@@ -2,7 +2,7 @@
 #!/opt/cb2/perl/bin/perl
 
 my $version = "[% version %]";
-my $date = "[% date $]";
+my $date = "[% date %]";
 my $procname = "builder";
 
 #	2012-12-25	AV	0.1	erste version
@@ -503,7 +503,7 @@ foreach my $refh_stackline (@CONFIG)
 	{
 		print "info: in temporary git-repository branch with numericname found '$_'\n";
 	}
-	print "info: only the $ybranches latest branches with numericname will be build.\n";
+	print "info: only the $now_ybranches latest branches with numericname will be build.\n";
 	
 	foreach (@branches_alphanames_sort)
 	{
@@ -556,11 +556,21 @@ foreach my $refh_stackline (@CONFIG)
 			{
 				unless ( -d $File::Find::name || $File::Find::name =~ /\.git/ || -B $File::Find::name )
 				{
-					print "info: processing file for filling placeholder [% version %] with string '$allbranches[$x]': $File::Find::name\n";
+					print "info: processing file in search of tt placeholders: $File::Find::name\n";
 					my $relname = File::Spec->abs2rel($File::Find::name);
 					my $tt = Template->new();
-					my $vars = { version => $allbranches[$x], date => $date_lastcommit};
-					$tt->process($relname, $vars, $relname) || print "error in subroutine"; next();
+					my $vars = {
+								version	=> sub	{
+													print "replacing [% version %] with '$allbranches[$x]'\n";
+													return $allbranches[$x];
+												},
+								date	=> sub	{
+													print "replacing [% date %] with '$date_lastcommit'\n";
+													return $allbranches[$x];
+												}
+								};
+ 					$tt->process($relname, $vars, $relname) || die $tt->error();
+#					$tt->process($relname, $vars, $relname) || print "error in subroutine $!"; next();
 				}
 			}
 		}
