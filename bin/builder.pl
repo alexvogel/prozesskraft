@@ -280,7 +280,7 @@ while(<STACK>)
 		# wenn parameter --app angegeben wurde, sollen nur eintraege im configfile mit dieser app beruecksichtigt werden
 		if ($app)
 		{
-			if ($paramset{'app'} ne $app)
+			if ($paramset{'app'} !~ m/^$app$/)
 			{
 				$soll_beruecksichtigt_werden = 0;
 			}
