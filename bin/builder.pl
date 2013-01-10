@@ -386,10 +386,11 @@ foreach my $refh_stackline (@CONFIG)
 	my $now_deployscript = $$refh_stackline{'deployscript'};
 	my @now_action = @{$$refh_stackline{'action'}};
 
-	print "info: ----- processing next stackline -----\n";
+	print "info: ----- start processing next stackline -----\n";
 	
 	#-------------------
 	# ausgabe der parameter aus conf und abgeleiterer params
+	print "info: ----- start these parameters (from stackline and user) -----\n";
 	print "info: app = $now_app\n";
 	print "info: repodir = $now_repodir\n";
 	print "info: targetdir = $now_targetdir\n";
@@ -422,6 +423,8 @@ foreach my $refh_stackline (@CONFIG)
 		print "error: ----- 'cause of errors skipping stackline -----\n";
 		next;
 	}
+	print "info: ----- end these parameters (from stackline and user) -----\n";
+	#-------------------
 	
 	#-------------------
 	# kopieren des repos nach $instancedir/<random>
@@ -448,34 +451,36 @@ foreach my $refh_stackline (@CONFIG)
 
 	print "info: calling: git branch -a\n";
 	my @branches = `git branch -a`;
+	print "@branches";
 	chomp @branches;
-	@branches = grep { /\s*remotes.+\/([^\/]+)$/ && !/HEAD/ } @branches;	# herausfiltern von kurzangabe und HEAD
+	@branches = grep { /\s*remotes.+\/([^\/]+)$/ && !/HEAD/ } @branches;	# herausfiltern von kurznamen und HEAD (es sollen nur noch die langnamen wie 'remotes/origin/master' bleiben
 	for(my $x=0; $x<@branches; $x++)
 	{
 		$branches[$x] =~ s/\s*remotes\/\w+\///;
 	}
+	print "refined: '".join(":", @branches)."'\n";
 
 	# das targetverzeichnis erstellen
-	print "info: creating target directory $now_targetdir\n";
+	print "info: creating directory target $now_targetdir\n";
 	print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetdir\"\n"; 
 	system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetdir\"";
 	
-	print "info: creating target directory ".$now_targetbin."\n";
+	print "info: creating directory targetbin ".$now_targetbin."\n";
 	print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbin\"\n"; 
 	system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbin\"";
 	
-	print "info: creating target directory ".$now_targetbulk."\n";
+	print "info: creating directory targetbulk ".$now_targetbulk."\n";
 	print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulk\"\n"; 
 	system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulk\"";
 	
 	if ($cleanapp)
 	{
-		print "info: deleting directory (if exists) ".$now_targetbulkapp."\n";
+		print "info: deleting directory targetbulkapp (if exists) ".$now_targetbulkapp."\n";
 		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkapp\"\n"; 
 		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkapp\"";
 	}
 	
-	print "info: creating target directory ".$now_targetbulkapp."\n";
+	print "info: creating directory targetbulkapp ".$now_targetbulkapp."\n";
 	print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulkapp\"\n"; 
 	system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulkapp\"";
 
@@ -487,7 +492,8 @@ foreach my $refh_stackline (@CONFIG)
 		$branches[$x] =~ s/\s//g;
 		print "info: branch found '$branches[$x]'\n";
 	}
-	
+	print "refined2: '".join(":", @branches)."'\n";
+
 	my @branches_numericnames = grep { $_ =~ /^[\d\.]+$/ } @branches;	# branches, die eine zahl im namen tragen (0.1 oder 2.1.10.2)
 	my @branches_numericnames_sort = reverse sort @branches_numericnames;	# numerisch absteigend sortieren
 	my @branches_alphanames = grep { $_ =~ /^[\w]+$/ } @branches;	# branches, die eine zahl im namen tragen (0.1 oder 2.1.10.2)
@@ -497,19 +503,22 @@ foreach my $refh_stackline (@CONFIG)
 	# als ersten branch 'master' der liste hinzufuegen
 #	unshift @branches_numericnames_sort, "master";
 
-	unless (@branches_numericnames_sort) {print "info: no branch with numerical name found. exit.\n";exit;}
-
+	#-------------------
+	# gibt es eigentlich branches numerical/alphabetical?
+	unless (@branches_numericnames_sort) {print "info: no branch with numerical name found.\n";}
 	foreach (@branches_numericnames_sort)
 	{
 		print "info: in temporary git-repository branch with numericname found '$_'\n";
 	}
 	print "info: only the $now_ybranches latest branches with numericname will be build.\n";
 	
+	unless (@branches_alphanames_sort) {print "info: no branch with alphabetical name found.\n";}
 	foreach (@branches_alphanames_sort)
 	{
 		print "info: in temporary git-repository branch with alphaname found '$_'\n";
 	}
 	print "info: all the branches with alphaname will be build.\n";
+	#-------------------
 
 	#-------------------
 	# fuer die letzten ybranches und alle alphabenamten branches durchfuehren
