@@ -323,7 +323,7 @@ while(<STACK>)
 		}
 		
 		# wenn parameter --ybranches angegeben wurde, soll fuer alle zeilen im configfile dieser ybranches-Wert verwendet werden (statt den den im file) 
-		if ($ybranches || ($ybranches && $ybranches == 0))
+		if (($ybranches) || ($ybranches =~ m/0/))
 		{
 			$paramset{'ybranches'} = $ybranches;
 		}
