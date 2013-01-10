@@ -69,7 +69,7 @@ my $repodir;
 my $targetdir;
 my $targetmachine;
 my $targetuser;
-my $ybranches;
+my $ybranches = "lamei";
 my $cleanapp;
 my $cleanbranch;
 my $genstack;
@@ -323,7 +323,7 @@ while(<STACK>)
 		}
 		
 		# wenn parameter --ybranches angegeben wurde, soll fuer alle zeilen im configfile dieser ybranches-Wert verwendet werden (statt den den im file) 
-		if (($ybranches) || ($ybranches =~ m/0/))
+		if ($ybranches =~ m/^\d+$/)
 		{
 			$paramset{'ybranches'} = $ybranches;
 		}
@@ -566,7 +566,7 @@ foreach my $refh_stackline (@CONFIG)
 												},
 								date	=> sub	{
 													print "replacing [% date %] with '$date_lastcommit'\n";
-													return $allbranches[$x];
+													return $date_lastcommit;
 												}
 								};
  					$tt->process($relname, $vars, $relname) || die $tt->error();
