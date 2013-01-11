@@ -558,12 +558,13 @@ foreach my $refh_stackline (@CONFIG)
 			#-------------------
 			# suchen und ersetzen des platzhalters fuer 'version' in allen files
 			print "info: action 'searchreplace'\n";
-			print "info: putting version-string into all files where 'version' is found\n";
-			find(\&wanted, $TMPDIR);
+			print "info: search and replace placeholder [version] and [date] in entry-point-file.\n";
+			find(\&wanted, "$TMPDIR");
 			
 			sub wanted
 			{
-				unless ( -d $File::Find::name || $File::Find::name =~ /\.git/ || -B $File::Find::name )
+#				unless ( -d $File::Find::name || $File::Find::name =~ /\.git/ || -B $File::Find::name )
+				if ( ( $_ =~ m/^$now_app$/ ) || ( $_ =~ m/^$now_app\.\w+$/ ) )
 				{
 					print "info: processing file in search of tt placeholders: $File::Find::name\n";
 					my $relname = File::Spec->abs2rel($File::Find::name);
