@@ -556,9 +556,9 @@ foreach my $refh_stackline (@CONFIG)
 		{
 			
 			#-------------------
-			# suchen und ersetzen des platzhalters [% version %] in allen files
+			# suchen und ersetzen des platzhalters fuer 'version' in allen files
 			print "info: action 'searchreplace'\n";
-			print "info: putting version-string into all files where [% version %] is found\n";
+			print "info: putting version-string into all files where 'version' is found\n";
 			find(\&wanted, $TMPDIR);
 			
 			sub wanted
@@ -570,11 +570,11 @@ foreach my $refh_stackline (@CONFIG)
 					my $tt = Template->new();
 					my $vars = {
 								version	=> sub	{
-													print "replacing [% version %] with '$allbranches[$x]'\n";
+													print "replacing placeholder for 'version' with '$allbranches[$x]'\n";
 													return $allbranches[$x];
 												},
 								date	=> sub	{
-													print "replacing [% date %] with '$date_lastcommit'\n";
+													print "replacing placeholder for 'date' with '$date_lastcommit'\n";
 													return $date_lastcommit;
 												}
 								};
