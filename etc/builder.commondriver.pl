@@ -90,27 +90,7 @@ elsif ( grep { $_ =~ /--version/ } @ARGV )
 		elsif ($last_arg_was_plain_version)
 		{
 			$last_arg_was_plain_version = 0;
-			if ($ARGV[$x] eq "default")
-			{
-				$version = $default;
-			}
-
-			elsif ($ARGV[$x] eq "newest")
-			{
-				if ($newest)
-				{
-					$version = $newest;
-				}
-				else
-				{
-					$version = $default;
-				}
-			}
-			
-			else
-			{
-				$version = $ARGV[$x];
-			}
+			$version = $ARGV[$x];
 		}
 		else
 		{
@@ -128,7 +108,24 @@ else
 }
 #------------
 
-print "neue argumente: @neue_argumente\n";
+if ($version eq "default")
+{
+	$version = $default;
+}
+
+elsif ($version eq "newest")
+{
+	if ($newest)
+	{
+		$version = $newest;
+	}
+	else
+	{
+		$version = $default;
+	}
+}
+			
+
 
 
 if ($query)
