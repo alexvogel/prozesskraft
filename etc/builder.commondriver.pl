@@ -166,14 +166,14 @@ unless ($version)
 {
     if ($default) {$version = $default;}
     elsif ($newest) {$version = $newest;}
-    else {print "no version of $filename installed.\n";exit;}
+    else {print "no version of $filename installed.\n";exit(1);}
 }
 
 unless (grep { $_ eq $version } @all_versions)
 {
     print "unknown version $version\n";
     print "call '$filename --query' for available versions\n";
-    exit;
+    exit(1);
 }
 
 #print "$versionen{$version} @neue_argumente\n";
