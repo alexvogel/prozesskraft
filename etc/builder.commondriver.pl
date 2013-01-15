@@ -71,18 +71,25 @@ if ( grep { $_ eq "--query" } @ARGV ) { $query = 1; }
 
 #------------
 # Den Aufruf durchsuchen nach '--version'. version feststellen und aus den argumenten entfernen
-elsif ( grep { $_ eq "--version" } @ARGV )
+elsif ( grep { $_ =~ /--version/ } @ARGV )
 {
-	my $position_of_version_paramter;
+	my $last_arg_was_plain_version;
 	for(my $x=0; $x<@ARGV; $x++)
 	{
-		if ($ARGV[$x] eq "--version")
+		if ($ARGV[$x] =~ m/--version/)
 		{
-			$position_of_version_paramter = $x;
+			if ($ARGV[$x] =~ m/^--version$/)
+			{
+				$last_arg_was_plain_version = 1;
+			}
+			elsif ($ARGV[$x] =~ m/^--version=(.+)$/)
+			{
+				$version = $1;
+			}
 		}
-		elsif ($x == $position_of_version_paramter + 1)
+		elsif ($last_arg_was_plain_version)
 		{
-
+			$last_arg_was_plain_version = 0;
 			if ($ARGV[$x] eq "default")
 			{
 				$version = $default;
@@ -113,7 +120,6 @@ elsif ( grep { $_ eq "--version" } @ARGV )
 }
 #------------
 
-
 #------------
 # wenn @neue_argumente leer ist, dann die @ARGV kopieren
 else
@@ -122,6 +128,7 @@ else
 }
 #------------
 
+print "neue argumente: @neue_argumente\n";
 
 
 if ($query)
@@ -162,7 +169,7 @@ unless ($version)
 {
     if ($default) {$version = $default;}
     elsif ($newest) {$version = $newest;}
-    else {die "no version of $filename installed."}
+    else {print "no version of $filename installed.\n";exit;}
 }
 
 unless (grep { $_ eq $version } @all_versions)
