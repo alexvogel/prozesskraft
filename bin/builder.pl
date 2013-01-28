@@ -70,7 +70,7 @@ my $targetdir;
 my $targetmachine;
 my $targetuser;
 my $ybranches = "lamei";
-my $branch = "irgendeinbranch";
+my @branch = "irgendeinbranch";
 my $cleanapp;
 my $cleanbranch;
 my $genstack;
@@ -84,7 +84,7 @@ my $result = GetOptions(
                         "targetmachine=s"  => \$targetmachine,
                         "targetuser=s" => \$targetuser,
                         "ybranches=s"  => \$ybranches,
-                        "branch=s"  => \$branch,
+                        "branch=s"  => \@branch,
                         "stack=s"     => \$stack,
                         "cleanapp"   => \$cleanapp,
                         "cleanbranch"=> \$cleanbranch,
@@ -502,7 +502,15 @@ foreach my $refh_stackline (@CONFIG)
 	my @branches_alphanames = grep { $_ =~ /^[\w]+$/ } @branches;	# branches, die eine zahl im namen tragen (0.1 oder 2.1.10.2)
 	my @branches_alphanames_sort = reverse sort @branches_alphanames;	# numerisch absteigend sortieren
 	my @allbranches = (@branches_numericnames_sort);
-	my @branches_wanted_by_name = grep { $_ =~ /^$branch$/ } @branches; # branches, die explizit angefragt wurden
+	
+	my @branches_wanted_by_name;
+	foreach my $branch (@branch)
+	{
+		if ( grep { $_ =~ /^$branch$/ } @branches ) # branches, die explizit angefragt wurden
+		{
+			push (@branches_wanted_by_name, $branch);
+		}
+	}
 
 	foreach my $branches_wanted_by_name (@branches_wanted_by_name)
 	{
