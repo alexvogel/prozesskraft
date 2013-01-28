@@ -70,6 +70,7 @@ my $targetdir;
 my $targetmachine;
 my $targetuser;
 my $ybranches = "lamei";
+my $branch = "irgendeinbranch";
 my $cleanapp;
 my $cleanbranch;
 my $genstack;
@@ -83,6 +84,7 @@ my $result = GetOptions(
                         "targetmachine=s"  => \$targetmachine,
                         "targetuser=s" => \$targetuser,
                         "ybranches=s"  => \$ybranches,
+                        "branch=s"  => \$branch,
                         "stack=s"     => \$stack,
                         "cleanapp"   => \$cleanapp,
                         "cleanbranch"=> \$cleanbranch,
@@ -127,6 +129,7 @@ $helptext .= " --targetdir=DIR      [optional, filters stack] processes only the
 $helptext .= " --targetmachine=STRING  [optional, filters stack] processes only the lines from the stack-file where this targetmachine is mentioned\n";
 $helptext .= " --targetuser=STRING  [optional, filters stack] processes only the lines from the stack-file where this targetuser is mentioned\n";
 $helptext .= " --ybranches=INT      [optional, overrides stack] installs the youngest <INT> branches (plus 'master' and all '*beta' younger than the <INT> youngest branches).\n";
+$helptext .= " --branch=PATTERN     [optional, overrides --ybranches] installs the matching branch.\n";
 $helptext .= " --cleanbranch		[optional] prior to install all content in target directory of the processed branch of the processed app will be deleted. this value overrides the value in configfile\n";
 $helptext .= " --cleanapp			[optional] prior to build all branches of the processed app will be deleted.\n";
 $helptext .= " --batch              [optional] direct execution of all relevant buildinstances without possibility to abort.\n";
@@ -498,35 +501,45 @@ foreach my $refh_stackline (@CONFIG)
 	my @branches_numericnames_sort = reverse sort @branches_numericnames;	# numerisch absteigend sortieren
 	my @branches_alphanames = grep { $_ =~ /^[\w]+$/ } @branches;	# branches, die eine zahl im namen tragen (0.1 oder 2.1.10.2)
 	my @branches_alphanames_sort = reverse sort @branches_alphanames;	# numerisch absteigend sortieren
-	my @allbranches = (@branches_alphanames_sort, @branches_numericnames_sort);
+	my @allbranches = (@branches_numericnames_sort);
+	my @branches_wanted_by_name = grep { $_ =~ /^$branch$/ } @branches; # branches, die explizit angefragt wurden
 
+	foreach my $branches_wanted_by_name (@branches_wanted_by_name)
+	{
+		my $branch_seen = 0;
+		for(my $y=0; $y<$now_ybranches; $y++)
+		{
+			if ( $allbranches[$y] =~ m/$branches_wanted_by_name/ )
+			{
+				$branch_seen = 1;
+			}
+		}
+		unless ($branch_seen)
+		{
+			unshift(@allbranches, $branches_wanted_by_name);
+			$now_ybranches++;
+		}
+	}
+		
 	# als ersten branch 'master' der liste hinzufuegen
 #	unshift @branches_numericnames_sort, "master";
 
 	#-------------------
 	# gibt es eigentlich branches numerical/alphabetical?
-	unless (@branches_numericnames_sort) {print "info: no branch with numerical name found.\n";}
-	foreach (@branches_numericnames_sort)
+	unless (@allbranches) {print "info: no branch found.\n";}
+	foreach (@allbranches)
 	{
-		print "info: in temporary git-repository branch with numericname found '$_'\n";
+		print "info: in temporary git-repository branch with name found '$_'\n";
 	}
-	print "info: only the $now_ybranches latest branches with numericname will be build.\n";
-	
-	unless (@branches_alphanames_sort) {print "info: no branch with alphabetical name found.\n";}
-	foreach (@branches_alphanames_sort)
-	{
-		print "info: in temporary git-repository branch with alphaname found '$_'\n";
-	}
-	print "info: all the branches with alphaname will be build.\n";
+	print "info: only the $now_ybranches latest branches will be build.\n";
 	#-------------------
 
 	#-------------------
 	# fuer die letzten ybranches und alle alphabenamten branches durchfuehren
-	if ($now_ybranches > scalar(@branches_numericnames_sort))
+	if ($now_ybranches > scalar(@allbranches))
 	{
-		$now_ybranches = scalar(@branches_numericnames_sort);
+		$now_ybranches = scalar(@allbranches);
 	}
-	$now_ybranches += scalar(@branches_alphanames_sort);
 	
 	for (my $x=0; $x<($now_ybranches); $x++)
 	{
@@ -572,7 +585,7 @@ foreach my $refh_stackline (@CONFIG)
 					my $vars = {
 								version	=> sub	{
 													print "replacing placeholder for 'version' with '$allbranches[$x]'\n";
-													return $allbranches[$x];
+													return $branches_numericnames[$x];
 												},
 								date	=> sub	{
 													print "replacing placeholder for 'date' with '$date_lastcommit'\n";
