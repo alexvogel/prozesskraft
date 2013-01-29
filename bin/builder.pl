@@ -70,7 +70,7 @@ my $targetdir;
 my $targetmachine;
 my $targetuser;
 my $ybranches = "lamei";
-my @branch = "irgendeinbranch";
+my @branch;
 my $cleanapp;
 my $cleanbranch;
 my $genstack;
@@ -533,12 +533,11 @@ foreach my $refh_stackline (@CONFIG)
 		unless ($branch_seen)
 		{
 			unshift(@allbranches, $branches_wanted_by_name);
-			print "info: scheduling user wanted branch for building.\n";
+			print "info: scheduling user wanted branch '$branches_wanted_by_name' for building.\n";
 			$now_ybranches++;
 		}
 	}
 
-exit;
 	# als ersten branch 'master' der liste hinzufuegen
 #	unshift @branches_numericnames_sort, "master";
 
@@ -551,7 +550,7 @@ exit;
 	}
 	print "info: only the first $now_ybranches branches will be build.\n";
 	#-------------------
-
+exit;
 	#-------------------
 	# fuer die letzten ybranches und alle alphabenamten branches durchfuehren
 	if ($now_ybranches > scalar(@allbranches))
