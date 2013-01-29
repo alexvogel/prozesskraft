@@ -506,9 +506,15 @@ foreach my $refh_stackline (@CONFIG)
 	my @branches_wanted_by_name;
 	foreach my $branch (@branch)
 	{
+		print "info: user wants branch '$branch' to be build.\n";
 		if ( grep { $_ =~ /^$branch$/ } @branches ) # branches, die explizit angefragt wurden
 		{
+			print "info: user wanted branch found in all existent branches in git-repository\n";
 			push (@branches_wanted_by_name, $branch);
+		}
+		else
+		{
+			print "warn: user wanted branch NOT found in all existent branches in git-repository\n";
 		}
 	}
 
@@ -517,29 +523,33 @@ foreach my $refh_stackline (@CONFIG)
 		my $branch_seen = 0;
 		for(my $y=0; $y<$now_ybranches; $y++)
 		{
+			print "info: examining if user wanted branch is already scheduled by --ybranches.\n";
 			if ( $allbranches[$y] =~ m/$branches_wanted_by_name/ )
 			{
 				$branch_seen = 1;
+				print "info: yes - user wanted branch has been already scheduled - dismiss user request.\n";
 			}
 		}
 		unless ($branch_seen)
 		{
 			unshift(@allbranches, $branches_wanted_by_name);
+			print "info: scheduling user wanted branch for building.\n";
 			$now_ybranches++;
 		}
 	}
-		
+
+exit;
 	# als ersten branch 'master' der liste hinzufuegen
 #	unshift @branches_numericnames_sort, "master";
 
 	#-------------------
 	# gibt es eigentlich branches numerical/alphabetical?
 	unless (@allbranches) {print "info: no branch found.\n";}
-	foreach (@allbranches)
+	for(my $x=0; $x < @allbranches; $x++)
 	{
-		print "info: in temporary git-repository branch with name found '$_'\n";
+		print "info: ".($x+1)."in temporary git-repository branch with name found '$allbranches[$x]'\n";
 	}
-	print "info: only the $now_ybranches latest branches will be build.\n";
+	print "info: only the first $now_ybranches branches will be build.\n";
 	#-------------------
 
 	#-------------------
