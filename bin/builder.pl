@@ -546,13 +546,13 @@ foreach my $refh_stackline (@CONFIG)
 	unless (@allbranches) {print "info: no branch found.\n";}
 	for(my $x=0; $x < @allbranches; $x++)
 	{
-		print "info: ".($x+1)."in temporary git-repository branch with name found '$allbranches[$x]'\n";
+		print "info: ".($x+1).") in temporary git-repository branch with name found '$allbranches[$x]'\n";
 	}
 	print "info: only the first $now_ybranches branches will be build.\n";
 	#-------------------
-exit;
+
 	#-------------------
-	# fuer die letzten ybranches und alle alphabenamten branches durchfuehren
+	# fuer alle vorgemerkten branches durchfuehren
 	if ($now_ybranches > scalar(@allbranches))
 	{
 		$now_ybranches = scalar(@allbranches);
@@ -602,7 +602,7 @@ exit;
 					my $vars = {
 								version	=> sub	{
 													print "replacing placeholder for 'version' with '$allbranches[$x]'\n";
-													return $branches_numericnames[$x];
+													return $allbranches[$x];
 												},
 								date	=> sub	{
 													print "replacing placeholder for 'date' with '$date_lastcommit'\n";
