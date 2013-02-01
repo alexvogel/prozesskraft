@@ -49,7 +49,7 @@ public class Checkin
 		  create boolean options
 		----------------------------*/
 		Option help = new Option("help", "print this message");
-		Option v = new Option("v", "prints version");
+		Option v = new Option("v", "prints version and build-date");
 		
 		/*----------------------------
 		  create argument options
@@ -83,6 +83,7 @@ public class Checkin
 		Options options = new Options();
 		
 		options.addOption( help );
+		options.addOption( v );
 		options.addOption( process );
 		options.addOption( id );
 		options.addOption( host );
