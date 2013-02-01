@@ -222,8 +222,8 @@ elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename\.pl$/ } @ca
 	}
 }
 
-# evtl hat das einstiegsprogramm im namen eine versionsbezeichnung und endet auf .jar
-elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\d*\.jar$/ } @callpossibilities)
+# evtl hat das einstiegsprogramm im namen eine versionsbezeichnung und endet auf -jar-with-dependencies.jar
+elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\d*-jar-with-dependencies\.jar$/ } @callpossibilities)
 {
 	if (@caller == 1)
 	{
@@ -237,8 +237,8 @@ elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\
 	}
 }
 
-# evtl hat das einstiegsprogramm im namen eine versionsbezeichnung und endet auf -jar-with-dependencies.jar
-elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\d*-jar-with-dependencies\.jar$/ } @callpossibilities)
+# evtl hat das einstiegsprogramm im namen eine versionsbezeichnung und endet auf .jar
+elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\d*\.jar$/ } @callpossibilities)
 {
 	if (@caller == 1)
 	{
