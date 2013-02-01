@@ -594,7 +594,10 @@ foreach my $refh_stackline (@CONFIG)
 			sub wanted
 			{
 #				unless ( -d $File::Find::name || $File::Find::name =~ /\.git/ || -B $File::Find::name )
-				if ( ( $_ =~ m/^$now_app$/i ) || ( $_ =~ m/^$now_app\.\w+$/i ) )
+				# falls $now_app ein Namen wie z.b. "pradar-checkin" ist, soll bei searchreplace auch "checkin" als entrypoints beruecksichtigt werden.
+				my $now_app_short;
+				if ($now_app =~ m/^\w+-(\w+)$/i) {$now_app_short = $1;}
+				if ( ( $_ =~ m/^$now_app$/i ) || ( $_ =~ m/^$now_app\.\w+$/i ) || ($now_app_short && ( $_ =~ m/^$now_app_short\.\w+$/i )) )
 				{
 					print "info: processing file in search of tt placeholders: $File::Find::name\n";
 					my $relname = File::Spec->abs2rel($File::Find::name);
