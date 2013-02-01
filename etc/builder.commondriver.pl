@@ -16,7 +16,15 @@ BEGIN
     use File::Basename;
     ($filename, $directories, $suffix) = fileparse ($0);
 }
+# falls $filename ein "-" enthaelt, kann der namensteil bis einschliesslich "-" entfallen
+my $filename_short;
+if ($filename =~ m/^\w+-(\.+)$/)
+{
+	$filename_short = $1;
+}
 #------------
+
+
 
 #------------
 # feststellen der verfuegbaren versionen
@@ -222,6 +230,21 @@ elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename\.pl$/ } @ca
 
 # evtl hat das einstiegsprogramm im namen eine versionsbezeichnung und endet auf .jar
 elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\d*\.jar$/ } @callpossibilities)
+{
+	if (@caller == 1)
+	{
+		print "java -jar $caller[0] @neue_argumente\n";
+		exec "java -jar $caller[0] @neue_argumente";
+	}
+	else
+	{
+		print "don't know what to call - @caller\n";
+		exit(1);
+	}
+}
+
+# falls filename ein "-" enthaelt kann der teil vor dem "-" fuer die suche nach einem aufrufer entfernt werden
+elsif ( $filename_short && (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename_short-\d\.\d*\.*\d*\.jar$/ } @callpossibilities) )
 {
 	if (@caller == 1)
 	{
