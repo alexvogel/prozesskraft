@@ -17,4 +17,4 @@ print "mvn install\n";
 system "mvn install";
 
 # nachfolgern bescheid geben wie das targetverzeichnis heisst
-print "<newdir>/tmp/pradar/newest<newdir>\n"
+print "<newdir>/tmp/pradar<newdir>\n"
