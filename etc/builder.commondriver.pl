@@ -187,7 +187,7 @@ if (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename$/ } @callpossi
 {
 	if (@caller == 1)
 	{
-		print "$installdir/$version/bin/$filename @neue_argumente\n";
+#		print "$installdir/$version/bin/$filename @neue_argumente\n";
 		exec "$installdir/$version/bin/$filename @neue_argumente";
 	}
 	else
@@ -212,7 +212,7 @@ elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename\.pl$/ } @ca
 #	}
 	if (@caller == 1)
 	{
-		print "$caller[0] @neue_argumente\n";
+#		print "$caller[0] @neue_argumente\n";
 		exec "$caller[0] @neue_argumente";
 	}
 	else
@@ -227,7 +227,7 @@ elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\
 {
 	if (@caller == 1)
 	{
-		print "java -jar $caller[0] @neue_argumente\n";
+#		print "java -jar $caller[0] @neue_argumente\n";
 		exec "java -jar $caller[0] @neue_argumente";
 	}
 	else
@@ -242,7 +242,7 @@ elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\
 {
 	if (@caller == 1)
 	{
-		print "java -jar $caller[0] @neue_argumente\n";
+#		print "java -jar $caller[0] @neue_argumente\n";
 		exec "java -jar $caller[0] @neue_argumente";
 	}
 	else
@@ -250,4 +250,11 @@ elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\
 		print "don't know what to call - @caller\n";
 		exit(1);
 	}
+}
+
+else
+{
+	print "error: no target found.";
+	print "please check installation of $filename.\n";
+	exit(2);
 }
