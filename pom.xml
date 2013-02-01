@@ -72,7 +72,7 @@
 					<finalName>${project.name}-${project.version}</finalName>
 					<archive>
 						<manifest>
-<!-- 							<mainClass>de.caegroup.pradar.Manager</mainClass> -->
+							<mainClass>de.caegroup.pradar.Checkin</mainClass>
 							<addClasspath>true</addClasspath>
 						</manifest>
 					</archive>
