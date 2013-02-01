@@ -16,12 +16,6 @@ BEGIN
     use File::Basename;
     ($filename, $directories, $suffix) = fileparse ($0);
 }
-# falls $filename ein "-" enthaelt, kann der namensteil bis einschliesslich "-" entfallen
-my $filename_short;
-if ($filename =~ m/^\w+-(\.+)$/)
-{
-	$filename_short = $1;
-}
 #------------
 
 
@@ -243,8 +237,8 @@ elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\
 	}
 }
 
-# falls filename ein "-" enthaelt kann der teil vor dem "-" fuer die suche nach einem aufrufer entfernt werden
-elsif ( $filename_short && (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename_short-\d\.\d*\.*\d*\.jar$/ } @callpossibilities) )
+# evtl hat das einstiegsprogramm im namen eine versionsbezeichnung und endet auf -jar-with-dependencies.jar
+elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\d*-jar-with-dependencies\.jar$/ } @callpossibilities)
 {
 	if (@caller == 1)
 	{
