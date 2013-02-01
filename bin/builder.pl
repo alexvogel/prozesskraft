@@ -594,7 +594,7 @@ foreach my $refh_stackline (@CONFIG)
 			sub wanted
 			{
 #				unless ( -d $File::Find::name || $File::Find::name =~ /\.git/ || -B $File::Find::name )
-				if ( ( $_ =~ m/^$now_app$/ ) || ( $_ =~ m/^$now_app\.\w+$/ ) )
+				if ( ( $_ =~ m/^$now_app$/i ) || ( $_ =~ m/^$now_app\.\w+$/i ) )
 				{
 					print "info: processing file in search of tt placeholders: $File::Find::name\n";
 					my $relname = File::Spec->abs2rel($File::Find::name);
