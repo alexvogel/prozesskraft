@@ -49,6 +49,7 @@ public class Checkin
 		  create boolean options
 		----------------------------*/
 		Option help = new Option("help", "print this message");
+		Option v = new Option("v", "prints version");
 		
 		/*----------------------------
 		  create argument options
@@ -76,7 +77,6 @@ public class Checkin
 //				.isRequired()
 				.create("user");
 				
-		
 		/*----------------------------
 		  create options object
 		----------------------------*/
@@ -108,8 +108,15 @@ public class Checkin
 		if ( line.hasOption("help"))
 		{
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("checkin --version [% version %]", options);
-//			formatter.printHelp("checkin", options);
+//			formatter.printHelp("checkin --version [% version %]", options);
+			formatter.printHelp("checkin", options);
+			System.exit(0);
+		}
+		
+		if ( line.hasOption("v"))
+		{
+			System.out.println("version [% version %]");
+			System.out.println("build at [% date %]");
 			System.exit(0);
 		}
 		
