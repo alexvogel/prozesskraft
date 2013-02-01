@@ -75,7 +75,7 @@ public class Checkin
 				.withDescription("[optional] owner of processinstance")
 //				.isRequired()
 				.create("user");
-		
+				
 		
 		/*----------------------------
 		  create options object
@@ -108,7 +108,8 @@ public class Checkin
 		if ( line.hasOption("help"))
 		{
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("checkin", options);
+			formatter.printHelp("checkin --version [% version %]", options);
+//			formatter.printHelp("checkin", options);
 			System.exit(0);
 		}
 		
