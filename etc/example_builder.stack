@@ -1,13 +1,27 @@
-# first line is header
+# first non-comment-line is header
 # app-name;repodirectory(abs);targetuser;targetmachine;targetdirectory(abs);amount_last_full_versions(newest(head) and betas (younger than full versions) are always on);deployment script;actiontag;actiontag;actiontag;actiontag
 app;repodir;targetuser;targetmachine;targetdir;ybranches;deployscript;action;action;action
 #
 # /share/xscaeapps/SNK/qxb0117
+myperllib;/projekte/git/myperllib.git;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;;searchreplace
 cud;/projekte/git/cud.git;avo;sv02;/soft/deploy;1;deploy.pl;searchreplace
 beulen;/projekte/git/beulen.git;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;1;deploy.pl;searchreplace
+multibeulen;/projekte/git/multibeulen.git;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;1;deploy.pl;searchreplace
+modal;/projekte/git/modal.git;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;1;;searchreplace
 #
 # targetmachine is sv02
-cud;/projekte/git/cud.git;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;1;deploy.pl;searchreplace
+myperllib;/projekte/git/myperllib.git;avo;sv02;/soft/deploy;0;;searchreplace
+cud;/projekte/git/cud.git;avo;sv02;/soft/deploy;1
 beulen;/projekte/git/beulen.git;avo;sv02;/soft/deploy;1;deploy.pl;searchreplace
+multibeulen;/projekte/git/multibeulen.git;avo;sv02;/soft/deploy;1;deploy.pl;searchreplace
+builder;/projekte/git/builder.git;avo;sv02;/soft/deploy;0;;searchreplace
+nak_cond_pre;/projekte/git/nak_cond_pre.git;avo;sv02;/soft/deploy;1;;searchreplace
+nak_cond_pre_cb2;/projekte/git/nak_cond_pre.git;avo;sv02;/soft/deploy;1;;searchreplace
+snk_cond_pre;/projekte/git/snk_cond_pre.git;avo;sv02;/soft/deploy;1;;searchreplace
+snk_cond_pre_cb2;/projekte/git/snk_cond_pre.git;avo;sv02;/soft/deploy;1;;searchreplace
+snk_cond_post;/projekte/git/snk_cond_post.git;avo;sv02;/soft/deploy;1;;searchreplace
+snk_cond_post_cb2;/projekte/git/snk_cond_post.git;avo;sv02;/soft/deploy;1;;searchreplace
+modal;/projekte/git/modal.git;avo;sv02;/soft/deploy;1;;searchreplace
+pradar-core;/projekte/git/pradar-core.git;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
 #
 # cb2

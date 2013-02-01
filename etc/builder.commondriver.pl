@@ -177,27 +177,60 @@ unless (grep { $_ eq $version } @all_versions)
     exit(1);
 }
 
+# liste der dateien feststellen, die in dem verzeichnis liegen
+my @callpossibilities = glob("$installdir/$version/bin/*");
+my @caller;
 #print "$versionen{$version} @neue_argumente\n";
-if (stat "$installdir/$version/bin/$filename")
+if (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename$/ } @callpossibilities)
 {
-	print "$installdir/$version/bin/$filename @neue_argumente\n";
-	exec "$installdir/$version/bin/$filename @neue_argumente";
+	if (@caller == 1)
+	{
+		print "$installdir/$version/bin/$filename @neue_argumente\n";
+		exec "$installdir/$version/bin/$filename @neue_argumente";
+	}
+	else
+	{
+		print "don't know what to call - @caller\n";
+		exit(1);
+	}
 }
 
 # evtl hat das einstiegsprogramm eine endung ".pl"
-elsif (stat "$installdir/$version/bin/$filename.pl")
+elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename\.pl$/ } @callpossibilities)
 {
-	# ist das file ein binary file? dann handelt es sich vermutlich um ein PAR-Archiv
-	if (-B "$installdir/$version/bin/$filename.pl")
+#	# ist das file ein binary file? dann handelt es sich vermutlich um ein PAR-Archiv
+#	if (-B "$installdir/$version/bin/$filename.pl")
+#	{
+#		print "checking for perl-module 'PAR'\n";
+#		if (!(eval{require PAR;}))
+#		{
+#			print "to use this program you need to install perl-module 'PAR' on your machine first. bye.\n";
+#			exit(1);
+#		}
+#	}
+	if (@caller == 1)
 	{
-		print "checking for perl-module 'PAR'\n";
-		if (!(eval{require PAR;}))
-		{
-			print "to use this program you need to install perl-module 'PAR' on your machine first. bye.\n";
-			exit(1);
-		}
+		print "$caller[0] @neue_argumente\n";
+		exec "$caller[0] @neue_argumente";
 	}
-	
-	print "$installdir/$version/bin/$filename.pl @neue_argumente\n";
-	exec "$installdir/$version/bin/$filename.pl @neue_argumente";
+	else
+	{
+		print "don't know what to call - @caller\n";
+		exit(1);
+	}
+}
+
+# evtl hat das einstiegsprogramm im namen eine versionsbezeichnung und endet auf .jar
+elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\d*\.jar$/ } @callpossibilities)
+{
+	if (@caller == 1)
+	{
+		print "java -jar $caller[0] @neue_argumente\n";
+		exec "java -jar $caller[0] @neue_argumente";
+	}
+	else
+	{
+		print "don't know what to call - @caller\n";
+		exit(1);
+	}
 }
