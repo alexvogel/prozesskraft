@@ -143,9 +143,11 @@ public class Checkin
 		
 		else
 		{
+			String programname = System.getProperty("sun.java.command");
+			System.out.println("Systemproperty: "+programname);
 			File program = new File(".");
 //			File program = new File(System.getProperty("user.dir"));
-			String basedirectory = program.getParent()+"/etc/pradar.conf";
+			String basedirectory = program.getParent();
 			File conffile = new File(basedirectory+"/etc/pradar.conf");
 			
 			Properties conf = new Properties();
