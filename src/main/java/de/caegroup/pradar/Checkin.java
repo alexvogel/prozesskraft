@@ -143,7 +143,8 @@ public class Checkin
 		
 		else
 		{
-			File program = new File(System.getProperty("user.dir"));
+			File program = new File(".");
+//			File program = new File(System.getProperty("user.dir"));
 			String basedirectory = program.getParent()+"/etc/pradar.conf";
 			File conffile = new File(basedirectory+"/etc/pradar.conf");
 			
