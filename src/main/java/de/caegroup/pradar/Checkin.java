@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
@@ -168,6 +169,7 @@ public class Checkin
 			Db db = new Db(dbfile);
 			
 			db.initDb();
+//			System.err.println("cannot open database in "+dbfile.getAbsolutePath());
 			
 //			Entity entity = db.genEntity();
 //			entity.setProcessname(line.getOptionValue("process"));
