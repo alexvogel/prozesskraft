@@ -574,7 +574,7 @@ foreach my $refh_stackline (@CONFIG)
 		print "info: determining the date of the last commit of that branch\n"; 
 		print "info: calling: git log -n 1 | grep 'Date'\n"; 
 		my $rueck = `git log -n 1 | grep 'Date'`;
-		$rueck =~ m/^Date:\s+(\w+\s\w+\s\w+)\s.+$/;
+		$rueck =~ m/^Date:\s+(\w+\s\w+\s\w+\s\d+:\d+:\d+\s\d+)\s.+$/;
 		my $date_lastcommit = "unknown";
 		$date_lastcommit = $1;
 		print "info: determined date is: $date_lastcommit\n";
