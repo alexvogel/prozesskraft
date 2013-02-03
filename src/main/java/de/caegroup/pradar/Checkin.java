@@ -161,7 +161,7 @@ public class Checkin
 			File dbfile = new File(conf.getProperty("dbfile"));
 			Db db = new Db(dbfile);
 			
-//			db.initDb();
+			db.initDb();
 			
 //			Entity entity = db.genEntity();
 //			entity.setProcessname(line.getOptionValue("process"));
