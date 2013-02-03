@@ -145,23 +145,26 @@ public class Checkin
 		{
 			String programname = System.getProperty("sun.java.command");
 			System.out.println("Systemproperty: "+programname);
-			File program = new File(".");
+
 //			File program = new File(System.getProperty("user.dir"));
-			String basedirectory = program.getParent();
-			File conffile = new File(basedirectory+"/etc/pradar.conf");
+//			String basedirectory = program.getParent();
+//			File conffile = new File(basedirectory+"/etc/pradar.conf");
 			
-			Properties conf = new Properties();
-			try
-			{
-				conf.load(new FileInputStream(conffile));
-			} catch (IOException e)
-			{
-				System.err.println("cannot read pradar config file: "+conffile.getAbsolutePath());
-				System.exit(2);
-				e.printStackTrace();
-			}
-			
-			File dbfile = new File(conf.getProperty("dbfile"));
+//			Properties conf = new Properties();
+//			try
+//			{
+//				conf.load(new FileInputStream(conffile));
+//			} catch (IOException e)
+//			{
+//				System.err.println("cannot read pradar config file: "+conffile.getAbsolutePath());
+//				System.exit(2);
+//				e.printStackTrace();
+//			}
+//			File dbfile = new File(conf.getProperty("dbfile"));
+
+			File cwd = new File(".");
+			File dbfile = new File(cwd.getAbsolutePath()+"/pradar.db");
+			System.out.println("Databasefile: "+dbfile.getAbsolutePath());
 			Db db = new Db(dbfile);
 			
 			db.initDb();
