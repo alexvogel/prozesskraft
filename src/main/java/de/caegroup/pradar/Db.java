@@ -60,7 +60,7 @@ public class Db
 		Connection connection = null;
 		try
 		{
-			System.out.println("getting connection to: this.dbfile.getAbsolutePath()");
+			System.out.println("getting connection to: "+this.dbfile.getAbsolutePath());
 			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
 			
 			
