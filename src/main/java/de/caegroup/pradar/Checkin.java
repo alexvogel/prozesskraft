@@ -164,12 +164,12 @@ public class Checkin
 //			}
 //			File dbfile = new File(conf.getProperty("dbfile"));
 
-			Properties systemproperties = System.getProperties();
-			for (Enumeration e = systemproperties.propertyNames(); e.hasMoreElements();)
-			{
-				String prop = (String) e.nextElement();
-				System.out.println("Property: " + prop + " , Wert: " + systemproperties.getProperty(prop));
-			}
+//			Properties systemproperties = System.getProperties();
+//			for (Enumeration e = systemproperties.propertyNames(); e.hasMoreElements();)
+//			{
+//				String prop = (String) e.nextElement();
+//				System.out.println("Property: " + prop + " , Wert: " + systemproperties.getProperty(prop));
+//			}
 			
 			
 			
