@@ -172,10 +172,6 @@ public class Checkin
 //			}
 			
 			
-			
-			File cwd = new File(".");
-			File dbfile = new File(cwd.getAbsolutePath()+"/pradar.db");
-			System.out.println("Databasefile: "+dbfile.getAbsolutePath());
 			Db db = new Db();
 			System.out.println("Db-Object: "+db.toString());
 			System.out.println("dbfile: "+db.getDbfile().getAbsolutePath());
