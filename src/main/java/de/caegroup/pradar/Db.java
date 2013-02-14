@@ -28,8 +28,8 @@ public class Db
 	public Db()
 	{
 		File program = new File(System.getProperty("java.class.path"));
-		File default_dbfile = new File (program.getParentFile().getParentFile().getAbsolutePath()+"/data/pradar.db");
-		System.out.println("default dbfile is expected to be here: " + program.getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getAbsolutePath()+"/data/pradar/pradar.db");
+		File default_dbfile = new File (program.getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getAbsolutePath()+"/data/pradar/pradar.db");
+		System.out.println("default dbfile is expected to be here: " + default_dbfile.getAbsolutePath());
 		new Db(default_dbfile);
 	}
 
