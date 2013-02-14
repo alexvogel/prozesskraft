@@ -28,28 +28,9 @@ public class Db
 	public Db()
 	{
 		File program = new File(System.getProperty("java.class.path"));
-		File default_dbfile = new File (program.getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getAbsolutePath()+"/data/pradar/pradar.db");
-		System.out.println("default dbfile is expected to be here: " + default_dbfile.getAbsolutePath());
-		new Db(default_dbfile);
-	}
-
-	/**
-	 * constructor with given dbfile as File
-	 */
-	public Db(File file)
-	{
+		File file = new File (program.getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getAbsolutePath()+"/data/pradar/pradar.db");
+		System.out.println("default dbfile is expected to be here: " + file.getAbsolutePath());
 		setDbfile(file);
-		System.out.println("getting connection to: "+this.dbfile.getAbsolutePath());
-
-		// JDBC-Treiber einbinden
-		try
-		{
-			Class.forName("org.sqlite.JDBC");
-		} catch (ClassNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -57,8 +38,7 @@ public class Db
 	 */
 	public Db(String pathtofile)
 	{
-		File file = new File(pathtofile);
-		new Db(file);
+		setDbfile(new File(pathtofile));
 	}
 
 	/*----------------------------
