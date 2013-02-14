@@ -45,16 +45,8 @@ public class Db
 	public void initDb()
 	{
 
-		System.out.println("2: getting connection to: "+this.getDbfile().getAbsolutePath());
-		try
-		{
-			Class.forName("org.sqlite.JDBC");
-		} catch (ClassNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		this.sqlvoodoo();
+
 		Connection connection = null;
 		try
 		{
@@ -159,7 +151,17 @@ public class Db
 //		}
 	}
 	
-	
+	public void sqlvoodoo()
+	{
+		try
+		{
+			Class.forName("org.sqlite.JDBC");
+		} catch (ClassNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	/*----------------------------
 	  methods getter/setter
