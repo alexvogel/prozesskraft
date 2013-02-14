@@ -66,6 +66,7 @@ public class Db
 	----------------------------*/
 	public void initDb()
 	{
+
 		System.out.println("2: getting connection to: "+this.dbfile.getAbsolutePath());
 		try
 		{
