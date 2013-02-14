@@ -89,19 +89,27 @@ public class Init
 		/*----------------------------
 		  usage/help
 		----------------------------*/
-		if ( line.hasOption("help"))
+		try
 		{
-			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("init", options);
-			System.exit(0);
-		}
-		
-		if ( line.hasOption("v"))
+			if ( line.hasOption("help"))
+			{
+				HelpFormatter formatter = new HelpFormatter();
+				formatter.printHelp("init", options);
+				System.exit(0);
+			}
+			
+			if ( line.hasOption("v"))
+			{
+				System.out.println("author:  alexander.vogel@caegroup.de");
+				System.out.println("version: [% version %]");
+				System.out.println("date:    [% date %]");
+				System.exit(0);
+			}
+		} catch (Exception e)
 		{
-			System.out.println("author:  alexander.vogel@caegroup.de");
-			System.out.println("version: [% version %]");
-			System.out.println("date:    [% date %]");
-			System.exit(0);
+			// TODO Auto-generated catch block
+			System.err.println("unrecognized option.");
+			e.printStackTrace();
 		}
 		
 		/*----------------------------
@@ -131,7 +139,7 @@ public class Init
 		
 		if (db.getDbfile().exists())
 		{
-			System.out.println("file " + db.getDbfile().getAbsolutePath() + " already exists. please remove.");
+			System.out.println("file " + db.getDbfile().getAbsolutePath() + " already exists.");
 			System.exit(0);
 		}
 
