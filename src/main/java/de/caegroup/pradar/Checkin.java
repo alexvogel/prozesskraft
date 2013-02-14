@@ -79,6 +79,12 @@ public class Checkin
 //				.isRequired()
 				.create("user");
 				
+		Option dbfile = OptionBuilder.withArgName("dbfile")
+				.hasArg()
+				.withDescription("[optional] dbfile")
+//				.isRequired()
+				.create("dbfile");
+				
 		/*----------------------------
 		  create options object
 		----------------------------*/
@@ -89,6 +95,8 @@ public class Checkin
 		options.addOption( process );
 		options.addOption( id );
 		options.addOption( host );
+		options.addOption( user );
+		options.addOption( dbfile );
 		
 		/*----------------------------
 		  create the parser
@@ -131,10 +139,47 @@ public class Checkin
 //		{
 //			String hello = line.getOptionValue("definitionfile");
 //		}
-		
+
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
+		
+		Db db = new Db();
+		
+		Properties systemproperties = System.getProperties();
+		for (Enumeration e = systemproperties.propertyNames(); e.hasMoreElements();)
+		{
+			String prop = (String) e.nextElement();
+			System.out.println("Property: " + prop + " , Wert: " + systemproperties.getProperty(prop));
+		}
+
+		if (line.hasOption("dbfile"))
+		{
+			File file = new File(line.getOptionValue("dbfile"));
+			if (file.exists())
+			{
+				db.setDbfile(file);
+			}
+			else
+			{
+				System.err.println("file not found: " + file.getAbsolutePath());
+				System.exit(1);
+			}
+		}
+		
+		Entity entity = new Entity();
+		
+		if (line.hasOption("id"))
+		{
+			entity.setId(line.getOptionValue("id"));
+		}
+
+		if (line.hasOption("host"))
+		{
+			entity.setHost(line.getOptionValue("host"));
+		}
+		
+		
 		
 		if ( !(line.hasOption("process")) || !(line.hasOption("host")) )
 		{
@@ -145,8 +190,8 @@ public class Checkin
 		
 		else
 		{
-			String programname = System.getProperty("sun.java.command");
-			System.out.println("Systemproperty: "+programname);
+//			String programname = System.getProperty("sun.java.command");
+//			System.out.println("Systemproperty: "+programname);
 
 //			File program = new File(System.getProperty("user.dir"));
 //			String basedirectory = program.getParent();
@@ -164,18 +209,10 @@ public class Checkin
 //			}
 //			File dbfile = new File(conf.getProperty("dbfile"));
 
-//			Properties systemproperties = System.getProperties();
-//			for (Enumeration e = systemproperties.propertyNames(); e.hasMoreElements();)
-//			{
-//				String prop = (String) e.nextElement();
-//				System.out.println("Property: " + prop + " , Wert: " + systemproperties.getProperty(prop));
-//			}
 			
-			
-			Db db = new Db();
-			System.out.println("Db-Object: "+db.toString());
-			System.out.println("dbfile: "+db.getDbfile().getAbsolutePath());
-			db.initDb();
+//			Db db = new Db();
+//			System.out.println("Db-Object: "+db.toString());
+//			db.initDb();
 //			System.err.println("cannot open database in "+dbfile.getAbsolutePath());
 			
 //			Entity entity = db.genEntity();
