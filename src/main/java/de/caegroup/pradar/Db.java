@@ -44,7 +44,6 @@ public class Db
 	----------------------------*/
 	public void initDb()
 	{
-
 		this.sqlvoodoo();
 
 		Connection connection = null;
@@ -52,7 +51,6 @@ public class Db
 		{
 			System.out.println("getting connection to: "+this.dbfile.getAbsolutePath());
 			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
-			
 			
 			Statement statement = connection.createStatement();
 			
@@ -70,12 +68,13 @@ public class Db
 			e.printStackTrace();
 		}
 // falls es automatisch von den feldern in entity abgeleitet werden soll
-//		Class entityClass = muster.getClass();
-//		Field[] fields = entityClass.getFields();
-//		for (int i=0; i < fields.length; i++)
-//		{
-//			System.out.println("Public field found: " + fields[i].toString());
-//		}
+		Entity muster = new Entity();
+		Class entityClass = muster.getClass();
+		Field[] fields = entityClass.getFields();
+		for (int i=0; i < fields.length; i++)
+		{
+			System.out.println("Public field found: " + fields[i].toString());
+		}
 	}
 
 	public void checkinEntity(Entity entity)
