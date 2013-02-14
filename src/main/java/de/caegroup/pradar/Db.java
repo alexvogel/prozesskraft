@@ -39,6 +39,7 @@ public class Db
 	public Db(File file)
 	{
 		setDbfile(file);
+		System.out.println("getting connection to: "+this.dbfile.getAbsolutePath());
 
 		// JDBC-Treiber einbinden
 		try
