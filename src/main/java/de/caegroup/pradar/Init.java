@@ -133,13 +133,13 @@ public class Init
 			
 			if (file.exists())
 			{
-				System.out.println("file " + line.getOptionValue("dbfile") + " already exists. please remove.");
+				System.out.println("file " + string_dbfile + " already exists. please remove.");
 				System.exit(0);
 			}
 			
 			else
 			{
-				Db db = new Db();
+				Db db = new Db(string_dbfile);
 				db.initDb();
 			}
 			
