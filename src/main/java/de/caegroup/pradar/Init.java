@@ -107,7 +107,8 @@ public class Init
 			}
 		} catch (Exception e)
 		{
-			System.err.println("unrecognized option.");
+//			System.err.println("unrecognized option.");
+			e.printStackTrace();
 			System.exit(1);
 		}
 		
@@ -126,7 +127,7 @@ public class Init
 		
 		if ( !(line.hasOption("dbfile")))
 		{
-			System.out.println("assuming you mean the default location.");
+			System.out.println("assuming default location for --dbfile.");
 		}
 		
 		else
