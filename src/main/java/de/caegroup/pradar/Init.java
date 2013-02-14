@@ -107,9 +107,8 @@ public class Init
 			}
 		} catch (Exception e)
 		{
-			// TODO Auto-generated catch block
 			System.err.println("unrecognized option.");
-			e.printStackTrace();
+			System.exit(1);
 		}
 		
 		/*----------------------------
