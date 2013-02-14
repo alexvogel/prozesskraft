@@ -21,6 +21,21 @@ public class Db
 	  constructors
 	----------------------------*/
 
+	/**
+	 * constructor without parameter
+	 * dbfile is expected in default location relative to program installation
+	 */
+	public Db()
+	{
+		File program = new File(System.getProperty("java.class.path"));
+		File default_dbfile = new File (program.getParentFile().getParentFile().getAbsolutePath()+"/data/pradar.db");
+		System.out.println("default dbfile is expected to be here: " + program.getParentFile().getParentFile().getAbsolutePath()+"/data/pradar.db");
+		new Db(default_dbfile);
+	}
+
+	/**
+	 * constructor with given dbfile as File
+	 */
 	public Db(File file)
 	{
 		setDbfile(file);
@@ -36,6 +51,9 @@ public class Db
 		}
 	}
 
+	/**
+	 * constructor with given dbfile as String of path
+	 */
 	public Db(String pathtofile)
 	{
 		File file = new File(pathtofile);
