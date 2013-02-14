@@ -178,6 +178,7 @@ public class Checkin
 			System.out.println("Databasefile: "+dbfile.getAbsolutePath());
 			Db db = new Db();
 			System.out.println("Db-Object: "+db.toString());
+			System.out.println("dbfile: "+db.getDbfile().getAbsolutePath());
 			db.initDb();
 //			System.err.println("cannot open database in "+dbfile.getAbsolutePath());
 			
