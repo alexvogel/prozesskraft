@@ -65,7 +65,7 @@ public class Db
 	----------------------------*/
 	public void initDb()
 	{
-		System.out.println("getting connection to: this.dbfile.getAbsolutePath()");
+		System.out.println("getting connection to: "+this.dbfile.getAbsolutePath());
 		try
 		{
 			Class.forName("org.sqlite.JDBC");
