@@ -115,35 +115,29 @@ public class Init
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
+		Db db = new Db();
 		
 		if ( !(line.hasOption("dbfile")))
 		{
-			System.out.println("try -help for help.");
-			System.exit(0);
+			System.out.println("assuming you mean the default location.");
 		}
 		
 		else
 		{
-//			String programname = System.getProperty("java.class.path");
-//			System.out.println("Systemproperty: "+programname);
-			
 			String string_dbfile = line.getOptionValue("dbfile");
-			
 			File file = new File (string_dbfile);
-			
-			if (file.exists())
-			{
-				System.out.println("file " + string_dbfile + " already exists. please remove.");
-				System.exit(0);
-			}
-			
-			else
-			{
-				Db db = new Db(string_dbfile);
-				db.initDb();
-			}
-			
+			db.setDbfile(file);
+		}
+		
+		if (db.getDbfile().exists())
+		{
+			System.out.println("file " + db.getDbfile().getAbsolutePath() + " already exists. please remove.");
+			System.exit(0);
 		}
 
+		else
+		{
+			db.initDb();
+		}
 	}
 }
