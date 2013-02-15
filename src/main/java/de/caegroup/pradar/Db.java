@@ -135,11 +135,21 @@ public class Db
 			System.out.println(sql);
 			ResultSet rs = statement.executeQuery(sql);
 			
-			String formatstring = "| %11s | %11s | %7s | %7s | %5s | %10s | %10s |\n";
+			String formatstring = "| %11s | %11s | %7s | %13s | %5s | %10s | %10s |\n";
 			System.out.format(formatstring, "id", "process", "user", "host", "active", "checkin", "checkout");
+			long Value = new Long("55");
 			while (rs.next())
 			{
-				System.out.format(formatstring, rs.getString("id"), rs.getString("process"), rs.getString("user"), rs.getString("host"), rs.getString("active"), rs.getString("checkin"), rs.getString("checkout") );
+				// millis in calendar umwandeln
+				Calendar cal_checkin = Calendar.getInstance();
+				Calendar cal_checkout = Calendar.getInstance();
+				cal_checkin.setTimeInMillis(new Long(rs.getString("checkin")));
+				cal_checkout.setTimeInMillis(new Long(rs.getString("checkin")));
+				
+				Timestamp tst_checkin = new Timestamp(new Long(rs.getString("checkin")));
+				Timestamp tst_checkout = new Timestamp(new Long(rs.getString("checkout")));
+
+				System.out.format(formatstring, rs.getString("id"), rs.getString("process"), rs.getString("user"), rs.getString("host"), rs.getString("active"), tst_checkin.toString(), tst_checkout.toString() );
 			}
 			
 			connection.close();
