@@ -142,9 +142,9 @@ public class Init
 			System.out.println("file " + db.getDbfile().getAbsolutePath() + " already exists.");
 			System.exit(0);
 		}
-
 		else
 		{
+			db.getDbfile().mkdirs();
 			db.initDb();
 		}
 	}
