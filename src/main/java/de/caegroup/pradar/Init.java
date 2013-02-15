@@ -144,7 +144,7 @@ public class Init
 		}
 		else
 		{
-			db.getDbfile().mkdirs();
+			db.getDbfile().getParentFile().mkdirs();
 			db.initDb();
 		}
 	}
