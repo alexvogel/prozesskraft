@@ -10,8 +10,7 @@ public class Entity
 
 	public String id = new String();
 	public Calendar checkin = Calendar.getInstance();
-	public Calendar checkout = Calendar.getInstance();
-	public String processname = "default";
+	public String process = "default";
 	public String host = "HAL";
 	public String user = "johndoe";
 	public boolean active = true;
@@ -47,7 +46,7 @@ public class Entity
 
 	public String getSuperid()
 	{
-		return (this.id + this.processname + this.host + this.user);
+		return (this.id + this.process + this.host + this.user);
 	}
 
 	public String getId()
@@ -72,22 +71,18 @@ public class Entity
 
 	public Calendar getCheckout()
 	{
+		Calendar checkout = Calendar.getInstance();
 		return checkout;
 	}
 
-	public void setCheckout(Calendar checkout)
+	public String getProcess()
 	{
-		this.checkout = checkout;
+		return process;
 	}
 
-	public String getProcessname()
+	public void setProcess(String process)
 	{
-		return processname;
-	}
-
-	public void setProcessname(String processname)
-	{
-		this.processname = processname;
+		this.process = process;
 	}
 
 	public String getHost()

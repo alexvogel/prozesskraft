@@ -85,7 +85,7 @@ public class Db
 			Statement statement = connection.createStatement();
 
 			statement.setQueryTimeout(10);
-			String sql = "INSERT INTO radar (id, processname, host, user, checkin, active) VALUES ('"+entity.getId()+"', '"+entity.getProcessname()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '"+entity.isActive()+"')"; 
+			String sql = "INSERT INTO radar (id, processname, host, user, checkin, active) VALUES ('"+entity.getId()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '"+entity.isActive()+"')"; 
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
@@ -114,11 +114,10 @@ public class Db
 			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
 			Statement statement = connection.createStatement();
 			
-			statement.setQueryTimeout(30);
+			statement.setQueryTimeout(10);
 			
-			statement.executeUpdate("INSERT INTO radar (checkout) VALUES ("+entity.getCheckout()+") WHERE (id="+entity.getId()+")");
+			statement.executeUpdate("INSERT INTO radar (checkout) VALUES ('"+entity.getCheckout().getTimeInMillis()+"') WHERE (id='"+entity.getId()+"', host='"+entity.getHost()+"', user='"+entity.getUser()+"', process='"+entity.getProcess()+"')");
 			
-			connection.commit();
 			connection.close();
 		} catch (SQLException e)
 		{
