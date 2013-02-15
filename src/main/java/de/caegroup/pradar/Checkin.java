@@ -4,9 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.*;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -145,13 +148,25 @@ public class Checkin
 		----------------------------*/
 		
 		Db db = new Db();
-		
-		Properties systemproperties = System.getProperties();
-		for (Enumeration e = systemproperties.propertyNames(); e.hasMoreElements();)
+		Entity entity = new Entity();
+
+		if (line.hasOption("process"))
 		{
-			String prop = (String) e.nextElement();
-			System.out.println("Property: " + prop + " , Wert: " + systemproperties.getProperty(prop));
+			entity.setProcessname(line.getOptionValue("process"));
 		}
+		else
+		{
+			System.out.println("-process is mandatory.");
+			System.out.println("try -help for help.");
+			System.exit(1);
+		}
+
+//		Properties systemproperties = System.getProperties();
+//		for (Enumeration e = systemproperties.propertyNames(); e.hasMoreElements();)
+//		{
+//			String prop = (String) e.nextElement();
+//			System.out.println("Property: " + prop + " , Wert: " + systemproperties.getProperty(prop));
+//		}
 
 		if (line.hasOption("dbfile"))
 		{
@@ -167,29 +182,41 @@ public class Checkin
 			}
 		}
 		
-		Entity entity = new Entity();
-		
 		if (line.hasOption("id"))
 		{
 			entity.setId(line.getOptionValue("id"));
 		}
+		else
+		{
+			Random generator = new Random();
+			entity.setId(""+generator.nextInt());
+			System.out.print("<id>"+entity.getId()+"<id>");
+		}
 
+		// setzen des hosts vom -host
 		if (line.hasOption("host"))
 		{
 			entity.setHost(line.getOptionValue("host"));
 		}
-		
-		
-		
-		if ( !(line.hasOption("process")) || !(line.hasOption("host")) )
-		{
-			System.out.println("at least one mandatory argument is missing.");
-			System.out.println("try -help for help.");
-			System.exit(1);
-		}
-		
+		// setzen des hosts vom system
 		else
 		{
+			try
+			{
+				InetAddress addr = InetAddress.getLocalHost();
+				entity.setHost(addr.getHostName());
+			} catch (UnknownHostException e)
+			{
+				// mache nichts, dann greift der default 'HAL'
+			}
+		}
+		
+		// setzen des user vom system
+		entity.setUser(System.getProperty("user.name"));
+		
+		// 
+		
+		
 //			String programname = System.getProperty("sun.java.command");
 //			System.out.println("Systemproperty: "+programname);
 
@@ -223,7 +250,6 @@ public class Checkin
 //			entity.setCheckinToNow();
 			
 			// TODO ist id schon vorhanden?
-		}
 
 	}
 }
