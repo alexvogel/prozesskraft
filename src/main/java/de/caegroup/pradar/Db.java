@@ -132,13 +132,13 @@ public class Db
 			statement.setQueryTimeout(10);
 			
 			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getId()+"' AND host LIKE '"+entity.getHost()+"' AND user LIKE '"+entity.getUser()+"' AND process LIKE '"+entity.getProcess()+"' AND active LIKE '"+entity.getActive()+"'";
-			System.out.println(sql);
+//			System.out.println(sql);
 			ResultSet rs = statement.executeQuery(sql);
 			
 			String formatstring = "|%11s|%11s|%7s|%13s|%6s|%23s|%23s|\n";
 			System.out.format(formatstring, "id", "process", "user", "host", "active", "checkin", "checkout");
 			System.out.format(formatstring, "-----------", "-----------", "-------", "-------------", "------", "-----------------------", "-----------------------");
-			long Value = new Long("55");
+
 			while (rs.next())
 			{
 				// millis in calendar umwandeln
