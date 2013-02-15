@@ -58,7 +58,6 @@ public class Db
 			statement.executeUpdate("drop table if exists radar");
 			statement.executeUpdate("create table radar (id, processname, host, user, checkin, checkout, active)");
 			
-//			connection.commit();
 			connection.close();
 
 		} catch (SQLException e)
@@ -90,7 +89,6 @@ public class Db
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
-			connection.commit();
 			connection.close();
 		} catch (SQLException e)
 		{
