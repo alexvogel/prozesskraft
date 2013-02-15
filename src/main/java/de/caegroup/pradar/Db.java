@@ -116,7 +116,7 @@ public class Db
 			
 			statement.setQueryTimeout(10);
 			
-			String sql = "UPDATE OR REPLACE radar SET checkout='"+entity.getCheckout().getTimeInMillis()+"' WHERE id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"'";
+			String sql = "UPDATE OR REPLACE radar SET checkout='"+entity.getCheckout().getTimeInMillis()+"', active='false' WHERE id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
