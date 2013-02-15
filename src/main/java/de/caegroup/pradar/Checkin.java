@@ -67,7 +67,7 @@ public class Checkin
 		
 		Option host = OptionBuilder.withArgName("host")
 				.hasArg()
-				.withDescription("[mandatory] hostname the processinstance is running")
+				.withDescription("[optional] hostname the processinstance is running")
 //				.isRequired()
 				.create("host");
 		
@@ -190,7 +190,7 @@ public class Checkin
 		{
 			Random generator = new Random();
 			entity.setId(""+generator.nextInt());
-			System.out.print("<id>"+entity.getId()+"<id>");
+			System.out.println("<id>"+entity.getId()+"<id>");
 		}
 
 		// setzen des hosts vom -host
@@ -214,8 +214,8 @@ public class Checkin
 		// setzen des user vom system
 		entity.setUser(System.getProperty("user.name"));
 		
-		// 
-		
+		// einchecken in die DB
+		db.checkinEntity(entity);
 		
 //			String programname = System.getProperty("sun.java.command");
 //			System.out.println("Systemproperty: "+programname);
