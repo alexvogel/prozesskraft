@@ -142,10 +142,10 @@ public class Db
 			while (rs.next())
 			{
 				// millis in calendar umwandeln
-				Calendar cal_checkin = Calendar.getInstance();
-				Calendar cal_checkout = Calendar.getInstance();
-				cal_checkin.setTimeInMillis(new Long(rs.getString("checkin")));
-				cal_checkout.setTimeInMillis(new Long(rs.getString("checkin")));
+//				Calendar cal_checkin = Calendar.getInstance();
+//				Calendar cal_checkout = Calendar.getInstance();
+//				cal_checkin.setTimeInMillis(new Long(rs.getString("checkin")));
+//				cal_checkout.setTimeInMillis(new Long(rs.getString("checkin")));
 				
 				Timestamp tst_checkin = new Timestamp(new Long(rs.getString("checkin")));
 				Timestamp tst_checkout = new Timestamp(new Long(rs.getString("checkout")));
