@@ -124,19 +124,19 @@ public class Init
 		  die eigentliche business logic
 		----------------------------*/
 		Db db = new Db();
-		
+
 		if ( !(line.hasOption("dbfile")))
 		{
 			System.out.println("assuming default location for --dbfile.");
 		}
-		
+
 		else
 		{
 			String string_dbfile = line.getOptionValue("dbfile");
 			File file = new File (string_dbfile);
 			db.setDbfile(file);
 		}
-		
+
 		if (db.getDbfile().exists())
 		{
 			System.out.println("file " + db.getDbfile().getAbsolutePath() + " already exists.");
