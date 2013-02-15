@@ -85,7 +85,7 @@ public class Db
 			Statement statement = connection.createStatement();
 
 			statement.setQueryTimeout(10);
-			String sql = "INSERT INTO radar (id, processname, host, user, checkin, active) VALUES ('"+entity.getId()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '"+entity.isActive()+"')"; 
+			String sql = "INSERT INTO radar (id, process, host, user, checkin, active) VALUES ('"+entity.getId()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '"+entity.isActive()+"')"; 
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
