@@ -73,7 +73,7 @@ public class Checkout
 		
 		Option id = OptionBuilder.withArgName("id")
 				.hasArg()
-				.withDescription("[optional] unique id over all instances of all possible processes")
+				.withDescription("[mandatory] unique id over all instances of all possible processes")
 				.create("id");
 		
 		Option user = OptionBuilder.withArgName("user")
