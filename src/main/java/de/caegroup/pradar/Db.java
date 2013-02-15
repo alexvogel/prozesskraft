@@ -116,7 +116,7 @@ public class Db
 			
 			statement.setQueryTimeout(10);
 			
-			String sql = "INSERT INTO radar (checkout) VALUES ('"+entity.getCheckout().getTimeInMillis()+"') SELECT (id, host, user, process) WHERE (id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"')";
+			String sql = "INSERT INTO radar (checkout) VALUES ('"+entity.getCheckout().getTimeInMillis()+"') SELECT (id, host, user, process) FROM radar WHERE (id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"')";
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
