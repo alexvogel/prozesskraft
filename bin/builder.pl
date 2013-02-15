@@ -382,6 +382,8 @@ foreach my $refh_stackline (@CONFIG)
 	my $now_targetdir = $$refh_stackline{'targetdir'};
 	my $now_targetbulk = $now_targetdir . "/install";
 	my $now_targetbulkapp = $now_targetbulk . "/" . $$refh_stackline{'app'};
+	my $now_targetdata = $now_targetdir . "/data";
+	my $now_targetdataapp = $now_targetdata . "/" . $$refh_stackline{'app'};
 	my $now_targetbin = $now_targetdir . "/bin";
 	my $now_targetuser = $$refh_stackline{'targetuser'};
 	my $now_targetmachine = $$refh_stackline{'targetmachine'};
@@ -399,6 +401,8 @@ foreach my $refh_stackline (@CONFIG)
 	print "info: targetdir = $now_targetdir\n";
 	print "info: targetbulk = $now_targetbulk\n";
 	print "info: targetbulkapp = $now_targetbulkapp\n";
+	print "info: targetdata = $now_targetdata\n";
+	print "info: targetdataapp = $now_targetdataapp\n";
 	print "info: targetbin = $now_targetbin\n";
 	print "info: targetuser = $now_targetuser\n";
 	print "info: targetmachine = $now_targetmachine\n";
@@ -476,6 +480,10 @@ foreach my $refh_stackline (@CONFIG)
 	print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulk\"\n"; 
 	system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulk\"";
 	
+	print "info: creating directory targetdata ".$now_targetdata."\n";
+	print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetdata\"\n"; 
+	system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetdata\"";
+	
 	if ($cleanapp)
 	{
 		print "info: deleting directory targetbulkapp (if exists) ".$now_targetbulkapp."\n";
@@ -486,6 +494,10 @@ foreach my $refh_stackline (@CONFIG)
 	print "info: creating directory targetbulkapp ".$now_targetbulkapp."\n";
 	print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulkapp\"\n"; 
 	system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulkapp\"";
+
+	print "info: creating directory targetdataapp ".$now_targetdataapp."\n";
+	print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetdataapp\"\n"; 
+	system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetdataapp\"";
 
 	#-------------------
 	# sonderzeichen und whitespaces aus den branchnamen entfernen
