@@ -13,7 +13,7 @@ public class Entity
 	public String process = "default";
 	public String host = "HAL";
 	public String user = "johndoe";
-	public boolean active = true;
+	public String active = "true";
 
 	/*----------------------------
 	  constructors
@@ -107,10 +107,14 @@ public class Entity
 
 	public boolean isActive()
 	{
-		return this.active;
+		if (this.active.matches("true"))
+		{
+			return true;
+		}
+		return false;
 	}
 
-	public void setActive(boolean active)
+	public void setActive(String active)
 	{
 		this.active = active;
 	}

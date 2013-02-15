@@ -86,7 +86,7 @@ public class Db
 
 			statement.setQueryTimeout(10);
 			String sql = "INSERT INTO radar (id, process, host, user, checkin, active) VALUES ('"+entity.getId()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '"+entity.isActive()+"')"; 
-			System.out.println(sql);
+//			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
 			connection.close();
@@ -99,15 +99,7 @@ public class Db
 
 	public void checkoutEntity(Entity entity)
 	{
-		try
-		{
-			Class.forName("org.sqlite.JDBC");
-		} catch (ClassNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		this.sqlvoodoo();
 		Connection connection = null;
 		try
 		{
@@ -117,7 +109,7 @@ public class Db
 			statement.setQueryTimeout(10);
 			
 			String sql = "UPDATE OR REPLACE radar SET checkout='"+entity.getCheckout().getTimeInMillis()+"', active='false' WHERE id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
-			System.out.println(sql);
+//			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
 			connection.close();
@@ -126,20 +118,38 @@ public class Db
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
-	public void getEntityById(String id) throws ClassNotFoundException
+	public void list(Entity entity)
 	{
-		Class.forName("org.sqlite.JDBC");
+		this.sqlvoodoo();
 		Connection connection = null;
-//		try
-//		{
-//			// create a database connection
-//			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile);
-//		}
+		try
+		{
+			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
+			Statement statement = connection.createStatement();
+			
+			statement.setQueryTimeout(10);
+			
+			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getId()+"' AND host LIKE '"+entity.getHost()+"' AND user LIKE '"+entity.getUser()+"' AND process LIKE '"+entity.getProcess()+"' AND active LIKE '"+entity.isActive()+"'";
+			System.out.println(sql);
+			ResultSet rs = statement.executeQuery(sql);
+			
+			String formatstring = "| %11s | %11s | %7s | %7s | %5s | %10s | %10s |";
+			System.out.format(formatstring, "id", "process", "user", "host", "active", "checkin", "checkout");
+			while (rs.next())
+			{
+				System.out.format(formatstring, rs.getString("id"), rs.getString("process"), rs.getString("user"), rs.getString("host"), rs.getString("active"), rs.getString("checkin"), rs.getString("checkout") );
+			}
+			
+			connection.close();
+		} catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void sqlvoodoo()
 	{
 		try
