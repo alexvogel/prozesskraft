@@ -135,7 +135,7 @@ public class Db
 			System.out.println(sql);
 			ResultSet rs = statement.executeQuery(sql);
 			
-			String formatstring = "| %11s | %11s | %7s | %13s | %5s | %22s | %22s |\n";
+			String formatstring = "|%11s|%11s|%7s|%13s|%6s|%22s|%22s|\n";
 			System.out.format(formatstring, "id", "process", "user", "host", "active", "checkin", "checkout");
 			long Value = new Long("55");
 			while (rs.next())
