@@ -82,7 +82,7 @@ public class List
 //				.isRequired()
 				.create("user");
 				
-		Option active = OptionBuilder.withArgName("active")
+		Option active = OptionBuilder.withArgName("true|false")
 				.hasArg()
 				.withDescription("[optional] filter for field 'active'")
 //				.isRequired()
