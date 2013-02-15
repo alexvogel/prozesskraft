@@ -177,7 +177,7 @@ public class Checkout
 			}
 		}
 		
-		if (db.getDbfile().exists())
+		if (!(db.getDbfile().exists()))
 		{
 			System.err.println("file not found: " + db.getDbfile().getAbsolutePath());
 			System.exit(1);
