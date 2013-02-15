@@ -45,11 +45,10 @@ public class Db
 	public void initDb()
 	{
 		this.sqlvoodoo();
-
 		Connection connection = null;
 		try
 		{
-			System.out.println("getting connection to: "+this.dbfile.getAbsolutePath());
+//			System.out.println("getting connection to: "+this.dbfile.getAbsolutePath());
 			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
 			
 			Statement statement = connection.createStatement();
@@ -67,36 +66,28 @@ public class Db
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-// falls es automatisch von den feldern in entity abgeleitet werden soll
-		Entity muster = new Entity();
-		Class entityClass = muster.getClass();
-		Field[] fields = entityClass.getFields();
-		for (int i=0; i < fields.length; i++)
-		{
-			System.out.println("Public field found: " + fields[i].toString());
-		}
+//// falls es automatisch von den feldern in entity abgeleitet werden soll
+//		Entity muster = new Entity();
+//		Class entityClass = muster.getClass();
+//		Field[] fields = entityClass.getFields();
+//		for (int i=0; i < fields.length; i++)
+//		{
+//			System.out.println("Public field found: " + fields[i].toString());
+//		}
 	}
 
 	public void checkinEntity(Entity entity)
 	{
-		try
-		{
-			Class.forName("org.sqlite.JDBC");
-		} catch (ClassNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		this.sqlvoodoo();
 		Connection connection = null;
 		try
 		{
 			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
 			Statement statement = connection.createStatement();
-			
-			statement.setQueryTimeout(30);
-			
-			statement.executeUpdate("INSERT INTO radar (id, processname, host, user, checkin, restart) VALUES ("+entity.getId()+", "+entity.getProcessname()+", "+entity.getHost()+", "+entity.getUser()+", "+entity.getCheckin()+", "+entity.isRestart()+")");
+
+			statement.setQueryTimeout(10);
+
+			statement.executeUpdate("INSERT INTO radar (id, processname, host, user, checkin, active) VALUES ("+entity.getId()+", "+entity.getProcessname()+", "+entity.getHost()+", "+entity.getUser()+", "+entity.getCheckin()+", "+entity.isActive()+")");
 			
 			connection.commit();
 			connection.close();
@@ -105,7 +96,6 @@ public class Db
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	public void checkoutEntity(Entity entity)

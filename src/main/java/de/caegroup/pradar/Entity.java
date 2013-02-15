@@ -7,15 +7,15 @@ public class Entity
 	/*----------------------------
 	  structure
 	----------------------------*/
-	
+
 	public String id = new String();
 	public Calendar checkin = Calendar.getInstance();
 	public Calendar checkout = Calendar.getInstance();
-	public String processname = "worldpower";
+	public String processname = "default";
 	public String host = "HAL";
 	public String user = "johndoe";
-	public boolean restart = false;
-	
+	public boolean active = true;
+
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -44,6 +44,11 @@ public class Entity
 	/*----------------------------
 	  methods getter/setter
 	----------------------------*/
+
+	public String getSuperid()
+	{
+		return (this.id + this.processname + this.host + this.user);
+	}
 
 	public String getId()
 	{
@@ -105,13 +110,13 @@ public class Entity
 		this.user = user;
 	}
 
-	public boolean isRestart()
+	public boolean isActive()
 	{
-		return restart;
+		return this.active;
 	}
 
-	public void setRestart(boolean restart)
+	public void setActive(boolean active)
 	{
-		this.restart = restart;
+		this.active = active;
 	}
 }
