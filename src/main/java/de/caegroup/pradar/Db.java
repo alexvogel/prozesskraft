@@ -56,7 +56,7 @@ public class Db
 			statement.setQueryTimeout(10);
 			
 			statement.executeUpdate("drop table if exists radar");
-			statement.executeUpdate("create table radar (id UNIQUE, processname, host, user, checkin, checkout, active)");
+			statement.executeUpdate("create table radar (id, processname, host, user, checkin, checkout, active)");
 			
 //			connection.commit();
 			connection.close();
