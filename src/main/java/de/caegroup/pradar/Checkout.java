@@ -175,11 +175,12 @@ public class Checkout
 			{
 				db.setDbfile(file);
 			}
-			else
-			{
-				System.err.println("file not found: " + file.getAbsolutePath());
-				System.exit(1);
-			}
+		}
+		
+		if (db.getDbfile().exists())
+		{
+			System.err.println("file not found: " + db.getDbfile().getAbsolutePath());
+			System.exit(1);
 		}
 		
 		if (line.hasOption("id"))
