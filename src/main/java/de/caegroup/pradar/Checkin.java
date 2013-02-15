@@ -152,7 +152,7 @@ public class Checkin
 
 		if (line.hasOption("process"))
 		{
-			entity.setProcessname(line.getOptionValue("process"));
+			entity.setProcess(line.getOptionValue("process"));
 		}
 		else
 		{
