@@ -105,13 +105,9 @@ public class Entity
 		this.user = user;
 	}
 
-	public boolean isActive()
+	public String getActive()
 	{
-		if (this.active.matches("true"))
-		{
-			return true;
-		}
-		return false;
+		return active;
 	}
 
 	public void setActive(String active)

@@ -85,7 +85,7 @@ public class Db
 			Statement statement = connection.createStatement();
 
 			statement.setQueryTimeout(10);
-			String sql = "INSERT INTO radar (id, process, host, user, checkin, active) VALUES ('"+entity.getId()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '"+entity.isActive()+"')"; 
+			String sql = "INSERT INTO radar (id, process, host, user, checkin, active) VALUES ('"+entity.getId()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '"+entity.getActive()+"')"; 
 //			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
@@ -131,11 +131,11 @@ public class Db
 			
 			statement.setQueryTimeout(10);
 			
-			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getId()+"' AND host LIKE '"+entity.getHost()+"' AND user LIKE '"+entity.getUser()+"' AND process LIKE '"+entity.getProcess()+"' AND active LIKE '"+entity.isActive()+"'";
+			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getId()+"' AND host LIKE '"+entity.getHost()+"' AND user LIKE '"+entity.getUser()+"' AND process LIKE '"+entity.getProcess()+"' AND active LIKE '"+entity.getActive()+"'";
 			System.out.println(sql);
 			ResultSet rs = statement.executeQuery(sql);
 			
-			String formatstring = "| %11s | %11s | %7s | %7s | %5s | %10s | %10s |";
+			String formatstring = "| %11s | %11s | %7s | %7s | %5s | %10s | %10s |\n";
 			System.out.format(formatstring, "id", "process", "user", "host", "active", "checkin", "checkout");
 			while (rs.next())
 			{
