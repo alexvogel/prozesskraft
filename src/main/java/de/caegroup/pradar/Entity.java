@@ -14,6 +14,7 @@ public class Entity
 	public String host = "HAL";
 	public String user = "johndoe";
 	public String active = "true";
+	public String exitcode = "unknown";
 
 	/*----------------------------
 	  constructors
@@ -113,5 +114,15 @@ public class Entity
 	public void setActive(String active)
 	{
 		this.active = active;
+	}
+
+	public String getExitcode()
+	{
+		return this.exitcode;
+	}
+
+	public void setExitcode(String exitcode)
+	{
+		this.exitcode = exitcode;
 	}
 }

@@ -56,7 +56,7 @@ public class Db
 			statement.setQueryTimeout(10);
 			
 			statement.executeUpdate("drop table if exists radar");
-			statement.executeUpdate("create table radar (id, process, host, user, checkin, checkout, active)");
+			statement.executeUpdate("create table radar (id, process, host, user, checkin, checkout, active, exitcode)");
 			
 			connection.close();
 
@@ -108,7 +108,7 @@ public class Db
 			
 			statement.setQueryTimeout(10);
 			
-			String sql = "UPDATE OR REPLACE radar SET checkout='"+entity.getCheckout().getTimeInMillis()+"', active='false' WHERE id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+			String sql = "UPDATE OR REPLACE radar SET checkout='"+entity.getCheckout().getTimeInMillis()+"', active='false', exitcode='"+ entity.getExitcode() +"' WHERE id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
 //			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
@@ -131,13 +131,13 @@ public class Db
 			
 			statement.setQueryTimeout(10);
 			
-			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getId()+"' AND host LIKE '"+entity.getHost()+"' AND user LIKE '"+entity.getUser()+"' AND process LIKE '"+entity.getProcess()+"' AND active LIKE '"+entity.getActive()+"'";
+			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getId()+"' AND host LIKE '"+entity.getHost()+"' AND user LIKE '"+entity.getUser()+"' AND process LIKE '"+entity.getProcess()+"' AND active LIKE '"+entity.getActive()+"' AND exitcode LIKE '"+entity.getExitcode()+"'";
 //			System.out.println(sql);
 			ResultSet rs = statement.executeQuery(sql);
 			
-			String formatstring = "|%-11s|%-11s|%-7s|%-13s|%-6s|%-23s|%-23s|\n";
-			System.out.format(formatstring, "id", "process", "user", "host", "active", "checkin", "checkout");
-			System.out.format(formatstring, "-----------", "-----------", "-------", "-------------", "------", "-----------------------", "-----------------------");
+			String formatstring = "|%-11s|%-11s|%-7s|%-13s|%-6s|%-23s|%-23s|%-8s|\n";
+			System.out.format(formatstring, "id", "process", "user", "host", "active", "checkin", "checkout", "exitcode");
+			System.out.format(formatstring, "-----------", "-----------", "-------", "-------------", "------", "-----------------------", "-----------------------", "--------");
 
 			while (rs.next())
 			{
@@ -150,7 +150,7 @@ public class Db
 				Timestamp tst_checkin = new Timestamp(new Long(rs.getString("checkin")));
 				Timestamp tst_checkout = new Timestamp(new Long(rs.getString("checkout")));
 
-				System.out.format(formatstring, rs.getString("id"), rs.getString("process"), rs.getString("user"), rs.getString("host"), rs.getString("active"), tst_checkin.toString(), tst_checkout.toString() );
+				System.out.format(formatstring, rs.getString("id"), rs.getString("process"), rs.getString("user"), rs.getString("host"), rs.getString("active"), tst_checkin.toString(), tst_checkout.toString(), rs.getString("exitcode") );
 			}
 			
 			connection.close();
