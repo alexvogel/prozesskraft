@@ -593,7 +593,11 @@ foreach my $refh_stackline (@CONFIG)
 			
 			sub wanted
 			{
-#				unless ( -d $File::Find::name || $File::Find::name =~ /\.git/ || -B $File::Find::name )
+				# wenn es ein directory ist, dann verwerfen
+				if ( -d $File::Find::name )
+				{
+					next;
+				}
 				# falls $now_app ein Namen wie z.b. "pradar-checkin" ist, soll bei searchreplace auch "checkin" als entrypoints beruecksichtigt werden.
 				my $now_app_short;
 				if ($now_app =~ m/^\w+-(\w+)$/i) {$now_app_short = $1;}

@@ -104,23 +104,23 @@ my @neue_argumente;
 
 #------------
 # Den Aufruf durchsuchen nach '--query'
-if ( grep { $_ eq "--query" } @ARGV ) { $query = 1; }
+if ( grep { $_ =~ "-query" } @ARGV ) { $query = 1; }
 #------------
 
 #------------
 # Den Aufruf durchsuchen nach '--version'. version feststellen und aus den argumenten entfernen
-elsif ( grep { $_ =~ /--version/ } @ARGV )
+elsif ( grep { $_ =~ /-version/ } @ARGV )
 {
 	my $last_arg_was_plain_version;
 	for(my $x=0; $x<@ARGV; $x++)
 	{
-		if ($ARGV[$x] =~ m/--version/)
+		if ($ARGV[$x] =~ m/-version/)
 		{
-			if ($ARGV[$x] =~ m/^--version$/)
+			if ($ARGV[$x] =~ m/^-version$/)
 			{
 				$last_arg_was_plain_version = 1;
 			}
-			elsif ($ARGV[$x] =~ m/^--version=(.+)$/)
+			elsif ($ARGV[$x] =~ m/^-version=(.+)$/)
 			{
 				$version = $1;
 			}
