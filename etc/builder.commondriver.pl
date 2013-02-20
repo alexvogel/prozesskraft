@@ -3,8 +3,8 @@
 use strict;
 use warnings;
 
-my $driverversion = "0.1";
-my $date = "Jan 07 2013";
+my $driverversion = "0.2";
+my $date = "Feb 20 2013";
 
 my $query;
 
@@ -37,15 +37,51 @@ closedir INPDIR;  #Close directory
 # Produktivversion
 my $version;
 my @versions;
+my $default;
+my $newest;
 
+# alle numerischen versionsstring durchsuchen und sortieren.
 @versions = sort (grep { !/[abcdefghijklmnopqrstuvwxyz]/i } @all_versions);
 #print "versions are: @versions\n";
-my $default = $versions[-1];
 
+# der versionsstring mit der hoechsten nummer ist vorerst der default
+if (@versions)
+{
+	$default = $versions[-1];
+}
+
+# gibt es eine version die exakt 'default' heisst, ist diese der default
+@versions = sort (grep { /^default$/i } @all_versions);
+if (@versions)
+{
+	$default = $versions[0];
+}
+
+# gibt es versionsstring mit buchstaben drin? - das sind die beta versionen und die letzte ist die neueste - vorerst
 @versions = sort (grep { /[abcdefghijklmnopqrstuvwxyz]/i } @all_versions);
 #print "versions are: @versions\n";
+if (@versions)
+{
+	$newest = $versions[-1];
+}
+else
+{
+	$newest = $default;
+}
 
-my $newest = ($versions[-1] || $default);
+# gibt es versionsstring 'master' ist das der neueste
+@versions = sort (grep { /^master$/i } @all_versions);
+if (@versions)
+{
+	$newest = $versions[0];
+}
+
+# gibt es versionsstring 'newest' ist das der neueste
+@versions = sort (grep { /^newest$/i } @all_versions);
+if (@versions)
+{
+	$newest = $versions[0];
+}
 
 my @neue_argumente;
 #------------
