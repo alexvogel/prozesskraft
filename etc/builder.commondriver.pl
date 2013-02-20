@@ -288,6 +288,21 @@ elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\
 	}
 }
 
+# evtl hat das einstiegsprogramm im namen einen beliebigen string und danach eine versionsbezeichnung und endet auf -jar-with-dependencies.jar
+elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\w+-\d\.\d*\.*\d*\.jar$/ } @callpossibilities)
+{
+	if (@caller == 1)
+	{
+#		print "java -jar $caller[0] @neue_argumente\n";
+		exec "java -jar $caller[0] @neue_argumente";
+	}
+	else
+	{
+		print "don't know what to call - @caller\n";
+		exit(1);
+	}
+}
+
 else
 {
 	print "error: no target found.";
