@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.Properties;
 import java.util.*;
 
 import org.apache.commons.cli.CommandLine;
@@ -61,7 +59,7 @@ public class List
 		----------------------------*/
 		Option process = OptionBuilder.withArgName("process")
 				.hasArg()
-				.withDescription("[mandatory] filter for field 'process'")
+				.withDescription("[optional] filter for field 'process'")
 //				.isRequired()
 				.create("process");
 		
@@ -76,15 +74,21 @@ public class List
 				.withDescription("[optional] filter for field 'id'")
 				.create("id");
 		
-		Option user = OptionBuilder.withArgName("user")
+		Option user = OptionBuilder.withArgName("user|all")
 				.hasArg()
-				.withDescription("[optional] filter for field 'user'")
+				.withDescription("[optional; default=<you>] filter for field 'user'")
 //				.isRequired()
 				.create("user");
 				
+		Option exitcode = OptionBuilder.withArgName("exitcode")
+				.hasArg()
+				.withDescription("[optional] filter for field 'exitcode'")
+//				.isRequired()
+				.create("exitcode");
+				
 		Option active = OptionBuilder.withArgName("true|false")
 				.hasArg()
-				.withDescription("[optional] filter for field 'active'")
+				.withDescription("[optional; default=true] filter for field 'active'")
 //				.isRequired()
 				.create("active");
 				
@@ -105,6 +109,7 @@ public class List
 		options.addOption( id );
 		options.addOption( host );
 		options.addOption( user );
+		options.addOption( exitcode );
 		options.addOption( active );
 		options.addOption( dbfile );
 		
@@ -203,13 +208,31 @@ public class List
 		}
 
 		// definition des filters fuer user
+		// default ist aktueller user
 		if (line.hasOption("user"))
 		{
-			entity.setUser("%"+line.getOptionValue("user")+"%");
+			if (line.getOptionValue("user").matches("all"))
+			{
+				entity.setUser("%");
+			}
+			else
+			{
+				entity.setUser("%"+line.getOptionValue("user")+"%");
+			}
 		}
 		else
 		{
-			entity.setUser("%");
+			entity.setUser(System.getProperty("user.name"));
+		}
+
+		// definition des filters fuer exitcode
+		if (line.hasOption("exitcode"))
+		{
+			entity.setExitcode("%"+line.getOptionValue("exitcode")+"%");
+		}
+		else
+		{
+			entity.setExitcode("%");
 		}
 
 		// definition des filters fuer host
