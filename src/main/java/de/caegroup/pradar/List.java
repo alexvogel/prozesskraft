@@ -248,11 +248,18 @@ public class List
 		// definition des filters fuer active
 		if (line.hasOption("active"))
 		{
-			entity.setActive("%"+line.getOptionValue("active")+"%");
+			if (line.getOptionValue("active").matches("all"))
+			{
+				entity.setActive("%");
+			}
+			else
+			{
+				entity.setActive("%"+line.getOptionValue("active")+"%");
+			}
 		}
 		else
 		{
-			entity.setActive("%");
+			entity.setActive("true");
 		}
 
 		// liste ausgeben und definierten filter dabei anwenden
