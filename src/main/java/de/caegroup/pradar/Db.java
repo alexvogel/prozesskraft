@@ -132,7 +132,7 @@ public class Db
 			statement.setQueryTimeout(10);
 			
 			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getId()+"' AND host LIKE '"+entity.getHost()+"' AND user LIKE '"+entity.getUser()+"' AND process LIKE '"+entity.getProcess()+"' AND active LIKE '"+entity.getActive()+"' AND exitcode LIKE '"+entity.getExitcode()+"'";
-//			System.out.println(sql);
+			System.out.println(sql);
 			ResultSet rs = statement.executeQuery(sql);
 			
 			String formatstring = "|%-11s|%-11s|%-7s|%-13s|%-6s|%-23s|%-23s|%-8s|\n";
