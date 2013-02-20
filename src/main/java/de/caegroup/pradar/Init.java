@@ -52,6 +52,7 @@ public class Init
 		----------------------------*/
 		Option help = new Option("help", "print this message");
 		Option v = new Option("v", "prints version and build-date");
+		Option f = new Option("f", "force");
 		
 		/*----------------------------
 		  create argument options
@@ -69,6 +70,7 @@ public class Init
 		
 		options.addOption( help );
 		options.addOption( v );
+		options.addOption( f );
 		options.addOption( dbfile );
 		
 		/*----------------------------
@@ -137,7 +139,7 @@ public class Init
 			db.setDbfile(file);
 		}
 
-		if (db.getDbfile().exists())
+		if ( !(line.hasOption("f")) && (db.getDbfile().exists()) )
 		{
 			System.out.println("file " + db.getDbfile().getAbsolutePath() + " already exists.");
 			System.exit(0);
