@@ -147,10 +147,31 @@ public class Db
 //				cal_checkin.setTimeInMillis(new Long(rs.getString("checkin")));
 //				cal_checkout.setTimeInMillis(new Long(rs.getString("checkin")));
 				
-				Timestamp tst_checkin = new Timestamp(new Long(rs.getString("checkin")));
-				Timestamp tst_checkout = new Timestamp(new Long(rs.getString("checkout")));
-
-				System.out.format(formatstring, rs.getString("id"), rs.getString("process"), rs.getString("user"), rs.getString("host"), rs.getString("active"), tst_checkin.toString(), tst_checkout.toString(), rs.getString("exitcode") );
+				String tst_str_checkin = new String();
+				Timestamp tst_checkin = new Timestamp(0);
+				if (!(rs.getString("checkin").matches(" ")))
+				{
+					tst_checkin = new Timestamp(new Long(rs.getString("checkin")));
+					tst_str_checkin = tst_checkin.toString();
+				}
+				else
+				{
+					tst_str_checkin = tst_checkin.toString();
+				}
+				
+				String tst_str_checkout = new String();
+				Timestamp tst_checkout = new Timestamp(0);
+				if (!(rs.getString("checkout").matches(" ")))
+				{
+					tst_checkout = new Timestamp(new Long(rs.getString("checkout")));
+					tst_str_checkout = tst_checkout.toString();
+				}
+				else
+				{
+					tst_str_checkout = tst_checkout.toString();
+				}
+				
+				System.out.format(formatstring, rs.getString("id"), rs.getString("process"), rs.getString("user"), rs.getString("host"), rs.getString("active"), tst_str_checkin, tst_str_checkout, rs.getString("exitcode") );
 			}
 			
 			connection.close();
