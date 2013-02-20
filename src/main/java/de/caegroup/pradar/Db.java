@@ -156,7 +156,7 @@ public class Db
 				}
 				else
 				{
-					tst_str_checkin = tst_checkin.toString();
+					tst_str_checkin = rs.getString("checkin");
 				}
 				
 				String tst_str_checkout = new String();
@@ -168,7 +168,7 @@ public class Db
 				}
 				else
 				{
-					tst_str_checkout = tst_checkout.toString();
+					tst_str_checkout = rs.getString("checkout");
 				}
 				
 				System.out.format(formatstring, rs.getString("id"), rs.getString("process"), rs.getString("user"), rs.getString("host"), rs.getString("active"), tst_str_checkin, tst_str_checkout, rs.getString("exitcode") );
