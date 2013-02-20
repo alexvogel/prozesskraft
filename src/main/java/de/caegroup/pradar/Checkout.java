@@ -82,6 +82,12 @@ public class Checkout
 //				.isRequired()
 				.create("user");
 				
+		Option exitcode = OptionBuilder.withArgName("exitcode")
+				.hasArg()
+				.withDescription("[optional] exitcode")
+//				.isRequired()
+				.create("exitcode");
+				
 		Option dbfile = OptionBuilder.withArgName("dbfile")
 				.hasArg()
 				.withDescription("[optional] dbfile")
@@ -99,6 +105,7 @@ public class Checkout
 		options.addOption( id );
 		options.addOption( host );
 		options.addOption( user );
+		options.addOption( exitcode );
 		options.addOption( dbfile );
 		
 		/*----------------------------
@@ -214,6 +221,12 @@ public class Checkout
 		
 		// setzen des user vom system
 		entity.setUser(System.getProperty("user.name"));
+		
+		// setzen des exitcodes vom aufrufer
+		if (line.hasOption("exitcode"))
+		{
+			entity.setExitcode(line.getOptionValue("exitcode"));
+		}
 		
 		// einchecken in die DB
 		db.checkoutEntity(entity);
