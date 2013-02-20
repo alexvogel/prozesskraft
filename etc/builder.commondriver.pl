@@ -116,11 +116,11 @@ elsif ( grep { $_ =~ /-version/ } @ARGV )
 	{
 		if ($ARGV[$x] =~ m/-version/)
 		{
-			if ($ARGV[$x] =~ m/^-version$/)
+			if ($ARGV[$x] =~ m/-version/)
 			{
 				$last_arg_was_plain_version = 1;
 			}
-			elsif ($ARGV[$x] =~ m/^-version=(.+)$/)
+			elsif ($ARGV[$x] =~ m/-version=(.+)$/)
 			{
 				$version = $1;
 			}
