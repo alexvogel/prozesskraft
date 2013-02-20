@@ -14,7 +14,7 @@ public class Entity
 	public String host = "HAL";
 	public String user = "johndoe";
 	public String active = "true";
-	public String exitcode = "unknown";
+	public String exitcode = " ";
 
 	/*----------------------------
 	  constructors
