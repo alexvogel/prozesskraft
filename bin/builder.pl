@@ -597,7 +597,7 @@ foreach my $refh_stackline (@CONFIG)
 				# falls $now_app ein Namen wie z.b. "pradar-checkin" ist, soll bei searchreplace auch "checkin" als entrypoints beruecksichtigt werden.
 				my $now_app_short;
 				if ($now_app =~ m/^\w+-(\w+)$/i) {$now_app_short = $1;}
-				print "info: $_\n";
+#				print "info: $_\n";
 				if ( ( $_ =~ m/^$now_app$/i ) || ( $_ =~ m/^$now_app\.\w+$/i ) || ($now_app_short && ( $_ =~ m/^$now_app_short\.\w+$/i )) )
 				{
 					print "info: processing file in search of tt placeholders: $File::Find::name\n";
