@@ -13,7 +13,7 @@ if (@ARGV)
 		print " checkout to checkout a process\n";
 		exit(0);
 	}
-	else
+	elsif ($ARGV[0] =~ m/^[^-]/)
 	{
 		$prog = shift;
 	}
