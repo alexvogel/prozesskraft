@@ -3,8 +3,8 @@
 use strict;
 use warnings;
 
-my $driverversion = "0.2";
-my $date = "Feb 20 2013";
+my $driverversion = "0.2.1";
+my $date = "Feb 21 2013";
 
 my $query;
 
@@ -258,6 +258,20 @@ elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename\.pl$/ } @ca
 	}
 }
 
+# evtl hat das einstiegsprogramm eine endung "-<irgendwas>.pl"
+elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\w+\.pl$/ } @callpossibilities)
+{
+	if (@caller == 1)
+	{
+#		print "$caller[0] @neue_argumente\n";
+		exec "$caller[0] @neue_argumente";
+	}
+	else
+	{
+		print "don't know what to call - @caller\n";
+		exit(1);
+	}
+}
 # evtl hat das einstiegsprogramm im namen eine versionsbezeichnung und endet auf -jar-with-dependencies.jar
 elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename-\d\.\d*\.*\d*-jar-with-dependencies\.jar$/ } @callpossibilities)
 {
