@@ -134,8 +134,8 @@ public class List
 		if ( line.hasOption("help"))
 		{
 			HelpFormatter formatter = new HelpFormatter();
-//			formatter.printHelp("checkin --version [% version %]", options);
-			formatter.printHelp("checkin", options);
+//			formatter.printHelp("list --version [% version %]", options);
+			formatter.printHelp("list", options);
 			System.exit(0);
 		}
 		
