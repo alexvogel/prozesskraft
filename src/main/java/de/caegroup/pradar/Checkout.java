@@ -130,7 +130,7 @@ public class Checkout
 		{
 			HelpFormatter formatter = new HelpFormatter();
 //			formatter.printHelp("checkin --version [% version %]", options);
-			formatter.printHelp("checkin", options);
+			formatter.printHelp("checkout", options);
 			System.exit(0);
 		}
 		
@@ -190,17 +190,6 @@ public class Checkout
 			System.exit(1);
 		}
 		
-		if (line.hasOption("id"))
-		{
-			entity.setId(line.getOptionValue("id"));
-		}
-		else
-		{
-			Random generator = new Random();
-			entity.setId(""+generator.nextInt());
-			System.out.println("<id>"+entity.getId()+"<id>");
-		}
-
 		// setzen des hosts vom -host
 		if (line.hasOption("host"))
 		{
