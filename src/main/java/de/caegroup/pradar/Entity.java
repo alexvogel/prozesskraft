@@ -70,14 +70,7 @@ public class Entity
 
 	public String getIdSqlPattern()
 	{
-		if (this.id.matches("^all$") || this.id.matches("^$"))
-		{
-			return "holla";
-		}
-		else
-		{
-			return this.id;
-		}
+		return "hello";
 	}
 	
 	public void setId(String id)
