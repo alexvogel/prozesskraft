@@ -70,7 +70,7 @@ public class Entity
 
 	public String getIdSqlPattern()
 	{
-		if (this.id.matches("^all$") || this.id.matches("^$"))
+		if (this.id.matches("all") || this.id.matches(""))
 		{
 			return "%";
 		}
@@ -143,7 +143,7 @@ public class Entity
 
 	public String getProcessSqlPattern()
 	{
-		if (this.process.matches("^all$") || this.process.matches("^$"))
+		if (this.process.matches("all") || this.process.matches(""))
 		{
 			return "%";
 		}
@@ -165,7 +165,7 @@ public class Entity
 
 	public String getHostSqlPattern()
 	{
-		if (this.host.matches("^all$") || this.host.matches("^$"))
+		if (this.host.matches("all") || this.host.matches(""))
 		{
 			return "%";
 		}
@@ -187,7 +187,7 @@ public class Entity
 
 	public String getUserSqlPattern()
 	{
-		if (this.user.matches("^all$") || this.user.matches("^$"))
+		if (this.user.matches("all") || this.user.matches(""))
 		{
 			return "%";
 		}
@@ -209,7 +209,7 @@ public class Entity
 
 	public String getActiveSqlPattern()
 	{
-		if (this.active.matches("^all$") || this.active.matches("^$"))
+		if (this.active.matches("all") || this.active.matches(""))
 		{
 			return "%";
 		}
@@ -231,7 +231,7 @@ public class Entity
 
 	public String getExitcodeSqlPattern()
 	{
-		if (this.exitcode.matches("^all$") || this.exitcode.matches("^$"))
+		if (this.exitcode.matches("all") || this.exitcode.matches(""))
 		{
 			return "%";
 		}
