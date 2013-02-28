@@ -72,11 +72,11 @@ public class Entity
 	{
 		if (this.id.matches("all") || this.id.matches(""))
 		{
-			return "%";
+			return "crick";
 		}
 		else
 		{
-			return "%"+this.id+"%";
+			return this.id;
 		}
 	}
 	
