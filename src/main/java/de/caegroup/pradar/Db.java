@@ -172,9 +172,10 @@ public class Db
 			
 			statement.setQueryTimeout(10);
 			
+			ArrayList<Entity> matched_entities = new ArrayList<Entity>();
 			try
 			{
-				ArrayList<Entity> matched_entities = this.match(entity);
+				matched_entities = this.match(entity);
 			}
 			catch (NullPointerException e)
 			{
