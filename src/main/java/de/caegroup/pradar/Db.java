@@ -129,6 +129,7 @@ public class Db
 		Connection connection = null;
 		try
 		{
+			System.out.println("connecting to dbfile this.dbfile.getAbsolutePath()");
 			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
 			Statement statement = connection.createStatement();
 			
