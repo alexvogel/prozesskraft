@@ -9,7 +9,7 @@ public class Entity
 	  structure
 	----------------------------*/
 
-	public long id = System.currentTimeMillis();
+	public long id = 735;
 	public Calendar checkin = Calendar.getInstance();
 	public Calendar checkout = Calendar.getInstance();
 	public String process = "default";
