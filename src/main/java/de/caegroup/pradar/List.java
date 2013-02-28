@@ -190,72 +190,42 @@ public class List
 		// definition des filters fuer id
 		if (line.hasOption("id"))
 		{
-			entity.setId("%"+line.getOptionValue("id")+"%");
-		}
-		else
-		{
-			entity.setId("%");
+			entity.setId(line.getOptionValue("id"));
 		}
 
 		// definition des filters fuer process
 		if (line.hasOption("process"))
 		{
-			entity.setProcess("%"+line.getOptionValue("process")+"%");
-		}
-		else
-		{
-			entity.setProcess("%");
+			entity.setProcess(line.getOptionValue("process"));
 		}
 
 		// definition des filters fuer user
 		// default ist aktueller user
 		if (line.hasOption("user"))
 		{
-			if (line.getOptionValue("user").matches("all"))
-			{
-				entity.setUser("%");
-			}
-			else
-			{
-				entity.setUser("%"+line.getOptionValue("user")+"%");
-			}
+			entity.setUser(line.getOptionValue("user"));
 		}
 		else
 		{
-			entity.setUser(System.getProperty("user.name"));
+			entity.setUser(entity.getActualuser());
 		}
-
+		
 		// definition des filters fuer exitcode
 		if (line.hasOption("exitcode"))
 		{
-			entity.setExitcode("%"+line.getOptionValue("exitcode")+"%");
-		}
-		else
-		{
-			entity.setExitcode("%");
+			entity.setExitcode(line.getOptionValue("exitcode"));
 		}
 
 		// definition des filters fuer host
 		if (line.hasOption("host"))
 		{
-			entity.setHost("%"+line.getOptionValue("host")+"%");
-		}
-		else
-		{
-			entity.setHost("%");
+			entity.setHost(line.getOptionValue("host"));
 		}
 
 		// definition des filters fuer active
 		if (line.hasOption("active"))
 		{
-			if (line.getOptionValue("active").matches("all"))
-			{
-				entity.setActive("%");
-			}
-			else
-			{
-				entity.setActive("%"+line.getOptionValue("active")+"%");
-			}
+			entity.setActive(line.getOptionValue("active"));
 		}
 		else
 		{
