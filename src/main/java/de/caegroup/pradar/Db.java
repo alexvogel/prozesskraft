@@ -179,7 +179,7 @@ public class Db
 			}
 			catch (NullPointerException e)
 			{
-				// ignore
+				System.out.println("result is empty!");
 			}
 			
 			String formatstring = "|%-11s|%-11s|%-7s|%-13s|%-6s|%-23s|%-23s|%-8s|\n";
