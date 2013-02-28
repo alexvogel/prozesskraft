@@ -9,7 +9,7 @@ public class Entity
 	  structure
 	----------------------------*/
 
-	public String id = new String();
+	public String id = System.currentTimeMillis()+"";
 	public Calendar checkin = Calendar.getInstance();
 	public Calendar checkout = Calendar.getInstance();
 	public String process = "default";
@@ -70,7 +70,14 @@ public class Entity
 
 	public String getIdSqlPattern()
 	{
-		return "hello";
+		if (this.id.matches("^all$") || this.id.matches("^$"))
+		{
+			return "%";
+		}
+		else
+		{
+			return "%"+this.id+"%";
+		}
 	}
 	
 	public void setId(String id)
