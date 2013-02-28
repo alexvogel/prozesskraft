@@ -129,16 +129,17 @@ public class Db
 		Connection connection = null;
 		try
 		{
-			System.out.println("connecting to dbfile this.dbfile.getAbsolutePath()");
+			System.out.println("connecting to dbfile "+this.dbfile.getAbsolutePath());
 			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
 			Statement statement = connection.createStatement();
 			
+			System.out.println("YOPP");
 			statement.setQueryTimeout(10);
+			System.out.println("YUPP");
 			
 			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"'";
 			System.out.println(sql);
 			ResultSet rs = statement.executeQuery(sql);
-			System.out.println("YUPP");
 		
 			while (rs.next())
 			{
