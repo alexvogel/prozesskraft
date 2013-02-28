@@ -70,7 +70,8 @@ public class Entity
 
 	public String getIdSqlPattern()
 	{
-		if (this.id.matches("all") || this.id.matches(""))
+		if (this.id.matches("all"))
+//		if (this.id.matches("all") || this.id.matches(""))
 		{
 			return "crick";
 		}
