@@ -9,7 +9,7 @@ public class Entity
 	  structure
 	----------------------------*/
 
-	public String id = System.currentTimeMillis()+"";
+	public long id = System.currentTimeMillis();
 	public Calendar checkin = Calendar.getInstance();
 	public Calendar checkout = Calendar.getInstance();
 	public String process = "default";
@@ -27,7 +27,7 @@ public class Entity
 
 	}
 
-	public Entity(String id)
+	public Entity(long id)
 	{
 		this.id = id;
 	}
@@ -39,8 +39,8 @@ public class Entity
 	public void genId()
 	{
 		long time = System.currentTimeMillis();
-		String time_as_string = "" + time;
-		this.setId(time_as_string);
+//		String time_as_string = "" + time;
+		this.setId(time);
 	}
 
 	/*----------------------------
@@ -63,17 +63,17 @@ public class Entity
 		return (this.id + this.process + this.host + this.user);
 	}
 
-	public String getId()
+	public long getId()
 	{
 		return id;
 	}
 
 	public String getIdSqlPattern()
 	{
-		return this.id;
+		return ""+this.id;
 	}
 	
-	public void setId(String id)
+	public void setId(long id)
 	{
 		this.id = id;
 	}
