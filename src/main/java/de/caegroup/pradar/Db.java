@@ -136,6 +136,7 @@ public class Db
 			System.out.println("YOPP");
 			statement.setQueryTimeout(10);
 			System.out.println("YUPP");
+			System.out.println(entity.getIdSqlPattern());
 			System.out.println("SELECT * FROM radar WHERE id LIKE '");
 			System.out.println("SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern());
 			System.out.println("SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern());
