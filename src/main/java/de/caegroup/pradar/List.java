@@ -163,7 +163,6 @@ public class List
 		Entity entity = new Entity();
 
 		entity.setProcess(line.getOptionValue("process"));
-		entity.setId(line.getOptionValue("id"));
 
 		//		Properties systemproperties = System.getProperties();
 //		for (Enumeration e = systemproperties.propertyNames(); e.hasMoreElements();)
@@ -190,7 +189,7 @@ public class List
 		// definition des filters fuer id
 		if (line.hasOption("id"))
 		{
-			entity.setId(line.getOptionValue("id"));
+			entity.setId(Long.valueOf(line.getOptionValue("id")));
 		}
 
 		// definition des filters fuer process
