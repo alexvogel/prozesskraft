@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Random;
 import java.sql.*;
 
@@ -85,7 +86,7 @@ public class Db
 			Statement statement = connection.createStatement();
 
 			statement.setQueryTimeout(10);
-			String sql = "INSERT INTO radar (id, process, host, user, checkin, checkout, active, exitcode) VALUES ('"+entity.getId()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', ' ', '"+entity.getActive()+"', '"+entity.getExitcode()+"')"; 
+			String sql = "INSERT INTO radar (id, process, host, user, checkin, checkout, active, exitcode) VALUES ('"+entity.getId()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getExitcode()+"')"; 
 //			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
@@ -108,7 +109,7 @@ public class Db
 			
 			statement.setQueryTimeout(10);
 			
-			String sql = "UPDATE OR REPLACE radar SET checkout='"+entity.getCheckout().getTimeInMillis()+"', active='false', exitcode='"+ entity.getExitcode() +"' WHERE id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+			String sql = "UPDATE OR REPLACE radar SET checkout='"+entity.getTimeInMillisOfNow()+"', active='false', exitcode='"+ entity.getExitcode() +"' WHERE id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
 //			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
@@ -120,6 +121,46 @@ public class Db
 		}
 	}
 
+	public ArrayList<Entity> match(Entity entity)
+	{
+		ArrayList<Entity> matches = new ArrayList<Entity>();
+		
+		this.sqlvoodoo();
+		Connection connection = null;
+		try
+		{
+			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
+			Statement statement = connection.createStatement();
+			
+			statement.setQueryTimeout(10);
+			
+			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"'";
+//			System.out.println(sql);
+			ResultSet rs = statement.executeQuery(sql);
+		
+			while (rs.next())
+			{
+				Entity matched_entity = new Entity();
+				matched_entity.setId(rs.getString("id"));
+				matched_entity.setProcess(rs.getString("process"));
+				matched_entity.setUser(rs.getString("user"));
+				matched_entity.setHost(rs.getString("host"));
+				matched_entity.setCheckin(Long.valueOf(rs.getString("checkin")).longValue());
+				matched_entity.setCheckout(Long.valueOf(rs.getString("checkout")).longValue());
+				matched_entity.setActive(rs.getString("active"));
+				matched_entity.setActive(rs.getString("exitcode"));
+				
+				matches.add(matched_entity);
+			}
+			
+			} catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return matches;
+	}
+	
 	public void list(Entity entity)
 	{
 		this.sqlvoodoo();
@@ -131,47 +172,18 @@ public class Db
 			
 			statement.setQueryTimeout(10);
 			
-			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getId()+"' AND host LIKE '"+entity.getHost()+"' AND user LIKE '"+entity.getUser()+"' AND process LIKE '"+entity.getProcess()+"' AND active LIKE '"+entity.getActive()+"' AND exitcode LIKE '"+entity.getExitcode()+"'";
-//			System.out.println(sql);
-			ResultSet rs = statement.executeQuery(sql);
+			ArrayList<Entity> matched_entities = this.match(entity);
 			
 			String formatstring = "|%-11s|%-11s|%-7s|%-13s|%-6s|%-23s|%-23s|%-8s|\n";
 			System.out.format(formatstring, "id", "process", "user", "host", "active", "checkin", "checkout", "exitcode");
 			System.out.format(formatstring, "-----------", "-----------", "-------", "-------------", "------", "-----------------------", "-----------------------", "--------");
 
-			while (rs.next())
+			Iterator<Entity> iterentity = matched_entities.iterator();
+			
+			while (iterentity.hasNext())
 			{
-				// millis in calendar umwandeln
-//				Calendar cal_checkin = Calendar.getInstance();
-//				Calendar cal_checkout = Calendar.getInstance();
-//				cal_checkin.setTimeInMillis(new Long(rs.getString("checkin")));
-//				cal_checkout.setTimeInMillis(new Long(rs.getString("checkin")));
-				
-				String tst_str_checkin = new String();
-				Timestamp tst_checkin = new Timestamp(0);
-				if (!(rs.getString("checkin").matches(" ")))
-				{
-					tst_checkin = new Timestamp(new Long(rs.getString("checkin")));
-					tst_str_checkin = tst_checkin.toString();
-				}
-				else
-				{
-					tst_str_checkin = rs.getString("checkin");
-				}
-				
-				String tst_str_checkout = new String();
-				Timestamp tst_checkout = new Timestamp(0);
-				if (!(rs.getString("checkout").matches(" ")))
-				{
-					tst_checkout = new Timestamp(new Long(rs.getString("checkout")));
-					tst_str_checkout = tst_checkout.toString();
-				}
-				else
-				{
-					tst_str_checkout = rs.getString("checkout");
-				}
-				
-				System.out.format(formatstring, rs.getString("id"), rs.getString("process"), rs.getString("user"), rs.getString("host"), rs.getString("active"), tst_str_checkin, tst_str_checkout, rs.getString("exitcode") );
+				Entity actual_entity = iterentity.next();
+				System.out.format(formatstring, actual_entity.getId(), actual_entity.getProcess(), actual_entity.getUser(), actual_entity.getHost(), actual_entity.getActive(), actual_entity.getCheckinAsString(), actual_entity.getCheckoutAsString(), actual_entity.getExitcode() );
 			}
 			
 			connection.close();
