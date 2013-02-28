@@ -138,7 +138,9 @@ public class Db
 			System.out.println("YUPP");
 			
 			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"'";
+			System.out.println("DARN");
 			System.out.println(sql);
+			System.out.println("DORN");
 			ResultSet rs = statement.executeQuery(sql);
 		
 			while (rs.next())
