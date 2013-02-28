@@ -172,7 +172,14 @@ public class Db
 			
 			statement.setQueryTimeout(10);
 			
-			ArrayList<Entity> matched_entities = this.match(entity);
+			try
+			{
+				ArrayList<Entity> matched_entities = this.match(entity);
+			}
+			catch (NullPointerException e)
+			{
+				// ignore
+			}
 			
 			String formatstring = "|%-11s|%-11s|%-7s|%-13s|%-6s|%-23s|%-23s|%-8s|\n";
 			System.out.format(formatstring, "id", "process", "user", "host", "active", "checkin", "checkout", "exitcode");
