@@ -151,7 +151,7 @@ public class Db
 			while (rs.next())
 			{
 				Entity matched_entity = new Entity();
-				matched_entity.setId(Long.valueOf(rs.getString("id")));
+				matched_entity.setId(rs.getString("id"));
 				matched_entity.setProcess(rs.getString("process"));
 				matched_entity.setUser(rs.getString("user"));
 				matched_entity.setHost(rs.getString("host"));
