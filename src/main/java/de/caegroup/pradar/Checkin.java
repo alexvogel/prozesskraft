@@ -186,12 +186,12 @@ public class Checkin
 		{
 			entity.setId(line.getOptionValue("id"));
 		}
-		else
-		{
-			Random generator = new Random();
-			entity.setId(""+generator.nextInt());
-			System.out.println("<id>"+entity.getId()+"<id>");
-		}
+//		else
+//		{
+//			Random generator = new Random();
+//			entity.setId(""+generator.nextInt());
+//			System.out.println("<id>"+entity.getId()+"<id>");
+//		}
 
 		// setzen des hosts vom -host
 		if (line.hasOption("host"))
