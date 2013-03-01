@@ -136,14 +136,7 @@ public class Entity
 
 	public String getProcessSqlPattern()
 	{
-		if (this.process.matches("all") || this.process.matches(""))
-		{
-			return "%";
-		}
-		else
-		{
-			return "%"+this.process+"%";
-		}
+		return "%"+this.process+"%";
 	}
 	
 	public void setProcess(String process)
