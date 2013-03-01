@@ -87,7 +87,7 @@ public class Db
 
 			statement.setQueryTimeout(10);
 			String sql = "INSERT INTO radar (id, process, host, user, checkin, checkout, active, exitcode) VALUES ('"+entity.getId()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getExitcode()+"')"; 
-			System.out.println(sql);
+//			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
 			connection.close();
@@ -129,23 +129,13 @@ public class Db
 		Connection connection = null;
 		try
 		{
-			System.out.println("connecting to dbfile "+this.dbfile.getAbsolutePath());
+//			System.out.println("connecting to dbfile "+this.dbfile.getAbsolutePath());
 			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
 			Statement statement = connection.createStatement();
 			
-			System.out.println("YOPP");
 			statement.setQueryTimeout(10);
-			System.out.println("YUPP");
-			System.out.println("id (sql-pattern): "+entity.getIdSqlPattern());
-			System.out.println("host (sql-pattern): "+entity.getHostSqlPattern());
-			System.out.println("user (sql-pattern): "+entity.getUserSqlPattern());
-			System.out.println("process (sql-pattern): "+entity.getProcessSqlPattern());
-			System.out.println("active (sql-pattern): "+entity.getActiveSqlPattern());
-			System.out.println("SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"'");
 			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"'";
-			System.out.println("DARN");
-			System.out.println(sql);
-			System.out.println("DORN");
+//			System.out.println(sql);
 			ResultSet rs = statement.executeQuery(sql);
 		
 			while (rs.next())
@@ -159,7 +149,6 @@ public class Db
 				matched_entity.setCheckout(Long.valueOf(rs.getString("checkout")).longValue());
 				matched_entity.setActive(rs.getString("active"));
 				matched_entity.setExitcode(rs.getString("exitcode"));
-				System.out.println("YES, something found");
 				matches.add(matched_entity);
 			}
 			
