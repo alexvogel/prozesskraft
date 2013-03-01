@@ -194,7 +194,7 @@ public class List
 		}
 		else
 		{
-			System.out.println("id is set to empty string ''.");
+			System.out.println("id is set to empty string ''." );
 			entity.setId("");
 		}
 
