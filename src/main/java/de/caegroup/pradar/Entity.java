@@ -70,7 +70,14 @@ public class Entity
 
 	public String getIdSqlPattern()
 	{
-		return "%"+this.id+"%";
+		if (!(this.id.isEmpty()))
+		{
+			return "%"+this.id+"%";
+		}
+		else
+		{
+			return "%";
+		}
 	}
 	
 	public void setId(String id)
