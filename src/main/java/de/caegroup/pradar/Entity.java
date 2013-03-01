@@ -70,7 +70,7 @@ public class Entity
 
 	public String getIdSqlPattern()
 	{
-		return ""+this.id;
+		return "%"+this.id+"%";
 	}
 	
 	public void setId(long id)
