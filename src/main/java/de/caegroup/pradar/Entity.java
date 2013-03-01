@@ -9,13 +9,13 @@ public class Entity
 	  structure
 	----------------------------*/
 
-	public String id = ""+System.currentTimeMillis();
+	public String id = "";
 	public Calendar checkin = Calendar.getInstance();
 	public Calendar checkout = Calendar.getInstance();
 	public String process = "";
 	public String host = "";
-	public String user = System.getProperty("user.name");
-	public String active = "true";
+	public String user = "";
+	public String active = "";
 	public String exitcode = "";
 
 	/*----------------------------
