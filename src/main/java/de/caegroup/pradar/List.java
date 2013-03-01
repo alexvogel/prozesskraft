@@ -189,13 +189,21 @@ public class List
 		// definition des filters fuer id
 		if (line.hasOption("id"))
 		{
-			entity.setId(Long.valueOf(line.getOptionValue("id")));
+			entity.setId(line.getOptionValue("id"));
+		}
+		else
+		{
+			entity.setId("");
 		}
 
 		// definition des filters fuer process
 		if (line.hasOption("process"))
 		{
 			entity.setProcess(line.getOptionValue("process"));
+		}
+		else
+		{
+			entity.setProcess("");
 		}
 
 		// definition des filters fuer user
@@ -214,11 +222,19 @@ public class List
 		{
 			entity.setExitcode(line.getOptionValue("exitcode"));
 		}
+		else
+		{
+			entity.setExitcode("");
+		}
 
 		// definition des filters fuer host
 		if (line.hasOption("host"))
 		{
 			entity.setHost(line.getOptionValue("host"));
+		}
+		else
+		{
+			entity.setHost("");
 		}
 
 		// definition des filters fuer active
