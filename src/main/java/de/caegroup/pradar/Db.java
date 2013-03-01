@@ -158,7 +158,7 @@ public class Db
 				matched_entity.setCheckin(Long.valueOf(rs.getString("checkin")).longValue());
 				matched_entity.setCheckout(Long.valueOf(rs.getString("checkout")).longValue());
 				matched_entity.setActive(rs.getString("active"));
-				matched_entity.setActive(rs.getString("exitcode"));
+				matched_entity.setExitcode(rs.getString("exitcode"));
 				System.out.println("YES, something found");
 				matches.add(matched_entity);
 			}
