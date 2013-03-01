@@ -190,7 +190,7 @@ public class Checkin
 //		{
 //			Random generator = new Random();
 //			entity.setId(""+generator.nextInt());
-//			System.out.println("<id>"+entity.getId()+"<id>");
+			System.out.println("<id>"+entity.getId()+"<id>");
 //		}
 
 		// setzen des hosts vom -host
