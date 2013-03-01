@@ -189,10 +189,12 @@ public class List
 		// definition des filters fuer id
 		if (line.hasOption("id"))
 		{
+			System.out.println("id is given via commandline parameter -id: "+line.getOptionValue("id"));
 			entity.setId(line.getOptionValue("id"));
 		}
 		else
 		{
+			System.out.println("id is set to empty string ''.");
 			entity.setId("");
 		}
 
