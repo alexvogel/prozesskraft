@@ -9,14 +9,14 @@ public class Entity
 	  structure
 	----------------------------*/
 
-	public long id = 735;
+	public long id = System.currentTimeMillis();
 	public Calendar checkin = Calendar.getInstance();
 	public Calendar checkout = Calendar.getInstance();
-	public String process = "default";
-	public String host = "HAL";
+	public String process = "";
+	public String host = "";
 	public String user = System.getProperty("user.name");
 	public String active = "true";
-	public String exitcode = " ";
+	public String exitcode = "";
 
 	/*----------------------------
 	  constructors
