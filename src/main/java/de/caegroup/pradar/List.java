@@ -161,8 +161,6 @@ public class List
 		
 		Db db = new Db();
 		Entity entity = new Entity();
-		System.out.println(entity.getId());
-		System.out.println(entity.getIdSqlPattern());
 
 		//		Properties systemproperties = System.getProperties();
 //		for (Enumeration e = systemproperties.propertyNames(); e.hasMoreElements();)
