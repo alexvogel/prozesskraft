@@ -136,13 +136,11 @@ public class Db
 			System.out.println("YOPP");
 			statement.setQueryTimeout(10);
 			System.out.println("YUPP");
-			System.out.println(entity.getIdSqlPattern());
-			System.out.println("SELECT * FROM radar WHERE id LIKE '");
-			System.out.println("SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern());
-			System.out.println("SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern());
-			System.out.println("SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern());
-			System.out.println("SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern());
-			System.out.println("SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern());
+			System.out.println("id (sql-pattern): "+entity.getIdSqlPattern());
+			System.out.println("host (sql-pattern): "+entity.getHostSqlPattern());
+			System.out.println("user (sql-pattern): "+entity.getUserSqlPattern());
+			System.out.println("process (sql-pattern): "+entity.getProcessSqlPattern());
+			System.out.println("active (sql-pattern): "+entity.getActiveSqlPattern());
 			System.out.println("SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"'");
 			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"'";
 			System.out.println("DARN");
@@ -153,7 +151,7 @@ public class Db
 			while (rs.next())
 			{
 				Entity matched_entity = new Entity();
-				matched_entity.setId(rs.getString("id"));
+				matched_entity.setId(Long.valueOf(rs.getString("id")));
 				matched_entity.setProcess(rs.getString("process"));
 				matched_entity.setUser(rs.getString("user"));
 				matched_entity.setHost(rs.getString("host"));
