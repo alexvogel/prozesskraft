@@ -136,7 +136,14 @@ public class Entity
 
 	public String getProcessSqlPattern()
 	{
-		return "%"+this.process+"%";
+		if (!(this.process.isEmpty()))
+		{
+			return "%"+this.process+"%";
+		}
+		else
+		{
+			return "%";
+		}
 	}
 	
 	public void setProcess(String process)
