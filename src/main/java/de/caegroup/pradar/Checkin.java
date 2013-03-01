@@ -189,7 +189,7 @@ public class Checkin
 //		else
 //		{
 //			Random generator = new Random();
-//			entity.setId(""+generator.nextInt());
+			entity.genId();
 			System.out.println("<id>"+entity.getId()+"<id>");
 //		}
 
