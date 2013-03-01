@@ -53,6 +53,19 @@ public class Entity
 		return tmp.getTimeInMillis();
 	}
 
+	public void print()
+	{
+		this.toString();
+		System.out.println("id: "+this.id);
+		System.out.println("process: "+this.process);
+		System.out.println("user: "+this.user);
+		System.out.println("host: "+this.host);
+		System.out.println("active: "+this.active);
+		System.out.println("checkin: "+this.getCheckinAsString());
+		System.out.println("checkout: "+this.getCheckoutAsString());
+		System.out.println("exitcode: "+this.exitcode);
+	}
+
 	public String getActualuser()
 	{
 		return System.getProperty("user.name");
