@@ -156,13 +156,13 @@ public class Entity
 
 	public String getProcessSqlPattern()
 	{
-		if (!(this.process.isEmpty()))
+		if (!(this.process.isEmpty()) || (this.process.matches("all")) )
 		{
-			return "%"+this.process+"%";
+			return "%";
 		}
 		else
 		{
-			return "%";
+			return "%"+this.process+"%";
 		}
 	}
 	
