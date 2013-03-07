@@ -111,7 +111,10 @@ public class Entity
 
 	public String getCheckinAsString()
 	{
-		return new Timestamp(this.checkin.getTimeInMillis()).toString();
+		Timestamp timestamp = new Timestamp(this.checkin.getTimeInMillis());
+		String string_timestamp = timestamp.toString();
+		String beschnittener_string_timestamp = string_timestamp.substring(0, 19);
+		return beschnittener_string_timestamp;
 	}
 
 	public void setCheckin(Calendar checkin)
@@ -137,7 +140,13 @@ public class Entity
 	public String getCheckoutAsString()
 	{
 		if (this.checkout.getTimeInMillis() == 0) {return "";}
-		else {return new Timestamp(this.checkout.getTimeInMillis()).toString();}
+		else
+		{
+			Timestamp timestamp = new Timestamp(this.checkout.getTimeInMillis());
+			String string_timestamp = timestamp.toString();
+			String beschnittener_string_timestamp = string_timestamp.substring(0, 19);
+			return beschnittener_string_timestamp;
+		}
 	}
 
 	public void setCheckout(Calendar checkout)

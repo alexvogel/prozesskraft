@@ -181,7 +181,7 @@ public class Db
 			
 			String formatstring = "|%-14s|%-11s|%-7s|%-13s|%-6s|%-23s|%-23s|%-8s|\n";
 			System.out.format(formatstring, "id", "process", "user", "host", "active", "checkin", "checkout", "exitcode");
-			System.out.format(formatstring, "-----------", "-----------", "-------", "-------------", "------", "-----------------------", "-----------------------", "--------");
+			System.out.format(formatstring, "--------------", "-----------", "-------", "-------------", "------", "-------------------", "-------------------", "--------");
 
 			Iterator<Entity> iterentity = matched_entities.iterator();
 			
