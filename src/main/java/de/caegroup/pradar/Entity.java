@@ -113,7 +113,7 @@ public class Entity
 	{
 		Timestamp timestamp = new Timestamp(this.checkin.getTimeInMillis());
 		String string_timestamp = timestamp.toString();
-		String beschnittener_string_timestamp = string_timestamp.substring(0, 19);
+		String beschnittener_string_timestamp = string_timestamp.substring(1, 19);
 		return beschnittener_string_timestamp;
 	}
 
@@ -144,7 +144,7 @@ public class Entity
 		{
 			Timestamp timestamp = new Timestamp(this.checkout.getTimeInMillis());
 			String string_timestamp = timestamp.toString();
-			String beschnittener_string_timestamp = string_timestamp.substring(0, 19);
+			String beschnittener_string_timestamp = string_timestamp.substring(1, 19);
 			return beschnittener_string_timestamp;
 		}
 	}
