@@ -166,7 +166,7 @@ public class Entity
 
 	public String getProcessSqlPattern()
 	{
-		if (!(this.process.isEmpty()) || (this.process.matches("all")) )
+		if (!(this.process.matches("")) || (this.process.matches("all")) )
 		{
 			return "%";
 		}
