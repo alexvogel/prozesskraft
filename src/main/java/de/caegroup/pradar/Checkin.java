@@ -227,6 +227,9 @@ public class Checkin
 		// setzen des user vom system
 		entity.setUser(System.getProperty("user.name"));
 		
+		// setzen von active auf 'true'
+		entity.setActive("true");
+		
 		// einchecken in die DB
 		db.checkinEntity(entity);
 		
