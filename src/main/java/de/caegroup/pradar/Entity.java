@@ -274,6 +274,18 @@ public class Entity
 		return this.resource;
 	}
 
+	public String getResourceSqlPattern()
+	{
+		if (this.resource.matches("all") || this.resource.matches(""))
+		{
+			return "%";
+		}
+		else
+		{
+			return "%"+this.resource+"%";
+		}
+	}
+
 	public void setResource(String resource)
 	{
 		this.resource = resource;
