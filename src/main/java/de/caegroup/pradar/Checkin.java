@@ -88,6 +88,12 @@ public class Checkin
 //				.isRequired()
 				.create("dbfile");
 				
+		Option resource = OptionBuilder.withArgName("resource")
+				.hasArg()
+				.withDescription("[optional] full path to a resource. e.g. logfile")
+//				.isRequired()
+				.create("resource");
+				
 		/*----------------------------
 		  create options object
 		----------------------------*/
@@ -100,6 +106,7 @@ public class Checkin
 		options.addOption( host );
 		options.addOption( user );
 		options.addOption( dbfile );
+		options.addOption( resource );
 		
 		/*----------------------------
 		  create the parser
@@ -209,6 +216,12 @@ public class Checkin
 			{
 				// mache nichts, dann greift der default 'HAL'
 			}
+		}
+		
+		// setzen der resource, falls angegeben
+		if (line.hasOption("resource"))
+		{
+			entity.setResource(line.getOptionValue("resource"));
 		}
 		
 		// setzen des user vom system
