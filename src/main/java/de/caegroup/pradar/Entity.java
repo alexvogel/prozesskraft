@@ -17,6 +17,7 @@ public class Entity
 	public String user = "";
 	public String active = "";
 	public String exitcode = "";
+	public String resource = "";
 
 	/*----------------------------
 	  constructors
@@ -258,4 +259,15 @@ public class Entity
 	{
 		this.exitcode = exitcode;
 	}
+
+	public String getResource()
+	{
+		return this.resource;
+	}
+
+	public void setResource(String resource)
+	{
+		this.resource = resource;
+	}
+
 }

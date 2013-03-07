@@ -57,7 +57,7 @@ public class Db
 			statement.setQueryTimeout(10);
 			
 			statement.executeUpdate("drop table if exists radar");
-			statement.executeUpdate("create table radar (id, process, host, user, checkin, checkout, active, exitcode)");
+			statement.executeUpdate("create table radar (id, process, host, user, checkin, checkout, active, exitcode, resource)");
 			
 			connection.close();
 
@@ -86,7 +86,7 @@ public class Db
 			Statement statement = connection.createStatement();
 
 			statement.setQueryTimeout(10);
-			String sql = "INSERT INTO radar (id, process, host, user, checkin, checkout, active, exitcode) VALUES ('"+entity.getId()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getExitcode()+"')"; 
+			String sql = "INSERT INTO radar (id, process, host, user, checkin, checkout, active, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
 //			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
