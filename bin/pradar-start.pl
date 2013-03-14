@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-my $prog = "list";
+my $prog = "gui";
 
 if (@ARGV)
 {
@@ -11,6 +11,7 @@ if (@ARGV)
 		print " list     to list contents of database\n";
 		print " checkin  to checkin a process\n";
 		print " checkout to checkout a process\n";
+		print " gui      for a gui\n";
 		exit(0);
 	}
 	elsif ($ARGV[0] =~ m/^[^-]/)
@@ -19,7 +20,7 @@ if (@ARGV)
 	}
 }
 	
-if ( grep { $_ eq $prog } ("list", "checkin", "checkout", "init") )
+if ( grep { $_ eq $prog } ("list", "checkin", "checkout", "init", "gui") )
 {
 #	print "pradar-$prog @ARGV\n";
 	system "pradar-$prog @ARGV";
