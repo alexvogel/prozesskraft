@@ -384,10 +384,9 @@ public class PradarViewProcessing extends PApplet
 	public PradarViewProcessing()
 	{
 	}
-	public PradarViewProcessing(Db db, Entity entity)
+	public PradarViewProcessing(Entity entity)
 	{
 		this.entity_filter = entity;
-		this.db = db;
 	}
 
 //	/**

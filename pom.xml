@@ -94,7 +94,7 @@
 		<dependency>
 			<groupId>de.caegroup.pradar</groupId>
 			<artifactId>pradar-core</artifactId>
-			<version>0.1.1</version>
+			<version>0.1.2</version>
 		</dependency>
     	<dependency>
 			<groupId>org.processing</groupId>

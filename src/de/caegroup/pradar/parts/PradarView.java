@@ -63,7 +63,7 @@ public class PradarView extends ModelObject
 	private Composite compositepaint;
 //	private Composite parent;
 	private Entity filter_entity = new Entity();
-	private Db db = new Db("/soft/deploy/data/pradar/pradar.db");
+//	private Db db = new Db("/soft/deploy/data/pradar/pradar.db");
 	PradarViewProcessing applet;
 	Display display;
 	
@@ -85,7 +85,6 @@ public class PradarView extends ModelObject
 	public void createControls(Composite parent)
 //	public void createControls()
 	{
-		System.out.println("HI");
 		parent.setSize(10, 10);
 		parent.setEnabled(true);
 		GridLayout gl_parent = new GridLayout(4, false);
@@ -134,7 +133,7 @@ public class PradarView extends ModelObject
 
 		Frame frame = SWT_AWT.new_Frame(compositepaint);
 
-		applet = new PradarViewProcessing(db, filter_entity);
+		applet = new PradarViewProcessing(filter_entity);
 		frame.add(applet, BorderLayout.CENTER);
 		applet.init();
 		frame.pack();
@@ -260,8 +259,6 @@ public class PradarView extends ModelObject
 	 */
 	public static void main(String[] args)
 	{
-		System.out.println("Yo");
-		System.exit(0);
 		final Display display = new Display();
 		
 		Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {
@@ -269,7 +266,6 @@ public class PradarView extends ModelObject
 			{
 				try
 				{
-					System.out.println("outa try");
 					Shell shell = new Shell(display);
 					shell.setLayout(new FillLayout());
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
@@ -286,26 +282,22 @@ public class PradarView extends ModelObject
 								display.sleep();
 							}
 						}
-						System.out.println("inna try");
 
 					}
 					finally
 					{
 						if (!shell.isDisposed())
 						{
-							System.out.println("dispose shell");
 							shell.dispose();
 						}
 					}
 					
 				} finally
 				{
-					System.out.println("dispose display");
 					display.dispose();
 				}
 			}
 		});
-		System.out.println("now exit");
 		System.exit(0);
 	}
 //
