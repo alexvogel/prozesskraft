@@ -32,7 +32,7 @@ public class Db
 //		System.out.println("installationdirectory is: "+installationdirectory.getAbsolutePath());
 		File file = installationdirectory;
 		
-		for (int x=0; x<3; x++)
+		for (int x=0; x<4; x++)
 		{
 			try
 			{
