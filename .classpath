@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/core-2.0b3.jar"/>
+	<classpathentry kind="lib" path="lib/databinding-1.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/databinding.beans-1.2.200.jar"/>
+	<classpathentry kind="lib" path="lib/databinding.observable-1.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/databinding.property-1.4.200.jar"/>
+	<classpathentry kind="lib" path="lib/gluegen-rt-2.0b3.jar"/>
+	<classpathentry kind="lib" path="lib/gluegen-rt-natives-linux-amd64-2.0b3.jar"/>
+	<classpathentry kind="lib" path="lib/gtk.linux.x86_64-3.101.0.jar"/>
+	<classpathentry kind="lib" path="lib/jface-3.8.300.jar"/>
+	<classpathentry kind="lib" path="lib/jface.databinding-1.6.200.jar"/>
+	<classpathentry kind="lib" path="lib/jogl-all-2.0b3.jar"/>
+	<classpathentry kind="lib" path="lib/jogl-all-natives-linux-amd64-2.0b3.jar"/>
+	<classpathentry kind="lib" path="lib/runtime-3.9.0.jar"/>
+	<classpathentry kind="lib" path="lib/runtime.compatibility-3.2.200.jar"/>
+	<classpathentry kind="lib" path="lib/ui.di-0.11.0.jar"/>
+	<classpathentry kind="lib" path="lib/inject-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/pradar-core-0.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/common-3.6.100.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
