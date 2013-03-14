@@ -14,6 +14,7 @@ public class Db
 	----------------------------*/
 	
 	private File dbfile;
+	private Connection connection = null;
 //	private ArrayList<Entity> entities = new ArrayList<Entity>();
 	
 	/*----------------------------
@@ -31,7 +32,7 @@ public class Db
 //		System.out.println("installationdirectory is: "+installationdirectory.getAbsolutePath());
 		File file = installationdirectory;
 		
-		for (int x=0; x<4; x++)
+		for (int x=0; x<3; x++)
 		{
 			try
 			{
@@ -164,11 +165,10 @@ public class Db
 	{
 		ArrayList<Entity> matches = new ArrayList<Entity>();
 		this.sqlvoodoo();
-		Connection connection = null;
 		try
 		{
-			connection = this.getConnection();
-			Statement statement = connection.createStatement();
+			this.getConnection();
+			Statement statement = this.connection.createStatement();
 			
 			statement.setQueryTimeout(10);
 			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"' AND resource LIKE '"+entity.getResourceSqlPattern()+"'";
@@ -252,9 +252,9 @@ public class Db
 		}
 	}
 	
-	public Connection getConnection() throws SQLException
+	public void getConnection() throws SQLException
 	{
-		Connection connection = DriverManager.getConnection("bla");
+		this.connection = null;
 		try
 		{
 			if (!(this.dbfile.exists()))
@@ -270,7 +270,7 @@ public class Db
 
 		try
 		{
-			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
+			this.connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
 		}
 		catch (SQLException e)
 		{
@@ -279,7 +279,6 @@ public class Db
 //				e.printStackTrace();
 		}
 		
-		return connection;
 	}
 	
 	/*----------------------------

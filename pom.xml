@@ -4,7 +4,7 @@
 	<groupId>de.caegroup.pradar</groupId>
 	<artifactId>pradar-core</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.2</version>
+	<version>0.1.3</version>
 	<name>pradar-core</name>
 	<url>http://maven.apache.org</url>
 	<build>
