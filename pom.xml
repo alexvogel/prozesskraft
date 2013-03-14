@@ -25,9 +25,9 @@
 									<mainClass>de.caegroup.pradar.parts.PradarView</mainClass>
 <!-- 									<addClasspath>true</addClasspath> -->
 								</manifest>
-								<manifestEntries>
-									<Class-Path>pradar-core-0.1-jar-with-dependencies.jar</Class-Path>
-								</manifestEntries>
+<!-- 								<manifestEntries> -->
+<!-- 									<Class-Path>pradar-core-0.1-jar-with-dependencies.jar</Class-Path> -->
+<!-- 								</manifestEntries> -->
 							</archive>
 							<outputDirectory>/tmp/pradar/bin-klar</outputDirectory>
 						</configuration>
@@ -53,6 +53,7 @@
 					<outjar>bin/${project.build.finalName}.jar</outjar>
 					<options>
 						<option>-keep public class de.caegroup.pradar.parts.PradarView { *; }</option>
+						<option>-keep public class de.caegroup.pradar.parts.PradarViewModel { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
@@ -154,6 +155,21 @@
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>databinding.property</artifactId>
 			<version>1.4.200</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.e4</groupId>
+			<artifactId>ui.di</artifactId>
+			<version>0.11.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>common</artifactId>
+			<version>3.6.100</version>
+		</dependency>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>inject</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

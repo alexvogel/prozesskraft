@@ -315,7 +315,7 @@ public class PradarViewProcessing extends PApplet
 	{
 		// daten holen aus db
 		this.matched_entities = db.match(this.entity_filter);
-		System.out.println("refreshing data from database...");
+		System.out.println("refreshing data...");
 //		System.out.println("id: "+entity_filter.getId());
 //		System.out.println("process: "+entity_filter.getProcess());
 //		System.out.println("user: "+entity_filter.getUser());

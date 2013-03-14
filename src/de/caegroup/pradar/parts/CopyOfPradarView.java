@@ -52,7 +52,7 @@ import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.runtime.IStatus;
 
-public class PradarView extends ModelObject
+public class CopyOfPradarView extends ModelObject
 {
 	private DataBindingContext bindingContext;
 	private Text text_process;
@@ -67,12 +67,12 @@ public class PradarView extends ModelObject
 	PradarViewProcessing applet;
 	Display display;
 	
-	public PradarView()
+	public CopyOfPradarView()
 	{
 	}
 
 	@Inject
-	public PradarView(Composite composite)
+	public CopyOfPradarView(Composite composite)
 	{
 //		this.parent = composite;
 		createControls(composite);
@@ -262,51 +262,51 @@ public class PradarView extends ModelObject
 	{
 		System.out.println("Yo");
 		System.exit(0);
-		final Display display = new Display();
-		
-		Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {
-			public void run()
-			{
-				try
-				{
-					System.out.println("outa try");
-					Shell shell = new Shell(display);
-					shell.setLayout(new FillLayout());
-					Composite composite = new Composite(shell, SWT.NO_FOCUS);
-					new PradarView(composite);
-					
-					try
-					{
-						shell.open();
-
-						while (!shell.isDisposed())
-						{
-							if( ! display.readAndDispatch())
-							{
-								display.sleep();
-							}
-						}
-						System.out.println("inna try");
-
-					}
-					finally
-					{
-						if (!shell.isDisposed())
-						{
-							System.out.println("dispose shell");
-							shell.dispose();
-						}
-					}
-					
-				} finally
-				{
-					System.out.println("dispose display");
-					display.dispose();
-				}
-			}
-		});
-		System.out.println("now exit");
-		System.exit(0);
+//		final Display display = new Display();
+//		
+//		Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {
+//			public void run()
+//			{
+//				try
+//				{
+//					System.out.println("outa try");
+//					Shell shell = new Shell(display);
+//					shell.setLayout(new FillLayout());
+//					Composite composite = new Composite(shell, SWT.NO_FOCUS);
+//					new PradarView(composite);
+//					
+//					try
+//					{
+//						shell.open();
+//
+//						while (!shell.isDisposed())
+//						{
+//							if( ! display.readAndDispatch())
+//							{
+//								display.sleep();
+//							}
+//						}
+//						System.out.println("inna try");
+//
+//					}
+//					finally
+//					{
+//						if (!shell.isDisposed())
+//						{
+//							System.out.println("dispose shell");
+//							shell.dispose();
+//						}
+//					}
+//					
+//				} finally
+//				{
+//					System.out.println("dispose display");
+//					display.dispose();
+//				}
+//			}
+//		});
+//		System.out.println("now exit");
+//		System.exit(0);
 	}
 //
 //	
