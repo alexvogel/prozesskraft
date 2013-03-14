@@ -1,12 +1,10 @@
 package de.caegroup.pradar;
 
 import java.io.File;
-import java.lang.reflect.Field;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.Random;
 import java.sql.*;
 
 public class Db
@@ -28,8 +26,49 @@ public class Db
 	 */
 	public Db()
 	{
+		File installationdirectory = WhereAmI.WhereAmI(this.getClass());
+		
+//		System.out.println("installationdirectory is: "+installationdirectory.getAbsolutePath());
+		File file = installationdirectory;
+		
+		for (int x=0; x<4; x++)
+		{
+			try
+			{
+				file = file.getParentFile();
+			}
+			catch (Exception e)
+			{
+				System.err.println("fatal: default position of databasefile cannot be determined.");
+			}
+		}
+		
+		try
+		{
+			File dbfile = new File(file.getAbsoluteFile()+"/data/pradar/pradar.db");
+			setDbfile(dbfile);
+		}
+		catch (NullPointerException e)
+		{
+			System.err.println("fatal: default position of databasefile cannot be determined.");
+			System.exit(1);
+		}
+		
+//		String path_dbfile = installationdirectory.getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getAbsolutePath()+"/data/pradar/pradar.db";
+//		System.out.println("default dbfile is: "+dbfile.getAbsolutePath());
+		
+//		System.exit(0);
 //		File program = new File(System.getProperty("java.class.path"));
-		this (new File (System.getProperty("java.class.path")).getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getAbsolutePath()+"/data/pradar/pradar.db");
+//		String javaclasspath = (new File (System.getProperty("java.class.path")).getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getAbsolutePath());
+//		String install = (new File (System.getProperty("java.class.path")).getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getAbsolutePath());
+//		String default_dbfilepath = install+"/data/pradar/pradar.db";
+//		System.out.println("javaclasspath: "+javaclasspath);
+//		System.out.println("installdir: "+install);
+//		System.out.println("using dbfile: "+default_dbfilepath);
+		
+		
+//		setDbfile(new File (default_dbfilepath));
+//		setDbfile(new File("/data/pradar/pradar.db"));
 	}
 
 	/**
@@ -128,7 +167,7 @@ public class Db
 		Connection connection = null;
 		try
 		{
-			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
+			connection = this.getConnection();
 			Statement statement = connection.createStatement();
 			
 			statement.setQueryTimeout(10);
@@ -154,6 +193,7 @@ public class Db
 			} catch (SQLException e)
 		{
 			// TODO Auto-generated catch block
+//			System.err.println("cannot talk to database.");
 			e.printStackTrace();
 		}
 		return matches;
@@ -210,6 +250,36 @@ public class Db
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public Connection getConnection() throws SQLException
+	{
+		Connection connection = DriverManager.getConnection("bla");
+		try
+		{
+			if (!(this.dbfile.exists()))
+			{
+				System.err.println("database file does not exist: "+this.dbfile.getAbsolutePath());
+				System.exit(1);
+			}
+		}
+		catch (Exception e)
+		{
+			System.err.println("database file does not exist.");
+		}
+
+		try
+		{
+			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
+		}
+		catch (SQLException e)
+		{
+			System.err.println("cannot connect to database: "+this.dbfile.getAbsolutePath());
+			System.exit(1);
+//				e.printStackTrace();
+		}
+		
+		return connection;
 	}
 	
 	/*----------------------------
