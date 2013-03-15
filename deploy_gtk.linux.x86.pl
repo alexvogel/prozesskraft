@@ -13,8 +13,8 @@ system "rm -rf /tmp/pradar";
 # maven ausfuehren
 print "**\n";
 print "maven ausfuehren\n";
-print "mvn install -P gtk.linux.x86_64\n";
-system "mvn install -P gtk.linux.x86_64";
+print "mvn install -P gtk.linux.x86\n";
+system "mvn install -P gtk.linux.x86";
 
 # nachfolgern bescheid geben wie das targetverzeichnis heisst
 #system "echo 'java -jar manager-0.1.jar $@' > /tmp/pradar/bin/pradar-core";
