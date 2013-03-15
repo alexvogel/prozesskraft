@@ -90,6 +90,28 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>gtk.linux.x86</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.eclipse.swt</groupId>
+					<artifactId>gtk.linux.x86</artifactId>
+					<version>3.100.1</version>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>gtk.linux.x86_64</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.eclipse.swt</groupId>
+					<artifactId>gtk.linux.x86_64</artifactId>
+					<version>3.101.0</version>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>de.caegroup.pradar</groupId>
@@ -121,16 +143,6 @@
 			<artifactId>gluegen-rt-natives-linux-amd64</artifactId>
 			<version>2.0b3</version>
     	</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.eclipse.swt</groupId> -->
-<!-- 			<artifactId>gtk.linux.x86_64</artifactId> -->
-<!-- 			<version>3.101.0</version> -->
-<!-- 		</dependency> -->
-		<dependency>
-			<groupId>org.eclipse.swt</groupId>
-			<artifactId>gtk.linux.x86</artifactId>
-			<version>3.100.1</version>
-		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>jface</artifactId>
