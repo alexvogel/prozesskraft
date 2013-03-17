@@ -2,6 +2,7 @@ package de.caegroup.pradar.parts;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
+import java.util.Iterator;
 //import java.beans.PropertyChangeSupport;
 //import java.beans.PropertyChangeListener;
 
@@ -61,45 +62,51 @@ import org.eclipse.core.runtime.IStatus;
 
 public class PradarPartUi extends ModelObject
 {
+	private DataBindingContext bindingContextFilter;
+	private DataBindingContext bindingContextZoom;
 	private DataBindingContext bindingContext;
 	private Text text_process;
 	private Text text_user;
 	private Text text_host;
 	private Text text_active;
+	private Scale scale_zoom;
 	private Table table;
-	private PradarViewModel filter = new PradarViewModel();
+	private PradarViewModel einstellungen = new PradarViewModel();
 	private Entity filter_entity = new Entity();
 	PradarViewProcessing applet;
 	Display display;
 	
+
+	/**
+	 * constructor als EntryPoint fuer WindowBuilder
+	 * @wbp.parser.entryPoint
+	 */
 	public PradarPartUi()
 	{
+		Shell shell = new Shell();
+		shell.setSize(633, 688);
+		Composite composite = new Composite(shell, SWT.NONE);
+		composite.setLocation(0, 0);
+		createControls(composite);
 	}
 
+	/**
+	 * constructor als EntryPoint fuer Main oder RCP
+	 */
 	@Inject
 	public PradarPartUi(Composite composite)
 	{
-//		this.parent = composite;
 		createControls(composite);
 	}
 
 	/**
 	 * Create contents of the view part.
-	 * @wbp.parser.entryPoint
 	 */
 	@PostConstruct
-	public void createControls(Composite parent)
-//	public void createControls()
+	public void createControls(Composite composite)
 	{
-		parent.setSize(10, 10);
-		parent.setEnabled(true);
-		GridLayout gl_parent = new GridLayout(4, false);
-		gl_parent.horizontalSpacing = 10;
-		parent.setLayout(gl_parent);
-		
-		Composite composite = parent;
-//		Composite composite = new Composite(parent, SWT.NONE);
 
+		composite.setSize(613, 649);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_composite.minimumWidth = 10;
 		gd_composite.minimumHeight = 10;
@@ -111,8 +118,8 @@ public class PradarPartUi extends ModelObject
 		gl_composite_1.marginWidth = 0;
 		gl_composite_1.marginHeight = 0;
 		composite_1.setLayout(gl_composite_1);
-		GridData gd_composite_1 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-		gd_composite_1.heightHint = 516;
+		GridData gd_composite_1 = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_composite_1.heightHint = 410;
 		gd_composite_1.widthHint = 122;
 		composite_1.setLayoutData(gd_composite_1);
 		
@@ -164,11 +171,11 @@ public class PradarPartUi extends ModelObject
 		lblNewLabel_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblNewLabel_2.setText("zoom");
 		
-		Scale scale = new Scale(grpVisual, SWT.NONE);
-		scale.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		scale.setMaximum(3);
-		scale.setMinimum(1);
-		scale.setSelection(1);
+		scale_zoom = new Scale(grpVisual, SWT.NONE);
+		scale_zoom.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		scale_zoom.setMaximum(300);
+		scale_zoom.setMinimum(100);
+		scale_zoom.setSelection(100);
 		
 		Group grpFunction = new Group(composite_11, SWT.NONE);
 		grpFunction.setLayout(new GridLayout(1, false));
@@ -189,7 +196,7 @@ public class PradarPartUi extends ModelObject
 		
 		Composite composite_2 = new Composite(composite, SWT.NONE);
 		composite_2.setLayout(new GridLayout(1, false));
-		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1);
+		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
 		gd_composite_2.heightHint = 225;
 		composite_2.setLayoutData(gd_composite_2);
 		
@@ -198,7 +205,8 @@ public class PradarPartUi extends ModelObject
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		checkboxTableViewer.setContentProvider(new ContentProvider());
 				
-		bindingContext = initDataBindings();
+		bindingContextFilter = initDataBindingsFilter();
+		bindingContextZoom = initDataBindingsZoom();
 
 		Frame frame = SWT_AWT.new_Frame(composite_12);
 
@@ -209,8 +217,9 @@ public class PradarPartUi extends ModelObject
 		frame.setLocation(0, 0);
 		frame.setVisible(true);
 
-		updateUserInterface(filter);
-		paint();
+		updateUserInterface(einstellungen);
+		updateUserInterfaceProcessing(einstellungen);
+		paint_with_new_filter();
 	}
 
 	private static class ContentProvider implements IStructuredContentProvider {
@@ -224,21 +233,18 @@ public class PradarPartUi extends ModelObject
 	}
 
 	
-	public void paint()
+	public void paint_with_new_filter()
 	{
-//		System.out.println("Es wird neu aufgebaut!");
-
-//		Db db = new Db("/soft/deploy/data/pradar/pradar.db");
-
-		filter_entity.setProcess(filter.getProcess());
-		filter_entity.setUser(filter.getUser());
-		filter_entity.setHost(filter.getHost());
-		filter_entity.setActive(filter.getActive());
+		filter_entity.setProcess(einstellungen.getProcess());
+		filter_entity.setUser(einstellungen.getUser());
+		filter_entity.setHost(einstellungen.getHost());
+		filter_entity.setActive(einstellungen.getActive());
 	
-//		PradarViewProcessing applet = new PradarViewProcessing(db, filter_entity);
-
-//		System.out.println("Active ist im Filter auf: "+filter.getActive());
 		applet.setFilter(filter_entity);
+	}
+	public void paint_with_new_zoom()
+	{
+		applet.setZoom(einstellungen.getZoom());
 	}
 	
 	
@@ -258,16 +264,36 @@ public class PradarPartUi extends ModelObject
 		public void handleChange(ChangeEvent event)
 		{
 //			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
-			paint();
+			paint_with_new_filter();
 		}
 	};
 	
-	// define a change listener
-	private void updateUserInterface(PradarViewModel filter)
+	IChangeListener listener_zoom = new IChangeListener()
+	{
+		public void handleChange(ChangeEvent event)
+		{
+//			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
+			paint_with_new_zoom();
+		}
+	};
+	
+	/**
+	 * add change listener to all bindings
+	 */
+	private void updateUserInterface(PradarViewModel einstellungen)
 	{
 //		bindingContext.dispose();
-		IObservableList bindings = bindingContext.getValidationStatusProviders();
+		IObservableList bindings = bindingContextFilter.getValidationStatusProviders();
 
+//		// Register the Listener for binding 'process'
+//		Iterator iterbinding =  bindings.iterator();
+//		while (iterbinding.hasNext())
+//		{
+//			Binding binding = (Binding)iterbinding.next();
+//			binding.getModel().addChangeListener(listener);
+//			System.out.println("bindingtype: "+binding.toString());
+//		}
+		
 		// Register the Listener to all bindings
 		for (Object o : bindings)
 		{
@@ -276,11 +302,33 @@ public class PradarPartUi extends ModelObject
 		}
 	}
 
-
 	/**
-	 * @wbp.parser.entryPoint
+	 * add change listener for binding 'zoom'
 	 */
-	protected DataBindingContext initDataBindings()
+	private void updateUserInterfaceProcessing(PradarViewModel zoom)
+	{
+//		bindingContext.dispose();
+		IObservableList bindings = bindingContextZoom.getValidationStatusProviders();
+
+		// Register the Listener for binding 'zoom'
+		
+		Binding b = (Binding) bindings.get(0);
+		b.getModel().addChangeListener(listener_zoom);
+	}
+
+
+	protected DataBindingContext initDataBindingsZoom()
+	{
+		DataBindingContext bindingContextZoom = new DataBindingContext();
+		//
+		IObservableValue targetObservableZoom = WidgetProperties.selection().observe(scale_zoom);
+		IObservableValue modelObservableZoom = BeanProperties.value("zoom").observe(einstellungen);
+		bindingContextZoom.bindValue(targetObservableZoom, modelObservableZoom, null, null);
+		//
+		return bindingContextZoom;
+	}
+	
+	protected DataBindingContext initDataBindingsFilter()
 	{
 
 		// Einrichten der ControlDecoration über dem Textfeld 'active'
@@ -313,25 +361,30 @@ public class PradarPartUi extends ModelObject
 		strategyActive.setBeforeSetValidator(validatorActive);
 		//---------
 		
-		DataBindingContext bindingContext = new DataBindingContext();
+		DataBindingContext bindingContextFilter = new DataBindingContext();
+		DataBindingContext bindingContextZoom = new DataBindingContext();
 		//
 		IObservableValue targetObservableProcess = WidgetProperties.text(SWT.Modify).observeDelayed(800, text_process);
-		IObservableValue modelObservableProcess = BeanProperties.value("process").observe(filter);
-		bindingContext.bindValue(targetObservableProcess, modelObservableProcess, null, null);
+		IObservableValue modelObservableProcess = BeanProperties.value("process").observe(einstellungen);
+		bindingContextFilter.bindValue(targetObservableProcess, modelObservableProcess, null, null);
 		//
 		IObservableValue targetObservableUser = WidgetProperties.text(SWT.Modify).observeDelayed(800, text_user);
-		IObservableValue modelObservableUser = BeanProperties.value("user").observe(filter);
-		bindingContext.bindValue(targetObservableUser, modelObservableUser, null, null);
+		IObservableValue modelObservableUser = BeanProperties.value("user").observe(einstellungen);
+		bindingContextFilter.bindValue(targetObservableUser, modelObservableUser, null, null);
 		//
 		IObservableValue targetObservableHost = WidgetProperties.text(SWT.Modify).observeDelayed(800, text_host);
-		IObservableValue modelObservableHost = BeanProperties.value("host").observe(filter);
-		bindingContext.bindValue(targetObservableHost, modelObservableHost, null, null);
+		IObservableValue modelObservableHost = BeanProperties.value("host").observe(einstellungen);
+		bindingContextFilter.bindValue(targetObservableHost, modelObservableHost, null, null);
 		//
 		IObservableValue targetObservableActive = WidgetProperties.text(SWT.Modify).observeDelayed(800, text_active);
-		IObservableValue modelObservableActive = BeanProperties.value("active").observe(filter);
-		bindingContext.bindValue(targetObservableActive, modelObservableActive, strategyActive, null);
+		IObservableValue modelObservableActive = BeanProperties.value("active").observe(einstellungen);
+		bindingContextFilter.bindValue(targetObservableActive, modelObservableActive, strategyActive, null);
 		//
-		return bindingContext;
+		IObservableValue targetObservableZoom = WidgetProperties.selection().observe(scale_zoom);
+		IObservableValue modelObservableZoom = BeanProperties.value("zoom").observe(einstellungen);
+		bindingContextZoom.bindValue(targetObservableZoom, modelObservableZoom, null, null);
+		//
+		return bindingContextFilter;
 	}
 	
 	/**

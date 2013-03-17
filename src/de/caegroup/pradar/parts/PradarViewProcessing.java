@@ -24,8 +24,10 @@ public class PradarViewProcessing extends PApplet
 	Calendar refresh_next = Calendar.getInstance();
 	Calendar now = Calendar.getInstance();
 	Calendar mouse_last_pressed = Calendar.getInstance();
+	int zoomfaktor = 100;
 	float doubleClickTimeSpan = 400;
 	int refresh_interval = 600;
+	ArrayList<Entity> all_entities = new ArrayList<Entity>();
 	ArrayList<Entity> matched_entities = new ArrayList<Entity>();
 	Entity entity_mit_fahne = new Entity();
 	float kleinster_abstand = 100000;
@@ -42,7 +44,7 @@ public class PradarViewProcessing extends PApplet
 		size(10, 10);
 //		background(255);
 //		noLoop();
-		frameRate(3);
+		frameRate(10);
 		PFont font = loadFont("AndaleMono-36.vlw");
 //    	PFont font = this.loadFont("TheSans-Plain-12.vlw");
 		textFont(font, 12);
@@ -50,6 +52,8 @@ public class PradarViewProcessing extends PApplet
 		height = 10;
 		refresh_last.setTimeInMillis(0);
 		mouse_last_pressed.setTimeInMillis(0);
+		// initiales Daten abholen aus DB
+		this.refresh();
   }
   
 	/*----------------------------
@@ -67,8 +71,8 @@ public class PradarViewProcessing extends PApplet
 		background(255);
 
 		int bezugsgroesse = 10;
-		if (width < height) { bezugsgroesse = width; }
-		else { bezugsgroesse = height; }
+		if (width < height) { bezugsgroesse = (width*this.zoomfaktor/100); }
+		else { bezugsgroesse = (height*this.zoomfaktor/100); }
 		
 		// strichfarbe festlegen
 		stroke(185);
@@ -314,7 +318,8 @@ public class PradarViewProcessing extends PApplet
 	void refresh()
 	{
 		// daten holen aus db
-		this.matched_entities = db.match(this.entity_filter);
+		this.all_entities = db.getAllEntities();
+//		this.matched_entities = db.match(this.entity_filter);
 		System.out.println("refreshing data...");
 //		System.out.println("id: "+entity_filter.getId());
 //		System.out.println("process: "+entity_filter.getProcess());
@@ -327,6 +332,13 @@ public class PradarViewProcessing extends PApplet
 		this.refresh_next.add(13, this.refresh_interval);
 	}
 
+	void filter(Entity entity_filter)
+	{
+		// daten holen aus db
+		this.matched_entities = entity_filter.getAllMatches(this.all_entities);
+		System.out.println("filtering data...");
+	}
+	
 	void legend()
 	{
 		stroke(100);
@@ -344,7 +356,12 @@ public class PradarViewProcessing extends PApplet
 	{
 		this.entity_filter = entity_filter;
 //		System.out.println("setting new filter");
-		this.refresh();
+		this.filter(this.entity_filter);
+	}
+
+	void setZoom (int zoomfaktor)
+	{
+		this.zoomfaktor = zoomfaktor;
 	}
 
 	void doubleClick ()

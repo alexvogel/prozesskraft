@@ -6,6 +6,7 @@ public class PradarViewModel extends ModelObject
 	public String user = System.getProperty("user.name");
 	public String host = "";
 	public String active = "true";
+	public int zoom = 100;
 	
 	public PradarViewModel()
 	{
@@ -31,6 +32,11 @@ public class PradarViewModel extends ModelObject
 		return active;
 	}
 
+	public int getZoom()
+	{
+		return zoom;
+	}
+
 	public void setProcess(String process)
 	{
 		firePropertyChange("process", this.process, this.process = process);
@@ -49,5 +55,10 @@ public class PradarViewModel extends ModelObject
 	public void setActive(String active)
 	{
 		firePropertyChange("active", this.active, this.active = active);
+	}
+
+	public void setZoom(int zoom)
+	{
+		firePropertyChange("zoom", this.zoom, this.zoom = zoom);
 	}
 }
