@@ -68,6 +68,7 @@ public class PradarViewProcessing extends PApplet
 //		if ((now.after(this.refresh_next)) || ((this.key == ' ') && ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > 1000)))
 		{
 			this.refresh();
+			this.filter(entity_filter);
 		}
 		
 		background(255);
