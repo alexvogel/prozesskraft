@@ -21,13 +21,10 @@
 						</goals>
 						<configuration>
 							<archive>
-<!-- 								<manifest> -->
-<!-- 									<mainClass>de.caegroup.pradar.parts.PradarView</mainClass> -->
-<!-- 									<addClasspath>true</addClasspath> -->
-<!-- 								</manifest> -->
-<!-- 								<manifestEntries> -->
-<!-- 									<Class-Path>pradar-core-0.1-jar-with-dependencies.jar</Class-Path> -->
-<!-- 								</manifestEntries> -->
+								<manifest>
+									<mainClass>de.caegroup.pradar.parts.PradarView</mainClass>
+									<addClasspath>true</addClasspath>
+								</manifest>
 							</archive>
 							<outputDirectory>/tmp/pradar/bin-klar</outputDirectory>
 						</configuration>
