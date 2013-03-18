@@ -39,7 +39,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>de.caegroup.pradar.parts.PradarView</mainClass>
+									<mainClass>de.caegroup.pradar.parts.PradarUi</mainClass>
 									<addClasspath>true</addClasspath>
 								</manifest>
 							</archive>
