@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry including="**/*.java" kind="src" path="src"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/test/resources"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="lib" path="lib/core-2.0b3.jar"/>
 	<classpathentry kind="lib" path="lib/databinding-1.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/databinding.beans-1.2.200.jar"/>

@@ -2,53 +2,25 @@ package de.caegroup.pradar.parts;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.util.Iterator;
-//import java.beans.PropertyChangeSupport;
-//import java.beans.PropertyChangeListener;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
-import org.eclipse.e4.ui.di.Focus;
-//import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.awt.SWT_AWT;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-//import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Scale;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-//import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Text;
-//import org.eclipse.swt.layout.FormLayout;
-//import org.eclipse.swt.layout.FormData;
-//import org.eclipse.swt.layout.FormAttachment;
-
-import de.caegroup.pradar.*;
-
-//import processing.core.PApplet;
-
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.ChangeEvent;
 import org.eclipse.core.databinding.observable.IChangeListener;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.list.IObservableList;
-//import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.validation.IValidator;
 import org.eclipse.core.databinding.validation.ValidationStatus;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.jface.databinding.swt.SWTObservables;
-//import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -56,9 +28,34 @@ import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Scale;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Text;
+
+import de.caegroup.pradar.Entity;
+//import java.beans.PropertyChangeSupport;
+//import java.beans.PropertyChangeListener;
+//import org.eclipse.jface.viewers.TableViewer;
+//import org.eclipse.swt.widgets.Combo;
+//import org.eclipse.swt.layout.FillLayout;
+//import org.eclipse.swt.layout.FormLayout;
+//import org.eclipse.swt.layout.FormData;
+//import org.eclipse.swt.layout.FormAttachment;
+//import processing.core.PApplet;
+//import org.eclipse.core.databinding.UpdateValueStrategy;
+//import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
 //import org.eclipse.core.databinding.beans.PojoProperties;
-import org.eclipse.core.databinding.beans.BeanProperties;
-import org.eclipse.core.runtime.IStatus;
 
 public class PradarPartUi extends ModelObject
 {

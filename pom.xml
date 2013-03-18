@@ -8,7 +8,24 @@
 	<name>pradar-gui</name>
 	<url>http://maven.apache.org</url>
 	<build>
+
+<!-- setzen des outputDirectories fuer die *.class-Files (die von maven-compiler-plugin erzeugt werden) -->
+<!-- 		<outputDirectory>target/classes</outputDirectory> -->
+
 		<plugins>
+
+<!-- compiliert alle *.java files zu *.class files-->
+<!-- 			<plugin> -->
+<!-- 				<artifactId>maven-compiler-plugin</artifactId> -->
+<!-- 				<version>3.0</version> -->
+<!-- 				<configuration> -->
+<!-- 					<includes> -->
+<!-- 						<include>${project.build.outputDirectory}/../src/de/caegroup/pradar/parts/*.java</include> -->
+<!-- 					</includes> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
+
+<!-- packt alle class-Files in ein jar legt es im classDirectory ab-->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.2</version>
@@ -26,11 +43,19 @@
 									<addClasspath>true</addClasspath>
 								</manifest>
 							</archive>
-							<outputDirectory>/tmp/pradar/bin-klar</outputDirectory>
+<!-- ${project.build.outputDirectory} = ./target/classes -->
+<!-- 							<classesDirectory>/target</classesDirectory> -->
+							<classesDirectory>/src/de/caegroup/pradar/parts</classesDirectory>
+<!-- 							<outputDirectory>/tmp/pradar/bin-klar</outputDirectory> -->
+							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+							<includes>
+								<include>*</include>
+							</includes>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>com.pyx4me</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
@@ -45,9 +70,11 @@
 				</executions>
 				<configuration>
 					<obfuscate>true</obfuscate>
-					<outputDirectory>/tmp/pradar</outputDirectory>
-					<injar>bin-klar/${project.build.finalName}.jar</injar>
-					<outjar>bin/${project.build.finalName}.jar</outjar>
+<!-- 					<outputDirectory>/tmp/pradar</outputDirectory> -->
+					<outputDirectory>${project.build.directory}</outputDirectory>
+<!-- 					<injar>bin-klar/${project.build.finalName}.jar</injar> -->
+					<injar>${project.build.finalName}.jar</injar>
+					<outjar>obfuscated_jar/${project.build.finalName}.jar</outjar>
 					<options>
 						<option>-keep public class de.caegroup.pradar.parts.PradarView { *; }</option>
 						<option>-keep public class de.caegroup.pradar.parts.PradarViewModel { *; }</option>

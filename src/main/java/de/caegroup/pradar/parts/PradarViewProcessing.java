@@ -2,15 +2,17 @@ package de.caegroup.pradar.parts;
 
 
 import java.io.IOException;
-//import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 
 import javax.inject.Inject;
 
-import de.caegroup.pradar.*;
-import processing.core.*;
+import processing.core.PApplet;
+import processing.core.PFont;
+import de.caegroup.pradar.Db;
+import de.caegroup.pradar.Entity;
+//import java.lang.management.ManagementFactory;
 
 public class PradarViewProcessing extends PApplet
 {
