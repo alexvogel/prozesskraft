@@ -22,5 +22,7 @@ system "mvn install -P gtk.linux.x86_64";
 
 # nachfolgern bescheid geben wie das targetverzeichnis heisst
 my $cwd = getcwd;
-print "<newdir>$cwd/target<newdir>\n";
+my $auslieferungsverzeichnis = $cwd . "/target/fertig_zur_installation";
+
+print "<newdir>$auslieferungsverzeichnis<newdir>\n";
 
