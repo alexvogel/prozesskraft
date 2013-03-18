@@ -93,7 +93,7 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
-					<outputDirectory>/tmp/pradar/bin</outputDirectory>
+<!-- 					<outputDirectory>/tmp/pradar/bin</outputDirectory> -->
 					<finalName>${project.name}-${project.version}</finalName>
 					<archive>
 						<manifest>
