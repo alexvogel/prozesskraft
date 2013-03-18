@@ -45,9 +45,9 @@
 							</archive>
 <!-- ${project.build.outputDirectory} = ./target/classes -->
 <!-- 							<classesDirectory>/target</classesDirectory> -->
-							<classesDirectory>/src/de/caegroup/pradar/parts</classesDirectory>
+<!-- 							<classesDirectory>/src/de/caegroup/pradar/parts</classesDirectory> -->
 <!-- 							<outputDirectory>/tmp/pradar/bin-klar</outputDirectory> -->
-							<outputDirectory>${project.build.outputDirectory}</outputDirectory>
+<!-- 							<outputDirectory>${project.build.outputDirectory}</outputDirectory> -->
 							<includes>
 								<include>*</include>
 							</includes>
