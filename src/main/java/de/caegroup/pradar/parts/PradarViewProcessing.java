@@ -322,7 +322,6 @@ public class PradarViewProcessing extends PApplet
 	{
 		// daten holen aus db
 		this.all_entities = db.getAllEntities();
-//		this.matched_entities = db.match(this.entity_filter);
 		System.out.println("refreshing data...");
 		this.refresh_last = Calendar.getInstance();
 		this.refresh_next = Calendar.getInstance();
@@ -333,20 +332,14 @@ public class PradarViewProcessing extends PApplet
 	void filter(Entity entity_filter)
 	{
 		// daten holen aus db
-		System.out.println("filtering data...");
-		System.out.println("id: "+entity_filter.getId());
-		System.out.println("process: "+entity_filter.getProcess());
-		System.out.println("user: "+entity_filter.getUser());
-		System.out.println("host: "+entity_filter.getHost());
-		System.out.println("active: "+entity_filter.getActive());
-		System.out.println("----------------");
+//		System.out.println("filtering data...");
+//		System.out.println("id: "+entity_filter.getId());
+//		System.out.println("process: "+entity_filter.getProcess());
+//		System.out.println("user: "+entity_filter.getUser());
+//		System.out.println("host: "+entity_filter.getHost());
+//		System.out.println("active: "+entity_filter.getActive());
+//		System.out.println("----------------");
 		this.matched_entities = entity_filter.getAllMatches(this.all_entities);
-		Iterator<Entity> iterentity = this.matched_entities.iterator();
-		while (iterentity.hasNext())
-		{
-			Entity entity = iterentity.next();
-			System.out.println("this is in the matched Entities: "+entity.getId());
-		}
 	}
 	
 	void legend()
