@@ -27,9 +27,8 @@ my $auslieferungsverzeichnis = $target . "/fertig_zur_installation";
 
 # kopieren des fertig zusammengestellten jars vom target ins auslieferungsverzeichnis
 system "mkdir $auslieferungsverzeichnis";
-system "mv $target/*jar-with-dependencies* $auslieferungsverzeichnis";
+system "mkdir $auslieferungsverzeichnis/bin";
+system "mv $target/*jar-with-dependencies* $auslieferungsverzeichnis/bin";
 
 # nachfolgern bescheid geben wie das targetverzeichnis heisst
 print "<newdir>$auslieferungsverzeichnis<newdir>\n";
-
-
