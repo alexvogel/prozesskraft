@@ -327,6 +327,7 @@ public class PradarViewProcessing extends PApplet
 		this.refresh_last = Calendar.getInstance();
 		this.refresh_next = Calendar.getInstance();
 		this.refresh_next.add(13, this.refresh_interval);
+		this.filter(entity_filter);
 	}
 
 	void filter(Entity entity_filter)
