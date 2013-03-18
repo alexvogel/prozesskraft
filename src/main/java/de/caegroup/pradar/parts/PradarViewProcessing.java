@@ -337,8 +337,14 @@ public class PradarViewProcessing extends PApplet
 	void filter(Entity entity_filter)
 	{
 		// daten holen aus db
-		this.matched_entities = entity_filter.getAllMatches(this.all_entities);
 		System.out.println("filtering data...");
+		this.matched_entities = entity_filter.getAllMatches(this.all_entities);
+		Iterator<Entity> iterentity = this.matched_entities.iterator();
+		while (iterentity.hasNext())
+		{
+			Entity entity = iterentity.next();
+			System.out.println("this is in the matched Entities: "+entity.getId());
+		}
 	}
 	
 	void legend()
