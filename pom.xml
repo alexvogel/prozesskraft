@@ -22,7 +22,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>de.caegroup.pradar.parts.PradarPartUi</mainClass>
+									<mainClass>de.caegroup.pradar.parts.PradarView</mainClass>
 <!-- 									<addClasspath>true</addClasspath> -->
 								</manifest>
 <!-- 								<manifestEntries> -->
@@ -52,7 +52,7 @@
 					<injar>bin-klar/${project.build.finalName}.jar</injar>
 					<outjar>bin/${project.build.finalName}.jar</outjar>
 					<options>
-						<option>-keep public class de.caegroup.pradar.parts.PradarPartUi { *; }</option>
+						<option>-keep public class de.caegroup.pradar.parts.PradarView { *; }</option>
 						<option>-keep public class de.caegroup.pradar.parts.PradarViewModel { *; }</option>
 					</options>
 					<libs>
@@ -73,7 +73,7 @@
 					<finalName>${project.name}-${project.version}</finalName>
 					<archive>
 						<manifest>
-							<mainClass>de.caegroup.pradar.parts.PradarPartUi</mainClass>
+							<mainClass>de.caegroup.pradar.parts.PradarView</mainClass>
 							<addClasspath>true</addClasspath>
 						</manifest>
 					</archive>
