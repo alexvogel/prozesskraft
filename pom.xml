@@ -21,10 +21,10 @@
 						</goals>
 						<configuration>
 							<archive>
-								<manifest>
-									<mainClass>de.caegroup.pradar.parts.PradarView</mainClass>
+<!-- 								<manifest> -->
+<!-- 									<mainClass>de.caegroup.pradar.parts.PradarView</mainClass> -->
 <!-- 									<addClasspath>true</addClasspath> -->
-								</manifest>
+<!-- 								</manifest> -->
 <!-- 								<manifestEntries> -->
 <!-- 									<Class-Path>pradar-core-0.1-jar-with-dependencies.jar</Class-Path> -->
 <!-- 								</manifestEntries> -->
