@@ -76,7 +76,7 @@
 					<injar>${project.build.finalName}.jar</injar>
 					<outjar>obfuscated_jar/${project.build.finalName}.jar</outjar>
 					<options>
-						<option>-keep public class de.caegroup.pradar.parts.PradarView { *; }</option>
+						<option>-keep public class de.caegroup.pradar.parts.PradarUi { *; }</option>
 						<option>-keep public class de.caegroup.pradar.parts.PradarViewModel { *; }</option>
 					</options>
 					<libs>
@@ -97,7 +97,7 @@
 					<finalName>${project.name}-${project.version}</finalName>
 					<archive>
 						<manifest>
-							<mainClass>de.caegroup.pradar.parts.PradarView</mainClass>
+							<mainClass>de.caegroup.pradar.parts.PradarUi</mainClass>
 							<addClasspath>true</addClasspath>
 						</manifest>
 					</archive>
