@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Cwd;
 
 # buffering off
 $|=1;
@@ -20,5 +21,6 @@ system "mvn install -P gtk.linux.x86_64";
 #system "echo 'java -jar manager-0.1.jar $@' > /tmp/pradar/bin/pradar-core";
 
 # nachfolgern bescheid geben wie das targetverzeichnis heisst
-print "<newdir>/tmp/pradar<newdir>\n";
+my $cwd = getcwd;
+print "<newdir>$cwd/target<newdir>\n";
 
