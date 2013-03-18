@@ -364,7 +364,7 @@ public class PradarViewProcessing extends PApplet
 	void setFilter (Entity entity_filter)
 	{
 		this.entity_filter = entity_filter;
-//		System.out.println("setting new filter");
+		System.out.println("setting new filter");
 		this.filter(this.entity_filter);
 	}
 
