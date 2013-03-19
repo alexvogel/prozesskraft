@@ -9,6 +9,8 @@
 	<url>http://maven.apache.org</url>
 	<build>
 		<plugins>
+
+<!-- packt alle class-Files in ein jar legt es im target ab-->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.2</version>
@@ -48,9 +50,9 @@
 				</executions>
 				<configuration>
 					<obfuscate>true</obfuscate>
-					<outputDirectory>/tmp/pradar</outputDirectory>
-					<injar>bin-klar/${project.build.finalName}.jar</injar>
-					<outjar>bin/${project.build.finalName}.jar</outjar>
+<!-- 					<outputDirectory>/tmp/pradar</outputDirectory> -->
+<!-- 					<injar>bin-klar/${project.build.finalName}.jar</injar> -->
+<!-- 					<outjar>bin/${project.build.finalName}.jar</outjar> -->
 					<options>
 						<option>-keep public class de.caegroup.pradar.Checkout { *; }</option>
 					</options>
@@ -68,7 +70,7 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
-					<outputDirectory>/tmp/pradar/bin</outputDirectory>
+<!-- 					<outputDirectory>/tmp/pradar/bin</outputDirectory> -->
 					<finalName>${project.name}-${project.version}</finalName>
 					<archive>
 						<manifest>
