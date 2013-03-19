@@ -10,7 +10,7 @@
 	<build>
 		<plugins>
 
-<!-- packt alle class-Files in ein jar legt es im classDirectory ab-->
+<!-- packt alle class-Files in ein jar legt es im target ab-->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.2</version>
@@ -51,7 +51,9 @@
 <!-- 					<injar>bin-klar/${project.build.finalName}.jar</injar> -->
 <!-- 					<outjar>bin/${project.build.finalName}.jar</outjar> -->
 					<options>
+<!-- 					abhaengigkeiten in anderen packages (durch import) koennen nur aufgeloest werden, wenn diese klassen public bleiben -->
 						<option>-keep public class de.caegroup.pradar.Db { *; }</option>
+						<option>-keep public class de.caegroup.pradar.Entity { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>

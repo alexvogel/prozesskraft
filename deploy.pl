@@ -17,12 +17,6 @@ print "maven ausfuehren\n";
 print "mvn install\n";
 system "mvn install";
 
-# nachfolgern bescheid geben wie das targetverzeichnis heisst
-#system "echo 'java -jar manager-0.1.jar $@' > /tmp/pradar/bin/pradar-core";
-
-# nachfolgern bescheid geben wie das targetverzeichnis heisst
-#system "echo 'java -jar manager-0.1.jar $@' > /tmp/pradar/bin/pradar-core";
-
 # erstellen eines auslieferungsverzeichnisses und einkopieren des fertigen jars mit allem
 my $cwd = getcwd;
 my $target = $cwd . "/target";

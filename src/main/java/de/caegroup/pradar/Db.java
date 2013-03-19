@@ -70,7 +70,7 @@ public class Db
 	public void initDb()
 	{
 		this.sqlvoodoo();
-		Connection connection = null;
+		this.connection = null;
 		try
 		{
 //			System.out.println("getting connection to: "+this.dbfile.getAbsolutePath());
@@ -83,7 +83,7 @@ public class Db
 			statement.executeUpdate("drop table if exists radar");
 			statement.executeUpdate("create table radar (id, process, host, user, checkin, checkout, active, exitcode, resource)");
 			
-			connection.close();
+			this.connection.close();
 
 		} catch (SQLException e)
 		{
@@ -103,7 +103,7 @@ public class Db
 	public void checkinEntity(Entity entity)
 	{
 		this.sqlvoodoo();
-		Connection connection = null;
+		this.connection = null;
 		try
 		{
 			this.getConnection();
@@ -114,7 +114,7 @@ public class Db
 //			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
-			connection.close();
+			this.connection.close();
 		} catch (SQLException e)
 		{
 			// TODO Auto-generated catch block
@@ -125,7 +125,7 @@ public class Db
 	public void checkoutEntity(Entity entity)
 	{
 		this.sqlvoodoo();
-		Connection connection = null;
+		this.connection = null;
 		try
 		{
 			this.getConnection();
@@ -137,7 +137,7 @@ public class Db
 //			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
-			connection.close();
+			this.connection.close();
 		} catch (SQLException e)
 		{
 			// TODO Auto-generated catch block
@@ -149,6 +149,7 @@ public class Db
 	{
 		ArrayList<Entity> matches = new ArrayList<Entity>();
 		this.sqlvoodoo();
+		this.connection = null;
 		try
 		{
 			this.getConnection();
@@ -173,7 +174,7 @@ public class Db
 				matched_entity.setResource(rs.getString("resource"));
 				matches.add(matched_entity);
 			}
-			
+			this.connection.close();
 		}
 		catch (Exception e)
 		{
@@ -187,6 +188,7 @@ public class Db
 	{
 		ArrayList<Entity> allEntities = new ArrayList<Entity>();
 		this.sqlvoodoo();
+		this.connection = null;
 		try
 		{
 			this.getConnection();
@@ -211,7 +213,7 @@ public class Db
 				matched_entity.setResource(rs.getString("resource"));
 				allEntities.add(matched_entity);
 			}
-			
+			this.connection.close();
 		}
 		catch (Exception e)
 		{
@@ -224,13 +226,14 @@ public class Db
 	public void list(Entity entity)
 	{
 		this.sqlvoodoo();
-		Connection connection = null;
+		this.connection = null;
 		try
 		{
 			this.getConnection();
+
 			Statement statement = this.connection.createStatement();
-			
 			statement.setQueryTimeout(10);
+
 			
 			ArrayList<Entity> matched_entities = new ArrayList<Entity>();
 			try
@@ -253,8 +256,8 @@ public class Db
 				Entity actual_entity = iterentity.next();
 				System.out.format(formatstring, actual_entity.getId(), actual_entity.getProcess(), actual_entity.getUser(), actual_entity.getHost(), actual_entity.getActive(), actual_entity.getCheckinAsString(), actual_entity.getCheckoutAsString(), actual_entity.getExitcode() );
 			}
-			
-			connection.close();
+
+			this.connection.close();
 		} catch (SQLException e)
 		{
 			// TODO Auto-generated catch block
