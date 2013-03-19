@@ -1,7 +1,9 @@
 package de.caegroup.pradar;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 
 public class Entity
 {
@@ -44,6 +46,64 @@ public class Entity
 		this.setId(""+time);
 	}
 
+	public ArrayList<Entity> getAllMatches(ArrayList<Entity> allEntities)
+	{
+		ArrayList<Entity> allMatches = new ArrayList<Entity>();
+		
+		Iterator<Entity> iterEntity = allEntities.iterator();
+		while (iterEntity.hasNext())
+		{
+			Entity entity = iterEntity.next();
+			if (this.doesItMatch(entity))
+			{
+				allMatches.add(entity);
+			}
+		}
+
+		return allMatches;
+	}
+	
+	public boolean doesItMatch(Entity assessedEntity)
+	{
+		boolean matchStatus = true;
+		if (!(assessedEntity.getId().matches(".*"+this.id+".*")))
+		{
+			matchStatus = false;
+		}
+		
+		if (!(assessedEntity.getProcess().matches(".*"+this.process+".*")))
+		{
+			matchStatus = false;
+		}
+		
+		if (!(assessedEntity.getHost().matches(".*"+this.host+".*")))
+		{
+			matchStatus = false;
+		}
+		
+		if (!(assessedEntity.getUser().matches(".*"+this.user+".*")))
+		{
+			matchStatus = false;
+		}
+		
+		if (!(assessedEntity.getActive().matches(".*"+this.active+".*")))
+		{
+			matchStatus = false;
+		}
+		
+		if (!(assessedEntity.getExitcode().matches(".*"+this.exitcode+".*")))
+		{
+			matchStatus = false;
+		}
+		
+		if (!(assessedEntity.getResource().matches(".*"+this.resource+".*")))
+		{
+			matchStatus = false;
+		}
+		
+		return matchStatus;
+	}
+	
 	/*----------------------------
 	  methods getter/setter
 	----------------------------*/

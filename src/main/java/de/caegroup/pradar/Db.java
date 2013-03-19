@@ -54,22 +54,6 @@ public class Db
 			System.err.println("fatal: default position of databasefile cannot be determined.");
 			System.exit(1);
 		}
-		
-//		String path_dbfile = installationdirectory.getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getAbsolutePath()+"/data/pradar/pradar.db";
-//		System.out.println("default dbfile is: "+dbfile.getAbsolutePath());
-		
-//		System.exit(0);
-//		File program = new File(System.getProperty("java.class.path"));
-//		String javaclasspath = (new File (System.getProperty("java.class.path")).getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getAbsolutePath());
-//		String install = (new File (System.getProperty("java.class.path")).getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().getAbsolutePath());
-//		String default_dbfilepath = install+"/data/pradar/pradar.db";
-//		System.out.println("javaclasspath: "+javaclasspath);
-//		System.out.println("installdir: "+install);
-//		System.out.println("using dbfile: "+default_dbfilepath);
-		
-		
-//		setDbfile(new File (default_dbfilepath));
-//		setDbfile(new File("/data/pradar/pradar.db"));
 	}
 
 	/**
@@ -122,8 +106,8 @@ public class Db
 		Connection connection = null;
 		try
 		{
-			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
-			Statement statement = connection.createStatement();
+			this.getConnection();
+			Statement statement = this.connection.createStatement();
 
 			statement.setQueryTimeout(10);
 			String sql = "INSERT INTO radar (id, process, host, user, checkin, checkout, active, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
@@ -144,8 +128,8 @@ public class Db
 		Connection connection = null;
 		try
 		{
-			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
-			Statement statement = connection.createStatement();
+			this.getConnection();
+			Statement statement = this.connection.createStatement();
 			
 			statement.setQueryTimeout(10);
 			
@@ -190,13 +174,51 @@ public class Db
 				matches.add(matched_entity);
 			}
 			
-			} catch (SQLException e)
-		{
-			// TODO Auto-generated catch block
-//			System.err.println("cannot talk to database.");
-			e.printStackTrace();
 		}
+		catch (Exception e)
+		{
+			System.err.println("no processes.");
+		}
+
 		return matches;
+	}
+	
+	public ArrayList<Entity> getAllEntities()
+	{
+		ArrayList<Entity> allEntities = new ArrayList<Entity>();
+		this.sqlvoodoo();
+		try
+		{
+			this.getConnection();
+			Statement statement = this.connection.createStatement();
+
+			statement.setQueryTimeout(10);
+			String sql = "SELECT * FROM radar";
+//			System.out.println(sql);
+			ResultSet rs = statement.executeQuery(sql);
+		
+			while (rs.next())
+			{
+				Entity matched_entity = new Entity();
+				matched_entity.setId(rs.getString("id"));
+				matched_entity.setProcess(rs.getString("process"));
+				matched_entity.setUser(rs.getString("user"));
+				matched_entity.setHost(rs.getString("host"));
+				matched_entity.setCheckin(Long.valueOf(rs.getString("checkin")).longValue());
+				matched_entity.setCheckout(Long.valueOf(rs.getString("checkout")).longValue());
+				matched_entity.setActive(rs.getString("active"));
+				matched_entity.setExitcode(rs.getString("exitcode"));
+				matched_entity.setResource(rs.getString("resource"));
+				allEntities.add(matched_entity);
+			}
+			
+		}
+		catch (Exception e)
+		{
+			System.err.println("no processes.");
+		}
+
+		return allEntities;
 	}
 	
 	public void list(Entity entity)
@@ -205,8 +227,8 @@ public class Db
 		Connection connection = null;
 		try
 		{
-			connection = DriverManager.getConnection("jdbc:sqlite:"+this.dbfile.getAbsolutePath());
-			Statement statement = connection.createStatement();
+			this.getConnection();
+			Statement statement = this.connection.createStatement();
 			
 			statement.setQueryTimeout(10);
 			
@@ -252,7 +274,7 @@ public class Db
 		}
 	}
 	
-	public void getConnection() throws SQLException
+	public void getConnection()
 	{
 		this.connection = null;
 		try
@@ -260,7 +282,7 @@ public class Db
 			if (!(this.dbfile.exists()))
 			{
 				System.err.println("database file does not exist: "+this.dbfile.getAbsolutePath());
-				System.exit(1);
+//				System.exit(1);
 			}
 		}
 		catch (Exception e)
@@ -275,7 +297,7 @@ public class Db
 		catch (SQLException e)
 		{
 			System.err.println("cannot connect to database: "+this.dbfile.getAbsolutePath());
-			System.exit(1);
+//			System.exit(1);
 //				e.printStackTrace();
 		}
 		
