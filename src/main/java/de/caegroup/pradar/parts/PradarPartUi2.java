@@ -57,7 +57,7 @@ import de.caegroup.pradar.Entity;
 //import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
 //import org.eclipse.core.databinding.beans.PojoProperties;
 
-public class PradarPartUi extends ModelObject
+public class PradarPartUi2 extends ModelObject
 {
 	private DataBindingContext bindingContextFilter;
 	private DataBindingContext bindingContextZoom;
@@ -78,7 +78,7 @@ public class PradarPartUi extends ModelObject
 	 * constructor als EntryPoint fuer WindowBuilder
 	 * @wbp.parser.entryPoint
 	 */
-	public PradarPartUi()
+	public PradarPartUi2()
 	{
 		Shell shell = new Shell();
 		shell.setSize(633, 688);
@@ -91,7 +91,7 @@ public class PradarPartUi extends ModelObject
 	 * constructor als EntryPoint fuer Main oder RCP
 	 */
 	@Inject
-	public PradarPartUi(Composite composite)
+	public PradarPartUi2(Composite composite)
 	{
 		createControls(composite);
 	}
@@ -402,7 +402,7 @@ public class PradarPartUi extends ModelObject
 					GridLayout gl_composite = new GridLayout(2, false);
 					gl_composite.marginWidth = 0;
 					gl_composite.marginHeight = 0;
-					new PradarPartUi(composite);
+					new PradarPartUi2(composite);
 					
 					try
 					{

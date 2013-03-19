@@ -50,7 +50,7 @@ import de.caegroup.pradar.Entity;
 //import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
 //import org.eclipse.core.databinding.beans.PojoProperties;
 
-public class PradarView extends ModelObject
+public class PradarPartUi1 extends ModelObject
 {
 	private DataBindingContext bindingContext;
 	private Text text_process;
@@ -65,12 +65,12 @@ public class PradarView extends ModelObject
 	PradarViewProcessing applet;
 	Display display;
 	
-	public PradarView()
+	public PradarPartUi1()
 	{
 	}
 
 	@Inject
-	public PradarView(Composite composite)
+	public PradarPartUi1(Composite composite)
 	{
 //		this.parent = composite;
 		createControls(composite);
@@ -267,7 +267,7 @@ public class PradarView extends ModelObject
 					Shell shell = new Shell(display);
 					shell.setLayout(new FillLayout());
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
-					new PradarView(composite);
+					new PradarPartUi1(composite);
 					
 					try
 					{
