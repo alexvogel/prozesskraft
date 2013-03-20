@@ -2,6 +2,7 @@ package de.caegroup.pradar.parts;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
+import java.awt.event.MouseWheelEvent;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -30,6 +31,8 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -47,6 +50,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
 import de.caegroup.pradar.Entity;
+import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Spinner;
 //import java.beans.PropertyChangeSupport;
 //import java.beans.PropertyChangeListener;
 //import org.eclipse.jface.viewers.TableViewer;
@@ -119,13 +124,14 @@ public class PradarPartUi2 extends ModelObject
 		gl_composite_1.marginHeight = 0;
 		composite_1.setLayout(gl_composite_1);
 		GridData gd_composite_1 = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		gd_composite_1.heightHint = 410;
+		gd_composite_1.heightHint = 445;
 		gd_composite_1.widthHint = 122;
 		composite_1.setLayoutData(gd_composite_1);
 		
 		Composite composite_11 = new Composite(composite_1, SWT.NONE);
 		composite_11.setLayout(new GridLayout(1, false));
 		GridData gd_composite_11 = new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1);
+		gd_composite_11.heightHint = 437;
 		gd_composite_11.widthHint = 169;
 		composite_11.setLayoutData(gd_composite_11);
 		
@@ -162,6 +168,15 @@ public class PradarPartUi2 extends ModelObject
 		text_active = new Text(grpFilter, SWT.BORDER);
 		text_active.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
+		Label lblCheckinScpoe = new Label(grpFilter, SWT.NONE);
+		lblCheckinScpoe.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		lblCheckinScpoe.setText("checkin period [h]");
+		
+		Spinner spinner = new Spinner(grpFilter, SWT.BORDER);
+		spinner.setMaximum(10000);
+		spinner.setSelection(48);
+		spinner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
 		Group grpVisual = new Group(composite_11, SWT.NONE);
 		grpVisual.setText("visual");
 		grpVisual.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -173,9 +188,15 @@ public class PradarPartUi2 extends ModelObject
 		
 		scale_zoom = new Scale(grpVisual, SWT.NONE);
 		scale_zoom.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		scale_zoom.setMaximum(300);
-		scale_zoom.setMinimum(100);
+		scale_zoom.setMaximum(500);
+		scale_zoom.setMinimum(50);
 		scale_zoom.setSelection(100);
+		
+		Button btnNewButton2 = new Button(grpVisual, SWT.NONE);
+		btnNewButton2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		btnNewButton2.setText("autoscale");
+		btnNewButton2.addSelectionListener(listener_autoscale_button);
+		scale_zoom.addMouseWheelListener(listener_mousewheel);
 		
 		Group grpFunction = new Group(composite_11, SWT.NONE);
 		grpFunction.setLayout(new GridLayout(1, false));
@@ -198,7 +219,7 @@ public class PradarPartUi2 extends ModelObject
 		Composite composite_2 = new Composite(composite, SWT.NONE);
 		composite_2.setLayout(new GridLayout(1, false));
 		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-		gd_composite_2.heightHint = 225;
+		gd_composite_2.heightHint = 164;
 		composite_2.setLayoutData(gd_composite_2);
 		
 		CheckboxTableViewer checkboxTableViewer = CheckboxTableViewer.newCheckList(composite_2, SWT.BORDER | SWT.FULL_SELECTION);
@@ -211,7 +232,7 @@ public class PradarPartUi2 extends ModelObject
 
 		Frame frame = SWT_AWT.new_Frame(composite_12);
 
-		applet = new PradarViewProcessing(filter_entity);
+		applet = new PradarViewProcessing(filter_entity, einstellungen);
 		frame.add(applet, BorderLayout.CENTER);
 		applet.init();
 		frame.pack();
@@ -245,11 +266,15 @@ public class PradarPartUi2 extends ModelObject
 	}
 	public void applet_paint_with_new_zoom()
 	{
-		applet.setZoom(einstellungen.getZoom());
+		applet.setZoomfaktor(einstellungen.getZoom());
 	}
 	public void applet_refresh()
 	{
 		applet.refresh();
+	}
+	public void applet_autoscale()
+	{
+		applet.autoscale();
 	}
 	
 	
@@ -288,6 +313,23 @@ public class PradarPartUi2 extends ModelObject
 		{
 //			System.out.println("button wurde gedrueckt");
 			applet_refresh();
+		}
+	};
+	
+	SelectionAdapter listener_autoscale_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+//			System.out.println("button wurde gedrueckt");
+			applet_autoscale();
+		}
+	};
+	
+	MouseWheelListener listener_mousewheel = new MouseWheelListener()
+	{
+		public void mouseScrolled(MouseEvent me)
+		{
+			scale_zoom.setSelection(scale_zoom.getSelection() + (me.count*5));
 		}
 	};
 	
@@ -450,6 +492,4 @@ public class PradarPartUi2 extends ModelObject
 		});
 		System.exit(0);
 	}
-//
-//	
 }

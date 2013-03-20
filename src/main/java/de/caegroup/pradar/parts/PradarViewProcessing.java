@@ -1,12 +1,22 @@
 package de.caegroup.pradar.parts;
 
 
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 
 import javax.inject.Inject;
+
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.databinding.swt.WidgetProperties;
+
+//import org.eclipse.swt.events.MouseEvent;
+//import org.eclipse.swt.events.MouseWheelListener;
 
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -19,6 +29,7 @@ public class PradarViewProcessing extends PApplet
 	/*----------------------------
 	  structure
 	----------------------------*/
+	private PradarViewModel einstellungen;
 	private Db db = new Db();
 	@Inject
 	private Entity entity_filter;
@@ -28,6 +39,14 @@ public class PradarViewProcessing extends PApplet
 	Calendar now = Calendar.getInstance();
 	Calendar mouse_last_pressed = Calendar.getInstance();
 	int zoomfaktor = 100;
+	int zoomfaktor_min = 50;
+	int zoomfaktor_max = 500;
+	int center_x;
+	int center_y;
+	double center_ratio_x = 0.5;
+	double center_ratio_y = 0.5;
+	int mouse_pressed_x;
+	int mouse_pressed_y;
 	float doubleClickTimeSpan = 400;
 	int refresh_interval = 600;
 	ArrayList<Entity> all_entities = new ArrayList<Entity>();
@@ -38,6 +57,7 @@ public class PradarViewProcessing extends PApplet
 	private float[] legendposition = {0,0,0};
 	private int[] legendcolor = {0,0,0};
     private int legendsize = (10);
+	int once = 0;
 
 	/*----------------------------
 	  method setup Processing
@@ -51,10 +71,12 @@ public class PradarViewProcessing extends PApplet
 		PFont font = loadFont("AndaleMono-36.vlw");
 //    	PFont font = this.loadFont("TheSans-Plain-12.vlw");
 		textFont(font, 12);
-		width = 10;
-		height = 10;
+		center_x = width/2;
 		refresh_last.setTimeInMillis(0);
 		mouse_last_pressed.setTimeInMillis(0);
+		
+		addMouseWheelListener(listener_mousewheel);
+		
 		// initiales Daten abholen aus DB
 		this.refresh();
   }
@@ -64,6 +86,17 @@ public class PradarViewProcessing extends PApplet
 	----------------------------*/
 	public void draw()
 	{
+		// do this only once at start but AFTER setup
+		if (once == 0)
+		{
+			center_x = (int) (this.center_ratio_x * width);
+			center_y = (int) (this.center_ratio_y * height);
+			once = 1;
+		}
+		
+		center_x = (int) (this.center_ratio_x * width);
+		center_y = (int) (this.center_ratio_y * height);
+		
 		this.now = Calendar.getInstance();
 		if ((now.after(this.refresh_next)) || ((this.keyPressed) && (this.key == ' ') && ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > this.min_refresh_interval)))
 //		if ((now.after(this.refresh_next)) || ((this.key == ' ') && ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > 1000)))
@@ -73,7 +106,6 @@ public class PradarViewProcessing extends PApplet
 		}
 		
 		background(255);
-
 		int bezugsgroesse = 10;
 		if (width < height) { bezugsgroesse = (width*this.zoomfaktor/100); }
 		else { bezugsgroesse = (height*this.zoomfaktor/100); }
@@ -84,70 +116,70 @@ public class PradarViewProcessing extends PApplet
 		// linien zeichnen
 		noFill();
 		stroke(240);
-		line( ((width-bezugsgroesse)/2)-20, height/2, width-((width-bezugsgroesse)/2)+20, height/2);
-		line(width/2, ((height-bezugsgroesse)/2)-20, width/2, height-((height-bezugsgroesse)/2)+20);
+		line( (center_x-bezugsgroesse/2-20),	center_y,						(center_x+bezugsgroesse/2+20),	center_y);
+		line(  center_x,						(center_y-bezugsgroesse/2-20),	center_x,						(center_y+bezugsgroesse/2-20));
 		
 		// kreise zeichnen
 
 		// kreis 1w
 		strokeWeight(1);
 		stroke(100);
-		ellipse(width/2, height/2, bezugsgroesse, bezugsgroesse);
+		ellipse(center_x, center_y, bezugsgroesse, bezugsgroesse);
 		strokeWeight(1);
 		stroke(240);
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.167))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.167))) );
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.333))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.333))) );
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.500))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.500))) );
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.667))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.667))) );
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.833))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.833))) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.167))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.167))) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.333))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.333))) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.500))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.500))) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.667))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.667))) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.833))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.833))) );
 
 		stroke(100);
 		textSize(bezugsgroesse/60);
 		fill(100);
-		text("1w", (width/2+(bezugsgroesse/2)+2), (height/2)-2);
+		text("1w", (center_x+(bezugsgroesse/2)+2), (center_y)-2);
 		noFill();
 
 		// kreis 1d
 		strokeWeight(1);
 		stroke(100);
-		ellipse(width/2, height/2, (bezugsgroesse/3)*2, (bezugsgroesse/3)*2);
+		ellipse(center_x, center_y, (bezugsgroesse/3)*2, (bezugsgroesse/3)*2);
 		strokeWeight(1);
 		stroke(240);
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.167))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.167))) );
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.333))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.333))) );
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.500))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.500))) );
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.667))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.667))) );
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.833))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.833))) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.167))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.167))) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.333))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.333))) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.500))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.500))) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.667))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.667))) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.833))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.833))) );
 
 		stroke(100);
 		textSize(bezugsgroesse/60);
 		fill(100);
-		text("1d", (width/2+(bezugsgroesse/3)+2), (height/2)-2);
+		text("1d", (center_x+(bezugsgroesse/3)+2), (center_y)-2);
 		noFill();
 
 		// kreis 1h
 		noFill();
 		strokeWeight(1);
 		stroke(100);
-		ellipse(width/2, height/2, bezugsgroesse/3, bezugsgroesse/3);
+		ellipse(center_x, center_y, bezugsgroesse/3, bezugsgroesse/3);
 		strokeWeight(1);
 		stroke(240);
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)*(0.167)), (float) ((bezugsgroesse/3)*(0.167)) );
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)*(0.333)), (float) ((bezugsgroesse/3)*(0.333)) );
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)*(0.500)), (float) ((bezugsgroesse/3)*(0.500)) );
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)*(0.667)), (float) ((bezugsgroesse/3)*(0.667)) );
-		ellipse(width/2, height/2, (float) ((bezugsgroesse/3)*(0.833)), (float) ((bezugsgroesse/3)*(0.833)) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*(0.167)), (float) ((bezugsgroesse/3)*(0.167)) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*(0.333)), (float) ((bezugsgroesse/3)*(0.333)) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*(0.500)), (float) ((bezugsgroesse/3)*(0.500)) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*(0.667)), (float) ((bezugsgroesse/3)*(0.667)) );
+		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*(0.833)), (float) ((bezugsgroesse/3)*(0.833)) );
 
 		stroke(100);
 		textSize(bezugsgroesse/60);
 		fill(100);
-		text("1h", (width/2+((bezugsgroesse/3)/2)+2), (height/2)-2);
+		text("1h", (center_x+((bezugsgroesse/3)/2)+2), (center_y)-2);
 		noFill();
 		
 		stroke(100);
 		textSize(bezugsgroesse/60);
 		fill(100);
-		text("now", (width/2+2), (height/2)-2);
+		text("now", (center_x+2), (center_y)-2);
 		noFill();
 
 		// ueber alle gefilterten entities iterieren
@@ -251,10 +283,10 @@ public class PradarViewProcessing extends PApplet
 			float zufall = random(0, 2*PI);
 //			float zufall = map(zaehler, 0, anzahl_entities, 0, 2*PI);
 //			zaehler++;
-			float x_checkin = (width/2) + cos(zufall) * radius_checkin;
-			float y_checkin = (height/2) + sin(zufall) * radius_checkin;
-			float x_checkout = (width/2) + cos(zufall) * radius_checkout;
-			float y_checkout = (height/2) + sin(zufall) * radius_checkout;
+			float x_checkin = (center_x) + cos(zufall) * radius_checkin;
+			float y_checkin = (center_y) + sin(zufall) * radius_checkin;
+			float x_checkout = (center_x) + cos(zufall) * radius_checkout;
+			float y_checkout = (center_y) + sin(zufall) * radius_checkout;
 //			System.out.println("x_checkin: "+x_checkin);
 //			System.out.println("y_checkin: "+y_checkin);
 //			System.out.println("x_checkout: "+x_checkout);
@@ -275,27 +307,32 @@ public class PradarViewProcessing extends PApplet
 		}
 		
 		// fahne zeichnen
-		if (kleinster_abstand < keine_fahne_ab_abstand_mehr_als)
+		if ((kleinster_abstand < keine_fahne_ab_abstand_mehr_als) && (entity_mit_fahne != null))
 		{
-			// weiss
-			stroke(100);
-			fill(255);
-			// dicke
-			strokeWeight(1);
-			rect(mouseX+3, mouseY-5, 165, -65, 5);
-
-			fill(100);
-			textSize(9);
-			text("process:  "+entity_mit_fahne.getProcess(), mouseX+6, mouseY-60);
-			text("user:     "+entity_mit_fahne.getUser(),    mouseX+6, mouseY-50);
-			text("host:     "+entity_mit_fahne.getHost(),    mouseX+6, mouseY-40);
-			text("checkin:  "+entity_mit_fahne.getCheckinAsString(), mouseX+6, mouseY-30);
-			text("checkout: "+entity_mit_fahne.getCheckoutAsString(),mouseX+6, mouseY-20);
-			text("exitcode: "+entity_mit_fahne.getExitcode(),mouseX+6, mouseY-10);
+			draw_flag();
 		}
 		
 	}
 
+	void draw_flag()
+	{
+		// weiss
+		stroke(100);
+		fill(255);
+		// dicke
+		strokeWeight(1);
+		rect(mouseX+3, mouseY-5, 165, -65, 5);
+
+		fill(100);
+		textSize(9);
+		text("process:  "+entity_mit_fahne.getProcess(), mouseX+6, mouseY-60);
+		text("user:     "+entity_mit_fahne.getUser(),    mouseX+6, mouseY-50);
+		text("host:     "+entity_mit_fahne.getHost(),    mouseX+6, mouseY-40);
+		text("checkin:  "+entity_mit_fahne.getCheckinAsString(), mouseX+6, mouseY-30);
+		text("checkout: "+entity_mit_fahne.getCheckoutAsString(),mouseX+6, mouseY-20);
+		text("exitcode: "+entity_mit_fahne.getExitcode(),mouseX+6, mouseY-10);
+	}
+	
 	float calc_abstand(float x_checkin, float y_checkin, float x_checkout, float y_checkout)
 	{
 		float abstand_mouse_zu_checkin = dist(mouseX, mouseY, x_checkin, y_checkin);
@@ -372,9 +409,24 @@ public class PradarViewProcessing extends PApplet
 		this.filter(this.entity_filter);
 	}
 
-	void setZoom (int zoomfaktor)
+	void setZoomfaktor (int zoomfaktor)
 	{
 		this.zoomfaktor = zoomfaktor;
+		// den zoomfaktor im Model synchron halten, damit das scale-widget aktualisiert wird
+		this.einstellungen.setZoom(zoomfaktor);
+	}
+
+	void setZoomfaktor ()
+	{
+		// den zoomfaktor im Model synchron halten, damit das scale-widget aktualisiert wird
+		this.einstellungen.setZoom(100);
+	}
+
+	void autoscale ()
+	{
+		this.center_ratio_x = 0.5;
+		this.center_ratio_y = 0.5;
+		this.setZoomfaktor();
 	}
 
 	void doubleClick ()
@@ -408,35 +460,103 @@ public class PradarViewProcessing extends PApplet
 			doubleClick();
 		}
 		mouse_last_pressed = now;
+		mouse_pressed_x = mouseX;
+		mouse_pressed_y = mouseY;
 	}
 	
+	public void mouseDragged()
+	{
+//		System.out.println("Ja mouse dragged: mouse_pressed_x="+mouse_pressed_x+"  || mouseX="+mouseX+" || center_x="+center_x);
+		int new_center_x = (int)(this.center_ratio_x * width) + (mouseX-mouse_pressed_x);
+		int new_center_y = (int)(this.center_ratio_y * height) + (mouseY-mouse_pressed_y);
+		
+		double new_center_ratio_x = ((double) new_center_x / (double)width);
+		double new_center_ratio_y = ((double) new_center_y / (double)height);
+		
+//		System.out.println("new_center_x= "+new_center_x+"    width="+width+"   || new_center_factor_x="+new_center_factor_x);
+		
+		if		(new_center_ratio_x < 0)		{this.center_ratio_x = 0;}
+		else if	(new_center_ratio_x > 1)		{this.center_ratio_x = 1;}
+		else									{this.center_ratio_x = new_center_ratio_x;}
+
+		if		(new_center_ratio_y < 0)		{this.center_ratio_y = 0;}
+		else if	(new_center_ratio_y > 1)		{this.center_ratio_y = 1;}
+		else									{this.center_ratio_y = new_center_ratio_y;}
+
+		mouse_pressed_x = mouseX;
+		mouse_pressed_y = mouseY;
+	}
+
+	public void mouseWheel(int delta)
+	{
+//		System.out.println("mouse has moved by "+delta+" units");
+		int newzoomfaktor = this.zoomfaktor - (delta*20);
+		
+		if (newzoomfaktor < this.zoomfaktor_min)
+		{
+			newzoomfaktor = this.zoomfaktor_min;
+		}
+		else if (newzoomfaktor > this.zoomfaktor_max)
+		{
+			newzoomfaktor = this.zoomfaktor_max;
+		}
+		
+		// wie veraendert sich der zoomfaktor?
+		double delta_zoomfaktor = (double)newzoomfaktor / (double)this.zoomfaktor;
+		
+		// feststellen an welcher verhaeltnis-position sich der mauszeiger gerade befindet
+		double mouse_ratio_x = ((double)mouseX / (double)width);
+		double mouse_ratio_y = ((double)mouseY / (double)height);
+		
+		// Abstand zwischen mouse_ratio und center_ratio
+		double delta_center_ratio_minus_mouse_ratio_x = this.center_ratio_x - mouse_ratio_x;
+		double delta_center_ratio_minus_mouse_ratio_y = this.center_ratio_y - mouse_ratio_y;
+		
+		// entsprechend muss das center bzgl. der aktuellen mausposition verschoben werden
+		this.center_ratio_x = mouse_ratio_x + (delta_zoomfaktor * delta_center_ratio_minus_mouse_ratio_x);
+		this.center_ratio_y = mouse_ratio_y + (delta_zoomfaktor * delta_center_ratio_minus_mouse_ratio_y);
+		
+		// neuen zoomfaktor setzen
+		this.setZoomfaktor(newzoomfaktor);
+		
+	}
 	
+	java.awt.event.MouseWheelListener listener_mousewheel = new MouseWheelListener()
+	{
+		public void mouseWheelMoved(MouseWheelEvent me)
+		{
+			mouseWheel(me.getWheelRotation());
+		}
+	};
+
+//	protected DataBindingContext initDataBindingsZoom()
+//	{
+//		DataBindingContext bindingContextZoom = new DataBindingContext();
+//		//
+//		IObservableValue targetObservableZoom = BeanProperties.value("zoomfaktor").observe(this);
+//		IObservableValue modelObservableZoom = BeanProperties.value("zoom").observe(einstellungen);
+//		bindingContextZoom.bindValue(targetObservableZoom, modelObservableZoom, null, null);
+//		//
+//		return bindingContextZoom;
+//	}
+
 	public PradarViewProcessing()
 	{
+		this.entity_filter = new Entity();
+		this.einstellungen = new PradarViewModel();
 	}
+	
 	public PradarViewProcessing(Entity entity)
 	{
 		this.entity_filter = entity;
+		this.einstellungen = new PradarViewModel();
 	}
 
-//	/**
-//	 * Create contents of the view part.
-//	 */
-//	@PostConstruct
-//	public void createControls(Composite parent)
-//	{
-//		parent.setLayout(new GridLayout());
-//	}
-//
-//	@PreDestroy
-//	public void dispose()
-//	{
-//	}
-//
-//	@Focus
-//	public void setFocus()
-//	{
-//		// TODO	Set the focus to control
-//	}
-//
+	public PradarViewProcessing(Entity entity, PradarViewModel einstellungen)
+	{
+		this.entity_filter = entity;
+		this.einstellungen = einstellungen;
+	}
+
+
 }
