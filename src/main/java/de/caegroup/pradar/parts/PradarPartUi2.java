@@ -30,6 +30,9 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -61,7 +64,7 @@ public class PradarPartUi2 extends ModelObject
 {
 	private DataBindingContext bindingContextFilter;
 	private DataBindingContext bindingContextZoom;
-	private DataBindingContext bindingContext;
+//	private DataBindingContext bindingContext;
 	private Text text_process;
 	private Text text_user;
 	private Text text_host;
@@ -182,6 +185,7 @@ public class PradarPartUi2 extends ModelObject
 		Button btnNewButton = new Button(grpFunction, SWT.NONE);
 		btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		btnNewButton.setText("refresh");
+		btnNewButton.addSelectionListener(listener_refresh_button);
 		
 		Composite composite_12 = new Composite(composite_1, SWT.EMBEDDED | SWT.NO_BACKGROUND);
 		composite_12.setLayout(new GridLayout(1, false));
@@ -201,7 +205,7 @@ public class PradarPartUi2 extends ModelObject
 		table = checkboxTableViewer.getTable();
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		checkboxTableViewer.setContentProvider(new ContentProvider());
-				
+		
 		bindingContextFilter = initDataBindingsFilter();
 		bindingContextZoom = initDataBindingsZoom();
 
@@ -216,7 +220,7 @@ public class PradarPartUi2 extends ModelObject
 
 		updateUserInterface(einstellungen);
 		updateUserInterfaceProcessing(einstellungen);
-		paint_with_new_filter();
+		applet_paint_with_new_filter();
 	}
 
 	private static class ContentProvider implements IStructuredContentProvider {
@@ -230,7 +234,7 @@ public class PradarPartUi2 extends ModelObject
 	}
 
 	
-	public void paint_with_new_filter()
+	public void applet_paint_with_new_filter()
 	{
 		filter_entity.setProcess(einstellungen.getProcess());
 		filter_entity.setUser(einstellungen.getUser());
@@ -239,9 +243,13 @@ public class PradarPartUi2 extends ModelObject
 	
 		applet.setFilter(filter_entity);
 	}
-	public void paint_with_new_zoom()
+	public void applet_paint_with_new_zoom()
 	{
 		applet.setZoom(einstellungen.getZoom());
+	}
+	public void applet_refresh()
+	{
+		applet.refresh();
 	}
 	
 	
@@ -261,7 +269,7 @@ public class PradarPartUi2 extends ModelObject
 		public void handleChange(ChangeEvent event)
 		{
 //			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
-			paint_with_new_filter();
+			applet_paint_with_new_filter();
 		}
 	};
 	
@@ -270,7 +278,16 @@ public class PradarPartUi2 extends ModelObject
 		public void handleChange(ChangeEvent event)
 		{
 //			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
-			paint_with_new_zoom();
+			applet_paint_with_new_zoom();
+		}
+	};
+	
+	SelectionAdapter listener_refresh_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+//			System.out.println("button wurde gedrueckt");
+			applet_refresh();
 		}
 	};
 	

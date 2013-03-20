@@ -24,6 +24,7 @@ public class PradarViewProcessing extends PApplet
 	private Entity entity_filter;
 	Calendar refresh_last = Calendar.getInstance();
 	Calendar refresh_next = Calendar.getInstance();
+	int min_refresh_interval = 5000;
 	Calendar now = Calendar.getInstance();
 	Calendar mouse_last_pressed = Calendar.getInstance();
 	int zoomfaktor = 100;
@@ -64,7 +65,7 @@ public class PradarViewProcessing extends PApplet
 	public void draw()
 	{
 		this.now = Calendar.getInstance();
-		if ((now.after(this.refresh_next)) || ((this.keyPressed) && (this.key == ' ') && ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > 1000)))
+		if ((now.after(this.refresh_next)) || ((this.keyPressed) && (this.key == ' ') && ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > this.min_refresh_interval)))
 //		if ((now.after(this.refresh_next)) || ((this.key == ' ') && ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > 1000)))
 		{
 			this.refresh();
@@ -320,13 +321,22 @@ public class PradarViewProcessing extends PApplet
 	
 	void refresh()
 	{
-		// daten holen aus db
-		this.all_entities = db.getAllEntities();
-		System.out.println("refreshing data...");
-		this.refresh_last = Calendar.getInstance();
-		this.refresh_next = Calendar.getInstance();
-		this.refresh_next.add(13, this.refresh_interval);
-		this.filter(entity_filter);
+		this.now = Calendar.getInstance();
+		if ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > this.min_refresh_interval)
+		{
+			// daten holen aus db
+			this.all_entities = db.getAllEntities();
+			System.out.println("refreshing data...");
+			this.refresh_last = Calendar.getInstance();
+			this.refresh_next = Calendar.getInstance();
+			this.refresh_next.add(13, this.refresh_interval);
+			this.filter(entity_filter);
+		}
+		else
+		{
+			System.out.println("refresh interval must not be less than "+(this.min_refresh_interval/1000)+" seconds.");
+			
+		}
 	}
 
 	void filter(Entity entity_filter)

@@ -48,9 +48,9 @@
 <!-- 							<classesDirectory>/src/de/caegroup/pradar/parts</classesDirectory> -->
 <!-- 							<outputDirectory>/tmp/pradar/bin-klar</outputDirectory> -->
 <!-- 							<outputDirectory>${project.build.outputDirectory}</outputDirectory> -->
-							<includes>
-								<include>*</include>
-							</includes>
+<!-- 							<includes> -->
+<!-- 								<include>*</include> -->
+<!-- 							</includes> -->
 						</configuration>
 					</execution>
 				</executions>
