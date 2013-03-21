@@ -191,6 +191,7 @@ public class PradarViewProcessing extends PApplet
 //		int anzahl_entities = matched_entities.size();
 //		int zaehler = 1;
 		kleinster_abstand = 100000;
+		entity_mit_fahne = null;
 		while (iterentity.hasNext())
 		{
 			Entity entity = iterentity.next();
@@ -250,15 +251,6 @@ public class PradarViewProcessing extends PApplet
 				radius_checkout = bezugsgroesse/2;
 			}
 			
-//			System.out.println("faktor: "+faktor);
-//
-//			System.out.println("log(woche): "+log(604800000));
-//			System.out.println("bezugsgroesse: "+bezugsgroesse);
-//			System.out.println("checkin_from_now_in_millis: "+checkin_from_now_in_millis);
-//			System.out.println("log(checkin_from_now): "+log(checkin_from_now_in_millis));
-//			System.out.println("checkout_from_now_in_millis: "+checkout_from_now_in_millis);
-//			System.out.println("radius_checkin: "+radius_checkin);
-//			System.out.println("radius_checkout: "+radius_checkout);
 			
 			// instanzlinien einfaerben nach exitcode
 			stroke(93, 134, 77);
@@ -287,10 +279,6 @@ public class PradarViewProcessing extends PApplet
 			float y_checkin = (center_y) + sin(zufall) * radius_checkin;
 			float x_checkout = (center_x) + cos(zufall) * radius_checkout;
 			float y_checkout = (center_y) + sin(zufall) * radius_checkout;
-//			System.out.println("x_checkin: "+x_checkin);
-//			System.out.println("y_checkin: "+y_checkin);
-//			System.out.println("x_checkout: "+x_checkout);
-//			System.out.println("y_checkout: "+y_checkout);
 			
 			ellipse(x_checkin, y_checkin, bezugsgroesse/200, bezugsgroesse/200);
 			ellipse(x_checkout, y_checkout, bezugsgroesse/200, bezugsgroesse/200);
@@ -306,7 +294,7 @@ public class PradarViewProcessing extends PApplet
 			
 		}
 		
-		// fahne zeichnen
+		// fahne zeichnen, falls bedingungen erfuellt
 		if ((kleinster_abstand < keine_fahne_ab_abstand_mehr_als) && (entity_mit_fahne != null))
 		{
 			draw_flag();
@@ -371,21 +359,13 @@ public class PradarViewProcessing extends PApplet
 		}
 		else
 		{
-			System.out.println("refresh interval must not be less than "+(this.min_refresh_interval/1000)+" seconds.");
+			System.out.println("refresh interval must be at least "+(this.min_refresh_interval/1000)+" seconds.");
 			
 		}
 	}
 
 	void filter(Entity entity_filter)
 	{
-		// daten holen aus db
-//		System.out.println("filtering data...");
-//		System.out.println("id: "+entity_filter.getId());
-//		System.out.println("process: "+entity_filter.getProcess());
-//		System.out.println("user: "+entity_filter.getUser());
-//		System.out.println("host: "+entity_filter.getHost());
-//		System.out.println("active: "+entity_filter.getActive());
-//		System.out.println("----------------");
 		this.matched_entities = entity_filter.getAllMatches(this.all_entities);
 	}
 	
@@ -394,9 +374,6 @@ public class PradarViewProcessing extends PApplet
 		stroke(100);
 		textSize(13);
 		fill(this.legendcolor[0], this.legendcolor[1], this.legendcolor[2]);
-//		text(this.legend_processstatus, this.legendposition[0]+this.legendsize/2, this.legendposition[1]+6*this.legendsize+0);
-//		text((int)(((this.refresh_next.getTimeInMillis() - this.now.getTimeInMillis())/1000)+1), this.legendsize/2, frame.getHeight() -40);
-//		text(((int)(this.frameRate)), frame.getWidth() - this.legendsize/2 - this.legendsize*3, frame.getHeight() - 40);
 		text((int)(((this.refresh_next.getTimeInMillis() - this.now.getTimeInMillis())/1000)), 5, height-5);
 		text("automation@caegroup.de", width-180, height-5);
 		noFill();
@@ -475,14 +452,16 @@ public class PradarViewProcessing extends PApplet
 		
 //		System.out.println("new_center_x= "+new_center_x+"    width="+width+"   || new_center_factor_x="+new_center_factor_x);
 		
-		if		(new_center_ratio_x < 0)		{this.center_ratio_x = 0;}
-		else if	(new_center_ratio_x > 1)		{this.center_ratio_x = 1;}
-		else									{this.center_ratio_x = new_center_ratio_x;}
+//		if		(new_center_ratio_x < 0)		{this.center_ratio_x = 0;}
+//		else if	(new_center_ratio_x > 1)		{this.center_ratio_x = 1;}
+//		else									{this.center_ratio_x = new_center_ratio_x;}
 
-		if		(new_center_ratio_y < 0)		{this.center_ratio_y = 0;}
-		else if	(new_center_ratio_y > 1)		{this.center_ratio_y = 1;}
-		else									{this.center_ratio_y = new_center_ratio_y;}
-
+//		if		(new_center_ratio_y < 0)		{this.center_ratio_y = 0;}
+//		else if	(new_center_ratio_y > 1)		{this.center_ratio_y = 1;}
+//		else									{this.center_ratio_y = new_center_ratio_y;}
+		this.center_ratio_x = new_center_ratio_x;
+		this.center_ratio_y = new_center_ratio_y;
+		
 		mouse_pressed_x = mouseX;
 		mouse_pressed_y = mouseY;
 	}
