@@ -170,12 +170,11 @@ public class PradarPartUi2 extends ModelObject
 		
 		Label lblCheckinScpoe = new Label(grpFilter, SWT.NONE);
 		lblCheckinScpoe.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		lblCheckinScpoe.setText("checkin period [h]");
+		lblCheckinScpoe.setText("consider last");
 		
 		Spinner spinner = new Spinner(grpFilter, SWT.BORDER);
 		spinner.setMaximum(10000);
 		spinner.setSelection(48);
-		spinner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
 		Group grpVisual = new Group(composite_11, SWT.NONE);
 		grpVisual.setText("visual");
