@@ -297,7 +297,6 @@ public class PradarPartUi2 extends ModelObject
 	{
 		public void handleChange(ChangeEvent event)
 		{
-//			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
 			applet_paint_with_new_filter();
 		}
 	};
@@ -422,7 +421,6 @@ public class PradarPartUi2 extends ModelObject
 		//---------
 		
 		DataBindingContext bindingContextFilter = new DataBindingContext();
-		DataBindingContext bindingContextZoom = new DataBindingContext();
 		//
 		IObservableValue targetObservableProcess = WidgetProperties.text(SWT.Modify).observeDelayed(800, text_process);
 		IObservableValue modelObservableProcess = BeanProperties.value("process").observe(einstellungen);
@@ -440,13 +438,9 @@ public class PradarPartUi2 extends ModelObject
 		IObservableValue modelObservableActive = BeanProperties.value("active").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservableActive, modelObservableActive, strategyActive, null);
 		//
-		IObservableValue targetObservableZoom = WidgetProperties.selection().observe(scale_zoom);
-		IObservableValue modelObservableZoom = BeanProperties.value("zoom").observe(einstellungen);
-		bindingContextZoom.bindValue(targetObservableZoom, modelObservableZoom, null, null);
-		//
-		IObservableValue targetObservablePeriod = WidgetProperties.selection().observe(spinner_period);
+		IObservableValue targetObservablePeriod = WidgetProperties.selection().observeDelayed(800, spinner_period);
 		IObservableValue modelObservablePeriod = BeanProperties.value("period").observe(einstellungen);
-		bindingContextZoom.bindValue(targetObservablePeriod, modelObservablePeriod, null, null);
+		bindingContextFilter.bindValue(targetObservablePeriod, modelObservablePeriod, null, null);
 		//
 		return bindingContextFilter;
 	}
