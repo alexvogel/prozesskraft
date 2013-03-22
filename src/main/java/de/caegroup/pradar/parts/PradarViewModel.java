@@ -6,6 +6,7 @@ public class PradarViewModel extends ModelObject
 	public String user = System.getProperty("user.name");
 	public String host = "";
 	public String active = "true";
+	public int period = 48;
 	public int zoom = 100;
 	
 	public PradarViewModel()
@@ -32,6 +33,11 @@ public class PradarViewModel extends ModelObject
 		return active;
 	}
 
+	public int getPeriod()
+	{
+		return period;
+	}
+
 	public int getZoom()
 	{
 		return zoom;
@@ -55,6 +61,11 @@ public class PradarViewModel extends ModelObject
 	public void setActive(String active)
 	{
 		firePropertyChange("active", this.active, this.active = active);
+	}
+
+	public void setPeriod(int period)
+	{
+		firePropertyChange("period", this.period, this.period = period);
 	}
 
 	public void setZoom(int zoom)

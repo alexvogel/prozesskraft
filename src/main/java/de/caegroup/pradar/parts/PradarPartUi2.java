@@ -74,6 +74,7 @@ public class PradarPartUi2 extends ModelObject
 	private Text text_user;
 	private Text text_host;
 	private Text text_active;
+	private Spinner spinner_period;
 	private Scale scale_zoom;
 	private Table table;
 	private PradarViewModel einstellungen = new PradarViewModel();
@@ -138,43 +139,46 @@ public class PradarPartUi2 extends ModelObject
 		Group grpFilter = new Group(composite_11, SWT.NONE);
 		grpFilter.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
 		grpFilter.setText("filter");
-		grpFilter.setLayout(new GridLayout(1, false));
+		grpFilter.setLayout(new GridLayout(2, false));
 		
 		Label lblNewLabel = new Label(grpFilter, SWT.NONE);
-		lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+		lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
 		lblNewLabel.setText("process");
 		
 		text_process = new Text(grpFilter, SWT.BORDER);
-		text_process.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		text_process.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
 		Label lblNewLabel_1 = new Label(grpFilter, SWT.NONE);
-		lblNewLabel_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		lblNewLabel_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
 		lblNewLabel_1.setText("user");
 		
 		text_user = new Text(grpFilter, SWT.BORDER);
-		text_user.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		text_user.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
 		Label lblHost = new Label(grpFilter, SWT.NONE);
-		lblHost.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		lblHost.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
 		lblHost.setText("host");
 		
 		text_host = new Text(grpFilter, SWT.BORDER);
-		text_host.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		text_host.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
 		Label lblActive = new Label(grpFilter, SWT.NONE);
-		lblActive.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		lblActive.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		lblActive.setText("active");
 		
 		text_active = new Text(grpFilter, SWT.BORDER);
-		text_active.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		text_active.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
-		Label lblCheckinScpoe = new Label(grpFilter, SWT.NONE);
-		lblCheckinScpoe.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		lblCheckinScpoe.setText("consider last");
+		Label lblPeriod = new Label(grpFilter, SWT.NONE);
+		lblPeriod.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		lblPeriod.setText("consider period of past");
 		
-		Spinner spinner = new Spinner(grpFilter, SWT.BORDER);
-		spinner.setMaximum(10000);
-		spinner.setSelection(48);
+		spinner_period = new Spinner(grpFilter, SWT.BORDER);
+		spinner_period.setMaximum(10000);
+		spinner_period.setSelection(48);
+		
+		Label lblNewLabel_3 = new Label(grpFilter, SWT.NONE);
+		lblNewLabel_3.setText("hours");
 		
 		Group grpVisual = new Group(composite_11, SWT.NONE);
 		grpVisual.setText("visual");
@@ -260,6 +264,7 @@ public class PradarPartUi2 extends ModelObject
 		filter_entity.setUser(einstellungen.getUser());
 		filter_entity.setHost(einstellungen.getHost());
 		filter_entity.setActive(einstellungen.getActive());
+		filter_entity.setPeriodInHours(einstellungen.getPeriod());
 	
 		applet.setFilter(filter_entity);
 	}
@@ -438,6 +443,10 @@ public class PradarPartUi2 extends ModelObject
 		IObservableValue targetObservableZoom = WidgetProperties.selection().observe(scale_zoom);
 		IObservableValue modelObservableZoom = BeanProperties.value("zoom").observe(einstellungen);
 		bindingContextZoom.bindValue(targetObservableZoom, modelObservableZoom, null, null);
+		//
+		IObservableValue targetObservablePeriod = WidgetProperties.selection().observe(spinner_period);
+		IObservableValue modelObservablePeriod = BeanProperties.value("period").observe(einstellungen);
+		bindingContextZoom.bindValue(targetObservablePeriod, modelObservablePeriod, null, null);
 		//
 		return bindingContextFilter;
 	}
