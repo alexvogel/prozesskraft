@@ -26,7 +26,7 @@ public class PradarViewProcessingEntity
 	private float gravity = (float)1;
 
 	long jahrInMillis   = 14515200000L;
-	long monatInMillis  = 1209600000;
+	long monatInMillis  = 2419200000L;
 	long wocheInMillis  = 604800000;
 	long tagInMillis    = 86400000;
 	long stundeInMillis = 3600000;
