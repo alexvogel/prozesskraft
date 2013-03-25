@@ -15,9 +15,9 @@ public class PradarViewProcessingEntity
 	----------------------------*/
 	private String superid;
 	private float checkin_radius;
-	private float[] checkin_position;
+	private float[] checkin_position = {0, 0};
 	private float checkout_radius;
-	private float[] checkout_position;
+	private float[] checkout_position = {0, 0};
 	private int[] color = {255,255,255};
 
 	private Entity entity;
