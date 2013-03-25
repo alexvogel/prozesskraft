@@ -132,6 +132,7 @@ public class PradarViewProcessingEntity
 		this.checkin_radius = calcRadius(this.entity.getCheckin());
 		System.out.println("checkinRadius: "+this.checkin_radius);
 		System.out.println("bogenlaenge: "+this.bogenlaenge);
+		System.out.println("center_x: "+this.parent.center_x);
 		this.checkin_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkin_radius;
 		System.out.println("checkinPositionX: "+this.checkin_position[0]);
 		this.checkin_position[1] = (this.parent.center_y) + PApplet.cos(this.bogenlaenge) * this.checkin_radius;
