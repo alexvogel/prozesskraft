@@ -181,6 +181,7 @@ public class PradarViewProcessingEntity
 		if (zeitpunkt.getTimeInMillis() == 0)
 		{
 			zeitpunkt = Calendar.getInstance();
+			return 0;
 		}
 		
 		float radius;
