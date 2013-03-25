@@ -131,10 +131,10 @@ public class PradarViewProcessingEntity
 	{
 		this.checkin_radius = calcRadius(this.entity.getCheckin());
 		this.checkin_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkin_radius;
-		this.checkin_position[1] = (this.parent.center_y) + PApplet.cos(this.bogenlaenge) * this.checkin_radius;
+		this.checkin_position[1] = (this.parent.center_y) + PApplet.sin(this.bogenlaenge) * this.checkin_radius;
 		this.checkout_radius = calcRadius(this.entity.getCheckout());
 		this.checkout_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkout_radius;
-		this.checkout_position[1] = (this.parent.center_y) + PApplet.cos(this.bogenlaenge) * this.checkout_radius;
+		this.checkout_position[1] = (this.parent.center_y) + PApplet.sin(this.bogenlaenge) * this.checkout_radius;
 	}
 	
 	public void calcNewBogenlaenge()
@@ -239,7 +239,7 @@ public class PradarViewProcessingEntity
 		this.parent.ellipse( this.checkin_position[0], this.checkin_position[1], (this.parent.bezugsgroesse/200), (this.parent.bezugsgroesse/200) );
 		this.parent.ellipse( this.checkout_position[0], this.checkout_position[1], (this.parent.bezugsgroesse/200), (this.parent.bezugsgroesse/200) );
 		this.parent.line(this.checkin_position[0], this.checkin_position[1], this.checkout_position[0], this.checkout_position[1]);
-		System.out.println(this.checkin_position[0]+" "+this.checkin_position[1]+" "+this.checkout_position[0]+" "+this.checkout_position[1]);
+//		System.out.println(this.checkin_position[0]+" "+this.checkin_position[1]+" "+this.checkout_position[0]+" "+this.checkout_position[1]);
 	}
 	
 	/*----------------------------
