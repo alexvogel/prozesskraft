@@ -130,12 +130,14 @@ public class PradarViewProcessingEntity
 	public void calcPosition()
 	{
 		this.checkin_radius = calcRadius(this.entity.getCheckin());
+		System.out.println("Radius checkin: "+this.checkin_radius);
 		this.checkin_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkin_radius;
 		this.checkin_position[1] = (this.parent.center_y) + PApplet.sin(this.bogenlaenge) * this.checkin_radius;
 		this.checkout_radius = calcRadius(this.entity.getCheckout());
+		System.out.println("Radius checkout: "+this.checkout_radius);
 		this.checkout_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkout_radius;
 		this.checkout_position[1] = (this.parent.center_y) + PApplet.sin(this.bogenlaenge) * this.checkout_radius;
-		System.out.println("1"+this.checkin_position[0]+" "+this.checkin_position[1]+" "+this.checkout_position[0]+" "+this.checkout_position[1]);
+		System.out.println("1=>"+this.checkin_position[0]+" "+this.checkin_position[1]+" "+this.checkout_position[0]+" "+this.checkout_position[1]);
 	}
 	
 	public void calcNewBogenlaenge()
