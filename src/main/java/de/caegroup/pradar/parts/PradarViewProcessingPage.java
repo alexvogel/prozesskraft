@@ -275,7 +275,7 @@ public class PradarViewProcessingPage extends PApplet
 		while (iterpentity.hasNext())
 		{
 			PradarViewProcessingEntity pentity = iterpentity.next();
-			pentity.calcNewBogenlaenge();
+//			pentity.calcNewBogenlaenge();
 			pentity.calcPosition();
 			pentity.draw();
 		}
