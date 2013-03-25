@@ -160,13 +160,15 @@ public class PradarViewProcessingEntity
 		double antigravitypuls;
 		
 		// mindestabstand um extreme geschwindigkeiten zu vermeiden
-		if (distance < 0.1) {distance = 0.1;}
-		if (distance > Math.PI) {distance = Math.PI;}
+		if		( (distance >= 0) && (distance < 0.1) ) {distance =  0.1;}
+		else if ( (distance < 0)  && (distance > -0.1) ){distance = -0.1;}
+		else if (distance > Math.PI) {distance = Math.PI;}
+		else if (distance < -Math.PI) {distance = -Math.PI;}
 		
 		// antigravitation nimmt mit dem quadrat des abstands ab
 		antigravitypuls = (distance / (Math.pow((distance),2))) * this.gravity;
 		
-		PApplet.map((float)antigravitypuls, (float)0, (float)10, (float)0, (float)1);
+		PApplet.map((float)antigravitypuls, (float)-10, (float)10, (float)-0.01, (float)0.01);
 		
 		return antigravitypuls;
 	}
