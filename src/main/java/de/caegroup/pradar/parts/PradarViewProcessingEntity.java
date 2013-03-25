@@ -239,7 +239,7 @@ public class PradarViewProcessingEntity
 		this.parent.ellipse( this.checkin_position[0], this.checkin_position[1], (this.parent.bezugsgroesse/200), (this.parent.bezugsgroesse/200) );
 		this.parent.ellipse( this.checkout_position[0], this.checkout_position[1], (this.parent.bezugsgroesse/200), (this.parent.bezugsgroesse/200) );
 		this.parent.line(this.checkin_position[0], this.checkin_position[1], this.checkout_position[0], this.checkout_position[1]);
-//		System.out.println(this.checkin_position[0]+" "+this.checkin_position[1]+" "+this.checkout_position[0]+" "+this.checkout_position[1]);
+		System.out.println(this.checkin_position[0]+" "+this.checkin_position[1]+" "+this.checkout_position[0]+" "+this.checkout_position[1]);
 	}
 	
 	/*----------------------------
