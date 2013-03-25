@@ -130,13 +130,8 @@ public class PradarViewProcessingEntity
 	public void calcPosition()
 	{
 		this.checkin_radius = calcRadius(this.entity.getCheckin());
-		System.out.println("checkinRadius: "+this.checkin_radius);
-		System.out.println("bogenlaenge: "+this.bogenlaenge);
-		System.out.println("center_x: "+this.parent.center_x);
 		this.checkin_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkin_radius;
-		System.out.println("checkinPositionX: "+this.checkin_position[0]);
 		this.checkin_position[1] = (this.parent.center_y) + PApplet.cos(this.bogenlaenge) * this.checkin_radius;
-		System.out.println("checkinPositionY: "+this.checkin_position[1]);
 		this.checkout_radius = calcRadius(this.entity.getCheckout());
 		this.checkout_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkout_radius;
 		this.checkout_position[1] = (this.parent.center_y) + PApplet.cos(this.bogenlaenge) * this.checkout_radius;
@@ -152,9 +147,12 @@ public class PradarViewProcessingEntity
 			float abstandRechtsdrehend = (this.bogenlaenge - pentity.bogenlaenge);
 			kraftRechtsdrehend = kraftRechtsdrehend + calAntigravitypuls(abstandRechtsdrehend);
 		}
-		long now = System.currentTimeMillis();
-		this.bogenlaenge = (float) (kraftRechtsdrehend * (now - this.lastTimePositionCalcInMillis));
-		this.lastTimePositionCalcInMillis = now;
+//		long now = System.currentTimeMillis();
+		System.out.println("bogenlaenge bisher: "+this.bogenlaenge);
+		this.bogenlaenge = this.bogenlaenge + (float) (kraftRechtsdrehend);
+		System.out.println("bogenlaenge neu: "+this.bogenlaenge);
+//		this.bogenlaenge = (float) (kraftRechtsdrehend * (now - this.lastTimePositionCalcInMillis));
+//		this.lastTimePositionCalcInMillis = now;
 	}
 	
 	private double calAntigravitypuls(double distance)
