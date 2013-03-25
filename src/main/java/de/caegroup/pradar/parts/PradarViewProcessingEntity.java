@@ -1,5 +1,6 @@
 package de.caegroup.pradar.parts;
 
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Iterator;
 
@@ -211,6 +212,7 @@ public class PradarViewProcessingEntity
 		{
 			radius = parent.radius_jahr;
 		}
+		System.out.println("radius "+radius+" bedeutet "+new Timestamp(zeitpunkt.getTimeInMillis()).toString());
 		return radius;
 	}
 	
