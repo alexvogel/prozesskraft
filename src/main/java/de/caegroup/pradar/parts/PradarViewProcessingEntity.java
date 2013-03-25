@@ -187,26 +187,27 @@ public class PradarViewProcessingEntity
 		
 		float radius;
 		long zeitpunktInMillis = zeitpunkt.getTimeInMillis();
+		long zeitspanne = System.currentTimeMillis() - zeitpunktInMillis;
 		
-		if ( (zeitpunktInMillis >= 0) && (zeitpunktInMillis < this.stundeInMillis) )
+		if ( (zeitspanne >= 0) && (zeitspanne < this.stundeInMillis) )
 		{
-			radius = PApplet.map(zeitpunktInMillis, 0, this.stundeInMillis, 0, parent.radius_stunde);
+			radius = PApplet.map(zeitspanne, 0, this.stundeInMillis, 0, parent.radius_stunde);
 		}
-		else if ( (zeitpunktInMillis >= this.stundeInMillis) && (zeitpunktInMillis <= this.tagInMillis) )
+		else if ( (zeitspanne >= this.stundeInMillis) && (zeitspanne <= this.tagInMillis) )
 		{
-			radius = PApplet.map(zeitpunktInMillis, this.stundeInMillis, this.tagInMillis, parent.radius_stunde, parent.radius_tag );
+			radius = PApplet.map(zeitspanne, this.stundeInMillis, this.tagInMillis, parent.radius_stunde, parent.radius_tag );
 		}
-		else if ( (zeitpunktInMillis >= this.tagInMillis) && (zeitpunktInMillis <= this.wocheInMillis) )
+		else if ( (zeitspanne >= this.tagInMillis) && (zeitspanne <= this.wocheInMillis) )
 		{
-			radius = PApplet.map(zeitpunktInMillis, this.tagInMillis, this.wocheInMillis, parent.radius_tag, parent.radius_woche );
+			radius = PApplet.map(zeitspanne, this.tagInMillis, this.wocheInMillis, parent.radius_tag, parent.radius_woche );
 		}
-		else if ( (zeitpunktInMillis >= this.wocheInMillis) && (zeitpunktInMillis <= this.monatInMillis) )
+		else if ( (zeitspanne >= this.wocheInMillis) && (zeitspanne <= this.monatInMillis) )
 		{
-			radius = PApplet.map(zeitpunktInMillis, this.wocheInMillis, this.monatInMillis, parent.radius_woche, parent.radius_monat );
+			radius = PApplet.map(zeitspanne, this.wocheInMillis, this.monatInMillis, parent.radius_woche, parent.radius_monat );
 		}
-		else if ( (zeitpunktInMillis >= this.monatInMillis) && (zeitpunktInMillis <= this.jahrInMillis) )
+		else if ( (zeitspanne >= this.monatInMillis) && (zeitspanne <= this.jahrInMillis) )
 		{
-			radius = PApplet.map(zeitpunktInMillis, this.monatInMillis, this.jahrInMillis, parent.radius_monat, parent.radius_jahr );
+			radius = PApplet.map(zeitspanne, this.monatInMillis, this.jahrInMillis, parent.radius_monat, parent.radius_jahr );
 		}
 		else
 		{
