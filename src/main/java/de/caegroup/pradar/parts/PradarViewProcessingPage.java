@@ -24,7 +24,7 @@ import de.caegroup.pradar.Db;
 import de.caegroup.pradar.Entity;
 //import java.lang.management.ManagementFactory;
 
-public class PradarViewProcessing extends PApplet
+public class PradarViewProcessingPage extends PApplet
 {
 	/*----------------------------
 	  structure
@@ -51,14 +51,34 @@ public class PradarViewProcessing extends PApplet
 	int refresh_interval = 600;
 	ArrayList<Entity> all_entities = new ArrayList<Entity>();
 	ArrayList<Entity> matched_entities = new ArrayList<Entity>();
-	Entity entity_mit_fahne = new Entity();
-	float kleinster_abstand = 100000;
+	ArrayList<PradarViewProcessingEntity> matched_processing_entities = new ArrayList<PradarViewProcessingEntity>();
+	Entity entity_mit_fahne = null;
+	Entity entity_mit_kleinstem_abstand_mouse = new Entity();
+	float distanceToMouse = 100000;
 	float keine_fahne_ab_abstand_mehr_als = 20;
 	private float[] legendposition = {0,0,0};
 	private int[] legendcolor = {0,0,0};
     private int legendsize = (10);
 	int once = 0;
+	int bezugsgroesse = 10;
 
+	int radius_basis;
+	int durchmesser_basis;
+	
+	int radius_stunde;
+	int radius_tag;
+	int radius_woche;
+	int radius_monat;
+	int radius_jahr;
+
+	int durchmesser_stunde;
+	int durchmesser_tag;
+	int durchmesser_woche;
+	int durchmesser_monat;
+	int durchmesser_jahr;
+	
+
+	
 	/*----------------------------
 	  method setup Processing
 	----------------------------*/
@@ -106,196 +126,162 @@ public class PradarViewProcessing extends PApplet
 		}
 		
 		background(255);
-		int bezugsgroesse = 10;
-		if (width < height) { bezugsgroesse = (width*this.zoomfaktor/100); }
-		else { bezugsgroesse = (height*this.zoomfaktor/100); }
+		if (width < height) { this.bezugsgroesse = (width*this.zoomfaktor/100); }
+		else { this.bezugsgroesse = (height*this.zoomfaktor/100); }
+
+		this.radius_basis = ((this.bezugsgroesse/3)*1)/2;
+		this.durchmesser_basis = this.radius_basis * 2;
+		
+		this.radius_stunde= this.radius_basis;
+		this.radius_tag   = this.radius_basis * 2;
+		this.radius_woche = this.radius_basis * 3;
+		this.radius_monat = this.radius_basis * 4;
+		this.radius_jahr = this.radius_basis * 5;
+
+		this.durchmesser_stunde= this.radius_stunde * 2;
+		this.durchmesser_tag   = this.radius_tag * 2;
+		this.durchmesser_woche = this.radius_woche * 2;
+		this.durchmesser_monat = this.radius_monat * 2;
+		this.durchmesser_jahr = this.radius_jahr * 2;
 		
 		// strichfarbe festlegen
 		stroke(185);
 
-		// linien zeichnen
-		noFill();
-		stroke(240);
-		line( (center_x-bezugsgroesse/2-20),	center_y,						(center_x+bezugsgroesse/2+20),	center_y);
-		line(  center_x,						(center_y-bezugsgroesse/2-20),	center_x,						(center_y+bezugsgroesse/2-20));
+		// zeitbereiche zeichnen
+
+		//////////////////
+		// stunde
+		//////////////////
 		
-		// kreise zeichnen
-
-		// kreis 1w
-		strokeWeight(1);
-		stroke(100);
-		ellipse(center_x, center_y, bezugsgroesse, bezugsgroesse);
-		strokeWeight(1);
+		// waagrechte und senkrechte linien verlaengern
+		noFill();
 		stroke(240);
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.167))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.167))) );
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.333))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.333))) );
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.500))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.500))) );
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.667))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.667))) );
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.833))), (float) ((bezugsgroesse/3)*2+((bezugsgroesse/3)*(0.833))) );
-
-		stroke(100);
-		textSize(bezugsgroesse/60);
-		fill(100);
-		text("1w", (center_x+(bezugsgroesse/2)+2), (center_y)-2);
-		noFill();
-
-		// kreis 1d
-		strokeWeight(1);
-		stroke(100);
-		ellipse(center_x, center_y, (bezugsgroesse/3)*2, (bezugsgroesse/3)*2);
-		strokeWeight(1);
-		stroke(240);
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.167))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.167))) );
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.333))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.333))) );
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.500))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.500))) );
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.667))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.667))) );
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.833))), (float) ((bezugsgroesse/3)+((bezugsgroesse/3)*(0.833))) );
-
-		stroke(100);
-		textSize(bezugsgroesse/60);
-		fill(100);
-		text("1d", (center_x+(bezugsgroesse/3)+2), (center_y)-2);
-		noFill();
-
-		// kreis 1h
-		noFill();
-		strokeWeight(1);
-		stroke(100);
-		ellipse(center_x, center_y, bezugsgroesse/3, bezugsgroesse/3);
-		strokeWeight(1);
-		stroke(240);
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*(0.167)), (float) ((bezugsgroesse/3)*(0.167)) );
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*(0.333)), (float) ((bezugsgroesse/3)*(0.333)) );
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*(0.500)), (float) ((bezugsgroesse/3)*(0.500)) );
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*(0.667)), (float) ((bezugsgroesse/3)*(0.667)) );
-		ellipse(center_x, center_y, (float) ((bezugsgroesse/3)*(0.833)), (float) ((bezugsgroesse/3)*(0.833)) );
-
-		stroke(100);
-		textSize(bezugsgroesse/60);
-		fill(100);
-		text("1h", (center_x+((bezugsgroesse/3)/2)+2), (center_y)-2);
-		noFill();
+		line( (center_x-radius_jahr-20),	center_y,					(center_x+radius_jahr+20),	center_y);
+		line(  center_x,					(center_y-radius_jahr-20),	center_x,					(center_y+radius_jahr+20));
 		
+		// kreise fuer bruchteile einer stunde zeichnen
+		strokeWeight(1);
+		stroke(240);
+		for(int viertelstunde=1; viertelstunde<=3; viertelstunde++)
+		{
+			ellipse(center_x, center_y, (float) ( durchmesser_stunde - (durchmesser_basis * ((float)viertelstunde/(float)4) ) ), (float) ( durchmesser_stunde - (durchmesser_basis * ((float)viertelstunde/(float)4) ) ) );
+		}
+
+		//////////////////
+		// tag
+		//////////////////
+		
+		// kreise fuer bruchteile eines tages zeichnen
+		strokeWeight(1);
+		stroke(240);
+
+		if (zoomfaktor < 300)
+		{
+			for(int viertelDesTags=1; viertelDesTags<=4; viertelDesTags++)
+			{
+				ellipse(center_x, center_y, (float) ( durchmesser_tag - (durchmesser_basis * ((float)viertelDesTags/(float)4) ) ), (float) ( durchmesser_tag - (durchmesser_basis * ((float)viertelDesTags/(float)4) ) ) );
+			}
+		}
+		else
+		{
+			for(int stundeDesTags=1; stundeDesTags<=23; stundeDesTags++)
+			{
+				ellipse(center_x, center_y, (float) ( durchmesser_tag - (durchmesser_basis * ((float)stundeDesTags/(float)23) ) ), (float) ( durchmesser_tag - (durchmesser_basis * ((float)stundeDesTags/(float)23) ) ) );
+			}
+		}
+
+		//////////////////
+		// woche
+		//////////////////
+		
+		// kreise fuer bruchteile einer woche zeichnen
+		strokeWeight(1);
+		stroke(240);
+		for(int tagDerWoche=1; tagDerWoche<=6; tagDerWoche++)
+		{
+			ellipse(center_x, center_y, (float) ( durchmesser_woche - (durchmesser_basis * ((float)tagDerWoche/(float)6) ) ), (float) ( durchmesser_woche - (durchmesser_basis * ((float)tagDerWoche/(float)6) ) ) );
+		}
+
+		//////////////////
+		// monat
+		//////////////////
+		
+		// kreise fuer bruchteile eines monats zeichnen
+		strokeWeight(1);
+		stroke(240);
+		for(int wocheDesMonats=1; wocheDesMonats<=3; wocheDesMonats++)
+		{
+			ellipse(center_x, center_y, (float) ( durchmesser_monat - (durchmesser_basis * ((float)wocheDesMonats/(float)3) ) ), (float) ( durchmesser_monat - (durchmesser_basis * ((float)wocheDesMonats/(float)3) ) ) );
+		}
+
+		//////////////////
+		// jahr
+		//////////////////
+		
+		// kreise fuer bruchteile eines jahrs zeichnen
+		strokeWeight(1);
+		stroke(240);
+		if (zoomfaktor < 300)
+		{
+			for(int viertelDesJahrs=1; viertelDesJahrs<=4; viertelDesJahrs++)
+			{
+				ellipse(center_x, center_y, (float) ( durchmesser_jahr - (durchmesser_basis * ((float)viertelDesJahrs/(float)4) ) ), (float) ( durchmesser_jahr - (durchmesser_basis * ((float)viertelDesJahrs/(float)4) ) ) );
+			}
+		}
+		else
+		{
+			for(int monatDesJahrs=1; monatDesJahrs<=11; monatDesJahrs++)
+			{
+				ellipse(center_x, center_y, (float) ( durchmesser_jahr - (durchmesser_basis * ((float)monatDesJahrs/(float)11) ) ), (float) ( durchmesser_jahr - (durchmesser_basis * ((float)monatDesJahrs/(float)11) ) ) );
+			}
+		}
+		
+		//////////////////
+		// hauptkreise zeichnen
+		//////////////////
+				
+		// kreise fuer 1h, 1d, 1w, 1m zeichnen
+		noFill();
+		strokeWeight(1);
+		stroke(100);
+		ellipse(center_x, center_y, durchmesser_stunde, durchmesser_stunde);
+		ellipse(center_x, center_y, durchmesser_tag, durchmesser_tag);
+		ellipse(center_x, center_y, durchmesser_woche, durchmesser_woche);
+		ellipse(center_x, center_y, durchmesser_monat, durchmesser_monat);
+		ellipse(center_x, center_y, durchmesser_jahr, durchmesser_jahr);
+		
+		//////////////////
+		// beschriftung der kreise
+		//////////////////
+		
+		// texte schreiben
 		stroke(100);
 		textSize(bezugsgroesse/60);
 		fill(100);
 		text("now", (center_x+2), (center_y)-2);
+		text("1h", (center_x+radius_stunde+2), (center_y)-2);
+		text("1h", (center_x+radius_stunde+2), (center_y)-2);
+		text("1d", (center_x+radius_tag+2), (center_y)-2);
+		text("1w", (center_x+radius_woche+2), (center_y)-2);
+		text("1m", (center_x+radius_monat+2), (center_y)-2);
+		text("1y", (center_x+radius_jahr+2), (center_y)-2);
 		noFill();
 
-		// ueber alle gefilterten entities iterieren
-		Iterator<Entity> iterentity = matched_entities.iterator();
-//		System.out.println("Hello"+matched_entities.size());
-		
+		// legende schreiben
 		legend();
 		
-//		int anzahl_entities = matched_entities.size();
-//		int zaehler = 1;
-		kleinster_abstand = 100000;
-		entity_mit_fahne = null;
-		while (iterentity.hasNext())
+		// ueber alle ProcessingEntities, die angezeigt werden sollen iterieren und die visualisierung zeichnen
+		Iterator<PradarViewProcessingEntity> iterpentity = matched_processing_entities.iterator();
+		while (iterpentity.hasNext())
 		{
-			Entity entity = iterentity.next();
-			
-			// Berechnen des ersten Punktes
-			Calendar checkin = entity.getCheckin();
-			Calendar checkout = entity.getCheckout();
-			Calendar now = Calendar.getInstance();
-			now.setTimeInMillis(System.currentTimeMillis());
-			if (checkout.getTimeInMillis() == 0)
-			{
-				checkout = now;
-			}
-			
-			long checkin_from_now_in_millis = now.getTimeInMillis() - checkin.getTimeInMillis();
-			long checkout_from_now_in_millis = now.getTimeInMillis() - checkout.getTimeInMillis();
-			
-//			long faktor = (long) (bezugsgroesse/log(604800000));
-			
-			long woche  = 604800000;
-			long tag    = 86400000;
-			long stunde = 3600000;
-			
-			float radius_checkin;
-			if ( (checkin_from_now_in_millis >= 0) && (checkin_from_now_in_millis < stunde) )
-			{
-				radius_checkin = map(checkin_from_now_in_millis, 0, stunde, 0, (bezugsgroesse/2)/3);
-			}
-			else if ( (checkin_from_now_in_millis >= stunde) && (checkin_from_now_in_millis <= tag) )
-			{
-				radius_checkin = map(checkin_from_now_in_millis, stunde, tag, (bezugsgroesse/2)/3, (bezugsgroesse/3) );
-			}
-			else if ( (checkin_from_now_in_millis >= tag) && (checkin_from_now_in_millis <= woche) )
-			{
-				radius_checkin = map(checkin_from_now_in_millis, tag, woche, (bezugsgroesse/3), (bezugsgroesse/2) );
-			}
-			else
-			{
-				radius_checkin = bezugsgroesse/2;
-			}
-
-			float radius_checkout;
-			if ( (checkout_from_now_in_millis >= 0) && (checkout_from_now_in_millis < stunde) )
-			{
-				radius_checkout = map(checkout_from_now_in_millis, 0, stunde, 0, (bezugsgroesse/2)/3);
-			}
-			else if ( (checkout_from_now_in_millis >= stunde) && (checkout_from_now_in_millis <= 86400000) )
-			{
-				radius_checkout = map(checkout_from_now_in_millis, stunde, 86400000, (bezugsgroesse/2)/3, (bezugsgroesse/3) );
-			}
-			else if ( (checkout_from_now_in_millis >= 86400000) && (checkout_from_now_in_millis <= 604800000) )
-			{
-				radius_checkout = map(checkout_from_now_in_millis, 86400000, 604800000, (bezugsgroesse/3), (bezugsgroesse/2) );
-			}
-			else
-			{
-				radius_checkout = bezugsgroesse/2;
-			}
-			
-			
-			// instanzlinien einfaerben nach exitcode
-			stroke(93, 134, 77);
-			if ((entity.getExitcode().matches("")) || (entity.getExitcode().matches("0")) )
-			{
-				// dunkelgruen
-				stroke(93, 134, 77);
-			}
-			else
-			{
-				// dunkelrot
-				stroke(186, 55, 55);
-			}
-			
-			// dunkelgrau
-			fill(50);
-			// dicke
-			strokeWeight(bezugsgroesse/300);
-			
-			// x-koordinate berechnen
-			randomSeed(checkin.getTimeInMillis());
-			float zufall = random(0, 2*PI);
-//			float zufall = map(zaehler, 0, anzahl_entities, 0, 2*PI);
-//			zaehler++;
-			float x_checkin = (center_x) + cos(zufall) * radius_checkin;
-			float y_checkin = (center_y) + sin(zufall) * radius_checkin;
-			float x_checkout = (center_x) + cos(zufall) * radius_checkout;
-			float y_checkout = (center_y) + sin(zufall) * radius_checkout;
-			
-			ellipse(x_checkin, y_checkin, bezugsgroesse/200, bezugsgroesse/200);
-			ellipse(x_checkout, y_checkout, bezugsgroesse/200, bezugsgroesse/200);
-			line(x_checkin, y_checkin, x_checkout, y_checkout);
-
-			// berechnen des aktuellen abstands von mauszeiger zur instanz
-			float abstand = calc_abstand(x_checkin, y_checkin, x_checkout, y_checkout);
-			if (abstand < kleinster_abstand)
-			{
-				kleinster_abstand = abstand;
-				entity_mit_fahne = entity;
-			}
-			
+			PradarViewProcessingEntity pentity = iterpentity.next();
+			pentity.calcNewBogenlaenge();
+			pentity.calcPosition();
+			pentity.draw();
 		}
-		
+
 		// fahne zeichnen, falls bedingungen erfuellt
-		if ((kleinster_abstand < keine_fahne_ab_abstand_mehr_als) && (entity_mit_fahne != null))
+		if (this.entity_mit_fahne != null)
 		{
 			draw_flag();
 		}
@@ -321,27 +307,30 @@ public class PradarViewProcessing extends PApplet
 		text("exitcode: "+entity_mit_fahne.getExitcode(),mouseX+6, mouseY-10);
 	}
 	
-	float calc_abstand(float x_checkin, float y_checkin, float x_checkout, float y_checkout)
+	void detEntityWithFlag()
 	{
-		float abstand_mouse_zu_checkin = dist(mouseX, mouseY, x_checkin, y_checkin);
-		float abstand_mouse_zu_checkout = dist(mouseX, mouseY, x_checkout, y_checkout);
-		float abstand_checkin_zu_checkout = dist(x_checkin, y_checkin, x_checkout, y_checkout);
+		int smallestDistanceMouse = 1000000;
+		this.entity_mit_fahne = null;
+		this.entity_mit_kleinstem_abstand_mouse = null;
 		
-		float winkel_zw_mouse_und_checkin = acos( (abstand_mouse_zu_checkin * abstand_mouse_zu_checkin - abstand_checkin_zu_checkout * abstand_checkin_zu_checkout - abstand_mouse_zu_checkout * abstand_mouse_zu_checkout)/(-2 * abstand_checkin_zu_checkout * abstand_mouse_zu_checkout));
-		float winkel_zw_mouse_und_checkout = acos( (abstand_mouse_zu_checkout * abstand_mouse_zu_checkout - abstand_checkin_zu_checkout * abstand_checkin_zu_checkout - abstand_mouse_zu_checkin * abstand_mouse_zu_checkin)/(-2 * abstand_checkin_zu_checkout * abstand_mouse_zu_checkin));
-		
-		
-		float abstand_zu_strecke = abstand_mouse_zu_checkin * (sin(winkel_zw_mouse_und_checkout));
-		
-		float abstand = min(abstand_zu_strecke, abstand_mouse_zu_checkin, abstand_mouse_zu_checkout);
-		
-		// wenn einer der winkel groesser als 90grad ist, soll der abstand zur geraden nicht beruecksichtigt werden
-		if ((winkel_zw_mouse_und_checkin > 0.5 * PI) || (winkel_zw_mouse_und_checkout > 0.5 * PI) )
+		// feststellen der ententy, die den kleinsten abstand zur mouse hat
+		Iterator<PradarViewProcessingEntity> iterpentity = this.matched_processing_entities.iterator();
+		while (iterpentity.hasNext())
 		{
-			abstand = min(abstand_mouse_zu_checkin, abstand_mouse_zu_checkout);
+			PradarViewProcessingEntity pentity = iterpentity.next();
+			float actualDistanceToMouse = pentity.calcDistToMouse();
+			if (actualDistanceToMouse < this.distanceToMouse)
+			{
+				this.distanceToMouse = actualDistanceToMouse;
+				entity_mit_kleinstem_abstand_mouse = this.getEntityBySuperId(pentity.getSuperid());
+			}
 		}
-		
-		return abstand;
+
+		// feststellen ob der kleinste abstand kleiner grenzabstand ist
+		if (this.distanceToMouse < this.keine_fahne_ab_abstand_mehr_als)
+		{
+			this.entity_mit_fahne = this.entity_mit_kleinstem_abstand_mouse;
+		}
 	}
 	
 	void refresh()
@@ -367,6 +356,88 @@ public class PradarViewProcessing extends PApplet
 	void filter(Entity entity_filter)
 	{
 		this.matched_entities = entity_filter.getAllMatches(this.all_entities);
+
+		// ueber alle entities, die angezeigt werden sollen iterieren und noch nicht vorhandene erstellen
+		// fuer entities, die noch keine entsprechung bei den ProcessingEntities haben, soll eine erstellt werden
+		Iterator<Entity> iterentity = this.matched_entities.iterator();
+		while (iterentity.hasNext())
+		{
+			Entity entity = iterentity.next();
+			
+			if ( !(isProcessingEntityPresent(entity)) )
+			{
+				PradarViewProcessingEntity newProcessingEntity = new PradarViewProcessingEntity(this, entity);
+				this.matched_processing_entities.add(newProcessingEntity);
+			}
+		}
+		
+		// ueber alle Processingentities, die existieren, soll iteriert werden und nicht mehr matchende sollen entfernt werden.
+		for (int x = 0; x<this.matched_processing_entities.size(); x++)
+		{
+			PradarViewProcessingEntity pentity = this.matched_processing_entities.get(x);
+			if ( !(isEntityPresent(pentity)) )
+			{
+				this.matched_processing_entities.remove(x);
+			}
+		}
+	}
+	
+	Entity getEntityBySuperId(String superId)
+	{
+		Entity entityWithSuperId = null;
+		Iterator<Entity> iterentity = this.all_entities.iterator();
+		while(iterentity.hasNext())
+		{
+			Entity entity = iterentity.next();
+			if ( entity.getSuperid().equals(superId) )
+			{
+				entityWithSuperId = entity;
+			}
+		}
+		return entityWithSuperId;
+	}
+	
+	void calcNewPosition()
+	{
+		// ueber alle ProcessingEntities, die angezeigt werden sollen iterieren und neue Position berechnen
+		Iterator<PradarViewProcessingEntity> iterpentity = matched_processing_entities.iterator();
+		while (iterpentity.hasNext())
+		{
+			PradarViewProcessingEntity pentity = iterpentity.next();
+//			pentity.calcNewPosition();
+		}
+	}
+	
+	boolean isProcessingEntityPresent(Entity entity)
+	{
+		boolean isPresent = false;
+		Iterator<PradarViewProcessingEntity> iterpentity = this.matched_processing_entities.iterator();
+		while (iterpentity.hasNext())
+		{
+			PradarViewProcessingEntity pentity = iterpentity.next();
+			if ( pentity.getSuperid().equals(entity.getSuperid()) )
+			{
+				isPresent = true;
+				return isPresent;
+			}
+		}
+		return isPresent;
+	}
+	
+	boolean isEntityPresent(PradarViewProcessingEntity pentity)
+	{
+		boolean isPresent = false;
+		Iterator<Entity> iterentity = this.matched_entities.iterator();
+		while (iterentity.hasNext())
+		{
+			Entity entity = iterentity.next();
+			if ( entity.getSuperid().equals(pentity.getSuperid()) )
+			{
+				isPresent = true;
+				return isPresent;
+			}
+		}
+		return isPresent;
 	}
 	
 	void legend()
@@ -414,9 +485,8 @@ public class PradarViewProcessing extends PApplet
 //		System.out.println("entity_mit_fahne: "+entity_mit_fahne.getId());
 		System.out.println("showing resource: "+aufruf);
 		
-		if (kleinster_abstand < keine_fahne_ab_abstand_mehr_als)
+		if (this.distanceToMouse < this.keine_fahne_ab_abstand_mehr_als)
 		{
-		
 			try
 			{
 				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
@@ -519,22 +589,38 @@ public class PradarViewProcessing extends PApplet
 //		return bindingContextZoom;
 //	}
 
-	public PradarViewProcessing()
+	public PradarViewProcessingPage()
 	{
 		this.entity_filter = new Entity();
 		this.einstellungen = new PradarViewModel();
 	}
 	
-	public PradarViewProcessing(Entity entity)
+	public PradarViewProcessingPage(Entity entity)
 	{
 		this.entity_filter = entity;
 		this.einstellungen = new PradarViewModel();
 	}
 
-	public PradarViewProcessing(Entity entity, PradarViewModel einstellungen)
+	public PradarViewProcessingPage(Entity entity, PradarViewModel einstellungen)
 	{
 		this.entity_filter = entity;
 		this.einstellungen = einstellungen;
+	}
+
+	/**
+	 * @return the bezugsgroesse
+	 */
+	public int getBezugsgroesse()
+	{
+		return this.bezugsgroesse;
+	}
+
+	/**
+	 * @param bezugsgroesse the bezugsgroesse to set
+	 */
+	public void setBezugsgroesse(int bezugsgroesse)
+	{
+		this.bezugsgroesse = bezugsgroesse;
 	}
 
 

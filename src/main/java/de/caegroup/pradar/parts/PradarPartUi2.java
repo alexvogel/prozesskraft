@@ -79,7 +79,7 @@ public class PradarPartUi2 extends ModelObject
 	private Table table;
 	private PradarViewModel einstellungen = new PradarViewModel();
 	private Entity filter_entity = new Entity();
-	PradarViewProcessing applet;
+	PradarViewProcessingPage applet;
 	Display display;
 	
 
@@ -235,7 +235,7 @@ public class PradarPartUi2 extends ModelObject
 
 		Frame frame = SWT_AWT.new_Frame(composite_12);
 
-		applet = new PradarViewProcessing(filter_entity, einstellungen);
+		applet = new PradarViewProcessingPage(filter_entity, einstellungen);
 		frame.add(applet, BorderLayout.CENTER);
 		applet.init();
 		frame.pack();

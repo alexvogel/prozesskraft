@@ -62,7 +62,7 @@ public class PradarPartUi1 extends ModelObject
 //	private Composite parent;
 	private Entity filter_entity = new Entity();
 //	private Db db = new Db("/soft/deploy/data/pradar/pradar.db");
-	PradarViewProcessing applet;
+	PradarViewProcessingPage applet;
 	Display display;
 	
 	public PradarPartUi1()
@@ -131,7 +131,7 @@ public class PradarPartUi1 extends ModelObject
 
 		Frame frame = SWT_AWT.new_Frame(compositepaint);
 
-		applet = new PradarViewProcessing(filter_entity);
+		applet = new PradarViewProcessingPage(filter_entity);
 		frame.add(applet, BorderLayout.CENTER);
 		applet.init();
 		frame.pack();
