@@ -193,19 +193,19 @@ public class PradarViewProcessingEntity
 		{
 			radius = PApplet.map(zeitspanne, 0, this.stundeInMillis, 0, parent.radius_stunde);
 		}
-		else if ( (zeitspanne >= this.stundeInMillis) && (zeitspanne <= this.tagInMillis) )
+		else if ( (zeitspanne >= this.stundeInMillis) && (zeitspanne < this.tagInMillis) )
 		{
 			radius = PApplet.map(zeitspanne, this.stundeInMillis, this.tagInMillis, parent.radius_stunde, parent.radius_tag );
 		}
-		else if ( (zeitspanne >= this.tagInMillis) && (zeitspanne <= this.wocheInMillis) )
+		else if ( (zeitspanne >= this.tagInMillis) && (zeitspanne < this.wocheInMillis) )
 		{
 			radius = PApplet.map(zeitspanne, this.tagInMillis, this.wocheInMillis, parent.radius_tag, parent.radius_woche );
 		}
-		else if ( (zeitspanne >= this.wocheInMillis) && (zeitspanne <= this.monatInMillis) )
+		else if ( (zeitspanne >= this.wocheInMillis) && (zeitspanne < this.monatInMillis) )
 		{
 			radius = PApplet.map(zeitspanne, this.wocheInMillis, this.monatInMillis, parent.radius_woche, parent.radius_monat );
 		}
-		else if ( (zeitspanne >= this.monatInMillis) && (zeitspanne <= this.jahrInMillis) )
+		else if ( (zeitspanne >= this.monatInMillis) && (zeitspanne < this.jahrInMillis) )
 		{
 			radius = PApplet.map(zeitspanne, this.monatInMillis, this.jahrInMillis, parent.radius_monat, parent.radius_jahr );
 		}
@@ -213,7 +213,7 @@ public class PradarViewProcessingEntity
 		{
 			radius = parent.radius_jahr;
 		}
-		System.out.println("radius "+radius+" bedeutet "+new Timestamp(zeitpunkt.getTimeInMillis()).toString());
+		System.out.println("zeitspanne "+zeitspanne+" bedeutet radius "+radius+" bedeutet "+new Timestamp(zeitpunkt.getTimeInMillis()).toString());
 		return radius;
 	}
 	
