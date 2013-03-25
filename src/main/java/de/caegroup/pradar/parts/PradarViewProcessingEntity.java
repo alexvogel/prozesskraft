@@ -48,23 +48,23 @@ public class PradarViewProcessingEntity
 		this.detColor();
 	}
 	
-	public PradarViewProcessingEntity(Entity entity)
-	{
-		this.parent = new PradarViewProcessingPage();
-		this.entity = entity;
-		this.superid = this.entity.getSuperid();
-		this.setInitialPosition();
-		this.detColor();
-	}
-	
-	public PradarViewProcessingEntity()
-	{
-		this.parent = new PradarViewProcessingPage();
-		this.entity = new Entity();
-		this.superid = this.entity.getSuperid();
-		this.setInitialPosition();
-		this.detColor();
-	}
+//	public PradarViewProcessingEntity(Entity entity)
+//	{
+//		this.parent = new PradarViewProcessingPage();
+//		this.entity = entity;
+//		this.superid = this.entity.getSuperid();
+//		this.setInitialPosition();
+//		this.detColor();
+//	}
+//	
+//	public PradarViewProcessingEntity()
+//	{
+//		this.parent = new PradarViewProcessingPage();
+//		this.entity = new Entity();
+//		this.superid = this.entity.getSuperid();
+//		this.setInitialPosition();
+//		this.detColor();
+//	}
 
 	/*----------------------------
 	  METHODS
@@ -130,8 +130,12 @@ public class PradarViewProcessingEntity
 	public void calcPosition()
 	{
 		this.checkin_radius = calcRadius(this.entity.getCheckin());
+		System.out.println("checkinRadius: "+this.checkin_radius);
+		System.out.println("bogenlaenge: "+this.bogenlaenge);
 		this.checkin_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkin_radius;
+		System.out.println("checkinPositionX: "+this.checkin_position[0]);
 		this.checkin_position[1] = (this.parent.center_y) + PApplet.cos(this.bogenlaenge) * this.checkin_radius;
+		System.out.println("checkinPositionY: "+this.checkin_position[1]);
 		this.checkout_radius = calcRadius(this.entity.getCheckout());
 		this.checkout_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkout_radius;
 		this.checkout_position[1] = (this.parent.center_y) + PApplet.cos(this.bogenlaenge) * this.checkout_radius;

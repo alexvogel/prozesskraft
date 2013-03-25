@@ -368,6 +368,7 @@ public class PradarViewProcessingPage extends PApplet
 			{
 				PradarViewProcessingEntity newProcessingEntity = new PradarViewProcessingEntity(this, entity);
 				this.matched_processing_entities.add(newProcessingEntity);
+				System.out.println("Erstellen eines neues pentity superId: "+newProcessingEntity.getSuperid());
 			}
 		}
 		
