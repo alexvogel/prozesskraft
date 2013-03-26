@@ -157,6 +157,10 @@ public class PradarViewProcessingEntity
 		while (iterpentity.hasNext())
 		{
 			PradarViewProcessingEntity pentity = iterpentity.next();
+			if (pentity.equals(this))
+			{
+				continue;
+			}
 			float abstandRechtsdrehend = (this.bogenlaenge - pentity.bogenlaenge);
 			antiGravityPulsSum = antiGravityPulsSum + calAntigravitypuls(abstandRechtsdrehend);
 		}
