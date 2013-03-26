@@ -136,6 +136,7 @@ public class PradarViewProcessingEntity
 	
 	public void calcNewBogenlaenge()
 	{
+		System.out.println("SuperId von ICH: "+this.getSuperid());
 		long now = System.currentTimeMillis();
 		long timediff = now - this.lastTimePositionCalcInMillis;
 		
