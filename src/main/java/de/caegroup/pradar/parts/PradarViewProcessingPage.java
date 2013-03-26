@@ -548,27 +548,30 @@ public class PradarViewProcessingPage extends PApplet
 			this.pentity_dragged.setBogenlaenge(calcBogenlaengeFromPosition(mouseX, mouseY));
 		}
 		
-//		System.out.println("Ja mouse dragged: mouse_pressed_x="+mouse_pressed_x+"  || mouseX="+mouseX+" || center_x="+center_x);
-		int new_center_x = (int)(this.center_ratio_x * width) + (mouseX-mouse_pressed_x);
-		int new_center_y = (int)(this.center_ratio_y * height) + (mouseY-mouse_pressed_y);
-		
-		double new_center_ratio_x = ((double) new_center_x / (double)width);
-		double new_center_ratio_y = ((double) new_center_y / (double)height);
-		
-//		System.out.println("new_center_x= "+new_center_x+"    width="+width+"   || new_center_factor_x="+new_center_factor_x);
-		
-//		if		(new_center_ratio_x < 0)		{this.center_ratio_x = 0;}
-//		else if	(new_center_ratio_x > 1)		{this.center_ratio_x = 1;}
-//		else									{this.center_ratio_x = new_center_ratio_x;}
-
-//		if		(new_center_ratio_y < 0)		{this.center_ratio_y = 0;}
-//		else if	(new_center_ratio_y > 1)		{this.center_ratio_y = 1;}
-//		else									{this.center_ratio_y = new_center_ratio_y;}
-		this.center_ratio_x = new_center_ratio_x;
-		this.center_ratio_y = new_center_ratio_y;
-		
-		mouse_pressed_x = mouseX;
-		mouse_pressed_y = mouseY;
+		else
+		{
+			//		System.out.println("Ja mouse dragged: mouse_pressed_x="+mouse_pressed_x+"  || mouseX="+mouseX+" || center_x="+center_x);
+			int new_center_x = (int)(this.center_ratio_x * width) + (mouseX-mouse_pressed_x);
+			int new_center_y = (int)(this.center_ratio_y * height) + (mouseY-mouse_pressed_y);
+			
+			double new_center_ratio_x = ((double) new_center_x / (double)width);
+			double new_center_ratio_y = ((double) new_center_y / (double)height);
+			
+	//		System.out.println("new_center_x= "+new_center_x+"    width="+width+"   || new_center_factor_x="+new_center_factor_x);
+			
+	//		if		(new_center_ratio_x < 0)		{this.center_ratio_x = 0;}
+	//		else if	(new_center_ratio_x > 1)		{this.center_ratio_x = 1;}
+	//		else									{this.center_ratio_x = new_center_ratio_x;}
+	
+	//		if		(new_center_ratio_y < 0)		{this.center_ratio_y = 0;}
+	//		else if	(new_center_ratio_y > 1)		{this.center_ratio_y = 1;}
+	//		else									{this.center_ratio_y = new_center_ratio_y;}
+			this.center_ratio_x = new_center_ratio_x;
+			this.center_ratio_y = new_center_ratio_y;
+			
+			mouse_pressed_x = mouseX;
+			mouse_pressed_y = mouseY;
+		}
 	}
 
 	public void mouseWheel(int delta)
