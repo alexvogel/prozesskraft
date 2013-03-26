@@ -181,7 +181,7 @@ public class PradarViewProcessingEntity
 		
 		System.out.println("bogenlaenge bisher: "+this.bogenlaenge);
 		this.bogenlaenge = this.bogenlaenge + repositionBogenlaenge;
-		this.bogenlaenge = (float) (this.bogenlaenge - (this.bogenlaenge / Math.PI) * Math.PI);
+		this.bogenlaenge = (float) (this.bogenlaenge - ( (int)(this.bogenlaenge / Math.PI) ) * Math.PI);
 		
 		System.out.println("bogenlaenge neu: "+this.bogenlaenge);
 	}
