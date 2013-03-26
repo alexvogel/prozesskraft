@@ -151,10 +151,22 @@ public class PradarViewProcessingEntity
 			}
 			System.out.println("bogenlaenge ich: "+this.bogenlaenge);
 			System.out.println("bogenlaenge pentity: "+pentity.bogenlaenge);
-			float abstandRechtsdrehend = (this.bogenlaenge - pentity.bogenlaenge);
-			abstandRechtsdrehend = (float) ((abstandRechtsdrehend % Math.PI));
-			System.out.println("abstand: "+abstandRechtsdrehend);
-			antiGravityPulsSum = antiGravityPulsSum + calAntigravitypuls(abstandRechtsdrehend);
+			float abstandRechtsdrehend1 = (this.bogenlaenge - pentity.bogenlaenge);
+			float abstandRechtsdrehend2 = (float) (this.bogenlaenge - 2*Math.PI - pentity.bogenlaenge);
+			
+			
+//			abstandRechtsdrehend = (float) ((abstandRechtsdrehend % Math.PI));
+			System.out.println("abstand1: "+abstandRechtsdrehend1);
+			System.out.println("abstand2: "+abstandRechtsdrehend2);
+			
+			if ( Math.abs(abstandRechtsdrehend1) < Math.abs(abstandRechtsdrehend2) )
+			{
+				antiGravityPulsSum = antiGravityPulsSum + calAntigravitypuls(abstandRechtsdrehend1);
+			}
+			else
+			{
+				antiGravityPulsSum = antiGravityPulsSum + calAntigravitypuls(abstandRechtsdrehend2);
+			}
 		}
 		
 		System.out.println("antiGravityPulsSum: "+antiGravityPulsSum);
