@@ -153,7 +153,7 @@ public class PradarViewProcessingEntity
 		}
 //		long now = System.currentTimeMillis();
 		System.out.println("bogenlaenge bisher: "+this.bogenlaenge);
-		this.bogenlaenge = this.bogenlaenge + (float) (kraftRechtsdrehend);
+		this.bogenlaenge = this.bogenlaenge + (float) ( (kraftRechtsdrehend)/100);
 		System.out.println("bogenlaenge neu: "+this.bogenlaenge);
 //		this.bogenlaenge = (float) (kraftRechtsdrehend * (now - this.lastTimePositionCalcInMillis));
 //		this.lastTimePositionCalcInMillis = now;
