@@ -28,7 +28,7 @@ public class PradarViewProcessingEntity
 	private float mass = (float)1;
 	private float gravity = (float)5;
 	private float spring = 10;
-	private float damp = (float)0.5;
+	private float damp = (float)0.1;
 
 	long jahrInMillis   = 14515200000L;
 	long monatInMillis  = 2419200000L;
@@ -121,18 +121,6 @@ public class PradarViewProcessingEntity
 		calcPosition();
 	}
 	
-//	public calcInitialPosition(Calendar zeitpunkt)
-//	{
-//		float[] newPosition = {0,0};
-//		
-//		float radius = calcRadius(zeitpunkt);
-//		
-//		newPosition[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * radius;
-//		newPosition[1] = (this.parent.center_y) + PApplet.sin(this.bogenlaenge) * radius;
-//		
-//		return newPosition;
-//	}
-	
 	public void calcPosition()
 	{
 		this.checkin_radius = calcRadius(this.entity.getCheckin());
@@ -170,8 +158,7 @@ public class PradarViewProcessingEntity
 		System.out.println("speeddiff: "+speeddiff);
 		float oldspeed = this.speed;
 		System.out.println("oldspeed: "+oldspeed);
-		float newspeed = (oldspeed + speeddiff);
-//		float newspeed = (oldspeed + speeddiff) * (1-this.damp);
+		float newspeed = (oldspeed + speeddiff) * (1-this.damp);
 		System.out.println("newspeed: "+newspeed);
 		
 		this.speed = newspeed;
@@ -193,6 +180,7 @@ public class PradarViewProcessingEntity
 		else if (distance > Math.PI) {distance = Math.PI;}
 		else if (distance < -Math.PI) {distance = -Math.PI;}
 		
+		System.out.println("distance: "+distance);
 		// antigravitation nimmt mit dem quadrat des abstands ab
 		antigravitypuls = (distance / (Math.pow((distance),2))) * this.gravity;
 		
