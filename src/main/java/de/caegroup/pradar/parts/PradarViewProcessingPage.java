@@ -53,6 +53,7 @@ public class PradarViewProcessingPage extends PApplet
 	ArrayList<Entity> matched_entities = new ArrayList<Entity>();
 	ArrayList<PradarViewProcessingEntity> matched_processing_entities = new ArrayList<PradarViewProcessingEntity>();
 	Entity entity_mit_fahne = null;
+	PradarViewProcessingEntity pentity_dragged = null;
 	Entity entity_mit_kleinstem_abstand_mouse = new Entity();
 	float distanceToMouse = 100000;
 	float keine_fahne_ab_abstand_mehr_als = 20;
@@ -398,15 +399,21 @@ public class PradarViewProcessingPage extends PApplet
 		return entityWithSuperId;
 	}
 	
-	void calcNewPosition()
+//	void calcNewPosition()
+//	{
+//		// ueber alle ProcessingEntities, die angezeigt werden sollen iterieren und neue Position berechnen
+//		Iterator<PradarViewProcessingEntity> iterpentity = matched_processing_entities.iterator();
+//		while (iterpentity.hasNext())
+//		{
+//			PradarViewProcessingEntity pentity = iterpentity.next();
+////			pentity.calcNewPosition();
+//		}
+//	}
+	
+	float calcBogenlaengeFromPosition(float x, float y)
 	{
-		// ueber alle ProcessingEntities, die angezeigt werden sollen iterieren und neue Position berechnen
-		Iterator<PradarViewProcessingEntity> iterpentity = matched_processing_entities.iterator();
-		while (iterpentity.hasNext())
-		{
-			PradarViewProcessingEntity pentity = iterpentity.next();
-//			pentity.calcNewPosition();
-		}
+		float bogenlaenge = (float) (Math.atan((x - this.center_x) / (y - this.center_y)));
+		return bogenlaenge;
 	}
 	
 	boolean isProcessingEntityPresent(Entity entity)
@@ -507,13 +514,40 @@ public class PradarViewProcessingPage extends PApplet
 		{
 			doubleClick();
 		}
+		
+		if ( this.distanceToMouse < this.keine_fahne_ab_abstand_mehr_als )
+		{
+			this.pentity_dragged = getPentityBySuperId(this.entity_mit_kleinstem_abstand_mouse.getSuperid());
+		}
+		
 		mouse_last_pressed = now;
 		mouse_pressed_x = mouseX;
 		mouse_pressed_y = mouseY;
 	}
 	
+	public PradarViewProcessingEntity getPentityBySuperId(String superid)
+	{
+		PradarViewProcessingEntity matching_pentity = null;
+		Iterator<PradarViewProcessingEntity> iterpentity = this.matched_processing_entities.iterator();
+		while (iterpentity.hasNext())
+		{
+			PradarViewProcessingEntity pentity = iterpentity.next();
+			if (pentity.getSuperid().equals(superid))
+			{
+				matching_pentity = pentity;
+			}
+		}
+		return matching_pentity;
+	}
+	
 	public void mouseDragged()
 	{
+		
+		if ( this.pentity_dragged != null )
+		{
+			this.pentity_dragged.setBogenlaenge(calcBogenlaengeFromPosition(mouseX, mouseY));
+		}
+		
 //		System.out.println("Ja mouse dragged: mouse_pressed_x="+mouse_pressed_x+"  || mouseX="+mouseX+" || center_x="+center_x);
 		int new_center_x = (int)(this.center_ratio_x * width) + (mouseX-mouse_pressed_x);
 		int new_center_y = (int)(this.center_ratio_y * height) + (mouseY-mouse_pressed_y);

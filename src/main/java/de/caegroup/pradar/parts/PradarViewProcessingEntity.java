@@ -388,6 +388,22 @@ public class PradarViewProcessingEntity
 	{
 		this.parent = parent;
 	}
+
+	/**
+	 * @return the bogenlaenge
+	 */
+	public float getBogenlaenge()
+	{
+		return this.bogenlaenge;
+	}
+
+	/**
+	 * @param bogenlaenge the bogenlaenge to set
+	 */
+	public void setBogenlaenge(float bogenlaenge)
+	{
+		this.bogenlaenge = bogenlaenge;
+	}
 	
 
 	
