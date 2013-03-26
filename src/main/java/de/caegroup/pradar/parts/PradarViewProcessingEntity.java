@@ -162,8 +162,11 @@ public class PradarViewProcessingEntity
 		}
 		
 		float speeddiff = (float) antiGravityPuls / this.mass;
+		System.out.println("speeddiff: "+speeddiff);
 		float oldspeed = this.speed;
+		System.out.println("oldspeed: "+oldspeed);
 		float newspeed = (oldspeed + speeddiff) * (1-this.damp);
+		System.out.println("newspeed: "+newspeed);
 		
 		this.speed = newspeed;
 		
