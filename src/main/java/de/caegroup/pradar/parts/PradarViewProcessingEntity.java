@@ -23,7 +23,12 @@ public class PradarViewProcessingEntity
 
 	private Entity entity;
 	
-	private float gravity = (float)1;
+	private float speed = 0;
+//	private float maxspeed = 50;
+	private float mass = (float)1;
+	private float gravity = (float)5;
+	private float spring = 10;
+	private float damp = (float)0.5;
 
 	long jahrInMillis   = 14515200000L;
 	long monatInMillis  = 2419200000L;
@@ -143,20 +148,30 @@ public class PradarViewProcessingEntity
 	
 	public void calcNewBogenlaenge()
 	{
-		double kraftRechtsdrehend = 0;
+		long now = System.currentTimeMillis();
+		long timediff = now - this.lastTimePositionCalcInMillis;
+		
+		double antiGravityPuls = 0;
+		
 		Iterator<PradarViewProcessingEntity> iterpentity = this.parent.matched_processing_entities.iterator();
 		while (iterpentity.hasNext())
 		{
 			PradarViewProcessingEntity pentity = iterpentity.next();
 			float abstandRechtsdrehend = (this.bogenlaenge - pentity.bogenlaenge);
-			kraftRechtsdrehend = kraftRechtsdrehend + calAntigravitypuls(abstandRechtsdrehend);
+			antiGravityPuls = antiGravityPuls + calAntigravitypuls(abstandRechtsdrehend);
 		}
-//		long now = System.currentTimeMillis();
+		
+		float speeddiff = (float) antiGravityPuls / this.mass;
+		float oldspeed = this.speed;
+		float newspeed = (oldspeed + speeddiff) * (1-this.damp);
+		
+		this.speed = newspeed;
+		
+		float repositionBogenlaenge = (float) (newspeed * timediff * 0.001);
+		
 		System.out.println("bogenlaenge bisher: "+this.bogenlaenge);
-		this.bogenlaenge = this.bogenlaenge + (float) ( (kraftRechtsdrehend)/100);
+		this.bogenlaenge = this.bogenlaenge + repositionBogenlaenge;
 		System.out.println("bogenlaenge neu: "+this.bogenlaenge);
-//		this.bogenlaenge = (float) (kraftRechtsdrehend * (now - this.lastTimePositionCalcInMillis));
-//		this.lastTimePositionCalcInMillis = now;
 	}
 	
 	private double calAntigravitypuls(double distance)
