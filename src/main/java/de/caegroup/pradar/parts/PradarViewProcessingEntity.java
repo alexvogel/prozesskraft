@@ -189,6 +189,7 @@ public class PradarViewProcessingEntity
 		
 		PApplet.map((float)antigravitypuls, (float)-10, (float)10, (float)-0.01, (float)0.01);
 		
+		System.out.println("antigravitypuls: "+antigravitypuls);
 		return antigravitypuls;
 	}
 	

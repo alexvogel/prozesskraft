@@ -8,6 +8,13 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
@@ -49,6 +56,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
+import de.caegroup.pradar.Db;
 import de.caegroup.pradar.Entity;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Spinner;
@@ -67,6 +75,7 @@ import org.eclipse.swt.widgets.Spinner;
 
 public class PradarPartUi2 extends ModelObject
 {
+	static CommandLine line;
 	private DataBindingContext bindingContextFilter;
 	private DataBindingContext bindingContextZoom;
 //	private DataBindingContext bindingContext;
@@ -81,7 +90,6 @@ public class PradarPartUi2 extends ModelObject
 	private Entity filter_entity = new Entity();
 	PradarViewProcessingPage applet;
 	Display display;
-	
 
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
@@ -450,6 +458,68 @@ public class PradarPartUi2 extends ModelObject
 	 */
 	public static void main(String[] args)
 	{
+//		/*----------------------------
+//		  create boolean options
+//		----------------------------*/
+//		Option help = new Option("help", "print this message");
+//		Option v = new Option("v", "prints version and build-date");
+//		/*----------------------------
+//		  create argument options
+//		----------------------------*/
+//		Option dbfile = OptionBuilder.withArgName("dbfile")
+//				.hasArg()
+//				.withDescription("[optional] dbfile")
+////				.isRequired()
+//				.create("dbfile");
+//		/*----------------------------
+//		  create options object
+//		----------------------------*/
+//		Options options = new Options();
+//		
+//		options.addOption( help );
+//		options.addOption( v );
+//		options.addOption( dbfile );
+//				
+//		/*----------------------------
+//		  create the parser
+//		----------------------------*/
+//		CommandLineParser parser = new GnuParser();
+//		try
+//		{
+//			// parse the command line arguments
+//			line = parser.parse( options,  args );
+//		}
+//		catch ( Exception exp )
+//		{
+//			// oops, something went wrong
+//			System.err.println( "Parsing failed. Reason: "+ exp.getMessage());
+//		}
+//		
+//		/*----------------------------
+//		  usage/help
+//		----------------------------*/
+//		if ( line.hasOption("help"))
+//		{
+//			HelpFormatter formatter = new HelpFormatter();
+////			formatter.printHelp("checkin --version [% version %]", options);
+//			formatter.printHelp("pradar-gui", options);
+//			System.exit(0);
+//		}
+//		
+//		if ( line.hasOption("v"))
+//		{
+//			System.out.println("author:  alexander.vogel@caegroup.de");
+//			System.out.println("version: [% version %]");
+//			System.out.println("date:    [% date %]");
+//			System.exit(0);
+//		}
+//		
+//		if (line.hasOption("dbfile"))
+//		{
+//			setDbfile(line.getOptionValue("dbfile"));
+//		}		
+//
+		// gui
 		final Display display = new Display();
 		
 		Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {

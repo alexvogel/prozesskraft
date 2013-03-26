@@ -608,6 +608,13 @@ public class PradarViewProcessingPage extends PApplet
 		this.einstellungen = einstellungen;
 	}
 
+	public PradarViewProcessingPage(String dbfile, Entity entity, PradarViewModel einstellungen)
+	{
+		this.db = new Db(dbfile);
+		this.entity_filter = entity;
+		this.einstellungen = einstellungen;
+	}
+
 	/**
 	 * @return the bezugsgroesse
 	 */
