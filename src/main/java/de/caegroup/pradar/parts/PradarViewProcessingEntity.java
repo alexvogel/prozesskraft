@@ -184,6 +184,13 @@ public class PradarViewProcessingEntity
 		this.bogenlaenge = this.bogenlaenge + repositionBogenlaenge;
 //		this.bogenlaenge = (float) (this.bogenlaenge - ( (int)(this.bogenlaenge / Math.PI) ) * Math.PI);
 		
+		int faktor = (int) (this.bogenlaenge / (2*Math.PI));
+		
+		if (faktor > 0)
+		{
+			this.bogenlaenge = (float) (this.bogenlaenge - (faktor * (2*Math.PI)));
+		}
+		
 		if (this.bogenlaenge < 0)
 		{
 			this.bogenlaenge = PApplet.map(this.bogenlaenge, (float)0, (float)-Math.PI, (float)(2*Math.PI), (float)0);
@@ -198,15 +205,15 @@ public class PradarViewProcessingEntity
 		System.out.println("distance am Anfang: "+distance);
 		
 		// mindestabstand um extreme geschwindigkeiten zu vermeiden
-		if		( (distance >= 0) && (distance < 0.1) ) {distance =  0.1;}
-		else if ( (distance < 0)  && (distance > -0.1) ){distance = -0.1;}
+		if		( (distance >= 0) && (distance < 0.001) ) {distance =  0.001;}
+		else if ( (distance < 0)  && (distance > -0.001) ){distance = -0.001;}
 		else if (distance > Math.PI) {distance = Math.PI;}
 		else if (distance < -Math.PI) {distance = -Math.PI;}
 		
 		System.out.println("distance nach nachbehandlung: "+distance);
 		// antigravitation nimmt mit dem quadrat des abstands ab
 		
-		if ( Math.abs(distance) < 0.5)
+		if ( Math.abs(distance) < 0.1)
 		{
 			antigravitypuls = (distance / (Math.pow((10*distance),2))) * this.gravity;
 //			float antigravitypulsMap = PApplet.map((float)antigravitypuls, (float)-10, (float)10, (float)-0.01, (float)0.01);
