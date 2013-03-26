@@ -194,7 +194,7 @@ public class PradarViewProcessingEntity
 	
 	private double calAntigravitypuls(double distance)
 	{
-		double antigravitypuls;
+		double antigravitypuls = 0;
 		System.out.println("distance am Anfang: "+distance);
 		
 		// mindestabstand um extreme geschwindigkeiten zu vermeiden
@@ -205,12 +205,15 @@ public class PradarViewProcessingEntity
 		
 		System.out.println("distance nach nachbehandlung: "+distance);
 		// antigravitation nimmt mit dem quadrat des abstands ab
-		antigravitypuls = (distance / (Math.pow((10*distance),2))) * this.gravity;
 		
-		float antigravitypulsMap = PApplet.map((float)antigravitypuls, (float)-10, (float)10, (float)-0.01, (float)0.01);
-		
-		System.out.println("antigravitypuls: "+antigravitypulsMap);
-		return antigravitypulsMap;
+		if ( Math.abs(distance) < 0.5)
+		{
+			antigravitypuls = (distance / (Math.pow((10*distance),2))) * this.gravity;
+//			float antigravitypulsMap = PApplet.map((float)antigravitypuls, (float)-10, (float)10, (float)-0.01, (float)0.01);
+		}
+		System.out.println("antigravitypuls: "+antigravitypuls);
+		return antigravitypuls;
+
 	}
 	
 	public float calcRadius(Calendar zeitpunkt)
