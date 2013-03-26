@@ -155,7 +155,9 @@ public class PradarViewProcessingEntity
 			float abstandRechtsdrehend2 = (float) (this.bogenlaenge - 2*Math.PI - pentity.bogenlaenge);
 			
 			
-//			abstandRechtsdrehend = (float) ((abstandRechtsdrehend % Math.PI));
+			abstandRechtsdrehend1 = (float) ((abstandRechtsdrehend1 % Math.PI));
+			abstandRechtsdrehend2 = (float) ((abstandRechtsdrehend2 % Math.PI));
+			
 			System.out.println("abstand1: "+abstandRechtsdrehend1);
 			System.out.println("abstand2: "+abstandRechtsdrehend2);
 			
