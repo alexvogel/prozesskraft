@@ -184,6 +184,11 @@ public class PradarViewProcessingEntity
 		this.bogenlaenge = this.bogenlaenge + repositionBogenlaenge;
 		this.bogenlaenge = (float) (this.bogenlaenge - ( (int)(this.bogenlaenge / Math.PI) ) * Math.PI);
 		
+		if (this.bogenlaenge < 0)
+		{
+			this.bogenlaenge = PApplet.map(this.bogenlaenge, (float)0, (float)-Math.PI, (float)Math.PI, (float)0);
+		}
+		
 		System.out.println("bogenlaenge neu: "+this.bogenlaenge);
 	}
 	
