@@ -186,7 +186,7 @@ public class PradarViewProcessingEntity
 		
 		if (this.bogenlaenge < 0)
 		{
-			this.bogenlaenge = PApplet.map(this.bogenlaenge, (float)0, (float)-Math.PI, (float)Math.PI, (float)0);
+			this.bogenlaenge = PApplet.map(this.bogenlaenge, (float)0, (float)-Math.PI, (float)(2*Math.PI), (float)0);
 		}
 		
 		System.out.println("bogenlaenge neu: "+this.bogenlaenge);
