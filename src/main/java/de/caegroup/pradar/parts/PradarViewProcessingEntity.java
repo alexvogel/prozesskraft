@@ -194,7 +194,7 @@ public class PradarViewProcessingEntity
 		float antigravitypulsMap = PApplet.map((float)antigravitypuls, (float)-10, (float)10, (float)-0.01, (float)0.01);
 		
 		System.out.println("antigravitypuls: "+antigravitypulsMap);
-		return antigravitypuls;
+		return antigravitypulsMap;
 	}
 	
 	public float calcRadius(Calendar zeitpunkt)
