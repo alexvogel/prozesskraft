@@ -173,6 +173,7 @@ public class PradarViewProcessingEntity
 	private double calAntigravitypuls(double distance)
 	{
 		double antigravitypuls;
+		System.out.println("distance am Anfang: "+distance);
 		
 		// mindestabstand um extreme geschwindigkeiten zu vermeiden
 		if		( (distance >= 0) && (distance < 0.1) ) {distance =  0.1;}
@@ -180,7 +181,7 @@ public class PradarViewProcessingEntity
 		else if (distance > Math.PI) {distance = Math.PI;}
 		else if (distance < -Math.PI) {distance = -Math.PI;}
 		
-		System.out.println("distance: "+distance);
+		System.out.println("distance nach nachbehandlung: "+distance);
 		// antigravitation nimmt mit dem quadrat des abstands ab
 		antigravitypuls = (distance / (Math.pow((distance),2))) * this.gravity;
 		
