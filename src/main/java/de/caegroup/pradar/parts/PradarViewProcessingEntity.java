@@ -187,9 +187,9 @@ public class PradarViewProcessingEntity
 		// antigravitation nimmt mit dem quadrat des abstands ab
 		antigravitypuls = (distance / (Math.pow((distance),2))) * this.gravity;
 		
-		PApplet.map((float)antigravitypuls, (float)-10, (float)10, (float)-0.01, (float)0.01);
+		float antigravitypulsMap = PApplet.map((float)antigravitypuls, (float)-10, (float)10, (float)-0.01, (float)0.01);
 		
-		System.out.println("antigravitypuls: "+antigravitypuls);
+		System.out.println("antigravitypuls: "+antigravitypulsMap);
 		return antigravitypuls;
 	}
 	
