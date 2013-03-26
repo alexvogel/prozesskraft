@@ -151,17 +151,18 @@ public class PradarViewProcessingEntity
 		long now = System.currentTimeMillis();
 		long timediff = now - this.lastTimePositionCalcInMillis;
 		
-		double antiGravityPuls = 0;
+		double antiGravityPulsSum = 0;
 		
 		Iterator<PradarViewProcessingEntity> iterpentity = this.parent.matched_processing_entities.iterator();
 		while (iterpentity.hasNext())
 		{
 			PradarViewProcessingEntity pentity = iterpentity.next();
 			float abstandRechtsdrehend = (this.bogenlaenge - pentity.bogenlaenge);
-			antiGravityPuls = antiGravityPuls + calAntigravitypuls(abstandRechtsdrehend);
+			antiGravityPulsSum = antiGravityPulsSum + calAntigravitypuls(abstandRechtsdrehend);
 		}
 		
-		float speeddiff = (float) antiGravityPuls / this.mass;
+		System.out.println("antiGravityPulsSum: "+antiGravityPulsSum);
+		float speeddiff = (float) antiGravityPulsSum / this.mass;
 		System.out.println("speeddiff: "+speeddiff);
 		float oldspeed = this.speed;
 		System.out.println("oldspeed: "+oldspeed);
