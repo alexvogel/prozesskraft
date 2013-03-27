@@ -26,7 +26,7 @@ public class PradarViewProcessingEntity
 	private float speed = 0;
 //	private float maxspeed = 50;
 	private float mass = (float)1;
-	private float gravity = (float)5;
+	private float gravity = (float)0.01;
 	private float spring = 10;
 	private float damp = (float)0.2;
 
