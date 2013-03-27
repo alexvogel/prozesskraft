@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.sql.*;
 
@@ -147,6 +148,11 @@ public class Db
 
 	public ArrayList<Entity> match(Entity entity)
 	{
+		
+		// kalkulieren der grenzzeit in millisekunden
+		long now = Calendar.getInstance().getTimeInMillis();
+		long grenzzeitInMillis = now - entity.getPeriodInMillis();
+		
 		ArrayList<Entity> matches = new ArrayList<Entity>();
 		this.sqlvoodoo();
 		this.connection = null;
@@ -156,7 +162,7 @@ public class Db
 			Statement statement = this.connection.createStatement();
 			
 			statement.setQueryTimeout(10);
-			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"' AND resource LIKE '"+entity.getResourceSqlPattern()+"'";
+			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"' AND resource LIKE '"+entity.getResourceSqlPattern()+"' AND ( checkin > '"+grenzzeitInMillis+"' OR checkout > '"+grenzzeitInMillis+"')";
 //			System.out.println(sql);
 			ResultSet rs = statement.executeQuery(sql);
 		

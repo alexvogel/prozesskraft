@@ -20,6 +20,7 @@ public class Entity
 	public String active = "";
 	public String exitcode = "";
 	public String resource = "";
+	public long period = 9999999999999L;
 
 	/*----------------------------
 	  constructors
@@ -101,6 +102,12 @@ public class Entity
 			matchStatus = false;
 		}
 		
+		if ( (this.getPeriodInMillis() < (Calendar.getInstance().getTimeInMillis() - assessedEntity.getCheckinInMillis())) && (this.getPeriodInMillis() < (Calendar.getInstance().getTimeInMillis() - assessedEntity.getCheckoutInMillis()) && (assessedEntity.getCheckoutInMillis() != 0) ) )
+		{
+//			System.out.println("CheckinInMillis="+assessedEntity.getCheckinInMillis()+" < (now="+Calendar.getInstance().getTimeInMillis()+" MINUS timePeriod="+this.getPeriodInMillis()+")" );
+			matchStatus = false;
+		}
+		
 		return matchStatus;
 	}
 	
@@ -134,7 +141,7 @@ public class Entity
 
 	public String getSuperid()
 	{
-		return (this.id + this.process + this.host + this.user);
+		return (this.id + this.checkin.getTimeInMillis());
 	}
 
 	public String getId()
@@ -351,4 +358,23 @@ public class Entity
 		this.resource = resource;
 	}
 
+	public long getPeriodInMillis()
+	{
+		return this.period;
+	}
+
+	public int getPeriodInHours()
+	{
+		 return (int)(this.period/3600000);
+	}
+
+	public void setPeriodInMillis(long millis)
+	{
+		this.period = millis;
+	}
+
+	public void setPeriodInHours(int hours)
+	{
+		this.period = (long)((long)hours*3600000);
+	}
 }
