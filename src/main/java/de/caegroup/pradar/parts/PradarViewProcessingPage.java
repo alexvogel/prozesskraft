@@ -416,7 +416,7 @@ public class PradarViewProcessingPage extends PApplet
 	
 	float calcBogenlaengeFromPosition(float x, float y)
 	{
-		float bogenlaenge = (float) ( Math.atan((x - this.center_y) / (y - this.center_x)) );
+		float bogenlaenge = (float) ( Math.atan((y - this.center_y) / (x - this.center_x)) );
 		return bogenlaenge;
 	}
 	
