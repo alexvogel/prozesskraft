@@ -546,6 +546,7 @@ public class PradarViewProcessingPage extends PApplet
 		if ( this.pentity_dragged != null )
 		{
 			this.pentity_dragged.setBogenlaenge(calcBogenlaengeFromPosition(mouseX, mouseY));
+			System.out.println("dragging a pentity not the whole radar");
 		}
 		
 		else
