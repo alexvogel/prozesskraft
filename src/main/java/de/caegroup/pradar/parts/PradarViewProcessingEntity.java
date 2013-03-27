@@ -146,12 +146,12 @@ public class PradarViewProcessingEntity
 		Iterator<PradarViewProcessingEntity> iterpentity = this.parent.matched_processing_entities.iterator();
 		while (iterpentity.hasNext())
 		{
+			PradarViewProcessingEntity pentity = iterpentity.next();
 			if (!(theFirstHasAlreadyBeenSeen))
 			{
 				theFirstHasAlreadyBeenSeen = true;
 				continue;
 			}
-			PradarViewProcessingEntity pentity = iterpentity.next();
 			if (pentity.equals(this))
 			{
 				continue;
