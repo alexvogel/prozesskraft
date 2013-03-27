@@ -28,7 +28,7 @@ public class PradarViewProcessingEntity
 	private float mass = (float)1;
 	private float gravity = (float)0.01;
 	private float spring = 10;
-	private float damp = (float)0.2;
+	private float damp = (float)0.4;
 
 	long jahrInMillis   = 14515200000L;
 	long monatInMillis  = 2419200000L;
