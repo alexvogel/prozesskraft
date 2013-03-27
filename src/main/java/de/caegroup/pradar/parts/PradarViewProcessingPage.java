@@ -4,6 +4,7 @@ package de.caegroup.pradar.parts;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -71,14 +72,20 @@ public class PradarViewProcessingPage extends PApplet
 	int radius_woche;
 	int radius_monat;
 	int radius_jahr;
+	int radius_period;
 
 	int durchmesser_stunde;
 	int durchmesser_tag;
 	int durchmesser_woche;
 	int durchmesser_monat;
 	int durchmesser_jahr;
+	int durchmesser_period;
 	
-
+	long jahrInMillis   = 14515200000L;
+	long monatInMillis  = 2419200000L;
+	long wocheInMillis  = 604800000;
+	long tagInMillis    = 86400000;
+	long stundeInMillis = 3600000;
 	
 	/*----------------------------
 	  method setup Processing
@@ -138,12 +145,17 @@ public class PradarViewProcessingPage extends PApplet
 		this.radius_woche = this.radius_basis * 3;
 		this.radius_monat = this.radius_basis * 4;
 		this.radius_jahr = this.radius_basis * 5;
-
+		Calendar period = Calendar.getInstance();
+		period.setTimeInMillis(System.currentTimeMillis()-this.entity_filter.getPeriodInMillis());
+		this.radius_period = (int) this.calcRadius(period);
+		
 		this.durchmesser_stunde= this.radius_stunde * 2;
 		this.durchmesser_tag   = this.radius_tag * 2;
 		this.durchmesser_woche = this.radius_woche * 2;
 		this.durchmesser_monat = this.radius_monat * 2;
 		this.durchmesser_jahr = this.radius_jahr * 2;
+		this.durchmesser_period = (int) (this.radius_period * 2);
+		
 		
 		// strichfarbe festlegen
 		stroke(185);
@@ -250,6 +262,7 @@ public class PradarViewProcessingPage extends PApplet
 		ellipse(center_x, center_y, durchmesser_woche, durchmesser_woche);
 		ellipse(center_x, center_y, durchmesser_monat, durchmesser_monat);
 		ellipse(center_x, center_y, durchmesser_jahr, durchmesser_jahr);
+		ellipse(center_x, center_y, durchmesser_period, durchmesser_period);
 		
 		//////////////////
 		// beschriftung der kreise
@@ -562,6 +575,46 @@ public class PradarViewProcessingPage extends PApplet
 			}
 		}
 		return matching_pentity;
+	}
+	
+	public float calcRadius(Calendar zeitpunkt)
+	{
+		if (zeitpunkt.getTimeInMillis() == 0)
+		{
+			zeitpunkt = Calendar.getInstance();
+			return 0;
+		}
+		
+		float radius;
+		long zeitpunktInMillis = zeitpunkt.getTimeInMillis();
+		long zeitspanne = System.currentTimeMillis() - zeitpunktInMillis;
+		
+		if ( (zeitspanne >= 0) && (zeitspanne < this.stundeInMillis) )
+		{
+			radius = PApplet.map(zeitspanne, 0, this.stundeInMillis, 0, this.radius_stunde);
+		}
+		else if ( (zeitspanne >= this.stundeInMillis) && (zeitspanne < this.tagInMillis) )
+		{
+			radius = PApplet.map(zeitspanne, this.stundeInMillis, this.tagInMillis, this.radius_stunde, this.radius_tag );
+		}
+		else if ( (zeitspanne >= this.tagInMillis) && (zeitspanne < this.wocheInMillis) )
+		{
+			radius = PApplet.map(zeitspanne, this.tagInMillis, this.wocheInMillis, this.radius_tag, this.radius_woche );
+		}
+		else if ( (zeitspanne >= this.wocheInMillis) && (zeitspanne < this.monatInMillis) )
+		{
+			radius = PApplet.map(zeitspanne, this.wocheInMillis, this.monatInMillis, this.radius_woche, this.radius_monat );
+		}
+		else if ( (zeitspanne >= this.monatInMillis) && (zeitspanne < this.jahrInMillis) )
+		{
+			radius = PApplet.map(zeitspanne, this.monatInMillis, this.jahrInMillis, this.radius_monat, this.radius_jahr );
+		}
+		else
+		{
+			radius = this.radius_jahr;
+		}
+		System.out.println("zeitspanne "+zeitspanne+" bedeutet radius "+radius+" bedeutet "+new Timestamp(zeitpunkt.getTimeInMillis()).toString());
+		return radius;
 	}
 	
 	public void mouseDragged()
