@@ -83,7 +83,7 @@ public class PradarViewProcessingPage extends PApplet
 	
 	long jahrInMillis   = 14515200000L;
 	long monatInMillis  = 2419200000L;
-	long wocheInMillis  = 604800000;
+	long wocheInMillis  = 604800000L;
 	long tagInMillis    = 86400000;
 	long stundeInMillis = 3600000;
 	
@@ -262,7 +262,6 @@ public class PradarViewProcessingPage extends PApplet
 		ellipse(center_x, center_y, durchmesser_woche, durchmesser_woche);
 		ellipse(center_x, center_y, durchmesser_monat, durchmesser_monat);
 		ellipse(center_x, center_y, durchmesser_jahr, durchmesser_jahr);
-		ellipse(center_x, center_y, durchmesser_period, durchmesser_period);
 		
 		//////////////////
 		// beschriftung der kreise
@@ -281,6 +280,14 @@ public class PradarViewProcessingPage extends PApplet
 		text("1y", (center_x+radius_jahr+2), (center_y)-2);
 		noFill();
 
+		//////////////////
+		// filterkreis zeichnen mit beschriftung
+		//////////////////
+		stroke(0, 140, 200);
+		ellipse(center_x, center_y, durchmesser_period, durchmesser_period);
+		text(""+(int)this.entity_filter.getPeriodInHours(), (center_x-radius_period+2), (center_y)-2);
+
+		
 		// legende schreiben
 		legend();
 		
@@ -495,6 +502,7 @@ public class PradarViewProcessingPage extends PApplet
 	{
 		this.entity_filter = entity_filter;
 		System.out.println("setting new filter");
+		System.out.println("period is now: "+this.entity_filter.getPeriodInMillis());
 		this.filter(this.entity_filter);
 	}
 
@@ -603,7 +611,7 @@ public class PradarViewProcessingPage extends PApplet
 		}
 		else if ( (zeitspanne >= this.wocheInMillis) && (zeitspanne < this.monatInMillis) )
 		{
-			radius = PApplet.map(zeitspanne, this.wocheInMillis, this.monatInMillis, this.radius_woche, this.radius_monat );
+			radius = PApplet.map((long)zeitspanne, (long)this.wocheInMillis, (long)this.monatInMillis, (long)this.radius_woche, (long)this.radius_monat );
 		}
 		else if ( (zeitspanne >= this.monatInMillis) && (zeitspanne < this.jahrInMillis) )
 		{
@@ -613,7 +621,7 @@ public class PradarViewProcessingPage extends PApplet
 		{
 			radius = this.radius_jahr;
 		}
-		System.out.println("zeitspanne "+zeitspanne+" bedeutet radius "+radius+" bedeutet "+new Timestamp(zeitpunkt.getTimeInMillis()).toString());
+//		System.out.println("zeitspanne "+zeitspanne+" bedeutet radius "+radius+" bedeutet "+new Timestamp(zeitpunkt.getTimeInMillis()).toString());
 		return radius;
 	}
 	
