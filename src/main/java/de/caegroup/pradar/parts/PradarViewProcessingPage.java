@@ -281,6 +281,8 @@ public class PradarViewProcessingPage extends PApplet
 			pentity.draw();
 		}
 
+		detEntityWithFlag();
+		
 		// fahne zeichnen, falls bedingungen erfuellt
 		if (this.entity_mit_fahne != null)
 		{
@@ -310,7 +312,7 @@ public class PradarViewProcessingPage extends PApplet
 	
 	void detEntityWithFlag()
 	{
-		int smallestDistanceMouse = 1000000;
+		this.distanceToMouse = 1000000;
 		this.entity_mit_fahne = null;
 		this.entity_mit_kleinstem_abstand_mouse = null;
 		
