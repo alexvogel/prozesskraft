@@ -29,6 +29,8 @@ public class PradarViewProcessingEntity
 	private float gravity = (float)0.01;
 	private float spring = 10;
 	private float damp = (float)0.4;
+	
+	private boolean fixPosition = false;
 
 	long jahrInMillis   = 14515200000L;
 	long monatInMillis  = 2419200000L;
@@ -137,72 +139,74 @@ public class PradarViewProcessingEntity
 	public void calcNewBogenlaenge()
 	{
 //		System.out.println("SuperId von ICH: "+this.getSuperid());
-		long now = System.currentTimeMillis();
-		long timediff = now - this.lastTimePositionCalcInMillis;
-		
-		double antiGravityPulsSum = 0;
-		boolean theFirstHasAlreadyBeenSeen = false;
-		
-		Iterator<PradarViewProcessingEntity> iterpentity = this.parent.matched_processing_entities.iterator();
-		while (iterpentity.hasNext())
+		if (this.fixPosition)
 		{
-			PradarViewProcessingEntity pentity = iterpentity.next();
-			if (!(theFirstHasAlreadyBeenSeen))
-			{
-				theFirstHasAlreadyBeenSeen = true;
-				continue;
-			}
-			if (pentity.equals(this))
-			{
-				continue;
-			}
-			System.out.println("bogenlaenge ich: "+this.bogenlaenge);
-			System.out.println("bogenlaenge pentity: "+pentity.bogenlaenge);
-			float abstandRechtsdrehend1 = (this.bogenlaenge - pentity.bogenlaenge);
-			float abstandRechtsdrehend2 = (float) (this.bogenlaenge - 2*Math.PI + pentity.bogenlaenge);
+			// mache nix
+		}
+		
+		else
+		{
+			long now = System.currentTimeMillis();
+			long timediff = now - this.lastTimePositionCalcInMillis;
 			
-			System.out.println("abstand1: "+abstandRechtsdrehend1);
-			System.out.println("abstand2: "+abstandRechtsdrehend2);
+			double antiGravityPulsSum = 0;
 			
-			if ( Math.abs(abstandRechtsdrehend1) < Math.abs(abstandRechtsdrehend2) )
+			Iterator<PradarViewProcessingEntity> iterpentity = this.parent.matched_processing_entities.iterator();
+			while (iterpentity.hasNext())
 			{
-				antiGravityPulsSum = antiGravityPulsSum + calAntigravitypuls(abstandRechtsdrehend1);
+				PradarViewProcessingEntity pentity = iterpentity.next();
+				if (pentity.equals(this))
+				{
+					continue;
+				}
+				System.out.println("bogenlaenge ich: "+this.bogenlaenge);
+				System.out.println("bogenlaenge pentity: "+pentity.bogenlaenge);
+				float abstandRechtsdrehend1 = (this.bogenlaenge - pentity.bogenlaenge);
+				float abstandRechtsdrehend2 = (float) (this.bogenlaenge - 2*Math.PI + pentity.bogenlaenge);
+				
+				System.out.println("abstand1: "+abstandRechtsdrehend1);
+				System.out.println("abstand2: "+abstandRechtsdrehend2);
+				
+				if ( Math.abs(abstandRechtsdrehend1) < Math.abs(abstandRechtsdrehend2) )
+				{
+					antiGravityPulsSum = antiGravityPulsSum + calAntigravitypuls(abstandRechtsdrehend1);
+				}
+				else
+				{
+					antiGravityPulsSum = antiGravityPulsSum + calAntigravitypuls(abstandRechtsdrehend2);
+				}
 			}
-			else
+			
+			System.out.println("antiGravityPulsSum: "+antiGravityPulsSum);
+			float speeddiff = (float) antiGravityPulsSum / this.mass;
+			System.out.println("speeddiff: "+speeddiff);
+			float oldspeed = this.speed;
+			System.out.println("oldspeed: "+oldspeed);
+			float newspeed = (oldspeed + speeddiff) * (1-this.damp);
+			System.out.println("newspeed: "+newspeed);
+			
+			this.speed = newspeed;
+			
+			float repositionBogenlaenge = (float) (newspeed * timediff * 0.001);
+			
+			System.out.println("bogenlaenge bisher: "+this.bogenlaenge);
+			this.bogenlaenge = this.bogenlaenge + repositionBogenlaenge;
+	//		this.bogenlaenge = (float) (this.bogenlaenge - ( (int)(this.bogenlaenge / Math.PI) ) * Math.PI);
+			
+			int faktor = (int) (this.bogenlaenge / (2*Math.PI));
+			
+			if (faktor > 0)
 			{
-				antiGravityPulsSum = antiGravityPulsSum + calAntigravitypuls(abstandRechtsdrehend2);
+				this.bogenlaenge = (float) (this.bogenlaenge - (faktor * (2*Math.PI)));
 			}
+			
+			if (this.bogenlaenge < 0)
+			{
+				this.bogenlaenge = PApplet.map(this.bogenlaenge, (float)0, (float)-Math.PI, (float)(2*Math.PI), (float)0);
+			}
+			
+			System.out.println("bogenlaenge neu: "+this.bogenlaenge);
 		}
-		
-		System.out.println("antiGravityPulsSum: "+antiGravityPulsSum);
-		float speeddiff = (float) antiGravityPulsSum / this.mass;
-		System.out.println("speeddiff: "+speeddiff);
-		float oldspeed = this.speed;
-		System.out.println("oldspeed: "+oldspeed);
-		float newspeed = (oldspeed + speeddiff) * (1-this.damp);
-		System.out.println("newspeed: "+newspeed);
-		
-		this.speed = newspeed;
-		
-		float repositionBogenlaenge = (float) (newspeed * timediff * 0.001);
-		
-		System.out.println("bogenlaenge bisher: "+this.bogenlaenge);
-		this.bogenlaenge = this.bogenlaenge + repositionBogenlaenge;
-//		this.bogenlaenge = (float) (this.bogenlaenge - ( (int)(this.bogenlaenge / Math.PI) ) * Math.PI);
-		
-		int faktor = (int) (this.bogenlaenge / (2*Math.PI));
-		
-		if (faktor > 0)
-		{
-			this.bogenlaenge = (float) (this.bogenlaenge - (faktor * (2*Math.PI)));
-		}
-		
-		if (this.bogenlaenge < 0)
-		{
-			this.bogenlaenge = PApplet.map(this.bogenlaenge, (float)0, (float)-Math.PI, (float)(2*Math.PI), (float)0);
-		}
-		
-		System.out.println("bogenlaenge neu: "+this.bogenlaenge);
 	}
 	
 	private double calAntigravitypuls(double distance)
@@ -407,6 +411,22 @@ public class PradarViewProcessingEntity
 	public void setBogenlaenge(float bogenlaenge)
 	{
 		this.bogenlaenge = bogenlaenge;
+	}
+
+	/**
+	 * @return the fixPosition
+	 */
+	public boolean isFixPosition()
+	{
+		return this.fixPosition;
+	}
+
+	/**
+	 * @param fixPosition the fixPosition to set
+	 */
+	public void setFixPosition(boolean fixPosition)
+	{
+		this.fixPosition = fixPosition;
 	}
 	
 

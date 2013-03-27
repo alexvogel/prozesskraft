@@ -385,6 +385,23 @@ public class PradarViewProcessingPage extends PApplet
 				this.matched_processing_entities.remove(x);
 			}
 		}
+		
+		// ueber alle pentities iterieren und nur beim ersten die fixPosition auf true setzen
+		// setzen des ersten auf fixPosition
+		for (int x = 0; x<this.matched_processing_entities.size(); x++)
+		{
+			PradarViewProcessingEntity pentity = this.matched_processing_entities.get(x);
+			if (x == 0)
+			{
+				pentity.setFixPosition(true);
+			}
+			else
+			{
+				pentity.setFixPosition(false);
+			}
+		}
+		
+		
 	}
 	
 	Entity getEntityBySuperId(String superId)
