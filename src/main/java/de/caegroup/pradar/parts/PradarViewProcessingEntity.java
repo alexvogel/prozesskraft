@@ -28,16 +28,16 @@ public class PradarViewProcessingEntity
 	private float mass = (float)1;
 	private float gravity = (float)0.01;
 	private float spring = 10;
-	private float damp = (float)0.4;
+	private float damp = (float)0.9;
 	
 	private boolean fixPosition = false;
 
-	long jahrInMillis   = 14515200000L;
-	long monatInMillis  = 2419200000L;
-	long wocheInMillis  = 604800000;
-	long tagInMillis    = 86400000;
-	long stundeInMillis = 3600000;
-	
+//	long jahrInMillis   = 14515200000L;
+//	long monatInMillis  = 2419200000L;
+//	long wocheInMillis  = 604800000;
+//	long tagInMillis    = 86400000;
+//	long stundeInMillis = 3600000;
+//	
 	long lastTimePositionCalcInMillis = System.currentTimeMillis();
 	
 	float bogenlaenge = 0;
@@ -125,11 +125,11 @@ public class PradarViewProcessingEntity
 	
 	public void calcPosition()
 	{
-		this.checkin_radius = calcRadius(this.entity.getCheckin());
+		this.checkin_radius = this.parent.calcRadius(this.entity.getCheckin());
 //		System.out.println("Radius checkin: "+this.checkin_radius);
 		this.checkin_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkin_radius;
 		this.checkin_position[1] = (this.parent.center_y) + PApplet.sin(this.bogenlaenge) * this.checkin_radius;
-		this.checkout_radius = calcRadius(this.entity.getCheckout());
+		this.checkout_radius = this.parent.calcRadius(this.entity.getCheckout());
 //		System.out.println("Radius checkout: "+this.checkout_radius);
 		this.checkout_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkout_radius;
 		this.checkout_position[1] = (this.parent.center_y) + PApplet.sin(this.bogenlaenge) * this.checkout_radius;
@@ -231,45 +231,45 @@ public class PradarViewProcessingEntity
 
 	}
 	
-	public float calcRadius(Calendar zeitpunkt)
-	{
-		if (zeitpunkt.getTimeInMillis() == 0)
-		{
-			zeitpunkt = Calendar.getInstance();
-			return 0;
-		}
-		
-		float radius;
-		long zeitpunktInMillis = zeitpunkt.getTimeInMillis();
-		long zeitspanne = System.currentTimeMillis() - zeitpunktInMillis;
-		
-		if ( (zeitspanne >= 0) && (zeitspanne < this.stundeInMillis) )
-		{
-			radius = PApplet.map(zeitspanne, 0, this.stundeInMillis, 0, parent.radius_stunde);
-		}
-		else if ( (zeitspanne >= this.stundeInMillis) && (zeitspanne < this.tagInMillis) )
-		{
-			radius = PApplet.map(zeitspanne, this.stundeInMillis, this.tagInMillis, parent.radius_stunde, parent.radius_tag );
-		}
-		else if ( (zeitspanne >= this.tagInMillis) && (zeitspanne < this.wocheInMillis) )
-		{
-			radius = PApplet.map(zeitspanne, this.tagInMillis, this.wocheInMillis, parent.radius_tag, parent.radius_woche );
-		}
-		else if ( (zeitspanne >= this.wocheInMillis) && (zeitspanne < this.monatInMillis) )
-		{
-			radius = PApplet.map(zeitspanne, this.wocheInMillis, this.monatInMillis, parent.radius_woche, parent.radius_monat );
-		}
-		else if ( (zeitspanne >= this.monatInMillis) && (zeitspanne < this.jahrInMillis) )
-		{
-			radius = PApplet.map(zeitspanne, this.monatInMillis, this.jahrInMillis, parent.radius_monat, parent.radius_jahr );
-		}
-		else
-		{
-			radius = parent.radius_jahr;
-		}
-		System.out.println("zeitspanne "+zeitspanne+" bedeutet radius "+radius+" bedeutet "+new Timestamp(zeitpunkt.getTimeInMillis()).toString());
-		return radius;
-	}
+//	public float calcRadius(Calendar zeitpunkt)
+//	{
+//		if (zeitpunkt.getTimeInMillis() == 0)
+//		{
+//			zeitpunkt = Calendar.getInstance();
+//			return 0;
+//		}
+//		
+//		float radius;
+//		long zeitpunktInMillis = zeitpunkt.getTimeInMillis();
+//		long zeitspanne = System.currentTimeMillis() - zeitpunktInMillis;
+//		
+//		if ( (zeitspanne >= 0) && (zeitspanne < this.stundeInMillis) )
+//		{
+//			radius = PApplet.map(zeitspanne, 0, this.stundeInMillis, 0, parent.radius_stunde);
+//		}
+//		else if ( (zeitspanne >= this.stundeInMillis) && (zeitspanne < this.tagInMillis) )
+//		{
+//			radius = PApplet.map(zeitspanne, this.stundeInMillis, this.tagInMillis, parent.radius_stunde, parent.radius_tag );
+//		}
+//		else if ( (zeitspanne >= this.tagInMillis) && (zeitspanne < this.wocheInMillis) )
+//		{
+//			radius = PApplet.map(zeitspanne, this.tagInMillis, this.wocheInMillis, parent.radius_tag, parent.radius_woche );
+//		}
+//		else if ( (zeitspanne >= this.wocheInMillis) && (zeitspanne < this.monatInMillis) )
+//		{
+//			radius = PApplet.map(zeitspanne, this.wocheInMillis, this.monatInMillis, parent.radius_woche, parent.radius_monat );
+//		}
+//		else if ( (zeitspanne >= this.monatInMillis) && (zeitspanne < this.jahrInMillis) )
+//		{
+//			radius = PApplet.map(zeitspanne, this.monatInMillis, this.jahrInMillis, parent.radius_monat, parent.radius_jahr );
+//		}
+//		else
+//		{
+//			radius = parent.radius_jahr;
+//		}
+//		System.out.println("zeitspanne "+zeitspanne+" bedeutet radius "+radius+" bedeutet "+new Timestamp(zeitpunkt.getTimeInMillis()).toString());
+//		return radius;
+//	}
 	
 	float calcDistToMouse()
 	{
