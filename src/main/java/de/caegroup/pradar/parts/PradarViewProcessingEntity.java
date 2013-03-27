@@ -79,12 +79,19 @@ public class PradarViewProcessingEntity
 	----------------------------*/
 	public void detColor()
 	{
-		if ( this.entity.getExitcode().matches("0") || this.entity.getExitcode().matches("") )
+		if ( this.entity.getExitcode().matches("0") )
 		{
 			// dunkelgruen
 			this.color[0] = 93;
-			this.color[1] = 134;
+			this.color[1] = 135;
 			this.color[2] = 77;
+		}
+		else if ( this.entity.getExitcode().matches("") )
+		{
+			// dunkelgruen
+			this.color[0] = 215;
+			this.color[1] = 135;
+			this.color[2] = 0;
 		}
 		else
 		{
@@ -300,7 +307,7 @@ public class PradarViewProcessingEntity
 		this.parent.ellipse( this.checkin_position[0], this.checkin_position[1], (this.parent.bezugsgroesse/200), (this.parent.bezugsgroesse/200) );
 		this.parent.ellipse( this.checkout_position[0], this.checkout_position[1], (this.parent.bezugsgroesse/200), (this.parent.bezugsgroesse/200) );
 		this.parent.line(this.checkin_position[0], this.checkin_position[1], this.checkout_position[0], this.checkout_position[1]);
-		this.parent.text(this.bogenlaenge, this.checkin_position[0], this.checkin_position[1]);
+//		this.parent.text(this.bogenlaenge, this.checkin_position[0], this.checkin_position[1]);
 	}
 	
 	/*----------------------------
