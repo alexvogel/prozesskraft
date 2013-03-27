@@ -213,11 +213,9 @@ public class PradarViewProcessingEntity
 		System.out.println("distance nach nachbehandlung: "+distance);
 		// antigravitation nimmt mit dem quadrat des abstands ab
 		
-		if ( Math.abs(distance) < 3.14)
-		{
-			antigravitypuls = (distance / (Math.pow((10*distance),2))) * this.gravity;
+		antigravitypuls = (distance / (Math.pow((10*distance),3))) * this.gravity;
 //			float antigravitypulsMap = PApplet.map((float)antigravitypuls, (float)-10, (float)10, (float)-0.01, (float)0.01);
-		}
+
 		System.out.println("antigravitypuls: "+antigravitypuls);
 		return antigravitypuls;
 
