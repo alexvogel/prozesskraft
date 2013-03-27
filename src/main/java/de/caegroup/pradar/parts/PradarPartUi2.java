@@ -182,7 +182,7 @@ public class PradarPartUi2 extends ModelObject
 		lblPeriod.setText("consider period of past");
 		
 		spinner_period = new Spinner(grpFilter, SWT.BORDER);
-		spinner_period.setMaximum(10000);
+		spinner_period.setMaximum(8064);
 		spinner_period.setSelection(48);
 		
 		Label lblNewLabel_3 = new Label(grpFilter, SWT.NONE);
@@ -273,7 +273,10 @@ public class PradarPartUi2 extends ModelObject
 		filter_entity.setHost(einstellungen.getHost());
 		filter_entity.setActive(einstellungen.getActive());
 		filter_entity.setPeriodInHours(einstellungen.getPeriod());
-	
+		System.out.println("period aus einstellungen in stunden: "+einstellungen.getPeriod());
+		System.out.println("period aus filter_entity in Stunden: "+filter_entity.getPeriodInHours());
+		System.out.println("period aus filter_entity in Millis: "+filter_entity.getPeriodInMillis());
+		
 		applet.setFilter(filter_entity);
 	}
 	public void applet_paint_with_new_zoom()

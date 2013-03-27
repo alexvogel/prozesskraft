@@ -81,7 +81,7 @@ public class PradarViewProcessingPage extends PApplet
 	int durchmesser_jahr;
 	int durchmesser_period;
 	
-	long jahrInMillis   = 14515200000L;
+	long jahrInMillis   = 29030400000L;
 	long monatInMillis  = 2419200000L;
 	long wocheInMillis  = 604800000L;
 	long tagInMillis    = 86400000;
@@ -502,7 +502,7 @@ public class PradarViewProcessingPage extends PApplet
 	{
 		this.entity_filter = entity_filter;
 		System.out.println("setting new filter");
-		System.out.println("period is now: "+this.entity_filter.getPeriodInMillis());
+//		System.out.println("period is now: "+this.entity_filter.getPeriodInMillis());
 		this.filter(this.entity_filter);
 	}
 
