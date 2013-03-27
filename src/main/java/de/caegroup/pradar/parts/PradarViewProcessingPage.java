@@ -52,8 +52,8 @@ public class PradarViewProcessingPage extends PApplet
 	ArrayList<Entity> all_entities = new ArrayList<Entity>();
 	ArrayList<Entity> matched_entities = new ArrayList<Entity>();
 	ArrayList<PradarViewProcessingEntity> matched_processing_entities = new ArrayList<PradarViewProcessingEntity>();
-	Entity entity_mit_fahne = null;
-	PradarViewProcessingEntity pentity_dragged = null;
+	Entity entity_nahe_maus = null;
+	PradarViewProcessingEntity pentity_nahe_maus = null;
 	Entity entity_mit_kleinstem_abstand_mouse = new Entity();
 	float distanceToMouse = 100000;
 	float keine_fahne_ab_abstand_mehr_als = 20;
@@ -284,7 +284,7 @@ public class PradarViewProcessingPage extends PApplet
 		detMouseAndEntity();
 		
 		// fahne zeichnen, falls bedingungen erfuellt
-		if (this.entity_mit_fahne != null)
+		if (this.entity_nahe_maus != null)
 		{
 			draw_flag();
 		}
@@ -302,19 +302,19 @@ public class PradarViewProcessingPage extends PApplet
 
 		fill(100);
 		textSize(9);
-		text("process:  "+entity_mit_fahne.getProcess(), mouseX+6, mouseY-60);
-		text("user:     "+entity_mit_fahne.getUser(),    mouseX+6, mouseY-50);
-		text("host:     "+entity_mit_fahne.getHost(),    mouseX+6, mouseY-40);
-		text("checkin:  "+entity_mit_fahne.getCheckinAsString(), mouseX+6, mouseY-30);
-		text("checkout: "+entity_mit_fahne.getCheckoutAsString(),mouseX+6, mouseY-20);
-		text("exitcode: "+entity_mit_fahne.getExitcode(),mouseX+6, mouseY-10);
+		text("process:  "+this.entity_nahe_maus.getProcess(), mouseX+6, mouseY-60);
+		text("user:     "+this.entity_nahe_maus.getUser(),    mouseX+6, mouseY-50);
+		text("host:     "+this.entity_nahe_maus.getHost(),    mouseX+6, mouseY-40);
+		text("checkin:  "+this.entity_nahe_maus.getCheckinAsString(), mouseX+6, mouseY-30);
+		text("checkout: "+this.entity_nahe_maus.getCheckoutAsString(),mouseX+6, mouseY-20);
+		text("exitcode: "+this.entity_nahe_maus.getExitcode(),mouseX+6, mouseY-10);
 	}
 	
 	void detMouseAndEntity()
 	{
 		this.distanceToMouse = 1000000;
-		this.entity_mit_fahne = null;
-		this.pentity_dragged = null;
+		this.entity_nahe_maus = null;
+		this.pentity_nahe_maus = null;
 		this.entity_mit_kleinstem_abstand_mouse = null;
 		
 		// feststellen der ententy, die den kleinsten abstand zur mouse hat
@@ -333,7 +333,8 @@ public class PradarViewProcessingPage extends PApplet
 		// feststellen ob der kleinste abstand kleiner grenzabstand ist
 		if (this.distanceToMouse < this.keine_fahne_ab_abstand_mehr_als)
 		{
-			this.entity_mit_fahne = this.entity_mit_kleinstem_abstand_mouse;
+			this.entity_nahe_maus = this.entity_mit_kleinstem_abstand_mouse;
+			this.pentity_nahe_maus = getPentityBySuperId(this.entity_nahe_maus.getSuperid());
 		}
 	}
 	
@@ -492,7 +493,7 @@ public class PradarViewProcessingPage extends PApplet
 	{
 		
 		// Aufruf taetigen
-		String aufruf = "nedit "+entity_mit_fahne.getResource();
+		String aufruf = "nedit "+this.entity_nahe_maus.getResource();
 //		System.out.println("entity_mit_fahne: "+entity_mit_fahne.getId());
 		System.out.println("showing resource: "+aufruf);
 		
@@ -518,11 +519,11 @@ public class PradarViewProcessingPage extends PApplet
 			doubleClick();
 		}
 		
-		if ( this.distanceToMouse < this.keine_fahne_ab_abstand_mehr_als )
-		{
-			this.pentity_dragged = getPentityBySuperId(this.entity_mit_kleinstem_abstand_mouse.getSuperid());
-		}
-		
+//		if ( this.distanceToMouse < this.keine_fahne_ab_abstand_mehr_als )
+//		{
+//			this.pentity_dragged = getPentityBySuperId(this.entity_mit_kleinstem_abstand_mouse.getSuperid());
+//		}
+//		
 		mouse_last_pressed = now;
 		mouse_pressed_x = mouseX;
 		mouse_pressed_y = mouseY;
@@ -546,9 +547,9 @@ public class PradarViewProcessingPage extends PApplet
 	public void mouseDragged()
 	{
 		
-		if ( this.pentity_dragged != null )
+		if ( this.pentity_nahe_maus != null )
 		{
-			this.pentity_dragged.setBogenlaenge(calcBogenlaengeFromPosition(mouseX, mouseY));
+			this.pentity_nahe_maus.setBogenlaenge(calcBogenlaengeFromPosition(mouseX, mouseY));
 			System.out.println("dragging a pentity not the whole radar");
 		}
 		
