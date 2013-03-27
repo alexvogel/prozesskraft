@@ -390,14 +390,16 @@ public class PradarViewProcessingPage extends PApplet
 		}
 		
 		// ueber alle Processingentities, die existieren, soll iteriert werden und nicht mehr matchende sollen entfernt werden.
+		ArrayList<PradarViewProcessingEntity> new_matched_processing_entities = new ArrayList<PradarViewProcessingEntity>();
 		for (int x = 0; x<this.matched_processing_entities.size(); x++)
 		{
 			PradarViewProcessingEntity pentity = this.matched_processing_entities.get(x);
-			if ( !(isEntityPresent(pentity)) )
+			if (isEntityPresent(pentity))
 			{
-				this.matched_processing_entities.remove(x);
+				new_matched_processing_entities.add(pentity);
 			}
 		}
+		this.matched_processing_entities = new_matched_processing_entities;
 		
 		// ueber alle pentities iterieren und nur beim ersten die fixPosition auf true setzen
 		// setzen des ersten auf fixPosition
@@ -413,8 +415,6 @@ public class PradarViewProcessingPage extends PApplet
 				pentity.setFixPosition(false);
 			}
 		}
-		
-		
 	}
 	
 	Entity getEntityBySuperId(String superId)

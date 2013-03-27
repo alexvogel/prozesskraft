@@ -274,8 +274,6 @@ public class PradarPartUi2 extends ModelObject
 		filter_entity.setActive(einstellungen.getActive());
 		filter_entity.setPeriodInHours(einstellungen.getPeriod());
 	
-		System.out.println("setting timeperiod in hours to: "+einstellungen.getPeriod());
-		
 		applet.setFilter(filter_entity);
 	}
 	public void applet_paint_with_new_zoom()
