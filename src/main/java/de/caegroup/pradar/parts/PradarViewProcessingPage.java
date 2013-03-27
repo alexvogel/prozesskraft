@@ -334,7 +334,6 @@ public class PradarViewProcessingPage extends PApplet
 		if (this.distanceToMouse < this.keine_fahne_ab_abstand_mehr_als)
 		{
 			this.entity_nahe_maus = this.entity_mit_kleinstem_abstand_mouse;
-//			this.pentity_nahe_maus = getPentityBySuperId(this.entity_nahe_maus.getSuperid());
 		}
 	}
 	
@@ -554,7 +553,6 @@ public class PradarViewProcessingPage extends PApplet
 		if ( this.pentity_nahe_maus != null )
 		{
 			this.pentity_nahe_maus.setBogenlaenge(calcBogenlaengeFromPosition(mouseX, mouseY));
-			System.out.println("dragging a pentity not the whole radar");
 		}
 		
 		else
@@ -566,15 +564,6 @@ public class PradarViewProcessingPage extends PApplet
 			double new_center_ratio_x = ((double) new_center_x / (double)width);
 			double new_center_ratio_y = ((double) new_center_y / (double)height);
 			
-	//		System.out.println("new_center_x= "+new_center_x+"    width="+width+"   || new_center_factor_x="+new_center_factor_x);
-			
-	//		if		(new_center_ratio_x < 0)		{this.center_ratio_x = 0;}
-	//		else if	(new_center_ratio_x > 1)		{this.center_ratio_x = 1;}
-	//		else									{this.center_ratio_x = new_center_ratio_x;}
-	
-	//		if		(new_center_ratio_y < 0)		{this.center_ratio_y = 0;}
-	//		else if	(new_center_ratio_y > 1)		{this.center_ratio_y = 1;}
-	//		else									{this.center_ratio_y = new_center_ratio_y;}
 			this.center_ratio_x = new_center_ratio_x;
 			this.center_ratio_y = new_center_ratio_y;
 			
