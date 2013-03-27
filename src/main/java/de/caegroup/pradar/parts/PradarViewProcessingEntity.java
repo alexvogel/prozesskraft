@@ -136,15 +136,21 @@ public class PradarViewProcessingEntity
 	
 	public void calcNewBogenlaenge()
 	{
-		System.out.println("SuperId von ICH: "+this.getSuperid());
+//		System.out.println("SuperId von ICH: "+this.getSuperid());
 		long now = System.currentTimeMillis();
 		long timediff = now - this.lastTimePositionCalcInMillis;
 		
 		double antiGravityPulsSum = 0;
+		boolean theFirstHasAlreadyBeenSeen = false;
 		
 		Iterator<PradarViewProcessingEntity> iterpentity = this.parent.matched_processing_entities.iterator();
 		while (iterpentity.hasNext())
 		{
+			if (!(theFirstHasAlreadyBeenSeen))
+			{
+				theFirstHasAlreadyBeenSeen = true;
+				continue;
+			}
 			PradarViewProcessingEntity pentity = iterpentity.next();
 			if (pentity.equals(this))
 			{
