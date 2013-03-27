@@ -334,7 +334,7 @@ public class PradarViewProcessingPage extends PApplet
 		if (this.distanceToMouse < this.keine_fahne_ab_abstand_mehr_als)
 		{
 			this.entity_nahe_maus = this.entity_mit_kleinstem_abstand_mouse;
-			this.pentity_nahe_maus = getPentityBySuperId(this.entity_nahe_maus.getSuperid());
+//			this.pentity_nahe_maus = getPentityBySuperId(this.entity_nahe_maus.getSuperid());
 		}
 	}
 	
@@ -519,11 +519,15 @@ public class PradarViewProcessingPage extends PApplet
 			doubleClick();
 		}
 		
-//		if ( this.distanceToMouse < this.keine_fahne_ab_abstand_mehr_als )
-//		{
-//			this.pentity_dragged = getPentityBySuperId(this.entity_mit_kleinstem_abstand_mouse.getSuperid());
-//		}
-//		
+		if ( this.entity_nahe_maus != null )
+		{
+			this.pentity_nahe_maus = getPentityBySuperId(this.entity_nahe_maus.getSuperid());
+		}
+		else
+		{
+			this.pentity_nahe_maus = null;
+		}
+		
 		mouse_last_pressed = now;
 		mouse_pressed_x = mouseX;
 		mouse_pressed_y = mouseY;
