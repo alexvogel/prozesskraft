@@ -281,7 +281,7 @@ public class PradarViewProcessingPage extends PApplet
 			pentity.draw();
 		}
 
-		detEntityWithFlag();
+		detMouseAndEntity();
 		
 		// fahne zeichnen, falls bedingungen erfuellt
 		if (this.entity_mit_fahne != null)
@@ -310,10 +310,11 @@ public class PradarViewProcessingPage extends PApplet
 		text("exitcode: "+entity_mit_fahne.getExitcode(),mouseX+6, mouseY-10);
 	}
 	
-	void detEntityWithFlag()
+	void detMouseAndEntity()
 	{
 		this.distanceToMouse = 1000000;
 		this.entity_mit_fahne = null;
+		this.pentity_dragged = null;
 		this.entity_mit_kleinstem_abstand_mouse = null;
 		
 		// feststellen der ententy, die den kleinsten abstand zur mouse hat
@@ -414,7 +415,7 @@ public class PradarViewProcessingPage extends PApplet
 	
 	float calcBogenlaengeFromPosition(float x, float y)
 	{
-		float bogenlaenge = (float) (Math.atan((x - this.center_x) / (y - this.center_y)));
+		float bogenlaenge = (float) ( Math.atan((x - this.center_y) / (y - this.center_x)) );
 		return bogenlaenge;
 	}
 	
