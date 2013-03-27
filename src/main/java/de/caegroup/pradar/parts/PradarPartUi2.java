@@ -179,11 +179,11 @@ public class PradarPartUi2 extends ModelObject
 		
 		Label lblPeriod = new Label(grpFilter, SWT.NONE);
 		lblPeriod.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
-		lblPeriod.setText("consider period of past");
+		lblPeriod.setText("active in last");
 		
 		spinner_period = new Spinner(grpFilter, SWT.BORDER);
 		spinner_period.setMaximum(8064);
-		spinner_period.setSelection(48);
+		spinner_period.setSelection(168);
 		
 		Label lblNewLabel_3 = new Label(grpFilter, SWT.NONE);
 		lblNewLabel_3.setText("hours");
@@ -273,9 +273,9 @@ public class PradarPartUi2 extends ModelObject
 		filter_entity.setHost(einstellungen.getHost());
 		filter_entity.setActive(einstellungen.getActive());
 		filter_entity.setPeriodInHours(einstellungen.getPeriod());
-		System.out.println("period aus einstellungen in stunden: "+einstellungen.getPeriod());
-		System.out.println("period aus filter_entity in Stunden: "+filter_entity.getPeriodInHours());
-		System.out.println("period aus filter_entity in Millis: "+filter_entity.getPeriodInMillis());
+//		System.out.println("period aus einstellungen in stunden: "+einstellungen.getPeriod());
+//		System.out.println("period aus filter_entity in Stunden: "+filter_entity.getPeriodInHours());
+//		System.out.println("period aus filter_entity in Millis: "+filter_entity.getPeriodInMillis());
 		
 		applet.setFilter(filter_entity);
 	}

@@ -285,7 +285,8 @@ public class PradarViewProcessingPage extends PApplet
 		//////////////////
 		stroke(0, 140, 200);
 		ellipse(center_x, center_y, durchmesser_period, durchmesser_period);
-		text(""+(int)this.entity_filter.getPeriodInHours(), (center_x-radius_period+2), (center_y)-2);
+		fill(0, 140, 200);
+		text((int)this.entity_filter.getPeriodInHours()+"h", (center_x-radius_period+2), (center_y)-2);
 
 		
 		// legende schreiben

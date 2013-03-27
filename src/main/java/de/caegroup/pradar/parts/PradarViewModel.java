@@ -5,8 +5,8 @@ public class PradarViewModel extends ModelObject
 	public String process = "";
 	public String user = System.getProperty("user.name");
 	public String host = "";
-	public String active = "true";
-	public int period = 48;
+	public String active = "";
+	public int period = 168;
 	public int zoom = 100;
 	
 	public PradarViewModel()
