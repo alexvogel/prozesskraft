@@ -126,14 +126,14 @@ public class PradarViewProcessingEntity
 	public void calcPosition()
 	{
 		this.checkin_radius = calcRadius(this.entity.getCheckin());
-		System.out.println("Radius checkin: "+this.checkin_radius);
+//		System.out.println("Radius checkin: "+this.checkin_radius);
 		this.checkin_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkin_radius;
 		this.checkin_position[1] = (this.parent.center_y) + PApplet.sin(this.bogenlaenge) * this.checkin_radius;
 		this.checkout_radius = calcRadius(this.entity.getCheckout());
-		System.out.println("Radius checkout: "+this.checkout_radius);
+//		System.out.println("Radius checkout: "+this.checkout_radius);
 		this.checkout_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkout_radius;
 		this.checkout_position[1] = (this.parent.center_y) + PApplet.sin(this.bogenlaenge) * this.checkout_radius;
-		System.out.println("1=>"+this.checkin_position[0]+" "+this.checkin_position[1]+" "+this.checkout_position[0]+" "+this.checkout_position[1]);
+//		System.out.println("1=>"+this.checkin_position[0]+" "+this.checkin_position[1]+" "+this.checkout_position[0]+" "+this.checkout_position[1]);
 	}
 	
 	public void calcNewBogenlaenge()
@@ -159,13 +159,13 @@ public class PradarViewProcessingEntity
 				{
 					continue;
 				}
-				System.out.println("bogenlaenge ich: "+this.bogenlaenge);
-				System.out.println("bogenlaenge pentity: "+pentity.bogenlaenge);
+//				System.out.println("bogenlaenge ich: "+this.bogenlaenge);
+//				System.out.println("bogenlaenge pentity: "+pentity.bogenlaenge);
 				float abstandRechtsdrehend1 = (this.bogenlaenge - pentity.bogenlaenge);
 				float abstandRechtsdrehend2 = (float) (((2*Math.PI) - Math.abs(abstandRechtsdrehend1)) * (abstandRechtsdrehend1/Math.abs(abstandRechtsdrehend1) * (-1)));
 				
-				System.out.println("abstand1: "+abstandRechtsdrehend1);
-				System.out.println("abstand2: "+abstandRechtsdrehend2);
+//				System.out.println("abstand1: "+abstandRechtsdrehend1);
+//				System.out.println("abstand2: "+abstandRechtsdrehend2);
 				
 				if ( Math.abs(abstandRechtsdrehend1) < Math.abs(abstandRechtsdrehend2) )
 				{
@@ -177,19 +177,19 @@ public class PradarViewProcessingEntity
 				}
 			}
 			
-			System.out.println("antiGravityPulsSum: "+antiGravityPulsSum);
+//			System.out.println("antiGravityPulsSum: "+antiGravityPulsSum);
 			float speeddiff = (float) antiGravityPulsSum / this.mass;
-			System.out.println("speeddiff: "+speeddiff);
+//			System.out.println("speeddiff: "+speeddiff);
 			float oldspeed = this.speed;
-			System.out.println("oldspeed: "+oldspeed);
+//			System.out.println("oldspeed: "+oldspeed);
 			float newspeed = (oldspeed + speeddiff) * (1-this.damp);
-			System.out.println("newspeed: "+newspeed);
+//			System.out.println("newspeed: "+newspeed);
 			
 			this.speed = newspeed;
 			
 			float repositionBogenlaenge = (float) (newspeed * timediff * 0.001);
 			
-			System.out.println("bogenlaenge bisher: "+this.bogenlaenge);
+//			System.out.println("bogenlaenge bisher: "+this.bogenlaenge);
 			this.bogenlaenge = this.bogenlaenge + repositionBogenlaenge;
 	//		this.bogenlaenge = (float) (this.bogenlaenge - ( (int)(this.bogenlaenge / Math.PI) ) * Math.PI);
 			
@@ -205,14 +205,14 @@ public class PradarViewProcessingEntity
 				this.bogenlaenge = PApplet.map(this.bogenlaenge, (float)0, (float)-Math.PI, (float)(2*Math.PI), (float)0);
 			}
 			
-			System.out.println("bogenlaenge neu: "+this.bogenlaenge);
+//			System.out.println("bogenlaenge neu: "+this.bogenlaenge);
 		}
 	}
 	
 	private double calAntigravitypuls(double distance)
 	{
 		double antigravitypuls = 0;
-		System.out.println("distance am Anfang: "+distance);
+//		System.out.println("distance am Anfang: "+distance);
 		
 		// mindestabstand um extreme geschwindigkeiten zu vermeiden
 		if		( (distance >= 0) && (distance < 0.001) ) {distance =  0.001;}
@@ -220,13 +220,13 @@ public class PradarViewProcessingEntity
 		else if (distance > Math.PI) {distance = Math.PI;}
 		else if (distance < -Math.PI) {distance = -Math.PI;}
 		
-		System.out.println("distance nach nachbehandlung: "+distance);
+//		System.out.println("distance nach nachbehandlung: "+distance);
 		// antigravitation nimmt mit dem quadrat des abstands ab
 		
 		antigravitypuls = (distance / (Math.pow((10*distance),2))) * this.gravity;
 //			float antigravitypulsMap = PApplet.map((float)antigravitypuls, (float)-10, (float)10, (float)-0.01, (float)0.01);
 
-		System.out.println("antigravitypuls: "+antigravitypuls);
+//		System.out.println("antigravitypuls: "+antigravitypuls);
 		return antigravitypuls;
 
 	}
