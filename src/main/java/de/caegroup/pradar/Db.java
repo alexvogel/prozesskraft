@@ -82,7 +82,7 @@ public class Db
 			statement.setQueryTimeout(10);
 			
 			statement.executeUpdate("drop table if exists radar");
-			statement.executeUpdate("create table radar (id, process, host, user, checkin, checkout, active, exitcode, resource)");
+			statement.executeUpdate("create table radar (id, parentid, process, host, user, checkin, checkout, active, exitcode, resource)");
 			
 			this.connection.close();
 
@@ -111,7 +111,7 @@ public class Db
 			Statement statement = this.connection.createStatement();
 
 			statement.setQueryTimeout(10);
-			String sql = "INSERT INTO radar (id, process, host, user, checkin, checkout, active, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
+			String sql = "INSERT INTO radar (id, parentid, process, host, user, checkin, checkout, active, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
 //			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
@@ -162,7 +162,7 @@ public class Db
 			Statement statement = this.connection.createStatement();
 			
 			statement.setQueryTimeout(10);
-			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"' AND resource LIKE '"+entity.getResourceSqlPattern()+"' AND ( checkin > '"+grenzzeitInMillis+"' OR checkout > '"+grenzzeitInMillis+"')";
+			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND parentid LIKE '"+entity.getParentidSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"' AND resource LIKE '"+entity.getResourceSqlPattern()+"' AND ( checkin > '"+grenzzeitInMillis+"' OR checkout > '"+grenzzeitInMillis+"')";
 //			System.out.println(sql);
 			ResultSet rs = statement.executeQuery(sql);
 		
@@ -170,6 +170,7 @@ public class Db
 			{
 				Entity matched_entity = new Entity();
 				matched_entity.setId(rs.getString("id"));
+				matched_entity.setParentid(rs.getString("parentid"));
 				matched_entity.setProcess(rs.getString("process"));
 				matched_entity.setUser(rs.getString("user"));
 				matched_entity.setHost(rs.getString("host"));
@@ -209,6 +210,7 @@ public class Db
 			{
 				Entity matched_entity = new Entity();
 				matched_entity.setId(rs.getString("id"));
+				matched_entity.setParentid(rs.getString("parentid"));
 				matched_entity.setProcess(rs.getString("process"));
 				matched_entity.setUser(rs.getString("user"));
 				matched_entity.setHost(rs.getString("host"));
@@ -251,16 +253,16 @@ public class Db
 				System.out.println("result is empty!");
 			}
 			
-			String formatstring = "|%-14s|%-11s|%-7s|%-13s|%-6s|%-19s|%-19s|%-8s|\n";
-			System.out.format(formatstring, "id", "process", "user", "host", "active", "checkin", "checkout", "exitcode");
-			System.out.format(formatstring, "--------------", "-----------", "-------", "-------------", "------", "-------------------", "-------------------", "--------");
+			String formatstring = "|%-14s|%-14s|%-11s|%-7s|%-13s|%-6s|%-19s|%-19s|%-8s|\n";
+			System.out.format(formatstring, "id", "parentid", "process", "user", "host", "active", "checkin", "checkout", "exitcode");
+			System.out.format(formatstring, "--------------", "--------------", "-----------", "-------", "-------------", "------", "-------------------", "-------------------", "--------");
 
 			Iterator<Entity> iterentity = matched_entities.iterator();
 			
 			while (iterentity.hasNext())
 			{
 				Entity actual_entity = iterentity.next();
-				System.out.format(formatstring, actual_entity.getId(), actual_entity.getProcess(), actual_entity.getUser(), actual_entity.getHost(), actual_entity.getActive(), actual_entity.getCheckinAsString(), actual_entity.getCheckoutAsString(), actual_entity.getExitcode() );
+				System.out.format(formatstring, actual_entity.getId(), actual_entity.getParentid(), actual_entity.getProcess(), actual_entity.getUser(), actual_entity.getHost(), actual_entity.getActive(), actual_entity.getCheckinAsString(), actual_entity.getCheckoutAsString(), actual_entity.getExitcode() );
 			}
 
 			this.connection.close();

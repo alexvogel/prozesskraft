@@ -12,6 +12,7 @@ public class Entity
 	----------------------------*/
 
 	public String id = "";
+	public String parentid = "";
 	public Calendar checkin = Calendar.getInstance();
 	public Calendar checkout = Calendar.getInstance();
 	public String process = "";
@@ -149,6 +150,34 @@ public class Entity
 		return id;
 	}
 
+	/**
+	 * @return the parentid
+	 */
+	public String getParentid()
+	{
+		return this.parentid;
+	}
+
+	/**
+	 * @param parentid the parentid to set
+	 */
+	public void setParentid(String parentid)
+	{
+		this.parentid = parentid;
+	}
+
+	public String getParentidSqlPattern()
+	{
+		if (this.parentid.matches("all") || this.host.matches(""))
+		{
+			return "%";
+		}
+		else
+		{
+			return "%"+this.parentid+"%";
+		}
+	}
+	
 	public String getIdSqlPattern()
 	{
 		if (!(this.id.isEmpty()))
