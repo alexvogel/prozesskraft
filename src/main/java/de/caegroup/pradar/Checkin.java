@@ -76,6 +76,11 @@ public class Checkin
 				.withDescription("[optional] unique id over all instances of all possible processes")
 				.create("id");
 		
+		Option parentid = OptionBuilder.withArgName("parentid")
+				.hasArg()
+				.withDescription("[optional] id of the parent process")
+				.create("parentid");
+		
 		Option user = OptionBuilder.withArgName("user")
 				.hasArg()
 				.withDescription("[optional] owner of processinstance")
@@ -103,6 +108,7 @@ public class Checkin
 		options.addOption( v );
 		options.addOption( process );
 		options.addOption( id );
+		options.addOption( parentid );
 		options.addOption( host );
 		options.addOption( user );
 		options.addOption( dbfile );
@@ -198,6 +204,15 @@ public class Checkin
 //			Random generator = new Random();
 			entity.genId();
 			System.out.println("<id>"+entity.getId()+"<id>");
+		}
+
+		if (line.hasOption("parentid"))
+		{
+			entity.setParentid(line.getOptionValue("parentid"));
+		}
+		else
+		{
+			entity.setParentid("0");
 		}
 
 		// setzen des hosts vom -host
