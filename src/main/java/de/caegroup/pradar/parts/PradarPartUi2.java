@@ -531,6 +531,7 @@ public class PradarPartUi2 extends ModelObject
 				try
 				{
 					Shell shell = new Shell(display);
+					shell.setText("pradar-gui "+"v[% version %]");
 					shell.setLayout(new FillLayout());
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
 					GridLayout gl_composite = new GridLayout(2, false);
