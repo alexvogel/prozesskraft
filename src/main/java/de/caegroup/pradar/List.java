@@ -74,6 +74,11 @@ public class List
 				.withDescription("[optional] filter for field 'id'")
 				.create("id");
 		
+		Option parentid = OptionBuilder.withArgName("parentid")
+				.hasArg()
+				.withDescription("[optional] filter for field 'parentid'")
+				.create("parentid");
+		
 		Option user = OptionBuilder.withArgName("user|all")
 				.hasArg()
 				.withDescription("[optional; default=<you>] filter for field 'user'")
@@ -107,6 +112,7 @@ public class List
 		options.addOption( v );
 		options.addOption( process );
 		options.addOption( id );
+		options.addOption( parentid );
 		options.addOption( host );
 		options.addOption( user );
 		options.addOption( exitcode );
@@ -192,6 +198,16 @@ public class List
 		else
 		{
 			entity.setId("");
+		}
+
+		// definition des filters fuer parentid
+		if (line.hasOption("parentid"))
+		{
+			entity.setParentid(line.getOptionValue("parentid"));
+		}
+		else
+		{
+			entity.setParentid("");
 		}
 
 		// definition des filters fuer process
