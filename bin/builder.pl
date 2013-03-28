@@ -582,9 +582,18 @@ foreach my $refh_stackline (@CONFIG)
 
 		#-------------------
 		# --- START ACTION 'searchreplace' --- #
-		if ( grep { /searchreplace/ } @now_action )
+		my $full_term;
+		if ( grep { /searchreplace/; $full_term = $_ } @now_action )
 		{
+			# falls mit searchreplace ein parameter mit gegeben wurde, soll das festgestellt werden
+			my @filenames_from_parameter;
+			if ( $full_term =~ m/searchreplace\((.+)\)/ )
+			{
+				@filenames_from_parameter = split(",", $1);
+			}
+			print "FULL_TERM: $full_term\n";
 			
+			print "PARAMETER: @filenames_from_parameter\n";
 			#-------------------
 			# suchen und ersetzen des platzhalters fuer 'version' in allen files
 			print "info: action 'searchreplace'\n";
@@ -602,7 +611,9 @@ foreach my $refh_stackline (@CONFIG)
 				my $now_app_short;
 				if ($now_app =~ m/^\w+-(\w+)$/i) {$now_app_short = $1;}
 #				print "info: $_\n";
-				if ( ( $_ =~ m/^$now_app$/i ) || ( $_ =~ m/^$now_app\.\w+$/i ) || ($now_app_short && ( $_ =~ m/^$now_app_short\.\w+$/i )) )
+				my $now_filename_without_path = $_;
+#				print "filename: $now_filename_without_path\n";
+				if ( ( $_ =~ m/^$now_app$/i ) || ( $_ =~ m/^$now_app\.\w+$/i ) || ($now_app_short && ( $_ =~ m/^$now_app_short\.\w+$/i )) || (@filenames_from_parameter && ( grep {$now_filename_without_path =~ /$_/i} @filenames_from_parameter )) )
 				{
 					print "info: processing file in search of tt placeholders: $File::Find::name\n";
 					my $relname = File::Spec->abs2rel($File::Find::name);
