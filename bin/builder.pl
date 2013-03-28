@@ -591,29 +591,32 @@ foreach my $refh_stackline (@CONFIG)
 			{
 				@filenames_from_parameter = split(",", $1);
 			}
-			print "FULL_TERM: $full_term\n";
-			
-			print "PARAMETER: @filenames_from_parameter\n";
 			#-------------------
 			# suchen und ersetzen des platzhalters fuer 'version' in allen files
 			print "info: action 'searchreplace'\n";
 			print "info: search and replace placeholder [version] and [date] in entry-point-file.\n";
-			find(\&wanted, "$TMPDIR");
+			find( sub { wanted($now_app) }, "$TMPDIR");
 			
 			sub wanted
 			{
+				my $now_app_inside_wanted = shift;
 				# wenn es ein directory ist, dann verwerfen
+				print "filename in wanted: ".$File::Find::name."\n";
 				if ( -d $File::Find::name )
 				{
 					next;
 				}
 				# falls $now_app ein Namen wie z.b. "pradar-checkin" ist, soll bei searchreplace auch "checkin" als entrypoints beruecksichtigt werden.
 				my $now_app_short;
-				if ($now_app =~ m/^\w+-(\w+)$/i) {$now_app_short = $1;}
+				if ($now_app_inside_wanted =~ m/^\w+-(\w+)$/i) {$now_app_short = $1;}
 #				print "info: $_\n";
 				my $now_filename_without_path = $_;
 #				print "filename: $now_filename_without_path\n";
-				if ( ( $_ =~ m/^$now_app$/i ) || ( $_ =~ m/^$now_app\.\w+$/i ) || ($now_app_short && ( $_ =~ m/^$now_app_short\.\w+$/i )) || (@filenames_from_parameter && ( grep {$now_filename_without_path =~ /$_/i} @filenames_from_parameter )) )
+#				print "filename kurz vor 'if': ".$File::Find::name."\n";
+#				print "kurzname kurz vor 'if': ".$_."\n";
+#				print "now_app kurz vor 'if': ".$now_app_inside_wanted."\n";
+#				print "now_app_short kurz vor 'if': ".$now_app_short."\n";
+				if ( ( $_ =~ m/^$now_app_inside_wanted/i ) || ( $_ =~ m/^$now_app_inside_wanted\.\w+$/i ) || ($now_app_short && ( $_ =~ m/^$now_app_short\.\w+$/i )) || (@filenames_from_parameter && ( grep {$now_filename_without_path =~ /$_/i} @filenames_from_parameter )) )
 				{
 					print "info: processing file in search of tt placeholders: $File::Find::name\n";
 					my $relname = File::Spec->abs2rel($File::Find::name);
