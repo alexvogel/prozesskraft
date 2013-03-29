@@ -73,7 +73,7 @@ import org.eclipse.swt.widgets.Spinner;
 //import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
 //import org.eclipse.core.databinding.beans.PojoProperties;
 
-public class PradarPartUi2 extends ModelObject
+public class PradarPartUi3 extends ModelObject
 {
 	static CommandLine line;
 	private DataBindingContext bindingContextFilter;
@@ -85,6 +85,7 @@ public class PradarPartUi2 extends ModelObject
 	private Text text_active;
 	private Spinner spinner_period;
 	private Scale scale_zoom;
+	private Table table;
 	private PradarViewModel einstellungen = new PradarViewModel();
 	private Entity filter_entity = new Entity();
 	PradarViewProcessingPage applet;
@@ -94,7 +95,7 @@ public class PradarPartUi2 extends ModelObject
 	 * constructor als EntryPoint fuer WindowBuilder
 	 * @wbp.parser.entryPoint
 	 */
-	public PradarPartUi2()
+	public PradarPartUi3()
 	{
 		Shell shell = new Shell();
 		shell.setSize(633, 688);
@@ -107,7 +108,7 @@ public class PradarPartUi2 extends ModelObject
 	 * constructor als EntryPoint fuer Main oder RCP
 	 */
 	@Inject
-	public PradarPartUi2(Composite composite)
+	public PradarPartUi3(Composite composite)
 	{
 		createControls(composite);
 	}
@@ -226,6 +227,17 @@ public class PradarPartUi2 extends ModelObject
 		gd_composite_12.minimumHeight = 10;
 		composite_12.setLayoutData(gd_composite_12);
 		
+		Composite composite_2 = new Composite(composite, SWT.NONE);
+		composite_2.setLayout(new GridLayout(1, false));
+		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+		gd_composite_2.heightHint = 164;
+		composite_2.setLayoutData(gd_composite_2);
+		
+		CheckboxTableViewer checkboxTableViewer = CheckboxTableViewer.newCheckList(composite_2, SWT.BORDER | SWT.FULL_SELECTION);
+		table = checkboxTableViewer.getTable();
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		checkboxTableViewer.setContentProvider(new ContentProvider());
+		
 		bindingContextFilter = initDataBindingsFilter();
 		bindingContextZoom = initDataBindingsZoom();
 
@@ -286,11 +298,11 @@ public class PradarPartUi2 extends ModelObject
 	{
 	}
 
-//	@Focus
-//	public void setFocus()
-//	{
-//		lblNewLabel.setFocus();
-//	}
+	@Focus
+	public void setFocus()
+	{
+		table.setFocus();
+	}
 	
 	IChangeListener listener = new IChangeListener()
 	{
@@ -525,7 +537,7 @@ public class PradarPartUi2 extends ModelObject
 					GridLayout gl_composite = new GridLayout(2, false);
 					gl_composite.marginWidth = 0;
 					gl_composite.marginHeight = 0;
-					new PradarPartUi2(composite);
+					new PradarPartUi3(composite);
 					
 					try
 					{

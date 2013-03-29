@@ -41,7 +41,7 @@ public class PradarViewProcessingPage extends PApplet
 	Calendar mouse_last_pressed = Calendar.getInstance();
 	int zoomfaktor = 100;
 	int zoomfaktor_min = 50;
-	int zoomfaktor_max = 500;
+	int zoomfaktor_max = 1000;
 	int center_x;
 	int center_y;
 	double center_ratio_x = 0.5;
