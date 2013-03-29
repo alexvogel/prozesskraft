@@ -471,7 +471,7 @@ public class PradarPartUi3 extends ModelObject
 		IObservableValue modelObservablePeriod = BeanProperties.value("period").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservablePeriod, modelObservablePeriod, null, null);
 		//
-		IObservableValue targetObservableChildren = WidgetProperties.selection().observeDelayed(800, button_children);
+		IObservableValue targetObservableChildren = WidgetProperties.selection().observe(button_children);
 		IObservableValue modelObservableChildren = BeanProperties.value("children").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservableChildren, modelObservableChildren, null, null);
 		//

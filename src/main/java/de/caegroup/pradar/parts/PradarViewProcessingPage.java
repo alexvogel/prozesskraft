@@ -55,9 +55,11 @@ public class PradarViewProcessingPage extends PApplet
 	ArrayList<PradarViewProcessingEntity> matched_processing_entities = new ArrayList<PradarViewProcessingEntity>();
 	Entity entity_nahe_maus = null;
 	PradarViewProcessingEntity pentity_nahe_maus = null;
+	boolean period_kreis_folgt_der_maus = false;
 	Entity entity_mit_kleinstem_abstand_mouse = new Entity();
 	float distanceToMouse = 100000;
-	float keine_fahne_ab_abstand_mehr_als = 20;
+	float maus_toleranz_pentity = 20;
+	float maus_toleranz_period = 5;
 	private float[] legendposition = {0,0,0};
 	private int[] legendcolor = {0,0,0};
     private int legendsize = (10);
@@ -335,7 +337,6 @@ public class PradarViewProcessingPage extends PApplet
 	{
 		this.distanceToMouse = 1000000;
 		this.entity_nahe_maus = null;
-		this.pentity_nahe_maus = null;
 		this.entity_mit_kleinstem_abstand_mouse = null;
 		
 		// feststellen der ententy, die den kleinsten abstand zur mouse hat
@@ -352,7 +353,7 @@ public class PradarViewProcessingPage extends PApplet
 		}
 
 		// feststellen ob der kleinste abstand kleiner grenzabstand ist
-		if (this.distanceToMouse < this.keine_fahne_ab_abstand_mehr_als)
+		if (this.distanceToMouse < this.maus_toleranz_pentity)
 		{
 			this.entity_nahe_maus = this.entity_mit_kleinstem_abstand_mouse;
 		}
@@ -382,8 +383,8 @@ public class PradarViewProcessingPage extends PApplet
 	{
 		this.matched_entities = entity_filter.getAllMatches(this.all_entities);
 
-		// ueber alle entities, die angezeigt werden sollen iterieren und noch nicht vorhandene erstellen
-		// fuer entities, die noch keine entsprechung bei den ProcessingEntities haben, soll eine erstellt werden
+		// ueber alle entities, die angezeigt werden sollen iterieren
+		// - fuer entities, die noch keine entsprechung (pentity) haben, soll eine erstellt werden
 		Iterator<Entity> iterentity = this.matched_entities.iterator();
 		while (iterentity.hasNext())
 		{
@@ -399,7 +400,6 @@ public class PradarViewProcessingPage extends PApplet
 		
 		// ueber alle Processingentities, die existieren, soll iteriert werden und
 		// - nicht mehr matchende sollen entfernt werden.
-		// - bei matchenden soll das checkout-datum von entity gesetzt werden (fuer den fall, dass sich das geaendert hat)
 		ArrayList<PradarViewProcessingEntity> new_matched_processing_entities = new ArrayList<PradarViewProcessingEntity>();
 		for (int x = 0; x<this.matched_processing_entities.size(); x++)
 		{
@@ -455,8 +455,42 @@ public class PradarViewProcessingPage extends PApplet
 	
 	float calcBogenlaengeFromPosition(float x, float y)
 	{
-		float bogenlaenge = (float) ( Math.atan((y - this.center_y) / (x - this.center_x)) );
+		int quad;
+		if ( (((this.center_y - y) * (-1)) >= 0)  &&  ((x - this.center_x) >= 0) ) {quad = 1;}
+		else if ( (((this.center_y - y) * (-1)) >= 0)  &&  ((x - this.center_x) <= 0) ) {quad = 2;}
+		else if ( (((this.center_y - y) * (-1)) <= 0)  &&  ((x - this.center_x) <= 0) ) {quad = 3;}
+		else {quad = 4;}
+		
+		float bogenlaenge = 0;
+		if (quad == 1)
+		{
+			bogenlaenge = (float) ( Math.atan(((this.center_y - y) * (-1)) / (x - this.center_x)) );
+		}
+		
+		else if (quad == 2)
+		{
+			bogenlaenge = (float) (Math.PI + ( Math.atan(((this.center_y - y) * (-1)) / (x - this.center_x))) );
+		}
+		
+		else if (quad == 3)
+		{
+			bogenlaenge = (float) (Math.PI + ( Math.atan(((this.center_y - y) * (-1)) / (x - this.center_x))) );
+		}
+		
+		else
+		{
+			bogenlaenge = (float) (2*Math.PI + ( Math.atan(((this.center_y - y) * (-1)) / (x - this.center_x))) );
+		}
+		
 		return bogenlaenge;
+	}
+	
+	float calcRadiusFromPosition(float x, float y)
+	{
+		float bogenlaenge = calcBogenlaengeFromPosition(x,y);
+		float radius = (float) (1 / Math.cos(bogenlaenge)) * (x - this.center_x);
+		
+		return radius;
 	}
 	
 	boolean isProcessingEntityPresent(Entity entity)
@@ -498,6 +532,7 @@ public class PradarViewProcessingPage extends PApplet
 		fill(this.legendcolor[0], this.legendcolor[1], this.legendcolor[2]);
 		text((int)(((this.refresh_next.getTimeInMillis() - this.now.getTimeInMillis())/1000)), 5, height-5);
 		text("automation@caegroup.de", width-180, height-5);
+//		text(""+calcRadiusFromPosition(mouseX, mouseY), 50, height-5);
 		noFill();
 	}
 	
@@ -537,7 +572,7 @@ public class PradarViewProcessingPage extends PApplet
 //		System.out.println("entity_mit_fahne: "+entity_mit_fahne.getId());
 		System.out.println("showing resource: "+aufruf);
 		
-		if (this.distanceToMouse < this.keine_fahne_ab_abstand_mehr_als)
+		if (this.distanceToMouse < this.maus_toleranz_pentity)
 		{
 			try
 			{
@@ -568,9 +603,21 @@ public class PradarViewProcessingPage extends PApplet
 			this.pentity_nahe_maus = null;
 		}
 		
+		// period-kreis umherziehen
+		if ( Math.abs((calcRadiusFromPosition(mouseX, mouseY) - this.radius_period)) < this.maus_toleranz_period)
+		{
+			this.period_kreis_folgt_der_maus = true;
+		}
+		
 		mouse_last_pressed = now;
 		mouse_pressed_x = mouseX;
 		mouse_pressed_y = mouseY;
+	}
+	
+	public void mouseReleased()
+	{
+		this.pentity_nahe_maus = null;
+		this.period_kreis_folgt_der_maus = false;
 	}
 	
 	public PradarViewProcessingEntity getPentityBySuperId(String superid)
@@ -588,6 +635,49 @@ public class PradarViewProcessingPage extends PApplet
 		return matching_pentity;
 	}
 	
+	public Calendar calcTimeFromRadius(float radius)
+	{
+		Calendar time = Calendar.getInstance();
+		long zeitspanne = 0;
+		if (radius < 0)
+		{
+			return time;
+		}
+		else if ( (radius >= 0) && (radius < this.radius_stunde) )
+		{
+			zeitspanne = (long)PApplet.map(radius, 0, this.radius_stunde, 0, this.stundeInMillis);
+		}
+		else if ( (radius >= this.radius_stunde) && (radius < this.radius_tag) )
+		{
+			zeitspanne = (long)PApplet.map(radius, this.radius_stunde, this.radius_tag, this.stundeInMillis, this.tagInMillis);
+		}
+		else if ( (radius >= this.radius_tag) && (radius < this.radius_woche) )
+		{
+			zeitspanne = (long)PApplet.map(radius, this.radius_tag, this.radius_woche, this.tagInMillis, this.wocheInMillis);
+		}
+		else if ( (radius >= this.radius_woche) && (radius < this.radius_monat) )
+		{
+			zeitspanne = (long)PApplet.map(radius, this.radius_woche, this.radius_monat, this.wocheInMillis, this.monatInMillis);
+		}
+		else if ( (radius >= this.radius_monat) && (radius < this.radius_jahr) )
+		{
+			zeitspanne = (long)PApplet.map(radius, this.radius_monat, this.radius_jahr, this.monatInMillis, this.jahrInMillis);
+		}
+		else
+		{
+			zeitspanne = this.jahrInMillis;
+		}
+		
+		time.setTimeInMillis((time.getTimeInMillis() - zeitspanne));
+		return time;
+	}
+
+	public int calcPeriodFromTime(Calendar calendar)
+	{
+		int period = (int)((System.currentTimeMillis() - calendar.getTimeInMillis()) / 3600000);
+		return period;
+	}
+
 	public float calcRadius(Calendar zeitpunkt)
 	{
 		if (zeitpunkt.getTimeInMillis() == 0)
@@ -600,7 +690,12 @@ public class PradarViewProcessingPage extends PApplet
 		long zeitpunktInMillis = zeitpunkt.getTimeInMillis();
 		long zeitspanne = System.currentTimeMillis() - zeitpunktInMillis;
 		
-		if ( (zeitspanne >= 0) && (zeitspanne < this.stundeInMillis) )
+		if (zeitspanne < 0)
+		{
+			return 0;
+		}
+		
+		else if ( (zeitspanne >= 0) && (zeitspanne < this.stundeInMillis) )
 		{
 			radius = PApplet.map(zeitspanne, 0, this.stundeInMillis, 0, this.radius_stunde);
 		}
@@ -631,9 +726,15 @@ public class PradarViewProcessingPage extends PApplet
 	public void mouseDragged()
 	{
 		
+		// pentity umherziehen
 		if ( this.pentity_nahe_maus != null )
 		{
 			this.pentity_nahe_maus.setBogenlaenge(calcBogenlaengeFromPosition(mouseX, mouseY));
+		}
+		
+		else if (this.period_kreis_folgt_der_maus)
+		{
+			this.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
 		}
 		
 		else

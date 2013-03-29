@@ -21,14 +21,14 @@ public class PradarViewProcessingEntity
 	private float[] checkout_position = {0, 0};
 //	private int[] color = {255,255,255};
 
-	private Entity entity;
+//	private Entity entity;
 	
 	private float speed = 0;
 //	private float maxspeed = 50;
 	private float mass = (float)1;
 	private float gravity = (float)0.01;
 	private float spring = 10;
-	private float damp = (float)0.9;
+	private float damp = (float)0.1;
 	
 	private boolean fixPosition = false;
 
@@ -41,6 +41,7 @@ public class PradarViewProcessingEntity
 	long lastTimePositionCalcInMillis = System.currentTimeMillis();
 	
 	float bogenlaenge = 0;
+	float repositionBogenlaenge = 0;
 	
 	private PradarViewProcessingPage parent;
 	/*----------------------------
@@ -50,8 +51,7 @@ public class PradarViewProcessingEntity
 	public PradarViewProcessingEntity(PradarViewProcessingPage p, Entity entity)
 	{
 		this.parent = p;
-		this.entity = entity;
-		this.superid = this.entity.getSuperid();
+		this.superid = entity.getSuperid();
 		this.setInitialPosition();
 //		this.detColor();
 	}
@@ -80,14 +80,14 @@ public class PradarViewProcessingEntity
 	public int getColor(String string)
 	{
 		int[] color = {255,255,255};
-		if ( this.entity.getExitcode().matches("0") )
+		if ( this.parent.getEntityBySuperId(this.superid).getExitcode().matches("0") )
 		{
 			// dunkelgruen
 			color[0] = 93;
 			color[1] = 135;
 			color[2] = 77;
 		}
-		else if ( this.entity.getExitcode().matches("") )
+		else if ( this.parent.getEntityBySuperId(this.superid).getExitcode().matches("") )
 		{
 			// dunkelgruen
 			color[0] = 215;
@@ -125,8 +125,8 @@ public class PradarViewProcessingEntity
 	public void setInitialPosition()
 	{
 		// Berechnen des ersten Punktes
-		Calendar checkin = this.entity.getCheckin();
-		Calendar checkout = this.entity.getCheckout();
+		Calendar checkin = this.parent.getEntityBySuperId(this.superid).getCheckin();
+		Calendar checkout = this.parent.getEntityBySuperId(this.superid).getCheckout();
 		Calendar now = Calendar.getInstance();
 		if (checkout.getTimeInMillis() == 0)
 		{
@@ -143,11 +143,11 @@ public class PradarViewProcessingEntity
 	
 	public void calcPosition()
 	{
-		this.checkin_radius = this.parent.calcRadius(this.entity.getCheckin());
+		this.checkin_radius = this.parent.calcRadius(this.parent.getEntityBySuperId(this.superid).getCheckin());
 //		System.out.println("Radius checkin: "+this.checkin_radius);
 		this.checkin_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkin_radius;
 		this.checkin_position[1] = (this.parent.center_y) + PApplet.sin(this.bogenlaenge) * this.checkin_radius;
-		this.checkout_radius = this.parent.calcRadius(this.entity.getCheckout());
+		this.checkout_radius = this.parent.calcRadius(this.parent.getEntityBySuperId(this.superid).getCheckout());
 //		System.out.println("Radius checkout: "+this.checkout_radius);
 		this.checkout_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkout_radius;
 		this.checkout_position[1] = (this.parent.center_y) + PApplet.sin(this.bogenlaenge) * this.checkout_radius;
@@ -166,6 +166,7 @@ public class PradarViewProcessingEntity
 		{
 			long now = System.currentTimeMillis();
 			long timediff = now - this.lastTimePositionCalcInMillis;
+			this.lastTimePositionCalcInMillis = now;
 			
 			double antiGravityPulsSum = 0;
 			
@@ -205,7 +206,9 @@ public class PradarViewProcessingEntity
 			
 			this.speed = newspeed;
 			
-			float repositionBogenlaenge = (float) (newspeed * timediff * 0.001);
+			float repositionBogenlaenge = (float) (newspeed * timediff * 0.01);
+			
+			this.repositionBogenlaenge = repositionBogenlaenge;
 			
 //			System.out.println("bogenlaenge bisher: "+this.bogenlaenge);
 			this.bogenlaenge = this.bogenlaenge + repositionBogenlaenge;
@@ -318,7 +321,7 @@ public class PradarViewProcessingEntity
 		this.parent.ellipse( this.checkin_position[0], this.checkin_position[1], (this.parent.bezugsgroesse/200), (this.parent.bezugsgroesse/200) );
 		this.parent.ellipse( this.checkout_position[0], this.checkout_position[1], (this.parent.bezugsgroesse/200), (this.parent.bezugsgroesse/200) );
 		this.parent.line(this.checkin_position[0], this.checkin_position[1], this.checkout_position[0], this.checkout_position[1]);
-//		this.parent.text(this.bogenlaenge, this.checkin_position[0], this.checkin_position[1]);
+//		this.parent.text(this.bogenlaenge+"|"+this.speed+"|"+this.repositionBogenlaenge, this.checkin_position[0], this.checkin_position[1]);
 	}
 	
 	/*----------------------------
@@ -383,21 +386,6 @@ public class PradarViewProcessingEntity
 //		this.color = color;
 //	}
 //
-	/**
-	 * @return the entity
-	 */
-	public Entity getEntity()
-	{
-		return this.entity;
-	}
-
-	/**
-	 * @param entity the entity to set
-	 */
-	public void setEntity(Entity entity)
-	{
-		this.entity = entity;
-	}
 
 	/**
 	 * @return the parent
