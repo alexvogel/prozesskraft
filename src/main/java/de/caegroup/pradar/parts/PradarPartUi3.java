@@ -103,6 +103,7 @@ public class PradarPartUi3 extends ModelObject
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLocation(0, 0);
 		createControls(composite);
+		applet = new PradarViewProcessingPage(filter_entity, einstellungen);
 	}
 
 	/**
@@ -111,6 +112,17 @@ public class PradarPartUi3 extends ModelObject
 	@Inject
 	public PradarPartUi3(Composite composite)
 	{
+		createControls(composite);
+		applet = new PradarViewProcessingPage(filter_entity, einstellungen);
+	}
+
+	/**
+	 * constructor als EntryPoint fuer Main falls das dbfile mitgeliefert wird
+	 */
+	@Inject
+	public PradarPartUi3(Composite composite, String pathdbfile)
+	{
+		applet = new PradarViewProcessingPage(pathdbfile, filter_entity, einstellungen);
 		createControls(composite);
 	}
 
@@ -249,7 +261,6 @@ public class PradarPartUi3 extends ModelObject
 
 		Frame frame = SWT_AWT.new_Frame(composite_12);
 
-		applet = new PradarViewProcessingPage(filter_entity, einstellungen);
 		frame.add(applet, BorderLayout.CENTER);
 		applet.init();
 		frame.pack();
@@ -472,67 +483,63 @@ public class PradarPartUi3 extends ModelObject
 	 */
 	public static void main(String[] args)
 	{
-//		/*----------------------------
-//		  create boolean options
-//		----------------------------*/
-//		Option help = new Option("help", "print this message");
-//		Option v = new Option("v", "prints version and build-date");
-//		/*----------------------------
-//		  create argument options
-//		----------------------------*/
-//		Option dbfile = OptionBuilder.withArgName("dbfile")
-//				.hasArg()
-//				.withDescription("[optional] dbfile")
-////				.isRequired()
-//				.create("dbfile");
-//		/*----------------------------
-//		  create options object
-//		----------------------------*/
-//		Options options = new Options();
-//		
-//		options.addOption( help );
-//		options.addOption( v );
-//		options.addOption( dbfile );
-//				
-//		/*----------------------------
-//		  create the parser
-//		----------------------------*/
-//		CommandLineParser parser = new GnuParser();
-//		try
-//		{
-//			// parse the command line arguments
-//			line = parser.parse( options,  args );
-//		}
-//		catch ( Exception exp )
-//		{
-//			// oops, something went wrong
-//			System.err.println( "Parsing failed. Reason: "+ exp.getMessage());
-//		}
-//		
-//		/*----------------------------
-//		  usage/help
-//		----------------------------*/
-//		if ( line.hasOption("help"))
-//		{
-//			HelpFormatter formatter = new HelpFormatter();
-////			formatter.printHelp("checkin --version [% version %]", options);
-//			formatter.printHelp("pradar-gui", options);
-//			System.exit(0);
-//		}
-//		
-//		if ( line.hasOption("v"))
-//		{
-//			System.out.println("author:  alexander.vogel@caegroup.de");
-//			System.out.println("version: [% version %]");
-//			System.out.println("date:    [% date %]");
-//			System.exit(0);
-//		}
-//		
-//		if (line.hasOption("dbfile"))
-//		{
-//			setDbfile(line.getOptionValue("dbfile"));
-//		}		
-//
+		/*----------------------------
+		  create boolean options
+		----------------------------*/
+		Option help = new Option("help", "print this message");
+		Option v = new Option("v", "prints version and build-date");
+		/*----------------------------
+		  create argument options
+		----------------------------*/
+		Option dbfile = OptionBuilder.withArgName("dbfile")
+				.hasArg()
+				.withDescription("[optional] dbfile")
+//				.isRequired()
+				.create("dbfile");
+		/*----------------------------
+		  create options object
+		----------------------------*/
+		Options options = new Options();
+		
+		options.addOption( help );
+		options.addOption( v );
+		options.addOption( dbfile );
+				
+		/*----------------------------
+		  create the parser
+		----------------------------*/
+		CommandLineParser parser = new GnuParser();
+		try
+		{
+			// parse the command line arguments
+			line = parser.parse( options,  args );
+		}
+		catch ( Exception exp )
+		{
+			// oops, something went wrong
+			System.err.println( "Parsing failed. Reason: "+ exp.getMessage());
+		}
+		
+		/*----------------------------
+		  usage/help
+		----------------------------*/
+		if ( line.hasOption("help"))
+		{
+			HelpFormatter formatter = new HelpFormatter();
+//			formatter.printHelp("checkin --version [% version %]", options);
+			formatter.printHelp("pradar-gui", options);
+			System.exit(0);
+		}
+		
+		if ( line.hasOption("v"))
+		{
+			System.out.println("author:  alexander.vogel@caegroup.de");
+			System.out.println("version: [% version %]");
+			System.out.println("date:    [% date %]");
+			System.exit(0);
+		}
+		
+
 		// gui
 		final Display display = new Display();
 		
@@ -548,7 +555,14 @@ public class PradarPartUi3 extends ModelObject
 					GridLayout gl_composite = new GridLayout(2, false);
 					gl_composite.marginWidth = 0;
 					gl_composite.marginHeight = 0;
-					new PradarPartUi3(composite);
+					if (line.hasOption("dbfile"))
+					{
+						new PradarPartUi3(composite, line.getOptionValue("dbfile"));
+					}
+					else
+					{
+						new PradarPartUi3(composite);
+					}
 					
 					try
 					{

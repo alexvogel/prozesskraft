@@ -31,7 +31,7 @@ public class PradarViewProcessingPage extends PApplet
 	  structure
 	----------------------------*/
 	private PradarViewModel einstellungen;
-	private Db db = new Db();
+	private Db db;
 	@Inject
 	private Entity entity_filter;
 	Calendar refresh_last = Calendar.getInstance();
@@ -397,7 +397,9 @@ public class PradarViewProcessingPage extends PApplet
 			}
 		}
 		
-		// ueber alle Processingentities, die existieren, soll iteriert werden und nicht mehr matchende sollen entfernt werden.
+		// ueber alle Processingentities, die existieren, soll iteriert werden und
+		// - nicht mehr matchende sollen entfernt werden.
+		// - bei matchenden soll das checkout-datum von entity gesetzt werden (fuer den fall, dass sich das geaendert hat)
 		ArrayList<PradarViewProcessingEntity> new_matched_processing_entities = new ArrayList<PradarViewProcessingEntity>();
 		for (int x = 0; x<this.matched_processing_entities.size(); x++)
 		{
@@ -703,30 +705,44 @@ public class PradarViewProcessingPage extends PApplet
 //		//
 //		return bindingContextZoom;
 //	}
-
+	public void setDbfile(String pathToFile)
+	{
+		this.db.setDbfile(pathToFile);
+	}
+	
 	public PradarViewProcessingPage()
 	{
 		this.entity_filter = new Entity();
 		this.einstellungen = new PradarViewModel();
+		this.db = new Db();
+	}
+	
+	public PradarViewProcessingPage(String pathToDbfile)
+	{
+		this.entity_filter = new Entity();
+		this.einstellungen = new PradarViewModel();
+		this.db = new Db(pathToDbfile);
 	}
 	
 	public PradarViewProcessingPage(Entity entity)
 	{
 		this.entity_filter = entity;
 		this.einstellungen = new PradarViewModel();
+		this.db = new Db();
 	}
 
 	public PradarViewProcessingPage(Entity entity, PradarViewModel einstellungen)
 	{
 		this.entity_filter = entity;
 		this.einstellungen = einstellungen;
+		this.db = new Db();
 	}
 
 	public PradarViewProcessingPage(String dbfile, Entity entity, PradarViewModel einstellungen)
 	{
-		this.db = new Db(dbfile);
 		this.entity_filter = entity;
 		this.einstellungen = einstellungen;
+		this.db = new Db(dbfile);
 	}
 
 	/**

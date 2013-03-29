@@ -19,7 +19,7 @@ public class PradarViewProcessingEntity
 	private float[] checkin_position = {0, 0};
 	private float checkout_radius;
 	private float[] checkout_position = {0, 0};
-	private int[] color = {255,255,255};
+//	private int[] color = {255,255,255};
 
 	private Entity entity;
 	
@@ -53,7 +53,7 @@ public class PradarViewProcessingEntity
 		this.entity = entity;
 		this.superid = this.entity.getSuperid();
 		this.setInitialPosition();
-		this.detColor();
+//		this.detColor();
 	}
 	
 //	public PradarViewProcessingEntity(Entity entity)
@@ -77,29 +77,40 @@ public class PradarViewProcessingEntity
 	/*----------------------------
 	  METHODS
 	----------------------------*/
-	public void detColor()
+	public int getColor(String string)
 	{
+		int[] color = {255,255,255};
 		if ( this.entity.getExitcode().matches("0") )
 		{
 			// dunkelgruen
-			this.color[0] = 93;
-			this.color[1] = 135;
-			this.color[2] = 77;
+			color[0] = 93;
+			color[1] = 135;
+			color[2] = 77;
 		}
 		else if ( this.entity.getExitcode().matches("") )
 		{
 			// dunkelgruen
-			this.color[0] = 215;
-			this.color[1] = 135;
-			this.color[2] = 0;
+			color[0] = 215;
+			color[1] = 135;
+			color[2] = 0;
 		}
 		else
 		{
 			// dunkelrot
-			this.color[0] = 186;
-			this.color[1] = 55;
-			this.color[2] = 55;
+			color[0] = 186;
+			color[1] = 55;
+			color[2] = 55;
 		}
+		
+		if (string.equals("r"))
+		{
+			return color[0];
+		}
+		else if (string.equals("g"))
+		{
+			return color[1];
+		}
+		return color[2];
 	}	
 	
 	public void detNewPosition()
@@ -303,7 +314,7 @@ public class PradarViewProcessingEntity
 	public void draw()
 	{
 		this.parent.strokeWeight(this.parent.bezugsgroesse/300);
-		this.parent.stroke(this.color[0], this.color[1], this.color[2]);
+		this.parent.stroke(getColor("r"), getColor("g"), getColor("b"));
 		this.parent.ellipse( this.checkin_position[0], this.checkin_position[1], (this.parent.bezugsgroesse/200), (this.parent.bezugsgroesse/200) );
 		this.parent.ellipse( this.checkout_position[0], this.checkout_position[1], (this.parent.bezugsgroesse/200), (this.parent.bezugsgroesse/200) );
 		this.parent.line(this.checkin_position[0], this.checkin_position[1], this.checkout_position[0], this.checkout_position[1]);
@@ -356,22 +367,22 @@ public class PradarViewProcessingEntity
 		this.checkout_radius = checkout_radius;
 	}
 
-	/**
-	 * @return the color
-	 */
-	public int[] getColor()
-	{
-		return this.color;
-	}
-
-	/**
-	 * @param color the color to set
-	 */
-	public void setColor(int[] color)
-	{
-		this.color = color;
-	}
-
+//	/**
+//	 * @return the color
+//	 */
+//	public int[] getColor()
+//	{
+//		return this.color;
+//	}
+//
+//	/**
+//	 * @param color the color to set
+//	 */
+//	public void setColor(int[] color)
+//	{
+//		this.color = color;
+//	}
+//
 	/**
 	 * @return the entity
 	 */
