@@ -112,8 +112,8 @@ public class PradarPartUi3 extends ModelObject
 	@Inject
 	public PradarPartUi3(Composite composite)
 	{
-		createControls(composite);
 		applet = new PradarViewProcessingPage(filter_entity, einstellungen);
+		createControls(composite);
 	}
 
 	/**
