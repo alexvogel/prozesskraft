@@ -601,13 +601,9 @@ public class PradarViewProcessingPage extends PApplet
 		{
 			this.pentity_nahe_maus = getPentityBySuperId(this.entity_nahe_maus.getSuperid());
 		}
-		else
-		{
-			this.pentity_nahe_maus = null;
-		}
 		
 		// period-kreis umherziehen
-		if ( Math.abs((calcRadiusFromPosition(mouseX, mouseY) - this.radius_period)) < this.maus_toleranz_period)
+		else if ( Math.abs((calcRadiusFromPosition(mouseX, mouseY) - this.radius_period)) < this.maus_toleranz_period)
 		{
 			this.period_kreis_folgt_der_maus = true;
 		}
