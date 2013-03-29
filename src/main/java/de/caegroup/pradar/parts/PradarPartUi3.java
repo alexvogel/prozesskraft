@@ -197,6 +197,7 @@ public class PradarPartUi3 extends ModelObject
 		spinner_period = new Spinner(grpFilter, SWT.BORDER);
 		spinner_period.setMaximum(8064);
 		spinner_period.setSelection(168);
+		spinner_period.setMinimum(1);
 		new Label(grpFilter, SWT.NONE);
 		
 		Label lblNewLabel_3 = new Label(grpFilter, SWT.NONE);

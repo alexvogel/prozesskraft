@@ -532,7 +532,7 @@ public class PradarViewProcessingPage extends PApplet
 		fill(this.legendcolor[0], this.legendcolor[1], this.legendcolor[2]);
 		text((int)(((this.refresh_next.getTimeInMillis() - this.now.getTimeInMillis())/1000)), 5, height-5);
 		text("automation@caegroup.de", width-180, height-5);
-//		text(""+calcRadiusFromPosition(mouseX, mouseY), 50, height-5);
+//		text(this.entity_filter.getPeriodInMillis(), 50, height-5);
 		noFill();
 	}
 	
@@ -567,20 +567,23 @@ public class PradarViewProcessingPage extends PApplet
 	void doubleClick ()
 	{
 		
-		// Aufruf taetigen
-		String aufruf = "nedit "+this.entity_nahe_maus.getResource();
-//		System.out.println("entity_mit_fahne: "+entity_mit_fahne.getId());
-		System.out.println("showing resource: "+aufruf);
-		
-		if (this.distanceToMouse < this.maus_toleranz_pentity)
+		if (this.entity_nahe_maus != null)
+			// Aufruf taetigen
 		{
-			try
+			String aufruf = "nedit "+this.entity_nahe_maus.getResource();
+	//		System.out.println("entity_mit_fahne: "+entity_mit_fahne.getId());
+			System.out.println("showing resource: "+aufruf);
+			
+			if (this.distanceToMouse < this.maus_toleranz_pentity)
 			{
-				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-			} catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				try
+				{
+					java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+				} catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -617,7 +620,11 @@ public class PradarViewProcessingPage extends PApplet
 	public void mouseReleased()
 	{
 		this.pentity_nahe_maus = null;
-		this.period_kreis_folgt_der_maus = false;
+		if (this.period_kreis_folgt_der_maus)
+		{
+			this.period_kreis_folgt_der_maus = false;
+			this.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
+		}
 	}
 	
 	public PradarViewProcessingEntity getPentityBySuperId(String superid)
@@ -734,7 +741,8 @@ public class PradarViewProcessingPage extends PApplet
 		
 		else if (this.period_kreis_folgt_der_maus)
 		{
-			this.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
+//			this.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
+			this.entity_filter.setPeriodInMillis((long) (3600000 * (long)(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))))) );
 		}
 		
 		else

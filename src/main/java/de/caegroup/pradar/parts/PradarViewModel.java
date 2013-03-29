@@ -71,6 +71,7 @@ public class PradarViewModel extends ModelObject
 
 	public void setPeriod(int period)
 	{
+		if (period < 1) {period = 1;}
 		firePropertyChange("period", this.period, this.period = period);
 	}
 
