@@ -84,6 +84,7 @@ public class PradarPartUi3 extends ModelObject
 	private Text text_host;
 	private Text text_active;
 	private Spinner spinner_period;
+	private Button button_children;
 	private Scale scale_zoom;
 	private Table table;
 	private PradarViewModel einstellungen = new PradarViewModel();
@@ -147,46 +148,51 @@ public class PradarPartUi3 extends ModelObject
 		Group grpFilter = new Group(composite_11, SWT.NONE);
 		grpFilter.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
 		grpFilter.setText("filter");
-		grpFilter.setLayout(new GridLayout(2, false));
+		grpFilter.setLayout(new GridLayout(3, false));
 		
 		Label lblNewLabel = new Label(grpFilter, SWT.NONE);
-		lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
+		lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1));
 		lblNewLabel.setText("process");
 		
 		text_process = new Text(grpFilter, SWT.BORDER);
-		text_process.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		text_process.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		
 		Label lblNewLabel_1 = new Label(grpFilter, SWT.NONE);
-		lblNewLabel_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		lblNewLabel_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 		lblNewLabel_1.setText("user");
 		
 		text_user = new Text(grpFilter, SWT.BORDER);
-		text_user.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		text_user.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		
 		Label lblHost = new Label(grpFilter, SWT.NONE);
-		lblHost.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		lblHost.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 		lblHost.setText("host");
 		
 		text_host = new Text(grpFilter, SWT.BORDER);
-		text_host.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		text_host.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		
 		Label lblActive = new Label(grpFilter, SWT.NONE);
-		lblActive.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		lblActive.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		lblActive.setText("active");
 		
 		text_active = new Text(grpFilter, SWT.BORDER);
-		text_active.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		text_active.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		
 		Label lblPeriod = new Label(grpFilter, SWT.NONE);
-		lblPeriod.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		lblPeriod.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 		lblPeriod.setText("active in last");
 		
 		spinner_period = new Spinner(grpFilter, SWT.BORDER);
 		spinner_period.setMaximum(8064);
 		spinner_period.setSelection(168);
+		new Label(grpFilter, SWT.NONE);
 		
 		Label lblNewLabel_3 = new Label(grpFilter, SWT.NONE);
 		lblNewLabel_3.setText("hours");
+		
+		button_children = new Button(grpFilter, SWT.CHECK);
+		button_children.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
+		button_children.setText("show children");
 		
 		Group grpVisual = new Group(composite_11, SWT.NONE);
 		grpVisual.setText("visual");
@@ -273,6 +279,7 @@ public class PradarPartUi3 extends ModelObject
 		filter_entity.setHost(einstellungen.getHost());
 		filter_entity.setActive(einstellungen.getActive());
 		filter_entity.setPeriodInHours(einstellungen.getPeriod());
+		filter_entity.setParentidAsBoolean(einstellungen.getChildren());
 //		System.out.println("period aus einstellungen in stunden: "+einstellungen.getPeriod());
 //		System.out.println("period aus filter_entity in Stunden: "+filter_entity.getPeriodInHours());
 //		System.out.println("period aus filter_entity in Millis: "+filter_entity.getPeriodInMillis());
@@ -452,6 +459,10 @@ public class PradarPartUi3 extends ModelObject
 		IObservableValue targetObservablePeriod = WidgetProperties.selection().observeDelayed(800, spinner_period);
 		IObservableValue modelObservablePeriod = BeanProperties.value("period").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservablePeriod, modelObservablePeriod, null, null);
+		//
+		IObservableValue targetObservableChildren = WidgetProperties.selection().observeDelayed(800, button_children);
+		IObservableValue modelObservableChildren = BeanProperties.value("children").observe(einstellungen);
+		bindingContextFilter.bindValue(targetObservableChildren, modelObservableChildren, null, null);
 		//
 		return bindingContextFilter;
 	}

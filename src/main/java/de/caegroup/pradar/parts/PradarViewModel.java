@@ -7,6 +7,7 @@ public class PradarViewModel extends ModelObject
 	public String host = "";
 	public String active = "";
 	public int period = 168;
+	public boolean children = false;
 	public int zoom = 100;
 	
 	public PradarViewModel()
@@ -38,6 +39,11 @@ public class PradarViewModel extends ModelObject
 		return period;
 	}
 
+	public boolean getChildren()
+	{
+		return children;
+	}
+
 	public int getZoom()
 	{
 		return zoom;
@@ -66,6 +72,11 @@ public class PradarViewModel extends ModelObject
 	public void setPeriod(int period)
 	{
 		firePropertyChange("period", this.period, this.period = period);
+	}
+
+	public void setChildren(boolean children)
+	{
+		firePropertyChange("children", this.children, this.children = children);
 	}
 
 	public void setZoom(int zoom)
