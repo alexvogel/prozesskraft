@@ -604,6 +604,12 @@ foreach my $refh_stackline (@CONFIG)
 				print "filename in wanted: ".$File::Find::name."\n";
 				if ( -d $File::Find::name )
 				{
+					print "skipping directory: ".$File::Find::name."\n";
+					next;
+				}
+				elsif (!( -T $File::Find::name ))
+				{
+					print "skipping binary file: ".$File::Find::name."\n";
 					next;
 				}
 				# falls $now_app ein Namen wie z.b. "pradar-checkin" ist, soll bei searchreplace auch "checkin" als entrypoints beruecksichtigt werden.
