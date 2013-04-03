@@ -32,6 +32,7 @@ public class Checkin
 	  structure
 	----------------------------*/
 	static CommandLine line;
+	static int defaultPortNumber = 37888;
 	
 	/*----------------------------
 	  constructors
@@ -253,12 +254,16 @@ public class Checkin
 		
 		try
 		{
-			server = new Socket("localhost", 37888);
+			server = new Socket("localhost", defaultPortNumber);
 			OutputStream out = server.getOutputStream();
 			InputStream in = server.getInputStream();
 			ObjectOutputStream objectOut = new ObjectOutputStream(out);
 			ObjectInputStream  objectIn  = new ObjectInputStream(in);
-
+			
+			objectOut.writeObject("/soft/deploy/data/pradar/pradar.db");
+			objectOut.writeObject("checkin");
+			objectOut.writeObject(entity);
+			
 		} catch (UnknownHostException e)
 		{
 			// TODO Auto-generated catch block
@@ -268,11 +273,7 @@ public class Checkin
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
-//		db.checkinEntity(entity);
-		
+		System.exit(0);
 
 	}
 }
