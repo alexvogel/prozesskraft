@@ -4,11 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.Properties;
 import java.util.*;
 
 import org.apache.commons.cli.CommandLine;
@@ -246,41 +249,30 @@ public class Checkin
 		entity.setActive("true");
 		
 		// einchecken in die DB
-		db.checkinEntity(entity);
+		Socket server = null;
 		
-//			String programname = System.getProperty("sun.java.command");
-//			System.out.println("Systemproperty: "+programname);
+		try
+		{
+			server = new Socket("localhost", 37888);
+			OutputStream out = server.getOutputStream();
+			InputStream in = server.getInputStream();
+			ObjectOutputStream objectOut = new ObjectOutputStream(out);
+			ObjectInputStream  objectIn  = new ObjectInputStream(in);
 
-//			File program = new File(System.getProperty("user.dir"));
-//			String basedirectory = program.getParent();
-//			File conffile = new File(basedirectory+"/etc/pradar.conf");
-			
-//			Properties conf = new Properties();
-//			try
-//			{
-//				conf.load(new FileInputStream(conffile));
-//			} catch (IOException e)
-//			{
-//				System.err.println("cannot read pradar config file: "+conffile.getAbsolutePath());
-//				System.exit(2);
-//				e.printStackTrace();
-//			}
-//			File dbfile = new File(conf.getProperty("dbfile"));
-
-			
-//			Db db = new Db();
-//			System.out.println("Db-Object: "+db.toString());
-//			db.initDb();
-//			System.err.println("cannot open database in "+dbfile.getAbsolutePath());
-			
-//			Entity entity = db.genEntity();
-//			entity.setProcessname(line.getOptionValue("process"));
-//			entity.setHost(line.getOptionValue("host"));
-//			if (line.hasOption("id")) { entity.setId(line.getOptionValue("id")); }
-//			if (line.hasOption("user")) { entity.setId(line.getOptionValue("user")); }
-//			entity.setCheckinToNow();
-			
-			// TODO ist id schon vorhanden?
+		} catch (UnknownHostException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+//		db.checkinEntity(entity);
+		
 
 	}
 }
