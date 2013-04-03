@@ -54,6 +54,8 @@
 <!-- 					abhaengigkeiten in anderen packages (durch import) koennen nur aufgeloest werden, wenn diese klassen public bleiben -->
 						<option>-keep public class de.caegroup.pradar.Db { *; }</option>
 						<option>-keep public class de.caegroup.pradar.Entity { *; }</option>
+						<option>-keep public class de.caegroup.network.ConcurrentServer { *; }</option>
+						<option>-keep public class de.caegroup.network.Client { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>

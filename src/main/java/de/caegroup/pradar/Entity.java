@@ -1,11 +1,13 @@
 package de.caegroup.pradar;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 
 public class Entity
+implements Serializable
 {
 	/*----------------------------
 	  structure
@@ -41,6 +43,9 @@ public class Entity
 	  methods
 	----------------------------*/
 
+	/**
+	 * generates an id (=currentTimeInMillis) 
+	 */
 	public void genId()
 	{
 		long time = System.currentTimeMillis();
@@ -48,6 +53,11 @@ public class Entity
 		this.setId(""+time);
 	}
 
+	/**
+	 * matches itself (this) against every item of the given ArrayList<Entity>
+	 * @param ArrayList<Entity>
+	 * @return ArrayList<Entity> of matched Entities
+	 */
 	public ArrayList<Entity> getAllMatches(ArrayList<Entity> allEntities)
 	{
 		ArrayList<Entity> allMatches = new ArrayList<Entity>();
@@ -65,7 +75,13 @@ public class Entity
 		return allMatches;
 	}
 	
-	public boolean doesItMatch(Entity assessedEntity)
+	/**
+	 * matches itself (this) against the given Entity (assessedEntity)
+	 * @param Entity
+	 * @return 'true' if all fields match
+	 * 'false' if one or more fields do not match
+	 */
+	private boolean doesItMatch(Entity assessedEntity)
 	{
 		boolean matchStatus = true;
 		if (!(assessedEntity.getId().matches(".*"+this.id+".*")))
@@ -103,6 +119,11 @@ public class Entity
 			matchStatus = false;
 		}
 		
+		if (!(assessedEntity.getParentid().matches(".*"+this.parentid+".*")))
+		{
+			matchStatus = false;
+		}
+		
 		if ( (this.getPeriodInMillis() < (Calendar.getInstance().getTimeInMillis() - assessedEntity.getCheckinInMillis())) && (this.getPeriodInMillis() < (Calendar.getInstance().getTimeInMillis() - assessedEntity.getCheckoutInMillis()) && (assessedEntity.getCheckoutInMillis() != 0) ) )
 		{
 //			System.out.println("CheckinInMillis="+assessedEntity.getCheckinInMillis()+" < (now="+Calendar.getInstance().getTimeInMillis()+" MINUS timePeriod="+this.getPeriodInMillis()+")" );
@@ -112,28 +133,28 @@ public class Entity
 		return matchStatus;
 	}
 	
-	/*----------------------------
-	  methods getter/setter
-	----------------------------*/
-
-	public long getTimeInMillisOfNow()
-	{
-		Calendar tmp = Calendar.getInstance();
-		return tmp.getTimeInMillis();
-	}
-
+	/**
+	 * prints all fields to stdout
+	 */
 	public void print()
 	{
 		this.toString();
-		System.out.println("id: "+this.id);
+		System.out.println("id:      "+this.id);
+		System.out.println("parentid:"+this.parentid);
 		System.out.println("process: "+this.process);
-		System.out.println("user: "+this.user);
-		System.out.println("host: "+this.host);
-		System.out.println("active: "+this.active);
+		System.out.println("user:    "+this.user);
+		System.out.println("host:    "+this.host);
+		System.out.println("active:  "+this.active);
 		System.out.println("checkin: "+this.getCheckinAsString());
-		System.out.println("checkout: "+this.getCheckoutAsString());
-		System.out.println("exitcode: "+this.exitcode);
+		System.out.println("checkout:"+this.getCheckoutAsString());
+		System.out.println("exitcode:"+this.exitcode);
+		System.out.println("resource:"+this.resource);
+		System.out.println("period:  "+this.resource);
 	}
+
+	/*----------------------------
+	  methods getter/setter
+	----------------------------*/
 
 	public String getActualuser()
 	{
@@ -150,20 +171,26 @@ public class Entity
 		return id;
 	}
 
-	/**
-	 * @return the parentid
-	 */
 	public String getParentid()
 	{
 		return this.parentid;
 	}
 
-	/**
-	 * @param parentid the parentid to set
-	 */
 	public void setParentid(String parentid)
 	{
 		this.parentid = parentid;
+	}
+
+	public void setParentidAsBoolean(boolean children)
+	{
+		if (children)
+		{
+			this.parentid = "";
+		}
+		else
+		{
+			this.parentid = "0";
+		}
 	}
 
 	public String getParentidSqlPattern()
@@ -174,7 +201,7 @@ public class Entity
 		}
 		else
 		{
-			return "%"+this.parentid+"%";
+			return this.parentid;
 		}
 	}
 	

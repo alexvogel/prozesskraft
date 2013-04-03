@@ -23,8 +23,10 @@ public class Db
 	----------------------------*/
 
 	/**
-	 * constructor without parameter
-	 * dbfile is expected in default location relative to program installation
+	 * constructor
+	 * the dbfile is set to be at the default position
+	 * default position is relative to installation position
+	 * <installationdir>/../../../../data/pradar/pradar.db
 	 */
 	public Db()
 	{
@@ -58,7 +60,8 @@ public class Db
 	}
 
 	/**
-	 * constructor with given dbfile as String of path
+	 * constructor
+	 * @param String
 	 */
 	public Db(String pathtofile)
 	{
@@ -68,6 +71,11 @@ public class Db
 	/*----------------------------
 	  methods
 	----------------------------*/
+	
+	/**
+	 * creating in database a table with name 'radar'
+	 * creating in table 'radar' a column for every field of object 'Entity'
+	 */
 	public void initDb()
 	{
 		this.sqlvoodoo();
@@ -91,16 +99,13 @@ public class Db
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//// falls es automatisch von den feldern in entity abgeleitet werden soll
-//		Entity muster = new Entity();
-//		Class entityClass = muster.getClass();
-//		Field[] fields = entityClass.getFields();
-//		for (int i=0; i < fields.length; i++)
-//		{
-//			System.out.println("Public field found: " + fields[i].toString());
-//		}
 	}
 
+	/**
+	 * creating in database in table 'radar' a row with content of Object 'Entity'
+	 * setting column 'checkin' to currentTimeInMillis
+	 * @param Entity
+	 */
 	public void checkinEntity(Entity entity)
 	{
 		this.sqlvoodoo();
@@ -123,6 +128,10 @@ public class Db
 		}
 	}
 
+	/**
+	 * setting in database in table 'radar' column 'checkout' to currentTimeInMillis
+	 * @param Entity
+	 */
 	public void checkoutEntity(Entity entity)
 	{
 		this.sqlvoodoo();
@@ -134,7 +143,7 @@ public class Db
 			
 			statement.setQueryTimeout(10);
 			
-			String sql = "UPDATE OR REPLACE radar SET checkout='"+entity.getTimeInMillisOfNow()+"', active='false', exitcode='"+ entity.getExitcode() +"' WHERE id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+			String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='"+ entity.getExitcode() +"' WHERE id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
 //			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
@@ -146,6 +155,11 @@ public class Db
 		}
 	}
 
+	/**
+	 * matches an 'Entity' against the table 'radar' in database
+	 * @param Entity
+	 * @return ArrayList<Entity> of all rows of table 'radar' which match.
+	 */
 	public ArrayList<Entity> match(Entity entity)
 	{
 		
@@ -160,7 +174,6 @@ public class Db
 		{
 			this.getConnection();
 			Statement statement = this.connection.createStatement();
-			
 			statement.setQueryTimeout(10);
 			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND parentid LIKE '"+entity.getParentidSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"' AND resource LIKE '"+entity.getResourceSqlPattern()+"' AND ( checkin > '"+grenzzeitInMillis+"' OR checkout > '"+grenzzeitInMillis+"')";
 //			System.out.println(sql);
@@ -191,6 +204,10 @@ public class Db
 		return matches;
 	}
 	
+	/**
+	 * get all rows of table 'radar'
+	 * @return ArrayList<Entity> of all rows of table 'radar'.
+	 */
 	public ArrayList<Entity> getAllEntities()
 	{
 		ArrayList<Entity> allEntities = new ArrayList<Entity>();
@@ -231,8 +248,13 @@ public class Db
 		return allEntities;
 	}
 	
-	public void list(Entity entity)
+	/**
+	 * print all rows to stdout of table 'radar' which match the Entity
+	 * @param Entity
+	 */
+	public ArrayList<String> list(Entity entity)
 	{
+		ArrayList<String> ausgabe = new ArrayList<String>();
 		this.sqlvoodoo();
 		this.connection = null;
 		try
@@ -254,15 +276,16 @@ public class Db
 			}
 			
 			String formatstring = "|%-14s|%-14s|%-11s|%-7s|%-13s|%-6s|%-19s|%-19s|%-8s|\n";
-			System.out.format(formatstring, "id", "parentid", "process", "user", "host", "active", "checkin", "checkout", "exitcode");
-			System.out.format(formatstring, "--------------", "--------------", "-----------", "-------", "-------------", "------", "-------------------", "-------------------", "--------");
+
+			ausgabe.add(String.format(formatstring, "id", "parentid", "process", "user", "host", "active", "checkin", "checkout", "exitcode"));
+			ausgabe.add(String.format(formatstring, "--------------", "--------------", "-----------", "-------", "-------------", "------", "-------------------", "-------------------", "--------"));
 
 			Iterator<Entity> iterentity = matched_entities.iterator();
 			
 			while (iterentity.hasNext())
 			{
 				Entity actual_entity = iterentity.next();
-				System.out.format(formatstring, actual_entity.getId(), actual_entity.getParentid(), actual_entity.getProcess(), actual_entity.getUser(), actual_entity.getHost(), actual_entity.getActive(), actual_entity.getCheckinAsString(), actual_entity.getCheckoutAsString(), actual_entity.getExitcode() );
+				ausgabe.add(String.format(formatstring, actual_entity.getId(), actual_entity.getParentid(), actual_entity.getProcess(), actual_entity.getUser(), actual_entity.getHost(), actual_entity.getActive(), actual_entity.getCheckinAsString(), actual_entity.getCheckoutAsString(), actual_entity.getExitcode() ));
 			}
 
 			this.connection.close();
@@ -271,9 +294,10 @@ public class Db
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return ausgabe;
 	}
 
-	public void sqlvoodoo()
+	private void sqlvoodoo()
 	{
 		try
 		{
@@ -285,7 +309,7 @@ public class Db
 		}
 	}
 	
-	public void getConnection()
+	private void getConnection()
 	{
 		this.connection = null;
 		try
@@ -328,4 +352,9 @@ public class Db
 		this.dbfile = dbfile;
 	}
 
+	public void setDbfile(String path)
+	{
+		File dbfile = new File(path);
+		this.dbfile = dbfile;
+	}
 }
