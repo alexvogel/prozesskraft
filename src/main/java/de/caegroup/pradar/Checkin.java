@@ -22,9 +22,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.ini4j.Ini;
+import org.ini4j.InvalidFileFormatException;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 
-import de.caegroup.pradar.*;;
+//import de.caegroup.pradar.*;
 
 public class Checkin
 {
@@ -33,7 +35,7 @@ public class Checkin
 	  structure
 	----------------------------*/
 	static CommandLine line;
-	static int defaultPortNumber = 37888;
+	static Ini ini;
 	
 	/*----------------------------
 	  constructors
@@ -42,18 +44,35 @@ public class Checkin
 	public static void main(String[] args) throws org.apache.commons.cli.ParseException
 	{
 
-//		try
-//		{
-//			if (args.length != 3)
-//			{
-//				System.out.println("Please specify processdefinition file (xml) and an outputfilename");
-//			}
-//			
-//		}
-//		catch (ArrayIndexOutOfBoundsException e)
-//		{
-//			System.out.println("***ArrayIndexOutOfBoundsException: Please specify processdefinition.xml, openoffice_template.od*, newfile_for_processdefinitions.odt\n" + e.toString());
-//		}
+		/*----------------------------
+		  get options from ini-file
+		----------------------------*/
+		Checkin tmp = new Checkin();
+		File inifile = WhereAmI.getInifile(tmp.getClass());
+		
+		ArrayList<String> pradar_server_list = new ArrayList<String>();
+		
+		try
+		{
+			ini = new Ini(inifile);
+			for(int x = 1; x <= 5; x++)
+			{
+				if (ini.get("pradar-server", "pradar-server-"+x) != null )
+				{
+					pradar_server_list.add(ini.get("pradar-server", "pradar-server-"+x));
+				}
+			}
+		}
+		catch (InvalidFileFormatException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		catch (IOException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		/*----------------------------
 		  create boolean options
@@ -179,13 +198,6 @@ public class Checkin
 			System.exit(1);
 		}
 
-//		Properties systemproperties = System.getProperties();
-//		for (Enumeration e = systemproperties.propertyNames(); e.hasMoreElements();)
-//		{
-//			String prop = (String) e.nextElement();
-//			System.out.println("Property: " + prop + " , Wert: " + systemproperties.getProperty(prop));
-//		}
-
 		if (line.hasOption("dbfile"))
 		{
 			File file = new File(line.getOptionValue("dbfile"));
@@ -253,32 +265,63 @@ public class Checkin
 		// einchecken in die DB
 		Socket server = null;
 		
-		try
+		boolean pradar_server_not_found = true;
+		
+		// ueber alle server aus ini-file iterieren und dem ersten den auftrag erteilen
+		Iterator<String> iter_pradar_server = pradar_server_list.iterator();
+		while(pradar_server_not_found && iter_pradar_server.hasNext())
 		{
-			server = new Socket("localhost", defaultPortNumber);
-			OutputStream out = server.getOutputStream();
-			InputStream in = server.getInputStream();
-			ObjectOutputStream objectOut = new ObjectOutputStream(out);
-			ObjectInputStream  objectIn  = new ObjectInputStream(in);
-			
-			objectOut.writeObject("/soft/deploy/data/pradar/pradar.db");
-			objectOut.writeObject("checkin");
-			objectOut.writeObject(entity);
-			
-		} catch (UnknownHostException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConnectException e)
-		{
-			System.err.println("cannot connect to pradar-server on port "+defaultPortNumber);
-			e.printStackTrace();
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.exit(0);
+			String port_and_machine_as_string = iter_pradar_server.next();
+			String [] port_and_machine = port_and_machine_as_string.split("@");
 
+			int portNumber = Integer.parseInt(port_and_machine[0]);
+			String machineName = port_and_machine[1];
+			System.err.println("trying pradar-server "+port_and_machine);
+			try
+			{
+				// socket einrichten und Out/Input-Streams setzen
+				server = new Socket(machineName, portNumber);
+				OutputStream out = server.getOutputStream();
+				InputStream in = server.getInputStream();
+				ObjectOutputStream objectOut = new ObjectOutputStream(out);
+				ObjectInputStream  objectIn  = new ObjectInputStream(in);
+				
+				// Pfad der db auf 'default' setzen.
+				String dbpath = WhereAmI.getDbfile(tmp.getClass()).getAbsolutePath();
+				// falls es im inifile einen eintrag zum pfad gibt, soll dieser verwendet werden
+				if (ini.get("meta", "pradar-db-path") != null )
+				{
+					dbpath = ini.get("meta", "pradar-db-path");
+				}
+				
+				// Objekte zum server uebertragen
+				objectOut.writeObject(WhereAmI.getDbfile(tmp.getClass()).getAbsolutePath());
+				objectOut.writeObject("checkin");
+				objectOut.writeObject(entity);
+
+				// nachricht wurde erfolgreich an server gesendet --> schleife beenden
+				pradar_server_not_found = false;
+			}
+			catch (UnknownHostException e)
+			{
+				// TODO Auto-generated catch block
+				System.err.println("unknown host "+machineName);
+			}
+			catch (ConnectException e)
+			{
+				System.err.println("no pradar-server found "+port_and_machine);
+	//			e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		if (pradar_server_not_found)
+		{
+			System.out.println("no pradar-server found.");
+		}
 	}
 }

@@ -20,12 +20,18 @@ system "mvn install";
 # erstellen eines auslieferungsverzeichnisses und einkopieren des fertigen jars mit allem
 my $cwd = getcwd;
 my $target = $cwd . "/target";
-my $auslieferungsverzeichnis = $target . "/fertig_zur_installation";
+my $auslieferungsverzeichnis = $cwd . "/fertig_zur_installation";
 
 # kopieren des fertig zusammengestellten jars vom target ins auslieferungsverzeichnis
+print "mkdir $auslieferungsverzeichnis\n";
 system "mkdir $auslieferungsverzeichnis";
+print "mkdir $auslieferungsverzeichnis/bin\n";
 system "mkdir $auslieferungsverzeichnis/bin";
-system "mv $target/*jar-with-dependencies* $auslieferungsverzeichnis/bin";
+print "cp -r $target/*jar-with-dependencies* $auslieferungsverzeichnis/bin/.\n";
+system "cp -r $target/*jar-with-dependencies* $auslieferungsverzeichnis/bin/.";
 
-# nachfolgern bescheid geben wie das targetverzeichnis heisst
+# kopieren von resourcen ausserhalb des jars ins auslieferungsverzeichnis
+system "cp -r $cwd/etc $auslieferungsverzeichnis/.";
+
+# nachfolgern bescheid geben wie das auslieferungsverzeichnis heisst
 print "<newdir>$auslieferungsverzeichnis<newdir>\n";
