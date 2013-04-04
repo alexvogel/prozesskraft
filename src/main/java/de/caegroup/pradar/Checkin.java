@@ -40,7 +40,6 @@ public class Checkin
 	/*----------------------------
 	  constructors
 	----------------------------*/
-//	public static void main(String[] args) throws SAXException, IOException, ParserConfigurationException
 	public static void main(String[] args) throws org.apache.commons.cli.ParseException
 	{
 
@@ -48,7 +47,7 @@ public class Checkin
 		  get options from ini-file
 		----------------------------*/
 		Checkin tmp = new Checkin();
-		File inifile = WhereAmI.getInifile(tmp.getClass());
+		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
 		
 		ArrayList<String> pradar_server_list = new ArrayList<String>();
 		
@@ -111,12 +110,6 @@ public class Checkin
 //				.isRequired()
 				.create("user");
 				
-		Option dbfile = OptionBuilder.withArgName("dbfile")
-				.hasArg()
-				.withDescription("[optional] dbfile")
-//				.isRequired()
-				.create("dbfile");
-				
 		Option resource = OptionBuilder.withArgName("resource")
 				.hasArg()
 				.withDescription("[optional] full path to a resource. e.g. logfile")
@@ -135,7 +128,6 @@ public class Checkin
 		options.addOption( parentid );
 		options.addOption( host );
 		options.addOption( user );
-		options.addOption( dbfile );
 		options.addOption( resource );
 		
 		/*----------------------------
@@ -172,18 +164,9 @@ public class Checkin
 		}
 		
 		/*----------------------------
-		  querying the commandline
-		----------------------------*/
-//		if ( line.hasOption("definitionfile") )
-//		{
-//			String hello = line.getOptionValue("definitionfile");
-//		}
-
-		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
 		
-		Db db = new Db();
 		Entity entity = new Entity();
 
 		if (line.hasOption("process"))
@@ -197,20 +180,6 @@ public class Checkin
 			System.exit(1);
 		}
 
-		if (line.hasOption("dbfile"))
-		{
-			File file = new File(line.getOptionValue("dbfile"));
-			if (file.exists())
-			{
-				db.setDbfile(file);
-			}
-			else
-			{
-				System.err.println("file not found: " + file.getAbsolutePath());
-				System.exit(1);
-			}
-		}
-		
 		if (line.hasOption("id"))
 		{
 			entity.setId(line.getOptionValue("id"));
@@ -219,7 +188,6 @@ public class Checkin
 		{
 //			Random generator = new Random();
 			entity.genId();
-			System.out.println("<id>"+entity.getId()+"<id>");
 		}
 
 		if (line.hasOption("parentid"))
@@ -285,27 +253,19 @@ public class Checkin
 				ObjectOutputStream objectOut = new ObjectOutputStream(out);
 				ObjectInputStream  objectIn  = new ObjectInputStream(in);
 				
-				// Pfad der db auf 'default' setzen.
-				String dbpath = WhereAmI.getDbfile(tmp.getClass()).getAbsolutePath();
-				// falls es im inifile einen eintrag zum pfad gibt, soll dieser verwendet werden
-				if (ini.get("meta", "pradar-db-path") != null )
-				{
-					dbpath = ini.get("meta", "pradar-db-path");
-				}
-				
 				// Objekte zum server uebertragen
 				objectOut.writeObject("checkin");
-				objectOut.writeObject(dbpath);
 				objectOut.writeObject(entity);
 
 				// nachricht wurde erfolgreich an server gesendet --> schleife beenden
-				System.err.println("over and out.");
 				pradar_server_not_found = false;
+				
+				System.out.println("<id>"+entity.getId()+"<id>");
 			}
 			catch (UnknownHostException e)
 			{
 				// TODO Auto-generated catch block
-				System.err.println("unknown host "+machineName);
+				System.err.println("unknown host "+machineName+" (UnknownHostException)");
 			}
 			catch (ConnectException e)
 			{
