@@ -28,5 +28,53 @@ public class WhereAmI {
       return file.getParentFile();
     }
   }
+  
+	public static File getDefaultInifile(Class clazz)
+	{
+		File myPosition = WhereAmI(clazz);
+		String iniFilepath = myPosition.getParentFile().getAbsolutePath()+"/etc/default.ini";
+		File iniFile = new File(iniFilepath);
+		return iniFile;
+	}
+
+	/**
+	 * constructor
+	 * the dbfile is set to be at the default position
+	 * default position is relative to installation position
+	 * <installationdir>/../../../../data/pradar/pradar.db
+	 */
+	public static File getDefaultDbfile(Class clazz)
+	{
+		File myPosition = WhereAmI(clazz);
+		File dbfile = myPosition;
+	  
+		for (int x=0; x<4; x++)
+		{
+			try
+			{
+				myPosition = myPosition.getParentFile();
+			}
+			catch (Exception e)
+			{
+				System.err.println("fatal: default position of databasefile cannot be determined.");
+			}
+		}
+		
+		try
+		{
+			dbfile = new File(myPosition.getAbsoluteFile()+"/data/pradar/pradar.db");
+		}
+		catch (NullPointerException e)
+		{
+			System.err.println("fatal: default position of databasefile cannot be determined.");
+			System.exit(1);
+		}
+		return dbfile;
+	}
+	
+	public static int getDefaultPortNumber()
+	{
+		return 37888;
+	}
 }
 

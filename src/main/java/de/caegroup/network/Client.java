@@ -1,5 +1,6 @@
 package de.caegroup.network;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 
 import de.caegroup.pradar.Db;
 import de.caegroup.pradar.Entity;
+import de.caegroup.pradar.WhereAmI;
 
 
 public class Client
@@ -23,14 +25,15 @@ public class Client
 	private ObjectOutputStream objectOut;
 	private ObjectInputStream objectIn;
 	private boolean typeUnknown = true;
-	private Db db = new Db();
+	private ConcurrentServer parent;
 	
 	/*----------------------------
 	  constructors
 	----------------------------*/
-	public Client(Socket s) throws IOException
+	public Client(Socket s, ConcurrentServer p) throws IOException
 	{
 		this.s = s;
+		this.parent = p;
 		out = s.getOutputStream();
 		in = s.getInputStream();
 		objectOut = new ObjectOutputStream(out);
@@ -48,49 +51,40 @@ public class Client
 			System.out.println("setting type to: "+type);
 			if (type.equals("init"))
 			{
-				db.initDb();
+				this.parent.db.initDb();
+			}
+			if (type.equals("initforce"))
+			{
+				this.parent.db.initForceDb();
 			}
 			else if (type.equals("checkin"))
 			{
-				String dbpath = (String) objectIn.readObject();
-				System.out.println("setting dbpath to: "+dbpath);
-				this.db.setDbfile(dbpath);
-
 				Entity entity = (Entity) objectIn.readObject();
 				
 				System.out.println("checking in entity");
-				db.checkinEntity(entity);
+				this.parent.db.checkinEntity(entity);
 			}
 			else if (type.equals("checkout"))
 			{
-				String dbpath = (String) objectIn.readObject();
-				System.out.println("setting dbpath to: "+dbpath);
-				this.db.setDbfile(dbpath);
-
 				Entity entity = (Entity) objectIn.readObject();
 				
 				System.out.println("checking out entity");
-				db.checkoutEntity(entity);
+				this.parent.db.checkoutEntity(entity);
 			}
 			else if (type.equals("list"))
 			{
-				String dbpath = (String) objectIn.readObject();
-				System.out.println("setting dbpath to: "+dbpath);
-				this.db.setDbfile(dbpath);
-
 				Entity entity = (Entity) objectIn.readObject();
 				
-				ArrayList<String> list = db.list(entity);
+				ArrayList<String> list = this.parent.db.list(entity);
 				objectOut.writeObject(list);
 			}
 			else if (type.equals("getall"))
 			{
-				ArrayList<Entity> allEntities = db.getAllEntities();
+				ArrayList<Entity> allEntities = this.parent.db.getAllEntities();
 				objectOut.writeObject(allEntities);
 			}
 			else if (type.equals("stop"))
 			{
-				System.out.println("stopping server...");
 				System.exit(0);
 			}
 			else

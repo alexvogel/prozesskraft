@@ -68,6 +68,15 @@ public class Db
 		setDbfile(new File(pathtofile));
 	}
 
+	/**
+	 * constructor
+	 * @param File
+	 */
+	public Db(File dbfile)
+	{
+		setDbfile(dbfile);
+	}
+
 	/*----------------------------
 	  methods
 	----------------------------*/
@@ -76,7 +85,7 @@ public class Db
 	 * creating in database a table with name 'radar'
 	 * creating in table 'radar' a column for every field of object 'Entity'
 	 */
-	public void initDb()
+	public void initForceDb()
 	{
 		this.sqlvoodoo();
 		this.connection = null;
@@ -98,6 +107,20 @@ public class Db
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * checking whether dbfile exists. if no, create directories and initForceDb()
+	 * creating in database a table with name 'radar'
+	 * creating in table 'radar' a column for every field of object 'Entity'
+	 */
+	public void initDb()
+	{
+		if (!(this.getDbfile().exists()))
+		{
+			this.getDbfile().mkdirs();
+			initForceDb();
 		}
 	}
 
