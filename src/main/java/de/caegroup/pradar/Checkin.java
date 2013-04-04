@@ -159,7 +159,6 @@ public class Checkin
 		if ( line.hasOption("help"))
 		{
 			HelpFormatter formatter = new HelpFormatter();
-//			formatter.printHelp("checkin --version [% version %]", options);
 			formatter.printHelp("checkin", options);
 			System.exit(0);
 		}
@@ -276,11 +275,11 @@ public class Checkin
 
 			int portNumber = Integer.parseInt(port_and_machine[0]);
 			String machineName = port_and_machine[1];
-			System.err.println("trying pradar-server "+port_and_machine);
+			System.err.println("trying pradar-server "+portNumber+"@"+machineName);
 			try
 			{
 				// socket einrichten und Out/Input-Streams setzen
-				server = new Socket(machineName, portNumber);
+				server = new Socket("sv02", portNumber);
 				OutputStream out = server.getOutputStream();
 				InputStream in = server.getInputStream();
 				ObjectOutputStream objectOut = new ObjectOutputStream(out);
