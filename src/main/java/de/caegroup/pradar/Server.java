@@ -40,23 +40,6 @@ public class Server
 	/*----------------------------
 	  constructors
 	----------------------------*/
-	public Server()
-	{
-		File file = WhereAmI.getInifile(this.getClass());
-		try
-		{
-			ini = new Ini(file);
-		} catch (InvalidFileFormatException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
 	/*----------------------------
 	  main
 	----------------------------*/
