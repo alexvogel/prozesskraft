@@ -279,7 +279,7 @@ public class Checkin
 			try
 			{
 				// socket einrichten und Out/Input-Streams setzen
-				server = new Socket("ws11", portNumber);
+				server = new Socket(machineName, portNumber);
 				OutputStream out = server.getOutputStream();
 				InputStream in = server.getInputStream();
 				ObjectOutputStream objectOut = new ObjectOutputStream(out);
@@ -308,7 +308,7 @@ public class Checkin
 			}
 			catch (ConnectException e)
 			{
-				System.err.println("no pradar-server found "+port_and_machine);
+				System.err.println("no pradar-server found at "+portNumber+"@"+machineName);
 	//			e.printStackTrace();
 			}
 			catch (IOException e)
