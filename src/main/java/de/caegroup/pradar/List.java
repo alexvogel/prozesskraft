@@ -4,7 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.*;
@@ -16,6 +22,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.ini4j.Ini;
+import org.ini4j.InvalidFileFormatException;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 
 import de.caegroup.pradar.*;;
@@ -27,26 +35,43 @@ public class List
 	  structure
 	----------------------------*/
 	static CommandLine line;
+	static Ini ini;
 	
 	/*----------------------------
 	  constructors
 	----------------------------*/
-//	public static void main(String[] args) throws SAXException, IOException, ParserConfigurationException
 	public static void main(String[] args) throws org.apache.commons.cli.ParseException
 	{
 
-//		try
-//		{
-//			if (args.length != 3)
-//			{
-//				System.out.println("Please specify processdefinition file (xml) and an outputfilename");
-//			}
-//			
-//		}
-//		catch (ArrayIndexOutOfBoundsException e)
-//		{
-//			System.out.println("***ArrayIndexOutOfBoundsException: Please specify processdefinition.xml, openoffice_template.od*, newfile_for_processdefinitions.odt\n" + e.toString());
-//		}
+		/*----------------------------
+		  get options from ini-file
+		----------------------------*/
+		List tmp = new List();
+		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
+		
+		ArrayList<String> pradar_server_list = new ArrayList<String>();
+		
+		try
+		{
+			ini = new Ini(inifile);
+			for(int x = 1; x <= 5; x++)
+			{
+				if (ini.get("pradar-server", "pradar-server-"+x) != null )
+				{
+					pradar_server_list.add(ini.get("pradar-server", "pradar-server-"+x));
+				}
+			}
+		}
+		catch (InvalidFileFormatException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		catch (IOException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		/*----------------------------
 		  create boolean options
@@ -97,12 +122,6 @@ public class List
 //				.isRequired()
 				.create("active");
 				
-		Option dbfile = OptionBuilder.withArgName("dbfile")
-				.hasArg()
-				.withDescription("[optional] specify dbfile if not default")
-//				.isRequired()
-				.create("dbfile");
-				
 		/*----------------------------
 		  create options object
 		----------------------------*/
@@ -117,7 +136,6 @@ public class List
 		options.addOption( user );
 		options.addOption( exitcode );
 		options.addOption( active );
-		options.addOption( dbfile );
 		
 		/*----------------------------
 		  create the parser
@@ -154,42 +172,11 @@ public class List
 		}
 		
 		/*----------------------------
-		  querying the commandline
-		----------------------------*/
-//		if ( line.hasOption("definitionfile") )
-//		{
-//			String hello = line.getOptionValue("definitionfile");
-//		}
-
-		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
 		
-		Db db = new Db();
 		Entity entity = new Entity();
 
-		//		Properties systemproperties = System.getProperties();
-//		for (Enumeration e = systemproperties.propertyNames(); e.hasMoreElements();)
-//		{
-//			String prop = (String) e.nextElement();
-//			System.out.println("Property: " + prop + " , Wert: " + systemproperties.getProperty(prop));
-//		}
-
-		if (line.hasOption("dbfile"))
-		{
-			File file = new File(line.getOptionValue("dbfile"));
-			if (file.exists())
-			{
-				db.setDbfile(file);
-			}
-		}
-		
-		if (!(db.getDbfile().exists()))
-		{
-			System.err.println("file not found: " + db.getDbfile().getAbsolutePath());
-			System.exit(1);
-		}
-		
 		// definition des filters fuer id
 		if (line.hasOption("id"))
 		{
@@ -261,7 +248,58 @@ public class List
 			entity.setActive("true");
 		}
 
-		// liste ausgeben und definierten filter dabei anwenden
-		db.list(entity);
+		// einchecken in die DB
+		Socket server = null;
+		
+		boolean pradar_server_not_found = true;
+		
+		// ueber alle server aus ini-file iterieren und dem ersten den auftrag erteilen
+		Iterator<String> iter_pradar_server = pradar_server_list.iterator();
+		while(pradar_server_not_found && iter_pradar_server.hasNext())
+		{
+			String port_and_machine_as_string = iter_pradar_server.next();
+			String [] port_and_machine = port_and_machine_as_string.split("@");
+
+			int portNumber = Integer.parseInt(port_and_machine[0]);
+			String machineName = port_and_machine[1];
+			System.err.println("trying pradar-server "+portNumber+"@"+machineName);
+			try
+			{
+				// socket einrichten und Out/Input-Streams setzen
+				server = new Socket(machineName, portNumber);
+				OutputStream out = server.getOutputStream();
+				InputStream in = server.getInputStream();
+				ObjectOutputStream objectOut = new ObjectOutputStream(out);
+				ObjectInputStream  objectIn  = new ObjectInputStream(in);
+				
+				// Objekte zum server uebertragen
+				objectOut.writeObject("list");
+				objectOut.writeObject(entity);
+
+				// nachricht wurde erfolgreich an server gesendet --> schleife beenden
+				pradar_server_not_found = false;
+			}
+			catch (UnknownHostException e)
+			{
+				// TODO Auto-generated catch block
+				System.err.println("unknown host "+machineName+" (UnknownHostException)");
+			}
+			catch (ConnectException e)
+			{
+				System.err.println("no pradar-server found at "+portNumber+"@"+machineName);
+	//			e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		if (pradar_server_not_found)
+		{
+			System.out.println("no pradar-server found.");
+		}
+
 	}
 }
