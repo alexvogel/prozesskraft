@@ -295,7 +295,7 @@ public class Checkin
 				}
 				
 				// Objekte zum server uebertragen
-				objectOut.writeObject(WhereAmI.getDbfile(tmp.getClass()).getAbsolutePath());
+				objectOut.writeObject(dbpath);
 				objectOut.writeObject("checkin");
 				objectOut.writeObject(entity);
 
