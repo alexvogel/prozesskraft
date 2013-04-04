@@ -1,19 +1,12 @@
 package de.caegroup.pradar;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ConnectException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.sql.SQLException;
 import java.util.*;
 
 import org.apache.commons.cli.CommandLine;
@@ -23,7 +16,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-//import org.apache.xerces.impl.xpath.regex.ParseException;
 
 import de.caegroup.network.ConcurrentServer;
 import org.ini4j.*;
@@ -35,6 +27,9 @@ public class Server
 	  fields
 	----------------------------*/
 	static CommandLine line;
+	static Ini ini;
+	static int portNumber = WhereAmI.getDefaultPortNumber();
+	static File dbfile;
 
 	/*----------------------------
 	  constructors
@@ -45,66 +40,63 @@ public class Server
 	public static void main(String[] args) throws org.apache.commons.cli.ParseException
 	{
 		
-		// feststellen der position des inifiles
-//		Server tmp = new Server();
-//		File inifile = WhereAmI.getInifile(tmp.getClass());
-//		
-//		ArrayList<String> pradar_server_list = new ArrayList<String>();
-//		
-//		try
-//		{
-//			Ini ini = new Ini(inifile);
-//			for(int x = 1; x <= 5; x++)
-//			{
-//				if (ini.get("pradar-server", "pradar-server-"+x) != null )
-//				{
-//					pradar_server_list.add(ini.get("pradar-server", "pradar-server-"+x));
-//				}
-//			}
-//		}
-//		catch (InvalidFileFormatException e1)
-//		{
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		catch (IOException e1)
-//		{
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
+		/*----------------------------
+		  get options from ini-file
+		----------------------------*/
+		Server tmp = new Server();
+		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
 		
-		int defaultPortNumber = 37888;
-		int portNumber;
-		String defaultPathToDb = new Db().getDbfile().getAbsolutePath();
-		String pathToDb;
+		ArrayList<String> pradar_server_list = new ArrayList<String>();
+		
+		try
+		{
+			ini = new Ini(inifile);
+			for(int x = 1; x <= 5; x++)
+			{
+				if (ini.get("pradar-server", "pradar-server-"+x) != null )
+				{
+					pradar_server_list.add(ini.get("pradar-server", "pradar-server-"+x));
+				}
+			}
+		}
+		catch (InvalidFileFormatException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		catch (IOException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		/*----------------------------
 		  create boolean options
 		----------------------------*/
-		Option help = new Option("help", "print this message");
-		Option v = new Option("v", "prints version and build-date");
+		Option oHelp = new Option("help", "print this message");
+		Option oV = new Option("v", "prints version and build-date");
 		
 		/*----------------------------
 		  create argument options
 		----------------------------*/
-		Option port = OptionBuilder.withArgName("port")
+		Option oPort = OptionBuilder.withArgName("port")
 				.hasArg()
-				.withDescription("[optional] port number. default is "+defaultPortNumber)
+				.withDescription("[optional] port number. default is "+portNumber)
 //				.isRequired()
 				.create("port");
 		
-		Option dbfile = OptionBuilder.withArgName("dbfile")
+		Option oDbfile = OptionBuilder.withArgName("dbfile")
 				.hasArg()
-				.withDescription("[optional] dbfile. default is "+defaultPathToDb)
+				.withDescription("[optional] dbfile")
 //				.isRequired()
 				.create("dbfile");
-				
-		Option stop = OptionBuilder.withArgName("stop")
+		
+		Option oStop = OptionBuilder.withArgName("stop")
 				.withDescription("[optional] stops the server.")
 //				.isRequired()
 				.create("stop");
 				
-		Option restart = OptionBuilder.withArgName("restart")
+		Option oRestart = OptionBuilder.withArgName("restart")
 				.withDescription("[optional] restarts the server.")
 //				.isRequired()
 				.create("restart");
@@ -114,12 +106,12 @@ public class Server
 		----------------------------*/
 		Options options = new Options();
 		
-		options.addOption( help );
-		options.addOption( v );
-		options.addOption( port );
-		options.addOption( dbfile );
-		options.addOption( stop );
-		options.addOption( restart );
+		options.addOption( oHelp );
+		options.addOption( oV );
+		options.addOption( oPort );
+		options.addOption( oDbfile );
+		options.addOption( oStop );
+		options.addOption( oRestart );
 		
 		/*----------------------------
 		  create the parser
@@ -142,8 +134,7 @@ public class Server
 		if ( line.hasOption("help"))
 		{
 			HelpFormatter formatter = new HelpFormatter();
-//			formatter.printHelp("checkin --version [% version %]", options);
-			formatter.printHelp("checkout", options);
+			formatter.printHelp("server", options);
 			System.exit(0);
 		}
 		
@@ -156,44 +147,33 @@ public class Server
 		}
 		
 		/*----------------------------
-		  querying the commandline
-		----------------------------*/
-//		if ( line.hasOption("definitionfile") )
-//		{
-//			String hello = line.getOptionValue("definitionfile");
-//		}
-
-		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
-		
-		Db db = new Db();
-		Entity entity = new Entity();
-
-		if (line.hasOption("dbfile"))
-		{
-			File file = new File(line.getOptionValue("dbfile"));
-			if (file.exists())
-			{
-				db.setDbfile(file);
-			}
-			else
-			{
-				System.err.println("file does not exist: "+file.getAbsolutePath());
-			}
-		}
-		else
-		{
-			pathToDb = defaultPathToDb;
-		}
 		
 		if (line.hasOption("port"))
 		{
 			portNumber = Integer.parseInt(line.getOptionValue("port"));
 		}
+		else if ((ini.get("meta", "port") != null ))
+		{
+			portNumber = Integer.parseInt(ini.get("meta", "port"));
+		}
 		else
 		{
-			portNumber = defaultPortNumber;
+			// verwende den schon gueltigen default
+		}
+		
+		if (line.hasOption("dbfile"))
+		{
+			dbfile = new File((line.getOptionValue("dbfile")));
+		}
+		else if ((ini.get("meta", "dbfile") != null ))
+		{
+			dbfile = new File((ini.get("meta", "pradar-db-path")));
+		}
+		else
+		{
+			// verwende den default im ConcurrentServer (ServerSocket)
 		}
 		
 		if ( (line.hasOption("stop")) || (line.hasOption("restart")) )
