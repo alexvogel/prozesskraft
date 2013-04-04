@@ -65,9 +65,9 @@ public class Server
 		
 		Server salut = new Server();
 		
-		File file = WhereAmI.getInifile(salut.getClass());
+		File filu = WhereAmI.getInifile(salut.getClass());
 		
-		System.out.println(file.getAbsolutePath());
+		System.out.println(filu.getAbsolutePath());
 		System.exit(0);
 
 		int defaultPortNumber = 37888;
