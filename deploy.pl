@@ -27,5 +27,8 @@ system "mkdir $auslieferungsverzeichnis";
 system "mkdir $auslieferungsverzeichnis/bin";
 system "mv $target/*jar-with-dependencies* $auslieferungsverzeichnis/bin";
 
+# kopieren von resourcen ausserhalb des jars ins auslieferungsverzeichnis
+system "cp $cwd/etc $auslieferungsverzeichnis/.";
+
 # nachfolgern bescheid geben wie das targetverzeichnis heisst
 print "<newdir>$auslieferungsverzeichnis<newdir>\n";

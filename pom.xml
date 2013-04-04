@@ -8,6 +8,14 @@
 	<name>pradar-server</name>
 	<url>http://maven.apache.org</url>
 	<build>
+<!-- 		<resources> -->
+<!-- 			<resource> -->
+<!-- 				<directory>etc</directory> -->
+<!-- 				<includes> -->
+<!-- 					<include>**/default.ini</include> -->
+<!-- 				</includes> -->
+<!-- 			</resource> -->
+<!-- 		</resources> -->
 		<plugins>
 
 <!-- packt alle class-Files in ein jar legt es im target ab-->
