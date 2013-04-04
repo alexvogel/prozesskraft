@@ -294,8 +294,8 @@ public class Checkin
 				}
 				
 				// Objekte zum server uebertragen
-				objectOut.writeObject(dbpath);
 				objectOut.writeObject("checkin");
+				objectOut.writeObject(dbpath);
 				objectOut.writeObject(entity);
 
 				// nachricht wurde erfolgreich an server gesendet --> schleife beenden
