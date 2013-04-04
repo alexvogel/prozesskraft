@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -267,6 +268,10 @@ public class Checkin
 		} catch (UnknownHostException e)
 		{
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ConnectException e)
+		{
+			System.err.println("cannot connect to pradar-server on port "+defaultPortNumber);
 			e.printStackTrace();
 		} catch (IOException e)
 		{
