@@ -299,6 +299,7 @@ public class Checkin
 				objectOut.writeObject(entity);
 
 				// nachricht wurde erfolgreich an server gesendet --> schleife beenden
+				System.err.println("over and out.");
 				pradar_server_not_found = false;
 			}
 			catch (UnknownHostException e)
