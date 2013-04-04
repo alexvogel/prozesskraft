@@ -35,7 +35,6 @@ public class Server
 	  fields
 	----------------------------*/
 	static CommandLine line;
-	Ini ini;
 
 	/*----------------------------
 	  constructors
@@ -46,13 +45,34 @@ public class Server
 	public static void main(String[] args) throws org.apache.commons.cli.ParseException
 	{
 		
-		Server salut = new Server();
+		// feststellen der position des inifiles
+//		Server tmp = new Server();
+//		File inifile = WhereAmI.getInifile(tmp.getClass());
+//		
+//		ArrayList<String> pradar_server_list = new ArrayList<String>();
+//		
+//		try
+//		{
+//			Ini ini = new Ini(inifile);
+//			for(int x = 1; x <= 5; x++)
+//			{
+//				if (ini.get("pradar-server", "pradar-server-"+x) != null )
+//				{
+//					pradar_server_list.add(ini.get("pradar-server", "pradar-server-"+x));
+//				}
+//			}
+//		}
+//		catch (InvalidFileFormatException e1)
+//		{
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//		catch (IOException e1)
+//		{
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 		
-		File filu = WhereAmI.getInifile(salut.getClass());
-		
-		System.out.println(filu.getAbsolutePath());
-		System.exit(0);
-
 		int defaultPortNumber = 37888;
 		int portNumber;
 		String defaultPathToDb = new Db().getDbfile().getAbsolutePath();
@@ -178,15 +198,22 @@ public class Server
 		
 		if ( (line.hasOption("stop")) || (line.hasOption("restart")) )
 		{
-			Socket server;
 			try
 			{
-				server = new Socket("localhost", defaultPortNumber);
+				System.out.println("stopping pradar-server.");
+				Socket server = new Socket("localhost", portNumber);
 				OutputStream out = server.getOutputStream();
-				InputStream in = server.getInputStream();
 				ObjectOutputStream objectOut = new ObjectOutputStream(out);
-				ObjectInputStream  objectIn  = new ObjectInputStream(in);
 				objectOut.writeObject("stop");
+				try
+				{
+					Thread.sleep(1000);
+				} catch (InterruptedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				server.close();
 			}
 			catch (UnknownHostException e)
 			{
@@ -195,7 +222,7 @@ public class Server
 			}
 			catch (ConnectException e)
 			{
-				System.out.println("server is already stopped.");
+				System.out.println("pradar-server is already stopped.");
 			}
 			catch (IOException e)
 			{
@@ -203,8 +230,9 @@ public class Server
 				e.printStackTrace();
 			}
 		}
-		else if ( line.hasOption("restart") || !(line.hasOption("stop")) )
+		if ( line.hasOption("restart") || !(line.hasOption("stop")) )
 		{
+			System.out.println("starting pradar-server to listen on port "+portNumber);
 			ConcurrentServer server = new ConcurrentServer(portNumber);
 		}
 	}
