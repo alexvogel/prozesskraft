@@ -800,16 +800,6 @@ public class PradarViewProcessingPage extends PApplet
 		}
 	};
 
-//	protected DataBindingContext initDataBindingsZoom()
-//	{
-//		DataBindingContext bindingContextZoom = new DataBindingContext();
-//		//
-//		IObservableValue targetObservableZoom = BeanProperties.value("zoomfaktor").observe(this);
-//		IObservableValue modelObservableZoom = BeanProperties.value("zoom").observe(einstellungen);
-//		bindingContextZoom.bindValue(targetObservableZoom, modelObservableZoom, null, null);
-//		//
-//		return bindingContextZoom;
-//	}
 	public void setDbfile(String pathToFile)
 	{
 		this.db.setDbfile(pathToFile);
