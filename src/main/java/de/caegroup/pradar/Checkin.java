@@ -279,7 +279,7 @@ public class Checkin
 			try
 			{
 				// socket einrichten und Out/Input-Streams setzen
-				server = new Socket("172.17.243.202", portNumber);
+				server = new Socket("localhost", portNumber);
 				OutputStream out = server.getOutputStream();
 				InputStream in = server.getInputStream();
 				ObjectOutputStream objectOut = new ObjectOutputStream(out);
