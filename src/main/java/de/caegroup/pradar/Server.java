@@ -36,14 +36,13 @@ public class Server
 	----------------------------*/
 	static CommandLine line;
 	Ini ini;
-	File file;
 
 	/*----------------------------
 	  constructors
 	----------------------------*/
 	public Server()
 	{
-		file = WhereAmI.getInifile(this.getClass());
+		File file = WhereAmI.getInifile(this.getClass());
 		try
 		{
 			ini = new Ini(file);
@@ -66,7 +65,9 @@ public class Server
 		
 		Server salut = new Server();
 		
-		System.out.println(salut.file.getAbsolutePath());
+		File file = WhereAmI.getInifile(salut.getClass());
+		
+		System.out.println(file.getAbsolutePath());
 		System.exit(0);
 
 		int defaultPortNumber = 37888;
