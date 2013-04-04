@@ -26,36 +26,49 @@ import org.apache.commons.cli.Options;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 
 import de.caegroup.network.ConcurrentServer;
-import de.caegroup.pradar.*;;
+import org.ini4j.*;
 
 public class Server
 {
 
 	/*----------------------------
-	  structure
+	  fields
 	----------------------------*/
 	static CommandLine line;
-	
+	Ini ini;
+	File file;
+
 	/*----------------------------
 	  constructors
 	----------------------------*/
-//	public static void main(String[] args) throws SAXException, IOException, ParserConfigurationException
+	public Server()
+	{
+		file = WhereAmI.getInifile(this.getClass());
+		try
+		{
+			ini = new Ini(file);
+		} catch (InvalidFileFormatException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/*----------------------------
+	  main
+	----------------------------*/
 	public static void main(String[] args) throws org.apache.commons.cli.ParseException
 	{
-
-//		try
-//		{
-//			if (args.length != 3)
-//			{
-//				System.out.println("Please specify processdefinition file (xml) and an outputfilename");
-//			}
-//			
-//		}
-//		catch (ArrayIndexOutOfBoundsException e)
-//		{
-//			System.out.println("***ArrayIndexOutOfBoundsException: Please specify processdefinition.xml, openoffice_template.od*, newfile_for_processdefinitions.odt\n" + e.toString());
-//		}
 		
+		Server salut = new Server();
+		
+		System.out.println(salut.file.getAbsolutePath());
+		System.exit(0);
+
 		int defaultPortNumber = 37888;
 		int portNumber;
 		String defaultPathToDb = new Db().getDbfile().getAbsolutePath();
