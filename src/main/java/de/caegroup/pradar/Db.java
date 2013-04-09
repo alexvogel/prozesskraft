@@ -298,7 +298,7 @@ public class Db
 				System.out.println("result is empty!");
 			}
 			
-			String formatstring = "|%-14s|%-14s|%-11s|%-7s|%-13s|%-6s|%-19s|%-19s|%-8s|\n";
+			String formatstring = "|%-14s|%-14s|%-11s|%-7s|%-13s|%-6s|%-19s|%-19s|%-8s|";
 
 			ausgabe.add(String.format(formatstring, "id", "parentid", "process", "user", "host", "active", "checkin", "checkout", "exitcode"));
 			ausgabe.add(String.format(formatstring, "--------------", "--------------", "-----------", "-------", "-------------", "------", "-------------------", "-------------------", "--------"));
