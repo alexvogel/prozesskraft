@@ -276,6 +276,22 @@ public class List
 				objectOut.writeObject("list");
 				objectOut.writeObject(entity);
 
+				// Antwort vom Server lesen. (Liste bereits Druckfertig aufbereitet)
+				try
+				{
+					ArrayList<String> list = (ArrayList<String>) objectIn.readObject();
+					System.out.println("Anzahl der Zeilen: "+list.size());
+					Iterator<String> iterstring = list.iterator();
+					while (iterstring.hasNext())
+					{
+						System.out.println(iterstring.next());
+					}
+				} catch (ClassNotFoundException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
 				// nachricht wurde erfolgreich an server gesendet --> schleife beenden
 				pradar_server_not_found = false;
 			}
