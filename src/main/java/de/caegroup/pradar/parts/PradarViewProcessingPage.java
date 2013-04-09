@@ -3,7 +3,15 @@ package de.caegroup.pradar.parts;
 
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.ConnectException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,6 +32,7 @@ import processing.core.PFont;
 import de.caegroup.pradar.Db;
 import de.caegroup.pradar.Entity;
 //import java.lang.management.ManagementFactory;
+import de.caegroup.pradar.WhereAmI;
 
 public class PradarViewProcessingPage extends PApplet
 {
@@ -364,8 +373,75 @@ public class PradarViewProcessingPage extends PApplet
 		this.now = Calendar.getInstance();
 		if ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > this.min_refresh_interval)
 		{
+			PradarViewProcessingPage tmp = new PradarViewProcessingPage();
+			File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
+			
+			ArrayList<String> pradar_server_list = new ArrayList<String>();
+			
+			// einchecken in die DB
+			Socket server = null;
+			
+			boolean pradar_server_not_found = true;
+			
+			// ueber alle server aus ini-file iterieren und dem ersten den auftrag erteilen
+			Iterator<String> iter_pradar_server = pradar_server_list.iterator();
+			while(pradar_server_not_found && iter_pradar_server.hasNext())
+			{
+				String port_and_machine_as_string = iter_pradar_server.next();
+				String [] port_and_machine = port_and_machine_as_string.split("@");
+
+				int portNumber = Integer.parseInt(port_and_machine[0]);
+				String machineName = port_and_machine[1];
+				System.err.println("trying pradar-server "+portNumber+"@"+machineName);
+				try
+				{
+					// socket einrichten und Out/Input-Streams setzen
+					server = new Socket(machineName, portNumber);
+					OutputStream out = server.getOutputStream();
+					InputStream in = server.getInputStream();
+					ObjectOutputStream objectOut = new ObjectOutputStream(out);
+					ObjectInputStream  objectIn  = new ObjectInputStream(in);
+					
+					// Objekte zum server uebertragen
+					objectOut.writeObject("getall");
+
+					// Antwort vom Server lesen. (Liste bereits Druckfertig aufbereitet)
+					try
+					{
+						this.all_entities = (ArrayList<Entity>) objectIn.readObject();
+					} catch (ClassNotFoundException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					// nachricht wurde erfolgreich an server gesendet --> schleife beenden
+					pradar_server_not_found = false;
+				}
+				catch (UnknownHostException e)
+				{
+					// TODO Auto-generated catch block
+					System.err.println("unknown host "+machineName+" (UnknownHostException)");
+				}
+				catch (ConnectException e)
+				{
+					System.err.println("no pradar-server found at "+portNumber+"@"+machineName);
+		//			e.printStackTrace();
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			if (pradar_server_not_found)
+			{
+				System.out.println("no pradar-server found.");
+			}
+			
+
 			// daten holen aus db
-			this.all_entities = db.getAllEntities();
 			System.out.println("refreshing data...");
 			this.refresh_last = Calendar.getInstance();
 			this.refresh_next = Calendar.getInstance();
