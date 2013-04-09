@@ -53,7 +53,7 @@ public class Client
 			{
 				this.parent.db.initDb();
 			}
-			if (type.equals("initforce"))
+			else if (type.equals("initforce"))
 			{
 				this.parent.db.initForceDb();
 			}
