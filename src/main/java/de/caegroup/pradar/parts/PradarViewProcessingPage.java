@@ -23,6 +23,8 @@ import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.ini4j.Ini;
+import org.ini4j.InvalidFileFormatException;
 
 //import org.eclipse.swt.events.MouseEvent;
 //import org.eclipse.swt.events.MouseWheelListener;
@@ -39,13 +41,12 @@ public class PradarViewProcessingPage extends PApplet
 	/*----------------------------
 	  structure
 	----------------------------*/
-	private PradarViewModel einstellungen;
-	private Db db;
+	PradarViewModel einstellungen;
+
+	PradarPartUi3 parent;
+	
 	@Inject
-	private Entity entity_filter;
-	Calendar refresh_last = Calendar.getInstance();
-	Calendar refresh_next = Calendar.getInstance();
-	int min_refresh_interval = 5000;
+//	private Entity entity_filter;
 	Calendar now = Calendar.getInstance();
 	Calendar mouse_last_pressed = Calendar.getInstance();
 	int zoomfaktor = 100;
@@ -59,9 +60,9 @@ public class PradarViewProcessingPage extends PApplet
 	int mouse_pressed_y;
 	float doubleClickTimeSpan = 400;
 	int refresh_interval = 600;
-	ArrayList<Entity> all_entities = new ArrayList<Entity>();
-	ArrayList<Entity> matched_entities = new ArrayList<Entity>();
-	ArrayList<PradarViewProcessingEntity> matched_processing_entities = new ArrayList<PradarViewProcessingEntity>();
+//	ArrayList<Entity> all_entities = new ArrayList<Entity>();
+//	ArrayList<Entity> matched_parent_entities = new ArrayList<Entity>();
+	ArrayList<PradarViewProcessingEntity> pentities_filtered;
 	Entity entity_nahe_maus = null;
 	PradarViewProcessingEntity pentity_nahe_maus = null;
 	boolean period_kreis_folgt_der_maus = false;
@@ -111,13 +112,11 @@ public class PradarViewProcessingPage extends PApplet
 //    	PFont font = this.loadFont("TheSans-Plain-12.vlw");
 		textFont(font, 12);
 		center_x = width/2;
-		refresh_last.setTimeInMillis(0);
 		mouse_last_pressed.setTimeInMillis(0);
 		
 		addMouseWheelListener(listener_mousewheel);
 		
 		// initiales Daten abholen aus DB
-		this.refresh();
   }
   
 	/*----------------------------
@@ -136,14 +135,6 @@ public class PradarViewProcessingPage extends PApplet
 		center_x = (int) (this.center_ratio_x * width);
 		center_y = (int) (this.center_ratio_y * height);
 		
-		this.now = Calendar.getInstance();
-		if ((now.after(this.refresh_next)) || ((this.keyPressed) && (this.key == ' ') && ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > this.min_refresh_interval)))
-//		if ((now.after(this.refresh_next)) || ((this.key == ' ') && ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > 1000)))
-		{
-			this.refresh();
-			this.filter(entity_filter);
-		}
-		
 		background(255);
 		if (width < height) { this.bezugsgroesse = (width*this.zoomfaktor/100); }
 		else { this.bezugsgroesse = (height*this.zoomfaktor/100); }
@@ -157,7 +148,7 @@ public class PradarViewProcessingPage extends PApplet
 		this.radius_monat = this.radius_basis * 4;
 		this.radius_jahr = this.radius_basis * 5;
 		Calendar period = Calendar.getInstance();
-		period.setTimeInMillis(System.currentTimeMillis()-this.entity_filter.getPeriodInMillis());
+		period.setTimeInMillis(System.currentTimeMillis()-this.einstellungen.getPeriod() * 3600000);
 		this.radius_period = (int) this.calcRadius(period);
 		
 		this.durchmesser_stunde= this.radius_stunde * 2;
@@ -297,20 +288,22 @@ public class PradarViewProcessingPage extends PApplet
 		stroke(0, 140, 200);
 		ellipse(center_x, center_y, durchmesser_period, durchmesser_period);
 		fill(0, 140, 200);
-		text((int)this.entity_filter.getPeriodInHours()+"h", (center_x-radius_period+2), (center_y)-2);
+		text((int)this.einstellungen.getPeriod()+"h", (center_x-radius_period+2), (center_y)-2);
 
 		
 		// legende schreiben
 		legend();
 		
-		// ueber alle ProcessingEntities, die angezeigt werden sollen iterieren und die visualisierung zeichnen
-		Iterator<PradarViewProcessingEntity> iterpentity = matched_processing_entities.iterator();
-		while (iterpentity.hasNext())
+		// ueber alle ProcessingEntities (parents und children) die angezeigt werden sollen iterieren und die visualisierung zeichnen
+
+		Iterator<PradarViewProcessingEntity> iter_pentities_filtered = this.pentities_filtered.iterator();
+		while(iter_pentities_filtered.hasNext())
 		{
-			PradarViewProcessingEntity pentity = iterpentity.next();
+			PradarViewProcessingEntity pentity = iter_pentities_filtered.next();
 			pentity.calcNewBogenlaenge();
 			pentity.calcPosition();
 			pentity.draw();
+//			System.out.println("SuperId: "+pentity.getSuperid());
 		}
 
 		detMouseAndEntity();
@@ -323,6 +316,60 @@ public class PradarViewProcessingPage extends PApplet
 		
 	}
 
+	void refresh()
+	{
+		syncPentities();
+		fixPosition();
+	}
+	
+	void fixPosition()
+	{
+		// ueber alle pentities iterieren und nur beim ersten die fixPosition auf true setzen
+		// setzen des ersten auf fixPosition
+		for (int x = 0; x<this.pentities_filtered.size(); x++)
+		{
+			PradarViewProcessingEntity pentity = this.pentities_filtered.get(x);
+			if (x == 0)
+			{
+				pentity.setFixPosition(true);
+			}
+			else
+			{
+				pentity.setFixPosition(false);
+			}
+		}
+	}
+	
+	void syncPentities()
+	{
+		// ueber alle parent-entities, die angezeigt werden sollen iterieren
+		// - fuer diejenigen, die noch keine entsprechung (pentity) haben, soll eine erstellt werden
+		Iterator<Entity> iterentity = this.parent.entities_filtered.iterator();
+		while (iterentity.hasNext())
+		{
+			Entity entity = iterentity.next();
+			
+			if ( !(isPentityPresent(entity)) )
+			{
+				PradarViewProcessingEntity newProcessingEntity = new PradarViewProcessingEntity(this, null, entity);
+				this.pentities_filtered.add(newProcessingEntity);
+			}
+		}
+
+		// ueber alle Processingentities, die existieren, soll iteriert werden und
+		// - nicht mehr matchende sollen entfernt werden.
+		ArrayList<PradarViewProcessingEntity> new_pentities_filtered = new ArrayList<PradarViewProcessingEntity>();
+		for (int x = 0; x<this.pentities_filtered.size(); x++)
+		{
+			PradarViewProcessingEntity pentity = this.pentities_filtered.get(x);
+			if (isEntityPresent(pentity))
+			{
+				new_pentities_filtered.add(pentity);
+			}
+		}
+		this.pentities_filtered = new_pentities_filtered;
+	}
+	
 	void draw_flag()
 	{
 		// weiss
@@ -349,7 +396,7 @@ public class PradarViewProcessingPage extends PApplet
 		this.entity_mit_kleinstem_abstand_mouse = null;
 		
 		// feststellen der ententy, die den kleinsten abstand zur mouse hat
-		Iterator<PradarViewProcessingEntity> iterpentity = this.matched_processing_entities.iterator();
+		Iterator<PradarViewProcessingEntity> iterpentity = this.pentities_filtered.iterator();
 		while (iterpentity.hasNext())
 		{
 			PradarViewProcessingEntity pentity = iterpentity.next();
@@ -357,7 +404,7 @@ public class PradarViewProcessingPage extends PApplet
 			if (actualDistanceToMouse < this.distanceToMouse)
 			{
 				this.distanceToMouse = actualDistanceToMouse;
-				entity_mit_kleinstem_abstand_mouse = this.getEntityBySuperId(pentity.getSuperid());
+				entity_mit_kleinstem_abstand_mouse = this.parent.getEntityBySuperId(pentity.getSuperid());
 			}
 		}
 
@@ -367,167 +414,6 @@ public class PradarViewProcessingPage extends PApplet
 			this.entity_nahe_maus = this.entity_mit_kleinstem_abstand_mouse;
 		}
 	}
-	
-	void refresh()
-	{
-		this.now = Calendar.getInstance();
-		if ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > this.min_refresh_interval)
-		{
-			PradarViewProcessingPage tmp = new PradarViewProcessingPage();
-			File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
-			
-			ArrayList<String> pradar_server_list = new ArrayList<String>();
-			
-			// einchecken in die DB
-			Socket server = null;
-			
-			boolean pradar_server_not_found = true;
-			
-			// ueber alle server aus ini-file iterieren und dem ersten den auftrag erteilen
-			Iterator<String> iter_pradar_server = pradar_server_list.iterator();
-			while(pradar_server_not_found && iter_pradar_server.hasNext())
-			{
-				String port_and_machine_as_string = iter_pradar_server.next();
-				String [] port_and_machine = port_and_machine_as_string.split("@");
-
-				int portNumber = Integer.parseInt(port_and_machine[0]);
-				String machineName = port_and_machine[1];
-				System.err.println("trying pradar-server "+portNumber+"@"+machineName);
-				try
-				{
-					// socket einrichten und Out/Input-Streams setzen
-					server = new Socket(machineName, portNumber);
-					OutputStream out = server.getOutputStream();
-					InputStream in = server.getInputStream();
-					ObjectOutputStream objectOut = new ObjectOutputStream(out);
-					ObjectInputStream  objectIn  = new ObjectInputStream(in);
-					
-					// Objekte zum server uebertragen
-					objectOut.writeObject("getall");
-
-					// Antwort vom Server lesen. (Liste bereits Druckfertig aufbereitet)
-					try
-					{
-						this.all_entities = (ArrayList<Entity>) objectIn.readObject();
-					} catch (ClassNotFoundException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					// nachricht wurde erfolgreich an server gesendet --> schleife beenden
-					pradar_server_not_found = false;
-				}
-				catch (UnknownHostException e)
-				{
-					// TODO Auto-generated catch block
-					System.err.println("unknown host "+machineName+" (UnknownHostException)");
-				}
-				catch (ConnectException e)
-				{
-					System.err.println("no pradar-server found at "+portNumber+"@"+machineName);
-		//			e.printStackTrace();
-				}
-				catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-			if (pradar_server_not_found)
-			{
-				System.out.println("no pradar-server found.");
-			}
-			
-
-			// daten holen aus db
-			System.out.println("refreshing data...");
-			this.refresh_last = Calendar.getInstance();
-			this.refresh_next = Calendar.getInstance();
-			this.refresh_next.add(13, this.refresh_interval);
-			this.filter(entity_filter);
-		}
-		else
-		{
-			System.out.println("refresh interval must be at least "+(this.min_refresh_interval/1000)+" seconds.");
-			
-		}
-	}
-
-	void filter(Entity entity_filter)
-	{
-		this.matched_entities = entity_filter.getAllMatches(this.all_entities);
-
-		// ueber alle entities, die angezeigt werden sollen iterieren
-		// - fuer entities, die noch keine entsprechung (pentity) haben, soll eine erstellt werden
-		Iterator<Entity> iterentity = this.matched_entities.iterator();
-		while (iterentity.hasNext())
-		{
-			Entity entity = iterentity.next();
-			
-			if ( !(isProcessingEntityPresent(entity)) )
-			{
-				PradarViewProcessingEntity newProcessingEntity = new PradarViewProcessingEntity(this, entity);
-				this.matched_processing_entities.add(newProcessingEntity);
-//				System.out.println("Erstellen eines neues pentity superId: "+newProcessingEntity.getSuperid());
-			}
-		}
-		
-		// ueber alle Processingentities, die existieren, soll iteriert werden und
-		// - nicht mehr matchende sollen entfernt werden.
-		ArrayList<PradarViewProcessingEntity> new_matched_processing_entities = new ArrayList<PradarViewProcessingEntity>();
-		for (int x = 0; x<this.matched_processing_entities.size(); x++)
-		{
-			PradarViewProcessingEntity pentity = this.matched_processing_entities.get(x);
-			if (isEntityPresent(pentity))
-			{
-				new_matched_processing_entities.add(pentity);
-			}
-		}
-		this.matched_processing_entities = new_matched_processing_entities;
-		
-		// ueber alle pentities iterieren und nur beim ersten die fixPosition auf true setzen
-		// setzen des ersten auf fixPosition
-		for (int x = 0; x<this.matched_processing_entities.size(); x++)
-		{
-			PradarViewProcessingEntity pentity = this.matched_processing_entities.get(x);
-			if (x == 0)
-			{
-				pentity.setFixPosition(true);
-			}
-			else
-			{
-				pentity.setFixPosition(false);
-			}
-		}
-	}
-	
-	Entity getEntityBySuperId(String superId)
-	{
-		Entity entityWithSuperId = null;
-		Iterator<Entity> iterentity = this.all_entities.iterator();
-		while(iterentity.hasNext())
-		{
-			Entity entity = iterentity.next();
-			if ( entity.getSuperid().equals(superId) )
-			{
-				entityWithSuperId = entity;
-			}
-		}
-		return entityWithSuperId;
-	}
-	
-//	void calcNewPosition()
-//	{
-//		// ueber alle ProcessingEntities, die angezeigt werden sollen iterieren und neue Position berechnen
-//		Iterator<PradarViewProcessingEntity> iterpentity = matched_processing_entities.iterator();
-//		while (iterpentity.hasNext())
-//		{
-//			PradarViewProcessingEntity pentity = iterpentity.next();
-////			pentity.calcNewPosition();
-//		}
-//	}
 	
 	float calcBogenlaengeFromPosition(float x, float y)
 	{
@@ -569,10 +455,11 @@ public class PradarViewProcessingPage extends PApplet
 		return radius;
 	}
 	
-	boolean isProcessingEntityPresent(Entity entity)
+	boolean isPentityPresent(Entity entity)
 	{
 		boolean isPresent = false;
-		Iterator<PradarViewProcessingEntity> iterpentity = this.matched_processing_entities.iterator();
+
+		Iterator<PradarViewProcessingEntity> iterpentity = this.pentities_filtered.iterator();
 		while (iterpentity.hasNext())
 		{
 			PradarViewProcessingEntity pentity = iterpentity.next();
@@ -588,7 +475,8 @@ public class PradarViewProcessingPage extends PApplet
 	boolean isEntityPresent(PradarViewProcessingEntity pentity)
 	{
 		boolean isPresent = false;
-		Iterator<Entity> iterentity = this.matched_entities.iterator();
+
+		Iterator<Entity> iterentity = this.parent.entities_filtered.iterator();
 		while (iterentity.hasNext())
 		{
 			Entity entity = iterentity.next();
@@ -606,20 +494,12 @@ public class PradarViewProcessingPage extends PApplet
 		stroke(100);
 		textSize(13);
 		fill(this.legendcolor[0], this.legendcolor[1], this.legendcolor[2]);
-		text((int)(((this.refresh_next.getTimeInMillis() - this.now.getTimeInMillis())/1000)), 5, height-5);
+		text((int)(((this.parent.refresh_next.getTimeInMillis() - this.now.getTimeInMillis())/1000)), 5, height-5);
 		text("automation@caegroup.de", width-180, height-5);
 //		text(this.entity_filter.getPeriodInMillis(), 50, height-5);
 		noFill();
 	}
 	
-	void setFilter (Entity entity_filter)
-	{
-		this.entity_filter = entity_filter;
-		System.out.println("setting new filter");
-//		System.out.println("period is now: "+this.entity_filter.getPeriodInMillis());
-		this.filter(this.entity_filter);
-	}
-
 	void setZoomfaktor (int zoomfaktor)
 	{
 		this.zoomfaktor = zoomfaktor;
@@ -702,7 +582,7 @@ public class PradarViewProcessingPage extends PApplet
 	public PradarViewProcessingEntity getPentityBySuperId(String superid)
 	{
 		PradarViewProcessingEntity matching_pentity = null;
-		Iterator<PradarViewProcessingEntity> iterpentity = this.matched_processing_entities.iterator();
+		Iterator<PradarViewProcessingEntity> iterpentity = this.pentities_filtered.iterator();
 		while (iterpentity.hasNext())
 		{
 			PradarViewProcessingEntity pentity = iterpentity.next();
@@ -814,7 +694,7 @@ public class PradarViewProcessingPage extends PApplet
 		else if (this.period_kreis_folgt_der_maus)
 		{
 //			this.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
-			this.entity_filter.setPeriodInMillis((long) (3600000 * (long)(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))))) );
+			this.parent.entity_filter.setPeriodInMillis((long) (3600000 * (long)(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))))) );
 		}
 		
 		else
@@ -876,44 +756,14 @@ public class PradarViewProcessingPage extends PApplet
 		}
 	};
 
-	public void setDbfile(String pathToFile)
-	{
-		this.db.setDbfile(pathToFile);
-	}
-	
 	public PradarViewProcessingPage()
 	{
-		this.entity_filter = new Entity();
-		this.einstellungen = new PradarViewModel();
-		this.db = new Db();
+		this.parent = new PradarPartUi3();
 	}
 	
-	public PradarViewProcessingPage(String pathToDbfile)
+	public PradarViewProcessingPage(PradarPartUi3 p)
 	{
-		this.entity_filter = new Entity();
-		this.einstellungen = new PradarViewModel();
-		this.db = new Db(pathToDbfile);
-	}
-	
-	public PradarViewProcessingPage(Entity entity)
-	{
-		this.entity_filter = entity;
-		this.einstellungen = new PradarViewModel();
-		this.db = new Db();
-	}
-
-	public PradarViewProcessingPage(Entity entity, PradarViewModel einstellungen)
-	{
-		this.entity_filter = entity;
-		this.einstellungen = einstellungen;
-		this.db = new Db();
-	}
-
-	public PradarViewProcessingPage(String dbfile, Entity entity, PradarViewModel einstellungen)
-	{
-		this.entity_filter = entity;
-		this.einstellungen = einstellungen;
-		this.db = new Db(dbfile);
+		this.parent = p;
 	}
 
 	/**

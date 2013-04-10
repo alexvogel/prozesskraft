@@ -3,6 +3,18 @@ package de.caegroup.pradar.parts;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.MouseWheelEvent;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.net.ConnectException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -58,6 +70,8 @@ import org.eclipse.swt.widgets.Text;
 
 import de.caegroup.pradar.Db;
 import de.caegroup.pradar.Entity;
+import de.caegroup.pradar.WhereAmI;
+
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Spinner;
 //import java.beans.PropertyChangeSupport;
@@ -72,6 +86,8 @@ import org.eclipse.swt.widgets.Spinner;
 //import org.eclipse.core.databinding.UpdateValueStrategy;
 //import org.eclipse.jface.databinding.fieldassist.ControlDecorationSupport;
 //import org.eclipse.core.databinding.beans.PojoProperties;
+import org.ini4j.Ini;
+import org.ini4j.InvalidFileFormatException;
 
 public class PradarPartUi3 extends ModelObject
 {
@@ -88,7 +104,19 @@ public class PradarPartUi3 extends ModelObject
 	private Scale scale_zoom;
 	private Table table;
 	private PradarViewModel einstellungen = new PradarViewModel();
-	private Entity filter_entity = new Entity();
+
+	Entity entity_filter = new Entity();
+	
+	public ArrayList<Entity> entities_all;
+	public ArrayList<Entity> entities_filtered;
+//	public ArrayList<Entity> entities_children_of_filtered;
+
+	private int refresh_min_interval = 5000;
+	private int refresh_interval = 600000;
+	private Calendar now = Calendar.getInstance();
+	private Calendar refresh_last = Calendar.getInstance();
+	Calendar refresh_next = Calendar.getInstance();
+	
 	PradarViewProcessingPage applet;
 	Display display;
 
@@ -103,7 +131,9 @@ public class PradarPartUi3 extends ModelObject
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLocation(0, 0);
 		createControls(composite);
-		applet = new PradarViewProcessingPage(filter_entity, einstellungen);
+		refresh_last.setTimeInMillis(0);
+		refresh();
+		applet = new PradarViewProcessingPage(this);
 	}
 
 	/**
@@ -112,17 +142,9 @@ public class PradarPartUi3 extends ModelObject
 	@Inject
 	public PradarPartUi3(Composite composite)
 	{
-		applet = new PradarViewProcessingPage(filter_entity, einstellungen);
-		createControls(composite);
-	}
-
-	/**
-	 * constructor als EntryPoint fuer Main falls das dbfile mitgeliefert wird
-	 */
-	@Inject
-	public PradarPartUi3(Composite composite, String pathdbfile)
-	{
-		applet = new PradarViewProcessingPage(pathdbfile, filter_entity, einstellungen);
+		refresh_last.setTimeInMillis(0);
+		refresh();
+		applet = new PradarViewProcessingPage(this);
 		createControls(composite);
 	}
 
@@ -286,26 +308,27 @@ public class PradarPartUi3 extends ModelObject
 	
 	public void applet_paint_with_new_filter()
 	{
-		filter_entity.setProcess(einstellungen.getProcess());
-		filter_entity.setUser(einstellungen.getUser());
-		filter_entity.setHost(einstellungen.getHost());
-		filter_entity.setActive(einstellungen.getActive());
-		filter_entity.setPeriodInHours(einstellungen.getPeriod());
-		filter_entity.setParentidAsBoolean(einstellungen.getChildren());
+		entity_filter.setProcess(einstellungen.getProcess());
+		entity_filter.setUser(einstellungen.getUser());
+		entity_filter.setHost(einstellungen.getHost());
+		entity_filter.setActive(einstellungen.getActive());
+		entity_filter.setPeriodInHours(einstellungen.getPeriod());
+		// nur entities, die keine eltern haben
+		entity_filter.setParentidAsBoolean(false);
 //		System.out.println("period aus einstellungen in stunden: "+einstellungen.getPeriod());
 //		System.out.println("period aus filter_entity in Stunden: "+filter_entity.getPeriodInHours());
 //		System.out.println("period aus filter_entity in Millis: "+filter_entity.getPeriodInMillis());
-		
-		applet.setFilter(filter_entity);
+		filter();
+//		applet.setFilter(filter_entity);
 	}
 	public void applet_paint_with_new_zoom()
 	{
 		applet.setZoomfaktor(einstellungen.getZoom());
 	}
-	public void applet_refresh()
-	{
-		applet.refresh();
-	}
+//	public void applet_refresh()
+//	{
+//		applet.refresh();
+//	}
 	public void applet_autoscale()
 	{
 		applet.autoscale();
@@ -323,7 +346,7 @@ public class PradarPartUi3 extends ModelObject
 		table.setFocus();
 	}
 	
-	IChangeListener listener = new IChangeListener()
+	IChangeListener listener_filter = new IChangeListener()
 	{
 		public void handleChange(ChangeEvent event)
 		{
@@ -345,7 +368,7 @@ public class PradarPartUi3 extends ModelObject
 		public void widgetSelected(SelectionEvent event)
 		{
 //			System.out.println("button wurde gedrueckt");
-			applet_refresh();
+			refresh();
 		}
 	};
 	
@@ -387,7 +410,7 @@ public class PradarPartUi3 extends ModelObject
 		for (Object o : bindings)
 		{
 			Binding b = (Binding) o;
-			b.getModel().addChangeListener(listener);
+			b.getModel().addChangeListener(listener_filter);
 		}
 	}
 
@@ -405,7 +428,6 @@ public class PradarPartUi3 extends ModelObject
 		b.getModel().addChangeListener(listener_zoom);
 	}
 
-
 	protected DataBindingContext initDataBindingsZoom()
 	{
 		DataBindingContext bindingContextZoom = new DataBindingContext();
@@ -415,6 +437,17 @@ public class PradarPartUi3 extends ModelObject
 		bindingContextZoom.bindValue(targetObservableZoom, modelObservableZoom, null, null);
 		//
 		return bindingContextZoom;
+	}
+	
+	protected DataBindingContext initDataBindingsChildren()
+	{
+		DataBindingContext bindingContextChildren = new DataBindingContext();
+		//
+		IObservableValue targetObservableChildren = WidgetProperties.selection().observe(button_children);
+		IObservableValue modelObservableChildren = BeanProperties.value("children").observe(einstellungen);
+		bindingContextFilter.bindValue(targetObservableChildren, modelObservableChildren, null, null);
+		//
+		return bindingContextChildren;
 	}
 	
 	protected DataBindingContext initDataBindingsFilter()
@@ -472,11 +505,165 @@ public class PradarPartUi3 extends ModelObject
 		IObservableValue modelObservablePeriod = BeanProperties.value("period").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservablePeriod, modelObservablePeriod, null, null);
 		//
-		IObservableValue targetObservableChildren = WidgetProperties.selection().observe(button_children);
-		IObservableValue modelObservableChildren = BeanProperties.value("children").observe(einstellungen);
-		bindingContextFilter.bindValue(targetObservableChildren, modelObservableChildren, null, null);
-		//
 		return bindingContextFilter;
+	}
+	
+	void refresh()
+	{
+		refresh();
+		filter();
+		applet.refresh();
+	}
+	
+	void load()
+	{
+		now = Calendar.getInstance();
+		if ((now.getTimeInMillis() - refresh_last.getTimeInMillis()) > refresh_min_interval)
+		{
+			PradarViewProcessingPage tmp = new PradarViewProcessingPage();
+			File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
+			
+			Ini ini;
+			
+			ArrayList<String> pradar_server_list = new ArrayList<String>();
+			
+			try
+			{
+				ini = new Ini(inifile);
+				for(int x = 1; x <= 5; x++)
+				{
+					if (ini.get("pradar-server", "pradar-server-"+x) != null )
+					{
+						pradar_server_list.add(ini.get("pradar-server", "pradar-server-"+x));
+					}
+				}
+			}
+			catch (InvalidFileFormatException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			catch (IOException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			// einchecken in die DB
+			Socket server = null;
+			
+			boolean pradar_server_not_found = true;
+			
+			// ueber alle server aus ini-file iterieren und dem ersten den auftrag erteilen
+			Iterator<String> iter_pradar_server = pradar_server_list.iterator();
+			while(pradar_server_not_found && iter_pradar_server.hasNext())
+			{
+				String port_and_machine_as_string = iter_pradar_server.next();
+				String [] port_and_machine = port_and_machine_as_string.split("@");
+
+				int portNumber = Integer.parseInt(port_and_machine[0]);
+				String machineName = port_and_machine[1];
+				System.err.println("trying pradar-server "+portNumber+"@"+machineName);
+				try
+				{
+					// socket einrichten und Out/Input-Streams setzen
+					server = new Socket(machineName, portNumber);
+					OutputStream out = server.getOutputStream();
+					InputStream in = server.getInputStream();
+					ObjectOutputStream objectOut = new ObjectOutputStream(out);
+					ObjectInputStream  objectIn  = new ObjectInputStream(in);
+					
+					// Objekte zum server uebertragen
+					objectOut.writeObject("getall");
+
+					// Antwort vom Server lesen. (Liste bereits Druckfertig aufbereitet)
+					try
+					{
+						this.entities_all = (ArrayList<Entity>) objectIn.readObject();
+					} catch (ClassNotFoundException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					// nachricht wurde erfolgreich an server gesendet --> schleife beenden
+					pradar_server_not_found = false;
+				}
+				catch (UnknownHostException e)
+				{
+					// TODO Auto-generated catch block
+					System.err.println("unknown host "+machineName+" (UnknownHostException)");
+				}
+				catch (ConnectException e)
+				{
+					System.err.println("no pradar-server found at "+portNumber+"@"+machineName);
+		//			e.printStackTrace();
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			if (pradar_server_not_found)
+			{
+				System.out.println("no pradar-server found.");
+			}
+			
+
+			// daten holen aus db
+			System.out.println("refreshing data...");
+			this.refresh_last = Calendar.getInstance();
+			this.refresh_next = Calendar.getInstance();
+			this.refresh_next.add(13, this.refresh_interval);
+		}
+		else
+		{
+			System.out.println("refresh interval must be at least "+(this.refresh_min_interval/1000)+" seconds.");
+			
+		}
+	}
+
+	void filter()
+	{
+		this.entities_filtered = entity_filter.getAllMatches(this.entities_all);
+		
+		// falls auch children angezeigt werden sollen
+		if (einstellungen.getChildren())
+		{
+			Iterator<Entity> iterentity = this.entities_filtered.iterator();
+			while (iterentity.hasNext())
+			{
+				Entity entity = iterentity.next();
+				String entity_id = entity.getId();
+				
+				Iterator<Entity> iterentity2 = this.entities_all.iterator();
+				while (iterentity2.hasNext())
+				{
+					Entity possible_child = iterentity2.next();
+					if (possible_child.getParentid().equals(entity_id))
+					{
+						this.entities_filtered.add(possible_child);
+					}
+				}
+			}
+		}
+	}
+
+	Entity getEntityBySuperId(String superId)
+	{
+		Entity entityWithSuperId = null;
+		Iterator<Entity> iterentity = this.entities_all.iterator();
+		while(iterentity.hasNext())
+		{
+			Entity entity = iterentity.next();
+			if ( entity.getSuperid().equals(superId) )
+			{
+				entityWithSuperId = entity;
+			}
+		}
+		return entityWithSuperId;
 	}
 	
 	/**
@@ -556,14 +743,7 @@ public class PradarPartUi3 extends ModelObject
 					GridLayout gl_composite = new GridLayout(2, false);
 					gl_composite.marginWidth = 0;
 					gl_composite.marginHeight = 0;
-					if (line.hasOption("dbfile"))
-					{
-						new PradarPartUi3(composite, line.getOptionValue("dbfile"));
-					}
-					else
-					{
-						new PradarPartUi3(composite);
-					}
+					new PradarPartUi3(composite);
 					
 					try
 					{
