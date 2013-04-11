@@ -103,7 +103,7 @@ public class PradarPartUi3 extends ModelObject
 	private Button button_children;
 	private Scale scale_zoom;
 	private Table table;
-	private PradarViewModel einstellungen = new PradarViewModel();
+	PradarViewModel einstellungen = new PradarViewModel();
 
 	Entity entity_filter = new Entity();
 	
@@ -131,9 +131,9 @@ public class PradarPartUi3 extends ModelObject
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLocation(0, 0);
 		createControls(composite);
+		applet = new PradarViewProcessingPage(this);
 		refresh_last.setTimeInMillis(0);
 		refresh();
-		applet = new PradarViewProcessingPage(this);
 	}
 
 	/**
@@ -142,9 +142,9 @@ public class PradarPartUi3 extends ModelObject
 	@Inject
 	public PradarPartUi3(Composite composite)
 	{
+		applet = new PradarViewProcessingPage(this);
 		refresh_last.setTimeInMillis(0);
 		refresh();
-		applet = new PradarViewProcessingPage(this);
 		createControls(composite);
 	}
 
@@ -439,17 +439,6 @@ public class PradarPartUi3 extends ModelObject
 		return bindingContextZoom;
 	}
 	
-	protected DataBindingContext initDataBindingsChildren()
-	{
-		DataBindingContext bindingContextChildren = new DataBindingContext();
-		//
-		IObservableValue targetObservableChildren = WidgetProperties.selection().observe(button_children);
-		IObservableValue modelObservableChildren = BeanProperties.value("children").observe(einstellungen);
-		bindingContextFilter.bindValue(targetObservableChildren, modelObservableChildren, null, null);
-		//
-		return bindingContextChildren;
-	}
-	
 	protected DataBindingContext initDataBindingsFilter()
 	{
 
@@ -505,12 +494,16 @@ public class PradarPartUi3 extends ModelObject
 		IObservableValue modelObservablePeriod = BeanProperties.value("period").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservablePeriod, modelObservablePeriod, null, null);
 		//
+		IObservableValue targetObservableChildren = WidgetProperties.selection().observe(button_children);
+		IObservableValue modelObservableChildren = BeanProperties.value("children").observe(einstellungen);
+		bindingContextFilter.bindValue(targetObservableChildren, modelObservableChildren, null, null);
+		//
 		return bindingContextFilter;
 	}
 	
 	void refresh()
 	{
-		refresh();
+		load();
 		filter();
 		applet.refresh();
 	}
@@ -520,7 +513,7 @@ public class PradarPartUi3 extends ModelObject
 		now = Calendar.getInstance();
 		if ((now.getTimeInMillis() - refresh_last.getTimeInMillis()) > refresh_min_interval)
 		{
-			PradarViewProcessingPage tmp = new PradarViewProcessingPage();
+			PradarViewProcessingPage tmp = new PradarViewProcessingPage(this);
 			File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
 			
 			Ini ini;
@@ -628,7 +621,7 @@ public class PradarPartUi3 extends ModelObject
 	void filter()
 	{
 		this.entities_filtered = entity_filter.getAllMatches(this.entities_all);
-		
+
 		// falls auch children angezeigt werden sollen
 		if (einstellungen.getChildren())
 		{

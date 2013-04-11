@@ -41,7 +41,7 @@ public class PradarViewProcessingPage extends PApplet
 	/*----------------------------
 	  structure
 	----------------------------*/
-	PradarViewModel einstellungen;
+//	PradarViewModel einstellungen;
 
 	PradarPartUi3 parent;
 	
@@ -62,7 +62,7 @@ public class PradarViewProcessingPage extends PApplet
 	int refresh_interval = 600;
 //	ArrayList<Entity> all_entities = new ArrayList<Entity>();
 //	ArrayList<Entity> matched_parent_entities = new ArrayList<Entity>();
-	ArrayList<PradarViewProcessingEntity> pentities_filtered;
+	ArrayList<PradarViewProcessingEntity> pentities_filtered = new ArrayList<PradarViewProcessingEntity>();
 	Entity entity_nahe_maus = null;
 	PradarViewProcessingEntity pentity_nahe_maus = null;
 	boolean period_kreis_folgt_der_maus = false;
@@ -113,7 +113,7 @@ public class PradarViewProcessingPage extends PApplet
 		textFont(font, 12);
 		center_x = width/2;
 		mouse_last_pressed.setTimeInMillis(0);
-		
+		refresh();
 		addMouseWheelListener(listener_mousewheel);
 		
 		// initiales Daten abholen aus DB
@@ -148,7 +148,7 @@ public class PradarViewProcessingPage extends PApplet
 		this.radius_monat = this.radius_basis * 4;
 		this.radius_jahr = this.radius_basis * 5;
 		Calendar period = Calendar.getInstance();
-		period.setTimeInMillis(System.currentTimeMillis()-this.einstellungen.getPeriod() * 3600000);
+		period.setTimeInMillis(System.currentTimeMillis()-this.parent.einstellungen.getPeriod() * 3600000);
 		this.radius_period = (int) this.calcRadius(period);
 		
 		this.durchmesser_stunde= this.radius_stunde * 2;
@@ -288,7 +288,7 @@ public class PradarViewProcessingPage extends PApplet
 		stroke(0, 140, 200);
 		ellipse(center_x, center_y, durchmesser_period, durchmesser_period);
 		fill(0, 140, 200);
-		text((int)this.einstellungen.getPeriod()+"h", (center_x-radius_period+2), (center_y)-2);
+		text((int)this.parent.einstellungen.getPeriod()+"h", (center_x-radius_period+2), (center_y)-2);
 
 		
 		// legende schreiben
@@ -296,10 +296,9 @@ public class PradarViewProcessingPage extends PApplet
 		
 		// ueber alle ProcessingEntities (parents und children) die angezeigt werden sollen iterieren und die visualisierung zeichnen
 
-		Iterator<PradarViewProcessingEntity> iter_pentities_filtered = this.pentities_filtered.iterator();
-		while(iter_pentities_filtered.hasNext())
+		for(int x=0; x < this.pentities_filtered.size(); x++)
 		{
-			PradarViewProcessingEntity pentity = iter_pentities_filtered.next();
+			PradarViewProcessingEntity pentity = this.pentities_filtered.get(x);
 			pentity.calcNewBogenlaenge();
 			pentity.calcPosition();
 			pentity.draw();
@@ -459,14 +458,17 @@ public class PradarViewProcessingPage extends PApplet
 	{
 		boolean isPresent = false;
 
-		Iterator<PradarViewProcessingEntity> iterpentity = this.pentities_filtered.iterator();
-		while (iterpentity.hasNext())
+		if (this.pentities_filtered != null)
 		{
-			PradarViewProcessingEntity pentity = iterpentity.next();
-			if ( pentity.getSuperid().equals(entity.getSuperid()) )
+			Iterator<PradarViewProcessingEntity> iterpentity = this.pentities_filtered.iterator();
+			while (iterpentity.hasNext())
 			{
-				isPresent = true;
-				return isPresent;
+				PradarViewProcessingEntity pentity = iterpentity.next();
+				if ( pentity.getSuperid().equals(entity.getSuperid()) )
+				{
+					isPresent = true;
+					return isPresent;
+				}
 			}
 		}
 		return isPresent;
@@ -504,13 +506,13 @@ public class PradarViewProcessingPage extends PApplet
 	{
 		this.zoomfaktor = zoomfaktor;
 		// den zoomfaktor im Model synchron halten, damit das scale-widget aktualisiert wird
-		this.einstellungen.setZoom(zoomfaktor);
+		this.parent.einstellungen.setZoom(zoomfaktor);
 	}
 
 	void setZoomfaktor ()
 	{
 		// den zoomfaktor im Model synchron halten, damit das scale-widget aktualisiert wird
-		this.einstellungen.setZoom(100);
+		this.parent.einstellungen.setZoom(100);
 	}
 
 	void autoscale ()
@@ -575,7 +577,7 @@ public class PradarViewProcessingPage extends PApplet
 		if (this.period_kreis_folgt_der_maus)
 		{
 			this.period_kreis_folgt_der_maus = false;
-			this.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
+			this.parent.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
 		}
 	}
 	
@@ -756,11 +758,11 @@ public class PradarViewProcessingPage extends PApplet
 		}
 	};
 
-	public PradarViewProcessingPage()
-	{
-		this.parent = new PradarPartUi3();
-	}
-	
+//	public PradarViewProcessingPage()
+//	{
+//		this.parent = new PradarPartUi3();
+//	}
+//	
 	public PradarViewProcessingPage(PradarPartUi3 p)
 	{
 		this.parent = p;

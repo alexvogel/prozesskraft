@@ -15,13 +15,14 @@ public class PradarViewProcessingEntity
 	/*----------------------------
 	  FIELDS
 	----------------------------*/
+	private final double gravityConst = 6.673 * Math.pow(10, -11);
+
 	private String superid;
 	private String parent_superid = null;
 	private float checkin_radius;
 	private float[] checkin_position = {0, 0};
 	private float checkout_radius;
 	private float[] checkout_position = {0, 0};
-	private boolean visible = false;
 //	private int[] color = {255,255,255};
 
 	public ArrayList<PradarViewProcessingEntity> children_pentities = new ArrayList<PradarViewProcessingEntity>();
@@ -172,7 +173,7 @@ public class PradarViewProcessingEntity
 	
 	public void calcNewBogenlaenge()
 	{
-		if ( (this.fixPosition) || (!(this.visible)) )
+		if ( (this.fixPosition)  )
 		{
 			// mache nix
 		}
@@ -184,11 +185,11 @@ public class PradarViewProcessingEntity
 			this.lastTimePositionCalcInMillis = now;
 			
 			// eine liste mit allen parent-pentities und all ihren children anlegen
-			ArrayList<PradarViewProcessingEntity> alle_pentities_parents_und_children = this.parent.matched_parent_processing_entities;
+			ArrayList<PradarViewProcessingEntity> alle_pentities_parents_und_children = this.parent.pentities_filtered;
 			
-			for(int x=0; x<this.parent.matched_parent_processing_entities.size(); x++)
+			for(int x=0; x<this.parent.pentities_filtered.size(); x++)
 			{
-				PradarViewProcessingEntity pentity_nur_parent = this.parent.matched_parent_processing_entities.get(x);
+				PradarViewProcessingEntity pentity_nur_parent = this.parent.pentities_filtered.get(x);
 				for(int y=0; y<pentity_nur_parent.children_pentities.size(); y++)
 				{
 					PradarViewProcessingEntity children_des_parent = pentity_nur_parent.children_pentities.get(y);
@@ -209,12 +210,6 @@ public class PradarViewProcessingEntity
 					continue;
 				}
 
-				// nicht beruecksichtigen, wenn unsichtbar
-				if (!(pentity.visible))
-				{
-					continue;
-				}
-				
 				// Gravity berechnen, falls es das parent ist
 				if (pentity.equals(this.pentity_parent))
 				{
@@ -278,7 +273,7 @@ public class PradarViewProcessingEntity
 				this.bogenlaenge = PApplet.map(this.bogenlaenge, (float)0, (float)-Math.PI, (float)(2*Math.PI), (float)0);
 			}
 			
-//			System.out.println("bogenlaenge neu: "+this.bogenlaenge);
+			System.out.println("bogenlaenge neu: "+this.bogenlaenge);
 		}
 	}
 	
@@ -299,14 +294,27 @@ public class PradarViewProcessingEntity
 		antigravitypuls = (distance / (Math.pow((10*distance),2))) * this.gravity;
 //			float antigravitypulsMap = PApplet.map((float)antigravitypuls, (float)-10, (float)10, (float)-0.01, (float)0.01);
 
-//		System.out.println("antigravitypuls: "+antigravitypuls);
+		if (Double.isNaN(antigravitypuls)) {antigravitypuls = 0.1;}
+		System.out.println("antigravitypuls: "+antigravitypuls);
 		return antigravitypuls;
+	}
+	
+	private double gravity(float mass1, float mass2, float distance)
+	{
+		double gravity = gravityConst * ((mass1 * mass2) / Math.pow(distance, 2)); 
+		return gravity;
+	}
+	
+	private double antiGravity(float mass1, float mass2, float distance)
+	{
+		double antiGravity = (-1) * gravity(mass1, mass2, distance);
+		return antiGravity;
 	}
 	
 	private double calGravitypuls(double distance)
 	{
 		double gravityPuls = (-1) * 0.1/calAntigravitypuls(distance);
-		System.out.println("GRAVITYPULS: "+gravityPuls);
+//		System.out.println("GRAVITYPULS: "+gravityPuls);
 		return gravityPuls;
 	}
 	
@@ -332,35 +340,35 @@ public class PradarViewProcessingEntity
 		return abstand;
 	}
 	
-	public void detVisible()
-	{
-		if (this.pentity_parent == null)
-		{
-			this.visible = true;
-		}
-		else if ((this.pentity_parent != null) && this.parent.einstellungen.getChildren() )
-		{
-			// falls es bisher unsichtbar war, soll die position beim einschalten auf die von parent gesetzt werden
-			if (!(this.visible))
-			{
-				this.bogenlaenge = this.pentity_parent.bogenlaenge+(float)0.01;
-				this.speed = 0;
-				this.calcPosition();
-			}
-			this.visible = true;
-		}
-		else
-		{
-			this.visible = false;
-		}		
-	}
-	
+//	public void detVisible()
+//	{
+//		if (this.pentity_parent == null)
+//		{
+//			this.visible = true;
+//		}
+//		else if ((this.pentity_parent != null) && this.parent.parent.einstellungen.getChildren() )
+//		{
+//			// falls es bisher unsichtbar war, soll die position beim einschalten auf die von parent gesetzt werden
+//			if (!(this.visible))
+//			{
+//				this.bogenlaenge = this.pentity_parent.bogenlaenge+(float)0.01;
+//				this.speed = 0;
+//				this.calcPosition();
+//			}
+//			this.visible = true;
+//		}
+//		else
+//		{
+//			this.visible = false;
+//		}		
+//	}
+//	
 	public void draw()
 	{
-		detVisible();
-		System.out.println("Schalter fuer children: "+this.parent.einstellungen.getChildren());
-		System.out.println("SuperId   :             "+this.superid);
-		System.out.println("Visibility:             "+this.visible);
+//		detVisible();
+//		System.out.println("Schalter fuer children: "+this.parent.parent.einstellungen.getChildren());
+//		System.out.println("SuperId   :             "+this.superid);
+//		System.out.println("Visibility:             "+this.visible);
 		if (true)
 		{
 			this.parent.strokeWeight(this.parent.bezugsgroesse/300);
