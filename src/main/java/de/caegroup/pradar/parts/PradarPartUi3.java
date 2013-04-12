@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -275,7 +276,6 @@ public class PradarPartUi3 extends ModelObject
 		composite_2.setLayoutData(gd_composite_2);
 		
 		text_logging = new Text(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
-		text_logging.setText("testtext");
 		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		bindingContextFilter = initDataBindingsFilter();
@@ -630,6 +630,7 @@ public class PradarPartUi3 extends ModelObject
 	void log(String logstring)
 	{
 //		text_logging.setText(text_logging.getText()+logstring+"\n");
+		logstring = "["+new Timestamp(System.currentTimeMillis()) + "] "+logstring;
 		if (text_logging != null)
 		{
 			text_logging.append(logstring+"\n");
@@ -657,6 +658,7 @@ public class PradarPartUi3 extends ModelObject
 				}
 			}
 		}
+		log("setting filter...");
 	}
 
 	Entity getEntityBySuperId(String superId)

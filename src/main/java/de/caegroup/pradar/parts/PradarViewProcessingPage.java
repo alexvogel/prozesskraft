@@ -3,15 +3,7 @@ package de.caegroup.pradar.parts;
 
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.net.ConnectException;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,22 +11,14 @@ import java.util.Iterator;
 
 import javax.inject.Inject;
 
-import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeanProperties;
-import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.jface.databinding.swt.WidgetProperties;
-import org.ini4j.Ini;
-import org.ini4j.InvalidFileFormatException;
 
 //import org.eclipse.swt.events.MouseEvent;
 //import org.eclipse.swt.events.MouseWheelListener;
 
 import processing.core.PApplet;
 import processing.core.PFont;
-import de.caegroup.pradar.Db;
 import de.caegroup.pradar.Entity;
 //import java.lang.management.ManagementFactory;
-import de.caegroup.pradar.WhereAmI;
 
 public class PradarViewProcessingPage extends PApplet
 {
