@@ -94,15 +94,15 @@ public class PradarPartUi3 extends ModelObject
 	static CommandLine line;
 	private DataBindingContext bindingContextFilter;
 	private DataBindingContext bindingContextZoom;
-//	private DataBindingContext bindingContext;
 	private Text text_process;
 	private Text text_user;
 	private Text text_host;
 	private Text text_active;
 	private Spinner spinner_period;
 	private Button button_children;
+	private Button button_refresh = null;
 	private Scale scale_zoom;
-	private Table table;
+	private Text text_logging = null;
 	PradarViewModel einstellungen = new PradarViewModel();
 
 	Entity entity_filter = new Entity();
@@ -255,10 +255,10 @@ public class PradarPartUi3 extends ModelObject
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpFunction.setText("function");
 		
-		Button btnNewButton = new Button(grpFunction, SWT.NONE);
-		btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		btnNewButton.setText("refresh");
-		btnNewButton.addSelectionListener(listener_refresh_button);
+		button_refresh = new Button(grpFunction, SWT.NONE);
+		button_refresh.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		button_refresh.setText("refresh");
+		button_refresh.addSelectionListener(listener_refresh_button);
 		
 		Composite composite_12 = new Composite(composite_1, SWT.EMBEDDED | SWT.NO_BACKGROUND);
 		composite_12.setLayout(new GridLayout(1, false));
@@ -274,10 +274,9 @@ public class PradarPartUi3 extends ModelObject
 		gd_composite_2.heightHint = 164;
 		composite_2.setLayoutData(gd_composite_2);
 		
-		CheckboxTableViewer checkboxTableViewer = CheckboxTableViewer.newCheckList(composite_2, SWT.BORDER | SWT.FULL_SELECTION);
-		table = checkboxTableViewer.getTable();
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		checkboxTableViewer.setContentProvider(new ContentProvider());
+		text_logging = new Text(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
+		text_logging.setText("testtext");
+		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		bindingContextFilter = initDataBindingsFilter();
 		bindingContextZoom = initDataBindingsZoom();
@@ -293,6 +292,7 @@ public class PradarPartUi3 extends ModelObject
 		updateUserInterface(einstellungen);
 		updateUserInterfaceProcessing(einstellungen);
 		applet_paint_with_new_filter();
+		
 	}
 
 	private static class ContentProvider implements IStructuredContentProvider {
@@ -304,7 +304,6 @@ public class PradarPartUi3 extends ModelObject
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		}
 	}
-
 	
 	public void applet_paint_with_new_filter()
 	{
@@ -314,12 +313,9 @@ public class PradarPartUi3 extends ModelObject
 		entity_filter.setActive(einstellungen.getActive());
 		entity_filter.setPeriodInHours(einstellungen.getPeriod());
 		// nur entities, die keine eltern haben
-		entity_filter.setParentidAsBoolean(false);
-//		System.out.println("period aus einstellungen in stunden: "+einstellungen.getPeriod());
-//		System.out.println("period aus filter_entity in Stunden: "+filter_entity.getPeriodInHours());
-//		System.out.println("period aus filter_entity in Millis: "+filter_entity.getPeriodInMillis());
+		entity_filter.setParentid("0");
 		filter();
-//		applet.setFilter(filter_entity);
+		applet.refresh();
 	}
 	public void applet_paint_with_new_zoom()
 	{
@@ -343,7 +339,7 @@ public class PradarPartUi3 extends ModelObject
 	@Focus
 	public void setFocus()
 	{
-		table.setFocus();
+		txtTesttext.setFocus();
 	}
 	
 	IChangeListener listener_filter = new IChangeListener()
@@ -388,6 +384,7 @@ public class PradarPartUi3 extends ModelObject
 			scale_zoom.setSelection(scale_zoom.getSelection() + (me.count*5));
 		}
 	};
+	private Text txtTesttext;
 	
 	/**
 	 * add change listener to all bindings
@@ -437,6 +434,17 @@ public class PradarPartUi3 extends ModelObject
 		bindingContextZoom.bindValue(targetObservableZoom, modelObservableZoom, null, null);
 		//
 		return bindingContextZoom;
+	}
+	
+	protected DataBindingContext initDataBindingsRefresh()
+	{
+		DataBindingContext bindingContextRefresh = new DataBindingContext();
+		//
+		IObservableValue targetObservableRefresh = WidgetProperties.selection().observe(button_refresh);
+		IObservableValue modelObservableRefresh = BeanProperties.value("refresh").observe(einstellungen);
+		bindingContextRefresh.bindValue(targetObservableRefresh, modelObservableRefresh, null, null);
+		//
+		return bindingContextRefresh;
 	}
 	
 	protected DataBindingContext initDataBindingsFilter()
@@ -556,7 +564,7 @@ public class PradarPartUi3 extends ModelObject
 
 				int portNumber = Integer.parseInt(port_and_machine[0]);
 				String machineName = port_and_machine[1];
-				System.err.println("trying pradar-server "+portNumber+"@"+machineName);
+				log("trying pradar-server "+portNumber+"@"+machineName);
 				try
 				{
 					// socket einrichten und Out/Input-Streams setzen
@@ -585,11 +593,11 @@ public class PradarPartUi3 extends ModelObject
 				catch (UnknownHostException e)
 				{
 					// TODO Auto-generated catch block
-					System.err.println("unknown host "+machineName+" (UnknownHostException)");
+					log("unknown host "+machineName+" (UnknownHostException)");
 				}
 				catch (ConnectException e)
 				{
-					System.err.println("no pradar-server found at "+portNumber+"@"+machineName);
+					log("no pradar-server found at "+portNumber+"@"+machineName);
 		//			e.printStackTrace();
 				}
 				catch (IOException e)
@@ -601,23 +609,34 @@ public class PradarPartUi3 extends ModelObject
 			
 			if (pradar_server_not_found)
 			{
-				System.out.println("no pradar-server found.");
+				log("no pradar-server found.");
 			}
 			
 
 			// daten holen aus db
-			System.out.println("refreshing data...");
+			log("refreshing data...");
 			this.refresh_last = Calendar.getInstance();
 			this.refresh_next = Calendar.getInstance();
 			this.refresh_next.add(13, this.refresh_interval);
 		}
 		else
 		{
-			System.out.println("refresh interval must be at least "+(this.refresh_min_interval/1000)+" seconds.");
+			log("refresh interval must be at least "+(this.refresh_min_interval/1000)+" seconds.");
+//			System.out.println("refresh interval must be at least "+(this.refresh_min_interval/1000)+" seconds.");
 			
 		}
 	}
 
+	void log(String logstring)
+	{
+//		text_logging.setText(text_logging.getText()+logstring+"\n");
+		if (text_logging != null)
+		{
+			text_logging.append(logstring+"\n");
+		}
+		System.out.println(logstring);
+	}
+	
 	void filter()
 	{
 		this.entities_filtered = entity_filter.getAllMatches(this.entities_all);
@@ -625,17 +644,13 @@ public class PradarPartUi3 extends ModelObject
 		// falls auch children angezeigt werden sollen
 		if (einstellungen.getChildren())
 		{
-			Iterator<Entity> iterentity = this.entities_filtered.iterator();
-			while (iterentity.hasNext())
+			for(int x=0; x<this.entities_filtered.size(); x++)
 			{
-				Entity entity = iterentity.next();
-				String entity_id = entity.getId();
-				
-				Iterator<Entity> iterentity2 = this.entities_all.iterator();
-				while (iterentity2.hasNext())
+				Entity entity = this.entities_filtered.get(x);
+				for(int y=0; y<this.entities_all.size(); y++)
 				{
-					Entity possible_child = iterentity2.next();
-					if (possible_child.getParentid().equals(entity_id))
+					Entity possible_child = this.entities_all.get(y);
+					if (possible_child.getParentid().equals(entity.getId()))
 					{
 						this.entities_filtered.add(possible_child);
 					}

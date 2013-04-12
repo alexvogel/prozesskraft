@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.Random;
 
 import processing.core.PApplet;
 
@@ -17,6 +18,7 @@ public class PradarViewProcessingEntity
 	----------------------------*/
 	private final double gravityConst = 6.673 * Math.pow(10, -11);
 
+	private String id;
 	private String superid;
 	private String parent_superid = null;
 	private float checkin_radius;
@@ -27,9 +29,9 @@ public class PradarViewProcessingEntity
 
 	public ArrayList<PradarViewProcessingEntity> children_pentities = new ArrayList<PradarViewProcessingEntity>();
 	
-	private float speed = 0;
+	private double speed = 0;
 //	private float maxspeed = 50;
-	private float mass = (float)1;
+	private double mass;
 	private float gravity = (float)0.01;
 	private float spring = 10;
 	private float damp = (float)0.1;
@@ -44,41 +46,38 @@ public class PradarViewProcessingEntity
 //	
 	long lastTimePositionCalcInMillis = System.currentTimeMillis();
 	
-	float bogenlaenge = 0;
+	double bogenlaenge = 0;
 	float repositionBogenlaenge = 0;
 	
 	private PradarViewProcessingPage parent;
-	private PradarViewProcessingEntity pentity_parent;
-	private Entity entity;
+	private PradarViewProcessingEntity pentity_parent = null;
+	
+	Random generator = new Random();
+//	private Entity entity;
 	/*----------------------------
 	  constructors
 	----------------------------*/
 
-	public PradarViewProcessingEntity(PradarViewProcessingPage page_parent, PradarViewProcessingEntity pentity_parent, Entity entity)
+	public PradarViewProcessingEntity(PradarViewProcessingPage page_parent, Entity entity)
 	{
 		this.parent = page_parent;
-		this.pentity_parent = pentity_parent;
 		this.superid = entity.getSuperid();
-		this.entity = entity;
-		Entity tmp_entity_filter = new Entity();
-		this.setInitialPosition();
+		this.id = entity.getId();
 
-		// aus allen entities die kinder entities des vorliegenden entity feststellen
-		tmp_entity_filter.setParentid(this.entity.getId());
-		ArrayList<Entity> children_entities = tmp_entity_filter.getAllMatches(this.parent.parent.entities_all);
-
-		// fuer jede der kinder-entity eine pentity erzeugen und unter children_pentities ablegen
-		Iterator<Entity> iter_entity = children_entities.iterator();
-		while(iter_entity.hasNext())
+		// falls es einen eintrag im parent-id gibt, soll das parent mit abgelegt werden
+		if (!( (entity.getParentid().equals("")) || (entity.getParentid().equals("0")) ))
 		{
-			Entity children_entity = iter_entity.next();
-			PradarViewProcessingEntity newProcessingEntity = new PradarViewProcessingEntity(this.parent, this, children_entity);
-			this.children_pentities.add(newProcessingEntity);
+			this.pentity_parent = getPentityById(entity.getParentid(), this.parent.pentities_filtered);
+			this.mass = 100;
+		}
+		
+		else
+		{
+			this.pentity_parent = null;
+			this.mass = 1000;
 		}
 
-		
-//		System.out.println("superId: "+this.superid+"  |  bogenlaenge: "+this.bogenlaenge);
-//		this.detColor();
+		this.setInitialPosition();
 	}
 	
 	/*----------------------------
@@ -120,14 +119,20 @@ public class PradarViewProcessingEntity
 		return color[2];
 	}	
 	
-//	public void detNewPosition()
-//	{
-//		Iterator<Entity> iterEntity = this.parent.matched_parent_entities.iterator();
-//		while (iterEntity.hasNext())
-//		{
-//		
-//		}
-//	}
+	public PradarViewProcessingEntity getPentityById(String id, ArrayList<PradarViewProcessingEntity> pentities)
+	{
+		PradarViewProcessingEntity pentity = null;
+		Iterator<PradarViewProcessingEntity> iterPentity = pentities.iterator();
+		while (iterPentity.hasNext())
+		{
+			pentity = iterPentity.next();
+			if (pentity.getId().equals(id))
+			{
+				return pentity;
+			}
+		}
+		return pentity;
+	}
 	
 	public void setInitialPosition()
 	{
@@ -151,7 +156,15 @@ public class PradarViewProcessingEntity
 		// wenn es EINEN parent gibt, so soll die initiale position die gleiche sein, wie die des parents
 		else
 		{
-			this.bogenlaenge = this.pentity_parent.bogenlaenge;
+			int faktor = generator.nextInt();
+			if (faktor < 0)
+			{
+				this.bogenlaenge =  this.pentity_parent.bogenlaenge - 0.01;
+			}
+			else
+			{
+				this.bogenlaenge =  this.pentity_parent.bogenlaenge + 0.01;
+			}
 		}
 
 		// position berechnen
@@ -162,12 +175,12 @@ public class PradarViewProcessingEntity
 	{
 		this.checkin_radius = this.parent.calcRadius(this.parent.parent.getEntityBySuperId(this.superid).getCheckin());
 //		System.out.println("Radius checkin: "+this.checkin_radius);
-		this.checkin_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkin_radius;
-		this.checkin_position[1] = (this.parent.center_y) + PApplet.sin(this.bogenlaenge) * this.checkin_radius;
+		this.checkin_position[0] = (this.parent.center_x) + PApplet.cos((float)this.bogenlaenge) * this.checkin_radius;
+		this.checkin_position[1] = (this.parent.center_y) + PApplet.sin((float)this.bogenlaenge) * this.checkin_radius;
 		this.checkout_radius = this.parent.calcRadius(this.parent.parent.getEntityBySuperId(this.superid).getCheckout());
 //		System.out.println("Radius checkout: "+this.checkout_radius);
-		this.checkout_position[0] = (this.parent.center_x) + PApplet.cos(this.bogenlaenge) * this.checkout_radius;
-		this.checkout_position[1] = (this.parent.center_y) + PApplet.sin(this.bogenlaenge) * this.checkout_radius;
+		this.checkout_position[0] = (this.parent.center_x) + PApplet.cos((float)this.bogenlaenge) * this.checkout_radius;
+		this.checkout_position[1] = (this.parent.center_y) + PApplet.sin((float)this.bogenlaenge) * this.checkout_radius;
 //		System.out.println("1=>"+this.checkin_position[0]+" "+this.checkin_position[1]+" "+this.checkout_position[0]+" "+this.checkout_position[1]);
 	}
 	
@@ -184,139 +197,140 @@ public class PradarViewProcessingEntity
 			long timediff = now - this.lastTimePositionCalcInMillis;
 			this.lastTimePositionCalcInMillis = now;
 			
-			// eine liste mit allen parent-pentities und all ihren children anlegen
-			ArrayList<PradarViewProcessingEntity> alle_pentities_parents_und_children = this.parent.pentities_filtered;
-			
+			// alle pentities durchgehen und die gravity/antigravity, die durch diese erzeugt wird aufaddieren
+			double forceSum = 0;
+//			System.out.println("Ich bin Pentity: "+this.getId());
 			for(int x=0; x<this.parent.pentities_filtered.size(); x++)
 			{
-				PradarViewProcessingEntity pentity_nur_parent = this.parent.pentities_filtered.get(x);
-				for(int y=0; y<pentity_nur_parent.children_pentities.size(); y++)
-				{
-					PradarViewProcessingEntity children_des_parent = pentity_nur_parent.children_pentities.get(y);
-					alle_pentities_parents_und_children.add(children_des_parent);
-				}
-			}
-			
-			double GravityPulsSum = 0;
-			
-			Iterator<PradarViewProcessingEntity> iter_alle_pentities_parents_und_children = alle_pentities_parents_und_children.iterator();
-			while (iter_alle_pentities_parents_und_children.hasNext())
-			{
-				PradarViewProcessingEntity pentity = iter_alle_pentities_parents_und_children.next();
-
-				// nicht beruecksichtigen, wenn du selber
-				if (pentity.equals(this))
-				{
-					continue;
-				}
-
-				// Gravity berechnen, falls es das parent ist
+				PradarViewProcessingEntity pentity = this.parent.pentities_filtered.get(x);
+//				System.out.println("--------------------------------------");
+//				System.out.println("Berechnen der Kraefte zum Pentity: "+pentity.getId());
+				
+				// wenn es sich um sich selber handelt -> ueberspringen
+				if (pentity.equals(this)) {break;}
+				
+				double forceZugFederRechtsdrehend = 0;
+				double forceZugFederLinksdrehend  = 0;
+				double forceStossFederRechtsdrehend = 0;
+				double forceStossFederLinksdrehend  = 0;
+				
+//				System.out.println("Abstand rechtsDrehend: "+this.abstandRechtsdrehend(pentity));
+//				System.out.println("Abstand linksDrehend : "+this.abstandLinksdrehend(pentity));
+				// wenn es der parent ist, dann soll gravity berechnet werden
 				if (pentity.equals(this.pentity_parent))
 				{
-					float abstandRechtsdrehend1 = (this.bogenlaenge - pentity.bogenlaenge);
-					float abstandRechtsdrehend2 = (float) (((2*Math.PI) - Math.abs(abstandRechtsdrehend1)) * (abstandRechtsdrehend1/Math.abs(abstandRechtsdrehend1) * (-1)));
-					
-//					System.out.println("abstand1: "+abstandRechtsdrehend1);
-//					System.out.println("abstand2: "+abstandRechtsdrehend2);
-					
-					if ( Math.abs(abstandRechtsdrehend1) < Math.abs(abstandRechtsdrehend2) )
-					{
-						GravityPulsSum = GravityPulsSum + calGravitypuls(abstandRechtsdrehend1);
-					}
-					else
-					{
-						GravityPulsSum = GravityPulsSum + calGravitypuls(abstandRechtsdrehend2);
-					}
+//					System.out.println("Its my parent: "+pentity.getId()+" == "+this.pentity_parent.getId());
+					forceZugFederRechtsdrehend = forceZugFeder(this.mass, pentity.mass, this.abstandLinksdrehend(pentity));
+					forceZugFederLinksdrehend  = forceZugFeder(this.mass, pentity.mass, this.abstandRechtsdrehend(pentity));
 				}
-
-				// auf jeden Fall die Abstossung berechnen
-				float abstandRechtsdrehend1 = (this.bogenlaenge - pentity.bogenlaenge);
-				float abstandRechtsdrehend2 = (float) (((2*Math.PI) - Math.abs(abstandRechtsdrehend1)) * (abstandRechtsdrehend1/Math.abs(abstandRechtsdrehend1) * (-1)));
 				
-				if ( Math.abs(abstandRechtsdrehend1) < Math.abs(abstandRechtsdrehend2) )
-				{
-					GravityPulsSum = GravityPulsSum + calAntigravitypuls(abstandRechtsdrehend1);
-				}
-				else
-				{
-					GravityPulsSum = GravityPulsSum + calAntigravitypuls(abstandRechtsdrehend2);
-				}
+				// bei jedem soll antiGravity berechnet werden
+				forceStossFederRechtsdrehend = forceStossFeder(this.mass, pentity.mass, this.abstandRechtsdrehend(pentity));
+				forceStossFederLinksdrehend  = forceStossFeder(this.mass, pentity.mass, this.abstandLinksdrehend(pentity));
+//				System.out.println("forceZugFederRechtsdrehend  : "+forceZugFederRechtsdrehend);
+//				System.out.println("forceZugFederLinksdrehend   : "+forceZugFederLinksdrehend);
+//				System.out.println("forceStossFederRechtsdrehend: "+forceStossFederRechtsdrehend);
+//				System.out.println("forceStossFederLinksdrehend : "+forceStossFederLinksdrehend);
+//				System.out.println("--------------------------------------");
+				
+				// summe aller Gravities bilden (rechts=positiv, links=negativ, anti=negativ)
+				double forceRechtsDrehend = forceZugFederRechtsdrehend + forceStossFederLinksdrehend;
+				double forceLinksDrehend  = forceZugFederLinksdrehend  + forceStossFederRechtsdrehend;
+				forceSum += forceRechtsDrehend - forceLinksDrehend;
 			}
 			
+//			System.out.println("SUMME ALLER GRAVITIES: "+forceSum);
+			
 //			System.out.println("antiGravityPulsSum: "+antiGravityPulsSum);
-			float speeddiff = (float) GravityPulsSum / this.mass;
+			double speeddiff = (forceSum / this.mass);
 //			System.out.println("speeddiff: "+speeddiff);
-			float oldspeed = this.speed;
+			double oldspeed = this.speed;
 //			System.out.println("oldspeed: "+oldspeed);
-			float newspeed = (oldspeed + speeddiff) * (1-this.damp);
+			double newspeed = (oldspeed + speeddiff) * (1-this.damp);
 //			System.out.println("newspeed: "+newspeed);
 			
 			this.speed = newspeed;
 			
-			float repositionBogenlaenge = (float) (newspeed * timediff * 0.001);
+			this.bogenlaenge += this.speed;
 			
-			this.repositionBogenlaenge = repositionBogenlaenge;
 			
-//			System.out.println("bogenlaenge bisher: "+this.bogenlaenge);
-			this.bogenlaenge = this.bogenlaenge + repositionBogenlaenge;
-	//		this.bogenlaenge = (float) (this.bogenlaenge - ( (int)(this.bogenlaenge / Math.PI) ) * Math.PI);
+//			System.out.println("SPEED: "+this.speed);
+//			System.out.println("BOGENLAENGE: "+this.bogenlaenge);
+//			System.out.println("========================================");
 			
-			int faktor = (int) (this.bogenlaenge / (2*Math.PI));
-			
-			if (faktor > 0)
-			{
-				this.bogenlaenge = (float) (this.bogenlaenge - (faktor * (2*Math.PI)));
-			}
-			
-			if (this.bogenlaenge < 0)
-			{
-				this.bogenlaenge = PApplet.map(this.bogenlaenge, (float)0, (float)-Math.PI, (float)(2*Math.PI), (float)0);
-			}
-			
-			System.out.println("bogenlaenge neu: "+this.bogenlaenge);
 		}
 	}
-	
-	private double calAntigravitypuls(double distance)
+	private double abstandLinksdrehend(PradarViewProcessingEntity pentity)
 	{
-		double antigravitypuls = 0;
-//		System.out.println("distance am Anfang: "+distance);
-		
-		// mindestabstand um extreme geschwindigkeiten zu vermeiden
-		if		( (distance >= 0) && (distance < 0.001) ) {distance =  0.001;}
-		else if ( (distance < 0)  && (distance > -0.001) ){distance = -0.001;}
-		else if (distance > Math.PI) {distance = Math.PI;}
-		else if (distance < -Math.PI) {distance = -Math.PI;}
-		
-//		System.out.println("distance nach nachbehandlung: "+distance);
-		// antigravitation nimmt mit dem quadrat des abstands ab
-		
-		antigravitypuls = (distance / (Math.pow((10*distance),2))) * this.gravity;
-//			float antigravitypulsMap = PApplet.map((float)antigravitypuls, (float)-10, (float)10, (float)-0.01, (float)0.01);
-
-		if (Double.isNaN(antigravitypuls)) {antigravitypuls = 0.1;}
-		System.out.println("antigravitypuls: "+antigravitypuls);
-		return antigravitypuls;
+		double abstand = this.bogenlaenge - pentity.bogenlaenge;
+		if (abstand >= 0)
+		{
+			// mach nix
+		}
+		else
+		{
+			abstand = (Math.PI * 2) + abstand;
+		}
+		return abstand;
 	}
+
+	private double abstandRechtsdrehend(PradarViewProcessingEntity pentity)
+	{
+		return (Math.PI * 2) - abstandLinksdrehend(pentity);
+	}
+
 	
-	private double gravity(float mass1, float mass2, float distance)
+//	private double calAntigravitypuls(double distance)
+//	{
+//		double antigravitypuls = 0;
+////		System.out.println("distance am Anfang: "+distance);
+//		
+//		// mindestabstand um extreme geschwindigkeiten zu vermeiden
+//		if		( (distance >= 0) && (distance < 0.001) ) {distance =  0.001;}
+//		else if ( (distance < 0)  && (distance > -0.001) ){distance = -0.001;}
+//		else if (distance > Math.PI) {distance = Math.PI;}
+//		else if (distance < -Math.PI) {distance = -Math.PI;}
+//		
+////		System.out.println("distance nach nachbehandlung: "+distance);
+//		// antigravitation nimmt mit dem quadrat des abstands ab
+//		
+//		antigravitypuls = (distance / (Math.pow((10*distance),2))) * this.gravity;
+////			float antigravitypulsMap = PApplet.map((float)antigravitypuls, (float)-10, (float)10, (float)-0.01, (float)0.01);
+//
+//		if (Double.isNaN(antigravitypuls)) {antigravitypuls = 0.1;}
+//		System.out.println("antigravitypuls: "+antigravitypuls);
+//		return antigravitypuls;
+//	}
+//	
+
+	private double forceGravity(double mass1, double mass2, double distance)
 	{
 		double gravity = gravityConst * ((mass1 * mass2) / Math.pow(distance, 2)); 
 		return gravity;
 	}
 	
-	private double antiGravity(float mass1, float mass2, float distance)
+	private double forceZugFeder(double mass1, double mass2, double distance)
 	{
-		double antiGravity = (-1) * gravity(mass1, mass2, distance);
-		return antiGravity;
+		if (distance < 0.01) { distance = 0.01; }
+		double force = gravityConst * ((mass1 * mass2) / Math.pow(1/distance, 3)); 
+		if (force > 1.0) {force = 1.0;}
+		return (500*force);
 	}
 	
-	private double calGravitypuls(double distance)
+	private double forceStossFeder(double mass1, double mass2, double distance)
 	{
-		double gravityPuls = (-1) * 0.1/calAntigravitypuls(distance);
-//		System.out.println("GRAVITYPULS: "+gravityPuls);
-		return gravityPuls;
+		if (distance < 0.001) { distance = 0.001; }
+		double force = gravityConst * ((mass1 * mass2) / Math.pow(distance, 3));
+		if (force > 1.0) {force = 1.0;}
+		return (force);
 	}
+	
+//	private double calGravitypuls(double distance)
+//	{
+//		double gravityPuls = (-1) * 0.1/calAntigravitypuls(distance);
+////		System.out.println("GRAVITYPULS: "+gravityPuls);
+//		return gravityPuls;
+//	}
 	
 	float calcDistToMouse()
 	{
@@ -369,6 +383,8 @@ public class PradarViewProcessingEntity
 //		System.out.println("Schalter fuer children: "+this.parent.parent.einstellungen.getChildren());
 //		System.out.println("SuperId   :             "+this.superid);
 //		System.out.println("Visibility:             "+this.visible);
+//		System.out.println("Pentity "+this.getId()+"  |  bogenlaenge:             "+this.bogenlaenge);
+		
 		if (true)
 		{
 			this.parent.strokeWeight(this.parent.bezugsgroesse/300);
@@ -383,9 +399,9 @@ public class PradarViewProcessingEntity
 	//			System.out.println("children are drawn");
 				this.parent.strokeWeight(1);
 				this.parent.stroke(100);
-				this.parent.line(this.pentity_parent.checkin_position[0], this.pentity_parent.checkin_position[1], this.checkin_position[0], this.checkin_position[1]);
+				this.parent.line((this.pentity_parent.checkin_position[0]+this.pentity_parent.checkout_position[0])/2, (this.pentity_parent.checkin_position[1]+this.pentity_parent.checkout_position[1])/2, this.checkin_position[0], this.checkin_position[1]);
 	//			System.out.println(this.pentity_parent.checkin_position[0]+" | "+this.pentity_parent.checkin_position[1]+"  |  "+this.checkin_position[0]+"  |  "+this.checkin_position[1]);
-				this.parent.line(this.pentity_parent.checkout_position[0], this.pentity_parent.checkout_position[1], this.checkout_position[0], this.checkout_position[1]);
+				this.parent.line((this.pentity_parent.checkin_position[0]+this.pentity_parent.checkout_position[0])/2, (this.pentity_parent.checkin_position[1]+this.pentity_parent.checkout_position[1])/2, this.checkout_position[0], this.checkout_position[1]);
 			}
 
 		}
@@ -397,6 +413,14 @@ public class PradarViewProcessingEntity
 
 	
 	
+	/**
+	 * @return the id
+	 */
+	public String getId()
+	{
+		return this.id;
+	}
+
 	/**
 	 * @return the superid
 	 */
@@ -473,7 +497,7 @@ public class PradarViewProcessingEntity
 	/**
 	 * @return the bogenlaenge
 	 */
-	public float getBogenlaenge()
+	public double getBogenlaenge()
 	{
 		return this.bogenlaenge;
 	}

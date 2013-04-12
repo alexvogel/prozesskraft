@@ -296,6 +296,8 @@ public class PradarViewProcessingPage extends PApplet
 		
 		// ueber alle ProcessingEntities (parents und children) die angezeigt werden sollen iterieren und die visualisierung zeichnen
 
+//		System.out.println("Anzahl der Entities : "+this.parent.entities_filtered.size());
+//		System.out.println("Anzahl der Pentities: "+this.pentities_filtered.size());
 		for(int x=0; x < this.pentities_filtered.size(); x++)
 		{
 			PradarViewProcessingEntity pentity = this.pentities_filtered.get(x);
@@ -341,7 +343,7 @@ public class PradarViewProcessingPage extends PApplet
 	
 	void syncPentities()
 	{
-		// ueber alle parent-entities, die angezeigt werden sollen iterieren
+		// ueber alle entities, die angezeigt werden sollen iterieren
 		// - fuer diejenigen, die noch keine entsprechung (pentity) haben, soll eine erstellt werden
 		Iterator<Entity> iterentity = this.parent.entities_filtered.iterator();
 		while (iterentity.hasNext())
@@ -350,7 +352,7 @@ public class PradarViewProcessingPage extends PApplet
 			
 			if ( !(isPentityPresent(entity)) )
 			{
-				PradarViewProcessingEntity newProcessingEntity = new PradarViewProcessingEntity(this, null, entity);
+				PradarViewProcessingEntity newProcessingEntity = new PradarViewProcessingEntity(this, entity);
 				this.pentities_filtered.add(newProcessingEntity);
 			}
 		}
@@ -367,8 +369,45 @@ public class PradarViewProcessingPage extends PApplet
 			}
 		}
 		this.pentities_filtered = new_pentities_filtered;
+//		System.out.println("Anzahl der Entities : "+this.parent.entities_filtered);
+//		System.out.println("Anzahl der Pentities: "+this.pentities_filtered);
 	}
 	
+	boolean isPentityPresent(Entity entity)
+	{
+		boolean isPresent = false;
+	
+		Iterator<PradarViewProcessingEntity> iterpentity = this.pentities_filtered.iterator();
+		while (iterpentity.hasNext())
+		{
+			PradarViewProcessingEntity pentity = iterpentity.next();
+			if ( pentity.getSuperid().equals(entity.getSuperid()) )
+			{
+				isPresent = true;
+//				System.out.println("Entity "+entity.getId()+" is present as Pentity "+pentity.getId());
+				return isPresent;
+			}
+		}
+		return isPresent;
+	}
+
+	boolean isEntityPresent(PradarViewProcessingEntity pentity)
+	{
+		boolean isPresent = false;
+	
+		Iterator<Entity> iterentity = this.parent.entities_filtered.iterator();
+		while (iterentity.hasNext())
+		{
+			Entity entity = iterentity.next();
+			if ( entity.getSuperid().equals(pentity.getSuperid()) )
+			{
+				isPresent = true;
+				return isPresent;
+			}
+		}
+		return isPresent;
+	}
+
 	void draw_flag()
 	{
 		// weiss
@@ -454,49 +493,15 @@ public class PradarViewProcessingPage extends PApplet
 		return radius;
 	}
 	
-	boolean isPentityPresent(Entity entity)
-	{
-		boolean isPresent = false;
-
-		if (this.pentities_filtered != null)
-		{
-			Iterator<PradarViewProcessingEntity> iterpentity = this.pentities_filtered.iterator();
-			while (iterpentity.hasNext())
-			{
-				PradarViewProcessingEntity pentity = iterpentity.next();
-				if ( pentity.getSuperid().equals(entity.getSuperid()) )
-				{
-					isPresent = true;
-					return isPresent;
-				}
-			}
-		}
-		return isPresent;
-	}
-	
-	boolean isEntityPresent(PradarViewProcessingEntity pentity)
-	{
-		boolean isPresent = false;
-
-		Iterator<Entity> iterentity = this.parent.entities_filtered.iterator();
-		while (iterentity.hasNext())
-		{
-			Entity entity = iterentity.next();
-			if ( entity.getSuperid().equals(pentity.getSuperid()) )
-			{
-				isPresent = true;
-				return isPresent;
-			}
-		}
-		return isPresent;
-	}
-	
 	void legend()
 	{
 		stroke(100);
 		textSize(13);
 		fill(this.legendcolor[0], this.legendcolor[1], this.legendcolor[2]);
-		text((int)(((this.parent.refresh_next.getTimeInMillis() - this.now.getTimeInMillis())/1000)), 5, height-5);
+		
+		Timestamp timestamp = new Timestamp(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY)).getTimeInMillis());
+		String beschnittener_string_timestamp = timestamp.toString().substring(0, 16);
+		text(beschnittener_string_timestamp, 5, height-5);
 		text("automation@caegroup.de", width-180, height-5);
 //		text(this.entity_filter.getPeriodInMillis(), 50, height-5);
 		noFill();
@@ -530,7 +535,7 @@ public class PradarViewProcessingPage extends PApplet
 		{
 			String aufruf = "nedit "+this.entity_nahe_maus.getResource();
 	//		System.out.println("entity_mit_fahne: "+entity_mit_fahne.getId());
-			System.out.println("showing resource: "+aufruf);
+//			System.out.println("showing resource: "+aufruf);
 			
 			if (this.distanceToMouse < this.maus_toleranz_pentity)
 			{
@@ -696,7 +701,8 @@ public class PradarViewProcessingPage extends PApplet
 		else if (this.period_kreis_folgt_der_maus)
 		{
 //			this.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
-			this.parent.entity_filter.setPeriodInMillis((long) (3600000 * (long)(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))))) );
+			this.parent.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
+//			this.parent.entity_filter.setPeriodInMillis((long) (3600000 * (long)(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))))) );
 		}
 		
 		else

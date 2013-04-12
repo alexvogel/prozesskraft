@@ -9,6 +9,7 @@ public class PradarViewModel extends ModelObject
 	public int period = 168;
 	public boolean children = false;
 	public int zoom = 100;
+	public int refresh = 600;
 	
 	public PradarViewModel()
 	{
@@ -49,6 +50,11 @@ public class PradarViewModel extends ModelObject
 		return zoom;
 	}
 
+	public int getRefresh()
+	{
+		return refresh;
+	}
+
 	public void setProcess(String process)
 	{
 		firePropertyChange("process", this.process, this.process = process);
@@ -83,5 +89,10 @@ public class PradarViewModel extends ModelObject
 	public void setZoom(int zoom)
 	{
 		firePropertyChange("zoom", this.zoom, this.zoom = zoom);
+	}
+
+	public void setRefresh(int refresh)
+	{
+		firePropertyChange("refresh", this.refresh, this.refresh = refresh);
 	}
 }
