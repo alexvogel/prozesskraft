@@ -523,10 +523,12 @@ public class PradarViewProcessingPage extends PApplet
 			
 			if (this.distanceToMouse < this.maus_toleranz_pentity)
 			{
+
 				try
 				{
 					java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-				} catch (IOException e)
+				}
+				catch (IOException e)
 				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();

@@ -222,11 +222,15 @@ public class PradarViewProcessingEntity
 //					System.out.println("Its my parent: "+pentity.getId()+" == "+this.pentity_parent.getId());
 					forceZugFederRechtsdrehend = forceZugFeder(this.mass, pentity.mass, this.abstandLinksdrehend(pentity));
 					forceZugFederLinksdrehend  = forceZugFeder(this.mass, pentity.mass, this.abstandRechtsdrehend(pentity));
+//					if (forceZugFederRechtsdrehend > forceZugFederLinksdrehend) {forceZugFederLinksdrehend = 0;}
+//					else {forceZugFederRechtsdrehend = 0;}
 				}
 				
 				// bei jedem soll antiGravity berechnet werden
 				forceStossFederRechtsdrehend = forceStossFeder(this.mass, pentity.mass, this.abstandRechtsdrehend(pentity));
 				forceStossFederLinksdrehend  = forceStossFeder(this.mass, pentity.mass, this.abstandLinksdrehend(pentity));
+//				if (forceStossFederRechtsdrehend > forceStossFederLinksdrehend) {forceStossFederLinksdrehend = 0;}
+//				else {forceStossFederRechtsdrehend = 0;}
 //				System.out.println("forceZugFederRechtsdrehend  : "+forceZugFederRechtsdrehend);
 //				System.out.println("forceZugFederLinksdrehend   : "+forceZugFederLinksdrehend);
 //				System.out.println("forceStossFederRechtsdrehend: "+forceStossFederRechtsdrehend);
@@ -237,6 +241,7 @@ public class PradarViewProcessingEntity
 				double forceRechtsDrehend = forceZugFederRechtsdrehend + forceStossFederLinksdrehend;
 				double forceLinksDrehend  = forceZugFederLinksdrehend  + forceStossFederRechtsdrehend;
 				forceSum += forceRechtsDrehend - forceLinksDrehend;
+//				System.out.println("SUMME der FORCES: "+forceSum);
 			}
 			
 //			System.out.println("SUMME ALLER GRAVITIES: "+forceSum);
@@ -248,8 +253,11 @@ public class PradarViewProcessingEntity
 //			System.out.println("oldspeed: "+oldspeed);
 			double newspeed = (oldspeed + speeddiff) * (1-this.damp);
 //			System.out.println("newspeed: "+newspeed);
-			
+						
 			this.speed = newspeed;
+			if (this.speed < -0.05) {this.speed = -0.05;}
+			else if (this.speed > 0.05) {this.speed = 0.05;}
+//			System.out.println("speed is "+this.speed);
 			
 			this.bogenlaenge += this.speed;
 			
@@ -263,11 +271,13 @@ public class PradarViewProcessingEntity
 	private double abstandLinksdrehend(PradarViewProcessingEntity pentity)
 	{
 		double abstand = this.bogenlaenge - pentity.bogenlaenge;
-		if (abstand >= 0)
+		int anzahl_der_vollkreise = Math.abs((int) (abstand / (Math.PI * 2)));
+		if (anzahl_der_vollkreise > 0)
 		{
-			// mach nix
+			abstand = abstand - (anzahl_der_vollkreise *  (Math.PI * 2));
 		}
-		else
+
+		if (abstand < 0)
 		{
 			abstand = (Math.PI * 2) + abstand;
 		}
@@ -311,17 +321,15 @@ public class PradarViewProcessingEntity
 	
 	private double forceZugFeder(double mass1, double mass2, double distance)
 	{
-		if (distance < 0.01) { distance = 0.01; }
-		double force = gravityConst * ((mass1 * mass2) / Math.pow(1/distance, 3)); 
-		if (force > 1.0) {force = 1.0;}
-		return (500*force);
+		if (distance < 0.1) { distance = 0.1; }
+		double force = 0.0000001 * (mass1 * mass2) * Math.pow(distance, 2); 
+		return (force);
 	}
 	
 	private double forceStossFeder(double mass1, double mass2, double distance)
 	{
-		if (distance < 0.001) { distance = 0.001; }
-		double force = gravityConst * ((mass1 * mass2) / Math.pow(distance, 3));
-		if (force > 1.0) {force = 1.0;}
+		if (distance < 0.01) { distance = 0.01; }
+		double force = 0.000000001 * (mass1 * mass2) * Math.pow((1/distance), 2);
 		return (force);
 	}
 	

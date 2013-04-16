@@ -564,7 +564,7 @@ public class PradarPartUi3 extends ModelObject
 
 				int portNumber = Integer.parseInt(port_and_machine[0]);
 				String machineName = port_and_machine[1];
-				log("trying pradar-server "+portNumber+"@"+machineName);
+				log("info", "trying pradar-server "+portNumber+"@"+machineName);
 				try
 				{
 					// socket einrichten und Out/Input-Streams setzen
@@ -593,11 +593,11 @@ public class PradarPartUi3 extends ModelObject
 				catch (UnknownHostException e)
 				{
 					// TODO Auto-generated catch block
-					log("unknown host "+machineName+" (UnknownHostException)");
+					log("warn", "unknown host "+machineName+" (UnknownHostException)");
 				}
 				catch (ConnectException e)
 				{
-					log("no pradar-server found at "+portNumber+"@"+machineName);
+					log("warn", "no pradar-server found at "+portNumber+"@"+machineName);
 		//			e.printStackTrace();
 				}
 				catch (IOException e)
@@ -609,29 +609,29 @@ public class PradarPartUi3 extends ModelObject
 			
 			if (pradar_server_not_found)
 			{
-				log("no pradar-server found. talk to your administrator. bye.");
+				log("error", "no pradar-server found. talk to your administrator. bye.");
 				System.exit(1);
 			}
 			
 
 			// daten holen aus db
-			log("refreshing data...");
+			log("info", "refreshing data...");
 			this.refresh_last = Calendar.getInstance();
 			this.refresh_next = Calendar.getInstance();
 			this.refresh_next.add(13, this.refresh_interval);
 		}
 		else
 		{
-			log("refresh interval must be at least "+(this.refresh_min_interval/1000)+" seconds.");
+			log("warn", "refresh interval must be at least "+(this.refresh_min_interval/1000)+" seconds.");
 //			System.out.println("refresh interval must be at least "+(this.refresh_min_interval/1000)+" seconds.");
 			
 		}
 	}
 
-	void log(String logstring)
+	void log(String level, String logstring)
 	{
 //		text_logging.setText(text_logging.getText()+logstring+"\n");
-		logstring = "["+new Timestamp(System.currentTimeMillis()) + "] "+logstring;
+		logstring = "["+new Timestamp(System.currentTimeMillis()) + "]:"+level+":"+logstring;
 		if (text_logging != null)
 		{
 			text_logging.append(logstring+"\n");
@@ -662,8 +662,8 @@ public class PradarPartUi3 extends ModelObject
 				}
 			}
 		}
-		log("setting filter...");
-		log("amount of entities passing filter: "+this.entities_filtered.size());
+		log("info", "setting filter...");
+		log("info", "amount of entities passing filter: "+this.entities_filtered.size());
 	}
 
 	Entity getEntityBySuperId(String superId)
