@@ -132,7 +132,7 @@ public class PradarViewProcessingPage extends PApplet
 		this.radius_monat = this.radius_basis * 4;
 		this.radius_jahr = this.radius_basis * 5;
 		Calendar period = Calendar.getInstance();
-		period.setTimeInMillis(System.currentTimeMillis()-this.parent.einstellungen.getPeriod() * 3600000);
+		period.setTimeInMillis(System.currentTimeMillis()-(long)(this.parent.einstellungen.getPeriod()) * 3600000);
 		this.radius_period = (int) this.calcRadius(period);
 		
 		this.durchmesser_stunde= this.radius_stunde * 2;
@@ -570,6 +570,45 @@ public class PradarViewProcessingPage extends PApplet
 		}
 	}
 	
+	public void mouseDragged()
+		{
+			
+			// pentity umherziehen
+			if ( this.pentity_nahe_maus != null )
+			{
+				this.pentity_nahe_maus.setBogenlaenge(calcBogenlaengeFromPosition(mouseX, mouseY));
+			}
+			
+			else if (this.period_kreis_folgt_der_maus)
+			{
+	//			this.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
+				float radius = calcRadiusFromPosition(mouseX, mouseY);
+				System.out.println("calcRadiusFromPosition: "+radius);
+				Calendar time = calcTimeFromRadius(radius);
+				System.out.println("calcTimeFromRadius: "+time.getTimeInMillis());
+				int period = calcPeriodFromTime(time);
+				System.out.println("calcPeriodFromTime: "+period);
+				this.parent.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
+	//			this.parent.entity_filter.setPeriodInMillis((long) (3600000 * (long)(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))))) );
+			}
+			
+			else
+			{
+				//		System.out.println("Ja mouse dragged: mouse_pressed_x="+mouse_pressed_x+"  || mouseX="+mouseX+" || center_x="+center_x);
+				int new_center_x = (int)(this.center_ratio_x * width) + (mouseX-mouse_pressed_x);
+				int new_center_y = (int)(this.center_ratio_y * height) + (mouseY-mouse_pressed_y);
+				
+				double new_center_ratio_x = ((double) new_center_x / (double)width);
+				double new_center_ratio_y = ((double) new_center_y / (double)height);
+				
+				this.center_ratio_x = new_center_ratio_x;
+				this.center_ratio_y = new_center_ratio_y;
+				
+				mouse_pressed_x = mouseX;
+				mouse_pressed_y = mouseY;
+			}
+		}
+
 	public PradarViewProcessingEntity getPentityBySuperId(String superid)
 	{
 		PradarViewProcessingEntity matching_pentity = null;
@@ -673,39 +712,6 @@ public class PradarViewProcessingPage extends PApplet
 		return radius;
 	}
 	
-	public void mouseDragged()
-	{
-		
-		// pentity umherziehen
-		if ( this.pentity_nahe_maus != null )
-		{
-			this.pentity_nahe_maus.setBogenlaenge(calcBogenlaengeFromPosition(mouseX, mouseY));
-		}
-		
-		else if (this.period_kreis_folgt_der_maus)
-		{
-//			this.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
-			this.parent.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
-//			this.parent.entity_filter.setPeriodInMillis((long) (3600000 * (long)(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))))) );
-		}
-		
-		else
-		{
-			//		System.out.println("Ja mouse dragged: mouse_pressed_x="+mouse_pressed_x+"  || mouseX="+mouseX+" || center_x="+center_x);
-			int new_center_x = (int)(this.center_ratio_x * width) + (mouseX-mouse_pressed_x);
-			int new_center_y = (int)(this.center_ratio_y * height) + (mouseY-mouse_pressed_y);
-			
-			double new_center_ratio_x = ((double) new_center_x / (double)width);
-			double new_center_ratio_y = ((double) new_center_y / (double)height);
-			
-			this.center_ratio_x = new_center_ratio_x;
-			this.center_ratio_y = new_center_ratio_y;
-			
-			mouse_pressed_x = mouseX;
-			mouse_pressed_y = mouseY;
-		}
-	}
-
 	public void mouseWheel(int delta)
 	{
 //		System.out.println("mouse has moved by "+delta+" units");

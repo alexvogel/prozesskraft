@@ -659,6 +659,7 @@ public class PradarPartUi3 extends ModelObject
 			}
 		}
 		log("setting filter...");
+		log("amount of entities passing filter: "+this.entities_filtered.size());
 	}
 
 	Entity getEntityBySuperId(String superId)
