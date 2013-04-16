@@ -582,12 +582,9 @@ public class PradarViewProcessingPage extends PApplet
 			else if (this.period_kreis_folgt_der_maus)
 			{
 	//			this.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
-				float radius = calcRadiusFromPosition(mouseX, mouseY);
-				System.out.println("calcRadiusFromPosition: "+radius);
-				Calendar time = calcTimeFromRadius(radius);
-				System.out.println("calcTimeFromRadius: "+time.getTimeInMillis());
-				int period = calcPeriodFromTime(time);
-				System.out.println("calcPeriodFromTime: "+period);
+//				float radius = calcRadiusFromPosition(mouseX, mouseY);
+//				Calendar time = calcTimeFromRadius(radius);
+//				int period = calcPeriodFromTime(time);
 				this.parent.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
 	//			this.parent.entity_filter.setPeriodInMillis((long) (3600000 * (long)(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))))) );
 			}

@@ -452,7 +452,7 @@ public class PradarPartUi3 extends ModelObject
 
 		// Einrichten der ControlDecoration über dem Textfeld 'active'
 		final ControlDecoration controlDecorationActive = new ControlDecoration(text_active, SWT.LEFT | SWT.TOP);
-		controlDecorationActive.setDescriptionText("use 'true', 'false', 'all' or leave field blank");
+		controlDecorationActive.setDescriptionText("use 'true', 'false' or leave field blank");
 		FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
 		controlDecorationActive.setImage(fieldDecoration.getImage());
 
