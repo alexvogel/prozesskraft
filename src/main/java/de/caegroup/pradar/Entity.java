@@ -14,7 +14,7 @@ implements Serializable
 	----------------------------*/
 
 	public String id = "";
-	public String parentid = "";
+	public String parentid = "0";
 	public Calendar checkin = Calendar.getInstance();
 	public Calendar checkout = Calendar.getInstance();
 	public String process = "";
@@ -119,7 +119,8 @@ implements Serializable
 			matchStatus = false;
 		}
 		
-		if (!(assessedEntity.getParentid().matches(".*"+this.parentid+".*")))
+		// wenn es dem pattern nicht entspricht UND nicht "" ist (leer)
+		if ( (!(assessedEntity.getParentid().matches(this.parentid))) && (!(this.parentid.equals(""))) )
 		{
 			matchStatus = false;
 		}
