@@ -609,7 +609,8 @@ public class PradarPartUi3 extends ModelObject
 			
 			if (pradar_server_not_found)
 			{
-				log("no pradar-server found.");
+				log("no pradar-server found. talk to your administrator. bye.");
+				System.exit(1);
 			}
 			
 
