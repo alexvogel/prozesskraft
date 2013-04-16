@@ -635,7 +635,10 @@ public class PradarPartUi3 extends ModelObject
 		{
 			text_logging.append(logstring+"\n");
 		}
-		System.out.println(logstring);
+		else
+		{
+			System.out.println(logstring);
+		}
 	}
 	
 	void filter()
