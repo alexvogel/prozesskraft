@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import de.caegroup.pradar.Db;
-import de.caegroup.pradar.WhereAmI;
+import de.caegroup.commons.*;
 
 
 public class ConcurrentServer implements Runnable
