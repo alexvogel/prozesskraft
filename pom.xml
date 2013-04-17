@@ -52,7 +52,7 @@
 <!-- 					<outjar>bin/${project.build.finalName}.jar</outjar> -->
 					<options>
 <!-- 					abhaengigkeiten in anderen packages (durch import) koennen nur aufgeloest werden, wenn diese klassen public bleiben -->
-						<option>-keep public class de.caegroup.pradar.WhereAmI { *; }</option>
+						<option>-keep public class de.caegroup.commons.WhereAmI { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
