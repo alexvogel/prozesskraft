@@ -100,7 +100,7 @@ public class PradarPartUi3 extends ModelObject
 	private Text text_host;
 	private Text text_active;
 	private Spinner spinner_period;
-	private Button button_children;
+	private Button btnChildren;
 	private Button button_refresh = null;
 	private Scale scale_zoom;
 	private Text text_logging = null;
@@ -183,39 +183,44 @@ public class PradarPartUi3 extends ModelObject
 		Group grpFilter = new Group(composite_11, SWT.NONE);
 		grpFilter.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
 		grpFilter.setText("filter");
-		grpFilter.setLayout(new GridLayout(3, false));
+		grpFilter.setLayout(new GridLayout(4, false));
 		
 		Label lblNewLabel = new Label(grpFilter, SWT.NONE);
 		lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1));
 		lblNewLabel.setText("process");
+		new Label(grpFilter, SWT.NONE);
 		
 		text_process = new Text(grpFilter, SWT.BORDER);
-		text_process.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		text_process.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		
 		Label lblNewLabel_1 = new Label(grpFilter, SWT.NONE);
 		lblNewLabel_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 		lblNewLabel_1.setText("user");
+		new Label(grpFilter, SWT.NONE);
 		
 		text_user = new Text(grpFilter, SWT.BORDER);
-		text_user.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		text_user.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		
 		Label lblHost = new Label(grpFilter, SWT.NONE);
 		lblHost.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 		lblHost.setText("host");
+		new Label(grpFilter, SWT.NONE);
 		
 		text_host = new Text(grpFilter, SWT.BORDER);
-		text_host.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		text_host.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		
 		Label lblActive = new Label(grpFilter, SWT.NONE);
 		lblActive.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		lblActive.setText("active");
+		new Label(grpFilter, SWT.NONE);
 		
 		text_active = new Text(grpFilter, SWT.BORDER);
-		text_active.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		text_active.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		
 		Label lblPeriod = new Label(grpFilter, SWT.NONE);
 		lblPeriod.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 		lblPeriod.setText("active in last");
+		new Label(grpFilter, SWT.NONE);
 		
 		spinner_period = new Spinner(grpFilter, SWT.BORDER);
 		spinner_period.setMaximum(8064);
@@ -224,11 +229,13 @@ public class PradarPartUi3 extends ModelObject
 		new Label(grpFilter, SWT.NONE);
 		
 		Label lblNewLabel_3 = new Label(grpFilter, SWT.NONE);
+		lblNewLabel_3.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		lblNewLabel_3.setText("hours");
 		
-		button_children = new Button(grpFilter, SWT.CHECK);
-		button_children.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
-		button_children.setText("show children");
+		btnChildren = new Button(grpFilter, SWT.CHECK);
+		btnChildren.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
+		btnChildren.setText("children");
+		new Label(grpFilter, SWT.NONE);
 		
 		Group grpVisual = new Group(composite_11, SWT.NONE);
 		grpVisual.setText("visual");
@@ -502,7 +509,7 @@ public class PradarPartUi3 extends ModelObject
 		IObservableValue modelObservablePeriod = BeanProperties.value("period").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservablePeriod, modelObservablePeriod, null, null);
 		//
-		IObservableValue targetObservableChildren = WidgetProperties.selection().observe(button_children);
+		IObservableValue targetObservableChildren = WidgetProperties.selection().observe(btnChildren);
 		IObservableValue modelObservableChildren = BeanProperties.value("children").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservableChildren, modelObservableChildren, null, null);
 		//

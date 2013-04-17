@@ -395,10 +395,15 @@ public class PradarViewProcessingEntity
 		
 		if (true)
 		{
-			this.parent.strokeWeight(this.parent.bezugsgroesse/300);
+			int groesse;
+			if ((this.parent.bezugsgroesse/300) > 4) {groesse = 4;}
+			else {groesse = (this.parent.bezugsgroesse/300);}
+			this.parent.strokeWeight(groesse);
+
 			this.parent.stroke(getColor("r"), getColor("g"), getColor("b"));
-			this.parent.ellipse( this.checkin_position[0], this.checkin_position[1], (this.parent.bezugsgroesse/200), (this.parent.bezugsgroesse/200) );
-			this.parent.ellipse( this.checkout_position[0], this.checkout_position[1], (this.parent.bezugsgroesse/200), (this.parent.bezugsgroesse/200) );
+			this.parent.fill(getColor("r"), getColor("g"), getColor("b"));
+			this.parent.ellipse( this.checkin_position[0], this.checkin_position[1], (float)(groesse*1.5), (float)(groesse*1.5) );
+			this.parent.ellipse( this.checkout_position[0], this.checkout_position[1], (float)(groesse*1.5), (float)(groesse*1.5) );
 			this.parent.line(this.checkin_position[0], this.checkin_position[1], this.checkout_position[0], this.checkout_position[1]);
 
 			// wenn es einen parent gibt, sollen die verbinder zu ihm gezeichnet werden
