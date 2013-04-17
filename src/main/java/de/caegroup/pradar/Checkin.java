@@ -26,6 +26,9 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 
+import de.caegroup.pradar.Entity;
+import de.caegroup.commons.WhereAmI;
+
 //import de.caegroup.pradar.*;
 
 public class Checkin
