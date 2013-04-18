@@ -14,6 +14,8 @@ public class TestPrampPartUi1
 	  fields
 	----------------------------*/
 	PrampPartUi1 ui = new PrampPartUi1("irgendwas");
+	String processDir = "src/test/resources/processes";
+	String iniFile = "src/test/resources/ini/default.ini";
 	
 	/*----------------------------
 	  setup
@@ -21,15 +23,31 @@ public class TestPrampPartUi1
 	@Before
 	public void setUp()
 	{
-		ui.setProcessMainDir("src/test/resources/processes");
+//		ui.setProcessMainDir(processDir);
+		ui.setIni(iniFile);
 	}
 
 	/*----------------------------
 	  tests
 	----------------------------*/
 	@Test
-	public void testGetProcessList()
+	public void testSetIniToDefault()
 	{
+		ui.setIni();
+		assertNotNull(ui.getIni());
+	}
+
+	@Test
+	public void testLoadIni()
+	{
+		ui.loadIni();
+		assertEquals(processDir, ui.getProcessMainDir());
+	}
+
+	@Test
+	public void testGetProcesses()
+	{
+		ui.loadIni();
 		ArrayList<String> processNames = ui.getProcesses();
 		// test ob die richtige Anzahl festgestellt wurde
 		assertEquals(3, processNames.size());
@@ -40,10 +58,24 @@ public class TestPrampPartUi1
 	}
 
 	@Test
-	public void testGetVersionList()
+	public void testGetVersions()
 	{
+		ui.loadIni();
 		String processName = "beulen";
 		ArrayList<String> versionNames = ui.getVersions(processName);
 		assertEquals(4, versionNames.size());
 	}
+
+	@Test
+	public void testGetProcessDefinition()
+	{
+		ui.loadIni();
+		String processName = "beulen";
+		String version = "0.8.2";
+		ui.setProcess(processName);
+		ui.setVersion(version);
+		String processDefinition = ui.getProcessDefinition();
+		assertEquals(processDir+"/"+processName+"/"+version+"/process.xml", processDefinition);
+	}
+	
 }

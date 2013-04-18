@@ -1,24 +1,35 @@
 package de.caegroup.pramp.parts;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class PrampViewModel extends ModelObject
 {
-	public ArrayList<String> processes = new ArrayList<String>();
-	public ArrayList<String> versions = new ArrayList<String>();
-	public String process = "";
-	public String version = "";
+	public String[] processes = null;
+	public String[] versions = null;
+	public String process = null;
+	public String version = null;
 	
 	public PrampViewModel()
 	{
 	}
 	
-	public ArrayList<String> getProcesses()
+//	public ArrayList<String> getProcesses()
+//	{
+//		return processes;
+//	}
+//
+	public String[] getProcesses()
 	{
 		return processes;
 	}
 
-	public ArrayList<String> getVersions()
+//	public ArrayList<String> getVersions()
+//	{
+//		return versions;
+//	}
+//
+	public String[] getVersions()
 	{
 		return versions;
 	}
@@ -33,12 +44,12 @@ public class PrampViewModel extends ModelObject
 		return version;
 	}
 
-	public void setProcesses(ArrayList<String> processes)
+	public void setProcesses(String[] processes)
 	{
 		firePropertyChange("processes", this.processes, this.processes = processes);
 	}
 
-	public void setVersions(ArrayList<String> versions)
+	public void setVersions(String[] versions)
 	{
 		firePropertyChange("versions", this.versions, this.versions = versions);
 	}

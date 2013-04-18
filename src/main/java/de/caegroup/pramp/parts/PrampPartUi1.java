@@ -1,7 +1,6 @@
 package de.caegroup.pramp.parts;
 
 import de.caegroup.commons.*;
-
 import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
@@ -21,17 +20,25 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateListStrategy;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.Realm;
+import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
+//import org.eclipse.jface.bindings.Binding;
+//import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -52,10 +59,13 @@ public class PrampPartUi1 extends ModelObject
 //public class PrampPartUi1
 {
 	static CommandLine line;
+	private DataBindingContext bindingContextProcesses;
 	private Button button_refresh = null;
 	private Text text_logging = null;
 	private Combo combo_processes = null;
+	private Combo combo_versions = null;
 	private String processMainDir = null;
+	private String iniFile = null;
 	ArrayList<String> processes = new ArrayList<String>();
 	PrampViewModel einstellungen = new PrampViewModel();
 
@@ -69,8 +79,10 @@ public class PrampPartUi1 extends ModelObject
 		shell.setSize(633, 688);
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLocation(0, 0);
+		setIni();
+		loadIni();
+		getProcesses();
 		createControls(composite);
-		refresh();
 	}
 
 	/**
@@ -79,7 +91,9 @@ public class PrampPartUi1 extends ModelObject
 	@Inject
 	public PrampPartUi1(Composite composite)
 	{
-		refresh();
+		setIni();
+		loadIni();
+		getProcesses();
 		createControls(composite);
 	}
 
@@ -89,7 +103,10 @@ public class PrampPartUi1 extends ModelObject
 	@Inject
 	public PrampPartUi1(String tmp)
 	{
-		refresh();
+		setIni();
+		loadIni();
+//		getProcesses();
+//		refresh();
 	}
 
 	/**
@@ -133,17 +150,17 @@ public class PrampPartUi1 extends ModelObject
 		lblNewLabel.setText("process");
 		new Label(grpFilter, SWT.NONE);
 		
-		combo_processes = new Combo(grpFilter, SWT.NONE);
+		combo_processes = new Combo(grpFilter, SWT.NONE | SWT.READ_ONLY);
 		combo_processes.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
-//		combo_processes.setItems(getProcesses().toArray(new String[getProcesses().size()]));
+		combo_processes.addModifyListener(listener_processselection);
 		
 		Label lblNewLabel_1 = new Label(grpFilter, SWT.NONE);
 		lblNewLabel_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 		lblNewLabel_1.setText("version");
 		new Label(grpFilter, SWT.NONE);
 		
-		Combo combo_1 = new Combo(grpFilter, SWT.NONE);
-		combo_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+		combo_versions = new Combo(grpFilter, SWT.NONE | SWT.READ_ONLY);
+		combo_versions.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		
 		Label lblHost = new Label(grpFilter, SWT.NONE);
 		lblHost.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
@@ -182,6 +199,23 @@ public class PrampPartUi1 extends ModelObject
 		text_logging = new Text(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
 		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
+		// Datenbindung Processes-Combo
+		initDataBindingsProcesses();
+		// Datenbindung Versions-Combo
+		initDataBindingsVersions();
+		// Datenbindung Processes-Combo-Selection
+		initDataBindingsProcess();
+		// Datenbindung Versions-Combo-Selection
+		initDataBindingsVersion();
+
+		// auswahl auf das erste Element setzen
+		combo_processes.select(0);
+		
+//		if (combo_processes.getItemCount() > 0)
+//		{
+//			updateUiComboVersions();
+//		}
+//		
 		Frame frame = SWT_AWT.new_Frame(composite_12);
 
 		frame.pack();
@@ -201,6 +235,12 @@ public class PrampPartUi1 extends ModelObject
 
 	}
 	
+	void updateUiComboVersions()
+	{
+		getVersions(combo_processes.getText());
+		combo_versions.select(combo_versions.getItemCount()-1);
+	}
+	
 	SelectionAdapter listener_refresh_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
@@ -210,20 +250,81 @@ public class PrampPartUi1 extends ModelObject
 		}
 	};
 	
-	protected DataBindingContext initDataBindingsRefresh()
+	ModifyListener listener_processselection = new ModifyListener()
 	{
-		DataBindingContext bindingContextRefresh = new DataBindingContext();
+		public void modifyText(ModifyEvent arg0)
+		{
+			updateUiComboVersions();
+		}
+	};
+	
+//	ModifyListener listener_versionselection = new ModifyListener()
+//	{
+//		public void modifyText(ModifyEvent arg0)
+//		{
+//			updateUiParameterAbfrage();
+//		}
+//	};	
+//	
+	/**
+	 * binds array of processnames to combo-box 'processes'
+	 */
+	protected DataBindingContext initDataBindingsProcesses()
+	{
+		DataBindingContext bindingContextProcesses = new DataBindingContext();
 		//
-		IObservableValue targetObservableRefresh = WidgetProperties.selection().observe(combo_processes);
-		IObservableValue modelObservableRefresh = BeanProperties.value("processes").observe(einstellungen);
-		bindingContextRefresh.bindValue(targetObservableRefresh, modelObservableRefresh, null, null);
+		IObservableList targetObservableProcesses = WidgetProperties.items().observe(combo_processes);
+		IObservableList modelObservableProcesses = BeanProperties.list("processes").observe(einstellungen);
+		bindingContextProcesses.bindList(targetObservableProcesses, modelObservableProcesses, null, null);
 		//
-		return bindingContextRefresh;
+		return bindingContextProcesses;
+	}
+	
+	/**
+	 * binds selection of combo-box 'processes' to String process
+	 */
+	protected DataBindingContext initDataBindingsProcess()
+	{
+		DataBindingContext bindingContextProcess = new DataBindingContext();
+		//
+		IObservableValue targetObservableProcess = WidgetProperties.text().observe(combo_processes);
+		IObservableValue modelObservableProcess = BeanProperties.value("process").observe(einstellungen);
+		bindingContextProcess.bindValue(targetObservableProcess, modelObservableProcess, null, null);
+		//
+		return bindingContextProcess;
+	}
+	
+	/**
+	 * binds array of versions to combo-box 'versions'
+	 */
+	protected DataBindingContext initDataBindingsVersions()
+	{
+		DataBindingContext bindingContextVersions = new DataBindingContext();
+		//
+		IObservableList targetObservableVersions = WidgetProperties.items().observe(combo_versions);
+		IObservableList modelObservableVersions = BeanProperties.list("versions").observe(einstellungen);
+		bindingContextVersions.bindList(targetObservableVersions, modelObservableVersions, null, null);
+		//
+		return bindingContextVersions;
+	}
+	
+	/**
+	 * binds selection of combo-box 'versions' to String version
+	 */
+	protected DataBindingContext initDataBindingsVersion()
+	{
+		DataBindingContext bindingContextVersion = new DataBindingContext();
+		//
+		IObservableValue targetObservableVersion = WidgetProperties.text().observe(combo_versions);
+		IObservableValue modelObservableVersion = BeanProperties.value("version").observe(einstellungen);
+		bindingContextVersion.bindValue(targetObservableVersion, modelObservableVersion, null, null);
+		//
+		return bindingContextVersion;
 	}
 	
 	void refresh()
 	{
-		loadIni();
+//		loadIni();
 //		this.einstellungen.setProcesses(getProcesses());
 	}
 
@@ -232,20 +333,14 @@ public class PrampPartUi1 extends ModelObject
 	 */
 	void loadIni()
 	{
-		PrampPartUi1 tmp = new PrampPartUi1();
-		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
 		Ini ini;
 		
 		try
 		{
-			ini = new Ini(inifile);
-			for(int x = 1; x <= 5; x++)
+			ini = new Ini(getIniAsFile());
+			if (ini.get("process", "process-installation-directory") != null )
 			{
-				if (ini.get("process", "process-installation-directory") != null )
-				{
-					this.processMainDir = (ini.get("process", "process-installation-directory"));
-					System.out.println("INI gelesen");
-				}
+				this.processMainDir = (ini.get("process", "process-installation-directory"));
 			}
 		}
 		catch (InvalidFileFormatException e1)
@@ -259,7 +354,7 @@ public class PrampPartUi1 extends ModelObject
 			e1.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * determines all processes of a specific process-installation-directory
 	 * @return a list of all installed processes sorted in alphabetical order
@@ -278,9 +373,13 @@ public class PrampPartUi1 extends ModelObject
 
 		// sortieren
 		Collections.sort(processes);
+
+		// zentrale daten setzen
+		einstellungen.setProcesses((String[]) processes.toArray(new String[processes.size()]));
+		
 		return processes;
 	}
-	
+
 	/**
 	 * determines all versions of a specific process
 	 * @return a list of all installed processes sorted in alphabetical order
@@ -297,9 +396,17 @@ public class PrampPartUi1 extends ModelObject
 			System.err.println("not a directory: "+directoryPath);
 //			e.printStackTrace();
 		}
-		
+
 		// sortieren
 		Collections.sort(versions);
+		
+		// zentrale daten setzen
+		einstellungen.setVersions((String[]) versions.toArray(new String[versions.size()]));
+		
+//		// in combo_box einfuegen
+//		combo_versions.setItems((String[]) versions.toArray(new String[versions.size()]));
+//		combo_versions.select(versions.size()-1);
+//		
 		return versions;
 	}
 	
@@ -330,6 +437,27 @@ public class PrampPartUi1 extends ModelObject
 		return subdirectories;
 	}
 	
+	/**
+	 * determines the path to the process-definition-file
+	 * @return String path to process-definition
+	 * @return null if parts of path are not available or path does not point to a file
+	 */
+	public String getProcessDefinition()
+	{
+		String processDefinition = null;
+		
+		String process = this.getProcess();
+		String version = this.getVersion();
+		String installationPath = this.processMainDir;
+		
+		if ((process != null) && (version != null) && (installationPath != null))
+		{
+			processDefinition = installationPath+"/"+process+"/"+version+"/process.xml";
+		}
+		
+		return processDefinition;
+	}
+
 	void load()
 	{
 		// inifile parsen
@@ -337,9 +465,7 @@ public class PrampPartUi1 extends ModelObject
 		// erzeugen der prozessliste (directory parsen)
 		// erzeugen der versionslisten (directory parsen)
 		
-		PrampPartUi1 tmp = new PrampPartUi1();
-		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
-		
+		File inifile = new File(getIni());
 		Ini ini;
 		
 		ArrayList<String> pradar_server_list = new ArrayList<String>();
@@ -367,9 +493,55 @@ public class PrampPartUi1 extends ModelObject
 		}
 	}
 
-	void setProcessMainDir (String dir)
+	void setProcessMainDir (String processMainDir)
 	{
-		this.processMainDir = dir;
+		this.processMainDir = processMainDir;
+	}
+	
+	String getProcessMainDir ()
+	{
+		return this.processMainDir;
+	}
+	
+	void setIni (String pathIniFile)
+	{
+		this.iniFile = pathIniFile;
+	}
+	
+	void setIni ()
+	{
+		File file = WhereAmI.getDefaultInifile(this.getClass());
+		this.iniFile = file.getAbsolutePath();
+	}
+
+	String getIni ()
+	{
+		return this.iniFile;
+	}
+	
+	File getIniAsFile ()
+	{
+		return new File(this.iniFile);
+	}
+	
+	void setProcess (String process)
+	{
+		this.einstellungen.setProcess(process);
+	}
+	
+	String getProcess ()
+	{
+		return this.einstellungen.getProcess();
+	}
+	
+	void setVersion (String version)
+	{
+		this.einstellungen.setVersion(version);
+	}
+	
+	String getVersion ()
+	{
+		return this.einstellungen.getVersion();
 	}
 	
 	void log(String level, String logstring)
