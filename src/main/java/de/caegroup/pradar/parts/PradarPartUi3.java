@@ -89,6 +89,7 @@ import org.eclipse.swt.widgets.Spinner;
 //import org.eclipse.core.databinding.beans.PojoProperties;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 public class PradarPartUi3 extends ModelObject
 {
@@ -102,8 +103,11 @@ public class PradarPartUi3 extends ModelObject
 	private Spinner spinner_period;
 	private Button btnChildren;
 	private Button button_refresh = null;
+	private Button button_radar = null;
+	private Button button_tree = null;
 	private Scale scale_zoom;
 	private Text text_logging = null;
+	private Frame frame_radar = null;
 	PradarViewModel einstellungen = new PradarViewModel();
 
 	Entity entity_filter = new Entity();
@@ -119,6 +123,14 @@ public class PradarPartUi3 extends ModelObject
 	Calendar refresh_next = Calendar.getInstance();
 	
 	PradarViewProcessingPage applet;
+	PradarViewTreePage tree;
+	
+	Shell shell_dummy_tree;
+	Composite composite_tree;
+	Shell shell_dummy_radar;
+	Composite composite_radar;
+	Composite composite_12;
+	
 	Display display;
 
 	/**
@@ -128,7 +140,7 @@ public class PradarPartUi3 extends ModelObject
 	public PradarPartUi3()
 	{
 		Shell shell = new Shell();
-		shell.setSize(633, 688);
+		shell.setSize(633, 767);
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLocation(0, 0);
 		createControls(composite);
@@ -156,7 +168,7 @@ public class PradarPartUi3 extends ModelObject
 	public void createControls(Composite composite)
 	{
 
-		composite.setSize(613, 649);
+		composite.setSize(613, 738);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_composite.minimumWidth = 10;
 		gd_composite.minimumHeight = 10;
@@ -177,7 +189,7 @@ public class PradarPartUi3 extends ModelObject
 		composite_11.setLayout(new GridLayout(1, false));
 		GridData gd_composite_11 = new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1);
 		gd_composite_11.heightHint = 437;
-		gd_composite_11.widthHint = 169;
+		gd_composite_11.widthHint = 170;
 		composite_11.setLayoutData(gd_composite_11);
 		
 		Group grpFilter = new Group(composite_11, SWT.NONE);
@@ -237,27 +249,6 @@ public class PradarPartUi3 extends ModelObject
 		btnChildren.setText("children");
 		new Label(grpFilter, SWT.NONE);
 		
-		Group grpVisual = new Group(composite_11, SWT.NONE);
-		grpVisual.setText("visual");
-		grpVisual.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		grpVisual.setLayout(new GridLayout(1, false));
-		
-		Label lblNewLabel_2 = new Label(grpVisual, SWT.NONE);
-		lblNewLabel_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblNewLabel_2.setText("zoom");
-		
-		scale_zoom = new Scale(grpVisual, SWT.NONE);
-		scale_zoom.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		scale_zoom.setMaximum(1000);
-		scale_zoom.setMinimum(50);
-		scale_zoom.setSelection(100);
-		
-		Button btnNewButton2 = new Button(grpVisual, SWT.NONE);
-		btnNewButton2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		btnNewButton2.setText("autoscale");
-		btnNewButton2.addSelectionListener(listener_autoscale_button);
-		scale_zoom.addMouseWheelListener(listener_mousewheel);
-		
 		Group grpFunction = new Group(composite_11, SWT.NONE);
 		grpFunction.setLayout(new GridLayout(1, false));
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -268,17 +259,74 @@ public class PradarPartUi3 extends ModelObject
 		button_refresh.setText("refresh");
 		button_refresh.addSelectionListener(listener_refresh_button);
 		
-		Composite composite_12 = new Composite(composite_1, SWT.EMBEDDED | SWT.NO_BACKGROUND);
+		Group grpVisual = new Group(composite_11, SWT.NONE);
+		grpVisual.setText("visual");
+		grpVisual.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		grpVisual.setLayout(new GridLayout(2, false));
+		
+		Label lblPerspective = new Label(grpVisual, SWT.NONE);
+		lblPerspective.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		lblPerspective.setText("perspective");
+		
+		button_radar = new Button(grpVisual, SWT.TOGGLE);
+		GridData gd_btnRadar = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_btnRadar.widthHint = 75;
+		button_radar.setLayoutData(gd_btnRadar);
+		button_radar.setText("radar");
+		button_radar.addSelectionListener(listener_radar_button);
+		
+		button_tree = new Button(grpVisual, SWT.TOGGLE);
+		GridData gd_btnTree = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_btnTree.widthHint = 75;
+		button_tree.setLayoutData(gd_btnTree);
+		button_tree.setText("tree");
+		button_tree.addSelectionListener(listener_tree_button);
+		
+		Label lblNewLabel_2 = new Label(grpVisual, SWT.NONE);
+		lblNewLabel_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		lblNewLabel_2.setText("zoom");
+		
+		scale_zoom = new Scale(grpVisual, SWT.NONE);
+		scale_zoom.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		scale_zoom.setMaximum(1000);
+		scale_zoom.setMinimum(50);
+		scale_zoom.setSelection(100);
+		scale_zoom.addMouseWheelListener(listener_mousewheel);
+		
+		Button btnNewButton2 = new Button(grpVisual, SWT.NONE);
+		btnNewButton2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		btnNewButton2.setText("autoscale");
+		btnNewButton2.addSelectionListener(listener_autoscale_button);
+		
+		composite_12 = new Composite(composite_1, SWT.NONE);
 		composite_12.setLayout(new GridLayout(1, false));
-		GridData gd_composite_12 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+		GridData gd_composite_12 = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_composite_12.heightHint = 390;
 		gd_composite_12.minimumWidth = 10;
 		gd_composite_12.minimumHeight = 10;
 		composite_12.setLayoutData(gd_composite_12);
 		
+		shell_dummy_radar = new Shell(display);
+		composite_radar = new Composite(shell_dummy_radar, SWT.NO_BACKGROUND | SWT.EMBEDDED);
+		composite_radar.setLayout(new GridLayout(1, false));
+		GridData gd_composite_radar = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_composite_radar.heightHint = 390;
+		gd_composite_radar.minimumWidth = 10;
+		gd_composite_radar.minimumHeight = 10;
+		composite_radar.setLayoutData(gd_composite_radar);
+		
+		shell_dummy_tree = new Shell(display);
+		composite_tree = new Composite(shell_dummy_tree, SWT.NONE);
+		composite_tree.setLayout(new GridLayout(1, false));
+		GridData gd_composite_tree = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_composite_tree.heightHint = 390;
+		gd_composite_tree.minimumWidth = 10;
+		gd_composite_tree.minimumHeight = 10;
+		composite_tree.setLayoutData(gd_composite_tree);
+		
 		Composite composite_2 = new Composite(composite, SWT.NONE);
 		composite_2.setLayout(new GridLayout(1, false));
-		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1);
 		gd_composite_2.heightHint = 164;
 		composite_2.setLayoutData(gd_composite_2);
 		
@@ -287,21 +335,63 @@ public class PradarPartUi3 extends ModelObject
 		
 		bindingContextFilter = initDataBindingsFilter();
 		bindingContextZoom = initDataBindingsZoom();
+		initDataBindingsPerspective();
 
-		Frame frame = SWT_AWT.new_Frame(composite_12);
-
-		frame.add(applet, BorderLayout.CENTER);
+		// tree einbinden
+		composite_tree.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+		Label testlab = new Label(composite_tree, SWT.NONE);
+//		composite_tree.setLayout(new GridLayout(1, false));
+//		composite_tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		composite_tree.setVisible(false);
+		tree = new PradarViewTreePage(this.composite_tree, this);
+		
+		// radar einbinden
+		frame_radar = SWT_AWT.new_Frame(composite_radar);
+		frame_radar.add(applet, BorderLayout.CENTER);
 		applet.init();
-		frame.pack();
-		frame.setLocation(0, 0);
-		frame.setVisible(true);
-
+		frame_radar.pack();
+		frame_radar.setLocation(0, 0);
 		updateUserInterface(einstellungen);
 		updateUserInterfaceProcessing(einstellungen);
 		applet_paint_with_new_filter();
+		frame_radar.setVisible(false);
+		
+		if (button_radar.getSelection())
+		{
+			set_perspective_to_radar();
+		}
+		
+		else if (button_tree.getSelection())
+		{
+			set_perspective_to_tree();
+		}
 		
 	}
 
+	private void set_perspective_to_radar()
+	{
+		composite_tree.setVisible(false);
+		composite_tree.setParent(shell_dummy_tree);
+		composite_radar.setVisible(true);
+		composite_radar.setParent(composite_12);
+		composite_12.layout(true);
+		updateUserInterface(einstellungen);
+		updateUserInterfaceProcessing(einstellungen);
+	}
+	
+	private void set_perspective_to_tree()
+	{
+//		frame_perspective.remove(applet);
+		tree.refresh();
+		composite_radar.setVisible(false);
+		composite_radar.setParent(shell_dummy_radar);
+		composite_tree.setVisible(true);
+		composite_tree.setParent(composite_12);
+		composite_12.layout(true);
+//		composite_tree.setFocus();
+		
+	}
+	
 	private static class ContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object inputElement) {
 			return new Object[0];
@@ -354,6 +444,43 @@ public class PradarPartUi3 extends ModelObject
 		public void handleChange(ChangeEvent event)
 		{
 			applet_paint_with_new_filter();
+			tree.refresh();
+		}
+	};
+	
+	SelectionAdapter listener_radar_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+//			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
+			button_tree.setSelection(!button_radar.getSelection());
+			
+			if (button_radar.getSelection())
+			{
+				set_perspective_to_radar();
+			}
+			else
+			{
+				set_perspective_to_tree();
+			}
+		}
+	};
+	
+	SelectionAdapter listener_tree_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+//			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
+			button_radar.setSelection(!button_tree.getSelection());
+
+			if (button_tree.getSelection())
+			{
+				set_perspective_to_tree();
+			}
+			else
+			{
+				set_perspective_to_radar();
+			}
 		}
 	};
 	
@@ -432,6 +559,21 @@ public class PradarPartUi3 extends ModelObject
 		b.getModel().addChangeListener(listener_zoom);
 	}
 
+	protected DataBindingContext initDataBindingsPerspective()
+	{
+		DataBindingContext bindingContextPerspective = new DataBindingContext();
+		//
+		IObservableValue targetObservableRadar = WidgetProperties.selection().observe(button_radar);
+		IObservableValue modelObservableRadar = BeanProperties.value("perspectiveRadar").observe(einstellungen);
+		bindingContextPerspective.bindValue(targetObservableRadar, modelObservableRadar, null, null);
+		//
+		IObservableValue targetObservableTree = WidgetProperties.selection().observe(button_tree);
+		IObservableValue modelObservableTree = BeanProperties.value("perspectiveTree").observe(einstellungen);
+		bindingContextPerspective.bindValue(targetObservableTree, modelObservableTree, null, null);
+		//
+		return bindingContextPerspective;
+	}
+	
 	protected DataBindingContext initDataBindingsZoom()
 	{
 		DataBindingContext bindingContextZoom = new DataBindingContext();

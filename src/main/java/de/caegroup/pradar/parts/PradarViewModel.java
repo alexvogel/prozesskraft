@@ -8,6 +8,8 @@ public class PradarViewModel extends ModelObject
 	public String active = "";
 	public int period = 168;
 	public boolean children = false;
+	public boolean perspectiveRadar = true;
+	public boolean perspectiveTree = false;
 	public int zoom = 100;
 	public int refresh = 600;
 	
@@ -43,6 +45,16 @@ public class PradarViewModel extends ModelObject
 	public boolean getChildren()
 	{
 		return children;
+	}
+
+	public boolean getPerspectiveRadar()
+	{
+		return perspectiveRadar;
+	}
+
+	public boolean getPerspectiveTree()
+	{
+		return perspectiveTree;
 	}
 
 	public int getZoom()
@@ -84,6 +96,16 @@ public class PradarViewModel extends ModelObject
 	public void setChildren(boolean children)
 	{
 		firePropertyChange("children", this.children, this.children = children);
+	}
+
+	public void setPerspectiveRadar(boolean perspectiveRadar)
+	{
+		firePropertyChange("perspectiveRadar", this.perspectiveRadar, this.perspectiveRadar = perspectiveRadar);
+	}
+
+	public void setPerspectiveTree(boolean perspectiveTree)
+	{
+		firePropertyChange("perspectiveTree", this.perspectiveTree, this.perspectiveTree = perspectiveTree);
 	}
 
 	public void setZoom(int zoom)
