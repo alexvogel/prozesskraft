@@ -1,14 +1,21 @@
 package de.caegroup.pradar.parts;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -68,7 +75,8 @@ public class PradarViewTreePage
 		Tree entityTree = new Tree(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		entityTree.setSize(1000, 1000);
 		entityTree.setLayout(new GridLayout(1, false));
-		GridData gd_entityTree = new GridData(SWT.LEFT, SWT.FILL, true, true, 1, 1);
+		GridData gd_entityTree = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+//		GridData gd_entityTree = new GridData(SWT.LEFT, SWT.FILL, true, true, 1, 1);
 //		gd_entityTree.heightHint = 1000;
 //		gd_entityTree.widthHint = 1000;
 		entityTree.setLayoutData(gd_entityTree);
@@ -83,7 +91,7 @@ public class PradarViewTreePage
 		TreeColumn column1 = new TreeColumn(entityTree, SWT.LEFT);
 		column1.setAlignment(SWT.LEFT);
 		column1.setText("id");
-		column1.setWidth(120);
+		column1.setWidth(160);
 		TreeColumn column2 = new TreeColumn(entityTree, SWT.RIGHT);
 		column2.setAlignment(SWT.LEFT);
 		column2.setText("process");
@@ -107,7 +115,7 @@ public class PradarViewTreePage
 		TreeColumn column7 = new TreeColumn(entityTree, SWT.RIGHT);
 		column7.setAlignment(SWT.LEFT);
 		column7.setText("exitcode");
-		column7.setWidth(50);
+		column7.setWidth(160);
 		
 		myTreeViewer.setContentProvider(new EntityContentProvider());
 		myTreeViewer.setLabelProvider(new TableLabelProvider());
@@ -117,7 +125,35 @@ public class PradarViewTreePage
 		myTreeViewer.setInput(entities);
 		myTreeViewer.expandAll();
 
+		myTreeViewer.addDoubleClickListener(listener_double_click);
+		
 	}
+	
+	IDoubleClickListener listener_double_click = new IDoubleClickListener()
+	{
+		public void doubleClick(DoubleClickEvent event)
+		{
+//			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
+			TreeViewer viewer = (TreeViewer) event.getSource();
+			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
+			
+			Entity entity = (Entity) thisselection.getFirstElement();
+
+			String aufruf = "nedit "+entity.getResource();
+			try
+			{
+				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+	};
+	
+
 	
 	void refresh()
 	{
