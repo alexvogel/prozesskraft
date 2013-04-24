@@ -649,10 +649,75 @@ foreach my $refh_stackline (@CONFIG)
 		}
 		#-------------------
 		# --- END ACTION 'searchreplace' --- #
-		else
+
+		#-------------------
+		# --- START ACTION 'perl_cb2' --- #
+		# es sollen bei allen perlscripten die shebang-zeile augetauscht werden
+		if ( grep { /perl_cb2/ } @now_action )
 		{
-			print "info: no action 'searchreplace'\n";
+			#-------------------
+			# suchen und ersetzen des platzhalters fuer 'version' in allen files
+			print "info: action 'perl_cb2' found in array (@now_action)\n";
+			print "info: add '#!/opt/cb2/perl/bin/perl' as shebang-line to all perl-scripts.\n";
+			find( sub { wanted2() }, "$TMPDIR");
+			
+			sub wanted2
+			{
+				my $cb2_perl_shebang = "#!/opt/cb2/perl/bin/perl";
+				# wenn es ein directory ist, dann verwerfen
+				print "filename in wanted: ".$File::Find::name."\n";
+				if ( -d $File::Find::name )
+				{
+					print "skipping directory: ".$File::Find::name."\n";
+					next;
+				}
+				if (!( -T $File::Find::name ))
+				{
+					print "skipping binary file: ".$File::Find::name."\n";
+					next;
+				}
+				if (!open (FILE, "<$File::Find::name")) {die "cannot read $File::Find::name: $!\n";}
+				
+				my $zeile = 1;
+				my $ist_perl = 0;
+				while(<FILE>)
+				{
+					if ($zeile == 1)
+					{
+						if ($_ =~ m/#!.*perl.*/)
+						{
+							print "found shebang that points to perl\n";
+							$ist_perl = 1;
+						}
+						$zeile++;
+					}
+					else
+					{
+						print "leaving current file\n";
+						last;
+					}
+				}
+				
+				if ($ist_perl)
+				{
+					print "adding new shebang that point to a special perl-installation of cb2 at bmw\n";
+					# neue shebang als erste zeile einfuegen
+					my @alles = <FILE>;
+					unshift(@alles, $cb2_perl_shebang."\n");
+					
+					# alte datei ueberschreiben
+					close FILE;
+					unlink $File::Find::name;
+					if (!open (FILE_TO_WRITE, ">$File::Find::name")) {die "cannot write $File::Find::name: $!\n";}
+					print FILE_TO_WRITE @alles;
+					close FILE_TO_WRITE;
+				}
+				
+			}
 		}
+
+		#-------------------
+		# --- END ACTION 'perl_cb2' --- #
 
 		# deploy.sh script ausfuehren, wenn eines existiert
 		if ($now_deployscript)
