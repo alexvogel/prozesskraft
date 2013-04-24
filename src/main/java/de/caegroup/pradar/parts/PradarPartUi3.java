@@ -71,7 +71,7 @@ import org.eclipse.swt.widgets.Text;
 
 import de.caegroup.pradar.Db;
 import de.caegroup.pradar.Entity;
-import de.caegroup.pradar.WhereAmI;
+import de.caegroup.commons.WhereAmI;
 
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Spinner;
