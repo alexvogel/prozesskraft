@@ -582,24 +582,31 @@ foreach my $refh_stackline (@CONFIG)
 
 		#-------------------
 		# --- START ACTION 'searchreplace' --- #
-		my $full_term;
-		if ( grep { /searchreplace/; $full_term = $_ } @now_action )
+#		my $full_term;
+		if ( grep { /searchreplace/; /searchreplace\((.+)\)/ } @now_action )
 		{
-			# falls mit searchreplace ein parameter mit gegeben wurde, soll das festgestellt werden
 			my @filenames_from_parameter;
-			if ( $full_term =~ m/searchreplace\((.+)\)/ )
+			# alle action-strings durchgehen und falls vorhanden die filenamen innerhalb der klammern feststellen
+			foreach (@now_action)
 			{
-				@filenames_from_parameter = split(",", $1);
+				if ($_ =~ m/searchreplace\((.+)\)/)
+				{
+					push(@filenames_from_parameter, split(",", $1));
+				}
 			}
+			
+			# falls mit searchreplace ein parameter mit gegeben wurde, soll das festgestellt werden
+			print "filenames_from_parameter bevor wanted aufgerufen wird: @filenames_from_parameter\n";
 			#-------------------
 			# suchen und ersetzen des platzhalters fuer 'version' in allen files
 			print "info: action 'searchreplace'\n";
 			print "info: search and replace placeholder [version] and [date] in entry-point-file.\n";
-			find( sub { wanted($now_app) }, "$TMPDIR");
+			find( sub { wanted($now_app, @filenames_from_parameter) }, "$TMPDIR");
 			
 			sub wanted
 			{
 				my $now_app_inside_wanted = shift;
+				my @filenames_from_parameter2 = @_;
 				# wenn es ein directory ist, dann verwerfen
 				print "filename in wanted: ".$File::Find::name."\n";
 				if ( -d $File::Find::name )
@@ -622,6 +629,8 @@ foreach my $refh_stackline (@CONFIG)
 				if ($now_app_inside_wanted =~ m/^\w+-(\w+)$/i) {$now_app_short = $1;}
 #				print "info: $_\n";
 				my $now_filename_without_path = $_;
+#				print "now_filename_without_path: $now_filename_without_path\n";
+				print "filenames_from_parameter: @filenames_from_parameter2\n";
 #				print "filename: $now_filename_without_path\n";
 #				print "filename kurz vor 'if': ".$File::Find::name."\n";
 #				print "kurzname kurz vor 'if': ".$_."\n";
