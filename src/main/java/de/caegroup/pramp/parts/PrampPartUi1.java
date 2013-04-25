@@ -4,9 +4,14 @@ import de.caegroup.commons.*;
 import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.NotDirectoryException;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 
 import javax.annotation.PostConstruct;
@@ -44,6 +49,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -64,9 +70,15 @@ public class PrampPartUi1 extends ModelObject
 	private Text text_logging = null;
 	private Combo combo_processes = null;
 	private Combo combo_versions = null;
+	private Combo combo_hosts = null;
 	private String processMainDir = null;
 	private String iniFile = null;
 	ArrayList<String> processes = new ArrayList<String>();
+	private Text text_instancedirectory = null;
+	
+
+	
+	
 	PrampViewModel einstellungen = new PrampViewModel();
 
 	/**
@@ -82,6 +94,8 @@ public class PrampPartUi1 extends ModelObject
 		setIni();
 		loadIni();
 		getProcesses();
+		getHosts();
+//		setRandomInstancedirectory();
 		createControls(composite);
 	}
 
@@ -94,6 +108,8 @@ public class PrampPartUi1 extends ModelObject
 		setIni();
 		loadIni();
 		getProcesses();
+		getHosts();
+//		setRandomInstancedirectory();
 		createControls(composite);
 	}
 
@@ -142,7 +158,7 @@ public class PrampPartUi1 extends ModelObject
 		
 		Group grpFilter = new Group(composite_11, SWT.NONE);
 		grpFilter.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
-		grpFilter.setText("which model?");
+		grpFilter.setText("select definition");
 		grpFilter.setLayout(new GridLayout(4, false));
 		
 		Label lblNewLabel = new Label(grpFilter, SWT.NONE);
@@ -151,8 +167,9 @@ public class PrampPartUi1 extends ModelObject
 		new Label(grpFilter, SWT.NONE);
 		
 		combo_processes = new Combo(grpFilter, SWT.NONE | SWT.READ_ONLY);
-		combo_processes.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+		combo_processes.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		combo_processes.addModifyListener(listener_processselection);
+		new Label(grpFilter, SWT.NONE);
 		
 		Label lblNewLabel_1 = new Label(grpFilter, SWT.NONE);
 		lblNewLabel_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
@@ -160,18 +177,48 @@ public class PrampPartUi1 extends ModelObject
 		new Label(grpFilter, SWT.NONE);
 		
 		combo_versions = new Combo(grpFilter, SWT.NONE | SWT.READ_ONLY);
-		combo_versions.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
-		
-		Label lblHost = new Label(grpFilter, SWT.NONE);
-		lblHost.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
-		lblHost.setText("instancedir");
-		new Label(grpFilter, SWT.NONE);
+		combo_versions.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		combo_versions.addModifyListener(listener_versionselection);
 		
 		Group grpVisual = new Group(composite_11, SWT.NONE);
-		grpVisual.setText("visual");
-		grpVisual.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		grpVisual.setLayout(new GridLayout(1, false));
+		grpVisual.setText("location");
+		GridData gd_grpVisual = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_grpVisual.widthHint = 139;
+		grpVisual.setLayoutData(gd_grpVisual);
+		grpVisual.setLayout(new GridLayout(4, false));
 		
+		Label lblNewLabel_2 = new Label(grpVisual, SWT.NONE);
+		lblNewLabel_2.setToolTipText("host to run instance");
+		lblNewLabel_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		lblNewLabel_2.setText("host");
+		new Label(grpVisual, SWT.NONE);
+		
+		combo_hosts = new Combo(grpVisual, SWT.NONE);
+		GridData gd_combo_hosts = new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1);
+		gd_combo_hosts.widthHint = 127;
+		combo_hosts.setLayoutData(gd_combo_hosts);
+		new Label(grpVisual, SWT.NONE);
+		
+		Label lblInstancedirectory = new Label(grpVisual, SWT.NONE);
+		lblInstancedirectory.setToolTipText("directory for instance data");
+		lblInstancedirectory.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
+		lblInstancedirectory.setText("instancedirectory");
+		new Label(grpVisual, SWT.NONE);
+		
+		text_instancedirectory = new Text(grpVisual, SWT.BORDER);
+		text_instancedirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+//		text_instancedirectory.addModifyListener(listener_text_instancedirectory);
+		
+		Button btnA = new Button(grpVisual, SWT.NONE);
+		btnA.setToolTipText("generates random path in current working directory");
+		btnA.setText("A");
+		btnA.addSelectionListener(listener_randomdirectory_button);
+		
+		Button button = new Button(grpVisual, SWT.NONE);
+		button.setToolTipText("select an empty directory");
+		button.setText("...");
+		button.addSelectionListener(listener_directory_button);
+
 		Group grpFunction = new Group(composite_11, SWT.NONE);
 		grpFunction.setLayout(new GridLayout(1, false));
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -203,19 +250,29 @@ public class PrampPartUi1 extends ModelObject
 		initDataBindingsProcesses();
 		// Datenbindung Versions-Combo
 		initDataBindingsVersions();
+		// Datenbindung Hosts-Combo
+		initDataBindingsHosts();
 		// Datenbindung Processes-Combo-Selection
 		initDataBindingsProcess();
 		// Datenbindung Versions-Combo-Selection
 		initDataBindingsVersion();
+		// Datenbindung Hosts-Combo-Selection
+		initDataBindingsHost();
+		// Datenbindung instancedirectory textfeld
+		initDataBindingsInstancedirectory();
 
-		// auswahl auf das erste Element setzen
+		// auswahl der Processes-Combo auf das erste Element setzen
 		combo_processes.select(0);
-		
-//		if (combo_processes.getItemCount() > 0)
-//		{
-//			updateUiComboVersions();
-//		}
-//		
+		new Label(grpFilter, SWT.NONE);
+
+		// auswahl der Hosts-Combo auf das erste Element setzen
+		combo_hosts.select(0);
+
+		// setzen der random instancedirectory
+		setRandomInstancedirectory();
+
+		new Label(grpVisual, SWT.NONE);
+
 		Frame frame = SWT_AWT.new_Frame(composite_12);
 
 		frame.pack();
@@ -241,20 +298,93 @@ public class PrampPartUi1 extends ModelObject
 		combo_versions.select(combo_versions.getItemCount()-1);
 	}
 	
+	/**
+	 * listener for Modifications/Selections in combobox 'processes'
+	 */
+	ModifyListener listener_processselection = new ModifyListener()
+	{
+		public void modifyText(ModifyEvent arg0)
+		{
+			updateUiComboVersions();
+			setRandomInstancedirectory();
+		}
+	};
+
+	/**
+	 * listener for Modifications/Selections in combobox 'versions'
+	 */
+	ModifyListener listener_versionselection = new ModifyListener()
+	{
+		public void modifyText(ModifyEvent arg0)
+		{
+			setRandomInstancedirectory();
+		}
+	};
+
+//	/**
+//	 * listener for Modification in textfield 'instancedirectory'
+//	 */
+//	ModifyListener listener_text_instancedirectory = new ModifyListener()
+//	{
+//		public void modifyText(ModifyEvent arg0)
+//		{
+//			text_instancedirectory.setToolTipText(text_instancedirectory.getText());
+//		}
+//	};
+//	
+	/**
+	 * listener for selection of 'A'-button
+	 */
+	SelectionAdapter listener_randomdirectory_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			setRandomInstancedirectory();
+		}
+	};
+	
+	/**
+	 * listener for selection of "..."-button
+	 * opens a shell to select a directory-path
+	 * selection will be echoed in textfield for directory path
+	 */
+	SelectionAdapter listener_directory_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+	        DirectoryDialog dlg = new DirectoryDialog(new Shell());
+
+	        // Set the initial filter path according
+	        // to anything they've selected or typed in
+	        dlg.setFilterPath(text_instancedirectory.getText());
+
+	        // Change the title bar text
+	        dlg.setText("Instance Directory Dialog");
+
+	        // Customizable message displayed in the dialog
+	        dlg.setMessage("Select a directory");
+
+	        // Calling open() will open and run the dialog.
+	        // It will return the selected directory, or
+	        // null if user cancels
+	        String dir = dlg.open();
+	        if (dir != null) {
+	          // Set the text box to the new selection
+	        	einstellungen.setInstancedirectory(dir);
+//	        	text_instancedirectory.setText(dir);
+	        }
+		}
+	};
+	
+	/**
+	 * listener for Selections in of button 'refresh'
+	 */
 	SelectionAdapter listener_refresh_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
 //			System.out.println("button wurde gedrueckt");
 			refresh();
-		}
-	};
-	
-	ModifyListener listener_processselection = new ModifyListener()
-	{
-		public void modifyText(ModifyEvent arg0)
-		{
-			updateUiComboVersions();
 		}
 	};
 	
@@ -320,6 +450,52 @@ public class PrampPartUi1 extends ModelObject
 		bindingContextVersion.bindValue(targetObservableVersion, modelObservableVersion, null, null);
 		//
 		return bindingContextVersion;
+	}
+	
+	/**
+	 * binds array of versions to combo-box 'hosts'
+	 */
+	protected DataBindingContext initDataBindingsHosts()
+	{
+		DataBindingContext bindingContextHosts = new DataBindingContext();
+		//
+		IObservableList targetObservableHosts = WidgetProperties.items().observe(combo_hosts);
+		IObservableList modelObservableHosts = BeanProperties.list("hosts").observe(einstellungen);
+		bindingContextHosts.bindList(targetObservableHosts, modelObservableHosts, null, null);
+		//
+		return bindingContextHosts;
+	}
+	
+	/**
+	 * binds selection of combo-box 'host' to String host
+	 */
+	protected DataBindingContext initDataBindingsHost()
+	{
+		DataBindingContext bindingContextHost = new DataBindingContext();
+		//
+		IObservableValue targetObservableHost = WidgetProperties.text().observe(combo_hosts);
+		IObservableValue modelObservableHost = BeanProperties.value("host").observe(einstellungen);
+		bindingContextHost.bindValue(targetObservableHost, modelObservableHost, null, null);
+		//
+		return bindingContextHost;
+	}
+	
+	/**
+	 * binds content of textfield 'instancedirectory' to String instancedirectory
+	 */
+	protected DataBindingContext initDataBindingsInstancedirectory()
+	{
+		DataBindingContext bindingContextInstancedirectory = new DataBindingContext();
+		//
+		IObservableValue targetObservableInstancedirectory = WidgetProperties.text().observe(text_instancedirectory);
+		IObservableValue modelObservableInstancedirectory = BeanProperties.value("instancedirectory").observe(einstellungen);
+		bindingContextInstancedirectory.bindValue(targetObservableInstancedirectory, modelObservableInstancedirectory, null, null);
+		//
+		IObservableValue targetObservableInstancedirectoryTooltip = WidgetProperties.tooltipText().observe(text_instancedirectory);
+		IObservableValue modelObservableInstancedirectoryTooltip = BeanProperties.value("instancedirectory").observe(einstellungen);
+		bindingContextInstancedirectory.bindValue(targetObservableInstancedirectoryTooltip, modelObservableInstancedirectoryTooltip, null, null);
+		//
+		return bindingContextInstancedirectory;
 	}
 	
 	void refresh()
@@ -411,6 +587,37 @@ public class PrampPartUi1 extends ModelObject
 	}
 	
 	/**
+	 * determines all available hosts which are known by name
+	 * @return a list of all available hosts
+	 */
+	public ArrayList<String> getHosts()
+	{
+		ArrayList<String> hosts = new ArrayList<String>();
+		
+		// feststellen des lokalen hosts
+		try
+		{
+			hosts.add(InetAddress.getLocalHost().getHostName());
+		} catch (UnknownHostException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// sortieren
+		Collections.sort(hosts);
+		
+		// zentrale daten setzen
+		einstellungen.setHosts((String[]) hosts.toArray(new String[hosts.size()]));
+		
+//		// in combo_box einfuegen
+//		combo_versions.setItems((String[]) versions.toArray(new String[versions.size()]));
+//		combo_versions.select(versions.size()-1);
+//		
+		return hosts;
+	}
+	
+	/**
 	 * determines all subdirectories of a specified directory
 	 * @return a list of all subdirectory names (without path - only the last name)
 	 * @throws NotDirectoryException 
@@ -433,7 +640,7 @@ public class PrampPartUi1 extends ModelObject
 			}
 		}
 		// sortieren
-		Collections.sort(processes);
+//		Collections.sort(processes);
 		return subdirectories;
 	}
 	
@@ -458,6 +665,50 @@ public class PrampPartUi1 extends ModelObject
 		return processDefinition;
 	}
 
+	/**
+	 * determines a random path in cwd
+	 */
+	public void setRandomInstancedirectory()
+	{
+		String cwd = System.getProperty("user.dir");
+		Calendar now = Calendar.getInstance();
+		
+		int intYear  = now.get(Calendar.YEAR);
+		int intMonth = now.get(Calendar.MONTH) + 1;
+		int intDay   = now.get(Calendar.DAY_OF_MONTH);
+		int intHour  = now.get(Calendar.HOUR_OF_DAY);
+		int intMinute= now.get(Calendar.MINUTE);
+		int intSecond= now.get(Calendar.SECOND);
+		int intMilli = now.get(Calendar.MILLISECOND);
+		
+		String stringYear  = String.format("%04d", intYear);
+		String stringMonth = String.format("%02d", intMonth);
+		String stringDay   = String.format("%02d", intDay);
+		String stringHour  = String.format("%02d", intHour);
+		String stringMinute= String.format("%02d", intMinute);
+		String stringSecond= String.format("%02d", intSecond);
+		String stringMilli = String.format("%03d", intMilli);
+		
+		String stringProcess = null;
+		if (combo_processes.getText() != null)
+		{
+			stringProcess = combo_processes.getText();
+		}
+		String stringVersion = null;
+		if (combo_versions.getText() != null)
+		{
+			stringVersion = combo_versions.getText();
+			stringVersion = stringVersion.replaceAll("\\.", "");
+		}
+		
+		String path = cwd + "/" + stringProcess + "_v" + stringVersion + "_" + stringYear + stringMonth + stringDay + "_" + stringHour + stringMinute + stringSecond + "_" + stringMilli; 
+
+		einstellungen.setInstancedirectory(path);
+//		System.out.println("pfad sollte sein: "+path);
+//		System.out.println("aktualisiere textfeld - einstellungen get.Instancedirectory: "+einstellungen.getInstancedirectory());
+	}
+	
+	
 	void load()
 	{
 		// inifile parsen
