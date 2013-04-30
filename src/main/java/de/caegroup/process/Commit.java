@@ -32,6 +32,11 @@ implements Serializable
 	/*----------------------------
 	  constructors
 	----------------------------*/
+	public Commit()
+	{
+		parent = new Step();
+	}
+
 	public Commit(Step s)
 	{
 		parent = s;
@@ -171,6 +176,14 @@ implements Serializable
 	public void setExitvalue(int exitvalue)
 	{
 		this.exitvalue = exitvalue;
+	}
+
+	/**
+	 * @param step the parent to set
+	 */
+	public void setParent(Step step)
+	{
+		this.parent = step;
 	}
 
 }

@@ -14,32 +14,35 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private String name = new String();
-	private String description = new String();
+	private String name = "unnamed";
+	private String description = "no description";
 	private String command = new String();
-	private ArrayList<Callitem> callitems = new ArrayList<Callitem>();
+	private ArrayList<Callitem> callitem = new ArrayList<Callitem>();
 	private String loop = new String();
 	private String loopvar = new String();
 	
 	private String status = new String();	// waiting/initializing/working/committing/ finished/broken/cancelled
 	private int exitvalue;
-	private String call = new String();
+	private Step parent;
 	/*----------------------------
 	  constructors
 	----------------------------*/
 	public Work()
 	{
-		name = "unnamed";
-		description = "no description";
+		this.parent = new Step();
 	}
 
+	public Work(Step step)
+	{
+		this.parent = step;
+	}
 
 	/*----------------------------
 	  methods
 	----------------------------*/
 	public void addCallitem(Callitem callitem)
 	{
-		this.callitems.add(callitem);
+		this.callitem.add(callitem);
 	}
 	
 
@@ -47,11 +50,6 @@ implements Serializable
 	  methods virtual get
 	----------------------------*/
 	public String getCall()
-	{
-		return this.call;
-	}
-	
-	public String generateCall(NamedList<String> lists)
 	{
 		ArrayList<Callitem> callitems = this.getCallitemssorted();
 		
@@ -62,11 +60,10 @@ implements Serializable
 		{
 			Callitem callitem = itercallitem.next();
 			callbuffer.append(" ");
-			callbuffer.append(callitem.getRespar(lists));
-			callbuffer.append(callitem.getResdel(lists));
-			callbuffer.append(callitem.getResval(lists));
+			callbuffer.append(callitem.getRespar());
+			callbuffer.append(callitem.getResdel());
+			callbuffer.append(callitem.getResval());
 		}
-		this.call = callbuffer.toString();
 		return callbuffer.toString();
 	}
 	
@@ -90,15 +87,25 @@ implements Serializable
 
 	public ArrayList<Callitem> getCallitems()
 	{
-		return this.callitems;
+		return this.callitem;
+	}
+	
+	public ArrayList<Callitem> getCallitem()
+	{
+		return this.callitem;
+	}
+	
+	public Callitem getCallitem(int index)
+	{
+		return this.callitem.get(index);
 	}
 	
 	public ArrayList<Callitem> getCallitemssorted()
 	{
-		ArrayList<String> sequences = new ArrayList<String>();
+		ArrayList<Integer> sequences = new ArrayList<Integer>();
 		
 		// aus den vorhandenen callitems die sequences in ein eigenes array extrahieren
-		Iterator<Callitem> itercallitem = this.callitems.iterator();
+		Iterator<Callitem> itercallitem = this.callitem.iterator();
 		while (itercallitem.hasNext())
 		{
 			Callitem callitem = itercallitem.next();
@@ -110,16 +117,16 @@ implements Serializable
 		
 		// ueber das sortierte sequences-array iterieren
 		ArrayList<Callitem> callitems_sorted = new ArrayList<Callitem>();
-		Iterator<String> itersequences = sequences.iterator();
+		Iterator<Integer> itersequences = sequences.iterator();
 		while (itersequences.hasNext())
 		{
-			String sequence = itersequences.next();
+			int sequence = itersequences.next();
 			// und das zugehoerige callitem rausfischen
-			Iterator<Callitem> itercallitem2 = this.callitems.iterator();
+			Iterator<Callitem> itercallitem2 = this.callitem.iterator();
 			while (itercallitem2.hasNext())
 			{
 				Callitem callitem = itercallitem2.next();
-				if (callitem.getSequence().equals(sequence))
+				if (callitem.getSequence() == sequence)
 				{
 					callitems_sorted.add(callitem);
 				}
@@ -131,10 +138,10 @@ implements Serializable
 	
 	public Callitem[] getCallitems2()
 	{
-		Callitem[] callitems = new Callitem[this.callitems.size()];
-		for (int i=0; i<this.callitems.size(); i++)
+		Callitem[] callitems = new Callitem[this.callitem.size()];
+		for (int i=0; i<this.callitem.size(); i++)
 		{
-			callitems[i] = this.callitems.get(i);
+			callitems[i] = this.callitem.get(i);
 		}
 		return callitems;
 	}
@@ -157,6 +164,11 @@ implements Serializable
 	public int getExitvalue()
 	{
 		return this.exitvalue;
+	}
+	
+	public ArrayList<String> getListItems(String listname)
+	{
+		return this.parent.getListItems(listname);
 	}
 	
 	/*----------------------------
@@ -195,6 +207,22 @@ implements Serializable
 	public void setExitvalue(int exitvalue)
 	{
 		this.exitvalue = exitvalue;
+	}
+
+	/**
+	 * @param step the parent to set
+	 */
+	public void setParent(Step step)
+	{
+		this.parent = step;
+	}
+
+	/**
+	 * @param ArrayList<Callitem> the callitem to set
+	 */
+	public void setCallitem(ArrayList<Callitem> callitem)
+	{
+		this.callitem = callitem;
 	}
 
 }

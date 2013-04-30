@@ -26,6 +26,7 @@ implements Serializable
 	
 	private String status = new String();	// waiting/initializing/working/committing/ finished/broken/cancelled
 
+	private Step parent = null;
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -154,6 +155,14 @@ implements Serializable
 	public void setStatus(String status)
 	{
 		this.status = status;
+	}
+
+	/**
+	 * @param step the parent to set
+	 */
+	public void setParent(Step step)
+	{
+		this.parent = step;
 	}
 
 }

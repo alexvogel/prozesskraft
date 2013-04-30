@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import javax.xml.bind.JAXBContext;
@@ -70,8 +71,8 @@ implements Serializable
 	private String architect = new String();
 	private String version = new String();
 //	private NamedList<Step> steps = new NamedList<Step>();
-	private ArrayList<Step> steps = new ArrayList<Step>();
-	private ArrayList<Init> inits = new ArrayList<Init>();
+	private ArrayList<Step> step = new ArrayList<Step>();
+//	private ArrayList<Init> inits = new ArrayList<Init>();
 	
 	private String status = new String();	// waiting/working/ finished/broken
 	private String rootdir = new String();
@@ -150,7 +151,7 @@ implements Serializable
 			}
 		}
 		step.setParent(this);
-		this.steps.add(step);
+		this.step.add(step);
 		return true;
 	}
 
@@ -227,14 +228,14 @@ implements Serializable
 			para2.setFont(fontbold2);
 			
 			// die vorhandenen steps ermitteln und fuer jeden step durchfuehren (seite hinzufuegen und beschreibung)
-			for (int i=0; i<this.steps.size();i++)
+			for (int i=0; i<this.step.size();i++)
 			{
 				document.addPageBreak();
 			
-				Step step = steps.get(i);
+				Step actualStep = step.get(i);
 				
 				// erster Absatz ist ueberschrift
-				Paragraph spara1 = document.addParagraph("step '"+step.getName()+"'");
+				Paragraph spara1 = document.addParagraph("step '"+actualStep.getName()+"'");
 				spara1.setHorizontalAlignment(HorizontalAlignmentType.CENTER);
 				Font sfontbold = spara1.getFont();
 				sfontbold.setSize(20);
@@ -249,26 +250,26 @@ implements Serializable
 				sfontbold2.setSize(12);
 				sfontbold2.setFontStyle(FontStyle.BOLD);
 				spara2.setFont(sfontbold2);
-				document.addParagraph(step.getName());	// inhalt
+				document.addParagraph(actualStep.getName());	// inhalt
 				
 				// neuer Absatz
 				document.addParagraph("");	// leere Zeile
 				spara2 = document.addParagraph("step-type:");	// ueberschrift2
 				spara2.setFont(fontbold2);
-				document.addParagraph(step.getType());	// leere Zeile
+				document.addParagraph(actualStep.getType());	// leere Zeile
 				
 				// neuer Absatz
 				document.addParagraph("");	// leere Zeile
 				spara2 = document.addParagraph("step-description:");	// ueberschrift2
 				spara2.setFont(fontbold2);
-				document.addParagraph(step.getDescription());	// leere Zeile
+				document.addParagraph(actualStep.getDescription());	// leere Zeile
 				
 				// neuer Absatz
 				document.addParagraph("");	// leere Zeile
 				spara2 = document.addParagraph("step-input:");	// ueberschrift2
 				spara2.setFont(fontbold2);
 
-				ArrayList<Init> sinits = step.getInits();
+				ArrayList<Init> sinits = actualStep.getInits();
 				for (int j=0; j<sinits.size();j++)
 				{
 					Init init = sinits.get(j);
@@ -280,19 +281,15 @@ implements Serializable
 				spara2 = document.addParagraph("step-work:");	// ueberschrift2
 				spara2.setFont(fontbold2);
 
-				ArrayList<Work> sworks = step.getWorks();
-				for (int j=0; j<sworks.size();j++)
-				{
-					Work work = sworks.get(j);
-					document.addParagraph("work '"+work.getName()+"' will be done with command '"+work.getCommand()+"'");	// ueberschrift2
-				}
+				Work swork = actualStep.getWork();
+				document.addParagraph("work '"+swork.getName()+"' will be done with command '"+swork.getCommand()+"'");	// ueberschrift2
 
 				// neuer Absatz
 				document.addParagraph("");	// leere Zeile
 				spara2 = document.addParagraph("step-output:");	// ueberschrift2
 				spara2.setFont(fontbold2);
 
-				ArrayList<Commit> scommits = step.getCommits();
+				ArrayList<Commit> scommits = actualStep.getCommits();
 				for (int j=0; j<scommits.size();j++)
 				{
 					Commit commit = scommits.get(j);
@@ -381,19 +378,19 @@ implements Serializable
 			hd.startElement("", "", "process", atts);
 
 			// Fuer jeden Knoten 'step'
-			for (int i=0; i<this.steps.size();i++)
+			for (int i=0; i<this.step.size();i++)
 			{
 				atts.clear();
-				atts.addAttribute("", "", "name", "CDATA", this.steps.get(i).getName());
-				atts.addAttribute("", "", "type", "CDATA", this.steps.get(i).getType());
-				atts.addAttribute("", "", "description", "CDATA", this.steps.get(i).getDescription());
-				atts.addAttribute("", "", "loop", "CDATA", this.steps.get(i).getLoop());
-				atts.addAttribute("", "", "loopvar", "CDATA", this.steps.get(i).getLoopvar());
+				atts.addAttribute("", "", "name", "CDATA", this.step.get(i).getName());
+				atts.addAttribute("", "", "type", "CDATA", this.step.get(i).getType());
+				atts.addAttribute("", "", "description", "CDATA", this.step.get(i).getDescription());
+				atts.addAttribute("", "", "loop", "CDATA", this.step.get(i).getLoop());
+				atts.addAttribute("", "", "loopvar", "CDATA", this.step.get(i).getLoopvar());
 				
 				hd.startElement("", "", "step", atts);
 				
 				// Fuer jeden Knoten 'init'
-				Init[] inits = this.steps.get(i).getInits2();
+				Init[] inits = this.step.get(i).getInits2();
 				for (int j=0; j<inits.length; j++)
 				{
 					atts.clear();
@@ -420,39 +417,36 @@ implements Serializable
 
 				}
 
-				// Fuer jeden Knoten 'work'
-				Work[] works = this.steps.get(i).getWorks2();
-				for (int j=0; j<works.length; j++)
+				// Fuer den einen(!) Knoten 'work'
+				Work work = this.step.get(i).getWork();
+				atts.clear();
+				atts.addAttribute("", "", "name", "CDATA", work.getName());
+				atts.addAttribute("", "", "loop", "CDATA", work.getLoop());
+				atts.addAttribute("", "", "loopvar", "CDATA", work.getLoopvar());
+				atts.addAttribute("", "", "description", "CDATA", work.getDescription());
+				atts.addAttribute("", "", "command", "CDATA", work.getCommand());
+				
+				hd.startElement("", "", "work", atts);
+			
+				// Fuer jeden Knoten 'callitem'
+				Callitem[] callitems = work.getCallitems2();
+				for (int k=0; k<callitems.length; k++)
 				{
 					atts.clear();
-					atts.addAttribute("", "", "name", "CDATA", works[j].getName());
-					atts.addAttribute("", "", "loop", "CDATA", works[j].getLoop());
-					atts.addAttribute("", "", "loopvar", "CDATA", works[j].getLoopvar());
-					atts.addAttribute("", "", "description", "CDATA", works[j].getDescription());
-					atts.addAttribute("", "", "command", "CDATA", works[j].getCommand());
+					atts.addAttribute("", "", "sequence", "CDATA", "" + callitems[k].getSequence());
+					atts.addAttribute("", "", "loop", "CDATA", callitems[k].getLoop());
+					atts.addAttribute("", "", "par", "CDATA", callitems[k].getPar());
+					atts.addAttribute("", "", "del", "CDATA", callitems[k].getDel());
+					atts.addAttribute("", "", "val", "CDATA", callitems[k].getVal());
 					
-					hd.startElement("", "", "work", atts);
-				
-					// Fuer jeden Knoten 'callitem'
-					Callitem[] callitems = works[j].getCallitems2();
-					for (int k=0; k<callitems.length; k++)
-					{
-						atts.clear();
-						atts.addAttribute("", "", "sequence", "CDATA", callitems[k].getSequence());
-						atts.addAttribute("", "", "loop", "CDATA", callitems[k].getLoop());
-						atts.addAttribute("", "", "par", "CDATA", callitems[k].getPar());
-						atts.addAttribute("", "", "del", "CDATA", callitems[k].getDel());
-						atts.addAttribute("", "", "val", "CDATA", callitems[k].getVal());
-						
-						hd.startElement("", "", "callitem", atts);
-						hd.endElement("", "", "callitem");
-					}
-					
-					hd.endElement("", "", "work");
+					hd.startElement("", "", "callitem", atts);
+					hd.endElement("", "", "callitem");
 				}
+				
+				hd.endElement("", "", "work");
 			
 				// Fuer jeden Knoten 'commit'
-				Commit[] commits = this.steps.get(i).getCommits2();
+				Commit[] commits = this.step.get(i).getCommits2();
 				for (int j=0; j<commits.length; j++)
 				{
 					atts.clear();
@@ -499,8 +493,16 @@ implements Serializable
 		Unmarshaller um = context.createUnmarshaller();
 		de.caegroup.jaxb.process.Process xprocess = (de.caegroup.jaxb.process.Process) um.unmarshal(new java.io.File(this.getInfilexml()));
 
-		Mapper mapper = new DozerBeanMapper();
+//		List myMappingFiles = new ArrayList();
+		System.out.println("existiert das mapping? "+new java.io.File("/data/prog/workspace/process-core/src/main/resources/dozermapping.xml").exists());
+//		myMappingFiles.add("dozermapping.xml");
+		
+		DozerBeanMapper mapper = new DozerBeanMapper();
+//		mapper.setMappingFiles(myMappingFiles);
 		Process destObject = mapper.map(xprocess, de.caegroup.process.Process.class);
+//		System.out.println("Anzahl der Steps in xprocess: "+xprocess.getStep().size()+" und der namen des ersten: "+xprocess.getStep().get(0).getName());
+//		System.out.println("Anzahl der Steps in destObject: "+destObject.getSteps().size()+" und der namen des ersten: "+destObject.getStep(0).getName());
+//		System.out.println("Anzahl der Steps in destObject: "+destObject.getSteps().size()+" und der namen des zweiten: "+destObject.getStep(1).getName());
 		return destObject;
 	}
 	
@@ -649,7 +651,7 @@ implements Serializable
 									
 									// Erstellen der Objektinstanz 'work' und einhaengen in den letzten step
 									Work work = new Work();
-									step.addWork(work);
+									step.setWork(work);
 									
 									// Eintragen der gelesenen Daten in die Objektinstanz
 									work.setName(workname);
@@ -680,7 +682,7 @@ implements Serializable
 											work.addCallitem(callitem);
 											
 											// Eintragen der gelesenen Daten in die Objektinstanz
-											callitem.setSequence(callitemsequence);
+											callitem.setSequence(Integer.parseInt(callitemsequence));
 											callitem.setLoop(callitemloop);
 											callitem.setPar(callitempar);
 											callitem.setDel(callitemdel);
@@ -864,21 +866,12 @@ implements Serializable
 			{
 				String listname = iterstring.next();
 				System.out.println("->      listname: "+listname);
-				Iterator<String> iterlistitem = step.getListitems(listname).iterator();
+				Iterator<String> iterlistitem = step.getListItems(listname).iterator();
 				while (iterlistitem.hasNext())
 				{
 					String listitem = iterlistitem.next();
 					System.out.println("->      listitem: "+listitem);
 				}
-			}
-			System.out.println("   amount works: "+step.getWorks().size());
-			ArrayList<Work> works = step.getWorks();
-			Iterator<Work> iterwork = works.iterator();
-			while (iterwork.hasNext())
-			{
-				Work work = iterwork.next();
-				System.out.println("-----> workname: "+work.getName());
-				System.out.println("----->     call: "+work.getCall());
 			}
 		}
 	}
@@ -903,7 +896,7 @@ implements Serializable
 	public void detStatus ()
 	{
 		String newstatus = "finished";
-		Iterator<Step> iterstep = this.steps.iterator();
+		Iterator<Step> iterstep = this.step.iterator();
 		while(iterstep.hasNext())
 		{
 			Step step = iterstep.next();
@@ -928,7 +921,7 @@ implements Serializable
 	----------------------------*/
 	public void removeStep (Step step)
 	{
-		this.steps.remove(step);
+		this.step.remove(step);
 	}
 	
 	/*----------------------------
@@ -1167,11 +1160,16 @@ implements Serializable
 
 	public Step getStep(int id)
 	{
-		return this.steps.get(id);
+		return this.step.get(id);
 	}	
 	public ArrayList<Step> getSteps()
 	{
-		return this.steps;
+		return this.step;
+	}
+
+	public ArrayList<Step> getStep()
+	{
+		return this.step;
 	}
 
 	// liefert nur den step zurueck dessen namen exakt passt
@@ -1229,7 +1227,7 @@ implements Serializable
 		Step[] steps = new Step[this.getSteps().size()];
 		for(int i=0; i<steps.length; i++)
 		{
-			steps[i] = this.steps.get(i);
+			steps[i] = this.step.get(i);
 		}
 		return steps;
 	}
@@ -1239,36 +1237,11 @@ implements Serializable
 		String[] stepnames = new String[this.getSteps().size()];
 		for(int i=0; i<stepnames.length; i++)
 		{
-			stepnames[i] = this.steps.get(i).getName();
+			stepnames[i] = this.step.get(i).getName();
 		}
 		return stepnames;
 	}
 	
-	public ArrayList<Init> getInits()
-	{
-		return this.inits;
-	}
-
-	public Init[] getInits2()
-	{
-		Init[] inits = new Init[this.inits.size()];
-		for (int i=0; i<this.inits.size(); i++)
-		{
-			inits[i] = this.inits.get(i);
-		}
-		return inits;
-	}
-
-	public String[] getInitnames()
-	{
-		String[] initnames = new String[this.inits.size()];
-		for (int i=0; i<this.inits.size(); i++)
-		{
-			initnames[i] = this.inits.get(i).getName(); 
-		}
-		return initnames;
-	}
-
 	public String getRootstepname()
 	{
 		return rootstepname;
@@ -1280,6 +1253,16 @@ implements Serializable
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public void setStep(ArrayList<Step> step)
+	{
+		this.step = step;
+		Iterator<Step> iterStep = this.step.iterator();
+		while(iterStep.hasNext())
+		{
+			iterStep.next().setParent(this);
+		}
 	}
 
 	public void setDescription(String description)

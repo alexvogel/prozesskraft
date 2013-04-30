@@ -5,12 +5,17 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.xml.bind.JAXBException;
+
 import org.junit.Test;
 import org.junit.Before;
 
-import de.caegroup.process.Init;
 import de.caegroup.process.Process;
 import de.caegroup.process.Step;
+import de.caegroup.process.List;
+import de.caegroup.process.Init;
+import de.caegroup.process.Work;
+import de.caegroup.process.Callitem;
 
 public class TestProcess {
 
@@ -90,6 +95,84 @@ public class TestProcess {
 		{
 			System.out.println(iterfile.next().getAbsolutePath());
 		}
+	}
+
+	@Test
+	public void testReadXml()
+	{
+		Process newProcess = new Process();
+		String pathToXml = "src/test/resources/beulen.xml";
+		process.setInfilexml(pathToXml);
+		java.io.File file = new java.io.File(pathToXml);
+
+		try
+		{
+			newProcess = process.readXml2();
+		} catch (JAXBException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// testen der process-attribute
+		assertEquals(true, file.isFile());
+		assertEquals("beulen", newProcess.getName());
+		assertEquals("0.2", newProcess.getVersion());
+		assertEquals("Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert.", newProcess.getDescription());
+		assertEquals("alexander.vogel@caegroup.de", newProcess.getArchitect());
+		
+		// testen der process-elemente
+		assertEquals(2, newProcess.getStep().size());
+
+		Step step0 = newProcess.getStep(0);
+		Step step1 = newProcess.getStep(1);
+		// testen der step-attribute
+		assertEquals("root", step0.getName());
+		assertEquals("gen_abaqus_beulen", step1.getName());
+		assertEquals("automatic", step1.getType());
+		assertEquals("Die gesamte Prozesskette", step1.getDescription());
+		
+		// testen der step-elemente
+		assertEquals(3, step1.getInit().size());
+
+		// testen der list0-attribute
+		List list0 = step1.getList(0);
+		assertEquals("matdb", list0.getName());
+		assertEquals(1, list0.getMin());
+		assertEquals(1, list0.getMax());
+
+		// testen der init0-attribute
+		Init init0 = step1.getInit(0);
+		assertEquals("template", init0.getName());
+		assertEquals("file", init0.getFromobjecttype());
+		assertEquals("pathfilename", init0.getReturnfield());
+		assertEquals("root", init0.getFromstep());
+
+		// testen der init1-attribute
+		Init init1 = step1.getInit(1);
+		assertEquals("nid", init1.getName());
+		assertEquals("variable", init1.getFromobjecttype());
+		assertEquals("value", init1.getReturnfield());
+		assertEquals("root", init1.getFromstep());
+		
+		// testen der init2-attribute
+		Init init2 = step1.getInit(2);
+		assertEquals("matdb", init2.getName());
+		assertEquals("variable", init2.getFromobjecttype());
+		assertEquals("value", init2.getReturnfield());
+		assertEquals("root", init2.getFromstep());
+		
+		// testen der work-attribute
+		Work work = step1.getWork();
+		assertEquals("starte_prozesskette", work.getName());
+		assertEquals("beulen.pl", work.getCommand());
+		assertEquals("irgendeine beschreibung", work.getDescription());
+
+		// testen der callitem0-attribute
+		Callitem callitem1 = work.getCallitem(1);
+		assertEquals(2, callitem1.getSequence());
+		assertEquals("--nid", callitem1.getPar());
+		assertEquals("=", callitem1.getDel());
+		assertEquals("list(nid)", callitem1.getVal());
 	}
 
 

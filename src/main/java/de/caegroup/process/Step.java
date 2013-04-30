@@ -18,9 +18,10 @@ implements Serializable, Cloneable
 	private String name = new String();
 	private String type = new String();
 	private String description = new String();
-	private ArrayList<Init> inits = new ArrayList<Init>();
-	private ArrayList<Work> works = new ArrayList<Work>();
-	private ArrayList<Commit> commits = new ArrayList<Commit>();
+	private ArrayList<List> list = new ArrayList<List>();
+	private ArrayList<Init> init = new ArrayList<Init>();
+	private Work work = null;
+	private ArrayList<Commit> commit = new ArrayList<Commit>();
 	private String loop = new String();
 	private String loopvar = new String();
 
@@ -30,7 +31,6 @@ implements Serializable, Cloneable
 //	private String abspid = new String();
 //	private String absstdout = new String();
 //	private String absstderr = new String();
-	private NamedList<String> list = new NamedList<String>();
 	private ArrayList<File> files = new ArrayList<File>();
 	private ArrayList<Variable> variables = new ArrayList<Variable>();
 	private String status = "waiting";	// waiting/initializing/working/committing/ finished/broken/cancelled
@@ -171,11 +171,13 @@ implements Serializable, Cloneable
 					// wenn die fileliste leer ist, dann ist initialisierung fehlgeschlagen
 					if (files_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
 					// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
+					List liste = new List();
+					this.addList(liste);
 					Iterator<File> iterfile = files_from_fromstep_which_matched.iterator();
 					while (iterfile.hasNext())
 					{
 						File file = iterfile.next();
-						this.list.add(name, file.getField(returnfield));
+						liste.addItem(file.getField(returnfield));
 					}
 				}
 
@@ -201,11 +203,13 @@ implements Serializable, Cloneable
 					}
 					if (variables_from_fromstep.size() == 0) {initializing_success = false;}
 					// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
+					List liste = new List();
+					this.addList(liste);
 					Iterator<Variable> itervariable = variables_from_fromstep.iterator();
 					while (itervariable.hasNext())
 					{
 						Variable variable = itervariable.next();
-						this.list.add(name, variable.getField(returnfield));
+						liste.addItem(variable.getField(returnfield));
 					}
 				}
 			}
@@ -230,9 +234,9 @@ implements Serializable, Cloneable
 		if (!(this.loop.equals("")))
 		{
 			// wenn die loopliste mindestens 1 wert enthaelt, ueber dioe liste iterieren und fuer jeden wert den aktuellen step clonen
-			if (this.getListitems(this.loop).size() > 0)
+			if (this.getListItems(this.loop).size() > 0)
 			{
-				Iterator<String> itervalue = this.getListitems(this.loop).iterator();
+				Iterator<String> itervalue = this.getListItems(this.loop).iterator();
 				int x = 1;
 				while (itervalue.hasNext())
 				{
@@ -256,72 +260,68 @@ implements Serializable, Cloneable
 	{
 		this.setStatus("working");
 
-		// ueber alle works iterieren
-		Iterator<Work> iterwork = this.getWorks().iterator();
-		while (iterwork.hasNext())
-		{
-			Work work = iterwork.next();
-			String call = work.generateCall(this.getListall());
+		Work work = this.work;
+//			String call = work.generateCall(this.getListall());
+		String call = work.getCall();
 
-			// holen der zugehoerigen Systemprozess-ID - feststellen ob fuer diesen work schon ein aufruf getaetigt wurde
+		// holen der zugehoerigen Systemprozess-ID - feststellen ob fuer diesen work schon ein aufruf getaetigt wurde
+		
+		
+		// wenn schritt schon gestartet wurde
+		if (this.isPidfileexistent())
+		{
+			String pid = this.getPid();	// aus der absdir des 'work' soll aus der Datei '.pid' die pid ermittelt werden. wenn noch keine existiert, wurde der schritt noch nicht gestartet
+			System.out.println("PROCESS-STEP BEREITS GESTARTET: "+pid);
 			
-			
-			// wenn schritt schon gestartet wurde
-			if (this.isPidfileexistent())
+			if (Step.isPidalive(pid))
 			{
-				String pid = this.getPid();	// aus der absdir des 'work' soll aus der Datei '.pid' die pid ermittelt werden. wenn noch keine existiert, wurde der schritt noch nicht gestartet
-				System.out.println("PROCESS-STEP BEREITS GESTARTET: "+pid);
-				
-				if (Step.isPidalive(pid))
-				{
-					System.out.println("PROCESS-STEP LAEUFT NOCH: "+pid);
-				}
-				else
-				{
-					System.out.println("PROCESS-STEP LAEUFT NICHT MEHR: "+pid);
-					this.setStatus("worked");
-				}
+				System.out.println("PROCESS-STEP LAEUFT NOCH: "+pid);
 			}
-			// wenn schritt noch nicht gestartet wurde
-			else 
+			else
 			{
-				System.out.println("PROCESS-STEP IST NOCH NICHT GESTARTET");
-				this.mkdir(this.getAbsdir());
-				
-				try
-				{
+				System.out.println("PROCESS-STEP LAEUFT NICHT MEHR: "+pid);
+				this.setStatus("worked");
+			}
+		}
+		// wenn schritt noch nicht gestartet wurde
+		else 
+		{
+			System.out.println("PROCESS-STEP IST NOCH NICHT GESTARTET");
+			this.mkdir(this.getAbsdir());
+			
+			try
+			{
 //					System.out.println("AUFRUF: /bin/bash /home/avo/bin/procsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
 //					String[] args_for_syscall = {"/bin/bash", "/home/avo/bin/procsyscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
-					System.out.println("AUFRUF: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
-					String[] args_for_syscall = {"processsyscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
-					ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
+				System.out.println("AUFRUF: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
+				String[] args_for_syscall = {"processsyscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
+				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
 
-					// erweitern des PATHs um den prozesseigenen path
-					Map<String,String> env = pb.environment();
-					String path = env.get("PATH");
-					path = this.parent.getPath()+":"+path;
-					env.put("PATH", path);
-					System.out.println("new PATH: "+path);
-					
-					java.io.File directory = new java.io.File(this.getAbsdir());
-					pb.directory(directory);
-					java.io.File checkdirectory = pb.directory().getAbsoluteFile();
-					System.out.println("ALS AKTUELLES VERZEICHNIS WIRD GESETZT+GECHECKT: "+checkdirectory);
-					java.lang.Process p = pb.start();
-	//					Map<String,String> env = pb.environment();
-	//					String cwd = env.get("PWD");
-	//					String cwd = "/data/prog/workspace/prozesse/dummy/inst";
-	//					java.io.File directory = new java.io.File(cwd);
-	//					System.out.println("DIRECTORY SETZEN AUF "+directory.getAbsolutePath());
-	//					pb.directory(directory);
-	//					java.lang.Process p = pb.start();
-	//					java.lang.Process p = Runtime.getRuntime().exec(args_for_syscall);
-					System.out.println("PROCESS: "+p.hashCode());
-				}			
-				catch (Exception e2)
-				{
-					e2.printStackTrace();
-				}
+				// erweitern des PATHs um den prozesseigenen path
+				Map<String,String> env = pb.environment();
+				String path = env.get("PATH");
+				path = this.parent.getPath()+":"+path;
+				env.put("PATH", path);
+				System.out.println("new PATH: "+path);
+				
+				java.io.File directory = new java.io.File(this.getAbsdir());
+				pb.directory(directory);
+				java.io.File checkdirectory = pb.directory().getAbsoluteFile();
+				System.out.println("ALS AKTUELLES VERZEICHNIS WIRD GESETZT+GECHECKT: "+checkdirectory);
+				java.lang.Process p = pb.start();
+//					Map<String,String> env = pb.environment();
+//					String cwd = env.get("PWD");
+//					String cwd = "/data/prog/workspace/prozesse/dummy/inst";
+//					java.io.File directory = new java.io.File(cwd);
+//					System.out.println("DIRECTORY SETZEN AUF "+directory.getAbsolutePath());
+//					pb.directory(directory);
+//					java.lang.Process p = pb.start();
+//					java.lang.Process p = Runtime.getRuntime().exec(args_for_syscall);
+				System.out.println("PROCESS: "+p.hashCode());
+			}			
+			catch (Exception e2)
+			{
+				e2.printStackTrace();
 			}
 		}
 	}
@@ -627,17 +627,12 @@ implements Serializable, Cloneable
 	----------------------------*/
 	public void addInit(Init init)
 	{
-		this.inits.add(init);
-	}
-
-	public void addWork(Work work)
-	{
-		this.works.add(work);
+		this.init.add(init);
 	}
 
 	public void addCommit(Commit commit)
 	{
-		this.commits.add(commit);
+		this.commit.add(commit);
 	}
 
 	public void addFile(File file)
@@ -663,6 +658,21 @@ implements Serializable, Cloneable
 	/*----------------------------
 	  methods get
 	----------------------------*/
+	public boolean isListPresent(String listname)
+	{
+		boolean listIsPresent = false;
+		Iterator<List> iterList = this.list.iterator();
+		while(iterList.hasNext())
+		{
+			if (iterList.next().getName().equals(listname))
+			{
+				listIsPresent = true;
+				return listIsPresent;
+			}
+		}
+		return listIsPresent;
+	}
+
 	public String getName()
 	{
 		return this.name;
@@ -757,12 +767,12 @@ implements Serializable, Cloneable
 
 	public Init getInit(String initname)
 	{
-		for(int i=0; i<inits.size(); i++)
+		for(int i=0; i<init.size(); i++)
 		{
-			Init init = inits.get(i);
-			if (init.getName() == initname)
+			Init actualInit = init.get(i);
+			if (actualInit.getName() == initname)
 			{
-				return init;
+				return actualInit;
 			}
 		}
 		return null;
@@ -770,55 +780,70 @@ implements Serializable, Cloneable
 	
 	public ArrayList<Init> getInits()
 	{
-		return this.inits;
+		return this.init;
+	}
+
+	public ArrayList<Init> getInit()
+	{
+		return this.init;
+	}
+
+	public Init getInit(int id)
+	{
+		return this.init.get(id);
 	}
 
 	public Init[] getInits2()
 	{
-		Init[] inits = new Init[this.inits.size()];
-		for (int i=0; i<this.inits.size(); i++)
+		Init[] inits = new Init[this.init.size()];
+		for (int i=0; i<this.init.size(); i++)
 		{
-			inits[i] = this.inits.get(i);
+			inits[i] = this.init.get(i);
 		}
 		return inits;
 	}
 
 	public String[] getInitnames()
 	{
-		String[] initnames = new String[this.inits.size()];
-		for (int i=0; i<this.inits.size(); i++)
+		String[] initnames = new String[this.init.size()];
+		for (int i=0; i<this.init.size(); i++)
 		{
-			initnames[i] = this.inits.get(i).getName(); 
+			initnames[i] = this.init.get(i).getName(); 
 		}
 		return initnames;
 	}
 	
-	public ArrayList<Work> getWorks()
-	{
-		return this.works;
-	}
-
-	public Work[] getWorks2()
-	{
-		Work[] works = new Work[this.works.size()];
-		for (int i=0; i<this.works.size(); i++)
-		{
-			works[i] = this.works.get(i);
-		}
-		return works;
-	}
-
+//	public ArrayList<Work> getWorks()
+//	{
+//		return this.work;
+//	}
+//
+//	public Work[] getWorks2()
+//	{
+//		Work[] works = new Work[this.work.size()];
+//		for (int i=0; i<this.work.size(); i++)
+//		{
+//			works[i] = this.work.get(i);
+//		}
+//		return works;
+//	}
+//
 	public ArrayList<Commit> getCommits()
 	{
-		return this.commits;
+		return this.commit;
+	}
+
+	public ArrayList<Commit> getCommit()
+	{
+		return this.commit;
 	}
 
 	public Commit[] getCommits2()
 	{
-		Commit[] commits = new Commit[this.commits.size()];
-		for (int i=0; i<this.commits.size(); i++)
+		Commit[] commits = new Commit[this.commit.size()];
+		for (int i=0; i<this.commit.size(); i++)
 		{
-			commits[i] = this.commits.get(i);
+			commits[i] = this.commit.get(i);
 		}
 		return commits;
 	}
@@ -848,37 +873,70 @@ implements Serializable, Cloneable
 		return this.parent.getRootdir()+"/STEP_"+this.getName();
 	}
 
-	public NamedList<String> getListall()
-	{
-		return this.list;
-	}
-
 	public ArrayList<String> getListnames()
 	{
 		ArrayList<String> listnames = new ArrayList<String>();
-		for(int i=0; i<this.list.size(); i++)
+		Iterator<List> iterList = this.list.iterator();
+		while (iterList.hasNext())
 		{
-			if(!(listnames.contains(this.list.getName(i))))
-			{
-				listnames.add(this.list.getName(i));
-			}
+			listnames.add(iterList.next().getName());
 		}
+		
 		return listnames;
 	}
 
-	public ArrayList<String> getListitems(String listname)
+	public List getList(String listname) throws ListNotFoundException
 	{
-		ArrayList<String> listitems = new ArrayList<String>();
-		for(int i=0; i<this.list.size(); i++)
+		List list = null;
+		
+		if (!(this.isListPresent(listname)))
 		{
-			if (this.list.getName(i).equals(listname))
+			throw new ListNotFoundException();
+		}
+		
+		Iterator<List> iterList = this.list.iterator();
+		while(iterList.hasNext())
+		{
+			List actualList = iterList.next();
+			if (actualList.getName().equals(listname))
 			{
-				listitems.add(this.list.getVal(i));
+				list = actualList;
+				return list;
 			}
 		}
-		return listitems;
+		return list;
+	}
+	
+	public List getList(int index)
+	{
+		return list.get(index);
+	}
+	
+	public ArrayList<List> getList()
+	{
+		return this.list;
+	}
+	
+	public ArrayList<String> getListItems(String listname)
+	{
+		List list = null;
+		try
+		{
+			list = this.getList(listname);
+		} catch (ListNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list.getItem();
 	}
 
+	public Work getWork()
+	{
+		return this.work;
+	}
+	
 	public ArrayList<Step> getFromsteps()
 	{
 		ArrayList<Step> fromsteps = new ArrayList<Step>();
@@ -918,6 +976,11 @@ implements Serializable, Cloneable
 		return this.variables;
 	}
 		
+	public void addList(List list)
+	{
+		this.list.add(list);
+	}
+		
 	public boolean isAmultistep()
 	{
 		boolean isamultistep = false;
@@ -927,6 +990,7 @@ implements Serializable, Cloneable
 		}
 		return isamultistep;
 	}
+	
 		
 	/*----------------------------
 	methods set
@@ -956,6 +1020,27 @@ implements Serializable, Cloneable
 		this.loopvar = loopvar;
 	}
 
+	public void setList(ArrayList<List> list)
+	{
+		this.list = list;
+		Iterator<List> iterList = this.list.iterator();
+		while(iterList.hasNext())
+		{
+			iterList.next().setParent(this);
+		}
+
+	}
+	
+	public void setInit(ArrayList<Init> init)
+	{
+		this.init = init;
+		Iterator<Init> iterInit = this.init.iterator();
+		while(iterInit.hasNext())
+		{
+			iterInit.next().setParent(this);
+		}
+	}
+	
 	public void setStatus(String status)
 	{
 		this.status = status;
@@ -965,4 +1050,21 @@ implements Serializable, Cloneable
 	{
 		this.parent = process;
 	}
+	
+	public void setWork(Work work)
+	{
+		this.work = work;
+		this.work.setParent(this);
+	}
+
+	public void setCommit(ArrayList<Commit> commit)
+	{
+		this.commit = commit;
+		Iterator<Commit> iterCommit = this.commit.iterator();
+		while(iterCommit.hasNext())
+		{
+			iterCommit.next().setParent(this);
+		}
+	}
+	
 }

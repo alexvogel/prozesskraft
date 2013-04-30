@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <root> -->
+<process name="beulen" version="0.2" description="Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert." architect="alexander.vogel@caegroup.de" path="irgendeinpath">
+	<step name="gen_abaqus_beulen" type="automatic" description="Die gesamte Prozesskette">
+		<list name="matdb" min="1" max="1">
+			<item>lin</item>
+		</list>
+		<init fromobjecttype="file" name="template" listname="template_abadeck" returnfield="pathfilename" fromstep="root" insertrule="overwrite">
+			<match field="filename" pattern="beulen_abaqus_start.tt"/>
+		</init>
+		<init fromobjecttype="variable" name="nid" listname="template" returnfield="value" fromstep="root" insertrule="overlap">
+			<match field="name" pattern="nid"/>
+		</init>
+		<init fromobjecttype="variable" name="matdb" listname="matdb" returnfield="value" fromstep="root" insertrule="overwrite">
+			<match field="value" pattern="lin|nlin"/>
+		</init>
+		<work name="starte_prozesskette" description="irgendeine beschreibung" command="beulen.pl">
+			<callitem sequence="1" val="list(script)"/>
+			<callitem sequence="2" par="--nid" del="=" val="list(nid)"/>
+			<callitem sequence="3" par="--template" del="=" val="list(template)"/>
+			<callitem sequence="4" par="--mat" del="=" val="list(materialfile)"/>
+			<callitem sequence="5" par="--inc" del="=" val="list(inc)"/>
+			<callitem sequence="6" par="--matpw" del="=" val="list(matpassword)"/>
+			<callitem sequence="7" par="--output" del="=" val="list(instancedir)/list(basename_beulanalyse_beulen)_list(nid).inp"/>
+		</work>
+		<commit id="1" toroot="true" type="file" name="abaqus_input_startdeck" filename="$basename$_beulen_$nid.inp"/>
+		<commit id="2" toroot="false" type="variable" name="superman" value="Alexander Vogel"/>
+	</step>
+</process>
+<!-- </root> -->

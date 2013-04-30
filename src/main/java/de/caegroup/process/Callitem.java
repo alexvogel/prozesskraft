@@ -15,112 +15,60 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private String sequence = new String();
-	private String par = new String();
-	private String del = new String();
-	private String val = new String();
+	private int sequence;
+	private String par = "";
+	private String del = "";
+	private String val = "";
 	private String loop = new String();
 	private String loopvar = new String();
 	
 	private String status = new String();	// waiting/initializing/working/committing/ finished/broken/cancelled
-	private String respar = null;
-	private String resdel = null;
-	private String resval = null;
+
+	private Work parent = null;
 
 	/*----------------------------
 	  constructors
 	----------------------------*/
 	public Callitem()
 	{
+		this.parent = new Work();
+	}
 
+	public Callitem(Work parent)
+	{
+		this.parent = parent;
 	}
 
 	/*----------------------------
 	  methods resolve
 	----------------------------*/
-	public void resolvePar(NamedList<String> lists)
-	{
-		this.respar = "";
-		String patt = "list\\((.+)\\)";
-		Pattern r = Pattern.compile(patt);
-		Matcher m = r.matcher(this.par);
-		if (m.find())
-		{
-			System.out.println("PATTERN "+patt+" GEFUNDEN in "+this.par);
-			String substitution = new String();
-			ArrayList<String> items = new ArrayList<String>(lists.getAll(m.group(1)));
-			Iterator<String> iterstring = items.iterator();
-			while(iterstring.hasNext())
-			{
-				substitution = substitution+iterstring.next();
-			}
-			System.out.println("PATTERN: "+patt+" will be substituted by "+substitution);
-			this.respar = m.replaceAll(substitution);
-			
-		}
-		else
-		{
-			System.out.println("PATTERN "+patt+" NICHT GEFUNDEN in "+this.par);
-		}
-	}
-	
-	public void resolveDel(NamedList<String> lists)
-	{
-		this.resdel = "";
-		String patt = "list\\((.+)\\)";
-		Pattern r = Pattern.compile(patt);
-		Matcher m = r.matcher(this.del);
-		if (m.find())
-		{
-			System.out.println("PATTERN "+patt+" GEFUNDEN in "+this.del);
-			String substitution = new String();
-			ArrayList<String> items = new ArrayList<String>(lists.getAll(m.group(1)));
-			Iterator<String> iterstring = items.iterator();
-			while(iterstring.hasNext())
-			{
-				substitution = substitution+iterstring.next();
-			}
-			System.out.println("PATTERN: "+patt+" will be substituted by "+substitution);
-			this.resdel = m.replaceAll(substitution);
-			
-		}
-		else
-		{
-			System.out.println("PATTERN "+patt+" NICHT GEFUNDEN in "+this.del);
-		}
-	}
-	
-	public void resolveVal(NamedList<String> lists)
-	{
-		this.resval = "";
-		String patt = "list\\((.+)\\)";
-		Pattern r = Pattern.compile(patt);
-		Matcher m = r.matcher(this.val);
-		if (m.find())
-		{
-			System.out.println("PATTERN "+patt+" GEFUNDEN in "+this.val);
-			String substitution = new String();
-			ArrayList<String> items = new ArrayList<String>(lists.getAll(m.group(1)));
-			Iterator<String> iterstring = items.iterator();
-			while(iterstring.hasNext())
-			{
-				substitution = substitution+iterstring.next();
-			}
-			System.out.println("PATTERN: "+patt+" will be substituted by "+substitution);
-			this.resval = m.replaceAll(substitution);
-			System.out.println("VAL: "+this.val+" RESVAL: "+this.resval);
 
-		}
-		else
+	private String resolve(String stringToResolve)
+	{
+		String resolvedString = null;
+
+		String patt = "list\\((.+)\\)";
+		Pattern r = Pattern.compile(patt);
+		Matcher m = r.matcher(stringToResolve);
+		
+		if (m.find())
 		{
-			System.out.println("PATTERN "+patt+" NICHT GEFUNDEN in "+this.val);
+			String substitution = new String();
+//			this.parent.getList(m.group(1));
+			ArrayList<String> listItems = (this.parent.getListItems(m.group(1)));
+			Iterator<String> iterListItem = listItems.iterator();
+			while(iterListItem.hasNext())
+			{
+				substitution = substitution + iterListItem.next();
+			}
+			resolvedString = m.replaceAll(substitution);
 		}
+		return resolvedString;
 	}
-	
 	/*----------------------------
 	  methods get
 	----------------------------*/
-	public String getSequence()
+	public int getSequence()
 	{
 		return this.sequence;
 	}
@@ -140,6 +88,26 @@ implements Serializable
 		return this.val;
 	}
 	
+	public String getStatus()
+	{
+		return this.status;
+	}
+
+	public String getRespar()
+	{
+		return resolve(this.getPar());
+	}
+
+	public String getResdel()
+	{
+		return resolve(this.getDel());
+	}
+
+	public String getResval()
+	{
+		return resolve(this.getVal());
+	}
+	
 	public String getLoop()
 	{
 		return this.loop;
@@ -149,43 +117,11 @@ implements Serializable
 	{
 		return this.loopvar;
 	}
-
-	public String getStatus()
-	{
-		return this.status;
-	}
-
-	public String getRespar(NamedList<String> lists)
-	{
-		if (this.respar == null)
-		{
-			this.resolvePar(lists);
-		}
-		return this.respar;
-	}
-
-	public String getResdel(NamedList<String> lists)
-	{
-		if (this.resdel == null)
-		{
-			this.resolveDel(lists);
-		}
-		return this.resdel;
-	}
-
-	public String getResval(NamedList<String> lists)
-	{
-		if (this.resval == null)
-		{
-			this.resolveVal(lists);
-		}
-		return this.resval;
-	}
 	
 	/*----------------------------
 	methods set
 	----------------------------*/
-	public void setSequence(String sequence)
+	public void setSequence(int sequence)
 	{
 		this.sequence = sequence;
 	}
@@ -209,7 +145,7 @@ implements Serializable
 	{
 		this.loop = loop;
 	}
-	
+
 	public void setLoopvar(String loopvar)
 	{
 		this.loopvar = loopvar;
