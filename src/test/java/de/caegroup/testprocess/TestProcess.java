@@ -10,6 +10,7 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 import org.junit.Before;
 
+import de.caegroup.process.Commit;
 import de.caegroup.process.Process;
 import de.caegroup.process.Step;
 import de.caegroup.process.List;
@@ -65,10 +66,10 @@ public class TestProcess {
 		ArrayList<String> initcommitvarfiles = process.getInitcommitvarfiles();
 		assertEquals(2, initcommitvarfiles.size());
 		Iterator<String> iterstring = initcommitvarfiles.iterator();
-		while (iterstring.hasNext())
-		{
-			System.out.println("BLUB: "+iterstring.next());
-		}
+//		while (iterstring.hasNext())
+//		{
+//			System.out.println("BLUB: "+iterstring.next());
+//		}
 	}
 
 	@Test
@@ -78,10 +79,10 @@ public class TestProcess {
 		ArrayList<String> initcommitvarfiles = process.getInitcommitvarfiles();
 		assertEquals(2, initcommitvarfiles.size());
 		Iterator<String> iterstring = initcommitvarfiles.iterator();
-		while (iterstring.hasNext())
-		{
-			System.out.println(iterstring.next());
-		}
+//		while (iterstring.hasNext())
+//		{
+//			System.out.println(iterstring.next());
+//		}
 	}
 
 	@Test
@@ -91,10 +92,10 @@ public class TestProcess {
 		ArrayList<java.io.File> initcommitvarfiles = process.getInitcommitvarfiles2();
 		assertEquals(2, initcommitvarfiles.size());
 		Iterator<java.io.File> iterfile = initcommitvarfiles.iterator();
-		while (iterfile.hasNext())
-		{
-			System.out.println(iterfile.next().getAbsolutePath());
-		}
+//		while (iterfile.hasNext())
+//		{
+//			System.out.println(iterfile.next().getAbsolutePath());
+//		}
 	}
 
 	@Test
@@ -107,7 +108,7 @@ public class TestProcess {
 
 		try
 		{
-			newProcess = process.readXml2();
+			newProcess = process.readXml();
 		} catch (JAXBException e)
 		{
 			// TODO Auto-generated catch block
@@ -123,22 +124,24 @@ public class TestProcess {
 		// testen der process-elemente
 		assertEquals(2, newProcess.getStep().size());
 
-		Step step0 = newProcess.getStep(0);
-		Step step1 = newProcess.getStep(1);
+		Step stepRoot = newProcess.getStep("root");
 		// testen der step-attribute
-		assertEquals("root", step0.getName());
+		assertEquals("root", stepRoot.getName());
+		assertEquals(9, stepRoot.getCommit().size());
+
+		Commit commitName3 = stepRoot.getCommit("name3");
+		// testen der commit-elemente des steps root
+		assertEquals(true, commitName3.getToroot());
+		
+
+		Step step1 = newProcess.getStep("gen_abaqus_beulen");
+		// testen der step-attribute
 		assertEquals("gen_abaqus_beulen", step1.getName());
 		assertEquals("automatic", step1.getType());
 		assertEquals("Die gesamte Prozesskette", step1.getDescription());
 		
 		// testen der step-elemente
 		assertEquals(3, step1.getInit().size());
-
-		// testen der list0-attribute
-		List list0 = step1.getList(0);
-		assertEquals("matdb", list0.getName());
-		assertEquals(1, list0.getMin());
-		assertEquals(1, list0.getMax());
 
 		// testen der init0-attribute
 		Init init0 = step1.getInit(0);

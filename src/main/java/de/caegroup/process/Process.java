@@ -94,9 +94,9 @@ implements Serializable
 		description = "without description";
 		status = "waiting";
 		
-		Step step = new Step(this);
-		step.setName(this.rootstepname);
-		this.addStep(step);
+//		Step step = new Step(this);
+//		step.setName(this.rootstepname);
+//		this.addStep(step);
 		
 //		try
 //		{
@@ -293,7 +293,7 @@ implements Serializable
 				for (int j=0; j<scommits.size();j++)
 				{
 					Commit commit = scommits.get(j);
-					document.addParagraph(commit.getType()+" '"+commit.getName()+"' will get stored temporarily (while instance is alive).");
+//					document.addParagraph(commit.getType()+" '"+commit.getName()+"' will get stored temporarily (while instance is alive).");
 				}
 
 				// neuer Absatz
@@ -307,7 +307,7 @@ implements Serializable
 					Commit commit = scommits.get(j);
 					if (commit.getToroot())
 					{
-						document.addParagraph(commit.getType()+" '"+commit.getName()+"' will get stored permanently.");
+//						document.addParagraph(commit.getType()+" '"+commit.getName()+"' will get stored permanently.");
 					}
 				}
 
@@ -402,7 +402,7 @@ implements Serializable
 					hd.startElement("", "", "init", atts);
 				
 					// Fuer jeden Knoten 'match'
-					Match[] matchs = inits[j].getMatchs2();
+					Filter[] matchs = inits[j].getMatchs2();
 					for (int k=0; k<matchs.length; k++)
 					{
 						atts.clear();
@@ -451,12 +451,10 @@ implements Serializable
 				{
 					atts.clear();
 					
-						atts.addAttribute("", "", "id", "CDATA", commits[j].getId());
+						atts.addAttribute("", "", "id", "CDATA", commits[j].getName());
 						atts.addAttribute("", "", "toroot", "CDATA", String.valueOf(commits[j].getToroot()));
-						atts.addAttribute("", "", "type", "CDATA", commits[j].getType());
-						atts.addAttribute("", "", "name", "CDATA", commits[j].getName());
-						atts.addAttribute("", "", "value", "CDATA", commits[j].getValue());
-						atts.addAttribute("", "", "filename", "CDATA", commits[j].getFilename());
+						atts.addAttribute("", "", "minoccur", "CDATA", ""+commits[j].getMinoccur());
+						atts.addAttribute("", "", "maxoccur", "CDATA", ""+commits[j].getMaxoccur());
 					
 					hd.startElement("", "", "commit", atts);
 					hd.endElement("", "", "commit");
@@ -487,14 +485,14 @@ implements Serializable
 	
 	}
 	
-	public Process readXml2() throws JAXBException
+	public Process readXml() throws JAXBException
 	{
 		JAXBContext context = JAXBContext.newInstance(de.caegroup.jaxb.process.Process.class);
 		Unmarshaller um = context.createUnmarshaller();
 		de.caegroup.jaxb.process.Process xprocess = (de.caegroup.jaxb.process.Process) um.unmarshal(new java.io.File(this.getInfilexml()));
 
 //		List myMappingFiles = new ArrayList();
-		System.out.println("existiert das mapping? "+new java.io.File("/data/prog/workspace/process-core/src/main/resources/dozermapping.xml").exists());
+//		System.out.println("existiert das mapping? "+new java.io.File("/data/prog/workspace/process-core/src/main/resources/dozermapping.xml").exists());
 //		myMappingFiles.add("dozermapping.xml");
 		
 		DozerBeanMapper mapper = new DozerBeanMapper();
@@ -511,7 +509,7 @@ implements Serializable
 	  			Alle bestehenden Definitionen gehen verloren. (Ausser infilebinary, infilexml, outfilebinary, outfilexml) 
 	----------------------------*/
 	@SuppressWarnings("finally")
-	public Process readXml()
+	public Process readXmlOld()
 	{
 		// neuen Prozess erzeugen
 		final Process proc = new Process();
@@ -627,7 +625,7 @@ implements Serializable
 											String matchpattern = lm.getAttribute("pattern");
 	
 											// Erstellen der Objektinstanz 'match' und einhaengen in den letzten list
-											Match match = new Match();
+											Filter match = new Filter();
 											init.addMatch(match);
 											
 											// Eintragen der gelesenen Daten in die Objektinstanz
@@ -697,22 +695,18 @@ implements Serializable
 									Element lco = (Element) node_k;
 									String commitid = lco.getAttribute("id");
 									String committoroot = lco.getAttribute("toroot");
-									String committype = lco.getAttribute("type");
-									String commitname = lco.getAttribute("name");
-									String commitvalue = lco.getAttribute("value");
-									String commitfilename = lco.getAttribute("filename");
+									String commitminoccur = lco.getAttribute("minoccur");
+									String commitmaxoccur = lco.getAttribute("maxoccur");
 									
 									// Erstellen der Objektinstanz 'commit' und einhaengen in den letzten step
 									Commit commit = new Commit(step);
 									step.addCommit(commit);
 									
 									// Eintragen der gelesenen Daten in die Objektinstanz
-									commit.setId(commitid);
+									commit.setName(commitid);
 									commit.setToroot(committoroot.equals("true"));
-									commit.setType(committype);
-									commit.setName(commitname);
-									commit.setValue(commitvalue);
-									commit.setFilename(commitfilename);
+									commit.setMinoccur(Integer.parseInt(commitminoccur));
+									commit.setMaxoccur(Integer.parseInt(commitmaxoccur));
 								}
 	
 							}
@@ -850,11 +844,11 @@ implements Serializable
 				System.out.println("       fromstep: "+init.getFromstep());
 				System.out.println("amount of matchs: "+init.getMatchs().size());
 
-				ArrayList<Match> matchs = init.getMatchs();
-				Iterator<Match> itermatch = matchs.iterator();
+				ArrayList<Filter> matchs = init.getMatchs();
+				Iterator<Filter> itermatch = matchs.iterator();
 				while (itermatch.hasNext())
 				{
-					Match match = itermatch.next();
+					Filter match = itermatch.next();
 					System.out.println("->        field: "+match.getField());
 					System.out.println("        pattern: "+match.getPattern());
 				}
@@ -1034,13 +1028,13 @@ implements Serializable
 	public ArrayList<java.io.File> getInitcommitvarfiles2()
 	{
 		ArrayList<java.io.File> initcommitvarfiles = new ArrayList<java.io.File>();
-		System.out.println("HELLO");
+//		System.out.println("HELLO");
 		Iterator<String> iterinitcommitvarfile = this.getInitcommitvarfiles().iterator();
 		while(iterinitcommitvarfile.hasNext())
 		{
 			String initcommitvarfile = iterinitcommitvarfile.next();
 			java.io.File initcommitvarfile_file = new java.io.File(initcommitvarfile);
-			System.out.println("commitvarfile: "+initcommitvarfile_file.getAbsolutePath());
+//			System.out.println("commitvarfile: "+initcommitvarfile_file.getAbsolutePath());
 			initcommitvarfiles.add(initcommitvarfile_file);
 		}
 		return initcommitvarfiles;

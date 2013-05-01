@@ -12,8 +12,11 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private String filename = new String();
-	private String absfilename = new String();
+	private String filename = "";
+	private String absfilename = "";
+	private int minoccur = 0;
+	private int maxoccur = 999999;
+	
 
 	/*----------------------------
 	  constructors
@@ -27,7 +30,7 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
-	public boolean match(Match match)
+	public boolean match(Filter match)
 	{
 		String fieldname = match.getField();
 		String pattern = match.getPattern();

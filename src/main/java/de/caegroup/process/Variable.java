@@ -3,6 +3,7 @@ package de.caegroup.process;
 import java.io.*;
 //import java.util.*;
 //import org.apache.solr.common.util.NamedList;
+import java.util.ArrayList;
 
 public class Variable
 implements Serializable
@@ -12,8 +13,13 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private String name = new String();
-	private String value = new String();
+	private String key = "";
+	private String value = "";
+	private ArrayList<String> choice = new ArrayList<String>();
+	private ArrayList<Test> test = new ArrayList<Test>();
+	private int minoccur = 0;
+	private int maxoccur = 999999;
+	
 
 	/*----------------------------
 	  constructors
@@ -23,10 +29,21 @@ implements Serializable
 
 	}
 
+	public Variable(String key)
+	{
+		this.key = key;
+	}
+
+	public Variable(String key, String value)
+	{
+		this.key = key;
+		this.value = value;
+	}
+
 	/*----------------------------
 	  methods
 	----------------------------*/
-	public boolean match(Match match)
+	public boolean match(Filter match)
 	{
 		String fieldname = match.getField();
 		String pattern = match.getPattern();
@@ -45,7 +62,7 @@ implements Serializable
 	----------------------------*/
 	public String getName()
 	{
-		return this.name;
+		return this.key;
 	}
 
 	public String getValue()
@@ -67,7 +84,7 @@ implements Serializable
 	----------------------------*/
 	public void setName(String name)
 	{
-		this.name = name;
+		this.key = name;
 	}
 
 	public void setValue(String value)

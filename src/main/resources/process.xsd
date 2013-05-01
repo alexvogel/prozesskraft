@@ -29,7 +29,7 @@
     	</xs:sequence>
     	<xs:attribute name="loop" type="xs:string"></xs:attribute>
     	<xs:attribute name="loopvar" type="xs:string"></xs:attribute>
-    	<xs:attribute name="description" use="required">
+    	<xs:attribute name="description" use="optional">
     		<xs:simpleType>
     			<xs:restriction base="xs:string">
     				<xs:minLength value="0"></xs:minLength>
@@ -51,7 +51,7 @@
   <xs:element name="init">
     <xs:complexType>
     	<xs:sequence>
-    		<xs:element ref="match" />
+    		<xs:element ref="filter" />
     	</xs:sequence>
     	<xs:attribute name="fromobjecttype" use="required"
     		type="ResourceType" />
@@ -63,7 +63,7 @@
     	<xs:attribute name="insertrule" type="xs:string"></xs:attribute>
     </xs:complexType>
   </xs:element>
-  <xs:element name="match">
+  <xs:element name="filter">
     <xs:complexType>
       <xs:attribute name="field" use="required" type="xs:NCName"/>
       <xs:attribute name="pattern" use="required"/>
@@ -91,12 +91,48 @@
   </xs:element>
   <xs:element name="commit">
     <xs:complexType>
-      <xs:attribute name="filename"/>
-      <xs:attribute name="id" use="required" type="xs:string"/>
-      <xs:attribute name="name" use="required" type="xs:NCName"/>
+      <xs:choice minOccurs="0">
+        <xs:element ref="file" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element ref="variable" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:choice>
+      <xs:attribute name="name" use="required" type="xs:string"/>
+      <xs:attribute name="maxoccur" type="xs:integer"/>
+      <xs:attribute name="minoccur" type="xs:integer"/>
       <xs:attribute name="toroot" use="required" type="xs:boolean"/>
-      <xs:attribute name="type" use="required" type="ResourceType"/>
-      <xs:attribute name="value"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="file">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="test"/>
+      </xs:sequence>
+      <xs:attribute name="description" use="required"/>
+      <xs:attribute name="key" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="variable">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="choice"/>
+        <xs:element ref="test" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+      <xs:attribute name="key" use="required" type="xs:NCName"/>
+      <xs:attribute name="value" use="optional"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="choice" type="xs:string"/>
+  <xs:element name="test">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="param"/>
+      </xs:sequence>
+      <xs:attribute name="description" use="required"/>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="param">
+    <xs:complexType mixed="true">
+      <xs:attribute name="id" use="required" type="xs:integer"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="list">

@@ -4,7 +4,7 @@ import java.io.*;
 //import java.util.*;
 //import org.apache.solr.common.util.NamedList;
 
-public class Match
+public class Filter
 implements Serializable
 {
 	/*----------------------------
@@ -18,7 +18,7 @@ implements Serializable
 	/*----------------------------
 	  constructors
 	----------------------------*/
-	public Match()
+	public Filter()
 	{
 
 	}

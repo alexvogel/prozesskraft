@@ -8,11 +8,13 @@
 
 package de.caegroup.jaxb.process;
 
+import java.math.BigInteger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 
 
 /**
@@ -24,9 +26,7 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element ref="{}process"/>
- *       &lt;/sequence>
+ *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}integer" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -36,36 +36,62 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "process"
+    "content"
 })
-@XmlRootElement(name = "root")
-public class Root {
+@XmlRootElement(name = "param")
+public class Param {
 
-    @XmlElement(required = true)
-    protected Process process;
+    @XmlValue
+    protected String content;
+    @XmlAttribute(name = "id", required = true)
+    protected BigInteger id;
 
     /**
-     * Gets the value of the process property.
+     * Gets the value of the content property.
      * 
      * @return
      *     possible object is
-     *     {@link Process }
+     *     {@link String }
      *     
      */
-    public Process getProcess() {
-        return process;
+    public String getContent() {
+        return content;
     }
 
     /**
-     * Sets the value of the process property.
+     * Sets the value of the content property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Process }
+     *     {@link String }
      *     
      */
-    public void setProcess(Process value) {
-        this.process = value;
+    public void setContent(String value) {
+        this.content = value;
+    }
+
+    /**
+     * Gets the value of the id property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    public BigInteger getId() {
+        return id;
+    }
+
+    /**
+     * Sets the value of the id property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    public void setId(BigInteger value) {
+        this.id = value;
     }
 
 }

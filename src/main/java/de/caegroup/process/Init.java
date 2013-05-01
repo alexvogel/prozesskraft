@@ -19,7 +19,7 @@ implements Serializable
 	private String fromobjecttype = new String();
 	private String returnfield = new String();
 	private String fromstep = new String();
-	private ArrayList<Match> matchs = new ArrayList<Match>();
+	private ArrayList<Filter> matchs = new ArrayList<Filter>();
 	private ArrayList<String> values = new ArrayList<String>();
 	private String loop = new String();
 	private String loopvar = new String();
@@ -39,7 +39,7 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
-	public void addMatch(Match match)
+	public void addMatch(Filter match)
 	{
 		this.matchs.add(match);
 	}
@@ -74,14 +74,14 @@ implements Serializable
 		return this.fromstep;
 	}
 	
-	public ArrayList<Match> getMatchs()
+	public ArrayList<Filter> getMatchs()
 	{
 		return this.matchs;
 	}
 
-	public Match[] getMatchs2()
+	public Filter[] getMatchs2()
 	{
-		Match[] matchs = new Match[this.matchs.size()];
+		Filter[] matchs = new Filter[this.matchs.size()];
 		for(int i=0; i<matchs.length; i++)
 		{
 			matchs[i] = this.matchs.get(i);

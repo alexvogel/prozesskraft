@@ -4,6 +4,7 @@ import java.io.*;
 //import java.util.*;
 //import java.util.HashMap;
 //import java.util.Map;
+import java.util.ArrayList;
 
 //import org.apache.solr.common.util.NamedList;
 
@@ -15,14 +16,12 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private String id = new String();
+	private String name = "";
 	private boolean toroot = false;
-	private String type = new String();
-	private String name = new String();
-	private String filename = new String();
-	private String value = new String();
-	private String loop = new String();
-	private String loopvar = new String();
+	private String loop = "";
+	private String loopvar = "";
+	private ArrayList<Variable> variable = new ArrayList<Variable>();
+	private ArrayList<File> file = new ArrayList<File>();
 	
 	private boolean success = false;
 	private java.lang.Process proc;
@@ -60,9 +59,9 @@ implements Serializable
 	/*----------------------------
 	  methods get
 	----------------------------*/
-	public String getId()
+	public String getName()
 	{
-		return this.id;
+		return this.name;
 	}
 
 	public boolean getToroot()
@@ -70,29 +69,14 @@ implements Serializable
 		return this.toroot;
 	}
 
-	public String getType()
+	public int getMinoccur()
 	{
-		return this.type;
+		return this.minoccur;
 	}
 
-	public String getName()
+	public int getMaxoccur()
 	{
-		return this.name;
-	}
-	
-	public String getFrompool()
-	{
-		return this.filename;
-	}
-
-	public String getFilename()
-	{
-		return this.filename;
-	}
-
-	public String getValue()
-	{
-		return this.value;
+		return this.maxoccur;
 	}
 
 	public String getLoop()
@@ -103,6 +87,16 @@ implements Serializable
 	public String getLoopvar()
 	{
 		return this.loopvar;
+	}
+
+	public ArrayList<Variable> getVariable()
+	{
+		return this.variable;
+	}
+
+	public ArrayList<File> getFile()
+	{
+		return this.file;
 	}
 
 	public boolean getSuccess()
@@ -123,9 +117,9 @@ implements Serializable
 	/*----------------------------
 	methods set
 	----------------------------*/
-	public void setId(String id)
+	public void setName(String name)
 	{
-		this.id = id;
+		this.name = name;
 	}
 
 	public void setToroot(boolean toroot)
@@ -133,24 +127,24 @@ implements Serializable
 		this.toroot = toroot;
 	}
 
-	public void setType(String type)
+	public void setMinoccur(int minoccur)
 	{
-		this.type = type;
+		this.minoccur = minoccur;
 	}
 
-	public void setName(String name)
+	public void setMaxoccur(int maxoccur)
 	{
-		this.name = name;
+		this.maxoccur = maxoccur;
 	}
 
-	public void setFilename(String filename)
+	public void setVariable(ArrayList<Variable> variable)
 	{
-		this.filename = filename;
+		this.variable = variable;
 	}
 
-	public void setValue(String value)
+	public void setFile(ArrayList<File> file)
 	{
-		this.value = value;
+		this.file = file;
 	}
 
 	public void setLoop(String loop)

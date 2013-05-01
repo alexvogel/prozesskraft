@@ -13,9 +13,11 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -28,13 +30,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{}step" maxOccurs="unbounded"/>
+ *         &lt;element ref="{}param" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
- *       &lt;attribute name="architect" use="required" type="{}EmailType" />
- *       &lt;attribute name="description" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="path" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="version" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="description" use="required" type="{http://www.w3.org/2001/XMLSchema}anySimpleType" />
+ *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}NCName" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -44,75 +43,47 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "step"
+    "param"
 })
-@XmlRootElement(name = "process")
-public class Process {
+@XmlRootElement(name = "test")
+public class Test {
 
-    @XmlElement(required = true)
-    protected List<Step> step;
-    @XmlAttribute(name = "architect", required = true)
-    protected String architect;
+    protected List<Param> param;
     @XmlAttribute(name = "description", required = true)
+    @XmlSchemaType(name = "anySimpleType")
     protected String description;
     @XmlAttribute(name = "name", required = true)
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlSchemaType(name = "NCName")
     protected String name;
-    @XmlAttribute(name = "path", required = true)
-    protected String path;
-    @XmlAttribute(name = "version", required = true)
-    protected String version;
 
     /**
-     * Gets the value of the step property.
+     * Gets the value of the param property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the step property.
+     * This is why there is not a <CODE>set</CODE> method for the param property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getStep().add(newItem);
+     *    getParam().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Step }
+     * {@link Param }
      * 
      * 
      */
-    public List<Step> getStep() {
-        if (step == null) {
-            step = new ArrayList<Step>();
+    public List<Param> getParam() {
+        if (param == null) {
+            param = new ArrayList<Param>();
         }
-        return this.step;
-    }
-
-    /**
-     * Gets the value of the architect property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getArchitect() {
-        return architect;
-    }
-
-    /**
-     * Sets the value of the architect property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setArchitect(String value) {
-        this.architect = value;
+        return this.param;
     }
 
     /**
@@ -161,54 +132,6 @@ public class Process {
      */
     public void setName(String value) {
         this.name = value;
-    }
-
-    /**
-     * Gets the value of the path property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getPath() {
-        return path;
-    }
-
-    /**
-     * Sets the value of the path property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setPath(String value) {
-        this.path = value;
-    }
-
-    /**
-     * Gets the value of the version property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getVersion() {
-        return version;
-    }
-
-    /**
-     * Sets the value of the version property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setVersion(String value) {
-        this.version = value;
     }
 
 }

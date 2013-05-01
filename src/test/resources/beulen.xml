@@ -1,18 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- <root> -->
 <process name="beulen" version="0.2" description="Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert." architect="alexander.vogel@caegroup.de" path="irgendeinpath">
+	<step name="root" type="automatic">
+		<commit name="name1" toroot="true">
+			<variable key="matdb" value="no" minoccur="1" maxoccur="1">
+				<choice>no</choice>
+				<choice>lin</choice>
+				<choice>nlin</choice>
+				<test name="matchPattern" description="">
+					<param id="1">no|lin|nlin</param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="name2" toroot="true">
+			<variable key="basename" minoccur="1" maxoccur="1">
+				<test name="matchPattern" description="min 3, max 50 characters [a-Z,0-9,_]">
+					<param id="1">\w{3,50}</param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="name3" toroot="true">
+			<file key="inc" description="abaqus model file" minoccur="1">
+				<test name="size" description="tests for file size">
+					<param id="1">min</param>
+					<param id="2">KB</param>
+					<param id="3">1</param>
+				</test>
+				<test name="isNotBinary" description="tests whether file is not binary">
+				</test>
+			</file>
+		</commit>
+		<commit name="name4" toroot="true">
+			<variable key="parttype" minoccur="1" maxoccur="1">
+				<choice>fkl</choice>
+				<choice>seite</choice>
+				<test name="matchPattern" description="">
+					<param id="1">fkl|seite</param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="name5" toroot="true">
+			<variable key="area" minoccur="1" maxoccur="1">
+				<choice>area_1</choice>
+				<choice>area_2</choice>
+				<choice>area_3</choice>
+				<test name="matchPattern" description="">
+					<param id="1">area_[123456789]{1}</param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="name6" toroot="true">
+			<variable key="nid" minoccur="1" maxoccur="1">
+				<test name="matchPattern" description="">
+					<param id="1">\d+</param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="name7" toroot="true">
+			<variable key="force" value="150" minoccur="1" maxoccur="1">
+				<test name="matchPattern" description="">
+					<param id="1">\d+</param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="name8" toroot="true">
+			<variable key="vmises" value="true" minoccur="0" maxoccur="1">
+				<choice>true</choice>
+				<choice>false</choice>
+				<test name="matchPattern" description="">
+					<param id="1">|true|false</param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="name9" toroot="true">
+			<variable key="plstrain" value="" minoccur="0" maxoccur="1">
+				<choice>true</choice>
+				<choice>false</choice>
+				<test name="matchPattern" description="">
+					<param id="1">|true|false</param>
+				</test>
+			</variable>
+		</commit>
+	</step>
 	<step name="gen_abaqus_beulen" type="automatic" description="Die gesamte Prozesskette">
-		<list name="matdb" min="1" max="1">
-			<item>lin</item>
-		</list>
 		<init fromobjecttype="file" name="template" listname="template_abadeck" returnfield="pathfilename" fromstep="root" insertrule="overwrite">
-			<match field="filename" pattern="beulen_abaqus_start.tt"/>
+			<filter field="filename" pattern="beulen_abaqus_start.tt"/>
 		</init>
 		<init fromobjecttype="variable" name="nid" listname="template" returnfield="value" fromstep="root" insertrule="overlap">
-			<match field="name" pattern="nid"/>
+			<filter field="name" pattern="nid"/>
 		</init>
 		<init fromobjecttype="variable" name="matdb" listname="matdb" returnfield="value" fromstep="root" insertrule="overwrite">
-			<match field="value" pattern="lin|nlin"/>
+			<filter field="value" pattern="lin|nlin"/>
 		</init>
 		<work name="starte_prozesskette" description="irgendeine beschreibung" command="beulen.pl">
 			<callitem sequence="1" val="list(script)"/>
@@ -23,8 +101,6 @@
 			<callitem sequence="6" par="--matpw" del="=" val="list(matpassword)"/>
 			<callitem sequence="7" par="--output" del="=" val="list(instancedir)/list(basename_beulanalyse_beulen)_list(nid).inp"/>
 		</work>
-		<commit id="1" toroot="true" type="file" name="abaqus_input_startdeck" filename="$basename$_beulen_$nid.inp"/>
-		<commit id="2" toroot="false" type="variable" name="superman" value="Alexander Vogel"/>
 	</step>
 </process>
 <!-- </root> -->

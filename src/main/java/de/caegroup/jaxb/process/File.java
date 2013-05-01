@@ -8,13 +8,17 @@
 
 package de.caegroup.jaxb.process;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
@@ -27,11 +31,10 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{}item" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element ref="{}test" maxOccurs="unbounded"/>
  *       &lt;/sequence>
- *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="max" type="{http://www.w3.org/2001/XMLSchema}integer" />
- *       &lt;attribute name="min" type="{http://www.w3.org/2001/XMLSchema}integer" />
+ *       &lt;attribute name="description" use="required" type="{http://www.w3.org/2001/XMLSchema}anySimpleType" />
+ *       &lt;attribute name="key" use="required" type="{http://www.w3.org/2001/XMLSchema}NCName" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -41,118 +44,96 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "item"
+    "test"
 })
-@XmlRootElement(name = "list")
-public class List {
+@XmlRootElement(name = "file")
+public class File {
 
-    protected java.util.List<String> item;
-    @XmlAttribute(name = "name")
-    protected String name;
-    @XmlAttribute(name = "max")
-    protected BigInteger max;
-    @XmlAttribute(name = "min")
-    protected BigInteger min;
+    @XmlElement(required = true)
+    protected List<Test> test;
+    @XmlAttribute(name = "description", required = true)
+    @XmlSchemaType(name = "anySimpleType")
+    protected String description;
+    @XmlAttribute(name = "key", required = true)
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlSchemaType(name = "NCName")
+    protected String key;
 
     /**
-     * Gets the value of the item property.
+     * Gets the value of the test property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the item property.
+     * This is why there is not a <CODE>set</CODE> method for the test property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getItem().add(newItem);
+     *    getTest().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * {@link Test }
      * 
      * 
      */
-    public java.util.List<String> getItem() {
-        if (item == null) {
-            item = new ArrayList<String>();
+    public List<Test> getTest() {
+        if (test == null) {
+            test = new ArrayList<Test>();
         }
-        return this.item;
+        return this.test;
     }
 
     /**
-     * Gets the value of the name property.
+     * Gets the value of the description property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
     /**
-     * Sets the value of the name property.
+     * Sets the value of the description property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setName(String value) {
-        this.name = value;
+    public void setDescription(String value) {
+        this.description = value;
     }
 
     /**
-     * Gets the value of the max property.
+     * Gets the value of the key property.
      * 
      * @return
      *     possible object is
-     *     {@link BigInteger }
+     *     {@link String }
      *     
      */
-    public BigInteger getMax() {
-        return max;
+    public String getKey() {
+        return key;
     }
 
     /**
-     * Sets the value of the max property.
+     * Sets the value of the key property.
      * 
      * @param value
      *     allowed object is
-     *     {@link BigInteger }
+     *     {@link String }
      *     
      */
-    public void setMax(BigInteger value) {
-        this.max = value;
-    }
-
-    /**
-     * Gets the value of the min property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getMin() {
-        return min;
-    }
-
-    /**
-     * Sets the value of the min property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setMin(BigInteger value) {
-        this.min = value;
+    public void setKey(String value) {
+        this.key = value;
     }
 
 }
