@@ -150,5 +150,10 @@
 			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>de.caegroup.commons</groupId>
+			<artifactId>avoge-commons</artifactId>
+			<version>0.1</version>
+		</dependency>
 	</dependencies>
 </project>

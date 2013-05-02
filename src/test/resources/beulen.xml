@@ -101,6 +101,15 @@
 			<callitem sequence="6" par="--matpw" del="=" val="list(matpassword)"/>
 			<callitem sequence="7" par="--output" del="=" val="list(instancedir)/list(basename_beulanalyse_beulen)_list(nid).inp"/>
 		</work>
+		<commit name="name9" toroot="true">
+			<variable key="plstrain" value="" minoccur="0" maxoccur="1">
+				<choice>true</choice>
+				<choice>false</choice>
+				<test name="matchPattern" description="">
+					<param id="1">|true|false</param>
+				</test>
+			</variable>
+		</commit>
 	</step>
 </process>
 <!-- </root> -->

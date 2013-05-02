@@ -49,7 +49,7 @@ implements Serializable
 		String pattern = match.getPattern();
 		
 		String string_to_test = new String();
-		if 		(fieldname.equals("name")) 		{string_to_test = this.getName();}
+		if 		(fieldname.equals("key")) 		{string_to_test = this.getKey();}
 		else if (fieldname.equals("value")) 	{string_to_test = this.getValue();}
 
 		if (string_to_test.matches(pattern)) { return true;	}
@@ -60,7 +60,7 @@ implements Serializable
 	/*----------------------------
 	  methods get
 	----------------------------*/
-	public String getName()
+	public String getKey()
 	{
 		return this.key;
 	}
@@ -70,10 +70,30 @@ implements Serializable
 		return this.value;
 	}
 
+	public int getMinoccur()
+	{
+		return this.minoccur;
+	}
+
+	public int getMaxoccur()
+	{
+		return this.maxoccur;
+	}
+
+	public ArrayList<Test> getTest()
+	{
+		return this.test;
+	}
+
+	public ArrayList<String> getChoice()
+	{
+		return this.choice;
+	}
+
 	public String getField(String fieldname)
 	{
 		String returnvalue = new String();
-		if 		(fieldname.equals("name")) 		{returnvalue = this.getName();}
+		if 		(fieldname.equals("key")) 		{returnvalue = this.getKey();}
 		else if (fieldname.equals("value")) 	{returnvalue = this.getValue();}
 		else 	{returnvalue = "no field '"+fieldname+"' in Object 'Variable'";}
 		return returnvalue;
@@ -82,14 +102,34 @@ implements Serializable
 	/*----------------------------
 	methods set
 	----------------------------*/
-	public void setName(String name)
+	public void setKey(String key)
 	{
-		this.key = name;
+		this.key = key;
 	}
 
 	public void setValue(String value)
 	{
 		this.value = value;
+	}
+
+	public void setMinoccur(int minoccur)
+	{
+		this.minoccur = minoccur;
+	}
+
+	public void setMaxoccur(int maxoccur)
+	{
+		this.maxoccur = maxoccur;
+	}
+
+	public void setTest(ArrayList<Test> test)
+	{
+		this.test = test;
+	}
+
+	public void setChoice(ArrayList<String> choice)
+	{
+		this.choice = choice;
 	}
 
 }

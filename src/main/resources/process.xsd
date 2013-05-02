@@ -22,10 +22,11 @@
   <xs:element name="step">
     <xs:complexType>
     	<xs:sequence>
-    		<xs:element maxOccurs="unbounded" ref="list" minOccurs="0"/>
-    		<xs:element maxOccurs="unbounded" ref="init" minOccurs="1" />
+    		<xs:element maxOccurs="unbounded" ref="list" minOccurs="0" />
+    		<xs:element maxOccurs="unbounded" ref="init" minOccurs="0" />
     		<xs:element ref="work" minOccurs="0" maxOccurs="1" />
-    		<xs:element maxOccurs="unbounded" ref="commit" minOccurs="1" />
+    		<xs:element maxOccurs="unbounded" ref="commit"
+    			minOccurs="1" />
     	</xs:sequence>
     	<xs:attribute name="loop" type="xs:string"></xs:attribute>
     	<xs:attribute name="loopvar" type="xs:string"></xs:attribute>
@@ -40,7 +41,7 @@
     		<xs:simpleType>
     			<xs:restriction base="xs:string">
     				<xs:minLength value="1"></xs:minLength>
-    				<xs:maxLength value="15"></xs:maxLength>
+    				<xs:maxLength value="50"></xs:maxLength>
     				<xs:whiteSpace value="collapse"></xs:whiteSpace>
     			</xs:restriction>
     		</xs:simpleType>
@@ -96,8 +97,6 @@
         <xs:element ref="variable" minOccurs="0" maxOccurs="unbounded"/>
       </xs:choice>
       <xs:attribute name="name" use="required" type="xs:string"/>
-      <xs:attribute name="maxoccur" type="xs:integer"/>
-      <xs:attribute name="minoccur" type="xs:integer"/>
       <xs:attribute name="toroot" use="required" type="xs:boolean"/>
     </xs:complexType>
   </xs:element>
@@ -108,6 +107,8 @@
       </xs:sequence>
       <xs:attribute name="description" use="required"/>
       <xs:attribute name="key" use="required" type="xs:NCName"/>
+      <xs:attribute name="maxoccur" type="xs:integer"/>
+      <xs:attribute name="minoccur" type="xs:integer"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="variable">
@@ -118,6 +119,8 @@
       </xs:sequence>
       <xs:attribute name="key" use="required" type="xs:NCName"/>
       <xs:attribute name="value" use="optional"/>
+      <xs:attribute name="maxoccur" type="xs:integer"/>
+      <xs:attribute name="minoccur" type="xs:integer"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="choice" type="xs:string"/>

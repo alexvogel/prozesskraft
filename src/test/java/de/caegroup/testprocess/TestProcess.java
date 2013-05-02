@@ -11,10 +11,12 @@ import org.junit.Test;
 import org.junit.Before;
 
 import de.caegroup.process.Commit;
+import de.caegroup.process.Param;
 import de.caegroup.process.Process;
 import de.caegroup.process.Step;
 import de.caegroup.process.List;
 import de.caegroup.process.Init;
+import de.caegroup.process.Variable;
 import de.caegroup.process.Work;
 import de.caegroup.process.Callitem;
 
@@ -124,15 +126,40 @@ public class TestProcess {
 		// testen der process-elemente
 		assertEquals(2, newProcess.getStep().size());
 
+		//-----Step 'root' testen Anfang-----
+
 		Step stepRoot = newProcess.getStep("root");
 		// testen der step-attribute
 		assertEquals("root", stepRoot.getName());
 		assertEquals(9, stepRoot.getCommit().size());
 
-		Commit commitName3 = stepRoot.getCommit("name3");
+		Commit commit1 = stepRoot.getCommit("name1");
 		// testen der commit-elemente des steps root
-		assertEquals(true, commitName3.getToroot());
-		
+		assertEquals(true, commit1.getToroot());
+
+		Variable variable1 = commit1.getVariable().get(0);
+		// testen der elemente des commits
+		assertEquals("matdb", variable1.getKey());
+		assertEquals("no", variable1.getValue());
+		assertEquals(1, variable1.getMinoccur());
+		assertEquals(1, variable1.getMaxoccur());
+
+		ArrayList<String> choice = variable1.getChoice();
+		// testen der elemente der variable
+		assertEquals(3, choice.size());
+		assertEquals("nlin", choice.get(2));
+
+		de.caegroup.process.Test test0 = variable1.getTest().get(0);
+		// testen der elemente des tests
+		assertEquals("matchPattern", test0.getName());
+		assertEquals("", test0.getDescription());
+
+		Param param1 = test0.getParam().get(0);
+		// testen der elemente des params
+		assertEquals(1, param1.getId());
+		assertEquals("no|lin|nlin", param1.getContent());
+
+		//-----Step 'root' testen Ende-----
 
 		Step step1 = newProcess.getStep("gen_abaqus_beulen");
 		// testen der step-attribute

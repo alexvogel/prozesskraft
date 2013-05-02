@@ -1,6 +1,7 @@
 package de.caegroup.process;
 
 //import de.caegroup.process.Step;
+//import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -9,6 +10,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -16,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -28,6 +33,8 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
@@ -41,19 +48,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-//import org.apache.solr.common.util.NamedList;
-//import java.awt.Image;
-//import java.awt.Toolkit;
-//import org.apache.xerces.util.URI;
-//import org.odftoolkit.simple.presentation.*;
-//import org.odftoolkit.simple.draw.Image;
-//import org.odftoolkit.simple.presentation.Slide;
-//import org.odftoolkit.simple.presentation.Slide.SlideLayout;
-//import org.odftoolkit.*;
-//import org.odftoolkit.simple.style.StyleTypeDefinitions.TextLinePosition;
-//import org.odftoolkit.simple.table.Table;
-//import org.odftoolkit.simple.text.Header;
 
+import de.caegroup.commons.*;
 
 public class Process
 implements Serializable
@@ -453,8 +449,6 @@ implements Serializable
 					
 						atts.addAttribute("", "", "id", "CDATA", commits[j].getName());
 						atts.addAttribute("", "", "toroot", "CDATA", String.valueOf(commits[j].getToroot()));
-						atts.addAttribute("", "", "minoccur", "CDATA", ""+commits[j].getMinoccur());
-						atts.addAttribute("", "", "maxoccur", "CDATA", ""+commits[j].getMaxoccur());
 					
 					hd.startElement("", "", "commit", atts);
 					hd.endElement("", "", "commit");
@@ -489,18 +483,37 @@ implements Serializable
 	{
 		JAXBContext context = JAXBContext.newInstance(de.caegroup.jaxb.process.Process.class);
 		Unmarshaller um = context.createUnmarshaller();
+		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		Schema schema;
+		try
+		{
+			URL inst1 = this.getClass().getClassLoader().getResource("");
+			URI uri_inst1 = inst1.toURI();
+			java.io.File process_schema1 = new java.io.File(uri_inst1.getPath()+"process.xsd");
+			System.out.println("version1 "+process_schema1.getAbsolutePath()+" it does exist?: "+process_schema1.exists());
+
+			URL inst2 = this.getClass().getResource("");
+			URI uri_inst2 = inst2.toURI();
+			java.io.File process_schema2 = new java.io.File(uri_inst2.getPath()+"process.xsd");
+			System.out.println("version2 "+process_schema2.getAbsolutePath()+" it does exist?: "+process_schema2.exists());
+
+			java.io.File classpathXSD = new java.io.File(WhereAmI.WhereAmI(this.getClass()).getAbsoluteFile()+"/process.xsd");
+			System.out.println("version3: "+classpathXSD.getAbsolutePath()+" it does exist?: "+classpathXSD.exists());
+			schema = sf.newSchema((classpathXSD));
+			um.setSchema(schema);
+		} catch (SAXException e)
+		{
+			System.err.println("reading schema throws an exception.");
+			e.printStackTrace();
+		} catch (URISyntaxException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		de.caegroup.jaxb.process.Process xprocess = (de.caegroup.jaxb.process.Process) um.unmarshal(new java.io.File(this.getInfilexml()));
 
-//		List myMappingFiles = new ArrayList();
-//		System.out.println("existiert das mapping? "+new java.io.File("/data/prog/workspace/process-core/src/main/resources/dozermapping.xml").exists());
-//		myMappingFiles.add("dozermapping.xml");
-		
 		DozerBeanMapper mapper = new DozerBeanMapper();
-//		mapper.setMappingFiles(myMappingFiles);
 		Process destObject = mapper.map(xprocess, de.caegroup.process.Process.class);
-//		System.out.println("Anzahl der Steps in xprocess: "+xprocess.getStep().size()+" und der namen des ersten: "+xprocess.getStep().get(0).getName());
-//		System.out.println("Anzahl der Steps in destObject: "+destObject.getSteps().size()+" und der namen des ersten: "+destObject.getStep(0).getName());
-//		System.out.println("Anzahl der Steps in destObject: "+destObject.getSteps().size()+" und der namen des zweiten: "+destObject.getStep(1).getName());
 		return destObject;
 	}
 	
@@ -695,8 +708,6 @@ implements Serializable
 									Element lco = (Element) node_k;
 									String commitid = lco.getAttribute("id");
 									String committoroot = lco.getAttribute("toroot");
-									String commitminoccur = lco.getAttribute("minoccur");
-									String commitmaxoccur = lco.getAttribute("maxoccur");
 									
 									// Erstellen der Objektinstanz 'commit' und einhaengen in den letzten step
 									Commit commit = new Commit(step);
@@ -705,8 +716,6 @@ implements Serializable
 									// Eintragen der gelesenen Daten in die Objektinstanz
 									commit.setName(commitid);
 									commit.setToroot(committoroot.equals("true"));
-									commit.setMinoccur(Integer.parseInt(commitminoccur));
-									commit.setMaxoccur(Integer.parseInt(commitmaxoccur));
 								}
 	
 							}
@@ -830,7 +839,7 @@ implements Serializable
 			while (itervariable.hasNext())
 			{
 				Variable variable = itervariable.next();
-				System.out.println("->     varname: "+variable.getName());
+				System.out.println("->     varname: "+variable.getKey());
 				System.out.println("         value: "+variable.getValue());
 			}
 			System.out.println("   amount inits: "+step.getInits().size());

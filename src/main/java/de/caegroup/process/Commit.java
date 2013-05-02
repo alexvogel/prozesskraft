@@ -69,16 +69,6 @@ implements Serializable
 		return this.toroot;
 	}
 
-	public int getMinoccur()
-	{
-		return this.minoccur;
-	}
-
-	public int getMaxoccur()
-	{
-		return this.maxoccur;
-	}
-
 	public String getLoop()
 	{
 		return this.loop;
@@ -125,16 +115,6 @@ implements Serializable
 	public void setToroot(boolean toroot)
 	{
 		this.toroot = toroot;
-	}
-
-	public void setMinoccur(int minoccur)
-	{
-		this.minoccur = minoccur;
-	}
-
-	public void setMaxoccur(int maxoccur)
-	{
-		this.maxoccur = maxoccur;
 	}
 
 	public void setVariable(ArrayList<Variable> variable)

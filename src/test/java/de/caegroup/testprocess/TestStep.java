@@ -2,6 +2,8 @@ package de.caegroup.testprocess;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
+
 import org.junit.Test;
 import org.junit.Before;
 
@@ -18,7 +20,7 @@ public class TestStep {
 	{
 		Init init1 = new Init();
 		init1.setFromstep("root");
-		
+
 		Init init2 = new Init();
 		init2.setFromstep("somestep");
 
@@ -36,9 +38,11 @@ public class TestStep {
 		
 		Process process = new Process();
 		process.addStep(step);
+		process.addStep("root");
 		process.addStep("somestep");
 		process.addStep("anotherstep@1");
 		process.addStep("anotherstep@2");
+		process.addStep("tuvalu");
 	}
 	
 	@Test
@@ -51,10 +55,15 @@ public class TestStep {
 	public void testGetFromsteps2()
 	{
 		Init init = new Init();
-		init.setFromstep("root");
+		init.setFromstep("tuvalu");
 		step.addInit(init);
-		
-		assertEquals(4, step.getFromsteps().size());
+		Iterator<Step> iterStep = step.getFromsteps().iterator();
+//		while(iterStep.hasNext())
+//		{
+//			Step actualStep = iterStep.next();
+//			System.out.println("Stepname: "+actualStep.getName());
+//		}
+		assertEquals(5, step.getFromsteps().size());
 	}
 
 }

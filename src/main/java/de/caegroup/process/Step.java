@@ -436,10 +436,10 @@ implements Serializable, Cloneable
 	public boolean commitvariable(String name, String value)
 	{
 		Variable variable = new Variable();
-		variable.setName(name);
+		variable.setKey(name);
 		variable.setValue(value);
 		this.addVariable(variable);
-		jlog.log(Level.INFO, "variable committed as (name=value): "+variable.getName()+"="+variable.getValue());
+		jlog.log(Level.INFO, "variable committed as (name=value): "+variable.getKey()+"="+variable.getValue());
 		return true;
 	}
 
@@ -486,10 +486,10 @@ implements Serializable, Cloneable
 						{
 							String[] linelist = line.split("=", 2);
 							Variable variable = new Variable();
-							variable.setName(linelist[0]);
+							variable.setKey(linelist[0]);
 							variable.setValue(linelist[1]);
 							this.addVariable(variable);
-							jlog.log(Level.INFO, "variable committed from file: "+file.getAbsolutePath()+" name: "+variable.getName()+" value: "+variable.getValue());
+							jlog.log(Level.INFO, "variable committed from file: "+file.getAbsolutePath()+" name: "+variable.getKey()+" value: "+variable.getValue());
 						}
 					}
 				}
@@ -952,6 +952,10 @@ implements Serializable, Cloneable
 		return this.work;
 	}
 	
+	/**
+	 * 
+	 * @return step
+	 */
 	public ArrayList<Step> getFromsteps()
 	{
 		ArrayList<Step> fromsteps = new ArrayList<Step>();
@@ -963,9 +967,9 @@ implements Serializable, Cloneable
 			Init init = iterinit.next();
 			String fromstep = init.getFromstep();
 //			System.out.println("fromstep: "+fromstep);
-			Process process = this.parent;
+
 			// und diese steps in einem arraylist aufsammeln
-			ArrayList<Step> steps = process.getSteps(fromstep);
+			ArrayList<Step> steps = this.parent.getSteps(fromstep);
 			
 			// nur die noch nicht als fromstep erkannten steps der suchliste hinzufuegen
 			Iterator<Step> iterstep = steps.iterator();
