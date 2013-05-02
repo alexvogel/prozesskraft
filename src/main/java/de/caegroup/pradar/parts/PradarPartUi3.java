@@ -185,11 +185,11 @@ public class PradarPartUi3 extends ModelObject
 		gd_composite_1.widthHint = 122;
 		composite_1.setLayoutData(gd_composite_1);
 		
-		Composite composite_11 = new Composite(composite_1, SWT.NONE);
+		Composite composite_11 = new Composite(composite_1, SWT.BORDER);
 		composite_11.setLayout(new GridLayout(1, false));
 		GridData gd_composite_11 = new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1);
 		gd_composite_11.heightHint = 437;
-		gd_composite_11.widthHint = 170;
+		gd_composite_11.widthHint = 169;
 		composite_11.setLayoutData(gd_composite_11);
 		
 		Group grpFilter = new Group(composite_11, SWT.NONE);
@@ -261,23 +261,27 @@ public class PradarPartUi3 extends ModelObject
 		
 		Group grpVisual = new Group(composite_11, SWT.NONE);
 		grpVisual.setText("visual");
-		grpVisual.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		GridData gd_grpVisual = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_grpVisual.widthHint = 152;
+		grpVisual.setLayoutData(gd_grpVisual);
 		grpVisual.setLayout(new GridLayout(2, false));
 		
 		Label lblPerspective = new Label(grpVisual, SWT.NONE);
-		lblPerspective.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		GridData gd_lblPerspective = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
+		gd_lblPerspective.widthHint = 138;
+		lblPerspective.setLayoutData(gd_lblPerspective);
 		lblPerspective.setText("perspective");
 		
 		button_radar = new Button(grpVisual, SWT.TOGGLE);
-		GridData gd_btnRadar = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_btnRadar.widthHint = 75;
+		GridData gd_btnRadar = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
+		gd_btnRadar.widthHint = 70;
 		button_radar.setLayoutData(gd_btnRadar);
 		button_radar.setText("radar");
 		button_radar.addSelectionListener(listener_radar_button);
 		
 		button_tree = new Button(grpVisual, SWT.TOGGLE);
-		GridData gd_btnTree = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_btnTree.widthHint = 75;
+		GridData gd_btnTree = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
+		gd_btnTree.widthHint = 70;
 		button_tree.setLayoutData(gd_btnTree);
 		button_tree.setText("tree");
 		button_tree.addSelectionListener(listener_tree_button);
@@ -287,18 +291,22 @@ public class PradarPartUi3 extends ModelObject
 		lblNewLabel_2.setText("zoom");
 		
 		scale_zoom = new Scale(grpVisual, SWT.NONE);
-		scale_zoom.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		GridData gd_scale_zoom = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd_scale_zoom.widthHint = 144;
+		scale_zoom.setLayoutData(gd_scale_zoom);
 		scale_zoom.setMaximum(1000);
 		scale_zoom.setMinimum(50);
 		scale_zoom.setSelection(100);
 		scale_zoom.addMouseWheelListener(listener_mousewheel);
 		
 		Button btnNewButton2 = new Button(grpVisual, SWT.NONE);
-		btnNewButton2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		GridData gd_btnNewButton2 = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd_btnNewButton2.widthHint = 141;
+		btnNewButton2.setLayoutData(gd_btnNewButton2);
 		btnNewButton2.setText("autoscale");
 		btnNewButton2.addSelectionListener(listener_autoscale_button);
 		
-		composite_12 = new Composite(composite_1, SWT.NONE);
+		composite_12 = new Composite(composite_1, SWT.BORDER);
 		composite_12.setLayout(new GridLayout(1, false));
 		GridData gd_composite_12 = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_composite_12.heightHint = 390;
