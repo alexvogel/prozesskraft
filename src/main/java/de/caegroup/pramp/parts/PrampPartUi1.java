@@ -13,10 +13,14 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
+import javax.xml.bind.JAXBException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -39,11 +43,15 @@ import org.eclipse.jface.databinding.swt.WidgetProperties;
 //import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.TextLayout;
+import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -60,6 +68,9 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.eclipse.swt.widgets.Combo;
 
+import de.caegroup.process.Commit;
+import de.caegroup.process.Process;
+import de.caegroup.process.Variable;
 
 public class PrampPartUi1 extends ModelObject
 //public class PrampPartUi1
@@ -67,17 +78,32 @@ public class PrampPartUi1 extends ModelObject
 	static CommandLine line;
 	private DataBindingContext bindingContextProcesses;
 	private Button button_refresh = null;
-	private Text text_logging = null;
+//	private Text text_logging = null;
+	private StyledText text_logging = null;
 	private Combo combo_processes = null;
 	private Combo combo_versions = null;
 	private Combo combo_hosts = null;
 	private String processMainDir = null;
+	private String processDefinitionPath = null;
+	private de.caegroup.process.Process process = null;
 	private String iniFile = null;
 	ArrayList<String> processes = new ArrayList<String>();
 	private Text text_instancedirectory = null;
 	
+	Composite composite_12;
+	Shell shell_dummy_hinweis;
+	Composite hinweisComposite;
+	Shell shell_dummy_commitRoot;
+	Composite commitRoot;
+	Map<String,Composite> commitRootOld = new HashMap();
 
+	Display display;
+
+	final Color colorLogError = new Color(new Shell().getDisplay(), 215, 165, 172);
+	final Color colorLogWarn = new Color(new Shell().getDisplay(), 199, 149, 31);
+	final Color colorLogInfo = new Color(new Shell().getDisplay(), 184, 210, 176);
 	
+	int logLineCount = 0;
 	
 	PrampViewModel einstellungen = new PrampViewModel();
 
@@ -149,7 +175,7 @@ public class PrampPartUi1 extends ModelObject
 		gd_composite_1.widthHint = 122;
 		composite_1.setLayoutData(gd_composite_1);
 		
-		Composite composite_11 = new Composite(composite_1, SWT.NONE);
+		Composite composite_11 = new Composite(composite_1, SWT.BORDER);
 		composite_11.setLayout(new GridLayout(1, false));
 		GridData gd_composite_11 = new GridData(SWT.LEFT, SWT.FILL, false, true, 1, 1);
 		gd_composite_11.heightHint = 437;
@@ -229,7 +255,7 @@ public class PrampPartUi1 extends ModelObject
 		button_refresh.setText("refresh");
 		button_refresh.addSelectionListener(listener_refresh_button);
 		
-		Composite composite_12 = new Composite(composite_1, SWT.EMBEDDED | SWT.NO_BACKGROUND);
+		composite_12 = new Composite(composite_1, SWT.BORDER);
 		composite_12.setLayout(new GridLayout(1, false));
 		GridData gd_composite_12 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
 		gd_composite_12.heightHint = 390;
@@ -237,15 +263,32 @@ public class PrampPartUi1 extends ModelObject
 		gd_composite_12.minimumHeight = 10;
 		composite_12.setLayoutData(gd_composite_12);
 		
+		shell_dummy_hinweis = new Shell(display);
+		hinweisComposite = new Composite(shell_dummy_hinweis, SWT.NONE);
+		hinweisComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridLayout gl_hinweisComposite = new GridLayout(1, false);
+		hinweisComposite.setLayout(gl_hinweisComposite);
+		Label label_hinweis = new Label(hinweisComposite, SWT.NONE);
+		label_hinweis.setText("no process definition.");
+		
+		shell_dummy_commitRoot = new Shell(display);
+		commitRoot = new Composite(shell_dummy_commitRoot, SWT.V_SCROLL);
+		commitRoot.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridLayout gl_commitRoot = new GridLayout(1, false);
+		commitRoot.setLayout(gl_commitRoot);
+
 		Composite composite_2 = new Composite(composite, SWT.NONE);
 		composite_2.setLayout(new GridLayout(1, false));
 		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
 		gd_composite_2.heightHint = 164;
 		composite_2.setLayoutData(gd_composite_2);
 		
-		text_logging = new Text(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
-		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+//		text_logging = new Text(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
+//		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
+		text_logging = new StyledText(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
+		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+
 		// Datenbindung Processes-Combo
 		initDataBindingsProcesses();
 		// Datenbindung Versions-Combo
@@ -273,11 +316,13 @@ public class PrampPartUi1 extends ModelObject
 
 		new Label(grpVisual, SWT.NONE);
 
-		Frame frame = SWT_AWT.new_Frame(composite_12);
+		
 
-		frame.pack();
-		frame.setLocation(0, 0);
-		frame.setVisible(true);
+//		Frame frame = SWT_AWT.new_Frame(composite_12);
+//		
+//		frame.pack();
+//		frame.setLocation(0, 0);
+//		frame.setVisible(true);
 
 	}
 
@@ -305,6 +350,7 @@ public class PrampPartUi1 extends ModelObject
 	{
 		public void modifyText(ModifyEvent arg0)
 		{
+        	log("info", "setting process: "+combo_processes.getText());
 			updateUiComboVersions();
 			setRandomInstancedirectory();
 		}
@@ -317,7 +363,10 @@ public class PrampPartUi1 extends ModelObject
 	{
 		public void modifyText(ModifyEvent arg0)
 		{
+        	log("info", "setting version: "+combo_versions.getText());
 			setRandomInstancedirectory();
+			getProcessDefinition();
+			createControlsRootCommit(composite_12);
 		}
 	};
 
@@ -371,6 +420,7 @@ public class PrampPartUi1 extends ModelObject
 	        if (dir != null) {
 	          // Set the text box to the new selection
 	        	einstellungen.setInstancedirectory(dir);
+	        	log("info", "setting instancedirectory: "+dir);
 //	        	text_instancedirectory.setText(dir);
 	        }
 		}
@@ -653,8 +703,8 @@ public class PrampPartUi1 extends ModelObject
 	{
 		String processDefinition = null;
 		
-		String process = this.getProcess();
-		String version = this.getVersion();
+		String process = this.combo_processes.getText();
+		String version = this.combo_versions.getText();
 		String installationPath = this.processMainDir;
 		
 		if ((process != null) && (version != null) && (installationPath != null))
@@ -662,9 +712,98 @@ public class PrampPartUi1 extends ModelObject
 			processDefinition = installationPath+"/"+process+"/"+version+"/process.xml";
 		}
 		
+		if ( (processDefinition == null) || (!(new java.io.File(processDefinition).exists())) )
+		{
+	    	log("error", "process definition does not exist: "+processDefinition);
+			processDefinition = null;
+			this.process = null;
+		}
+		else
+		{
+	    	log("info", "setting process definition: "+processDefinition);
+			Process tmp = new Process();
+			tmp.setInfilexml(processDefinition);
+			try
+			{
+				this.process = tmp.readXml();
+			} catch (JAXBException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		this.processDefinitionPath = processDefinition;
 		return processDefinition;
 	}
 
+	/**
+	 * creates the controls for RootCommit Area
+	 */
+	public void createControlsRootCommit(Composite parent)
+	{
+
+		if (this.process == null)
+		{
+			commitRoot.setParent(shell_dummy_commitRoot);
+			commitRoot.setVisible(false);
+			hinweisComposite.setParent(parent);
+			hinweisComposite.setVisible(true);
+			parent.layout(true);
+		}
+		
+		else
+		{
+			hinweisComposite.setVisible(false);
+			hinweisComposite.setParent(shell_dummy_hinweis);
+			
+			// wenn es fuer diese version schon einen composite gibt, dann diesen anzeigen
+			if ( this.commitRootOld.containsKey((combo_processes.getText()+combo_versions.getText())) )
+			{
+				
+//				Composite old = this.commitRootOld.get((combo_processes.getText()+combo_versions.getText()));
+				commitRoot = this.commitRootOld.get((combo_processes.getText()+combo_versions.getText()));
+				commitRoot.setParent(parent);
+				commitRoot.setVisible(true);
+				parent.layout(true);
+				log("info", "reactivating an existent commitRoot page");
+			}
+			
+			// ein neues composite erstellen
+			else
+			{
+				Composite actualComposite = new Composite(commitRoot, SWT.V_SCROLL);
+				actualComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+				GridLayout gl_actualComposite = new GridLayout(1, false);
+				actualComposite.setLayout(gl_actualComposite);
+
+				Iterator<Commit> iterCommit = this.process.getStep("root").getCommit().iterator();
+				while (iterCommit.hasNext())
+				{
+					Commit actualCommit = iterCommit.next();
+					Group grpCommit = new Group(actualComposite, SWT.NONE);
+					grpCommit.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+					grpCommit.setText(actualCommit.getName());
+					grpCommit.setLayout(new GridLayout(4, false));
+					
+					Iterator<Variable> iterVariable = actualCommit.getVariable().iterator();
+					while(iterVariable.hasNext())
+					{
+						Variable actualVariable = iterVariable.next();
+						
+					}
+					
+				}
+				commitRoot = actualComposite;
+				commitRoot.setParent(parent);
+				commitRoot.setVisible(true);
+				parent.layout(true);
+				log("info", "creating a new commitRoot page");
+				commitRootOld.put((combo_processes.getText()+combo_versions.getText()), commitRoot);
+			}
+		}
+	}
+	
 	/**
 	 * determines a random path in cwd
 	 */
@@ -704,6 +843,7 @@ public class PrampPartUi1 extends ModelObject
 		String path = cwd + "/" + stringProcess + "_v" + stringVersion + "_" + stringYear + stringMonth + stringDay + "_" + stringHour + stringMinute + stringSecond + "_" + stringMilli; 
 
 		einstellungen.setInstancedirectory(path);
+    	log("info", "setting instancedirectory: "+path);
 //		System.out.println("pfad sollte sein: "+path);
 //		System.out.println("aktualisiere textfeld - einstellungen get.Instancedirectory: "+einstellungen.getInstancedirectory());
 	}
@@ -802,6 +942,11 @@ public class PrampPartUi1 extends ModelObject
 		if (text_logging != null)
 		{
 			text_logging.append(logstring+"\n");
+//			if (level.equals("info"))		{	text_logging.setLineBackground(logLineCount, 1, colorLogWarn);}
+			if (level.equals("warn"))	{	text_logging.setLineBackground(logLineCount, 1, colorLogWarn);}
+			else if (level.equals("error"))	{	text_logging.setLineBackground(logLineCount, 1, colorLogError);}
+			logLineCount = logLineCount+1;
+			text_logging.setTopIndex(text_logging.getLineCount()-1);
 		}
 		else
 		{
