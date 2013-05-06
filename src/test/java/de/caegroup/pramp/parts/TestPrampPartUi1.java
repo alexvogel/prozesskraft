@@ -72,10 +72,11 @@ public class TestPrampPartUi1
 	{
 		ui.loadIni();
 		String processName = "beulen";
-		String version = "0.8.2";
+		String version = "0.8.1";
 		ui.setProcess(processName);
 		ui.setVersion(version);
 		String processDefinition = ui.getProcessDefinition();
+		System.out.println(processDefinition);
 		assertEquals(processDir+"/"+processName+"/"+version+"/process.xml", processDefinition);
 	}
 	
