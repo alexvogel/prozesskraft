@@ -145,7 +145,7 @@ public class PrampPartUi1 extends ModelObject
 	@Inject
 	public PrampPartUi1(String tmp)
 	{
-		setIni();
+		setIni("target/test-classes/etc/default.ini");
 		loadIni();
 //		getProcesses();
 //		refresh();
