@@ -485,31 +485,41 @@ implements Serializable
 		Unmarshaller um = context.createUnmarshaller();
 		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		Schema schema;
+		URI uri_inst = null;
 		try
 		{
-			URL inst1 = this.getClass().getClassLoader().getResource("");
-			URI uri_inst1 = inst1.toURI();
-			java.io.File process_schema1 = new java.io.File(uri_inst1.getPath()+"process.xsd");
-			System.out.println("version1 "+process_schema1.getAbsolutePath()+" it does exist?: "+process_schema1.exists());
+			java.io.File process_schema1;
 
-			URL inst2 = this.getClass().getResource("");
+//			URL inst1 = this.getClass().getClassLoader().getResource("process.xsd");
+//			uri_inst = inst1.toURI();
+//			process_schema1 = new java.io.File(uri_inst.getPath());
+//			System.out.println("version1 "+process_schema1.getAbsolutePath()+" it does exist?: "+process_schema1.exists());
+
+			URL inst2 = this.getClass().getResource("process.xsd");
 			URI uri_inst2 = inst2.toURI();
-			java.io.File process_schema2 = new java.io.File(uri_inst2.getPath()+"process.xsd");
+			java.io.File process_schema2 = new java.io.File(uri_inst2.getPath());
 			System.out.println("version2 "+process_schema2.getAbsolutePath()+" it does exist?: "+process_schema2.exists());
+//
+//			java.io.File classpathXSD = new java.io.File(WhereAmI.WhereAmI(this.getClass()).getAbsoluteFile()+"/process.xsd");
+//			System.out.println("version3: "+classpathXSD.getAbsolutePath()+" it does exist?: "+classpathXSD.exists());
 
-			java.io.File classpathXSD = new java.io.File(WhereAmI.WhereAmI(this.getClass()).getAbsoluteFile()+"/process.xsd");
-			System.out.println("version3: "+classpathXSD.getAbsolutePath()+" it does exist?: "+classpathXSD.exists());
-			schema = sf.newSchema((classpathXSD));
+			schema = sf.newSchema((process_schema2));
 			um.setSchema(schema);
 		} catch (SAXException e)
 		{
-			System.err.println("reading schema throws an exception.");
+			System.err.println("error: reading schema.");
 			e.printStackTrace();
-		} catch (URISyntaxException e)
+		} catch (URISyntaxException e1)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
+		catch (NullPointerException e2)
+		{
+			System.err.println("error: xml schema file not found "+uri_inst.getPath());
+			e2.printStackTrace();
+		}
+
 		de.caegroup.jaxb.process.Process xprocess = (de.caegroup.jaxb.process.Process) um.unmarshal(new java.io.File(this.getInfilexml()));
 
 		DozerBeanMapper mapper = new DozerBeanMapper();
