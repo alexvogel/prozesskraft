@@ -173,5 +173,40 @@
 			<artifactId>commons-cli</artifactId>
 			<version>1.2</version>
 		</dependency>
+				<dependency>
+			<groupId>javax</groupId>
+			<artifactId>inject</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+				<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>jface</artifactId>
+			<version>3.8.300</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>jface.databinding</artifactId>
+			<version>1.6.200</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>databinding</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>databinding.beans</artifactId>
+			<version>1.2.200</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>databinding.observable</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>databinding.property</artifactId>
+			<version>1.4.200</version>
+		</dependency>
 	</dependencies>
 </project>
