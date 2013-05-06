@@ -14,8 +14,9 @@ public class TestPrampPartUi1
 	  fields
 	----------------------------*/
 	PrampPartUi1 ui = new PrampPartUi1("irgendwas");
-	String processDir = "src/test/resources/processes";
-	String iniFile = "etc/default.ini";
+	String processDir = "test-classes/processes";
+//	String processDir = "src/test/resources/processes";
+	String iniFile = "test-classes/etc/default.ini";
 	
 	/*----------------------------
 	  setup
