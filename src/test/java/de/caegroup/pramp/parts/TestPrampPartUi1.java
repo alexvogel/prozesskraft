@@ -42,7 +42,7 @@ public class TestPrampPartUi1
 	public void testLoadIni()
 	{
 		ui.loadIni();
-		assertEquals(processDir, ui.getProcessMainDir());
+		assertEquals("/data/prog/workspace/pramp-gui/src/test/resources/processes", ui.getProcessMainDir());
 	}
 
 	@Test
