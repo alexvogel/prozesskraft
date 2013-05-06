@@ -67,17 +67,17 @@ public class TestPrampPartUi1
 		assertEquals(4, versionNames.size());
 	}
 
-	@Test
-	public void testGetProcessDefinition()
-	{
-		ui.loadIni();
-		String processName = "beulen";
-		String version = "0.8.1";
-		ui.setProcess(processName);
-		ui.setVersion(version);
-		String processDefinition = ui.getProcessDefinition();
-		System.out.println(processDefinition);
-		assertEquals(processDir+"/"+processName+"/"+version+"/process.xml", processDefinition);
-	}
+//	@Test
+//	public void testGetProcessDefinition()
+//	{
+//		ui.loadIni();
+//		String processName = "beulen";
+//		String version = "0.8.1";
+//		ui.setProcess(processName);
+//		ui.setVersion(version);
+//		String processDefinition = ui.getProcessDefinition();
+//		System.out.println(processDefinition);
+//		assertEquals(processDir+"/"+processName+"/"+version+"/process.xml", processDefinition);
+//	}
 	
 }
