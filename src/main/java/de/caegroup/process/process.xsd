@@ -113,14 +113,16 @@
   </xs:element>
   <xs:element name="variable">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="choice"/>
-        <xs:element ref="test" minOccurs="0" maxOccurs="unbounded"/>
-      </xs:sequence>
-      <xs:attribute name="key" use="required" type="xs:NCName"/>
-      <xs:attribute name="value" use="optional"/>
-      <xs:attribute name="maxoccur" type="xs:integer"/>
-      <xs:attribute name="minoccur" type="xs:integer"/>
+    	<xs:sequence>
+    		<xs:element minOccurs="0" maxOccurs="unbounded"
+    			ref="choice" />
+    		<xs:element ref="test" minOccurs="0" maxOccurs="unbounded" />
+    	</xs:sequence>
+    	<xs:attribute name="key" use="required" type="xs:NCName" />
+    	<xs:attribute name="value" use="optional" />
+    	<xs:attribute name="maxoccur" type="xs:integer" use="optional"/>
+    	<xs:attribute name="minoccur" type="xs:integer" use="optional"/>
+    	<xs:attribute name="free" type="xs:boolean" use="optional"></xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="choice" type="xs:string"/>

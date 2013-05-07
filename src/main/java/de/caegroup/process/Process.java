@@ -2,10 +2,15 @@ package de.caegroup.process;
 
 //import de.caegroup.process.Step;
 //import java.io.File;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
@@ -485,45 +490,60 @@ implements Serializable
 		Unmarshaller um = context.createUnmarshaller();
 		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		Schema schema;
-		URI uri_inst = null;
 		try
 		{
-			java.io.File process_schema1;
+			// stream auf das schema liegt im selbem verzeichnis wie die class-files oeffnen
+			InputStream schemaStream = this.getClass().getResourceAsStream("process.xsd");
+			BufferedReader schemaReader = new BufferedReader(new InputStreamReader(schemaStream));
 
-//			URL inst1 = this.getClass().getClassLoader().getResource("process.xsd");
-//			uri_inst = inst1.toURI();
-//			process_schema1 = new java.io.File(uri_inst.getPath());
-//			System.out.println("version1 "+process_schema1.getAbsolutePath()+" it does exist?: "+process_schema1.exists());
+			// und in dieses temp-verzeichnis schreiben
+			java.io.File tmpFile = java.io.File.createTempFile("avoge2013", "process.xsd");
+			FileWriter fstream = new FileWriter(tmpFile);
+			BufferedWriter schemaWriter = new BufferedWriter(fstream);
+			
+			String thisLine;
+			while((thisLine = schemaReader.readLine()) != null)
+			{
+//				System.out.println(thisLine);
+				schemaWriter.append(thisLine);
+			}
+			schemaWriter.close();
 
-			URL inst2 = this.getClass().getResource("process.xsd");
-			URI uri_inst2 = inst2.toURI();
-			java.io.File process_schema2 = new java.io.File(uri_inst2.getPath());
-			System.out.println("version2 "+process_schema2.getAbsolutePath()+" it does exist?: "+process_schema2.exists());
-//
-//			java.io.File classpathXSD = new java.io.File(WhereAmI.WhereAmI(this.getClass()).getAbsoluteFile()+"/process.xsd");
-//			System.out.println("version3: "+classpathXSD.getAbsolutePath()+" it does exist?: "+classpathXSD.exists());
-
-			schema = sf.newSchema((process_schema2));
+			// das temporaere schemafile beim unmarshaller angeben, damit es zur validierung verwendet wird
+			schema = sf.newSchema(tmpFile);
 			um.setSchema(schema);
-		} catch (SAXException e)
+		}
+		catch (SAXException e)
 		{
 			System.err.println("error: reading schema.");
 			e.printStackTrace();
-		} catch (URISyntaxException e1)
+		}
+		catch (IOException e1)
 		{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		catch (NullPointerException e2)
 		{
-			System.err.println("error: xml schema file not found "+uri_inst.getPath());
+			System.err.println("error: xml schema file not found");
 			e2.printStackTrace();
 		}
 
-		de.caegroup.jaxb.process.Process xprocess = (de.caegroup.jaxb.process.Process) um.unmarshal(new java.io.File(this.getInfilexml()));
-
-		DozerBeanMapper mapper = new DozerBeanMapper();
-		Process destObject = mapper.map(xprocess, de.caegroup.process.Process.class);
+		// das aktuelle xml-file in die jaxb-klassen einlesen
+		Process destObject = new Process();
+		try
+		{
+			de.caegroup.jaxb.process.Process xprocess = (de.caegroup.jaxb.process.Process) um.unmarshal(new java.io.File(this.getInfilexml()));
+			DozerBeanMapper mapper = new DozerBeanMapper();
+			destObject = mapper.map(xprocess, de.caegroup.process.Process.class);
+		}
+		catch (javax.xml.bind.UnmarshalException e)
+		{
+			System.err.println("error: cannot unmarshall xml-file");
+			e.printStackTrace();
+		}
+		
+		// die jaxb-klassen mit den domain-klassen mappen
 		return destObject;
 	}
 	
@@ -1207,7 +1227,7 @@ implements Serializable
 		boolean vorhanden = false;
 		Step step = this.getStep(stepname);
 		
-		if (!(step.equals(null)))
+		if (step != null)
 		{
 			vorhanden = true;
 		}

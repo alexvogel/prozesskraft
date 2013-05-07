@@ -3,7 +3,7 @@
 <process name="beulen" version="0.2" description="Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert." architect="alexander.vogel@caegroup.de" path="irgendeinpath">
 	<step name="root" type="automatic">
 		<commit name="name1" toroot="true">
-			<variable key="matdb" value="no" minoccur="1" maxoccur="1">
+			<variable key="matdb" value="no" minoccur="1" maxoccur="1" free="false">
 				<choice>no</choice>
 				<choice>lin</choice>
 				<choice>nlin</choice>
@@ -13,7 +13,7 @@
 			</variable>
 		</commit>
 		<commit name="name2" toroot="true">
-			<variable key="basename" minoccur="1" maxoccur="1">
+			<variable key="basename" minoccur="1" maxoccur="1" free="false">
 				<test name="matchPattern" description="min 3, max 50 characters [a-Z,0-9,_]">
 					<param id="1">\w{3,50}</param>
 				</test>
@@ -31,7 +31,7 @@
 			</file>
 		</commit>
 		<commit name="name4" toroot="true">
-			<variable key="parttype" minoccur="1" maxoccur="1">
+			<variable key="parttype" minoccur="1" maxoccur="1" free="true">
 				<choice>fkl</choice>
 				<choice>seite</choice>
 				<test name="matchPattern" description="">
@@ -40,7 +40,7 @@
 			</variable>
 		</commit>
 		<commit name="name5" toroot="true">
-			<variable key="area" minoccur="1" maxoccur="1">
+			<variable key="area" minoccur="1" maxoccur="1" free="false">
 				<choice>area_1</choice>
 				<choice>area_2</choice>
 				<choice>area_3</choice>
@@ -50,21 +50,21 @@
 			</variable>
 		</commit>
 		<commit name="name6" toroot="true">
-			<variable key="nid" minoccur="1" maxoccur="1">
+			<variable key="nid" minoccur="1" maxoccur="1" free="true">
 				<test name="matchPattern" description="">
 					<param id="1">\d+</param>
 				</test>
 			</variable>
 		</commit>
 		<commit name="name7" toroot="true">
-			<variable key="force" value="150" minoccur="1" maxoccur="1">
+			<variable key="force" value="150" minoccur="1" maxoccur="1" free="true">
 				<test name="matchPattern" description="">
 					<param id="1">\d+</param>
 				</test>
 			</variable>
 		</commit>
 		<commit name="name8" toroot="true">
-			<variable key="vmises" value="true" minoccur="0" maxoccur="1">
+			<variable key="vmises" value="true" minoccur="0" maxoccur="1" free="false">
 				<choice>true</choice>
 				<choice>false</choice>
 				<test name="matchPattern" description="">
@@ -73,7 +73,7 @@
 			</variable>
 		</commit>
 		<commit name="name9" toroot="true">
-			<variable key="plstrain" value="" minoccur="0" maxoccur="1">
+			<variable key="plstrain" value="" minoccur="0" maxoccur="1" free="false">
 				<choice>true</choice>
 				<choice>false</choice>
 				<test name="matchPattern" description="">
@@ -102,7 +102,7 @@
 			<callitem sequence="7" par="--output" del="=" val="list(instancedir)/list(basename_beulanalyse_beulen)_list(nid).inp"/>
 		</work>
 		<commit name="name9" toroot="true">
-			<variable key="plstrain" value="" minoccur="0" maxoccur="1">
+			<variable key="plstrain" value="" minoccur="0" maxoccur="1" free="false">
 				<choice>true</choice>
 				<choice>false</choice>
 				<test name="matchPattern" description="">

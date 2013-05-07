@@ -143,6 +143,7 @@ public class TestProcess {
 		assertEquals("no", variable1.getValue());
 		assertEquals(1, variable1.getMinoccur());
 		assertEquals(1, variable1.getMaxoccur());
+		assertEquals(false, variable1.isFree());
 
 		ArrayList<String> choice = variable1.getChoice();
 		// testen der elemente der variable

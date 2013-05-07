@@ -1,2 +1,2 @@
 #!/bin/bash
-xjc -p de.caegroup.jaxb.process process.xsd -d ../java/.
+xjc -p de.caegroup.jaxb.process ../java/de/caegroup/process/process.xsd -d ../java/.

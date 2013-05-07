@@ -19,6 +19,7 @@ implements Serializable
 	private ArrayList<Test> test = new ArrayList<Test>();
 	private int minoccur = 0;
 	private int maxoccur = 999999;
+	private boolean free = true;
 	
 
 	/*----------------------------
@@ -80,6 +81,16 @@ implements Serializable
 		return this.maxoccur;
 	}
 
+	public boolean getFree()
+	{
+		return this.free;
+	}
+
+	public boolean isFree()
+	{
+		return this.free;
+	}
+
 	public ArrayList<Test> getTest()
 	{
 		return this.test;
@@ -120,6 +131,11 @@ implements Serializable
 	public void setMaxoccur(int maxoccur)
 	{
 		this.maxoccur = maxoccur;
+	}
+
+	public void setFree(boolean free)
+	{
+		this.free = free;
 	}
 
 	public void setTest(ArrayList<Test> test)
