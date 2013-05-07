@@ -770,7 +770,7 @@ public class PrampPartUi1 extends ModelObject
 			}
 			
 			// ein neues composite erstellen
-			else
+			else if (this.process.isStep("root"))
 			{
 				Composite actualComposite = new Composite(commitRoot, SWT.V_SCROLL);
 				actualComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
