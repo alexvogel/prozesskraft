@@ -772,7 +772,6 @@ public class PrampPartUi1 extends ModelObject
 			// ein neues composite erstellen
 			else if (this.process.isStep("root"))
 			{
-				System.out.println("root soll vorhanden sein: "+this.process.isStep("root"));
 				Composite actualComposite = new Composite(commitRoot, SWT.V_SCROLL);
 				actualComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 				GridLayout gl_actualComposite = new GridLayout(1, false);
@@ -802,6 +801,16 @@ public class PrampPartUi1 extends ModelObject
 				log("info", "creating a new commitRoot page");
 				commitRootOld.put((combo_processes.getText()+combo_versions.getText()), commitRoot);
 			}
+			
+			else
+			{
+				commitRoot.setParent(shell_dummy_commitRoot);
+				commitRoot.setVisible(false);
+				hinweisComposite.setParent(parent);
+				hinweisComposite.setVisible(true);
+				parent.layout(true);
+			}
+			
 		}
 	}
 	
