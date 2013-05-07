@@ -64,7 +64,7 @@ public class TestPrampPartUi1
 		ui.loadIni();
 		String processName = "beulen";
 		ArrayList<String> versionNames = ui.getVersions(processName);
-		assertEquals(4, versionNames.size());
+		assertEquals(2, versionNames.size());
 	}
 
 //	@Test
