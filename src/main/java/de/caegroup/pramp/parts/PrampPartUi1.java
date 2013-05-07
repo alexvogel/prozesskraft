@@ -804,6 +804,7 @@ public class PrampPartUi1 extends ModelObject
 			
 			else
 			{
+				log("error", "selected process definition does not contain a step 'root'");
 				commitRoot.setParent(shell_dummy_commitRoot);
 				commitRoot.setVisible(false);
 				hinweisComposite.setParent(parent);
