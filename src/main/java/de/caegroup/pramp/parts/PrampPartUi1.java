@@ -1,6 +1,8 @@
 package de.caegroup.pramp.parts;
 
 import de.caegroup.commons.*;
+import de.caegroup.gui.process.CommitCreator;
+
 import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +45,7 @@ import org.eclipse.jface.databinding.swt.WidgetProperties;
 //import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -258,9 +261,9 @@ public class PrampPartUi1 extends ModelObject
 		composite_12 = new Composite(composite_1, SWT.BORDER);
 		composite_12.setLayout(new GridLayout(1, false));
 		GridData gd_composite_12 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-		gd_composite_12.heightHint = 390;
-		gd_composite_12.minimumWidth = 10;
-		gd_composite_12.minimumHeight = 10;
+//		gd_composite_12.heightHint = 390;
+//		gd_composite_12.minimumWidth = 10;
+//		gd_composite_12.minimumHeight = 10;
 		composite_12.setLayoutData(gd_composite_12);
 		
 		shell_dummy_hinweis = new Shell(display);
@@ -772,29 +775,27 @@ public class PrampPartUi1 extends ModelObject
 			// ein neues composite erstellen
 			else if (this.process.isStep("root"))
 			{
-				Composite actualComposite = new Composite(commitRoot, SWT.V_SCROLL);
+				ScrolledComposite sc = new ScrolledComposite(shell_dummy_commitRoot, SWT.V_SCROLL);
+				
+				Composite actualComposite = new Composite(sc, SWT.NONE);
 				actualComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 				GridLayout gl_actualComposite = new GridLayout(1, false);
 				actualComposite.setLayout(gl_actualComposite);
 
-				Iterator<Commit> iterCommit = this.process.getStep("root").getCommit().iterator();
-				while (iterCommit.hasNext())
-				{
-					Commit actualCommit = iterCommit.next();
-					Group grpCommit = new Group(actualComposite, SWT.NONE);
-					grpCommit.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
-					grpCommit.setText(actualCommit.getName());
-					grpCommit.setLayout(new GridLayout(4, false));
-					
-					Iterator<Variable> iterVariable = actualCommit.getVariable().iterator();
-					while(iterVariable.hasNext())
-					{
-						Variable actualVariable = iterVariable.next();
-						
-					}
-					
-				}
-				commitRoot = actualComposite;
+				CommitCreator commitCreator = new CommitCreator(actualComposite, this.process.getStep("root"));
+				actualComposite = commitCreator.createControls();
+				actualComposite.pack();
+				
+				sc.setContent(actualComposite);
+				sc.setExpandHorizontal(true);
+				sc.setExpandVertical(true);
+				sc.setAlwaysShowScrollBars(true);
+				sc.setMinSize(actualComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+				
+				
+				
+//				commitRoot = actualComposite;
+				commitRoot = sc;
 				commitRoot.setParent(parent);
 				commitRoot.setVisible(true);
 				parent.layout(true);
