@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
+import de.caegroup.process.File;
 import de.caegroup.process.Commit;
 import de.caegroup.process.Step;
 import de.caegroup.process.Variable;
@@ -38,16 +39,16 @@ public class CommitGui
 	Composite composite;
 
 	ArrayList<VariableGui> variableGui = new ArrayList<VariableGui>();
-//	ArrayList<Filegui> fileGui = new ArrayList<Filegui>();
+	ArrayList<FileGui> fileGui = new ArrayList<FileGui>();
 	
 	public CommitGui(CommitCreator parent_commitcreator, Composite parent, Commit commit)
 	{
 		this.parent_commitcreator = parent_commitcreator;
 		this.parent = parent;
 		this.commit = commit;
-		
+
 		composite = new Composite(this.parent, SWT.NONE);
-		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
+		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 		composite.setLayoutData(gd_composite);
 		composite.setLayout(new GridLayout(1, false));
 		
@@ -73,6 +74,13 @@ public class CommitGui
 		{
 			Variable actualVariable = iterVariable.next();
 			variableGui.add(new VariableGui(this, group, actualVariable));
+		}
+		
+		Iterator<File> iterFile = commit.getFile().iterator();
+		while(iterFile.hasNext())
+		{
+			File actualFile = iterFile.next();
+			fileGui.add(new FileGui(this, group, actualFile));
 		}
 	}
 }

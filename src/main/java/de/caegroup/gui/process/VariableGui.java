@@ -81,6 +81,9 @@ public class VariableGui
 			variableoccurGui.add(variableoccur);
 		}
 //		setBackground();
+		parent_commitgui.parent.layout();
+		parent_commitgui.parent_commitcreator.sc.setMinSize(parent_commitgui.parent_commitcreator.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		parent_commitgui.parent_commitcreator.composite.layout();
 	}
 	
 	public void add()
@@ -91,6 +94,10 @@ public class VariableGui
 			variableoccurGui.add(variableoccur);
 //			setBackground();
 			parent_commitgui.parent.layout();
+			parent_commitgui.parent_commitcreator.sc.setMinSize(parent_commitgui.parent_commitcreator.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+//			System.out.println("minHeight: "+parent_commitgui.parent_commitcreator.sc.getMinHeight());
+//			parent_commitgui.parent_commitcreator.composite.setSize(parent_commitgui.parent_commitcreator.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+			parent_commitgui.parent_commitcreator.composite.layout();
 		}
 	}
 
@@ -124,6 +131,11 @@ public class VariableGui
 //			System.out.println("Nochmal Ersterstellung durchlaufen und jetzt eine laenge von: "+this.variableoccurGui.size());
 		}
 //		setBackground();
-		parent_commitgui.parent_commitcreator.parent.layout();
+		parent_commitgui.parent.layout();
+		parent_commitgui.parent_commitcreator.sc.setMinSize(parent_commitgui.parent_commitcreator.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+//		System.out.println("minHeight: "+parent_commitgui.parent_commitcreator.sc.getMinHeight());
+
+		//		parent_commitgui.parent_commitcreator.composite.setSize(parent_commitgui.parent_commitcreator.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		parent_commitgui.parent_commitcreator.composite.layout();
 	}
 }

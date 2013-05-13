@@ -81,9 +81,10 @@ public class VariableOccurGui
 		// erstellen eines Label fuer den 'key' der Variable
 		Label variableKey = new Label(composite, SWT.NONE);
 		variableKey.setText(this.key);
+		variableKey.setToolTipText(this.variable.getDescription());
 
 		FormData fd_variableKey = new FormData();
-		fd_variableKey.top = new FormAttachment(0, 0);
+		fd_variableKey.top = new FormAttachment(0, 4);
 		fd_variableKey.right = new FormAttachment(0,100);
 		variableKey.setLayoutData(fd_variableKey);
 
@@ -120,12 +121,23 @@ public class VariableOccurGui
 		}
 		
 		combo.setItems(variable.getChoice().toArray(new String[variable.getChoice().size()]));
+		
+		combo.setToolTipText(this.variable.getDescription());
+//		combo.setMessage(this.variable.getDescription());
+
+		// Default 1: Der erste Wert der Liste
 		combo.select(0);
+		
+		// Default 2: Der Wert, der als Value definiert ist
+		combo.select(variable.getChoice().indexOf(variable.getValue()));
+		
+		// Default 3: Der Wert, der als beim letzten Mal gewählt wurde
+		
 		
 		FormData fd_combo_variable = new FormData();
 		fd_combo_variable.top = new FormAttachment(0, 0);
-		fd_combo_variable.left = new FormAttachment(0, 130);
-		fd_combo_variable.width = 200;
+		fd_combo_variable.left = new FormAttachment(0, 120);
+		fd_combo_variable.width = 220;
 
 		combo.setLayoutData(fd_combo_variable);
 		
@@ -142,7 +154,7 @@ public class VariableOccurGui
 		
 		FormData fd_button = new FormData();
 		fd_button.top = new FormAttachment(0, 0);
-		fd_button.left = new FormAttachment(0, 350);
+		fd_button.left = new FormAttachment(0, 340);
 		fd_button.width = 25;
 		button.setLayoutData(fd_button);
 	}

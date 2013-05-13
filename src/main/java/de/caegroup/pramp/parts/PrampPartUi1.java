@@ -259,16 +259,18 @@ public class PrampPartUi1 extends ModelObject
 		button_refresh.addSelectionListener(listener_refresh_button);
 		
 		composite_12 = new Composite(composite_1, SWT.BORDER);
-		composite_12.setLayout(new GridLayout(1, false));
-		GridData gd_composite_12 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+//		composite_12.setLayout(new GridLayout(1, false));
+		composite_12.setLayout(new FillLayout());
+		GridData gd_composite_12 = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 //		gd_composite_12.heightHint = 390;
 //		gd_composite_12.minimumWidth = 10;
 //		gd_composite_12.minimumHeight = 10;
 		composite_12.setLayoutData(gd_composite_12);
+
 		
 		shell_dummy_hinweis = new Shell(display);
 		hinweisComposite = new Composite(shell_dummy_hinweis, SWT.NONE);
-		hinweisComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+//		hinweisComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		GridLayout gl_hinweisComposite = new GridLayout(1, false);
 		hinweisComposite.setLayout(gl_hinweisComposite);
 		Label label_hinweis = new Label(hinweisComposite, SWT.NONE);
@@ -775,27 +777,18 @@ public class PrampPartUi1 extends ModelObject
 			// ein neues composite erstellen
 			else if (this.process.isStep("root"))
 			{
-				ScrolledComposite sc = new ScrolledComposite(shell_dummy_commitRoot, SWT.V_SCROLL);
-				
-				Composite actualComposite = new Composite(sc, SWT.NONE);
-				actualComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-				GridLayout gl_actualComposite = new GridLayout(1, false);
-				actualComposite.setLayout(gl_actualComposite);
+
+				Composite actualComposite = new Composite(shell_dummy_commitRoot, SWT.NONE);
+//				actualComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+//				actualComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+//				GridLayout gl_actualComposite = new GridLayout(1, false);
+				actualComposite.setLayout(new FillLayout());
 
 				CommitCreator commitCreator = new CommitCreator(actualComposite, this.process.getStep("root"));
 				actualComposite = commitCreator.createControls();
-				actualComposite.pack();
+//				actualComposite.pack();
 				
-				sc.setContent(actualComposite);
-				sc.setExpandHorizontal(true);
-				sc.setExpandVertical(true);
-				sc.setAlwaysShowScrollBars(true);
-				sc.setMinSize(actualComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-				
-				
-				
-//				commitRoot = actualComposite;
-				commitRoot = sc;
+				commitRoot = actualComposite;
 				commitRoot.setParent(parent);
 				commitRoot.setVisible(true);
 				parent.layout(true);
