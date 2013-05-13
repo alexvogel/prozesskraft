@@ -2,8 +2,8 @@
 <!-- <root> -->
 <process name="beulen" version="0.2" description="Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert." architect="alexander.vogel@caegroup.de" path="irgendeinpath">
 	<step name="root" type="automatic">
-		<commit name="name1" toroot="true">
-			<variable key="matdb" value="no" minoccur="1" maxoccur="1" free="false">
+		<commit name="parameter" toroot="true">
+			<variable key="matdb" value="no" minoccur="1" maxoccur="1" free="false" description="choose a centrally maintained material database or 'no' if material definitions are provided with abaqus includes" >
 				<choice>no</choice>
 				<choice>lin</choice>
 				<choice>nlin</choice>
@@ -11,16 +11,55 @@
 					<param id="1">no|lin|nlin</param>
 				</test>
 			</variable>
-		</commit>
-		<commit name="name2" toroot="true">
-			<variable key="basename" minoccur="1" maxoccur="1" free="false">
+			<variable key="basename" minoccur="1" maxoccur="1" free="true" description="give it a name.">
 				<test name="matchPattern" description="min 3, max 50 characters [a-Z,0-9,_]">
 					<param id="1">\w{3,50}</param>
 				</test>
 			</variable>
+			<variable key="parttype" minoccur="1" maxoccur="1" free="false">
+				<choice>fkl</choice>
+				<choice>dach</choice>
+				<choice>seite</choice>
+				<test name="matchPattern" description="">
+					<param id="1">fkl|dach|seite</param>
+				</test>
+			</variable>
+			<variable key="nid" minoccur="1" maxoccur="1" free="true" description="test device will be positioned at this node id.">
+				<test name="matchPattern" description="">
+					<param id="1">\d+</param>
+				</test>
+			</variable>
+			<variable key="area" minoccur="1" maxoccur="1" free="false" description="assessment area of node id. this links to the benchmarks.">
+				<choice>area_1</choice>
+				<choice>area_2</choice>
+				<choice>area_3</choice>
+				<test name="matchPattern" description="">
+					<param id="1">area_[123456789]{1}</param>
+				</test>
+			</variable>
+			<variable key="force" value="150" minoccur="1" maxoccur="1" free="true" description="force the test device will be pushed with.">
+				<choice>150</choice>
+				<test name="matchPattern" description="">
+					<param id="1">\d+</param>
+				</test>
+			</variable>
+			<variable key="vmises" value="true" minoccur="0" maxoccur="1" free="false" description="if default postprocessing does not allow for a resultset 'vonMisesStrain' with this parameter set to 'true' the generation of this resultset will be forced.">
+				<choice>true</choice>
+				<choice>false</choice>
+				<test name="matchPattern" description="">
+					<param id="1">|true|false</param>
+				</test>
+			</variable>
+			<variable key="plstrain" value="" minoccur="0" maxoccur="1" free="false" description="if default postprocessing does not allow for a resultset 'plasticStrain' with this parameter set to 'true' the generation of this resultset will be forced.">
+				<choice>true</choice>
+				<choice>false</choice>
+				<test name="matchPattern" description="">
+					<param id="1">|true|false</param>
+				</test>
+			</variable>
 		</commit>
-		<commit name="name3" toroot="true">
-			<file key="inc" description="abaqus model file" minoccur="1">
+		<commit name="abaqus model" toroot="true">
+			<file key="inc" minoccur="1" description="abaqus include file without history data" >
 				<test name="size" description="tests for file size">
 					<param id="1">min</param>
 					<param id="2">KB</param>
@@ -30,57 +69,20 @@
 				</test>
 			</file>
 		</commit>
-		<commit name="name4" toroot="true">
-			<variable key="parttype" minoccur="1" maxoccur="1" free="true">
-				<choice>fkl</choice>
-				<choice>seite</choice>
-				<test name="matchPattern" description="">
-					<param id="1">fkl|seite</param>
-				</test>
-			</variable>
-		</commit>
-		<commit name="name5" toroot="true">
-			<variable key="area" minoccur="1" maxoccur="1" free="false">
-				<choice>area_1</choice>
-				<choice>area_2</choice>
-				<choice>area_3</choice>
-				<test name="matchPattern" description="">
-					<param id="1">area_[123456789]{1}</param>
-				</test>
-			</variable>
-		</commit>
-		<commit name="name6" toroot="true">
-			<variable key="nid" minoccur="1" maxoccur="1" free="true">
-				<test name="matchPattern" description="">
-					<param id="1">\d+</param>
-				</test>
-			</variable>
-		</commit>
-		<commit name="name7" toroot="true">
-			<variable key="force" value="150" minoccur="1" maxoccur="1" free="true">
-				<test name="matchPattern" description="">
-					<param id="1">\d+</param>
-				</test>
-			</variable>
-		</commit>
-		<commit name="name8" toroot="true">
-			<variable key="vmises" value="true" minoccur="0" maxoccur="1" free="false">
-				<choice>true</choice>
-				<choice>false</choice>
-				<test name="matchPattern" description="">
-					<param id="1">|true|false</param>
-				</test>
-			</variable>
-		</commit>
-		<commit name="name9" toroot="true">
-			<variable key="plstrain" value="" minoccur="0" maxoccur="1" free="false">
-				<choice>true</choice>
-				<choice>false</choice>
-				<test name="matchPattern" description="">
-					<param id="1">|true|false</param>
-				</test>
-			</variable>
-		</commit>
+<!-- 		<commit name="name3" toroot="true"> -->
+<!-- 		</commit> -->
+<!-- 		<commit name="name4" toroot="true"> -->
+<!-- 		</commit> -->
+<!-- 		<commit name="name5" toroot="true"> -->
+<!-- 		</commit> -->
+<!-- 		<commit name="name6" toroot="true"> -->
+<!-- 		</commit> -->
+<!-- 		<commit name="name7" toroot="true"> -->
+<!-- 		</commit> -->
+<!-- 		<commit name="name8" toroot="true"> -->
+<!-- 		</commit> -->
+<!-- 		<commit name="name9" toroot="true"> -->
+<!-- 		</commit> -->
 	</step>
 	<step name="gen_abaqus_beulen" type="automatic" description="Die gesamte Prozesskette">
 		<init fromobjecttype="file" name="template" listname="template_abadeck" returnfield="pathfilename" fromstep="root" insertrule="overwrite">

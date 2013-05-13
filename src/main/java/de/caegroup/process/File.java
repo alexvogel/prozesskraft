@@ -12,7 +12,9 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
+	private String key = "";
 	private String filename = "";
+	private String description = "";
 	private String absfilename = "";
 	private int minoccur = 0;
 	private int maxoccur = 999999;
@@ -47,14 +49,34 @@ implements Serializable
 	/*----------------------------
 	  methods get
 	----------------------------*/
+	public String getKey()
+	{
+		return this.key;
+	}
+
 	public String getFilename()
 	{
 		return this.filename;
 	}
 
+	public String getDescription()
+	{
+		return this.description;
+	}
+
 	public String getAbsfilename()
 	{
 		return this.absfilename;
+	}
+
+	public int getMinoccur()
+	{
+		return this.minoccur;
+	}
+
+	public int getMaxoccur()
+	{
+		return this.maxoccur;
 	}
 
 	public String getField(String fieldname)
@@ -69,14 +91,34 @@ implements Serializable
 	/*----------------------------
 	methods set
 	----------------------------*/
+	public void setKey(String key)
+	{
+		this.key = key;
+	}
+
 	public void setFilename(String filename)
 	{
 		this.filename = filename;
 	}
 
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
 	public void setAbsfilename(String absfilename)
 	{
 		this.absfilename = absfilename;
+	}
+
+	public void setMinoccur(int minoccur)
+	{
+		this.minoccur = minoccur;
+	}
+
+	public void setMaxoccur(int maxoccur)
+	{
+		this.maxoccur = maxoccur;
 	}
 
 

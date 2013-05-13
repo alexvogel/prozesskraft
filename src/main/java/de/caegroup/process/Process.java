@@ -43,6 +43,7 @@ import javax.xml.validation.SchemaFactory;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
+import org.dozer.loader.api.BeanMappingBuilder;
 import org.odftoolkit.simple.TextDocument;
 import org.odftoolkit.simple.style.Font;
 import org.odftoolkit.simple.style.StyleTypeDefinitions.FontStyle;
@@ -500,7 +501,7 @@ implements Serializable
 			java.io.File tmpFile = java.io.File.createTempFile("avoge2013", "process.xsd");
 			FileWriter fstream = new FileWriter(tmpFile);
 			BufferedWriter schemaWriter = new BufferedWriter(fstream);
-			
+
 			String thisLine;
 			while((thisLine = schemaReader.readLine()) != null)
 			{
@@ -534,6 +535,15 @@ implements Serializable
 		try
 		{
 			de.caegroup.jaxb.process.Process xprocess = (de.caegroup.jaxb.process.Process) um.unmarshal(new java.io.File(this.getInfilexml()));
+//			System.out.println("xprocess variable1 free = "+xprocess.getStep().get(0).getCommit().get(0).getVariable().get(0).isFree());
+//			BeanMappingBuilder builder = new BeanMappingBuilder()
+//			{
+//				protected void configure()
+//				{
+//					mapping(de.caegroup.jaxb.process.Process.class, de.caegroup.process.Process.class, oneWay(), mapId("A"), mapNull(true));
+//				}
+//			};
+			
 			DozerBeanMapper mapper = new DozerBeanMapper();
 			destObject = mapper.map(xprocess, de.caegroup.process.Process.class);
 		}

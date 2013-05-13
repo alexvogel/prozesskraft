@@ -131,9 +131,9 @@ public class TestProcess {
 		Step stepRoot = newProcess.getStep("root");
 		// testen der step-attribute
 		assertEquals("root", stepRoot.getName());
-		assertEquals(9, stepRoot.getCommit().size());
+		assertEquals(2, stepRoot.getCommit().size());
 
-		Commit commit1 = stepRoot.getCommit("name1");
+		Commit commit1 = stepRoot.getCommit("parameter");
 		// testen der commit-elemente des steps root
 		assertEquals(true, commit1.getToroot());
 
@@ -143,7 +143,7 @@ public class TestProcess {
 		assertEquals("no", variable1.getValue());
 		assertEquals(1, variable1.getMinoccur());
 		assertEquals(1, variable1.getMaxoccur());
-		assertEquals(false, variable1.isFree());
+		assertEquals(false, variable1.getFree());
 
 		ArrayList<String> choice = variable1.getChoice();
 		// testen der elemente der variable

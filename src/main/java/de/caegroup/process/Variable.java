@@ -15,11 +15,12 @@ implements Serializable
 	static final long serialVersionUID = 1;
 	private String key = "";
 	private String value = "";
+	private String description = "";
 	private ArrayList<String> choice = new ArrayList<String>();
 	private ArrayList<Test> test = new ArrayList<Test>();
 	private int minoccur = 0;
 	private int maxoccur = 999999;
-	private boolean free = true;
+	private Boolean free = null;
 	
 
 	/*----------------------------
@@ -69,6 +70,11 @@ implements Serializable
 	public String getValue()
 	{
 		return this.value;
+	}
+
+	public String getDescription()
+	{
+		return this.description;
 	}
 
 	public int getMinoccur()
@@ -121,6 +127,11 @@ implements Serializable
 	public void setValue(String value)
 	{
 		this.value = value;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
 	}
 
 	public void setMinoccur(int minoccur)

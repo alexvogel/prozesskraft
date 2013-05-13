@@ -92,12 +92,12 @@
   </xs:element>
   <xs:element name="commit">
     <xs:complexType>
-      <xs:choice minOccurs="0">
-        <xs:element ref="file" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element ref="variable" minOccurs="0" maxOccurs="unbounded"/>
-      </xs:choice>
-      <xs:attribute name="name" use="required" type="xs:string"/>
-      <xs:attribute name="toroot" use="required" type="xs:boolean"/>
+            <xs:choice minOccurs="0">
+    		<xs:element ref="file" minOccurs="0" maxOccurs="unbounded" />
+    		<xs:element ref="variable" minOccurs="0" maxOccurs="unbounded" />
+    	</xs:choice>
+    	<xs:attribute name="name" use="required" type="xs:string" />
+    	<xs:attribute name="toroot" use="required" type="xs:boolean" />
     </xs:complexType>
   </xs:element>
   <xs:element name="file">
@@ -105,8 +105,8 @@
       <xs:sequence>
         <xs:element maxOccurs="unbounded" ref="test"/>
       </xs:sequence>
-      <xs:attribute name="description" use="required"/>
-      <xs:attribute name="key" use="required" type="xs:NCName"/>
+      <xs:attribute name="description" use="optional" type="xs:string"/>
+      <xs:attribute name="key" use="required" type="xs:string"/>
       <xs:attribute name="maxoccur" type="xs:integer"/>
       <xs:attribute name="minoccur" type="xs:integer"/>
     </xs:complexType>
@@ -120,9 +120,10 @@
     	</xs:sequence>
     	<xs:attribute name="key" use="required" type="xs:NCName" />
     	<xs:attribute name="value" use="optional" />
-    	<xs:attribute name="maxoccur" type="xs:integer" use="optional"/>
-    	<xs:attribute name="minoccur" type="xs:integer" use="optional"/>
-    	<xs:attribute name="free" type="xs:boolean" use="optional"></xs:attribute>
+    	<xs:attribute name="maxoccur" type="xs:integer" use="optional" />
+    	<xs:attribute name="minoccur" type="xs:integer" use="optional" />
+    	<xs:attribute name="free" type="xs:boolean" use="required"></xs:attribute>
+    	<xs:attribute name="description" type="xs:string"></xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="choice" type="xs:string"/>
