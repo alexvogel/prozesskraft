@@ -160,7 +160,8 @@ public class Cleandb
 				InputStream in = server.getInputStream();
 				ObjectOutputStream objectOut = new ObjectOutputStream(out);
 				ObjectInputStream  objectIn  = new ObjectInputStream(in);
-				
+				System.err.println("lulu");
+				System.exit(0);
 				objectOut.writeObject("cleandb");
 
 				// nachricht wurde erfolgreich an server gesendet --> schleife beenden
