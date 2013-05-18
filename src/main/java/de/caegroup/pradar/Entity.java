@@ -1,10 +1,22 @@
 package de.caegroup.pradar;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+
 
 public class Entity
 implements Serializable
@@ -151,6 +163,116 @@ implements Serializable
 		System.out.println("exitcode:"+this.exitcode);
 		System.out.println("resource:"+this.resource);
 		System.out.println("period:  "+this.resource);
+	}
+
+	/**
+	 * determines whether host is reachable via ssh
+	 * @return boolean
+	 */
+	public boolean isHostReachable()
+	{
+		boolean reachable = false;
+		
+		try
+		{
+			JSch jsch = new JSch();
+			jsch.addIdentity(".ssh/id_rsa");
+			Session session = jsch.getSession(System.getProperty("user.name"), this.host, 22);
+//			session.setPassword("salutner1");
+//			System.out.println("establishing connection...");
+
+			session.setConfig("StrictHostKeyChecking", "no");
+			session.connect();
+
+//			System.out.println("connection established");
+			
+//			Channel channel = session.openChannel("exec");
+//			channel.connect();
+
+//			System.out.println("channel 'exec' connection established");
+
+			reachable = true;
+			session.disconnect();
+
+		} catch (JSchException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.err.println("host "+this.getHost()+" not reachable");
+		}
+		
+		return reachable;
+	}
+
+	/**
+	 * determines whether PID is alive on host
+	 * @return boolean
+	 */
+	public boolean isInstanceAlive()
+	{
+		boolean alive = false;
+		Pattern patternPsLinux = Pattern.compile("^ *(\\d+) +[^ ]+ +[^ ]+ +(.+)$");
+
+		try
+		{
+			JSch jsch = new JSch();
+
+			jsch.addIdentity(".ssh/id_rsa");
+
+			Session session = jsch.getSession(System.getProperty("user.name"), this.host, 22);
+			session.setConfig("StrictHostKeyChecking", "no");
+			session.connect();
+			
+			ChannelExec channelExec = (ChannelExec)session.openChannel("exec");
+
+			InputStream in = channelExec.getInputStream();
+			String command = "ps -p "+this.getId();
+			
+			channelExec.setCommand(command);
+
+//			System.out.println("setting command to: "+command);
+			channelExec.connect();
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+			
+			String line;
+			
+			while((line = reader.readLine()) != null)
+			{
+//				System.out.println(line);
+				Matcher matcher = patternPsLinux.matcher(line);
+				while(matcher.find())
+				{
+					if (matcher.group(1).equals(this.getId()))
+					{
+//						System.out.println("PID gefunden: "+matcher.group(1));
+						if (matcher.group(2).matches(this.getProcess()+".+"))
+						{
+							alive = true;
+//							System.out.println("Prozessname '"+matcher.group(2)+"' stimmt auch weitgehend (ideal waehre '"+this.getProcess()+"'. jetzt gilt er als erkannt!");
+						}
+//						else
+//						{
+//							System.out.println("Prozessname'"+matcher.group(2)+"' stimmt nicht mit gesuchtem  '"+this.getProcess()+"'-> weitersuchen");
+//						}
+					}
+				}
+			}
+
+//			int exitStatus = channelExec.getExitStatus();
+//			System.out.println("exitstatus of jsch-connection: "+exitStatus);
+
+			channelExec.disconnect();
+			session.disconnect();
+			
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return alive;
 	}
 
 	/*----------------------------
@@ -354,6 +476,15 @@ implements Serializable
 		return active;
 	}
 
+	public boolean isActive()
+	{
+		if (this.active.equals("true"))
+		{
+			return true;
+		}
+		return false;
+	}
+
 	public String getActiveSqlPattern()
 	{
 		if (this.active.matches("all") || this.active.matches(""))
@@ -369,6 +500,18 @@ implements Serializable
 	public void setActive(String active)
 	{
 		this.active = active;
+	}
+
+	public void setActive(boolean active)
+	{
+		if (active)
+		{
+			this.active = "true";
+		}
+		else
+		{
+			this.active = "false";
+		}
 	}
 
 	public String getExitcode()
@@ -434,4 +577,6 @@ implements Serializable
 	{
 		this.period = (long)((long)hours*3600000);
 	}
+	
+	
 }

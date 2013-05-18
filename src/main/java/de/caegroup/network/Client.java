@@ -87,6 +87,11 @@ public class Client
 			{
 				System.exit(0);
 			}
+			else if (type.equals("cleandb"))
+			{
+				this.parent.db.cleanDb();
+				System.out.println("cleaning db.");
+			}
 			else
 			{
 				System.out.println("dont know what you want: type="+type);

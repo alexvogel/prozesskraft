@@ -250,22 +250,48 @@ public class Db
 			while (rs.next())
 			{
 				Entity matched_entity = new Entity();
+
+//				System.out.println(rs.getString("id"));
 				matched_entity.setId(rs.getString("id"));
+				
+//				System.out.println(rs.getString("parentid"));
 				matched_entity.setParentid(rs.getString("parentid"));
+				
+//				System.out.println(rs.getString("process"));
 				matched_entity.setProcess(rs.getString("process"));
+				
+//				System.out.println(rs.getString("user"));
 				matched_entity.setUser(rs.getString("user"));
+				
+//				System.out.println(rs.getString("host"));
 				matched_entity.setHost(rs.getString("host"));
-				matched_entity.setCheckin(Long.valueOf(rs.getString("checkin")).longValue());
-				matched_entity.setCheckout(Long.valueOf(rs.getString("checkout")).longValue());
+				
+				String checkin = rs.getString("checkin");
+				if (checkin.matches("")) {checkin = "0";}
+//				System.out.println(rs.getString("checkin"));
+				matched_entity.setCheckin(Long.valueOf(checkin).longValue());
+				
+				String checkout = rs.getString("checkout");
+				if (checkout.matches("")) {checkout = "0";}
+//				System.out.println(rs.getString("checkout"));
+				matched_entity.setCheckout(Long.valueOf(checkout).longValue());
+
+//				System.out.println(rs.getString("active"));
 				matched_entity.setActive(rs.getString("active"));
+				
+//				System.out.println(rs.getString("exitcode"));
 				matched_entity.setExitcode(rs.getString("exitcode"));
+				
+//				System.out.println(rs.getString("resource"));
 				matched_entity.setResource(rs.getString("resource"));
+				
 				allEntities.add(matched_entity);
 			}
 			this.connection.close();
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			System.err.println("no processes.");
 		}
 
@@ -285,8 +311,8 @@ public class Db
 		{
 			this.getConnection();
 
-			Statement statement = this.connection.createStatement();
-			statement.setQueryTimeout(10);
+//			Statement statement = this.connection.createStatement();
+//			statement.setQueryTimeout(10);
 
 			
 			ArrayList<Entity> matched_entities = new ArrayList<Entity>();
@@ -319,6 +345,77 @@ public class Db
 			e.printStackTrace();
 		}
 		return ausgabe;
+	}
+
+	/**
+	 * cleans Db: checks out all active instances where
+	 * 1) host is reachable, but pid is no longer active
+	 * 2) host is unreachable and instance is older than 1 week
+	 * 
+	 */
+	public void cleanDb()
+	{
+		this.sqlvoodoo();
+		this.connection = null;
+		try
+		{
+			this.getConnection();
+
+			Statement statement = this.connection.createStatement();
+			statement.setQueryTimeout(10);
+			
+			ArrayList<Entity> all_entities = new ArrayList<Entity>();
+			try
+			{
+				all_entities = this.getAllEntities();
+			}
+			catch (NullPointerException e)
+			{
+				System.out.println("result is empty!");
+			}
+			
+			Iterator<Entity> iterentity = all_entities.iterator();
+			
+			while (iterentity.hasNext())
+			{
+				Entity actualEntity = iterentity.next();
+				if (actualEntity.isActive())
+				{
+					if (actualEntity.isHostReachable())
+					{
+						System.out.println("host "+actualEntity.getHost()+" is reachable");
+						
+						if (!(actualEntity.isInstanceAlive()))
+						{
+							System.out.println("instance appears to be vanished: pid "+actualEntity.getId());
+							String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='? (forced checkout)' WHERE id IS "+actualEntity.getId()+" AND host IS '"+actualEntity.getHost()+"' AND user IS '"+actualEntity.getUser()+"' AND process IS '"+actualEntity.getProcess()+"' AND active IS 'true'";
+//							System.out.println(sql);
+//							statement.execute(sql);
+							statement.executeUpdate(sql);
+						}
+						else
+						{
+							System.out.println("instance "+actualEntity.getId()+" is still alive");
+						}
+
+					}
+					// sonst wenn aelter als eine Woche -> forced checkout
+					else if ( (actualEntity.getCheckinInMillis() - System.currentTimeMillis()) > 604800000 )
+					{
+						System.out.println("host is unreachable and instance is older than 1 week.");
+						String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='? (forced checkout)' WHERE id IS "+actualEntity.getId()+" AND host IS '"+actualEntity.getHost()+"' AND user IS '"+actualEntity.getUser()+"' AND process IS '"+actualEntity.getProcess()+"' AND active IS 'true'";
+//						System.out.println(sql);
+						statement.executeUpdate(sql);
+					}
+				}
+			}
+
+			this.connection.close();
+		} catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void sqlvoodoo()
