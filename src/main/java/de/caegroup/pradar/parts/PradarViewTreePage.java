@@ -192,7 +192,11 @@ public class PradarViewTreePage
 				Entity filter_entity = new Entity();
 				filter_entity.setId(entity.getParentid());
 				
-				Object parentEntity = filter_entity.getAllMatches(parentData.entities_filtered).get(0);
+				Object parentEntity = null;
+				if (filter_entity.getAllMatches(parentData.entities_filtered).size() > 0)
+				{
+					parentEntity = filter_entity.getAllMatches(parentData.entities_filtered).get(0);
+				}
 				return parentEntity;
 			}
 			return null;
