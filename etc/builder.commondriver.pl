@@ -233,6 +233,21 @@ if (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename$/ } @callpossi
 	}
 }
 
+# evtl hat das einstiegsprogramm eine endung ".sh"
+elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename\.sh$/ } @callpossibilities)
+{
+	if (@caller == 1)
+	{
+#		print "$caller[0] @neue_argumente\n";
+		exec "$caller[0] @neue_argumente";
+	}
+	else
+	{
+		print "don't know what to call - @caller\n";
+		exit(1);
+	}
+}
+
 # evtl hat das einstiegsprogramm eine endung ".pl"
 elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename\.pl$/ } @callpossibilities)
 {
