@@ -53,7 +53,7 @@ public class PradarViewProcessingEntity
 	private PradarViewProcessingEntity pentity_parent = null;
 	
 	Random generator = new Random();
-//	private Entity entity;
+	private Entity entity;
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -63,6 +63,8 @@ public class PradarViewProcessingEntity
 		this.parent = page_parent;
 		this.superid = entity.getSuperid();
 		this.id = entity.getId();
+		
+		this.entity = entity;
 
 		// falls es einen eintrag im parent-id gibt, soll das parent mit abgelegt werden
 		if (!( (entity.getParentid().equals("")) || (entity.getParentid().equals("0")) ))
@@ -226,16 +228,28 @@ public class PradarViewProcessingEntity
 //					else {forceZugFederRechtsdrehend = 0;}
 				}
 				
-				// bei jedem soll antiGravity berechnet werden
-				forceStossFederRechtsdrehend = forceStossFeder(this.mass, pentity.mass, this.abstandRechtsdrehend(pentity));
-				forceStossFederLinksdrehend  = forceStossFeder(this.mass, pentity.mass, this.abstandLinksdrehend(pentity));
-//				if (forceStossFederRechtsdrehend > forceStossFederLinksdrehend) {forceStossFederLinksdrehend = 0;}
-//				else {forceStossFederRechtsdrehend = 0;}
-//				System.out.println("forceZugFederRechtsdrehend  : "+forceZugFederRechtsdrehend);
-//				System.out.println("forceZugFederLinksdrehend   : "+forceZugFederLinksdrehend);
-//				System.out.println("forceStossFederRechtsdrehend: "+forceStossFederRechtsdrehend);
-//				System.out.println("forceStossFederLinksdrehend : "+forceStossFederLinksdrehend);
-//				System.out.println("--------------------------------------");
+				// bei jedem pentity, dass sich mit dem aktuellen ueberschneidet, soll antiGravity berechnet werden
+				if (
+						(
+								(pentity.getEntity().getCheckinInMillis() > this.getEntity().getCheckinInMillis())   &&
+								(pentity.getEntity().getCheckinInMillis() < this.getEntity().getCheckoutInMillis())
+						)  ||
+						(
+								(pentity.getEntity().getCheckoutInMillis() < this.getEntity().getCheckoutInMillis())  &&
+								(pentity.getEntity().getCheckoutInMillis() > this.getEntity().getCheckinInMillis())
+						)
+					)
+				{
+					forceStossFederRechtsdrehend = forceStossFeder(this.mass, pentity.mass, this.abstandRechtsdrehend(pentity));
+					forceStossFederLinksdrehend  = forceStossFeder(this.mass, pentity.mass, this.abstandLinksdrehend(pentity));
+//					if (forceStossFederRechtsdrehend > forceStossFederLinksdrehend) {forceStossFederLinksdrehend = 0;}
+//					else {forceStossFederRechtsdrehend = 0;}
+//					System.out.println("forceZugFederRechtsdrehend  : "+forceZugFederRechtsdrehend);
+//					System.out.println("forceZugFederLinksdrehend   : "+forceZugFederLinksdrehend);
+//					System.out.println("forceStossFederRechtsdrehend: "+forceStossFederRechtsdrehend);
+//					System.out.println("forceStossFederLinksdrehend : "+forceStossFederLinksdrehend);
+//					System.out.println("--------------------------------------");
+				}
 				
 				// summe aller Gravities bilden (rechts=positiv, links=negativ, anti=negativ)
 				double forceRechtsDrehend = forceZugFederRechtsdrehend + forceStossFederLinksdrehend;
@@ -513,6 +527,14 @@ public class PradarViewProcessingEntity
 	public double getBogenlaenge()
 	{
 		return this.bogenlaenge;
+	}
+
+	/**
+	 * @return the entity
+	 */
+	public Entity getEntity()
+	{
+		return this.entity;
 	}
 
 	/**
