@@ -103,7 +103,7 @@ public class PrampPartUi1 extends ModelObject
 	Display display;
 
 	final Color colorLogError = new Color(new Shell().getDisplay(), 215, 165, 172);
-	final Color colorLogWarn = new Color(new Shell().getDisplay(), 199, 149, 31);
+	final Color colorLogWarn = new Color(new Shell().getDisplay(), 202, 191, 142);
 	final Color colorLogInfo = new Color(new Shell().getDisplay(), 184, 210, 176);
 	
 	int logLineCount = 0;
