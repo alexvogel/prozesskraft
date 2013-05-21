@@ -51,11 +51,13 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -106,13 +108,13 @@ public class PradarPartUi3 extends ModelObject
 	private Button button_radar = null;
 	private Button button_tree = null;
 	private Scale scale_zoom;
-	private Text text_logging = null;
+	private StyledText text_logging = null;
 	private Frame frame_radar = null;
 	PradarViewModel einstellungen = new PradarViewModel();
 
 	Entity entity_filter = new Entity();
 	
-	public ArrayList<Entity> entities_all;
+	public ArrayList<Entity> entities_all = new ArrayList<Entity>();
 	public ArrayList<Entity> entities_filtered;
 //	public ArrayList<Entity> entities_children_of_filtered;
 
@@ -132,6 +134,13 @@ public class PradarPartUi3 extends ModelObject
 	Composite composite_12;
 	
 	Display display;
+	
+	final Color colorLogError = new Color(new Shell().getDisplay(), 215, 165, 172);
+	final Color colorLogWarn = new Color(new Shell().getDisplay(), 202, 191, 142);
+	final Color colorLogInfo = new Color(new Shell().getDisplay(), 184, 210, 176);
+	
+	int logLineCount = 0;
+
 
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
@@ -338,7 +347,7 @@ public class PradarPartUi3 extends ModelObject
 		gd_composite_2.heightHint = 164;
 		composite_2.setLayoutData(gd_composite_2);
 		
-		text_logging = new Text(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
+		text_logging = new StyledText(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
 		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		bindingContextFilter = initDataBindingsFilter();
@@ -751,23 +760,25 @@ public class PradarPartUi3 extends ModelObject
 				{
 					// TODO Auto-generated catch block
 					log("warn", "unknown host "+machineName+" (UnknownHostException)");
+//					e.printStackTrace();
 				}
 				catch (ConnectException e)
 				{
 					log("warn", "no pradar-server found at "+portNumber+"@"+machineName);
-		//			e.printStackTrace();
+//					e.printStackTrace();
 				}
 				catch (IOException e)
 				{
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log("warn", "input / output problems at "+portNumber+"@"+machineName);
+//					e.printStackTrace();
 				}
 			}
 			
 			if (pradar_server_not_found)
 			{
-				log("error", "no pradar-server found. talk to your administrator. bye.");
-				System.exit(1);
+				log("error", "no pradar-server found. talk to your administrator.");
+//				System.exit(1);
 			}
 			
 
@@ -792,6 +803,11 @@ public class PradarPartUi3 extends ModelObject
 		if (text_logging != null)
 		{
 			text_logging.append(logstring+"\n");
+//			if (level.equals("info"))		{	text_logging.setLineBackground(logLineCount, 1, colorLogWarn);}
+			if (level.equals("warn"))	{	text_logging.setLineBackground(logLineCount, 1, colorLogWarn);}
+			else if (level.equals("error"))	{	text_logging.setLineBackground(logLineCount, 1, colorLogError);}
+			logLineCount = logLineCount+1;
+			text_logging.setTopIndex(text_logging.getLineCount()-1);
 		}
 		else
 		{
