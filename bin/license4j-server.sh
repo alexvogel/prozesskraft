@@ -10,7 +10,8 @@
 # SET YOUR JAVA PATH HERE
 #
 #JAVA=/usr/local/jdk1.7.0_21
-JAVA=/usr/java/jdk1.7.0_07
+#JAVA=/usr/java/jdk1.7.0_07
+JAVA=[% ersetze_mich_durch_java_home %]
 #
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

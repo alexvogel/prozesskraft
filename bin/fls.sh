@@ -7,15 +7,17 @@
 
 CLASS_PATH=FloatingLicenseServer.jar
 CLASS=com.license4j.floatinglicenseserver.server.FloatingLicenseServerDaemon
-PID=/var/run/fls.pid
+#PID=/var/run/fls.pid
+PID=[% home %]/fls.pid
 
 do_exec() {
-	if [ `getconf LONG_BIT` == "32" ]
-	then
-		./jsvc32 -server -home $JAVA -cp $CLASS_PATH -pidfile $PID $1 $CLASS
-	else
-		./jsvc64 -server -home $JAVA -cp $CLASS_PATH -pidfile $PID $1 $CLASS
-	fi	
+#	if [ `getconf LONG_BIT` == "32" ]
+#	then
+#		./jsvc32 -server -home $JAVA -cp $CLASS_PATH -pidfile $PID $1 $CLASS
+#	else
+#		./jsvc64 -server -home $JAVA -cp $CLASS_PATH -pidfile $PID $1 $CLASS
+#	fi	
+[% ersetze_mich_durch_aufruf %]
 }
 
 case "$1" in
