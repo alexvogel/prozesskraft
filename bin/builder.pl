@@ -824,12 +824,58 @@ foreach my $refh_stackline (@CONFIG)
 				system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkappbranch/$zeile[0] $now_targetbulkappbranch/$zeile[1]\"";
 			}
 		}
-		
 
-		# den commondriver installieren
-		print "info: installing common driver $CONF{'commondriver'} to $now_targetbin"."/".$now_app."\n";
-		print "rsync -avz $CONF{'commondriver'} ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbin."/".$now_app."\n";
-		system "rsync -avz $CONF{'commondriver'} ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbin."/".$now_app;
+		# den allgemeinen commondriver in das temporaere verzeichnis kopieren
+		print "info: copying common driver $CONF{'commondriver'} to $TMPDIR/commondriver\n";
+		print "cp $CONF{'commondriver'} $TMPDIR/commondriver\n";
+		system "cp $CONF{'commondriver'} $TMPDIR/commondriver";
+
+		# den allgemeinen commondriver an die aktuelle app anpassen
+		find( sub { wanted3() }, "$TMPDIR/commondriver");
+			
+		sub wanted3
+		{
+			my $relname = File::Spec->abs2rel($File::Find::name);
+			my $tt = Template->new();
+			my $vars = {
+						appname	=> sub	{
+											print "replacing placeholder for 'appname' with '$now_app'\n";
+											return $now_app;
+										},
+						};
+ 			$tt->process($relname, $vars, $relname) || die $tt->error();
+		}
+
+		# den angepassten commondriver installieren
+		print "info: installing common driver $TMPDIR/commondriver to $now_targetbin"."/".$now_app."\n";
+		print "rsync -avz $TMPDIR/commondriver ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbin."/".$now_app."\n";
+		system "rsync -avz $TMPDIR/commondriver ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbin."/".$now_app;
+
+		# zusaetzliche commondriver (jeweils einen fuer jeden eintrag in action=addcaller(caller1,caller2))
+		#-------------------
+		# --- START ACTION 'addcaller' --- #
+#		my $full_term;
+		if ( grep { /addcaller/; /addcaller\((.+)\)/ } @now_action )
+		{
+			my @all_caller;
+			# alle action-strings durchgehen und falls vorhanden die filenamen innerhalb der klammern feststellen
+			foreach (@now_action)
+			{
+				if ($_ =~ m/addcaller\((.+)\)/)
+				{
+					push(@all_caller, split(",", $1));
+				}
+			}
+			
+			foreach my $caller (@all_caller)
+			{
+				print "info: installing additional common driver $TMPDIR/commondriver to $now_targetbin"."/".$caller."\n";
+				print "rsync -avz $TMPDIR/commondriver ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbin."/".$caller."\n";
+				system "rsync -avz $TMPDIR/commondriver ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbin."/".$caller;
+			}
+		}
+		#-------------------
+		# --- END ACTION 'add_caller' --- #
 
 		# rechte in zielverzeichnis setzen auf 755
 		print "info: setting rights in targetbulk to 755\n";
