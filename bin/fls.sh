@@ -17,7 +17,7 @@ do_exec() {
 #	else
 #		./jsvc64 -server -home $JAVA -cp $CLASS_PATH -pidfile $PID $1 $CLASS
 #	fi	
-[% ersetze_mich_durch_aufruf %]
+<ersetze_mich_durch_aufruf>
 }
 
 case "$1" in
