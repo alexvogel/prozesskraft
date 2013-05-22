@@ -649,6 +649,10 @@ foreach my $refh_stackline (@CONFIG)
 								date	=> sub	{
 													print "replacing placeholder for 'date' with '$date_lastcommit'\n";
 													return $date_lastcommit;
+												},
+								home	=> sub	{
+													print "replacing placeholder for 'home' with '".$ENV{'HOME'}."'\n";
+													return $ENV{'HOME'};
 												}
 								};
  					$tt->process($relname, $vars, $relname) || die $tt->error();
