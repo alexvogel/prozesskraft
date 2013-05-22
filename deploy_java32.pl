@@ -12,7 +12,7 @@ my $cwd = getcwd;
 # oeffnen des startscripts und setzen des aufrufs fuer java64 oder java32
 my $filename_server = "bin/license4j-server.sh";
 my $path_server_start = $cwd."/".$filename_server;
-open (SERVER, '<', $path_server_start) or die "Can't read $path_server_start: $!";
+open (SERVER, '>', $path_server_start) or die "Can't read $path_server_start: $!";
 
 while(<SERVER>)
 {
@@ -23,7 +23,7 @@ close SERVER;
 # oeffnen des startscripts fuer administration und setzen des aufrufs fuer java64 oder java32
 my $filename_server_admin = "bin/license4j-server-admin.sh";
 my $path_server_admin = $cwd."/".$filename_server_admin;
-open (SERVERADMIN, '<', $path_server_admin) or die "Can't read $path_server_admin: $!";
+open (SERVERADMIN, '>', $path_server_admin) or die "Can't read $path_server_admin: $!";
 
 while(<SERVERADMIN>)
 {
@@ -34,7 +34,7 @@ close SERVERADMIN;
 # oeffnen des startscripts und setzen des aufrufs fuer java64 oder java32
 my $filename_fls = "bin/fls.sh";
 my $path_fls = $cwd."/".$filename_fls;
-open (AUFRUFSCRIPT, '<', $path_server_start) or die "Can't read $path_server_start: $!";
+open (AUFRUFSCRIPT, '>', $path_server_start) or die "Can't read $path_server_start: $!";
 
 while(<AUFRUFSCRIPT>)
 {
