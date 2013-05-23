@@ -140,6 +140,7 @@ public class PradarPartUi3 extends ModelObject
 	
 	Display display;
 	
+	final Color colorLogFatal = new Color(new Shell().getDisplay(), 215, 40, 40);
 	final Color colorLogError = new Color(new Shell().getDisplay(), 215, 165, 172);
 	final Color colorLogWarn = new Color(new Shell().getDisplay(), 202, 191, 142);
 	final Color colorLogInfo = new Color(new Shell().getDisplay(), 184, 210, 176);
@@ -879,20 +880,29 @@ public class PradarPartUi3 extends ModelObject
 
 	void log(String level, String logstring)
 	{
-//		text_logging.setText(text_logging.getText()+logstring+"\n");
+
 		logstring = "["+new Timestamp(System.currentTimeMillis()) + "]:"+level+":"+logstring;
+
 		if (text_logging != null)
 		{
 			text_logging.append(logstring+"\n");
 //			if (level.equals("info"))		{	text_logging.setLineBackground(logLineCount, 1, colorLogWarn);}
 			if (level.equals("warn"))	{	text_logging.setLineBackground(logLineCount, 1, colorLogWarn);}
 			else if (level.equals("error"))	{	text_logging.setLineBackground(logLineCount, 1, colorLogError);}
+			else if (level.equals("fatal"))	{	text_logging.setLineBackground(logLineCount, 1, colorLogFatal);}
 			logLineCount = logLineCount+1;
 			text_logging.setTopIndex(text_logging.getLineCount()-1);
+			
+			// alles ausser level=info soll auch auf der kommandozeile ausgegeben werden
+			if (!(level.equals("info")))
+			{
+				System.err.println(logstring);
+			}
 		}
+		
 		else
 		{
-			System.out.println(logstring);
+			System.err.println(logstring);
 		}
 	}
 	
@@ -944,8 +954,16 @@ public class PradarPartUi3 extends ModelObject
 		
 		if (!(license_valid))
 		{
-			log("fatal", "no valid license found.");
-			System.exit(1);
+			log("fatal", "no valid license found. forcing exit.");
+			try
+			{
+				Thread.sleep(10000);
+				System.exit(1);
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else
 		{
