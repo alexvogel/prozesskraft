@@ -764,7 +764,7 @@ public class PradarPartUi3 extends ModelObject
 			{
 				// TODO Auto-generated catch block
 				log("warn", "input / output problems at "+portNumber+"@"+machineName);
-	//					e.printStackTrace();
+						e.printStackTrace();
 			}
 	
 			// daten holen aus db
