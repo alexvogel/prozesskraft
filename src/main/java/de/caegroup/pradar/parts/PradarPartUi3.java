@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.ConnectException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.sql.Timestamp;
@@ -93,6 +94,10 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import com.license4j.License;
+import com.license4j.LicenseValidator;
+import com.license4j.util.FileUtils;
+
 public class PradarPartUi3 extends ModelObject
 {
 	static CommandLine line;
@@ -140,6 +145,10 @@ public class PradarPartUi3 extends ModelObject
 	final Color colorLogInfo = new Color(new Shell().getDisplay(), 184, 210, 176);
 	
 	int logLineCount = 0;
+	
+	ArrayList<String> pradar_server_port_at_hostname = new ArrayList<String>();
+	ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
+	License license = null;
 
 
 	/**
@@ -148,6 +157,7 @@ public class PradarPartUi3 extends ModelObject
 	 */
 	public PradarPartUi3()
 	{
+		loadIni();
 		Shell shell = new Shell();
 		shell.setSize(633, 767);
 		Composite composite = new Composite(shell, SWT.NONE);
@@ -164,6 +174,7 @@ public class PradarPartUi3 extends ModelObject
 	@Inject
 	public PradarPartUi3(Composite composite)
 	{
+		loadIni();
 		applet = new PradarViewProcessingPage(this);
 		refresh_last.setTimeInMillis(0);
 		refresh();
@@ -675,118 +686,19 @@ public class PradarPartUi3 extends ModelObject
 		return bindingContextFilter;
 	}
 	
+	/**
+	 * refreshes data (entities) from database
+	 * @return void
+	 */
 	void refresh()
 	{
-		load();
-		filter();
-		applet.refresh();
-	}
-	
-	void load()
-	{
+		checkLicense();
 		now = Calendar.getInstance();
 		if ((now.getTimeInMillis() - refresh_last.getTimeInMillis()) > refresh_min_interval)
 		{
-			PradarViewProcessingPage tmp = new PradarViewProcessingPage(this);
-			File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
-			
-			Ini ini;
-			
-			ArrayList<String> pradar_server_list = new ArrayList<String>();
-			
-			try
-			{
-				ini = new Ini(inifile);
-				for(int x = 1; x <= 5; x++)
-				{
-					if (ini.get("pradar-server", "pradar-server-"+x) != null )
-					{
-						pradar_server_list.add(ini.get("pradar-server", "pradar-server-"+x));
-					}
-				}
-			}
-			catch (InvalidFileFormatException e1)
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			catch (IOException e1)
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			// einchecken in die DB
-			Socket server = null;
-			
-			boolean pradar_server_not_found = true;
-			
-			// ueber alle server aus ini-file iterieren und dem ersten den auftrag erteilen
-			Iterator<String> iter_pradar_server = pradar_server_list.iterator();
-			while(pradar_server_not_found && iter_pradar_server.hasNext())
-			{
-				String port_and_machine_as_string = iter_pradar_server.next();
-				String [] port_and_machine = port_and_machine_as_string.split("@");
-
-				int portNumber = Integer.parseInt(port_and_machine[0]);
-				String machineName = port_and_machine[1];
-				log("info", "trying pradar-server "+portNumber+"@"+machineName);
-				try
-				{
-					// socket einrichten und Out/Input-Streams setzen
-					server = new Socket(machineName, portNumber);
-					OutputStream out = server.getOutputStream();
-					InputStream in = server.getInputStream();
-					ObjectOutputStream objectOut = new ObjectOutputStream(out);
-					ObjectInputStream  objectIn  = new ObjectInputStream(in);
-					
-					// Objekte zum server uebertragen
-					objectOut.writeObject("getall");
-
-					// Antwort vom Server lesen. (Liste bereits Druckfertig aufbereitet)
-					try
-					{
-						this.entities_all = (ArrayList<Entity>) objectIn.readObject();
-					} catch (ClassNotFoundException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					// nachricht wurde erfolgreich an server gesendet --> schleife beenden
-					pradar_server_not_found = false;
-				}
-				catch (UnknownHostException e)
-				{
-					// TODO Auto-generated catch block
-					log("warn", "unknown host "+machineName+" (UnknownHostException)");
-//					e.printStackTrace();
-				}
-				catch (ConnectException e)
-				{
-					log("warn", "no pradar-server found at "+portNumber+"@"+machineName);
-//					e.printStackTrace();
-				}
-				catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					log("warn", "input / output problems at "+portNumber+"@"+machineName);
-//					e.printStackTrace();
-				}
-			}
-			
-			if (pradar_server_not_found)
-			{
-				log("error", "no pradar-server found. talk to your administrator.");
-//				System.exit(1);
-			}
-			
-
-			// daten holen aus db
-			log("info", "refreshing data...");
-			this.refresh_last = Calendar.getInstance();
-			this.refresh_next = Calendar.getInstance();
-			this.refresh_next.add(13, this.refresh_interval);
+			loadData();
+			filter();
+			applet.refresh();
 		}
 		else
 		{
@@ -794,6 +706,175 @@ public class PradarPartUi3 extends ModelObject
 //			System.out.println("refresh interval must be at least "+(this.refresh_min_interval/1000)+" seconds.");
 			
 		}
+	}
+
+	/**
+	 * asks for entities from the first pradar-server that responds
+	 * @return void
+	 */
+	void loadData()
+	{
+		Iterator<String> iterPradarServer = this.pradar_server_port_at_hostname.iterator();
+		while(iterPradarServer.hasNext())
+		{
+			String portAtMachineAsString = iterPradarServer.next();
+			String [] port_and_machine = portAtMachineAsString.split("@");
+	
+			int portNumber = Integer.parseInt(port_and_machine[0]);
+			String machineName = port_and_machine[1];
+			log("info", "trying pradar-server "+portNumber+"@"+machineName);
+			try
+			{
+				// socket einrichten und Out/Input-Streams setzen
+				Socket server = new Socket(machineName, portNumber);
+				OutputStream out = server.getOutputStream();
+				InputStream in = server.getInputStream();
+				ObjectOutputStream objectOut = new ObjectOutputStream(out);
+				ObjectInputStream  objectIn  = new ObjectInputStream(in);
+				
+				// Objekte zum server uebertragen
+				objectOut.writeObject("getall");
+	
+				// Antwort vom Server lesen. (Liste bereits Druckfertig aufbereitet)
+				try
+				{
+					this.entities_all = (ArrayList<Entity>) objectIn.readObject();
+				}
+				catch (ClassNotFoundException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+			catch (UnknownHostException e)
+			{
+				// TODO Auto-generated catch block
+				log("warn", "unknown host "+machineName);
+				this.pradar_server_port_at_hostname = null;
+	//					e.printStackTrace();
+			}
+	//		catch (ConnectException e)
+	//		{
+	//			log("warn", "no pradar-server found at "+portNumber+"@"+machineName);
+	////					e.printStackTrace();
+	//		}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				log("warn", "input / output problems at "+portNumber+"@"+machineName);
+	//					e.printStackTrace();
+			}
+	
+			// daten holen aus db
+			log("info", "refreshing data...");
+			this.refresh_last = Calendar.getInstance();
+			this.refresh_next = Calendar.getInstance();
+			this.refresh_next.add(13, this.refresh_interval);
+		}
+	}
+	
+	/**
+	 * loads variables from ini-file, tests whether server are responding and saves the responding ones to fields
+	 * @return void
+	 */
+	void loadIni()
+	{
+		PradarViewProcessingPage tmp = new PradarViewProcessingPage(this);
+		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
+			
+		Ini ini;
+			
+		ArrayList<String> pradar_server_list = new ArrayList<String>();
+		ArrayList<String> license_server_list = new ArrayList<String>();
+			
+		try
+		{
+			ini = new Ini(inifile);
+			// einlesen der ini-section [pradar-server]
+			for(int x = 1; x <= 5; x++)
+			{
+				if (ini.get("pradar-server", "pradar-server-"+x) != null )
+				{
+					pradar_server_list.add(ini.get("pradar-server", "pradar-server-"+x));
+				}
+			}
+			// einlesen der ini-section [license-server]
+			for(int x = 1; x <= 3; x++)
+			{
+				if (ini.get("license-server", "license-server-"+x) != null )
+				{
+					license_server_list.add(ini.get("license-server", "license-server-"+x));
+				}
+			}
+			this.license_server_port_at_hostname = license_server_list;
+		}
+		catch (InvalidFileFormatException e1)
+		{
+			log("error", "invalid fileformat of inifile: "+inifile);
+			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+		}
+		catch (IOException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+			
+		// einchecken in die DB
+		Socket server = null;
+			
+		boolean pradar_server_not_found = true;
+			
+		// ueber alle pradar-server aus ini-file iterieren und den ersten erfolgreichen merken fuer spaetere anfragen
+		Iterator<String> iter_pradar_server = pradar_server_list.iterator();
+		while(pradar_server_not_found && iter_pradar_server.hasNext() && (this.pradar_server_port_at_hostname.size() == 0))
+		{
+			String port_and_machine_as_string = iter_pradar_server.next();
+			String [] port_and_machine = port_and_machine_as_string.split("@");
+
+			int portNumber = Integer.parseInt(port_and_machine[0]);
+			String machineName = port_and_machine[1];
+			log("info", "trying pradar-server "+portNumber+"@"+machineName);
+			try
+			{
+				// socket einrichten und Out/Input-Streams setzen
+				server = new Socket(machineName, portNumber);
+				OutputStream out = server.getOutputStream();
+				InputStream in = server.getInputStream();
+				ObjectOutputStream objectOut = new ObjectOutputStream(out);
+				ObjectInputStream  objectIn  = new ObjectInputStream(in);
+				
+				// socket wurde erfolgreich mit dem server verbunden. pradar-server soll fuer weitere Anfragen gemerkt werden
+				this.pradar_server_port_at_hostname.add(port_and_machine_as_string);
+				pradar_server_not_found = false;
+				log("info", "valid pradar-server found at "+portNumber+"@"+machineName);
+			}
+			catch (UnknownHostException e)
+			{
+				// TODO Auto-generated catch block
+				log("warn", "unknown host "+machineName);
+//					e.printStackTrace();
+			}
+			catch (ConnectException e)
+			{
+				log("warn", "no pradar-server found at "+portNumber+"@"+machineName);
+//					e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				log("warn", "input / output problems at "+portNumber+"@"+machineName);
+//					e.printStackTrace();
+			}
+			
+		}
+		if (pradar_server_not_found)
+		{
+			log("error", "no pradar-server found. talk to your administrator.");
+//			System.exit(1);
+		}
+
 	}
 
 	void log(String level, String logstring)
@@ -815,6 +896,72 @@ public class PradarPartUi3 extends ModelObject
 		}
 	}
 	
+	/**
+	 * checkout License from floatingLicenseServer
+	 * @return void
+	 */
+	void checkLicense()
+	{
+		String publicKey =	"30819f300d06092a864886f70d010101050003818d003081893032301006"
+							+ "072a8648ce3d02002EC311215SHA512withECDSA106052b81040006031e0"
+							+ "004b46c75f6fe31c9721cb3d37bcd3ca6e80beb6309c43816b6551641a5G"
+							+ "02818100979bb432406483b286aa994af0141b619ae38c8b9b82c0766adc"
+							+ "d13179e2f6a393a38685f524cd01b382e2ebc215d1dd9d13c05f7f898c1a"
+							+ "36df447c282f25d1e04a20988a8ef91dd1fde2af0bb4fa242df3df8070bd"
+							+ "d04bc83f4266202a73f303RSA4102413SHA512withRSA9c26a4d464229e9"
+							+ "5b40df68620efd5bc408f0d8bb8d99499c465811c498080ad0203010001";
+
+		boolean license_valid = false;		
+		
+		Iterator<String> iterLicenseServerAsPortAtHostname = this.license_server_port_at_hostname.iterator();
+		while(iterLicenseServerAsPortAtHostname.hasNext() && (!(license_valid)))
+		{
+			String portAtHost = iterLicenseServerAsPortAtHostname.next();
+			String[] port_and_host = portAtHost.split("@");
+			log("info", "trying license-server "+portAtHost);
+			InetAddress inetAddressHost;
+			try
+			{
+				inetAddressHost = InetAddress.getByName(port_and_host[1]);
+				license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
+//				License license = LicenseValidator.validate("", "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
+				log("info", "license validation returns "+license.getValidationStatus().toString());
+				
+				switch(license.getValidationStatus())
+				{
+					case LICENSE_VALID:
+						license_valid = true;
+					break;
+				}
+			}
+			catch (UnknownHostException e)
+			{
+				// TODO Auto-generated catch block
+				log("warn", "unknown host "+port_and_host[1]);
+	//			e.printStackTrace();
+			}
+		}
+		
+		if (!(license_valid))
+		{
+			log("fatal", "no valid license found.");
+			System.exit(1);
+		}
+		else
+		{
+			log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
+		}
+	}
+
+//	/**
+//	 * check if license is still valid
+//	 * @return void
+//	 */
+//	void checkLicense()
+//	{
+//		log("info", license.getValidationStatus().toString());
+//	}
+//	
 	void filter()
 	{
 		this.entities_filtered = entity_filter.getAllMatches(this.entities_all);
