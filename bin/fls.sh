@@ -8,7 +8,7 @@
 CLASS_PATH=FloatingLicenseServer.jar
 CLASS=com.license4j.floatinglicenseserver.server.FloatingLicenseServerDaemon
 #PID=/var/run/fls.pid
-PID=<ersetze_mich_durch_home>/fls.pid
+PID=/var/tmp/fls.pid
 
 do_exec() {
 #	if [ `getconf LONG_BIT` == "32" ]

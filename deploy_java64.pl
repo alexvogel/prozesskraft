@@ -50,8 +50,7 @@ open (AUFRUFSCRIPT_OUT, '>', $path_tmp_fls) or die "Can't write $path_tmp_fls: $
 
 while(<AUFRUFSCRIPT>)
 {
-	$_ =~ s/<ersetze_mich_durch_aufruf>/\.\/jsvc64 -server -home \$JAVA -cp \$CLASS_PATH -pidfile \$PID $1 \$CLASS/;
-	$_ =~ s/<ersetze_mich_durch_home>/\/home\/avo/;
+	$_ =~ s/<ersetze_mich_durch_aufruf>/\.\/jsvc64 -server -home \$JAVA -cp \$CLASS_PATH -pidfile \$PID \$1 \$CLASS/;
 	print AUFRUFSCRIPT_OUT $_;
 }
 close AUFRUFSCRIPT;
