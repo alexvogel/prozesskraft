@@ -33,7 +33,8 @@ public class Server
 	static Ini ini;
 	static int portNumber;
 	static File dbFile;
-	static File logFile = null;
+	static File logFileOut = null;
+	static File logFileErr = null;
 	static String sshIdRelPath;
 
 	/*----------------------------
@@ -64,9 +65,13 @@ public class Server
 				{
 					portNumber = Integer.parseInt(ini.get("pradar-server", "port"));
 				}
-				if (ini.get("pradar-server", "logfile") != null )
+				if (ini.get("pradar-server", "logfileout") != null )
 				{
-					logFile = new File(ini.get("pradar-server", "logfile"));
+					logFileOut = new File(ini.get("pradar-server", "logfileout"));
+				}
+				if (ini.get("pradar-server", "logfileerr") != null )
+				{
+					logFileErr = new File(ini.get("pradar-server", "logfileerr"));
 				}
 				if (ini.get("pradar-db", "pradar-db-path") != null )
 				{
@@ -228,12 +233,24 @@ public class Server
 				System.err.println("make sure it exists when you start checking in new entities.");
 				System.err.println("use 'pradar-init' to initialize a dbfile.");
 			}
-			if (logFile != null)
+			if (logFileOut != null)
 			{
 				try
 				{
-					System.setOut(new PrintStream(logFile));
-					System.setErr(new PrintStream(logFile));
+					System.out.println("STDOUT will be redirected to "+logFileOut.getAbsolutePath());
+					System.setOut(new PrintStream(logFileOut));
+				} catch (FileNotFoundException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (logFileErr != null)
+			{
+				try
+				{
+					System.out.println("STDERR will be redirected to "+logFileErr.getAbsolutePath());
+					System.setErr(new PrintStream(logFileErr));
 				} catch (FileNotFoundException e)
 				{
 					// TODO Auto-generated catch block
