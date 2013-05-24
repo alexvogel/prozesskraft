@@ -249,7 +249,7 @@ public class Server
 			{
 				try
 				{
-					System.out.println("STDERR will be redirected to "+logFileErr.getAbsolutePath());
+					System.err.println("STDERR will be redirected to "+logFileErr.getAbsolutePath());
 					System.setErr(new PrintStream(logFileErr));
 				} catch (FileNotFoundException e)
 				{
