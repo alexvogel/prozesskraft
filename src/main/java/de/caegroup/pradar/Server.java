@@ -233,6 +233,7 @@ public class Server
 				try
 				{
 					System.setOut(new PrintStream(logFile));
+					System.setErr(new PrintStream(logFile));
 				} catch (FileNotFoundException e)
 				{
 					// TODO Auto-generated catch block
