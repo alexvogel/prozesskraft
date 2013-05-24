@@ -63,7 +63,7 @@ public class Server
 				}
 				if (ini.get("pradar-db", "pradar-db-path") != null )
 				{
-					dbFile = new File(ini.get("pradar-db", "pradar-db"));
+					dbFile = new File(ini.get("pradar-db", "pradar-db-path"));
 				}
 				if (ini.get("ssh", "ssh-id") != null )
 				{
