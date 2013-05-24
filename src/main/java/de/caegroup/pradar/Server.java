@@ -1,9 +1,11 @@
 package de.caegroup.pradar;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -31,6 +33,7 @@ public class Server
 	static Ini ini;
 	static int portNumber;
 	static File dbFile;
+	static File logFile = null;
 	static String sshIdRelPath;
 
 	/*----------------------------
@@ -60,6 +63,10 @@ public class Server
 				if (ini.get("pradar-server", "port") != null )
 				{
 					portNumber = Integer.parseInt(ini.get("pradar-server", "port"));
+				}
+				if (ini.get("pradar-server", "logfile") != null )
+				{
+					logFile = new File(ini.get("pradar-server", "logfile"));
 				}
 				if (ini.get("pradar-db", "pradar-db-path") != null )
 				{
@@ -220,6 +227,17 @@ public class Server
 				System.err.println("dbfile does not exist. this is perfectly fine at the moment.");
 				System.err.println("make sure it exists when you start checking in new entities.");
 				System.err.println("use 'pradar-init' to initialize a dbfile.");
+			}
+			if (logFile != null)
+			{
+				try
+				{
+					System.setOut(new PrintStream(logFile));
+				} catch (FileNotFoundException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			System.out.println("starting pradar-server to listen on port "+portNumber+" governing over dbfile "+dbFile.getAbsolutePath());
 			ConcurrentServer server = new ConcurrentServer(sshIdRelPath, portNumber, dbFile);
