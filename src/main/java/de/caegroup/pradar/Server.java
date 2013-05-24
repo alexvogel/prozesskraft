@@ -223,7 +223,7 @@ public class Server
 			}
 			else
 			{
-				System.out.println("starting pradar-server to listen on port "+portNumber);
+				System.out.println("starting pradar-server to listen on port "+portNumber+" governing over dbfile "+dbFile.getAbsolutePath());
 				ConcurrentServer server = new ConcurrentServer(sshIdRelPath, portNumber, dbFile);
 			}
 		}
