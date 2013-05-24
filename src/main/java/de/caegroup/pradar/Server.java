@@ -49,8 +49,8 @@ public class Server
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
-		
+		String inifileString = WhereAmI.getDefaultInifile(tmp.getClass()).getAbsolutePath();
+		File inifile = new File(inifileString);
 
 		if (inifile.exists())
 		{
