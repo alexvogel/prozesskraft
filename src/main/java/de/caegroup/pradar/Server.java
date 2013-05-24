@@ -178,14 +178,6 @@ public class Server
 		{
 			dbFile = new File((line.getOptionValue("dbfile")));
 		}
-		else if ((ini.get("pradar-db", "pradar-db-path") != null ))
-		{
-			dbFile = new File((ini.get("pradar-db", "pradar-db-path")));
-		}
-		else
-		{
-			// verwende den default im ConcurrentServer (ServerSocket)
-		}
 		
 		if ( (line.hasOption("stop")) || (line.hasOption("restart")) )
 		{
@@ -223,8 +215,17 @@ public class Server
 		}
 		if ( line.hasOption("restart") || !(line.hasOption("stop")) )
 		{
-			System.out.println("starting pradar-server to listen on port "+portNumber);
-			ConcurrentServer server = new ConcurrentServer(sshIdRelPath, portNumber, dbFile);
+			// check ob dbfile an angegebener position vorhanden ist
+			if (!(dbFile.exists()))
+			{
+				System.err.println("dbfile does not exist: "+dbFile.getAbsolutePath());
+				System.err.println("server does not start.");
+			}
+			else
+			{
+				System.out.println("starting pradar-server to listen on port "+portNumber);
+				ConcurrentServer server = new ConcurrentServer(sshIdRelPath, portNumber, dbFile);
+			}
 		}
 	}
 }
