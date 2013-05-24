@@ -215,8 +215,13 @@ public class Server
 		}
 		if ( line.hasOption("restart") || !(line.hasOption("stop")) )
 		{
+			if (!(dbFile.exists()))
+			{
+				System.err.println("dbfile does not exist. this is perfectly fine at the moment.");
+				System.err.println("make sure it exists when you start checking in new entities.");
+				System.err.println("use 'pradar-init' to initialize a dbfile.");
+			}
 			System.out.println("starting pradar-server to listen on port "+portNumber+" governing over dbfile "+dbFile.getAbsolutePath());
-			System.out.println("make sure that dbfile exists: "+dbFile.getAbsolutePath());
 			ConcurrentServer server = new ConcurrentServer(sshIdRelPath, portNumber, dbFile);
 		}
 	}
