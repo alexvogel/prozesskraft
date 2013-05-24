@@ -100,7 +100,7 @@ public class Db
 			statement.setQueryTimeout(10);
 			
 			statement.executeUpdate("drop table if exists radar");
-			statement.executeUpdate("create table radar (id, parentid, process, host, user, checkin, checkout, active, exitcode, resource)");
+			statement.executeUpdate("create table radar (id TEXT, parentid TEXT, process TEXT, host TEXT, user TEXT, checkin TEXT, checkout TEXT, active TEXT, exitcode TEXT, resource TEXT)");
 			
 			this.connection.close();
 
@@ -353,7 +353,7 @@ public class Db
 	 * 2) host is unreachable and instance is older than 1 week
 	 * 
 	 */
-	public void cleanDb()
+	public void cleanDb(String sshIdRelPath)
 	{
 		this.sqlvoodoo();
 		this.connection = null;
@@ -381,14 +381,14 @@ public class Db
 				Entity actualEntity = iterentity.next();
 				if (actualEntity.isActive())
 				{
-					if (actualEntity.isHostReachable())
+					if (actualEntity.isHostReachable(sshIdRelPath))
 					{
 						System.out.println("host "+actualEntity.getHost()+" is reachable");
 						
-						if (!(actualEntity.isInstanceAlive()))
+						if (!(actualEntity.isInstanceAlive(sshIdRelPath)))
 						{
 							System.out.println("instance appears to be vanished: pid "+actualEntity.getId());
-							String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='? (forced checkout)' WHERE id IS "+actualEntity.getId()+" AND host IS '"+actualEntity.getHost()+"' AND user IS '"+actualEntity.getUser()+"' AND process IS '"+actualEntity.getProcess()+"' AND active IS 'true'";
+							String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='? (forced checkout)' WHERE id IS '"+actualEntity.getId()+"' AND host IS '"+actualEntity.getHost()+"' AND user IS '"+actualEntity.getUser()+"' AND process IS '"+actualEntity.getProcess()+"' AND active IS 'true'";
 //							System.out.println(sql);
 //							statement.execute(sql);
 							statement.executeUpdate(sql);
@@ -403,7 +403,7 @@ public class Db
 					else if ( (actualEntity.getCheckinInMillis() - System.currentTimeMillis()) > 604800000 )
 					{
 						System.out.println("host is unreachable and instance is older than 1 week.");
-						String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='? (forced checkout)' WHERE id IS "+actualEntity.getId()+" AND host IS '"+actualEntity.getHost()+"' AND user IS '"+actualEntity.getUser()+"' AND process IS '"+actualEntity.getProcess()+"' AND active IS 'true'";
+						String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='? (forced checkout)' WHERE id IS '"+actualEntity.getId()+"' AND host IS '"+actualEntity.getHost()+"' AND user IS '"+actualEntity.getUser()+"' AND process IS '"+actualEntity.getProcess()+"' AND active IS 'true'";
 //						System.out.println(sql);
 						statement.executeUpdate(sql);
 					}

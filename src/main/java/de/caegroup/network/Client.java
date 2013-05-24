@@ -89,7 +89,7 @@ public class Client
 			}
 			else if (type.equals("cleandb"))
 			{
-				this.parent.db.cleanDb();
+				this.parent.db.cleanDb(this.parent.getSshIdRelPath());
 				System.out.println("cleaning db.");
 			}
 			else

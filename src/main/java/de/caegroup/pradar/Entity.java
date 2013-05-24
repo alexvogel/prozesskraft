@@ -169,14 +169,17 @@ implements Serializable
 	 * determines whether host is reachable via ssh
 	 * @return boolean
 	 */
-	public boolean isHostReachable()
+	public boolean isHostReachable(String sshIdRelPath)
 	{
 		boolean reachable = false;
+		
+		String sshIdAbsPath = System.getProperty("user.home")+"/"+sshIdRelPath;
+		System.out.println("using ssh-id-rsa: "+sshIdAbsPath);
 		
 		try
 		{
 			JSch jsch = new JSch();
-			jsch.addIdentity(".ssh/id_rsa");
+			jsch.addIdentity(sshIdAbsPath);
 			Session session = jsch.getSession(System.getProperty("user.name"), this.host, 22);
 //			session.setPassword("salutner1");
 //			System.out.println("establishing connection...");
@@ -208,8 +211,11 @@ implements Serializable
 	 * determines whether PID is alive on host
 	 * @return boolean
 	 */
-	public boolean isInstanceAlive()
+	public boolean isInstanceAlive(String sshIdRelPath)
 	{
+		String sshIdAbsPath = System.getProperty("user.home")+"/"+sshIdRelPath;
+		System.out.println("using ssh-id-rsa: "+sshIdAbsPath);
+
 		boolean alive = false;
 		Pattern patternPsLinux = Pattern.compile("^ *(\\d+) +[^ ]+ +[^ ]+ +(.+)$");
 
@@ -217,7 +223,7 @@ implements Serializable
 		{
 			JSch jsch = new JSch();
 
-			jsch.addIdentity(".ssh/id_rsa");
+			jsch.addIdentity(sshIdAbsPath);
 
 			Session session = jsch.getSession(System.getProperty("user.name"), this.host, 22);
 			session.setConfig("StrictHostKeyChecking", "no");
