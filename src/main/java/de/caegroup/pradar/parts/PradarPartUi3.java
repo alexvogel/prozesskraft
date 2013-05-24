@@ -747,6 +747,9 @@ public class PradarPartUi3 extends ModelObject
 					e.printStackTrace();
 				}
 				
+				// daten holen aus db
+				log("info", "refreshing data...");
+				
 			}
 			catch (UnknownHostException e)
 			{
@@ -767,8 +770,6 @@ public class PradarPartUi3 extends ModelObject
 						e.printStackTrace();
 			}
 	
-			// daten holen aus db
-			log("info", "refreshing data...");
 			this.refresh_last = Calendar.getInstance();
 			this.refresh_next = Calendar.getInstance();
 			this.refresh_next.add(13, this.refresh_interval);

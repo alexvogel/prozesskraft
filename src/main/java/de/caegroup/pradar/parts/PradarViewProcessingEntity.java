@@ -231,12 +231,15 @@ public class PradarViewProcessingEntity
 				// bei jedem pentity, dass sich mit dem aktuellen ueberschneidet, soll antiGravity berechnet werden
 				if (
 						(
-								(pentity.getEntity().getCheckinInMillis() > this.getEntity().getCheckinInMillis())   &&
-								(pentity.getEntity().getCheckinInMillis() < this.getEntity().getCheckoutInMillis())
+								(pentity.getEntity().getCheckinInMillis() >= this.getEntity().getCheckinInMillis())   &&
+								(pentity.getEntity().getCheckinInMillis() <= this.getEntity().getCheckoutInMillis())
 						)  ||
 						(
-								(pentity.getEntity().getCheckoutInMillis() < this.getEntity().getCheckoutInMillis())  &&
-								(pentity.getEntity().getCheckoutInMillis() > this.getEntity().getCheckinInMillis())
+								(pentity.getEntity().getCheckoutInMillis() <= this.getEntity().getCheckoutInMillis())  &&
+								(pentity.getEntity().getCheckoutInMillis() >= this.getEntity().getCheckinInMillis())
+						)  ||
+						(
+								(pentity.getEntity().getCheckoutInMillis() == this.getEntity().getCheckoutInMillis())
 						)
 					)
 				{
