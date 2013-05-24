@@ -76,5 +76,10 @@ public class WhereAmI {
 	{
 		return 37888;
 	}
+
+	public static String getDefaultSshIdRsa()
+	{
+		return "/.ssh/id_rsa";
+	}
 }
 
