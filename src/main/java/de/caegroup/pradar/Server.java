@@ -29,8 +29,9 @@ public class Server
 	----------------------------*/
 	static CommandLine line;
 	static Ini ini;
-	static int portNumber = WhereAmI.getDefaultPortNumber();
-	static File dbfile;
+	static int portNumber;
+	static File dbFile;
+	static String sshIdRelPath;
 
 	/*----------------------------
 	  constructors
@@ -41,36 +42,45 @@ public class Server
 	public static void main(String[] args) throws org.apache.commons.cli.ParseException
 	{
 		
+		Server tmp = new Server();
+		dbFile = WhereAmI.getDefaultDbfile(tmp.getClass());
+		sshIdRelPath = WhereAmI.getDefaultSshIdRsa();
+		portNumber = WhereAmI.getDefaultPortNumber();
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		Server tmp = new Server();
 		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
 		
-		ArrayList<String> pradar_server_list = new ArrayList<String>();
-		
-		try
+
+		if (inifile.exists())
 		{
-			ini = new Ini(inifile);
-			for(int x = 1; x <= 5; x++)
+			try
 			{
-				if (ini.get("pradar-server", "pradar-server-"+x) != null )
+				ini = new Ini(inifile);
+				if (ini.get("pradar-server", "port") != null )
 				{
-					pradar_server_list.add(ini.get("pradar-server", "pradar-server-"+x));
+					portNumber = Integer.parseInt(ini.get("pradar-server", "port"));
+				}
+				if (ini.get("pradar-db", "pradar-db-path") != null )
+				{
+					dbFile = new File(ini.get("pradar-db", "pradar-db"));
+				}
+				if (ini.get("ssh", "ssh-id") != null )
+				{
+					sshIdRelPath = ini.get("ssh", "ssh-id");
 				}
 			}
-		}
-		catch (InvalidFileFormatException e1)
-		{
+			catch (InvalidFileFormatException e1)
+			{
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		catch (IOException e1)
-		{
+				e1.printStackTrace();
+			}
+			catch (IOException e1)
+			{
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+				e1.printStackTrace();
+			}
 		}
-		
 		/*----------------------------
 		  create boolean options
 		----------------------------*/
@@ -155,9 +165,9 @@ public class Server
 		{
 			portNumber = Integer.parseInt(line.getOptionValue("port"));
 		}
-		else if ((ini.get("meta", "port") != null ))
+		else if ((ini.get("pradar-server", "port") != null ))
 		{
-			portNumber = Integer.parseInt(ini.get("meta", "port"));
+			portNumber = Integer.parseInt(ini.get("pradar-server", "port"));
 		}
 		else
 		{
@@ -166,11 +176,11 @@ public class Server
 		
 		if (line.hasOption("dbfile"))
 		{
-			dbfile = new File((line.getOptionValue("dbfile")));
+			dbFile = new File((line.getOptionValue("dbfile")));
 		}
-		else if ((ini.get("meta", "dbfile") != null ))
+		else if ((ini.get("pradar-db", "pradar-db-path") != null ))
 		{
-			dbfile = new File((ini.get("meta", "pradar-db-path")));
+			dbFile = new File((ini.get("pradar-db", "pradar-db-path")));
 		}
 		else
 		{
@@ -214,7 +224,7 @@ public class Server
 		if ( line.hasOption("restart") || !(line.hasOption("stop")) )
 		{
 			System.out.println("starting pradar-server to listen on port "+portNumber);
-			ConcurrentServer server = new ConcurrentServer(portNumber);
+			ConcurrentServer server = new ConcurrentServer(sshIdRelPath, portNumber, dbFile);
 		}
 	}
 }
