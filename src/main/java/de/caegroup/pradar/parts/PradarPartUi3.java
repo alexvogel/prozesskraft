@@ -3,7 +3,10 @@ package de.caegroup.pradar.parts;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.MouseWheelEvent;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -110,6 +113,7 @@ public class PradarPartUi3 extends ModelObject
 	private Spinner spinner_period;
 	private Button btnChildren;
 	private Button button_refresh = null;
+	private Button button_showlog = null;
 	private Button button_radar = null;
 	private Button button_tree = null;
 	private Scale scale_zoom;
@@ -121,8 +125,8 @@ public class PradarPartUi3 extends ModelObject
 	
 	public ArrayList<Entity> entities_all = new ArrayList<Entity>();
 	public ArrayList<Entity> entities_filtered;
-//	public ArrayList<Entity> entities_children_of_filtered;
-
+//	public Entity entity_marked = null;
+	
 	private int refresh_min_interval = 5000;
 	private int refresh_interval = 600000;
 	private Calendar now = Calendar.getInstance();
@@ -159,6 +163,7 @@ public class PradarPartUi3 extends ModelObject
 	public PradarPartUi3()
 	{
 		loadIni();
+//		checkLicense();
 		Shell shell = new Shell();
 		shell.setSize(633, 767);
 		Composite composite = new Composite(shell, SWT.NONE);
@@ -176,6 +181,7 @@ public class PradarPartUi3 extends ModelObject
 	public PradarPartUi3(Composite composite)
 	{
 		loadIni();
+//		checkLicense();
 		applet = new PradarViewProcessingPage(this);
 		refresh_last.setTimeInMillis(0);
 		refresh();
@@ -271,7 +277,7 @@ public class PradarPartUi3 extends ModelObject
 		new Label(grpFilter, SWT.NONE);
 		
 		Group grpFunction = new Group(composite_11, SWT.NONE);
-		grpFunction.setLayout(new GridLayout(1, false));
+		grpFunction.setLayout(new GridLayout(2, false));
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpFunction.setText("function");
 		
@@ -279,6 +285,11 @@ public class PradarPartUi3 extends ModelObject
 		button_refresh.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		button_refresh.setText("refresh");
 		button_refresh.addSelectionListener(listener_refresh_button);
+		
+		button_showlog = new Button(grpFunction, SWT.NONE);
+		button_showlog.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		button_showlog.setText("showlog");
+		button_showlog.addSelectionListener(listener_showlog_button);
 		
 		Group grpVisual = new Group(composite_11, SWT.NONE);
 		grpVisual.setText("visual");
@@ -528,6 +539,31 @@ public class PradarPartUi3 extends ModelObject
 		{
 //			System.out.println("button wurde gedrueckt");
 			refresh();
+		}
+	};
+	
+	SelectionAdapter listener_showlog_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+//			System.out.println("button wurde gedrueckt");
+			if (einstellungen.entitySelected != null && (!(einstellungen.entitySelected.getResource().equals(""))))
+			{
+				log("info", "showing logfile "+einstellungen.entitySelected.getResource());
+				showTextFile(einstellungen.entitySelected.getResource());
+			}
+			else if (einstellungen.entitySelected != null && einstellungen.entitySelected.getResource().equals(""))
+			{
+				log("warn", "no logfile for entity "+einstellungen.entitySelected.getId()+" (is an instance of process '"+einstellungen.entitySelected.getProcess()+"')");
+			}
+			else if (einstellungen.entitySelected != null && (new File(einstellungen.entitySelected.getResource()).canRead() ) )
+			{
+				log("warn", "cannot read logfile of entity "+einstellungen.entitySelected.getId()+" (is an instance of process '"+einstellungen.entitySelected.getProcess()+"')");
+			}
+			else
+			{
+				log("warn", "no entity marked.");
+			}
 		}
 	};
 	
@@ -923,20 +959,31 @@ public class PradarPartUi3 extends ModelObject
 							+ "5b40df68620efd5bc408f0d8bb8d99499c465811c498080ad0203010001";
 
 		boolean license_valid = false;		
+		boolean das_erste_mal = false;
+		if (license == null)
+		{
+			das_erste_mal = true;
+		}
 		
 		Iterator<String> iterLicenseServerAsPortAtHostname = this.license_server_port_at_hostname.iterator();
 		while(iterLicenseServerAsPortAtHostname.hasNext() && (!(license_valid)))
 		{
 			String portAtHost = iterLicenseServerAsPortAtHostname.next();
 			String[] port_and_host = portAtHost.split("@");
-			log("info", "trying license-server "+portAtHost);
 			InetAddress inetAddressHost;
 			try
 			{
 				inetAddressHost = InetAddress.getByName(port_and_host[1]);
+
 				license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
-//				License license = LicenseValidator.validate("", "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
-				log("info", "license validation returns "+license.getValidationStatus().toString());
+
+				// logging nur beim ersten mal
+				if (das_erste_mal)
+				{
+					log("info", "trying license-server "+portAtHost);
+					log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
+					log("info", "license validation returns "+license.getValidationStatus().toString());
+				}
 				
 				switch(license.getValidationStatus())
 				{
@@ -968,7 +1015,7 @@ public class PradarPartUi3 extends ModelObject
 		}
 		else
 		{
-			log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
+//			log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
 		}
 	}
 
@@ -980,7 +1027,7 @@ public class PradarPartUi3 extends ModelObject
 //	{
 //		log("info", license.getValidationStatus().toString());
 //	}
-//	
+	
 	void filter()
 	{
 		this.entities_filtered = entity_filter.getAllMatches(this.entities_all);
@@ -1018,6 +1065,69 @@ public class PradarPartUi3 extends ModelObject
 			}
 		}
 		return entityWithSuperId;
+	}
+	
+	/**
+	 * opens a seperate window and shows the content of a file
+	 * @param String pathToFile
+	 */
+	void showTextFile(String pathToFile)
+	{
+		String content = "problems while reading from file";
+		File file = new File(pathToFile);
+		if (!(file.exists()))
+		{
+//			log("warn", "cannot read file: "+pathToFile);
+			content = "cannot read file";
+		}
+		
+		try
+		{
+			content = readFile(pathToFile);
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// create the widget's shell
+		Shell shell = new Shell(display);
+		shell.setText(pathToFile);
+		shell.setLayout(new FillLayout());
+		shell.setSize(800, 400);
+//		Display display = shell.getDisplay();
+
+		// create the styled text widget
+		StyledText widget = new StyledText(shell, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI);
+		widget.setText(content);
+
+		shell.open();
+//		while (!shell.isDisposed())
+//		if (!display.readAndDispatch()) display.sleep();
+
+	}
+
+	/**
+	 * reads the content of a file
+	 * @param String pathToFile
+	 * @return String contentOfFile
+	 */
+	public String readFile(String pathToFile) throws IOException
+	{
+		BufferedReader reader = new BufferedReader( new FileReader (pathToFile));
+		String line = null;
+		StringBuilder stringBuilder = new StringBuilder();
+		String ls = System.getProperty("line.separator");
+		
+		while ( ( line = reader.readLine()) != null)
+		{
+			stringBuilder.append(line);
+			stringBuilder.append(ls);
+		}
+		
+		reader.close();
+		
+		return stringBuilder.toString();
 	}
 	
 	/**

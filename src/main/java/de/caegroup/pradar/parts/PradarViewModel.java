@@ -1,17 +1,21 @@
 package de.caegroup.pradar.parts;
 
+import de.caegroup.pradar.Entity;
+
 public class PradarViewModel extends ModelObject
 {
 	public String process = "";
 	public String user = System.getProperty("user.name");
 	public String host = "";
 	public String active = "";
-	public int period = 168;
+	public int period = 24;
 	public boolean children = false;
 	public boolean perspectiveRadar = true;
 	public boolean perspectiveTree = false;
 	public int zoom = 100;
 	public int refresh = 600;
+	
+	public Entity entitySelected = null;
 	
 	public PradarViewModel()
 	{
@@ -67,6 +71,11 @@ public class PradarViewModel extends ModelObject
 		return refresh;
 	}
 
+	public Entity getEntitySelected()
+	{
+		return entitySelected;
+	}
+
 	public void setProcess(String process)
 	{
 		firePropertyChange("process", this.process, this.process = process);
@@ -116,5 +125,10 @@ public class PradarViewModel extends ModelObject
 	public void setRefresh(int refresh)
 	{
 		firePropertyChange("refresh", this.refresh, this.refresh = refresh);
+	}
+
+	public void setEntitySelected(Entity entitySelected)
+	{
+		firePropertyChange("entitySelected", this.entitySelected, this.entitySelected = entitySelected);
 	}
 }

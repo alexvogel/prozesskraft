@@ -11,6 +11,8 @@ import java.util.Iterator;
 
 import javax.inject.Inject;
 
+import org.eclipse.swt.widgets.Display;
+
 
 //import org.eclipse.swt.events.MouseEvent;
 //import org.eclipse.swt.events.MouseWheelListener;
@@ -487,6 +489,10 @@ public class PradarViewProcessingPage extends PApplet
 		String beschnittener_string_timestamp = timestamp.toString().substring(0, 16);
 		text(beschnittener_string_timestamp, 5, height-5);
 		text("automation@caegroup.de", width-180, height-5);
+		if (this.parent.einstellungen.entitySelected != null)
+		{
+			text(this.parent.einstellungen.entitySelected.getId(), width/3, height-5);
+		}
 //		text(this.entity_filter.getPeriodInMillis(), 50, height-5);
 		noFill();
 	}
@@ -523,7 +529,6 @@ public class PradarViewProcessingPage extends PApplet
 			
 			if (this.distanceToMouse < this.maus_toleranz_pentity)
 			{
-
 				try
 				{
 					java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
@@ -549,12 +554,17 @@ public class PradarViewProcessingPage extends PApplet
 		if ( this.entity_nahe_maus != null )
 		{
 			this.pentity_nahe_maus = getPentityBySuperId(this.entity_nahe_maus.getSuperid());
+			this.parent.einstellungen.entitySelected = this.entity_nahe_maus;
 		}
-		
 		// period-kreis umherziehen
 		else if ( Math.abs((calcRadiusFromPosition(mouseX, mouseY) - this.radius_period)) < this.maus_toleranz_period)
 		{
 			this.period_kreis_folgt_der_maus = true;
+		}
+		
+		else if ( this.entity_nahe_maus == null)
+		{
+			this.parent.einstellungen.entitySelected = null;
 		}
 		
 		mouse_last_pressed = now;

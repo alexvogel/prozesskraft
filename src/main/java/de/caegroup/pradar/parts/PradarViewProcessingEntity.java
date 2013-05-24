@@ -97,10 +97,14 @@ public class PradarViewProcessingEntity
 		}
 		else if ( this.parent.parent.getEntityBySuperId(this.superid).getExitcode().matches("") )
 		{
+//			// orange
+//			color[0] = 215;
+//			color[1] = 135;
+//			color[2] = 0;
 			// dunkelgruen
-			color[0] = 215;
+			color[0] = 93;
 			color[1] = 135;
-			color[2] = 0;
+			color[2] = 77;
 		}
 		else
 		{
@@ -419,8 +423,34 @@ public class PradarViewProcessingEntity
 
 			this.parent.stroke(getColor("r"), getColor("g"), getColor("b"));
 			this.parent.fill(getColor("r"), getColor("g"), getColor("b"));
-			this.parent.ellipse( this.checkin_position[0], this.checkin_position[1], (float)(groesse*1.5), (float)(groesse*1.5) );
-			this.parent.ellipse( this.checkout_position[0], this.checkout_position[1], (float)(groesse*1.5), (float)(groesse*1.5) );
+
+			// wenn es die markierte entity ist, soll die groesse neu definiert werden
+			if (this.entity.equals(this.parent.parent.einstellungen.entitySelected))
+			{
+//				this.parent.strokeWeight(groesse/2);
+				this.parent.fill(255,255,255);
+			}
+			
+			// kreis soll fein umrandet sein und weiss gefuellt
+			this.parent.fill(255,255,255);
+			this.parent.strokeWeight(1);
+
+			// wenn kreis markiert ist, soll er mit seiner farbe gefuellt sein
+			if (this.entity.equals(this.parent.parent.einstellungen.entitySelected))
+			{
+				this.parent.fill(getColor("r"), getColor("g"), getColor("b"));
+			}
+			
+			this.parent.ellipse( this.checkin_position[0], this.checkin_position[1], (float)(groesse*3), (float)(groesse*3) );
+			this.parent.ellipse( this.checkout_position[0], this.checkout_position[1], (float)(groesse*3), (float)(groesse*3) );
+			
+			// linie soll sie duenn sein
+			this.parent.strokeWeight(groesse/2);
+			// wenn linie markiert ist, soll sie doppelt so dick sein
+			if (this.entity.equals(this.parent.parent.einstellungen.entitySelected))
+			{
+				this.parent.strokeWeight(groesse);
+			}
 			this.parent.line(this.checkin_position[0], this.checkin_position[1], this.checkout_position[0], this.checkout_position[1]);
 
 			// wenn es einen parent gibt, sollen die verbinder zu ihm gezeichnet werden
