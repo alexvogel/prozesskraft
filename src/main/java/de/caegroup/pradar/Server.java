@@ -10,6 +10,7 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.logging.Logger;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -37,6 +38,8 @@ public class Server
 	static File logFileErr = null;
 	static String sshIdRelPath;
 
+//	private static final Logger log = Logger.getLogger(Server.class.getName());
+	
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -225,6 +228,7 @@ public class Server
 				e.printStackTrace();
 			}
 		}
+		
 		if ( line.hasOption("restart") || !(line.hasOption("stop")) )
 		{
 			if (!(dbFile.exists()))
