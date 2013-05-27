@@ -1104,12 +1104,11 @@ public class PradarPartUi3 extends ModelObject
 	 */
 	void showLogFile(Entity entity)
 	{
-		String content = "problems while reading from file";
 		File file = new File(entity.getResource());
 		if (!(file.exists()))
 		{
 			log("warn", "cannot read file: "+entity.getResource());
-			content = "cannot read file";
+			return;
 		}
 
 		else
