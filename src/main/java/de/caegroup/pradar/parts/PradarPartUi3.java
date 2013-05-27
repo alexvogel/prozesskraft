@@ -525,7 +525,7 @@ public class PradarPartUi3 extends ModelObject
 			{
 				log("warn", "cannot read logfile of entity "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
 			}
-			else if (einstellungen.entitySelected != null && (new File(einstellungen.entitySelected.getResource()).exists() ) )
+			else if (einstellungen.entitySelected != null && (!(new File(einstellungen.entitySelected.getResource()).exists()) ) )
 			{
 				log("warn", "logfile of entity does not exist "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
 			}
