@@ -55,7 +55,11 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -114,8 +118,8 @@ public class PradarPartUi3 extends ModelObject
 	private Button btnChildren;
 	private Button button_refresh = null;
 	private Button button_showlog = null;
-	private Button button_radar = null;
-	private Button button_tree = null;
+//	private Button button_radar = null;
+//	private Button button_tree = null;
 	private Scale scale_zoom;
 	private StyledText text_logging = null;
 	private Frame frame_radar = null;
@@ -136,11 +140,17 @@ public class PradarPartUi3 extends ModelObject
 	PradarViewProcessingPage applet;
 	PradarViewTreePage tree;
 	
-	Shell shell_dummy_tree;
-	Composite composite_tree;
-	Shell shell_dummy_radar;
-	Composite composite_radar;
-	Composite composite_12;
+//	Shell shell_dummy_tree;
+//	Composite composite_tree;
+//	Shell shell_dummy_radar;
+//	Composite composite_radar;
+//	Composite composite_12;
+	CTabFolder tabFolder_12;
+	ArrayList<PradarViewLogPage> logPages = new ArrayList<PradarViewLogPage>();
+	CTabItem tabItem_radar;
+	CTabItem tabItem_tree;
+	Composite composite_tabItem_radar;
+	Composite composite_tabItem_tree;
 	
 	Display display;
 	
@@ -155,6 +165,8 @@ public class PradarPartUi3 extends ModelObject
 	ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
 	License license = null;
 
+	private Text txtTesttext;
+	private Composite composite_3;
 
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
@@ -166,10 +178,10 @@ public class PradarPartUi3 extends ModelObject
 //		checkLicense();
 		Shell shell = new Shell();
 		shell.setSize(633, 767);
-		Composite composite = new Composite(shell, SWT.NONE);
-		composite.setLocation(0, 0);
-		createControls(composite);
-		applet = new PradarViewProcessingPage(this);
+		composite_3 = new Composite(shell, SWT.NONE);
+		composite_3.setLocation(0, 0);
+		createControls(composite_3);
+//		applet = new PradarViewProcessingPage(this);
 		refresh_last.setTimeInMillis(0);
 		refresh();
 	}
@@ -194,7 +206,6 @@ public class PradarPartUi3 extends ModelObject
 	@PostConstruct
 	public void createControls(Composite composite)
 	{
-
 		composite.setSize(613, 738);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_composite.minimumWidth = 10;
@@ -203,7 +214,7 @@ public class PradarPartUi3 extends ModelObject
 		composite.setLayout(new GridLayout(1, false));
 		
 		Composite composite_1 = new Composite(composite, SWT.NONE);
-		GridLayout gl_composite_1 = new GridLayout(2, false);
+		GridLayout gl_composite_1 = new GridLayout(3, false);
 		gl_composite_1.marginWidth = 0;
 		gl_composite_1.marginHeight = 0;
 		composite_1.setLayout(gl_composite_1);
@@ -276,6 +287,7 @@ public class PradarPartUi3 extends ModelObject
 		btnChildren.setText("children");
 		new Label(grpFilter, SWT.NONE);
 		
+		// Group function
 		Group grpFunction = new Group(composite_11, SWT.NONE);
 		grpFunction.setLayout(new GridLayout(2, false));
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -291,32 +303,13 @@ public class PradarPartUi3 extends ModelObject
 		button_showlog.setText("showlog");
 		button_showlog.addSelectionListener(listener_showlog_button);
 		
+		// Group visual
 		Group grpVisual = new Group(composite_11, SWT.NONE);
 		grpVisual.setText("visual");
 		GridData gd_grpVisual = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_grpVisual.widthHint = 152;
 		grpVisual.setLayoutData(gd_grpVisual);
 		grpVisual.setLayout(new GridLayout(2, false));
-		
-		Label lblPerspective = new Label(grpVisual, SWT.NONE);
-		GridData gd_lblPerspective = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
-		gd_lblPerspective.widthHint = 138;
-		lblPerspective.setLayoutData(gd_lblPerspective);
-		lblPerspective.setText("perspective");
-		
-		button_radar = new Button(grpVisual, SWT.TOGGLE);
-		GridData gd_btnRadar = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
-		gd_btnRadar.widthHint = 70;
-		button_radar.setLayoutData(gd_btnRadar);
-		button_radar.setText("radar");
-		button_radar.addSelectionListener(listener_radar_button);
-		
-		button_tree = new Button(grpVisual, SWT.TOGGLE);
-		GridData gd_btnTree = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
-		gd_btnTree.widthHint = 70;
-		button_tree.setLayoutData(gd_btnTree);
-		button_tree.setText("tree");
-		button_tree.addSelectionListener(listener_tree_button);
 		
 		Label lblNewLabel_2 = new Label(grpVisual, SWT.NONE);
 		lblNewLabel_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -336,33 +329,44 @@ public class PradarPartUi3 extends ModelObject
 		gd_btnNewButton2.widthHint = 141;
 		btnNewButton2.setLayoutData(gd_btnNewButton2);
 		btnNewButton2.setText("autoscale");
+		new Label(composite_1, SWT.NONE);
 		btnNewButton2.addSelectionListener(listener_autoscale_button);
-		
-		composite_12 = new Composite(composite_1, SWT.BORDER);
-		composite_12.setLayout(new GridLayout(1, false));
-		GridData gd_composite_12 = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		gd_composite_12.heightHint = 390;
-		gd_composite_12.minimumWidth = 10;
-		gd_composite_12.minimumHeight = 10;
-		composite_12.setLayoutData(gd_composite_12);
-		
-		shell_dummy_radar = new Shell(display);
-		composite_radar = new Composite(shell_dummy_radar, SWT.NO_BACKGROUND | SWT.EMBEDDED);
-		composite_radar.setLayout(new GridLayout(1, false));
+
+		// tabFolder erzeugen
+		tabFolder_12 = new CTabFolder(composite_1, SWT.BORDER);
+		tabFolder_12.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		tabFolder_12.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
+										
+		// ein tabItem fuer radar mit eingebetteten composite erzeugen
+		tabItem_radar = new CTabItem(tabFolder_12, SWT.NONE);
+		tabItem_radar.setText("radar");
+										
+		composite_tabItem_radar = new Composite(tabFolder_12, SWT.NO_BACKGROUND | SWT.EMBEDDED);
+		composite_tabItem_radar.setLayout(new GridLayout(1, false));
 		GridData gd_composite_radar = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_composite_radar.heightHint = 390;
 		gd_composite_radar.minimumWidth = 10;
 		gd_composite_radar.minimumHeight = 10;
-		composite_radar.setLayoutData(gd_composite_radar);
+		composite_tabItem_radar.setLayoutData(gd_composite_radar);
+												
+		tabItem_radar.setControl(composite_tabItem_radar);
+		// radar einbinden
+		frame_radar = SWT_AWT.new_Frame(composite_tabItem_radar);
+
+		// ein tabItem fuer tree mit eingebetteten composite erzeugen
+		tabItem_tree = new CTabItem(tabFolder_12, SWT.NONE);
+		tabItem_tree.setText("tree");
 		
-		shell_dummy_tree = new Shell(display);
-		composite_tree = new Composite(shell_dummy_tree, SWT.NONE);
-		composite_tree.setLayout(new GridLayout(1, false));
+		composite_tabItem_tree = new Composite(tabFolder_12, SWT.NONE);
+		composite_tabItem_tree.setLayout(new GridLayout(1, false));
 		GridData gd_composite_tree = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_composite_tree.heightHint = 390;
 		gd_composite_tree.minimumWidth = 10;
 		gd_composite_tree.minimumHeight = 10;
-		composite_tree.setLayoutData(gd_composite_tree);
+		composite_tabItem_tree.setLayoutData(gd_composite_tree);
+
+		tabItem_tree.setControl(composite_tabItem_tree);
+		tree = new PradarViewTreePage(this.composite_tabItem_tree, this);
 		
 		Composite composite_2 = new Composite(composite, SWT.NONE);
 		composite_2.setLayout(new GridLayout(1, false));
@@ -375,18 +379,12 @@ public class PradarPartUi3 extends ModelObject
 		
 		bindingContextFilter = initDataBindingsFilter();
 		bindingContextZoom = initDataBindingsZoom();
-		initDataBindingsPerspective();
+//		initDataBindingsPerspective();
 
 		// tree einbinden
-		composite_tree.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
-		Label testlab = new Label(composite_tree, SWT.NONE);
-//		composite_tree.setLayout(new GridLayout(1, false));
-//		composite_tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		composite_tree.setVisible(false);
-		tree = new PradarViewTreePage(this.composite_tree, this);
-		
-		// radar einbinden
-		frame_radar = SWT_AWT.new_Frame(composite_radar);
+		composite_tabItem_tree.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+		Label testlab = new Label(composite_tabItem_tree, SWT.NONE);
+
 		frame_radar.add(applet, BorderLayout.CENTER);
 		applet.init();
 		frame_radar.pack();
@@ -394,44 +392,11 @@ public class PradarPartUi3 extends ModelObject
 		updateUserInterface(einstellungen);
 		updateUserInterfaceProcessing(einstellungen);
 		applet_paint_with_new_filter();
-		frame_radar.setVisible(false);
-		
-		if (button_radar.getSelection())
-		{
-			set_perspective_to_radar();
-		}
-		
-		else if (button_tree.getSelection())
-		{
-			set_perspective_to_tree();
-		}
-		
+		tabFolder_12.setSelection(0);
+		frame_radar.setVisible(true);
+		tabFolder_12.layout(true);
 	}
 
-	private void set_perspective_to_radar()
-	{
-		composite_tree.setVisible(false);
-		composite_tree.setParent(shell_dummy_tree);
-		composite_radar.setVisible(true);
-		composite_radar.setParent(composite_12);
-		composite_12.layout(true);
-		updateUserInterface(einstellungen);
-		updateUserInterfaceProcessing(einstellungen);
-	}
-	
-	private void set_perspective_to_tree()
-	{
-//		frame_perspective.remove(applet);
-		tree.refresh();
-		composite_radar.setVisible(false);
-		composite_radar.setParent(shell_dummy_radar);
-		composite_tree.setVisible(true);
-		composite_tree.setParent(composite_12);
-		composite_12.layout(true);
-//		composite_tree.setFocus();
-		
-	}
-	
 	private static class ContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object inputElement) {
 			return new Object[0];
@@ -488,42 +453,42 @@ public class PradarPartUi3 extends ModelObject
 		}
 	};
 	
-	SelectionAdapter listener_radar_button = new SelectionAdapter()
-	{
-		public void widgetSelected(SelectionEvent event)
-		{
-//			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
-			button_tree.setSelection(!button_radar.getSelection());
-			
-			if (button_radar.getSelection())
-			{
-				set_perspective_to_radar();
-			}
-			else
-			{
-				set_perspective_to_tree();
-			}
-		}
-	};
-	
-	SelectionAdapter listener_tree_button = new SelectionAdapter()
-	{
-		public void widgetSelected(SelectionEvent event)
-		{
-//			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
-			button_radar.setSelection(!button_tree.getSelection());
-
-			if (button_tree.getSelection())
-			{
-				set_perspective_to_tree();
-			}
-			else
-			{
-				set_perspective_to_radar();
-			}
-		}
-	};
-	
+//	SelectionAdapter listener_radar_button = new SelectionAdapter()
+//	{
+//		public void widgetSelected(SelectionEvent event)
+//		{
+////			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
+//			button_tree.setSelection(!button_radar.getSelection());
+//			
+//			if (button_radar.getSelection())
+//			{
+//				set_perspective_to_radar();
+//			}
+//			else
+//			{
+//				set_perspective_to_tree();
+//			}
+//		}
+//	};
+//	
+//	SelectionAdapter listener_tree_button = new SelectionAdapter()
+//	{
+//		public void widgetSelected(SelectionEvent event)
+//		{
+////			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
+//			button_radar.setSelection(!button_tree.getSelection());
+//
+//			if (button_tree.getSelection())
+//			{
+//				set_perspective_to_tree();
+//			}
+//			else
+//			{
+//				set_perspective_to_radar();
+//			}
+//		}
+//	};
+//	
 	IChangeListener listener_zoom = new IChangeListener()
 	{
 		public void handleChange(ChangeEvent event)
@@ -550,7 +515,7 @@ public class PradarPartUi3 extends ModelObject
 			if (einstellungen.entitySelected != null && (!(einstellungen.entitySelected.getResource().equals(""))))
 			{
 				log("info", "showing logfile "+einstellungen.entitySelected.getResource());
-				showTextFile(einstellungen.entitySelected.getResource());
+				showLogFile(einstellungen.entitySelected);
 			}
 			else if (einstellungen.entitySelected != null && einstellungen.entitySelected.getResource().equals(""))
 			{
@@ -583,7 +548,20 @@ public class PradarPartUi3 extends ModelObject
 			scale_zoom.setSelection(scale_zoom.getSelection() + (me.count*5));
 		}
 	};
-	private Text txtTesttext;
+	
+	FocusListener listener_tabItem_refresh = new FocusListener()
+	{
+		public void focusGained(FocusEvent event)
+		{
+			StyledText widgetFocused = (StyledText) event.getSource();
+			int logLineCount = widgetFocused.getLineCount();
+		}
+		
+		public void focusLost(FocusEvent event)
+		{
+			
+		}
+	};
 	
 	/**
 	 * add change listener to all bindings
@@ -624,20 +602,20 @@ public class PradarPartUi3 extends ModelObject
 		b.getModel().addChangeListener(listener_zoom);
 	}
 
-	protected DataBindingContext initDataBindingsPerspective()
-	{
-		DataBindingContext bindingContextPerspective = new DataBindingContext();
-		//
-		IObservableValue targetObservableRadar = WidgetProperties.selection().observe(button_radar);
-		IObservableValue modelObservableRadar = BeanProperties.value("perspectiveRadar").observe(einstellungen);
-		bindingContextPerspective.bindValue(targetObservableRadar, modelObservableRadar, null, null);
-		//
-		IObservableValue targetObservableTree = WidgetProperties.selection().observe(button_tree);
-		IObservableValue modelObservableTree = BeanProperties.value("perspectiveTree").observe(einstellungen);
-		bindingContextPerspective.bindValue(targetObservableTree, modelObservableTree, null, null);
-		//
-		return bindingContextPerspective;
-	}
+//	protected DataBindingContext initDataBindingsPerspective()
+//	{
+//		DataBindingContext bindingContextPerspective = new DataBindingContext();
+//		//
+//		IObservableValue targetObservableRadar = WidgetProperties.selection().observe(button_radar);
+//		IObservableValue modelObservableRadar = BeanProperties.value("perspectiveRadar").observe(einstellungen);
+//		bindingContextPerspective.bindValue(targetObservableRadar, modelObservableRadar, null, null);
+//		//
+//		IObservableValue targetObservableTree = WidgetProperties.selection().observe(button_tree);
+//		IObservableValue modelObservableTree = BeanProperties.value("perspectiveTree").observe(einstellungen);
+//		bindingContextPerspective.bindValue(targetObservableTree, modelObservableTree, null, null);
+//		//
+//		return bindingContextPerspective;
+//	}
 	
 	protected DataBindingContext initDataBindingsZoom()
 	{
@@ -736,6 +714,14 @@ public class PradarPartUi3 extends ModelObject
 			loadData();
 			filter();
 			applet.refresh();
+			
+			for(PradarViewLogPage logPage : this.logPages)
+			{
+				if (this.isTabPresentByName(this.tabFolder_12, logPage.getTabName()))
+				{
+					logPage.refresh();
+				}
+			}
 		}
 		else
 		{
@@ -1071,7 +1057,7 @@ public class PradarPartUi3 extends ModelObject
 	 * opens a seperate window and shows the content of a file
 	 * @param String pathToFile
 	 */
-	void showTextFile(String pathToFile)
+	void showTextFileShell(String pathToFile)
 	{
 		String content = "problems while reading from file";
 		File file = new File(pathToFile);
@@ -1107,6 +1093,126 @@ public class PradarPartUi3 extends ModelObject
 
 	}
 
+	/**
+	 * opens a seperate Tab and shows the content of a file
+	 * @param String pathToFile
+	 */
+	void showLogFile(Entity entity)
+	{
+		String content = "problems while reading from file";
+		File file = new File(entity.getResource());
+		if (!(file.exists()))
+		{
+			log("warn", "cannot read file: "+entity.getResource());
+			content = "cannot read file";
+		}
+
+		String tabName = entity.getProcess()+"<"+entity.getId()+">";
+		
+		// ueberpruefen ob es von diesem file schon ein tab gibt
+		if (isTabPresentByName(tabFolder_12, tabName))
+		{
+			tabFolder_12.setSelection(getTabIdByName(tabFolder_12, tabName));
+		}
+		
+		// tab mit logfile ansicht erzeugen
+		else
+		{
+			this.logPages.add(new PradarViewLogPage(this.tabFolder_12, this, entity, tabName));
+			// focus auf den neuen Tab
+			tabFolder_12.setSelection(tabFolder_12.getItemCount()-1);
+		}
+		
+		// tab mit logfile ansicht erzeugen
+//		else
+//		{
+//			// ein tabItem fuer das textfile mit eingebetteten composite erzeugen
+//			CTabItem tabItem_logtext = new CTabItem(tabFolder_12, SWT.CLOSE);
+//			tabItem_logtext.setText(entity.getProcess()+" "+entity.getId());
+//			tabItem_logtext.setToolTipText(entity.getResource());
+//	
+//			Composite composite_tabItem_logtext = new Composite(tabFolder_12, SWT.NONE);
+//			composite_tabItem_logtext.setLayout(new GridLayout(1, false));
+//			GridData gd_composite_logtext = new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1);
+//			gd_composite_logtext.heightHint = 390;
+//			gd_composite_logtext.minimumWidth = 10;
+//			gd_composite_logtext.minimumHeight = 10;
+//			composite_tabItem_logtext.setLayoutData(gd_composite_logtext);
+//			
+//			tabItem_logtext.setControl(composite_tabItem_logtext);
+//	
+//			try
+//			{
+//				content = readFile(entity.getResource());
+//			} catch (IOException e)
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//			String[] lines = content.split("\\n");
+//			
+//			// create the styled text widget
+//			StyledText widget = new StyledText(composite_tabItem_logtext, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI);
+//			widget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+//			
+//			for (int y = 0; y < lines.length; y++)
+//			{
+//				widget.append(lines[y]+"\n");
+//				if (lines[y].matches(".*([^\\w]|^)(warn|WARN)([^\\w]|$).*") || lines[y].matches(".*([^\\w]|^)(warning|WARNING)([^\\w]|$).*"))	{	widget.setLineBackground(y, 1, colorLogWarn);}
+//				if (lines[y].matches(".*([^\\w]|^)(error|ERROR)([^\\w]|$).*"))	{	widget.setLineBackground(y, 1, colorLogError);}
+//				if (lines[y].matches(".*([^\\w]|^)(fatal|FATAL)([^\\w]|$).*"))	{	widget.setLineBackground(y, 1, colorLogFatal);}
+//			}
+//			widget.setTopIndex(widget.getLineCount()-1);
+//		
+//			widget.addFocusListener(listener_tabItem_refresh);
+//			
+//			tabFolder_12.setSelection(tabFolder_12.getItemCount()-1);
+//		}
+		
+	}
+
+	/**
+	 * determines whether a Tab is present by Name
+	 * @param CTabFolder folder, String TabItemName
+	 * @return boolean isTabPresent
+	 */
+	private boolean isTabPresentByName(CTabFolder tabFolder, String name)
+	{
+		boolean isPresent = false;
+		
+		for(int x = 0; x < tabFolder.getItemCount(); x++)
+		{
+			CTabItem tabItem = tabFolder.getItem(x);
+			if (tabItem.getText().equals(name))
+			{
+				return true;
+			}
+		}
+		return isPresent;
+	}
+	
+	/**
+	 * determines the tabIndex by Name
+	 * @param CTabFolder folder, String TabItemName
+	 * @return int index
+	 */
+	private int getTabIdByName(CTabFolder tabFolder, String name)
+	{
+		int tabId = 0;
+		
+		for(int x = 0; x < tabFolder.getItemCount(); x++)
+		{
+			CTabItem tabItem = tabFolder.getItem(x);
+			if (tabItem.getText().equals(name))
+			{
+				return x;
+			}
+		}
+		return tabId;
+	}
+	
+	
 	/**
 	 * reads the content of a file
 	 * @param String pathToFile
