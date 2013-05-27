@@ -320,7 +320,7 @@ public class PradarPartUi3 extends ModelObject
 		gd_scale_zoom.widthHint = 144;
 		scale_zoom.setLayoutData(gd_scale_zoom);
 		scale_zoom.setMaximum(1000);
-		scale_zoom.setMinimum(50);
+		scale_zoom.setMinimum(60);
 		scale_zoom.setSelection(100);
 		scale_zoom.addMouseWheelListener(listener_mousewheel);
 		

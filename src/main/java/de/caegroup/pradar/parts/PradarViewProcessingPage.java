@@ -35,8 +35,8 @@ public class PradarViewProcessingPage extends PApplet
 //	private Entity entity_filter;
 	Calendar now = Calendar.getInstance();
 	Calendar mouse_last_pressed = Calendar.getInstance();
-	int zoomfaktor = 100;
-	int zoomfaktor_min = 50;
+	int zoomfaktor = 150;
+	int zoomfaktor_min = 60;
 	int zoomfaktor_max = 1000;
 	int center_x;
 	int center_y;
@@ -489,10 +489,10 @@ public class PradarViewProcessingPage extends PApplet
 		String beschnittener_string_timestamp = timestamp.toString().substring(0, 16);
 		text(beschnittener_string_timestamp, 5, height-5);
 		text("automation@caegroup.de", width-180, height-5);
-		if (this.parent.einstellungen.entitySelected != null)
-		{
-			text(this.parent.einstellungen.entitySelected.getId(), width/3, height-5);
-		}
+//		if (this.parent.einstellungen.entitySelected != null)
+//		{
+//			text(this.parent.einstellungen.entitySelected.getId(), width/3, height-5);
+//		}
 //		text(this.entity_filter.getPeriodInMillis(), 50, height-5);
 		noFill();
 	}
@@ -507,7 +507,7 @@ public class PradarViewProcessingPage extends PApplet
 	void setZoomfaktor ()
 	{
 		// den zoomfaktor im Model synchron halten, damit das scale-widget aktualisiert wird
-		this.parent.einstellungen.setZoom(100);
+		this.parent.einstellungen.setZoom(150);
 	}
 
 	void autoscale ()

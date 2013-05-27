@@ -12,7 +12,7 @@ public class PradarViewModel extends ModelObject
 	public boolean children = false;
 	public boolean perspectiveRadar = true;
 	public boolean perspectiveTree = false;
-	public int zoom = 100;
+	public int zoom = 60;
 	public int refresh = 600;
 	
 	public Entity entitySelected = null;
