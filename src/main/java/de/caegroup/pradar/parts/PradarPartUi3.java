@@ -519,11 +519,15 @@ public class PradarPartUi3 extends ModelObject
 			}
 			else if (einstellungen.entitySelected != null && einstellungen.entitySelected.getResource().equals(""))
 			{
-				log("warn", "no logfile for entity "+einstellungen.entitySelected.getId()+" (is an instance of process '"+einstellungen.entitySelected.getProcess()+"')");
+				log("warn", "no logfile for entity "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
 			}
 			else if (einstellungen.entitySelected != null && (new File(einstellungen.entitySelected.getResource()).canRead() ) )
 			{
-				log("warn", "cannot read logfile of entity "+einstellungen.entitySelected.getId()+" (is an instance of process '"+einstellungen.entitySelected.getProcess()+"')");
+				log("warn", "cannot read logfile of entity "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
+			}
+			else if (einstellungen.entitySelected != null && (new File(einstellungen.entitySelected.getResource()).exists() ) )
+			{
+				log("warn", "logfile of entity does not exist "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
 			}
 			else
 			{
@@ -720,6 +724,7 @@ public class PradarPartUi3 extends ModelObject
 				if (this.isTabPresentByName(this.tabFolder_12, logPage.getTabName()))
 				{
 					logPage.refresh();
+					log("info", "refreshing logfile "+logPage.getTabName());
 				}
 			}
 		}
@@ -1107,20 +1112,23 @@ public class PradarPartUi3 extends ModelObject
 			content = "cannot read file";
 		}
 
-		String tabName = entity.getProcess()+"<"+entity.getId()+">";
-		
-		// ueberpruefen ob es von diesem file schon ein tab gibt
-		if (isTabPresentByName(tabFolder_12, tabName))
-		{
-			tabFolder_12.setSelection(getTabIdByName(tabFolder_12, tabName));
-		}
-		
-		// tab mit logfile ansicht erzeugen
 		else
 		{
-			this.logPages.add(new PradarViewLogPage(this.tabFolder_12, this, entity, tabName));
-			// focus auf den neuen Tab
-			tabFolder_12.setSelection(tabFolder_12.getItemCount()-1);
+			String tabName = entity.getProcess()+"<"+entity.getId()+">";
+			
+			// ueberpruefen ob es von diesem file schon ein tab gibt
+			if (isTabPresentByName(tabFolder_12, tabName))
+			{
+				tabFolder_12.setSelection(getTabIdByName(tabFolder_12, tabName));
+			}
+			
+			// tab mit logfile ansicht erzeugen
+			else
+			{
+				this.logPages.add(new PradarViewLogPage(this.tabFolder_12, this, entity, tabName));
+				// focus auf den neuen Tab
+				tabFolder_12.setSelection(tabFolder_12.getItemCount()-1);
+			}
 		}
 		
 		// tab mit logfile ansicht erzeugen
