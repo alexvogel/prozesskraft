@@ -96,37 +96,37 @@ implements Serializable
 	private boolean doesItMatch(Entity assessedEntity)
 	{
 		boolean matchStatus = true;
-		if (!(assessedEntity.getId().matches(".*"+this.id+".*")))
+		if (!(assessedEntity.getId().matches(".*"+Pattern.quote(this.id)+".*")))
 		{
 			matchStatus = false;
 		}
 		
-		if (!(assessedEntity.getProcess().matches(".*"+this.process+".*")))
+		if (!(assessedEntity.getProcess().matches(".*"+Pattern.quote(this.process)+".*")))
 		{
 			matchStatus = false;
 		}
 		
-		if (!(assessedEntity.getHost().matches(".*"+this.host+".*")))
+		if (!(assessedEntity.getHost().matches(".*"+Pattern.quote(this.host)+".*")))
 		{
 			matchStatus = false;
 		}
 		
-		if (!(assessedEntity.getUser().matches(".*"+this.user+".*")))
+		if (!(assessedEntity.getUser().matches(".*"+Pattern.quote(this.user)+".*")))
 		{
 			matchStatus = false;
 		}
 		
-		if (!(assessedEntity.getActive().matches(".*"+this.active+".*")))
+		if (!(assessedEntity.getActive().matches(".*"+Pattern.quote(this.active)+".*")))
 		{
 			matchStatus = false;
 		}
 		
-		if (!(assessedEntity.getExitcode().matches(".*"+this.exitcode+".*")))
+		if (!(assessedEntity.getExitcode().matches(".*"+Pattern.quote(this.exitcode)+".*")))
 		{
 			matchStatus = false;
 		}
 		
-		if (!(assessedEntity.getResource().matches(".*"+this.resource+".*")))
+		if (!(assessedEntity.getResource().matches(".*"+Pattern.quote(this.resource)+".*")))
 		{
 			matchStatus = false;
 		}
