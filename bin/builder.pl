@@ -835,22 +835,45 @@ foreach my $refh_stackline (@CONFIG)
 		print "cp $CONF{'commondriver'} $TMPDIR/commondriver\n";
 		system "cp $CONF{'commondriver'} $TMPDIR/commondriver";
 
-		# den allgemeinen commondriver an die aktuelle app anpassen
-		find( sub { wanted3() }, "$TMPDIR/commondriver");
-			
-		sub wanted3
-		{
-			my $relname = File::Spec->abs2rel($File::Find::name);
-			my $tt = Template->new();
-			my $vars = {
-						appname	=> sub	{
-											print "replacing placeholder for 'appname' with '$now_app'\n";
-											return $now_app;
-										},
-						};
- 			$tt->process($relname, $vars, $relname) || die $tt->error();
-		}
+		print "der aktuelle appname ist: $now_app\n";
 
+##		# den allgemeinen commondriver an die aktuelle app anpassen
+#		# oeffnen der kopie des commondriver
+#		my $filename = "$TMPDIR/commondriver";
+#		my $filename_tmp = "$TMPDIR/commondriver-tmp";
+#		open (VON, '<', $filename) or die "Can't read $filename: $!";
+#		open (ZU, '>', $filename_tmp) or die "Can't write $filename_tmp: $!";
+#		
+#		while(<VON>)
+#		{
+#			$_ =~ s/<appname>/$now_app/;
+#			print ZU $_;
+#		}
+#		close VON;
+#		close ZU;
+#		system "mv $filename $filename_tmp";
+
+		# es soll diese Ersetzung nur gemacht werden, wenn es $now_app NICHT 'builder' heisst
+		# den allgemeinen commondriver an die aktuelle app anpassen
+		
+		if (!($now_app eq "builder"))
+		{
+			find( sub { wanted3() }, "$TMPDIR/commondriver");
+				
+			sub wanted3
+			{
+				my $relname = File::Spec->abs2rel($File::Find::name);
+				my $tt = Template->new();
+				my $vars = {
+							appname	=> sub	{
+												print "replacing placeholder for 'appname' with '$now_app'\n";
+												return $now_app;
+											},
+							};
+	 			$tt->process($relname, $vars, $relname) || die $tt->error();
+			}
+		}
+		
 		# den angepassten commondriver installieren
 		print "info: installing common driver $TMPDIR/commondriver to $now_targetbin"."/".$now_app."\n";
 		print "rsync -avz $TMPDIR/commondriver ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbin."/".$now_app."\n";

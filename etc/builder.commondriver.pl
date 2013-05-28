@@ -19,11 +19,10 @@ BEGIN
 #------------
 
 
-
 #------------
 # feststellen der verfuegbaren versionen
 #my $installdir = $directories."../install/$filename";
-my $installdir = $directories."../install/[% appname %]";
+my $installdir = $directories."../install/<appname>";
 opendir INPDIR, $installdir;   # READ INPUT DIRECTORY FILE LIST
 my @all_versions = readdir INPDIR;  # Read file list
 @all_versions = grep { !/^\.$/ && !/^\.\.$/ } @all_versions;
