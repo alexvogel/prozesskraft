@@ -353,7 +353,7 @@ public class Db
 	 * 2) host is unreachable and instance is older than 1 week
 	 * 
 	 */
-	public void cleanDb(String sshIdRelPath)
+	public void cleanDb(String sshIdRelPath, String user)
 	{
 		this.sqlvoodoo();
 		this.connection = null;
@@ -364,21 +364,28 @@ public class Db
 			Statement statement = this.connection.createStatement();
 			statement.setQueryTimeout(10);
 			
-			ArrayList<Entity> all_entities = new ArrayList<Entity>();
+			ArrayList<Entity> all_entities_to_check = new ArrayList<Entity>();
 			try
 			{
-				all_entities = this.getAllEntities();
+				if (user.equals(""))
+				{
+					all_entities_to_check = this.getAllEntities();
+				}
+				else
+				{
+					Entity entityFilter = new Entity();
+					entityFilter.setUser(user);
+					entityFilter.setActive(true);
+					all_entities_to_check = entityFilter.getAllMatches(this.getAllEntities());
+				}
 			}
 			catch (NullPointerException e)
 			{
 				System.out.println("result is empty!");
 			}
 			
-			Iterator<Entity> iterentity = all_entities.iterator();
-			
-			while (iterentity.hasNext())
+			for (Entity actualEntity : all_entities_to_check)
 			{
-				Entity actualEntity = iterentity.next();
 				if (actualEntity.isActive())
 				{
 					if (actualEntity.isHostReachable(sshIdRelPath))

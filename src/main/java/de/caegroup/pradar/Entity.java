@@ -26,7 +26,7 @@ implements Serializable
 	----------------------------*/
 
 	public String id = "";
-	public String parentid = "0";
+	public String parentid = "";
 	public Calendar checkin = Calendar.getInstance();
 	public Calendar checkout = Calendar.getInstance();
 	public String process = "";
@@ -35,6 +35,8 @@ implements Serializable
 	public String active = "";
 	public String exitcode = "";
 	public String resource = "";
+	
+	
 	public long period = 9999999999999L;
 
 	/*----------------------------
@@ -95,53 +97,64 @@ implements Serializable
 	 */
 	private boolean doesItMatch(Entity assessedEntity)
 	{
+//		System.out.println("tested entity id:"+assessedEntity.getId());
 		boolean matchStatus = true;
-		if (!(assessedEntity.getId().matches(".*"+Pattern.quote(this.id)+".*")))
+		if (!(this.id.equals("") ) && (!(assessedEntity.getId().matches(Pattern.quote(this.id)))) )
 		{
+//			System.out.println("id does not match");
 			matchStatus = false;
 		}
 		
-		if (!(assessedEntity.getProcess().matches(".*"+Pattern.quote(this.process)+".*")))
+		if (!(this.process.equals("") ) && (!(assessedEntity.getProcess().matches(Pattern.quote(this.process)))) )
 		{
 			matchStatus = false;
+//			System.out.println("process does not match");
 		}
 		
-		if (!(assessedEntity.getHost().matches(".*"+Pattern.quote(this.host)+".*")))
+		if (!(this.host.equals("") ) && (!(assessedEntity.getHost().matches(Pattern.quote(this.host)))) )
 		{
 			matchStatus = false;
+//			System.out.println("host does not match");
 		}
 		
-		if (!(assessedEntity.getUser().matches(".*"+Pattern.quote(this.user)+".*")))
+		if (!(this.user.equals("") ) && (!(assessedEntity.getUser().matches(Pattern.quote(this.user)))) )
 		{
 			matchStatus = false;
+//			System.out.println("user does not match");
 		}
 		
-		if (!(assessedEntity.getActive().matches(".*"+Pattern.quote(this.active)+".*")))
+		if (!(this.active.equals("") ) && (!(assessedEntity.getActive().matches(Pattern.quote(this.active)))) )
 		{
 			matchStatus = false;
+//			System.out.println("active does not match");
 		}
 		
-		if (!(assessedEntity.getExitcode().matches(".*"+Pattern.quote(this.exitcode)+".*")))
+		if (!(this.exitcode.equals("") ) && (!(assessedEntity.getExitcode().matches(Pattern.quote(this.exitcode)))) )
 		{
 			matchStatus = false;
+//			System.out.println("exitcode does not match");
 		}
 		
-		if (!(assessedEntity.getResource().matches(".*"+Pattern.quote(this.resource)+".*")))
+		if (!(this.resource.equals("") ) && (!(assessedEntity.getResource().matches(Pattern.quote(this.resource)))) )
 		{
 			matchStatus = false;
+//			System.out.println("resource does not match");
 		}
 		
 		// wenn es dem pattern nicht entspricht UND nicht "" ist (leer)
 		if ( (!(assessedEntity.getParentid().matches(this.parentid))) && (!(this.parentid.equals(""))) )
 		{
 			matchStatus = false;
+//			System.out.println("parentid does not match");
 		}
 		
 		if ( (this.getPeriodInMillis() < (Calendar.getInstance().getTimeInMillis() - assessedEntity.getCheckinInMillis())) && (this.getPeriodInMillis() < (Calendar.getInstance().getTimeInMillis() - assessedEntity.getCheckoutInMillis()) && (assessedEntity.getCheckoutInMillis() != 0) ) )
 		{
 //			System.out.println("CheckinInMillis="+assessedEntity.getCheckinInMillis()+" < (now="+Calendar.getInstance().getTimeInMillis()+" MINUS timePeriod="+this.getPeriodInMillis()+")" );
+//			System.out.println("time does not match");
 			matchStatus = false;
 		}
+		System.out.println("matchStatus is: "+matchStatus);
 		
 		return matchStatus;
 	}
