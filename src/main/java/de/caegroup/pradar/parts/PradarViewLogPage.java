@@ -33,6 +33,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -50,8 +51,10 @@ public class PradarViewLogPage
 	private CTabFolder folder;
 	private CTabItem tabItem;
 	private StyledText textWidget;
+	private Label labelInfo;
 	private Entity entity;
 	private String tabName;
+	private int lineCount = 0;
 	
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
@@ -105,6 +108,9 @@ public class PradarViewLogPage
 		
 		tabItem.setControl(composite_tabItem_logtext);
 		
+		labelInfo = new Label(composite_tabItem_logtext, SWT.NONE);
+		labelInfo.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1));
+		
 		textWidget = new StyledText(composite_tabItem_logtext, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI);
 		textWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
@@ -113,24 +119,34 @@ public class PradarViewLogPage
 	public void refresh()
 	{
 		String content;
+		
+		labelInfo.setText(new Timestamp(System.currentTimeMillis()).toString()+"  ->  "+entity.getResource());
+		
 		try
 		{
 			content = readFile(this.entity.getResource());
 			String[] lines = content.split("\\n");
 			
-			textWidget.setText("<<< "+new Timestamp(System.currentTimeMillis())+" content of "+this.entity.getResource()+" >>>\n");
-			
-			for (int y = 0; y < lines.length; y++)
+			// falls das logfile gekuerzt wurde, soll es komplett neu eingelesen werden
+			if (lineCount > lines.length)
 			{
-				textWidget.append(lines[y]+"\n");
-				if (lines[y].matches(".*([^\\w]|^)(warn|WARN)([^\\w]|$).*") || lines[y].matches(".*([^\\w]|^)(warning|WARNING)([^\\w]|$).*"))	{	textWidget.setLineBackground(y+1, 1, parentData.colorLogWarn);}
-				if (lines[y].matches(".*([^\\w]|^)(error|ERROR)([^\\w]|$).*"))	{	textWidget.setLineBackground(y+1, 1, parentData.colorLogError);}
-				if (lines[y].matches(".*([^\\w]|^)(fatal|FATAL)([^\\w]|$).*"))	{	textWidget.setLineBackground(y+1, 1, parentData.colorLogFatal);}
+				lineCount = 0;
+			}
+			
+			for (; lineCount < lines.length; lineCount++)
+			{
+				textWidget.append(lines[lineCount]+"\n");
+				if (lines[lineCount].matches(".*([^\\w]|^)(warn|WARN)([^\\w]|$).*") || lines[lineCount].matches(".*([^\\w]|^)(warning|WARNING)([^\\w]|$).*"))	{	textWidget.setLineBackground(lineCount, 1, parentData.colorLogWarn);}
+				if (lines[lineCount].matches(".*([^\\w]|^)(error|ERROR)([^\\w]|$).*"))	{	textWidget.setLineBackground(lineCount, 1, parentData.colorLogError);}
+				if (lines[lineCount].matches(".*([^\\w]|^)(fatal|FATAL)([^\\w]|$).*"))	{	textWidget.setLineBackground(lineCount, 1, parentData.colorLogFatal);}
 //				if (lines[y].matches(".*([^\\w]|^)(info|INFO)([^\\w]|$).*"))	{	widget.setLineBackground(y, 1, colorLogInfo);}
+//				System.out.println("zeilennummer: "+lineCount);
 			}
 			
 			textWidget.setTopIndex(textWidget.getLineCount()-1);
-		} catch (IOException e)
+
+		}
+		catch (IOException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();

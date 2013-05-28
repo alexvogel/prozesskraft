@@ -19,6 +19,7 @@ import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Iterator;
 
 import javax.annotation.PostConstruct;
@@ -336,6 +337,10 @@ public class PradarPartUi3 extends ModelObject
 		tabFolder_12 = new CTabFolder(composite_1, SWT.BORDER);
 		tabFolder_12.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		tabFolder_12.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
+		tabFolder_12.setTabPosition(SWT.TOP);
+		tabFolder_12.setTabHeight(30);
+//		tabFolder_12.setFont(SWTResourceManager.getFont("Sans", 12, SWT.NORMAL));
+//		tabFolder_12.setSimple(false);
 										
 		// ein tabItem fuer radar mit eingebetteten composite erzeugen
 		tabItem_radar = new CTabItem(tabFolder_12, SWT.NONE);
@@ -719,12 +724,19 @@ public class PradarPartUi3 extends ModelObject
 			filter();
 			applet.refresh();
 			
-			for(PradarViewLogPage logPage : this.logPages)
+			// jetzt alle logFiles refreshen
+			// falls ein logFile mehrfach geoeffnet wurde, ist es in diesem Array mehrfach vorhanden und nur das letzte soll refresht werden
+
+			ArrayList<PradarViewLogPage> logPagesReverse = this.logPages;
+			Collections.reverse(logPagesReverse);
+			
+			for(PradarViewLogPage logPage : logPagesReverse)
 			{
 				if (this.isTabPresentByName(this.tabFolder_12, logPage.getTabName()))
 				{
 					logPage.refresh();
 					log("info", "refreshing logfile "+logPage.getTabName());
+					break;
 				}
 			}
 		}
