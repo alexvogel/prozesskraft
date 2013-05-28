@@ -583,7 +583,8 @@ foreach my $refh_stackline (@CONFIG)
 		#-------------------
 		# --- START ACTION 'searchreplace' --- #
 #		my $full_term;
-		if ( grep { /searchreplace/; /searchreplace\((.+)\)/ } @now_action )
+#		if ( grep { /searchreplace/; /searchreplace\((.+)\)/ } @now_action )
+		if ( grep { /searchreplace/ } @now_action )
 		{
 			my @filenames_from_parameter;
 			# alle action-strings durchgehen und falls vorhanden die filenamen innerhalb der klammern feststellen
