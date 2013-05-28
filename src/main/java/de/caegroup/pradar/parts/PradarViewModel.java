@@ -4,10 +4,14 @@ import de.caegroup.pradar.Entity;
 
 public class PradarViewModel extends ModelObject
 {
+	public String[] processes = null;
 	public String process = "";
-	public String user = System.getProperty("user.name");
+	public String[] users = null;
+	public String user = "";
+	public String[] hosts = null;
 	public String host = "";
-	public String active = "";
+	public String[] exitcodes = null;
+	public String exitcode = "";
 	public int period = 24;
 	public boolean children = false;
 	public boolean perspectiveRadar = true;
@@ -21,9 +25,19 @@ public class PradarViewModel extends ModelObject
 	{
 	}
 	
+	public String[] getProcesses()
+	{
+		return processes;
+	}
+
 	public String getProcess()
 	{
 		return process;
+	}
+
+	public String[] getUsers()
+	{
+		return users;
 	}
 
 	public String getUser()
@@ -31,14 +45,24 @@ public class PradarViewModel extends ModelObject
 		return user;
 	}
 
+	public String[] getHosts()
+	{
+		return hosts;
+	}
+
 	public String getHost()
 	{
 		return host;
 	}
 
-	public String getActive()
+	public String[] getExitcodes()
 	{
-		return active;
+		return exitcodes;
+	}
+
+	public String getExitcode()
+	{
+		return exitcode;
 	}
 
 	public int getPeriod()
@@ -76,9 +100,19 @@ public class PradarViewModel extends ModelObject
 		return entitySelected;
 	}
 
+	public void setProcesses(String[] processes)
+	{
+		firePropertyChange("processes", this.processes, this.processes = processes);
+	}
+
 	public void setProcess(String process)
 	{
 		firePropertyChange("process", this.process, this.process = process);
+	}
+
+	public void setUsers(String[] users)
+	{
+		firePropertyChange("users", this.users, this.users = users);
 	}
 
 	public void setUser(String user)
@@ -86,14 +120,24 @@ public class PradarViewModel extends ModelObject
 		firePropertyChange("user", this.user, this.user = user);
 	}
 
+	public void setHosts(String[] hosts)
+	{
+		firePropertyChange("hosts", this.hosts, this.hosts = hosts);
+	}
+
 	public void setHost(String host)
 	{
 		firePropertyChange("host", this.host, this.host = host);
 	}
 
-	public void setActive(String active)
+	public void setExitcodes(String[] exitcodes)
 	{
-		firePropertyChange("active", this.active, this.active = active);
+		firePropertyChange("exitcodes", this.exitcodes, this.exitcodes = exitcodes);
+	}
+
+	public void setExitcode(String exitcode)
+	{
+		firePropertyChange("exitcode", this.exitcode, this.exitcode = exitcode);
 	}
 
 	public void setPeriod(int period)

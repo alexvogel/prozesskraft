@@ -20,7 +20,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -71,6 +75,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
@@ -111,10 +116,10 @@ public class PradarPartUi3 extends ModelObject
 	static CommandLine line;
 	private DataBindingContext bindingContextFilter;
 	private DataBindingContext bindingContextZoom;
-	private Text text_process;
-	private Text text_user;
-	private Text text_host;
-	private Text text_active;
+	private Combo combo_processes;
+	private Combo combo_users;
+	private Combo combo_hosts;
+	private Combo combo_exitcodes;
 	private Spinner spinner_period;
 	private Button btnChildren;
 	private Button button_refresh = null;
@@ -241,32 +246,32 @@ public class PradarPartUi3 extends ModelObject
 		lblNewLabel.setText("process");
 		new Label(grpFilter, SWT.NONE);
 		
-		text_process = new Text(grpFilter, SWT.BORDER);
-		text_process.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+		combo_processes = new Combo(grpFilter, SWT.BORDER | SWT.READ_ONLY);
+		combo_processes.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		
 		Label lblNewLabel_1 = new Label(grpFilter, SWT.NONE);
 		lblNewLabel_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 		lblNewLabel_1.setText("user");
 		new Label(grpFilter, SWT.NONE);
 		
-		text_user = new Text(grpFilter, SWT.BORDER);
-		text_user.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+		combo_users = new Combo(grpFilter, SWT.BORDER | SWT.READ_ONLY);
+		combo_users.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		
 		Label lblHost = new Label(grpFilter, SWT.NONE);
 		lblHost.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
 		lblHost.setText("host");
 		new Label(grpFilter, SWT.NONE);
 		
-		text_host = new Text(grpFilter, SWT.BORDER);
-		text_host.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+		combo_hosts = new Combo(grpFilter, SWT.BORDER | SWT.READ_ONLY);
+		combo_hosts.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		
 		Label lblActive = new Label(grpFilter, SWT.NONE);
 		lblActive.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		lblActive.setText("active");
+		lblActive.setText("exitcode");
 		new Label(grpFilter, SWT.NONE);
 		
-		text_active = new Text(grpFilter, SWT.BORDER);
-		text_active.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+		combo_exitcodes = new Combo(grpFilter, SWT.BORDER | SWT.READ_ONLY);
+		combo_exitcodes.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		
 		Label lblPeriod = new Label(grpFilter, SWT.NONE);
 		lblPeriod.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
@@ -382,10 +387,15 @@ public class PradarPartUi3 extends ModelObject
 		text_logging = new StyledText(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
 		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
+		// Datenbindung der Filter
 		bindingContextFilter = initDataBindingsFilter();
 		bindingContextZoom = initDataBindingsZoom();
-//		initDataBindingsPerspective();
+		// Datenbindung Processes-Combo
+		initDataBindingsComboItems();
 
+		// select combo_user to 'aktueller user'
+		combo_users.setText(System.getProperty("user.name"));
+		
 		// tree einbinden
 		composite_tabItem_tree.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		Label testlab = new Label(composite_tabItem_tree, SWT.NONE);
@@ -400,6 +410,7 @@ public class PradarPartUi3 extends ModelObject
 		tabFolder_12.setSelection(0);
 		frame_radar.setVisible(true);
 		tabFolder_12.layout(true);
+		
 	}
 
 	private static class ContentProvider implements IStructuredContentProvider {
@@ -417,7 +428,7 @@ public class PradarPartUi3 extends ModelObject
 		entity_filter.setProcess(einstellungen.getProcess());
 		entity_filter.setUser(einstellungen.getUser());
 		entity_filter.setHost(einstellungen.getHost());
-		entity_filter.setActive(einstellungen.getActive());
+		entity_filter.setExitcode(einstellungen.getExitcode());
 		entity_filter.setPeriodInHours(einstellungen.getPeriod());
 		// nur entities, die keine eltern haben
 		entity_filter.setParentid("0");
@@ -611,21 +622,6 @@ public class PradarPartUi3 extends ModelObject
 		b.getModel().addChangeListener(listener_zoom);
 	}
 
-//	protected DataBindingContext initDataBindingsPerspective()
-//	{
-//		DataBindingContext bindingContextPerspective = new DataBindingContext();
-//		//
-//		IObservableValue targetObservableRadar = WidgetProperties.selection().observe(button_radar);
-//		IObservableValue modelObservableRadar = BeanProperties.value("perspectiveRadar").observe(einstellungen);
-//		bindingContextPerspective.bindValue(targetObservableRadar, modelObservableRadar, null, null);
-//		//
-//		IObservableValue targetObservableTree = WidgetProperties.selection().observe(button_tree);
-//		IObservableValue modelObservableTree = BeanProperties.value("perspectiveTree").observe(einstellungen);
-//		bindingContextPerspective.bindValue(targetObservableTree, modelObservableTree, null, null);
-//		//
-//		return bindingContextPerspective;
-//	}
-	
 	protected DataBindingContext initDataBindingsZoom()
 	{
 		DataBindingContext bindingContextZoom = new DataBindingContext();
@@ -637,67 +633,61 @@ public class PradarPartUi3 extends ModelObject
 		return bindingContextZoom;
 	}
 	
-	protected DataBindingContext initDataBindingsRefresh()
-	{
-		DataBindingContext bindingContextRefresh = new DataBindingContext();
-		//
-		IObservableValue targetObservableRefresh = WidgetProperties.selection().observe(button_refresh);
-		IObservableValue modelObservableRefresh = BeanProperties.value("refresh").observe(einstellungen);
-		bindingContextRefresh.bindValue(targetObservableRefresh, modelObservableRefresh, null, null);
-		//
-		return bindingContextRefresh;
-	}
-	
 	protected DataBindingContext initDataBindingsFilter()
 	{
 
-		// Einrichten der ControlDecoration über dem Textfeld 'active'
-		final ControlDecoration controlDecorationActive = new ControlDecoration(text_active, SWT.LEFT | SWT.TOP);
-		controlDecorationActive.setDescriptionText("use 'true', 'false' or leave field blank");
-		FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
-		controlDecorationActive.setImage(fieldDecoration.getImage());
-
-		// Validator for 'active' mit Verbindung zur Controldecoration
-		IValidator validatorActive = new IValidator()
-		{
-			public IStatus validate(Object value)
-			{
-				if (value instanceof String)
-				{
-					if (((String) value).matches("true|false|all|"))
-					{
-						controlDecorationActive.hide();
-						return ValidationStatus.ok();
-						
-					}
-				}
-				controlDecorationActive.show();
-				return ValidationStatus.error("not a boolean or 'all'");
-			}
-		};
-
-		// UpdateStrategy fuer 'active' ist: update der werte nur wenn validierung erfolgreich
-		UpdateValueStrategy strategyActive = new UpdateValueStrategy();
-		strategyActive.setBeforeSetValidator(validatorActive);
+//		// Einrichten der ControlDecoration über dem Textfeld 'active'
+//		final ControlDecoration controlDecorationActive = new ControlDecoration(text_active, SWT.LEFT | SWT.TOP);
+//		controlDecorationActive.setDescriptionText("use 'true', 'false' or leave field blank");
+//		FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
+//		controlDecorationActive.setImage(fieldDecoration.getImage());
+//
+//		// Validator for 'active' mit Verbindung zur Controldecoration
+//		IValidator validatorActive = new IValidator()
+//		{
+//			public IStatus validate(Object value)
+//			{
+//				if (value instanceof String)
+//				{
+//					if (((String) value).matches("true|false|all|"))
+//					{
+//						controlDecorationActive.hide();
+//						return ValidationStatus.ok();
+//						
+//					}
+//				}
+//				controlDecorationActive.show();
+//				return ValidationStatus.error("not a boolean or 'all'");
+//			}
+//		};
+//
+//		// UpdateStrategy fuer 'active' ist: update der werte nur wenn validierung erfolgreich
+//		UpdateValueStrategy strategyActive = new UpdateValueStrategy();
+//		strategyActive.setBeforeSetValidator(validatorActive);
+//
+//		IObservableValue targetObservableActive = WidgetProperties.text().observeDelayed(800, text_active);
+//		IObservableValue modelObservableActive = BeanProperties.value("active").observe(einstellungen);
+//		bindingContextFilter.bindValue(targetObservableActive, modelObservableActive, strategyActive, null);
+		//
 		//---------
 		
 		DataBindingContext bindingContextFilter = new DataBindingContext();
 		//
-		IObservableValue targetObservableProcess = WidgetProperties.text(SWT.Modify).observeDelayed(800, text_process);
+		IObservableValue targetObservableProcess = WidgetProperties.text().observe(combo_processes);
 		IObservableValue modelObservableProcess = BeanProperties.value("process").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservableProcess, modelObservableProcess, null, null);
 		//
-		IObservableValue targetObservableUser = WidgetProperties.text(SWT.Modify).observeDelayed(800, text_user);
+		IObservableValue targetObservableUser = WidgetProperties.text().observe(combo_users);
 		IObservableValue modelObservableUser = BeanProperties.value("user").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservableUser, modelObservableUser, null, null);
 		//
-		IObservableValue targetObservableHost = WidgetProperties.text(SWT.Modify).observeDelayed(800, text_host);
+		IObservableValue targetObservableHost = WidgetProperties.text().observe(combo_hosts);
 		IObservableValue modelObservableHost = BeanProperties.value("host").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservableHost, modelObservableHost, null, null);
 		//
-		IObservableValue targetObservableActive = WidgetProperties.text(SWT.Modify).observeDelayed(800, text_active);
-		IObservableValue modelObservableActive = BeanProperties.value("active").observe(einstellungen);
-		bindingContextFilter.bindValue(targetObservableActive, modelObservableActive, strategyActive, null);
+		IObservableValue targetObservableExitcode = WidgetProperties.text().observe(combo_exitcodes);
+		IObservableValue modelObservableExitcode = BeanProperties.value("exitcode").observe(einstellungen);
+		bindingContextFilter.bindValue(targetObservableExitcode, modelObservableExitcode, null, null);
 		//
 		IObservableValue targetObservablePeriod = WidgetProperties.selection().observeDelayed(800, spinner_period);
 		IObservableValue modelObservablePeriod = BeanProperties.value("period").observe(einstellungen);
@@ -710,6 +700,32 @@ public class PradarPartUi3 extends ModelObject
 		return bindingContextFilter;
 	}
 	
+	/**
+	 * binds arrays to combo-boxes 'processes', 'users'
+	 */
+	protected DataBindingContext initDataBindingsComboItems()
+	{
+		DataBindingContext bindingContextComboItems = new DataBindingContext();
+		//
+		IObservableList targetObservableProcesses = WidgetProperties.items().observe(combo_processes);
+		IObservableList modelObservableProcesses = BeanProperties.list("processes").observe(einstellungen);
+		bindingContextComboItems.bindList(targetObservableProcesses, modelObservableProcesses, null, null);
+		//
+		IObservableList targetObservableUsers = WidgetProperties.items().observe(combo_users);
+		IObservableList modelObservableUsers = BeanProperties.list("users").observe(einstellungen);
+		bindingContextComboItems.bindList(targetObservableUsers, modelObservableUsers, null, null);
+		//
+		IObservableList targetObservableHosts = WidgetProperties.items().observe(combo_hosts);
+		IObservableList modelObservableHosts = BeanProperties.list("hosts").observe(einstellungen);
+		bindingContextComboItems.bindList(targetObservableHosts, modelObservableHosts, null, null);
+		//
+		IObservableList targetObservableExitcodes = WidgetProperties.items().observe(combo_exitcodes);
+		IObservableList modelObservableExitcodes = BeanProperties.list("exitcodes").observe(einstellungen);
+		bindingContextComboItems.bindList(targetObservableExitcodes, modelObservableExitcodes, null, null);
+		//
+		return bindingContextComboItems;
+	}
+
 	/**
 	 * refreshes data (entities) from database
 	 * @return void
@@ -739,6 +755,55 @@ public class PradarPartUi3 extends ModelObject
 					break;
 				}
 			}
+			
+			// die liste der moegliche process-auswahl feststellen
+			Map<String, String> processNames = new HashMap<String, String>();
+			processNames.put("", "");
+			for (Entity entity : this.entities_all)
+			{
+				if (!(processNames.containsKey(entity.getProcess())) && entity.getParentid().equals("0"))
+				{
+					processNames.put(entity.getProcess(), "");
+				}
+			}
+			einstellungen.processes = processNames.keySet().toArray(new String[processNames.size()]);
+			
+			// die liste der moegliche user-auswahl feststellen
+			Map<String, String> userNames = new HashMap<String, String>();
+			userNames.put("", "");
+			for (Entity entity : this.entities_all)
+			{
+				if (!(userNames.containsKey(entity.getUser())) && entity.getParentid().equals("0"))
+				{
+					userNames.put(entity.getUser(), "");
+				}
+			}
+			einstellungen.users = userNames.keySet().toArray(new String[userNames.size()]);
+			
+			// die liste der moegliche host-auswahl feststellen
+			Map<String, String> hostNames = new HashMap<String, String>();
+			hostNames.put("", "");
+			for (Entity entity : this.entities_all)
+			{
+				if (!(hostNames.containsKey(entity.getUser())) && entity.getParentid().equals("0"))
+				{
+					hostNames.put(entity.getHost(), "");
+				}
+			}
+			einstellungen.hosts = hostNames.keySet().toArray(new String[hostNames.size()]);
+			
+			// die liste der moeglichen exitcode-auswahl feststellen
+			Map<String, String> exitcodes = new HashMap<String, String>();
+			exitcodes.put("", "");
+			for (Entity entity : this.entities_all)
+			{
+				if (!(exitcodes.containsKey(entity.getExitcode())) && entity.getParentid().equals("0"))
+				{
+					exitcodes.put(entity.getExitcode(), "");
+				}
+			}
+			einstellungen.exitcodes = exitcodes.keySet().toArray(new String[exitcodes.size()]);
+
 		}
 		else
 		{
@@ -1034,7 +1099,6 @@ public class PradarPartUi3 extends ModelObject
 	void filter()
 	{
 		this.entities_filtered = entity_filter.getAllMatches(this.entities_all);
-
 		// falls auch children angezeigt werden sollen
 		if (einstellungen.getChildren())
 		{
