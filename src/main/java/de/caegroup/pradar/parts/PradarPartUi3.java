@@ -123,9 +123,10 @@ public class PradarPartUi3 extends ModelObject
 	private Spinner spinner_period;
 	private Button btnChildren;
 	private Button button_refresh = null;
-	private Button button_showlog = null;
-//	private Button button_radar = null;
-//	private Button button_tree = null;
+	private Button button_log = null;
+	private Button button_kill = null;
+	private Button button_clean = null;
+	private Button button_delete = null;
 	private Scale scale_zoom;
 	private StyledText text_logging = null;
 	private Frame frame_radar = null;
@@ -295,19 +296,41 @@ public class PradarPartUi3 extends ModelObject
 		
 		// Group function
 		Group grpFunction = new Group(composite_11, SWT.NONE);
-		grpFunction.setLayout(new GridLayout(2, false));
+		grpFunction.setLayout(new GridLayout(4, false));
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		grpFunction.setText("function");
+		grpFunction.setText("functions");
 		
 		button_refresh = new Button(grpFunction, SWT.NONE);
-		button_refresh.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		GridData gd_button_refresh = new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1);
+		gd_button_refresh.widthHint = 62;
+		button_refresh.setLayoutData(gd_button_refresh);
 		button_refresh.setText("refresh");
+		button_refresh.setToolTipText("refresh status of entities from database");
 		button_refresh.addSelectionListener(listener_refresh_button);
 		
-		button_showlog = new Button(grpFunction, SWT.NONE);
-		button_showlog.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		button_showlog.setText("showlog");
-		button_showlog.addSelectionListener(listener_showlog_button);
+		button_log = new Button(grpFunction, SWT.NONE);
+		button_log.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_log.setText("log");
+		button_log.setToolTipText("shows logfile of selected process instance");
+		button_log.addSelectionListener(listener_log_button);
+		
+		button_kill = new Button(grpFunction, SWT.NONE);
+		button_kill.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		button_kill.setText("kill");
+		button_kill.setToolTipText("kills the selected process instance");
+//		button_kill.addSelectionListener(listener_kill_button);
+		
+		button_clean = new Button(grpFunction, SWT.NONE);
+		button_clean.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_clean.setText("clean");
+		button_clean.setToolTipText("checks whether active instances are still alive - disappeared instances will be checked out");
+		button_clean.addSelectionListener(listener_clean_button);
+		
+		button_delete = new Button(grpFunction, SWT.NONE);
+		button_delete.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_delete.setText("delete");
+		button_delete.setToolTipText("deletes a finished (already checked out) process instance from database. includes an implicit 'clean'");
+//		button_delete.addSelectionListener(listener_delete_button);
 		
 		// Group visual
 		Group grpVisual = new Group(composite_11, SWT.NONE);
@@ -523,7 +546,7 @@ public class PradarPartUi3 extends ModelObject
 		}
 	};
 	
-	SelectionAdapter listener_showlog_button = new SelectionAdapter()
+	SelectionAdapter listener_log_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
@@ -552,6 +575,59 @@ public class PradarPartUi3 extends ModelObject
 		}
 	};
 	
+	SelectionAdapter listener_clean_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			Iterator<String> iterPradarServer = pradar_server_port_at_hostname.iterator();
+			while(iterPradarServer.hasNext())
+			{
+				String portAtMachineAsString = iterPradarServer.next();
+				String [] port_and_machine = portAtMachineAsString.split("@");
+		
+				int portNumber = Integer.parseInt(port_and_machine[0]);
+				String machineName = port_and_machine[1];
+				log("info", "trying pradar-server "+portNumber+"@"+machineName);
+				try
+				{
+					// socket einrichten und Out/Input-Streams setzen
+					Socket server = new Socket(machineName, portNumber);
+					OutputStream out = server.getOutputStream();
+					InputStream in = server.getInputStream();
+					ObjectOutputStream objectOut = new ObjectOutputStream(out);
+					ObjectInputStream  objectIn  = new ObjectInputStream(in);
+					
+					// Objekte zum server uebertragen
+					objectOut.writeObject("cleandb_user");
+					objectOut.writeObject(System.getProperty("user.name"));
+		
+					// daten holen aus db
+					log("info", "refreshing data...");
+					server.close();
+					
+				}
+				catch (UnknownHostException e)
+				{
+					// TODO Auto-generated catch block
+					log("warn", "unknown host "+machineName);
+					pradar_server_port_at_hostname = null;
+		//					e.printStackTrace();
+				}
+		//		catch (ConnectException e)
+		//		{
+		//			log("warn", "no pradar-server found at "+portNumber+"@"+machineName);
+		////					e.printStackTrace();
+		//		}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					log("warn", "input / output problems at "+portNumber+"@"+machineName);
+							e.printStackTrace();
+				}
+			}
+		}
+	};	
+	
 	SelectionAdapter listener_autoscale_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
@@ -566,20 +642,6 @@ public class PradarPartUi3 extends ModelObject
 		public void mouseScrolled(MouseEvent me)
 		{
 			scale_zoom.setSelection(scale_zoom.getSelection() + (me.count*5));
-		}
-	};
-	
-	FocusListener listener_tabItem_refresh = new FocusListener()
-	{
-		public void focusGained(FocusEvent event)
-		{
-			StyledText widgetFocused = (StyledText) event.getSource();
-			int logLineCount = widgetFocused.getLineCount();
-		}
-		
-		public void focusLost(FocusEvent event)
-		{
-			
 		}
 	};
 	
@@ -853,6 +915,7 @@ public class PradarPartUi3 extends ModelObject
 				
 				// daten holen aus db
 				log("info", "refreshing data...");
+				server.close();
 				
 			}
 			catch (UnknownHostException e)
@@ -1019,12 +1082,12 @@ public class PradarPartUi3 extends ModelObject
 	{
 		String publicKey =	"30819f300d06092a864886f70d010101050003818d003081893032301006"
 							+ "072a8648ce3d02002EC311215SHA512withECDSA106052b81040006031e0"
-							+ "004b46c75f6fe31c9721cb3d37bcd3ca6e80beb6309c43816b6551641a5G"
-							+ "02818100979bb432406483b286aa994af0141b619ae38c8b9b82c0766adc"
-							+ "d13179e2f6a393a38685f524cd01b382e2ebc215d1dd9d13c05f7f898c1a"
-							+ "36df447c282f25d1e04a20988a8ef91dd1fde2af0bb4fa242df3df8070bd"
-							+ "d04bc83f4266202a73f303RSA4102413SHA512withRSA9c26a4d464229e9"
-							+ "5b40df68620efd5bc408f0d8bb8d99499c465811c498080ad0203010001";
+							+ "004b460a863476ce8d60591192b45e656da25433f85feb56f0911f79c69G"
+							+ "02818100b89d68e21006ec20808c60ba29d992bf3fc519c2109cb7f85f24"
+							+ "07bbbd0ba620cf5b40148a4a5ba61e67e2423b528cb73e7db95013405d01"
+							+ "a5e083a519fc5ebb5861aa51e785df6e9e2afd7c9dc89b9cbd4edde24278"
+							+ "0f52dc58c07f8259c7d803RSA4102413SHA512withRSA5645cb91606642d"
+							+ "1d00b916fbde2ebb7954dfe2531abdb5174835b5c09413a6f0203010001";
 
 		boolean license_valid = false;		
 		boolean das_erste_mal = false;
@@ -1033,10 +1096,8 @@ public class PradarPartUi3 extends ModelObject
 			das_erste_mal = true;
 		}
 		
-		Iterator<String> iterLicenseServerAsPortAtHostname = this.license_server_port_at_hostname.iterator();
-		while(iterLicenseServerAsPortAtHostname.hasNext() && (!(license_valid)))
+		for(String portAtHost : this.license_server_port_at_hostname)
 		{
-			String portAtHost = iterLicenseServerAsPortAtHostname.next();
 			String[] port_and_host = portAtHost.split("@");
 			InetAddress inetAddressHost;
 			try
@@ -1049,7 +1110,6 @@ public class PradarPartUi3 extends ModelObject
 				if (das_erste_mal)
 				{
 					log("info", "trying license-server "+portAtHost);
-					log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
 					log("info", "license validation returns "+license.getValidationStatus().toString());
 				}
 				
@@ -1057,7 +1117,10 @@ public class PradarPartUi3 extends ModelObject
 				{
 					case LICENSE_VALID:
 						license_valid = true;
+						log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
 					break;
+					default:
+						license_valid = false;
 				}
 			}
 			catch (UnknownHostException e)

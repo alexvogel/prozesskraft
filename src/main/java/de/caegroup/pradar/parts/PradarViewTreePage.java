@@ -169,22 +169,21 @@ public class PradarViewTreePage
 	{
 		public void doubleClick(DoubleClickEvent event)
 		{
-//			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
-			TreeViewer viewer = (TreeViewer) event.getSource();
-			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
-			
-			Entity entity = (Entity) thisselection.getFirstElement();
-
-			String aufruf = "nedit "+entity.getResource();
-			try
-			{
-				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			TreeViewer viewer = (TreeViewer) event.getSource();
+//			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
+//			
+//			Entity entity = (Entity) thisselection.getFirstElement();
+//
+//			String aufruf = "nedit "+entity.getResource();
+//			try
+//			{
+//				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+//			}
+//			catch (IOException e)
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 
 		}
 	};

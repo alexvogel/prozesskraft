@@ -524,21 +524,19 @@ public class PradarViewProcessingPage extends PApplet
 			// Aufruf taetigen
 		{
 			String aufruf = "nedit "+this.entity_nahe_maus.getResource();
-	//		System.out.println("entity_mit_fahne: "+entity_mit_fahne.getId());
-//			System.out.println("showing resource: "+aufruf);
 			
-			if (this.distanceToMouse < this.maus_toleranz_pentity)
-			{
-				try
-				{
-					java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-				}
-				catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+//			if (this.distanceToMouse < this.maus_toleranz_pentity)
+//			{
+//				try
+//				{
+//					java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+//				}
+//				catch (IOException e)
+//				{
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
 		}
 	}
 	
