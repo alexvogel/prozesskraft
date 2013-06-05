@@ -1118,7 +1118,8 @@ public class PradarPartUi3 extends ModelObject
 					case LICENSE_VALID:
 						license_valid = true;
 						log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
-					break;
+						das_erste_mal = false;
+						break;
 					default:
 						license_valid = false;
 				}
@@ -1128,6 +1129,11 @@ public class PradarPartUi3 extends ModelObject
 				// TODO Auto-generated catch block
 				log("warn", "unknown host "+port_and_host[1]);
 	//			e.printStackTrace();
+			}
+			
+			if (license_valid)
+			{
+				break;
 			}
 		}
 		
