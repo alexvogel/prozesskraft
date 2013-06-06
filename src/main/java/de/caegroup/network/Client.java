@@ -102,7 +102,7 @@ public class Client
 			{
 				Entity entity = (Entity) objectIn.readObject();
 				this.parent.db.deleteEntity(entity);
-				System.out.println("deleting entity (id "+entity.getId());
+				System.out.println("deleting entity (id "+entity.getId()+")");
 			}
 			else
 			{
