@@ -80,6 +80,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -330,7 +331,7 @@ public class PradarPartUi3 extends ModelObject
 		button_delete.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		button_delete.setText("delete");
 		button_delete.setToolTipText("deletes a finished (already checked out) process instance from database. includes an implicit 'clean'");
-//		button_delete.addSelectionListener(listener_delete_button);
+		button_delete.addSelectionListener(listener_delete_button);
 		
 		// Group visual
 		Group grpVisual = new Group(composite_11, SWT.NONE);
@@ -602,9 +603,8 @@ public class PradarPartUi3 extends ModelObject
 					objectOut.writeObject(System.getProperty("user.name"));
 		
 					// daten holen aus db
-					log("info", "refreshing data...");
+					log("info", "checking out active instances which appear to be disappeared");
 					server.close();
-					
 				}
 				catch (UnknownHostException e)
 				{
@@ -627,6 +627,104 @@ public class PradarPartUi3 extends ModelObject
 			}
 		}
 	};	
+	
+	SelectionAdapter listener_delete_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			if ( (einstellungen.entitySelected != null) && (!(einstellungen.entitySelected.getUser().equals(System.getProperty("user.name")))) )
+			{
+				log("error", "you may only delete your instances (user "+System.getProperty("user.name")+")");
+			}
+			
+			else if ( (einstellungen.entitySelected != null) && einstellungen.entitySelected.isActive() )
+			{
+				log("error", "you may only delete finished instances. use 'kill' or 'clean' first.");
+			}
+			
+			else if (einstellungen.entitySelected != null)
+			{
+				// bestaetigungsdialog
+				Shell shell = new Shell();
+				MessageBox confirmation = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+				confirmation.setText("please confirm");
+				
+				String message = "Do you really want to delete this entity from pradar database?\n\n";
+				message += "id:\t\t\t"+einstellungen.entitySelected.getId() +"\n";
+				message += "process:\t\t"+einstellungen.entitySelected.getProcess() +"\n";
+				message += "user:\t\t"+einstellungen.entitySelected.getUser() +"\n";
+				message += "host:\t\t"+einstellungen.entitySelected.getHost() +"\n";
+				message += "checkin:\t\t"+einstellungen.entitySelected.getCheckinAsString() +"\n";
+				message += "checkout:\t"+einstellungen.entitySelected.getCheckoutAsString() +"\n";
+				message += "exitcode:\t\t"+einstellungen.entitySelected.getExitcode() +"\n";
+				
+				confirmation.setMessage(message);
+				
+				// open confirmation and wait for user selection
+				int returnCode = confirmation.open();
+//				System.out.println("returnCode is: "+returnCode);
+
+				// ok == 32
+				if (returnCode == 32)
+				
+				{
+					Iterator<String> iterPradarServer = pradar_server_port_at_hostname.iterator();
+					while(iterPradarServer.hasNext())
+					{
+						String portAtMachineAsString = iterPradarServer.next();
+						String [] port_and_machine = portAtMachineAsString.split("@");
+				
+						int portNumber = Integer.parseInt(port_and_machine[0]);
+						String machineName = port_and_machine[1];
+						log("info", "trying pradar-server "+portNumber+"@"+machineName);
+						try
+						{
+							// socket einrichten und Out/Input-Streams setzen
+							Socket server = new Socket(machineName, portNumber);
+							OutputStream out = server.getOutputStream();
+							InputStream in = server.getInputStream();
+							ObjectOutputStream objectOut = new ObjectOutputStream(out);
+							ObjectInputStream  objectIn  = new ObjectInputStream(in);
+							
+							// Objekte zum server uebertragen
+							objectOut.writeObject("delete");
+							objectOut.writeObject(einstellungen.entitySelected);
+				
+							// daten holen aus db
+							log("info", "deleting entity");
+							server.close();
+							
+						}
+						catch (UnknownHostException e)
+						{
+							// TODO Auto-generated catch block
+							log("warn", "unknown host "+machineName);
+							pradar_server_port_at_hostname = null;
+				//					e.printStackTrace();
+						}
+				//		catch (ConnectException e)
+				//		{
+				//			log("warn", "no pradar-server found at "+portNumber+"@"+machineName);
+				////					e.printStackTrace();
+				//		}
+						catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							log("warn", "input / output problems at "+portNumber+"@"+machineName);
+									e.printStackTrace();
+						}
+					}
+				}
+			}
+			
+			else
+			{
+				log("warn", "no entity marked.");
+			}
+			
+		}
+	};	
+	
 	
 	SelectionAdapter listener_autoscale_button = new SelectionAdapter()
 	{
