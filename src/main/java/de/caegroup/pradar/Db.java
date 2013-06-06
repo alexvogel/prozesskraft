@@ -180,6 +180,33 @@ public class Db
 	}
 
 	/**
+	 * delete in database in table 'radar' a row where column user and id match the given parameter
+	 * @param Entity
+	 */
+	public void deleteEntity(Entity entity)
+	{
+		this.sqlvoodoo();
+		this.connection = null;
+		try
+		{
+			this.getConnection();
+			Statement statement = this.connection.createStatement();
+			
+			statement.setQueryTimeout(10);
+			
+			String sql = "DELETE FROM radar WHERE id LIKE '"+entity.getId()+"' AND user LIKE '"+entity.getUser()+"' AND checkin LIKE '"+entity.getCheckinInMillis()+"'";
+//			System.out.println(sql);
+			statement.executeUpdate(sql);
+			
+			this.connection.close();
+		} catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * matches an 'Entity' against the table 'radar' in database
 	 * @param Entity
 	 * @return ArrayList<Entity> of all rows of table 'radar' which match.

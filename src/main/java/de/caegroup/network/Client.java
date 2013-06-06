@@ -98,6 +98,13 @@ public class Client
 				this.parent.db.cleanDb(this.parent.getSshIdRelPath(), user);
 				System.out.println("cleaning db for user "+user);
 			}
+			else if (type.equals("delete"))
+			{
+				String user = (String) objectIn.readObject();
+				Entity entity = (Entity) objectIn.readObject();
+				this.parent.db.deleteEntity(entity);
+				System.out.println("deleting entity (id "+entity.getId());
+			}
 			else
 			{
 				System.out.println("dont know what you want: type="+type);
