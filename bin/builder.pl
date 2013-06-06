@@ -851,7 +851,7 @@ foreach my $refh_stackline (@CONFIG)
 		}
 		close VON;
 		close ZU;
-		system "mv $filename $filename_tmp";
+		system "mv $filename_tmp $filename";
 
 		# es soll diese Ersetzung nur gemacht werden, wenn es $now_app NICHT 'builder' heisst
 		# den allgemeinen commondriver an die aktuelle app anpassen
