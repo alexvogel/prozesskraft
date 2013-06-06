@@ -195,7 +195,7 @@ public class Db
 			statement.setQueryTimeout(10);
 			
 			String sql = "DELETE FROM radar WHERE id LIKE '"+entity.getId()+"' AND user LIKE '"+entity.getUser()+"' AND checkin LIKE '"+entity.getCheckinInMillis()+"'";
-//			System.out.println(sql);
+			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
 			this.connection.close();
