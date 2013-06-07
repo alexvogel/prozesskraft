@@ -125,7 +125,7 @@ public class PradarPartUi3 extends ModelObject
 	private Button btnChildren;
 	private Button button_refresh = null;
 	private Button button_log = null;
-	private Button button_kill = null;
+//	private Button button_kill = null;
 	private Button button_clean = null;
 	private Button button_delete = null;
 	private Scale scale_zoom;
@@ -315,10 +315,10 @@ public class PradarPartUi3 extends ModelObject
 		button_log.setToolTipText("shows logfile of selected process instance");
 		button_log.addSelectionListener(listener_log_button);
 		
-		button_kill = new Button(grpFunction, SWT.NONE);
-		button_kill.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
-		button_kill.setText("kill");
-		button_kill.setToolTipText("kills the selected process instance");
+//		button_kill = new Button(grpFunction, SWT.NONE);
+//		button_kill.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+//		button_kill.setText("kill");
+//		button_kill.setToolTipText("kills the selected process instance");
 //		button_kill.addSelectionListener(listener_kill_button);
 		
 		button_clean = new Button(grpFunction, SWT.NONE);
@@ -625,6 +625,9 @@ public class PradarPartUi3 extends ModelObject
 							e.printStackTrace();
 				}
 			}
+			
+			// daten und anzeige refreshen
+			refresh();
 		}
 	};	
 	
@@ -639,7 +642,7 @@ public class PradarPartUi3 extends ModelObject
 			
 			else if ( (einstellungen.entitySelected != null) && einstellungen.entitySelected.isActive() )
 			{
-				log("error", "you may only delete finished instances. use 'kill' or 'clean' first.");
+				log("error", "you may only delete finished instances.");
 			}
 			
 			else if (einstellungen.entitySelected != null)
@@ -715,6 +718,9 @@ public class PradarPartUi3 extends ModelObject
 						}
 					}
 				}
+				
+				// daten und anzeige refreshen
+				refresh();
 			}
 			
 			else
