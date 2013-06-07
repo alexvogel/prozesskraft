@@ -350,7 +350,7 @@ public class PradarViewProcessingEntity
 	private double forceStossFeder(double mass1, double mass2, double distance)
 	{
 		if (distance < 0.01) { distance = 0.01; }
-		double force = 0.000000001 * (mass1 * mass2) * Math.pow((1/distance), 2);
+		double force = 0.00000001 * (mass1 * mass2) * Math.pow((1/distance), 2);
 		return (force);
 	}
 	

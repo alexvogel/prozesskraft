@@ -457,7 +457,6 @@ public class PradarPartUi3 extends ModelObject
 		// nur entities, die keine eltern haben
 		entity_filter.setParentid("0");
 		filter();
-		applet.refresh();
 	}
 	public void applet_paint_with_new_zoom()
 	{
@@ -489,6 +488,7 @@ public class PradarPartUi3 extends ModelObject
 		public void handleChange(ChangeEvent event)
 		{
 			applet_paint_with_new_filter();
+			applet.refresh();
 			tree.refresh();
 		}
 	};
