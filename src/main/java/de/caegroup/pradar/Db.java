@@ -197,9 +197,14 @@ public class Db
 			String sql = "DELETE FROM radar WHERE id LIKE '"+entity.getId()+"' AND user LIKE '"+entity.getUser()+"'";
 			System.out.println(sql);
 			statement.executeUpdate(sql);
-			sql = "DELETE FROM radar WHERE parentid LIKE '"+entity.getParentid()+"' AND user LIKE '"+entity.getUser()+"'";
-			System.out.println(sql);
-			statement.executeUpdate(sql);
+
+			// alle children 
+			if (!(entity.getParentid().equals("0")))
+			{
+				sql = "DELETE FROM radar WHERE parentid LIKE '"+entity.getParentid()+"' AND user LIKE '"+entity.getUser()+"'";
+				System.out.println(sql);
+				statement.executeUpdate(sql);
+			}
 			
 			this.connection.close();
 		} catch (SQLException e)
