@@ -487,48 +487,13 @@ public class PradarPartUi3 extends ModelObject
 	{
 		public void handleChange(ChangeEvent event)
 		{
+			filter();
 			applet_paint_with_new_filter();
 			applet.refresh();
 			tree.refresh();
 		}
 	};
 	
-//	SelectionAdapter listener_radar_button = new SelectionAdapter()
-//	{
-//		public void widgetSelected(SelectionEvent event)
-//		{
-////			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
-//			button_tree.setSelection(!button_radar.getSelection());
-//			
-//			if (button_radar.getSelection())
-//			{
-//				set_perspective_to_radar();
-//			}
-//			else
-//			{
-//				set_perspective_to_tree();
-//			}
-//		}
-//	};
-//	
-//	SelectionAdapter listener_tree_button = new SelectionAdapter()
-//	{
-//		public void widgetSelected(SelectionEvent event)
-//		{
-////			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
-//			button_radar.setSelection(!button_tree.getSelection());
-//
-//			if (button_tree.getSelection())
-//			{
-//				set_perspective_to_tree();
-//			}
-//			else
-//			{
-//				set_perspective_to_radar();
-//			}
-//		}
-//	};
-//	
 	IChangeListener listener_zoom = new IChangeListener()
 	{
 		public void handleChange(ChangeEvent event)
@@ -1290,6 +1255,7 @@ public class PradarPartUi3 extends ModelObject
 		}
 		log("info", "setting filter...");
 		log("info", "amount of entities passing filter: "+this.entities_filtered.size());
+
 	}
 
 	Entity getEntityBySuperId(String superId)
