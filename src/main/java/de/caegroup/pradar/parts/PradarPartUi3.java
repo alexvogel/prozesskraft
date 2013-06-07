@@ -192,6 +192,8 @@ public class PradarPartUi3 extends ModelObject
 //		applet = new PradarViewProcessingPage(this);
 		refresh_last.setTimeInMillis(0);
 		refresh();
+		applet.refresh();
+		tree.refresh();
 	}
 
 	/**
@@ -206,6 +208,8 @@ public class PradarPartUi3 extends ModelObject
 		refresh_last.setTimeInMillis(0);
 		refresh();
 		createControls(composite);
+		applet.refresh();
+		tree.refresh();
 	}
 
 	/**
