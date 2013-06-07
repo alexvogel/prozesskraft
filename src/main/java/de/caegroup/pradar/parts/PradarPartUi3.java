@@ -1215,13 +1215,13 @@ public class PradarPartUi3 extends ModelObject
 				{
 					log("info", "trying license-server "+portAtHost);
 					log("info", "license validation returns "+license.getValidationStatus().toString());
+					log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
 				}
 				
 				switch(license.getValidationStatus())
 				{
 					case LICENSE_VALID:
 						license_valid = true;
-						log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
 						das_erste_mal = false;
 						break;
 					default:
