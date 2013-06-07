@@ -11,6 +11,8 @@ if (@ARGV)
 		print " list     to list contents of database\n";
 		print " checkin  to checkin a process\n";
 		print " checkout to checkout a process\n";
+		print " server   to start the server\n";
+		print " cleandb  to clean the database\n";
 		print " gui      for a gui\n";
 		exit(0);
 	}
@@ -20,7 +22,7 @@ if (@ARGV)
 	}
 }
 	
-if ( grep { $_ eq $prog } ("list", "checkin", "checkout", "init", "gui") )
+if ( grep { $_ eq $prog } ("list", "checkin", "checkout", "init", "server", "cleandb", "gui") )
 {
 #	print "pradar-$prog @ARGV\n";
 	system "pradar-$prog @ARGV";
