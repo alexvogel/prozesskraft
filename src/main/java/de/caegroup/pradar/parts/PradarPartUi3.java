@@ -182,6 +182,7 @@ public class PradarPartUi3 extends ModelObject
 	 */
 	public PradarPartUi3()
 	{
+		checkJavaVersion();
 		loadIni();
 //		checkLicense();
 		Shell shell = new Shell();
@@ -202,6 +203,7 @@ public class PradarPartUi3 extends ModelObject
 	@Inject
 	public PradarPartUi3(Composite composite)
 	{
+		checkJavaVersion();
 		loadIni();
 //		checkLicense();
 		applet = new PradarViewProcessingPage(this);
@@ -1460,6 +1462,21 @@ public class PradarPartUi3 extends ModelObject
 		reader.close();
 		
 		return stringBuilder.toString();
+	}
+	
+	/**
+	 * checks if java-version is newer than 1.6
+	 */
+	void checkJavaVersion()
+	{
+		String javaVersion = System.getProperty("java.version");
+		char minor = javaVersion.charAt(2);
+		char point = javaVersion.charAt(4);
+		
+		if (minor < '6')
+		{
+			throw new RuntimeException("Java 1.6 or higher is required to run this app. (found version "+javaVersion+")");
+		}
 	}
 	
 	/**
