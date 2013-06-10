@@ -125,7 +125,7 @@ public class PradarPartUi3 extends ModelObject
 	private Button btnChildren;
 	private Button button_refresh = null;
 	private Button button_log = null;
-//	private Button button_kill = null;
+	private Button button_browse = null;
 	private Button button_clean = null;
 	private Button button_delete = null;
 	private Scale scale_zoom;
@@ -321,11 +321,11 @@ public class PradarPartUi3 extends ModelObject
 		button_log.setToolTipText("shows logfile of selected process instance");
 		button_log.addSelectionListener(listener_log_button);
 		
-//		button_kill = new Button(grpFunction, SWT.NONE);
-//		button_kill.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
-//		button_kill.setText("kill");
-//		button_kill.setToolTipText("kills the selected process instance");
-//		button_kill.addSelectionListener(listener_kill_button);
+		button_browse = new Button(grpFunction, SWT.NONE);
+		button_browse.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		button_browse.setText("browse");
+		button_browse.setToolTipText("browse instance files.");
+		button_browse.addSelectionListener(listener_browse_button);
 		
 		button_clean = new Button(grpFunction, SWT.NONE);
 		button_clean.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -539,6 +539,44 @@ public class PradarPartUi3 extends ModelObject
 			else if (einstellungen.entitySelected != null && (!(new File(einstellungen.entitySelected.getResource()).exists()) ) )
 			{
 				log("warn", "logfile of entity does not exist "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
+			}
+			else
+			{
+				log("warn", "no entity marked.");
+			}
+		}
+	};
+	
+	SelectionAdapter listener_browse_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			if (einstellungen.entitySelected != null && (!(einstellungen.entitySelected.getResource().equals(""))))
+			{
+				String pathInstanceDir = new File(einstellungen.entitySelected.getResource()).getParent();
+				log("info", "opening filebrowser for entity "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
+				try
+				{
+					log("info", "nautilus --browser "+pathInstanceDir);
+					java.lang.Process sysproc = Runtime.getRuntime().exec("nautilus --browser "+pathInstanceDir);
+				} catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+			else if (einstellungen.entitySelected != null && einstellungen.entitySelected.getResource().equals(""))
+			{
+				log("warn", "unknown instance directory for entity "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
+			}
+			else if (einstellungen.entitySelected != null && (new File(einstellungen.entitySelected.getResource()).getParentFile().canRead() ) )
+			{
+				log("warn", "cannot read instance directory of entity "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
+			}
+			else if (einstellungen.entitySelected != null && (!(new File(einstellungen.entitySelected.getResource()).getParentFile().exists()) ) )
+			{
+				log("warn", "instance directory of entity does not exist "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
 			}
 			else
 			{
