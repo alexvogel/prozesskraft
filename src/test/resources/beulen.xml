@@ -11,12 +11,12 @@
 					<param id="1">no|lin|nlin</param>
 				</test>
 			</variable>
-			<variable key="basename" minoccur="1" maxoccur="1" free="true" description="give it a name.">
+			<variable key="basename" minoccur="1" maxoccur="1" free="true" description="give it a name. 3-50 characters long.">
 				<test name="matchPattern" description="min 3, max 50 characters [a-Z,0-9,_]">
 					<param id="1">\w{3,50}</param>
 				</test>
 			</variable>
-			<variable key="parttype" minoccur="1" maxoccur="1" free="false">
+			<variable key="parttype" minoccur="1" maxoccur="1" free="false" description="which partype are you going to analyse?">
 				<choice>fkl</choice>
 				<choice>dach</choice>
 				<choice>seite</choice>
@@ -24,7 +24,7 @@
 					<param id="1">fkl|dach|seite</param>
 				</test>
 			</variable>
-			<variable key="nid" minoccur="1" maxoccur="1" free="true" description="test device will be positioned at this node id.">
+			<variable key="nid" minoccur="1" maxoccur="1" free="true" description="define test position via node id.">
 				<test name="matchPattern" description="">
 					<param id="1">\d+</param>
 				</test>
@@ -37,10 +37,16 @@
 					<param id="1">area_[123456789]{1}</param>
 				</test>
 			</variable>
-			<variable key="force" value="150" minoccur="1" maxoccur="1" free="true" description="force the test device will be pushed with.">
+			<variable key="force" value="150" minoccur="1" maxoccur="1" free="true" description="test force">
 				<choice>150</choice>
-				<test name="matchPattern" description="">
+				<test name="matchPattern" description="testing if given value is an integer">
 					<param id="1">\d+</param>
+				</test>
+				<test name="moreThan" description="testing if given value exceeds 100">
+					<param id="1">99</param>
+				</test>
+				<test name="lessThan" description=" testing if given value does not exceed 300">
+					<param id="1">301</param>
 				</test>
 			</variable>
 			<variable key="vmises" value="true" minoccur="0" maxoccur="1" free="false" description="if default postprocessing does not allow for a resultset 'vonMisesStrain' with this parameter set to 'true' the generation of this resultset will be forced.">
@@ -69,20 +75,6 @@
 				</test>
 			</file>
 		</commit>
-<!-- 		<commit name="name3" toroot="true"> -->
-<!-- 		</commit> -->
-<!-- 		<commit name="name4" toroot="true"> -->
-<!-- 		</commit> -->
-<!-- 		<commit name="name5" toroot="true"> -->
-<!-- 		</commit> -->
-<!-- 		<commit name="name6" toroot="true"> -->
-<!-- 		</commit> -->
-<!-- 		<commit name="name7" toroot="true"> -->
-<!-- 		</commit> -->
-<!-- 		<commit name="name8" toroot="true"> -->
-<!-- 		</commit> -->
-<!-- 		<commit name="name9" toroot="true"> -->
-<!-- 		</commit> -->
 	</step>
 	<step name="gen_abaqus_beulen" type="automatic" description="Die gesamte Prozesskette">
 		<init fromobjecttype="file" name="template" listname="template_abadeck" returnfield="pathfilename" fromstep="root" insertrule="overwrite">

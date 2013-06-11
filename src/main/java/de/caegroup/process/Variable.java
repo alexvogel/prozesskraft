@@ -58,6 +58,38 @@ implements Serializable
 		else { return false; }
 	}
 	
+	public boolean doAllTestsPass()
+	{
+//		System.out.println("Variable "+this.getKey());
+		for(Test t : this.test)
+		{
+//			System.out.println("testName "+t.getName()+" parameter: "+t.getParam().get(0).getContent());
+			if (!(t.doesTestPass(this)))
+			{
+//				System.out.println("test "+t.getName()+" does not pass with this call: value="+this.getValue()+" pattern="+t.getParam().get(0).getContent());
+				return false;
+			}
+		}
+//		System.out.println("all tests pass.");
+		return true;
+	}
+	
+	public String getAllTestsFeedback()
+	{
+		String testsFeedback = "";
+		for(Test t : this.test)
+		{
+			if (!(testsFeedback.equals("")))
+			{
+				testsFeedback = testsFeedback + "\n\n";
+			}
+			testsFeedback = testsFeedback + "testName: " + t.getName() + "\n";
+			testsFeedback = testsFeedback + "testDescription: " + t.getDescription() + "\n";
+			testsFeedback = testsFeedback + "testResult: " + t.getTestResult() + "\n";
+			testsFeedback = testsFeedback + "testFeedback: " + t.getTestFeedback();
+		}
+		return testsFeedback;
+	}
 
 	/*----------------------------
 	  methods get
