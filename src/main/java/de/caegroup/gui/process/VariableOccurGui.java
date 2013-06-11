@@ -7,6 +7,17 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.databinding.validation.IValidator;
+import org.eclipse.core.databinding.validation.ValidationStatus;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -49,6 +60,8 @@ public class VariableOccurGui
 	Label label;
 	Combo combo = null;
 	Button button = null;
+	
+	VariableModel data = new VariableModel();
 
 	public VariableOccurGui(VariableGui parent_variablegui, Composite parent, Variable variable, String key, boolean free, boolean comboexist, boolean buttonexist)
 	{
@@ -142,6 +155,7 @@ public class VariableOccurGui
 		combo.setLayoutData(fd_combo_variable);
 		
 		composite.layout();
+		DataBindingContext bindingContext = initDataBinding();
 	}
 	
 	/**
@@ -235,5 +249,52 @@ public class VariableOccurGui
 
 		parent_variablegui.remove(this);
 	}
-	
+
+	/**
+	 * databinding
+	 */
+	protected DataBindingContext initDataBinding()
+	{
+		// Einrichten der ControlDecoration über dem combofeld
+		final ControlDecoration controlDecorationCombo = new ControlDecoration(combo, SWT.LEFT | SWT.TOP);
+//		controlDecorationCombo.setDescriptionText("test failed");
+		FieldDecoration fieldDecorationError = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
+		controlDecorationCombo.setImage(fieldDecorationError.getImage());
+		FieldDecoration fieldDecorationInfo = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
+//		controlDecorationCombo.setImage(fieldDecorationInfo.getImage());
+		
+		// Validator mit Verbindung zur Controldecoration
+		IValidator validatorTest = new IValidator()
+		{
+			public IStatus validate(Object value)
+			{
+				if (value instanceof String)
+				{
+					variable.setValue((String)value);
+					if ( variable.doAllTestsPass() )
+					{
+						controlDecorationCombo.hide();
+						return ValidationStatus.ok();
+
+					}
+				}
+				controlDecorationCombo.setDescriptionText( variable.getAllTestsFeedback() );
+				controlDecorationCombo.show();
+				return ValidationStatus.error("at least one test failed");
+			}
+		};
+
+		// UpdateStrategy ist: update der werte nur wenn validierung erfolgreich
+		UpdateValueStrategy strategyTest = new UpdateValueStrategy();
+		strategyTest.setBeforeSetValidator(validatorTest);
+
+		DataBindingContext bindingContext = new DataBindingContext();
+
+		IObservableValue targetObservableContent = WidgetProperties.text().observeDelayed(1500, combo);
+		IObservableValue modelObservableContent = BeanProperties.value("content").observe(data);
+		bindingContext.bindValue(targetObservableContent, modelObservableContent, strategyTest, null);
+
+		return bindingContext;
+	}
+
 }
