@@ -43,7 +43,7 @@ implements Serializable
 	 * @param variableToTest
 	 * @return boolean testResult
 	 */
-	public boolean doesTestPass(Variable variableToTest)
+	public void performTest(Variable variableToTest)
 	{
 		Boolean result = null;
 
@@ -55,39 +55,61 @@ implements Serializable
 
 		else if (this.name.equals("matchPattern"))
 		{
-			result = this.matchPattern(variableToTest, this.getParameterList());
+			result = this.testVariableMatchPattern(variableToTest, this.getParameterList());
 		}
 		
 		else if (this.name.equals("lessThan"))
 		{
-			result = this.lessThan(variableToTest, this.getParameterList());
+			result = this.testVariableLessThan(variableToTest, this.getParameterList());
 		}
+		
+		else if (this.name.equals("moreThan"))
+		{
+			result = this.testVariableMoreThan(variableToTest, this.getParameterList());
+		}
+		
+		else
+		{
+			result = false;
+			setTestFeedback("variable test with name '"+this.name+"' does not exist. please check process definition.");
+		}
+		
 		setTestResult(result);
-		return result;
 	}
 	
-//	/**
-//	 * tests the file
-//	 * @param fileToTest
-//	 * @return boolean testResult
-//	 */
-//	public boolean doesTestPass(File fileToTest)
-//	{
-//		Boolean result = null;
-//
-//		// in die einzelnen Tests abzweigen
-//		if (this.name.equals(""))
-//		{
-//			result = false;
-//		}
-//
-//		else if (this.name.equals("matchPattern"))
-//		{
-//			result = this.matchPattern(fileToTest, this.getParameterList());
-//		}
-//		
-//		return result;
-//	}
+	/**
+	 * tests the variable
+	 * @param variableToTest
+	 * @return boolean testResult
+	 */
+	public void performTest(File fileToTest)
+	{
+		Boolean result = null;
+
+		// in die einzelnen Tests abzweigen
+		if (this.name.equals(""))
+		{
+			result = false;
+		}
+
+		else if (this.name.equals("sizeGreaterThan"))
+		{
+			result = this.testFileSizeGreaterThan(fileToTest, this.getParameterList());
+		}
+		
+		else if (this.name.equals("doesExist"))
+		{
+			result = this.testFileDoesExist(fileToTest, this.getParameterList());
+		}
+		
+		else
+		{
+			result = false;
+			setTestFeedback("file test with name '"+this.name+"' does not exist. please check process definition.");
+		}
+		
+		setTestResult(result);
+	}
 	
 	private ArrayList<String> getParameterList()
 	{
@@ -101,29 +123,98 @@ implements Serializable
 	}
 	
 	/*----------------------------
-	  test methods
+	  test file methods
 	----------------------------*/
-	
+
 	/**
-	 * tests whether the Variable-value matches all patterns
+	 * tests whether the fileSize is greater than a given treshhold
 	 * @param Variable testVariable, ArrayList<String> pattern
 	 * @return boolean testResult
 	 */
-	private boolean matchPattern(Variable testVariable, ArrayList<String> pattern)
+	private boolean testFileSizeGreaterThan(File testFile, ArrayList<String> param)
 	{
 		boolean result = true;
-		this.testFeedback = "";
-		for (String p : pattern)
+		
+		if (param.size() != 2)
 		{
-			if (!(testVariable.getValue().matches(p)))
-			{
-				addTestFeedback("value "+testVariable.getValue()+" does not match pattern '"+p+"'");
-				result = false;
-			}
-			else
-			{
-				addTestFeedback("value "+testVariable.getValue()+" matches pattern '"+p+"'");
-			}
+			setTestFeedback("error in test definition for files. test sizeGreaterThan need exact 2 param.");
+			result = false;
+			return result;
+		}
+		
+		String sizeScale = param.get(0);
+		long sizeTreshold = Integer.parseInt(param.get(1));
+		
+		if (testFile.getSize(sizeScale) <= sizeTreshold)
+		{
+			setTestFeedback("size of file '"+testFile.getAbsfilename()+"' is not greater than '"+sizeTreshold+"' "+sizeScale);
+			result = false;
+		}
+		else
+		{
+			setTestFeedback("size of file '"+testFile.getAbsfilename()+"' is greater than '"+sizeTreshold+"' "+sizeScale);
+		}
+		return result;
+	}
+
+	/**
+	 * tests whether the file does exist
+	 * @param Variable testVariable, ArrayList<String> pattern
+	 * @return boolean testResult
+	 */
+	private boolean testFileDoesExist(File testFile, ArrayList<String> param)
+	{
+		boolean result = true;
+		
+		if (param.size() > 0)
+		{
+			setTestFeedback("error in test definition for files. test doesExist need exact 0 param.");
+			result = false;
+			return result;
+		}
+		
+		if (!(testFile.doesExist()))
+		{
+			setTestFeedback("file '"+testFile.getAbsfilename()+"' does not exist.");
+			result = false;
+		}
+		else
+		{
+			setTestFeedback("file '"+testFile.getAbsfilename()+"' does exist");
+		}
+		return result;
+	}
+
+	/*----------------------------
+	  test variable methods
+	----------------------------*/
+	
+	/**
+	 * VariableTest: tests whether the Variable-value matches all patterns
+	 * @param Variable testVariable, ArrayList<String> pattern
+	 * @return boolean testResult
+	 */
+	private boolean testVariableMatchPattern(Variable testVariable, ArrayList<String> param)
+	{
+		boolean result = true;
+
+		if (param.size() != 1)
+		{
+			setTestFeedback("error in test definition for variables. test matchPattern needs exact 1 param.");
+			result = false;
+			return result;
+		}
+		
+		String pattern = param.get(0);
+		
+		if (!(testVariable.getValue().matches(pattern)))
+		{
+			setTestFeedback("value '"+testVariable.getValue()+"' does not match pattern '"+pattern+"'");
+			result = false;
+		}
+		else
+		{
+			setTestFeedback("value '"+testVariable.getValue()+"' matches pattern '"+pattern+"'");
 		}
 		return result;
 	}
@@ -133,24 +224,60 @@ implements Serializable
 	 * @param Variable testVariable, ArrayList<String> pattern
 	 * @return boolean testResult
 	 */
-	private boolean lessThan(Variable testVariable, ArrayList<String> grenzwert)
+	private boolean testVariableLessThan(Variable testVariable, ArrayList<String> param)
 	{
 		boolean result = true;
-		this.testFeedback = "";
-		for (String g : grenzwert)
+		
+		if (param.size() != 1)
 		{
-			int grenzwert_integer = Integer.parseInt(g);
-			
-			if (!( Integer.parseInt(testVariable.getValue()) < grenzwert_integer ))
-			{
-				addTestFeedback("value "+testVariable.getValue()+" is not < "+grenzwert_integer);
-				result = false;
-			}
-			else
-			{
-				addTestFeedback("value "+testVariable.getValue()+" is < "+grenzwert_integer);
-			}
+			setTestFeedback("error in test definition for variables. test lessThan needs exact 1 param.");
+			result = false;
+			return result;
 		}
+		
+		int grenzwert_integer = Integer.parseInt(param.get(0));
+		
+		if (!( Integer.parseInt(testVariable.getValue()) < grenzwert_integer ))
+		{
+			setTestFeedback("value '"+testVariable.getValue()+"' is not < "+grenzwert_integer);
+			result = false;
+		}
+		else
+		{
+			setTestFeedback("value '"+testVariable.getValue()+"' is < "+grenzwert_integer);
+		}
+
+		return result;
+	}
+	
+	/**
+	 * tests whether the Integer is greater than a given treshhold
+	 * @param Variable testVariable, ArrayList<String> pattern
+	 * @return boolean testResult
+	 */
+	private boolean testVariableMoreThan(Variable testVariable, ArrayList<String> param)
+	{
+		boolean result = true;
+
+		if (param.size() != 1)
+		{
+			setTestFeedback("error in test definition for variables. test moreThan needs exact 1 param.");
+			result = false;
+			return result;
+		}
+		
+		int grenzwert_integer = Integer.parseInt(param.get(0));
+		
+		if (!( Integer.parseInt(testVariable.getValue()) > grenzwert_integer ))
+		{
+			setTestFeedback("value '"+testVariable.getValue()+"' is not > "+grenzwert_integer);
+			result = false;
+		}
+		else
+		{
+			setTestFeedback("value '"+testVariable.getValue()+"' is > "+grenzwert_integer);
+		}
+
 		return result;
 	}
 	

@@ -7,12 +7,12 @@
 				<choice>no</choice>
 				<choice>lin</choice>
 				<choice>nlin</choice>
-				<test name="matchPattern" description="">
+				<test name="matchPattern" description="testing if given value is one the possible choices.">
 					<param id="1">no|lin|nlin</param>
 				</test>
 			</variable>
-			<variable key="basename" minoccur="1" maxoccur="1" free="true" description="give it a name. 3-50 characters long.">
-				<test name="matchPattern" description="min 3, max 50 characters [a-Z,0-9,_]">
+			<variable key="basename" minoccur="1" maxoccur="1" free="true" description="give it a name. 3-50 characters long. letters, figueres and '_'. no spaces.">
+				<test name="matchPattern" description="testing if value is min 3 and max 50 characters long and only uses letters, figures and '_'">
 					<param id="1">\w{3,50}</param>
 				</test>
 			</variable>
@@ -20,12 +20,12 @@
 				<choice>fkl</choice>
 				<choice>dach</choice>
 				<choice>seite</choice>
-				<test name="matchPattern" description="">
+				<test name="matchPattern" description="testing if given value is one the possible choices.">
 					<param id="1">fkl|dach|seite</param>
 				</test>
 			</variable>
-			<variable key="nid" minoccur="1" maxoccur="1" free="true" description="define test position via node id.">
-				<test name="matchPattern" description="">
+			<variable key="nid" minoccur="1" maxoccur="1" free="true" description="define position of stempel via node id.">
+				<test name="matchPattern" description="testing if given value is an integer">
 					<param id="1">\d+</param>
 				</test>
 			</variable>
@@ -39,13 +39,13 @@
 			</variable>
 			<variable key="force" value="150" minoccur="1" maxoccur="1" free="true" description="test force">
 				<choice>150</choice>
-				<test name="matchPattern" description="testing if given value is an integer">
+				<test name="matchPattern" description="tests whether given value is an integer">
 					<param id="1">\d+</param>
 				</test>
-				<test name="moreThan" description="testing if given value exceeds 100">
+				<test name="moreThan" description="tests whether given value is min 100">
 					<param id="1">99</param>
 				</test>
-				<test name="lessThan" description=" testing if given value does not exceed 300">
+				<test name="lessThan" description=" tests whether given value does not exceed 300">
 					<param id="1">301</param>
 				</test>
 			</variable>
@@ -66,12 +66,11 @@
 		</commit>
 		<commit name="abaqus model" toroot="true">
 			<file key="inc" minoccur="1" description="abaqus include file without history data" >
-				<test name="size" description="tests for file size">
-					<param id="1">min</param>
-					<param id="2">KB</param>
-					<param id="3">1</param>
+				<test name="doesExist" description="tests whether file does exist">
 				</test>
-				<test name="isNotBinary" description="tests whether file is not binary">
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
 				</test>
 			</file>
 		</commit>

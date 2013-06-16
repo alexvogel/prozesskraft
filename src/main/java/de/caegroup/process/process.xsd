@@ -103,7 +103,7 @@
   <xs:element name="file">
     <xs:complexType>
       <xs:sequence>
-        <xs:element maxOccurs="unbounded" ref="test"/>
+        <xs:element maxOccurs="unbounded" ref="test" minOccurs="0"/>
       </xs:sequence>
       <xs:attribute name="description" use="optional" type="xs:string"/>
       <xs:attribute name="key" use="required" type="xs:string"/>

@@ -153,7 +153,7 @@ public class TestProcess {
 		de.caegroup.process.Test test0 = variable1.getTest().get(0);
 		// testen der elemente des tests
 		assertEquals("matchPattern", test0.getName());
-		assertEquals("", test0.getDescription());
+//		assertEquals("", test0.getDescription());
 
 		Param param1 = test0.getParam().get(0);
 		// testen der elemente des params

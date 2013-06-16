@@ -58,13 +58,21 @@ implements Serializable
 		else { return false; }
 	}
 	
+	public void performAllTests()
+	{
+		for(Test t : this.test)
+		{
+			t.performTest(this);
+		}
+	}
+	
 	public boolean doAllTestsPass()
 	{
 //		System.out.println("Variable "+this.getKey());
 		for(Test t : this.test)
 		{
 //			System.out.println("testName "+t.getName()+" parameter: "+t.getParam().get(0).getContent());
-			if (!(t.doesTestPass(this)))
+			if (!(t.getTestResult()))
 			{
 //				System.out.println("test "+t.getName()+" does not pass with this call: value="+this.getValue()+" pattern="+t.getParam().get(0).getContent());
 				return false;
@@ -87,6 +95,48 @@ implements Serializable
 			testsFeedback = testsFeedback + "testDescription: " + t.getDescription() + "\n";
 			testsFeedback = testsFeedback + "testResult: " + t.getTestResult() + "\n";
 			testsFeedback = testsFeedback + "testFeedback: " + t.getTestFeedback();
+		}
+		return testsFeedback;
+	}
+
+	public String getFailedTestsFeedback()
+	{
+		String testsFeedback = "";
+		for(Test t : this.test)
+		{
+			if (!(t.getTestResult()))
+			{
+				if (!(testsFeedback.equals("")))
+				{
+					testsFeedback = testsFeedback + "\n\n";
+				}
+				testsFeedback = testsFeedback + "testName: " + t.getName() + "\n";
+				testsFeedback = testsFeedback + "testDescription: " + t.getDescription() + "\n";
+				testsFeedback = testsFeedback + "testResult: " + t.getTestResult() + "\n";
+				testsFeedback = testsFeedback + "testFeedback: " + t.getTestFeedback();
+			}
+		}
+		return testsFeedback;
+	}
+
+	public String getFirstFailedTestsFeedback()
+	{
+		String testsFeedback = "";
+		for(Test t : this.test)
+		{
+			if (!(t.getTestResult()))
+			{
+				if (!(testsFeedback.equals("")))
+				{
+					testsFeedback = testsFeedback + "\n\n";
+				}
+				testsFeedback = testsFeedback + "testName: " + t.getName() + "\n";
+				testsFeedback = testsFeedback + "testDescription: " + t.getDescription() + "\n";
+				testsFeedback = testsFeedback + "testResult: " + t.getTestResult() + "\n";
+				testsFeedback = testsFeedback + "testFeedback: " + t.getTestFeedback();
+				
+				return testsFeedback;
+			}
 		}
 		return testsFeedback;
 	}
