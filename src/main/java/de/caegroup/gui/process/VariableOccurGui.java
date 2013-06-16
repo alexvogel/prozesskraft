@@ -61,7 +61,7 @@ public class VariableOccurGui
 	Combo combo = null;
 	Button button = null;
 	
-	VariableModel data = new VariableModel();
+	ModelData data = new ModelData();
 
 	public VariableOccurGui(VariableGui parent_variablegui, Composite parent, Variable variable, String key, boolean free, boolean comboexist, boolean buttonexist)
 	{
@@ -117,6 +117,7 @@ public class VariableOccurGui
 		{
 			if (button != null) {setButtonPlus();}
 		}
+
 	}
 	
 	/**
@@ -155,6 +156,8 @@ public class VariableOccurGui
 		combo.setLayoutData(fd_combo_variable);
 		
 		composite.layout();
+		
+		// databinding nur, falls auch tatsaechlich eine combo box erstellt wird
 		DataBindingContext bindingContext = initDataBinding();
 	}
 	
@@ -260,7 +263,7 @@ public class VariableOccurGui
 //		controlDecorationCombo.setDescriptionText("test failed");
 		FieldDecoration fieldDecorationError = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
 		controlDecorationCombo.setImage(fieldDecorationError.getImage());
-		FieldDecoration fieldDecorationInfo = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
+//		FieldDecoration fieldDecorationInfo = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 //		controlDecorationCombo.setImage(fieldDecorationInfo.getImage());
 		
 		// Validator mit Verbindung zur Controldecoration
@@ -271,6 +274,7 @@ public class VariableOccurGui
 				if (value instanceof String)
 				{
 					variable.setValue((String)value);
+					variable.performAllTests();
 					if ( variable.doAllTestsPass() )
 					{
 						controlDecorationCombo.hide();
@@ -278,7 +282,7 @@ public class VariableOccurGui
 
 					}
 				}
-				controlDecorationCombo.setDescriptionText( variable.getAllTestsFeedback() );
+				controlDecorationCombo.setDescriptionText( variable.getFirstFailedTestsFeedback() );
 				controlDecorationCombo.show();
 				return ValidationStatus.error("at least one test failed");
 			}
@@ -290,7 +294,7 @@ public class VariableOccurGui
 
 		DataBindingContext bindingContext = new DataBindingContext();
 
-		IObservableValue targetObservableContent = WidgetProperties.text().observeDelayed(1500, combo);
+		IObservableValue targetObservableContent = WidgetProperties.text().observeDelayed(800, combo);
 		IObservableValue modelObservableContent = BeanProperties.value("content").observe(data);
 		bindingContext.bindValue(targetObservableContent, modelObservableContent, strategyTest, null);
 

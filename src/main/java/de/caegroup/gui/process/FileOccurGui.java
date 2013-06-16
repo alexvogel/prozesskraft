@@ -6,6 +6,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.databinding.validation.IValidator;
+import org.eclipse.core.databinding.validation.ValidationStatus;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -52,6 +63,8 @@ public class FileOccurGui
 	Label label;
 	Text text = null;
 	Button button = null;
+
+	ModelData data = new ModelData();
 
 	public FileOccurGui(FileGui parent_filegui, Composite parent, File file, String key, boolean textexist, boolean buttonexist)
 	{
@@ -136,6 +149,7 @@ public class FileOccurGui
 		fileButton.setLayoutData(fd_file_button);
 		
 		composite.layout();
+		DataBindingContext bindingContext = initDataBinding();
 	}
 	
 	/**
@@ -265,4 +279,60 @@ public class FileOccurGui
 		parent_filegui.remove(this);
 	}
 	
+	/**
+	 * databinding
+	 */
+	protected DataBindingContext initDataBinding()
+	{
+		// Einrichten der ControlDecoration über dem combofeld
+		final ControlDecoration controlDecorationCombo = new ControlDecoration(text, SWT.LEFT | SWT.TOP);
+//		controlDecorationCombo.setDescriptionText("test failed");
+		FieldDecoration fieldDecorationError = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
+		controlDecorationCombo.setImage(fieldDecorationError.getImage());
+//		FieldDecoration fieldDecorationInfo = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
+//		controlDecorationCombo.setImage(fieldDecorationInfo.getImage());
+		
+		// Validator mit Verbindung zur Controldecoration
+		IValidator validatorTest = new IValidator()
+		{
+			public IStatus validate(Object value)
+			{
+				if (value instanceof String)
+				{
+					file.setAbsfilename((String)value);
+					System.out.println("ACTUAL FILENAME IS: "+file.getAbsfilename());
+					file.performAllTests();
+					if ( file.doAllTestsPass() )
+					{
+						controlDecorationCombo.hide();
+
+//						// debug
+//						controlDecorationCombo.show();
+//						controlDecorationCombo.setDescriptionText( file.getAllTestsFeedback() );
+//						
+						return ValidationStatus.ok();
+
+					}
+				}
+				controlDecorationCombo.setDescriptionText( file.getFirstFailedTestsFeedback() );
+				System.out.println(file.getFailedTestsFeedback());
+				controlDecorationCombo.show();
+				return ValidationStatus.error("at least one test failed");
+			}
+		};
+
+		// UpdateStrategy ist: update der werte nur wenn validierung erfolgreich
+		UpdateValueStrategy strategyTest = new UpdateValueStrategy();
+//		strategyTest.setBeforeSetValidator(validatorTest);
+		strategyTest.setBeforeSetValidator(validatorTest);
+
+		DataBindingContext bindingContext = new DataBindingContext();
+
+		IObservableValue targetObservableContent = WidgetProperties.text(SWT.Modify).observeDelayed(800, text);
+		IObservableValue modelObservableContent = BeanProperties.value("content").observe(data);
+		bindingContext.bindValue(targetObservableContent, modelObservableContent, strategyTest, null);
+
+		return bindingContext;
+	}
+
 }
