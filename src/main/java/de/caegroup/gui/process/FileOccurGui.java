@@ -140,6 +140,7 @@ public class FileOccurGui
 		fd_text_file.top = new FormAttachment(0, 0);
 		fd_text_file.left = new FormAttachment(0, 120);
 		fd_text_file.width = 190;
+		textexist = true;
 		text.setLayoutData(fd_text_file);
 		
 		FormData fd_file_button = new FormData();
@@ -300,7 +301,7 @@ public class FileOccurGui
 				if (value instanceof String)
 				{
 					file.setAbsfilename((String)value);
-					System.out.println("ACTUAL FILENAME IS: "+file.getAbsfilename());
+//					System.out.println("ACTUAL FILENAME IS: "+file.getAbsfilename());
 					file.performAllTests();
 					if ( file.doAllTestsPass() )
 					{

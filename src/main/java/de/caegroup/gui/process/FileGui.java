@@ -69,12 +69,7 @@ public class FileGui
 			fileoccurGui.add(fileoccur);
 		}
 		
-		// wenn schon die mindestanzahl erreicht ist aber die maximalzahl noch nicht, soll NUR ein button erstellt werden
-		if ( (this.fileoccurGui.size() >= file.getMinoccur()) && (this.fileoccurGui.size() < file.getMaxoccur()) )
-		{
-			FileOccurGui fileoccur = new FileOccurGui(this, composite, file, file.getKey(), false, true);
-			fileoccurGui.add(fileoccur);
-		}
+		addButtonIfNecessary();
 
 		parent_commitgui.parent.layout();
 		parent_commitgui.parent_commitcreator.sc.setMinSize(parent_commitgui.parent_commitcreator.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -96,7 +91,32 @@ public class FileGui
 		}
 	}
 
-//	private void setBackground()
+	public void addButtonIfNecessary()
+	{
+		// ist die mindestanzahl der eintraege erreicht UND maximalanzahl der eintraege noch nicht erreicht, und existiert noch kein einzelnes button, soll ein einzelnes button erzeugt werden
+		if ( (this.fileoccurGui.size() >= file.getMinoccur()) && (this.fileoccurGui.size() < file.getMaxoccur()) && (!(isFileOccurWithOnlyAButtonPresent())))
+		{
+			FileOccurGui variableoccur = new FileOccurGui(this, composite, file, file.getKey(), false, true);
+			fileoccurGui.add(variableoccur);
+		}
+	}
+	
+	public boolean isFileOccurWithOnlyAButtonPresent()
+	{
+		boolean isPresent = false;
+		for (FileOccurGui v : this.fileoccurGui)
+		{
+			if ( (!(v.textexist)) & v.buttonexist )
+			{
+				isPresent = true;
+			}
+		}
+		return isPresent;
+	}
+	
+
+	
+	//	private void setBackground()
 //	{
 //		if (this.variableoccurGui.size() > 1)
 //		{
@@ -125,6 +145,9 @@ public class FileGui
 			addFirst();
 //			System.out.println("Nochmal Ersterstellung durchlaufen und jetzt eine laenge von: "+this.variableoccurGui.size());
 		}
+
+		addButtonIfNecessary();
+		
 //		setBackground();
 		parent_commitgui.parent.layout();
 		parent_commitgui.parent_commitcreator.sc.setMinSize(parent_commitgui.parent_commitcreator.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));

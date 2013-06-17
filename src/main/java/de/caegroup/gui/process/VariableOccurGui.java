@@ -157,6 +157,8 @@ public class VariableOccurGui
 		
 		composite.layout();
 		
+		comboexist = true;
+		
 		// databinding nur, falls auch tatsaechlich eine combo box erstellt wird
 		DataBindingContext bindingContext = initDataBinding();
 	}
