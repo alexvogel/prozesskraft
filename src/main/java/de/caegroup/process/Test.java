@@ -4,6 +4,7 @@ import java.io.*;
 //import java.util.*;
 //import org.apache.solr.common.util.NamedList;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class Test
 implements Serializable
@@ -102,6 +103,11 @@ implements Serializable
 			result = this.testFileDoesExist(fileToTest, this.getParameterList());
 		}
 		
+		else if (this.name.equals("matchPattern"))
+		{
+			result = this.testFileMatchPattern(fileToTest, this.getParameterList());
+		}
+		
 		else
 		{
 			result = false;
@@ -145,14 +151,22 @@ implements Serializable
 		String sizeScale = param.get(0);
 		long sizeTreshold = Integer.parseInt(param.get(1));
 		
-		if (testFile.getSize(sizeScale) <= sizeTreshold)
+		if (sizeScale.matches("^byte$|^kilobyte$|^megabyte$|^gigabyte$"))
 		{
-			setTestFeedback("size of file '"+testFile.getAbsfilename()+"' is not greater than '"+sizeTreshold+"' "+sizeScale);
-			result = false;
+			if (testFile.getSize(sizeScale) <= sizeTreshold)
+			{
+				setTestFeedback("size of file '"+testFile.getAbsfilename()+"' is not greater than '"+sizeTreshold+"' "+sizeScale);
+				result = false;
+			}
+			else
+			{
+				setTestFeedback("size of file '"+testFile.getAbsfilename()+"' is greater than '"+sizeTreshold+"' "+sizeScale);
+			}
 		}
 		else
 		{
-			setTestFeedback("size of file '"+testFile.getAbsfilename()+"' is greater than '"+sizeTreshold+"' "+sizeScale);
+			setTestFeedback("unknown sizeScale '"+sizeScale+"'. check process definition.");
+			result = false;
 		}
 		return result;
 	}
@@ -184,6 +198,73 @@ implements Serializable
 		}
 		return result;
 	}
+
+	/**
+	 * VariableTest: tests whether the Variable-value matches all patterns
+	 * @param Variable testVariable, ArrayList<String> pattern
+	 * @return boolean testResult
+	 */
+	private boolean testFileMatchPattern(File testFile, ArrayList<String> param)
+	{
+		boolean result = false;
+
+		if (param.size() != 1)
+		{
+			setTestFeedback("error in test definition for files. test matchPattern needs exact 1 param.");
+			result = false;
+			return result;
+		}
+		
+		String pattern = param.get(0);
+		
+		// einlesen der datei
+		BufferedReader reader;
+		try
+		{
+			reader = new BufferedReader( new FileReader (testFile.getAbsfilename()));
+		
+			String line = null;
+			StringBuilder stringBuilder = new StringBuilder();
+			String ls = System.getProperty("line.separator");
+
+			while ( ( line = reader.readLine()) != null)
+			{
+				stringBuilder.append(line);
+				stringBuilder.append(ls);
+			}
+			
+			reader.close();
+
+			String content = stringBuilder.toString();
+			String[] lines = content.split("\\n");
+			
+			// ueber alle zeilen iterieren bis das muster einmal gefunden wurde
+			for (String l : lines)
+			{
+				if (l.matches(".*"+Pattern.quote(pattern)+".*"))
+				{
+					setTestFeedback("content of file '"+testFile.getAbsfilename()+"' matches pattern '"+pattern+"'");
+					return true;
+				}
+			}
+			
+			setTestFeedback("content of file '"+testFile.getAbsfilename()+"' does not match pattern '"+pattern+"'");
+
+		
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			setTestFeedback("content of file '"+testFile.getAbsfilename()+"' does not match pattern '"+pattern+"'");
+//			e.printStackTrace();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+		
+	}
+	
 
 	/*----------------------------
 	  test variable methods

@@ -72,6 +72,9 @@
 					<param id="1">byte</param>
 					<param id="2">1</param>
 				</test>
+				<test name="matchPattern" description="tests whether file content matches a certain pattern.">
+					<param id="1">FO] --- maven-jar-plugin:2.3.2:jar (default-jar) @ pradar</param>
+				</test>
 			</file>
 		</commit>
 	</step>
