@@ -80,7 +80,7 @@ public class PrampPartUi1 extends ModelObject
 {
 	static CommandLine line;
 	private DataBindingContext bindingContextProcesses;
-	private Button button_refresh = null;
+	private Button button_commit = null;
 //	private Text text_logging = null;
 	private StyledText text_logging = null;
 	private Combo combo_processes = null;
@@ -88,9 +88,8 @@ public class PrampPartUi1 extends ModelObject
 	private Combo combo_hosts = null;
 	private String processMainDir = null;
 	private String processDefinitionPath = null;
-	private de.caegroup.process.Process process = null;
+	private Process process = null;
 	private String iniFile = null;
-	ArrayList<String> processes = new ArrayList<String>();
 	private Text text_instancedirectory = null;
 	
 	Composite composite_12;
@@ -99,6 +98,7 @@ public class PrampPartUi1 extends ModelObject
 	Shell shell_dummy_commitRoot;
 	Composite commitRoot;
 	Map<String,Composite> commitRootOld = new HashMap();
+	Map<String,CommitCreator> commitCreatorOld = new HashMap();
 
 	Display display;
 
@@ -122,7 +122,7 @@ public class PrampPartUi1 extends ModelObject
 		composite.setLocation(0, 0);
 		setIni();
 		loadIni();
-		getProcesses();
+		getInstalledProcessNames();
 		getHosts();
 //		setRandomInstancedirectory();
 		createControls(composite);
@@ -136,7 +136,7 @@ public class PrampPartUi1 extends ModelObject
 	{
 		setIni();
 		loadIni();
-		getProcesses();
+		getInstalledProcessNames();
 		getHosts();
 //		setRandomInstancedirectory();
 		createControls(composite);
@@ -253,10 +253,10 @@ public class PrampPartUi1 extends ModelObject
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpFunction.setText("function");
 		
-		button_refresh = new Button(grpFunction, SWT.NONE);
-		button_refresh.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		button_refresh.setText("refresh");
-		button_refresh.addSelectionListener(listener_refresh_button);
+		button_commit = new Button(grpFunction, SWT.NONE);
+		button_commit.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		button_commit.setText("commit");
+		button_commit.addSelectionListener(listener_commit_button);
 		
 		composite_12 = new Composite(composite_1, SWT.BORDER);
 //		composite_12.setLayout(new GridLayout(1, false));
@@ -344,7 +344,7 @@ public class PrampPartUi1 extends ModelObject
 	
 	void updateUiComboVersions()
 	{
-		getVersions(combo_processes.getText());
+		getInstalledVersionNames(combo_processes.getText());
 		combo_versions.select(combo_versions.getItemCount()-1);
 	}
 	
@@ -434,12 +434,12 @@ public class PrampPartUi1 extends ModelObject
 	/**
 	 * listener for Selections in of button 'refresh'
 	 */
-	SelectionAdapter listener_refresh_button = new SelectionAdapter()
+	SelectionAdapter listener_commit_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
 //			System.out.println("button wurde gedrueckt");
-			refresh();
+			commit();
 		}
 	};
 	
@@ -553,12 +553,6 @@ public class PrampPartUi1 extends ModelObject
 		return bindingContextInstancedirectory;
 	}
 	
-	void refresh()
-	{
-//		loadIni();
-//		this.einstellungen.setProcesses(getProcesses());
-	}
-
 	/**
 	 * loads an ini-file into the field ini
 	 */
@@ -590,7 +584,7 @@ public class PrampPartUi1 extends ModelObject
 	 * determines all processes of a specific process-installation-directory
 	 * @return a list of all installed processes sorted in alphabetical order
 	 */
-	public ArrayList<String> getProcesses()
+	public ArrayList<String> getInstalledProcessNames()
 	{
 		ArrayList<String> processes = new ArrayList<String>();
 		try
@@ -615,7 +609,7 @@ public class PrampPartUi1 extends ModelObject
 	 * determines all versions of a specific process
 	 * @return a list of all installed processes sorted in alphabetical order
 	 */
-	public ArrayList<String> getVersions(String processName)
+	public ArrayList<String> getInstalledVersionNames(String processName)
 	{
 		ArrayList<String> versions = new ArrayList<String>();
 		String directoryPath = this.processMainDir+"/"+processName;
@@ -734,7 +728,8 @@ public class PrampPartUi1 extends ModelObject
 			} catch (JAXBException e)
 			{
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log("error", "cannot unmarshal data from process definition.");
+//				e.printStackTrace();
 			}
 			
 		}
@@ -742,6 +737,16 @@ public class PrampPartUi1 extends ModelObject
 		return processDefinition;
 	}
 
+	/**
+	 * every commitRoot page has a Name, such as "beulen@0.8.2"
+	 * @return String actualCommitRootName
+	 */
+	public String getActualCommitRootName()
+	{
+		return combo_processes.getText()+"@"+combo_versions.getText();
+	}
+	
+	
 	/**
 	 * creates the controls for RootCommit Area
 	 */
@@ -763,11 +768,11 @@ public class PrampPartUi1 extends ModelObject
 			hinweisComposite.setParent(shell_dummy_hinweis);
 			
 			// wenn es fuer diese version schon einen composite gibt, dann diesen anzeigen
-			if ( this.commitRootOld.containsKey((combo_processes.getText()+combo_versions.getText())) )
+			if ( this.commitRootOld.containsKey(getActualCommitRootName()) )
 			{
 				
 //				Composite old = this.commitRootOld.get((combo_processes.getText()+combo_versions.getText()));
-				commitRoot = this.commitRootOld.get((combo_processes.getText()+combo_versions.getText()));
+				commitRoot = this.commitRootOld.get(getActualCommitRootName());
 				commitRoot.setParent(parent);
 				commitRoot.setVisible(true);
 				parent.layout(true);
@@ -793,7 +798,8 @@ public class PrampPartUi1 extends ModelObject
 				commitRoot.setVisible(true);
 				parent.layout(true);
 				log("info", "creating a new commitRoot page");
-				commitRootOld.put((combo_processes.getText()+combo_versions.getText()), commitRoot);
+				commitRootOld.put(getActualCommitRootName(), commitRoot);
+				commitCreatorOld.put(getActualCommitRootName(), commitCreator);
 			}
 			
 			else
@@ -853,6 +859,16 @@ public class PrampPartUi1 extends ModelObject
 //		System.out.println("aktualisiere textfeld - einstellungen get.Instancedirectory: "+einstellungen.getInstancedirectory());
 	}
 	
+	/**
+	 * commit all the defined data to the process
+	 */
+	void commit()
+	{
+		System.out.println("button commit");
+		System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
+		this.commitCreatorOld.get(getActualCommitRootName()).commitAll();
+		System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
+	}
 	
 	void load()
 	{

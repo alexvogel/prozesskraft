@@ -336,4 +336,10 @@ public class FileOccurGui
 		return bindingContext;
 	}
 
+	
+	public void commit(Step step)
+	{
+		step.commitFile(file);
+	}
+
 }

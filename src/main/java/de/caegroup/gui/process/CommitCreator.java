@@ -77,12 +77,18 @@ public class CommitCreator
 		GridLayout gl_actualComposite = new GridLayout(1, false);
 		actualComposite.setLayout(gl_actualComposite);
 
-		Iterator<Commit> iterCommit = step.getCommit().iterator();
-		while(iterCommit.hasNext())
+		for (Commit actualCommit : step.getCommit())
 		{
-			Commit actualCommit = iterCommit.next();
 			commitGui.add(new CommitGui(this, actualComposite, actualCommit));
 		}
 		return parent;
+	}
+	
+	public void commitAll()
+	{
+		for (CommitGui actualCommitGui : commitGui)
+		{
+			actualCommitGui.commit(step);
+		}
 	}
 }

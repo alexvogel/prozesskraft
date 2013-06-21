@@ -303,4 +303,9 @@ public class VariableOccurGui
 		return bindingContext;
 	}
 
+	
+	public void commit(Step step)
+	{
+		step.commitvariable(this.key, data.getContent());
+	}
 }

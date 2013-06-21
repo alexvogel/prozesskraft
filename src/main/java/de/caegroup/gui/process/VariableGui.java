@@ -172,4 +172,15 @@ public class VariableGui
 		//		parent_commitgui.parent_commitcreator.composite.setSize(parent_commitgui.parent_commitcreator.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		parent_commitgui.parent_commitcreator.composite.layout();
 	}
+	
+	/**
+	 * commit the content of the combo / textfield to ste step of process
+	 */
+	public void commit (Step step)
+	{
+		for(VariableOccurGui actualVariableoccurGui : variableoccurGui)
+		{
+			actualVariableoccurGui.commit(step);
+		}
+	}
 }

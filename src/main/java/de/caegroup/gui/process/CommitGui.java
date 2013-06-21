@@ -83,4 +83,18 @@ public class CommitGui
 			fileGui.add(new FileGui(this, group, actualFile));
 		}
 	}
+	
+	public void commit(Step step)
+	{
+		// commit aller variables
+		for(VariableGui actualVariableGui : variableGui)
+		{
+			actualVariableGui.commit(step);
+		}
+		// commit aller files
+		for(FileGui actualFileGui : fileGui)
+		{
+			actualFileGui.commit(step);
+		}
+	}
 }

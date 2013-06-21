@@ -49,7 +49,7 @@ public class TestPrampPartUi1
 	public void testGetProcesses()
 	{
 		ui.loadIni();
-		ArrayList<String> processNames = ui.getProcesses();
+		ArrayList<String> processNames = ui.getInstalledProcessNames();
 		// test ob die richtige Anzahl festgestellt wurde
 		assertEquals(3, processNames.size());
 		// test auf richtige sortierung innerhalb der liste
@@ -63,7 +63,7 @@ public class TestPrampPartUi1
 	{
 		ui.loadIni();
 		String processName = "beulen";
-		ArrayList<String> versionNames = ui.getVersions(processName);
+		ArrayList<String> versionNames = ui.getInstalledVersionNames(processName);
 		assertEquals(2, versionNames.size());
 	}
 
