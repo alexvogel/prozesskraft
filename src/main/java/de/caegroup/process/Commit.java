@@ -49,7 +49,7 @@ implements Serializable
 	// ein file in den aktuellen step committen
 	public void commitfile(java.io.File file)
 	{
-		this.parent.commitfile(file);
+		this.parent.commitFile(file);
 	}
 
 	public void commitvariable(String name, String value)

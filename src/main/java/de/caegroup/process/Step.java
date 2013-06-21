@@ -31,8 +31,8 @@ implements Serializable, Cloneable
 //	private String abspid = new String();
 //	private String absstdout = new String();
 //	private String absstderr = new String();
-	private ArrayList<File> files = new ArrayList<File>();
-	private ArrayList<Variable> variables = new ArrayList<Variable>();
+	private ArrayList<File> file = new ArrayList<File>();
+	private ArrayList<Variable> variable = new ArrayList<Variable>();
 	private String status = "waiting";	// waiting/initializing/working/committing/ finished/broken/cancelled
 	
 	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
@@ -150,7 +150,7 @@ implements Serializable, Cloneable
 				// wenn es ein file ist
 				if (fromobjecttype.equals("file"))
 				{
-					ArrayList<File> files_from_fromstep = fromstep.getFiles();
+					ArrayList<File> files_from_fromstep = fromstep.getFile();
 					ArrayList<File> files_from_fromstep_which_matched = new ArrayList<File>();
 					// wenn match-angaben vorhanden sind, wird die fileliste reduziert
 					Iterator<Filter> itermatch = matchs.iterator();
@@ -174,31 +174,26 @@ implements Serializable, Cloneable
 					// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
 					List liste = new List();
 					this.addList(liste);
-					Iterator<File> iterfile = files_from_fromstep_which_matched.iterator();
-					while (iterfile.hasNext())
+					
+					for (File actualFile : files_from_fromstep_which_matched)
 					{
-						File file = iterfile.next();
-						liste.addItem(file.getField(returnfield));
+						liste.addItem(actualFile.getField(returnfield));
 					}
 				}
 
 				// wenn es ein variable ist
 				else if (fromobjecttype.equals("variable"))
 				{
-					ArrayList<Variable> variables_from_fromstep = fromstep.getVariables();
-					Iterator<Filter> itermatch = matchs.iterator();
-					// iteriere ueber matchs
-					while (itermatch.hasNext())
+					ArrayList<Variable> variables_from_fromstep = fromstep.getVariable();
+
+					for (Filter actualMatch : matchs)
 					{
-						Filter match = itermatch.next();
 						// iteriere ueber alle Files der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
-						Iterator<Variable> itervariable = variables_from_fromstep.iterator();
-						while (itervariable.hasNext())
+						for (Variable actualVariable : variables_from_fromstep)
 						{
-							Variable variable = itervariable.next();
-							if (!(variable.match(match)))
+							if (!(actualVariable.match(actualMatch)))
 							{
-								variables_from_fromstep.remove(variable);
+								variables_from_fromstep.remove(actualVariable);
 							}
 						}
 					}
@@ -376,7 +371,7 @@ implements Serializable, Cloneable
 				if (file.isFile())
 				{
 					jlog.log(Level.INFO, "it is a file");
-					if (!(this.commitfile(file)))
+					if (!(this.commitFile(file)))
 					{
 						all_commitfiles_ok = false;
 					}
@@ -400,9 +395,9 @@ implements Serializable, Cloneable
 		java.io.File file = new java.io.File(absfilepathdir);
 		return commitdir(file);
 	}
-	
+
 	// ein file in den aktuellen step committen
-	public boolean commitfile(java.io.File file)
+	public boolean commitFile(java.io.File file)
 	{
 		if (file.canRead())
 		{
@@ -411,7 +406,7 @@ implements Serializable, Cloneable
 			newfile.setAbsfilename(file.getPath());
 			this.addFile(newfile);
 			jlog.log(Level.INFO, "file committed: "+newfile.getAbsfilename());
-			System.out.println("AMOUNT OF FILES ARE NOW: "+this.files.size());
+			System.out.println("AMOUNT OF FILES ARE NOW: "+this.file.size());
 			return true;
 		}
 		else
@@ -420,13 +415,18 @@ implements Serializable, Cloneable
 			return false;
 		}
 	}
-	
-	public boolean commitfile(String absfilepathdir)
+
+	public boolean commitFile(String absfilepathdir)
 	{
 		java.io.File file = new java.io.File(absfilepathdir);
-		return commitfile(file);
+		return commitFile(file);
 	}
-	
+
+	public void commitFile(File file)
+	{
+		addFile(file);
+	}
+
 	/**
 	 * commit einer variable aus zwei strings (name, value)
 	 *
@@ -638,13 +638,13 @@ implements Serializable, Cloneable
 
 	public void addFile(File file)
 	{
-		this.files.add(file);
+		this.file.add(file);
 //		System.out.println("NOW FILES AMOUNT: "+this.files.size());
 	}
 
 	public void addVariable(Variable variable)
 	{
-		this.variables.add(variable);
+		this.variable.add(variable);
 	}
 	
 	public String genName()
@@ -985,14 +985,14 @@ implements Serializable, Cloneable
 		return fromsteps;
 	}
 
-	public ArrayList<File> getFiles()
+	public ArrayList<File> getFile()
 	{
-		return this.files;
+		return this.file;
 	}
 		
-	public ArrayList<Variable> getVariables()
+	public ArrayList<Variable> getVariable()
 	{
-		return this.variables;
+		return this.variable;
 	}
 		
 	public void addList(List list)

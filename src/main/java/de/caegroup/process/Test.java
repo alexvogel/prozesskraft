@@ -247,19 +247,20 @@ implements Serializable
 					return true;
 				}
 			}
-			
 			setTestFeedback("content of file '"+testFile.getAbsfilename()+"' does not match pattern '"+pattern+"'");
 
 		
 		} catch (FileNotFoundException e)
 		{
 			// TODO Auto-generated catch block
-			setTestFeedback("content of file '"+testFile.getAbsfilename()+"' does not match pattern '"+pattern+"'");
+			setTestFeedback("content of file '"+testFile.getAbsfilename()+"' does not match pattern '"+pattern+"', because file does not exist.");
 //			e.printStackTrace();
-		} catch (IOException e)
+		}
+		catch (IOException e)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+//				e.printStackTrace();
 		}
 		return result;
 		

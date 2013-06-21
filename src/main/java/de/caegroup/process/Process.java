@@ -550,7 +550,7 @@ implements Serializable
 		catch (javax.xml.bind.UnmarshalException e)
 		{
 			System.err.println("error: cannot unmarshall xml-file");
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		
 		// die jaxb-klassen mit den domain-klassen mappen
@@ -866,16 +866,16 @@ implements Serializable
 			System.out.println("-----------step: "+step.getName());
 			System.out.println("         status: "+step.getStatus());
 			System.out.println("    description: "+step.getDescription());
-			System.out.println("   amount files: "+step.getFiles().size());
-			Iterator<File> iterfile = step.getFiles().iterator();
+			System.out.println("   amount files: "+step.getFile().size());
+			Iterator<File> iterfile = step.getFile().iterator();
 			while (iterfile.hasNext())
 			{
 				File file = iterfile.next();
 				System.out.println("->    filename: "+file.getFilename());
 				System.out.println("   absfilename: "+file.getAbsfilename());
 			}
-			System.out.println("    amount vars: "+step.getVariables().size());
-			Iterator<Variable> itervariable = step.getVariables().iterator();
+			System.out.println("    amount vars: "+step.getVariable().size());
+			Iterator<Variable> itervariable = step.getVariable().iterator();
 			while (itervariable.hasNext())
 			{
 				Variable variable = itervariable.next();

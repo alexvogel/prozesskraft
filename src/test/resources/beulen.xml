@@ -51,14 +51,14 @@
 			</variable>
 			<variable key="vmises" value="true" minoccur="0" maxoccur="1" free="false" description="if default postprocessing does not allow for a resultset 'vonMisesStrain' with this parameter set to 'true' the generation of this resultset will be forced.">
 				<choice>true</choice>
-				<choice>false</choice>
+<!-- 				<choice>false</choice> -->
 				<test name="matchPattern" description="">
 					<param id="1">|true|false</param>
 				</test>
 			</variable>
 			<variable key="plstrain" value="" minoccur="0" maxoccur="1" free="false" description="if default postprocessing does not allow for a resultset 'plasticStrain' with this parameter set to 'true' the generation of this resultset will be forced.">
 				<choice>true</choice>
-				<choice>false</choice>
+<!-- 				<choice>false</choice> -->
 				<test name="matchPattern" description="">
 					<param id="1">|true|false</param>
 				</test>
