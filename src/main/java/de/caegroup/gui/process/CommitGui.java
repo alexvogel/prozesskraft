@@ -97,4 +97,27 @@ public class CommitGui
 			actualFileGui.commit(step);
 		}
 	}
+
+	public boolean doAllTestsPass()
+	{
+		// check ob alle Tests der Variablen gut (true) gelaufen sind
+		for(VariableGui actualVariableGui : variableGui)
+		{
+			if ( ! (actualVariableGui.doAllTestsPass()) )
+			{
+				return false;
+			}
+		}
+		// check ob alle Tests der Files gut (true) gelaufen sind
+		for(FileGui actualFileGui : fileGui)
+		{
+			if ( ! (actualFileGui.doAllTestsPass()) )
+			{
+				return false;
+			}
+		}
+		
+		// kein Tests 'false' gelaufen? -> dann treu zurueckmelden
+		return true;
+	}
 }

@@ -339,7 +339,17 @@ public class FileOccurGui
 	
 	public void commit(Step step)
 	{
-		step.commitFile(file);
+		if ( data.getContent() != null )
+		{
+			step.commitFile(file);
+		}
+	}
+
+	
+	public boolean doAllTestsPass()
+	{
+//		System.out.println("testResult file '"+this.key+"' "+this.file.doAllTestsPass());
+		return this.file.doAllTestsPass();
 	}
 
 }

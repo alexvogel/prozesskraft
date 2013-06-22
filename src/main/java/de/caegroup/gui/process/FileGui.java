@@ -167,5 +167,21 @@ public class FileGui
 			actualFileoccurGui.commit(step);
 		}
 	}
+	
+	/**
+	 * checks the status of all Tests associated with this commitRoot (all Files in this view)
+	 */
+	public boolean doAllTestsPass ()
+	{
+		for(FileOccurGui actualFileoccurGui : fileoccurGui)
+		{
+			if ( ! ( actualFileoccurGui.doAllTestsPass() ) )
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
 
 }

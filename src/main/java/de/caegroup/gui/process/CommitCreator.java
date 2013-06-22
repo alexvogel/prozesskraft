@@ -91,4 +91,17 @@ public class CommitCreator
 			actualCommitGui.commit(step);
 		}
 	}
+	
+	public boolean doAllTestsPass()
+	{
+		for (CommitGui actualCommitGui : commitGui)
+		{
+			if (! (actualCommitGui.doAllTestsPass()) )
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
 }

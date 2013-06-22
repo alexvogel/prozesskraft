@@ -183,4 +183,19 @@ public class VariableGui
 			actualVariableoccurGui.commit(step);
 		}
 	}
+
+	/**
+	 * checks the status of all Tests associated with this commitRoot (all Variables in this view)
+	 */
+	public boolean doAllTestsPass ()
+	{
+		for(VariableOccurGui actualVariableoccurGui : variableoccurGui)
+		{
+			if ( ! ( actualVariableoccurGui.doAllTestsPass() ) )
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 }

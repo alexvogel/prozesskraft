@@ -859,15 +859,52 @@ public class PrampPartUi1 extends ModelObject
 //		System.out.println("aktualisiere textfeld - einstellungen get.Instancedirectory: "+einstellungen.getInstancedirectory());
 	}
 	
+	private boolean createInstanceDir()
+	{
+		java.io.File instanceDir = new java.io.File(this.einstellungen.getInstancedirectory());
+		return instanceDir.mkdirs();
+	}
+	
 	/**
 	 * commit all the defined data to the process
 	 */
-	void commit()
+	private boolean commit()
 	{
-		System.out.println("button commit");
-		System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
-		this.commitCreatorOld.get(getActualCommitRootName()).commitAll();
-		System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
+//		System.out.println("button commit");
+
+		if (this.commitCreatorOld.containsKey((getActualCommitRootName())))
+		{
+			if ( ! (this.commitCreatorOld.get(getActualCommitRootName()).doAllTestsPass()))
+			{
+				log ("error", "not all tests passed. commit refused. check input.");
+				return false;
+			}
+			else
+			{
+				if (createInstanceDir())
+				{
+					log ("info", "all tests passed. performing commit.");
+	//				System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
+					this.commitCreatorOld.get(getActualCommitRootName()).commitAll();
+	//				System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
+					
+					process.setOutfilebinary(this.einstellungen.getInstancedirectory()+"/"+this.einstellungen.getProcess()+".bpd");
+					process.writeBinary();
+					
+					return true;
+				}
+				else
+				{
+					log ("error", "problems creating instance directory.");
+					return false;
+				}
+			}
+		}
+		else
+		{
+			log ("error", "nothing to commit.");
+			return false;
+		}
 	}
 	
 	void load()

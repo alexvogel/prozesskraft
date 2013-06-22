@@ -62,7 +62,7 @@ public class VariableOccurGui
 	Button button = null;
 	
 	ModelData data = new ModelData();
-
+	
 	public VariableOccurGui(VariableGui parent_variablegui, Composite parent, Variable variable, String key, boolean free, boolean comboexist, boolean buttonexist)
 	{
 		this.parent_variablegui = parent_variablegui;
@@ -134,6 +134,10 @@ public class VariableOccurGui
 			combo = new Combo(composite, SWT.NONE | SWT.READ_ONLY);
 		}
 		
+		// databinding nur, falls auch tatsaechlich eine combo box erstellt wird
+		// und bevor programmatisch ein wert gesetzt wird
+		DataBindingContext bindingContext = initDataBinding();
+
 		combo.setItems(variable.getChoice().toArray(new String[variable.getChoice().size()]));
 		
 		combo.setToolTipText(this.variable.getDescription());
@@ -159,8 +163,6 @@ public class VariableOccurGui
 		
 		comboexist = true;
 		
-		// databinding nur, falls auch tatsaechlich eine combo box erstellt wird
-		DataBindingContext bindingContext = initDataBinding();
 	}
 	
 	/**
@@ -281,7 +283,6 @@ public class VariableOccurGui
 					{
 						controlDecorationCombo.hide();
 						return ValidationStatus.ok();
-
 					}
 				}
 				controlDecorationCombo.setDescriptionText( variable.getFirstFailedTestsFeedback() );
@@ -303,9 +304,17 @@ public class VariableOccurGui
 		return bindingContext;
 	}
 
-	
 	public void commit(Step step)
 	{
-		step.commitvariable(this.key, data.getContent());
+		if ( data.getContent() != null )
+		{
+			step.commitvariable(this.key, data.getContent());
+		}
+	}
+
+	public boolean doAllTestsPass()
+	{
+//		System.out.println("testResult variable '"+this.key+"' "+this.variable.doAllTestsPass());
+		return this.variable.doAllTestsPass();
 	}
 }
