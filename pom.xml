@@ -73,7 +73,7 @@
 					<finalName>${project.name}-${project.version}</finalName>
 					<archive>
 						<manifest>
-							<mainClass>de.caegroup.pradar.Startinstance</mainClass>
+							<mainClass>de.caegroup.process.Startinstance</mainClass>
 							<addClasspath>true</addClasspath>
 						</manifest>
 					</archive>
