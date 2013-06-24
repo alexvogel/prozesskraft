@@ -3,6 +3,8 @@ package de.caegroup.process;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -12,8 +14,8 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.xerces.impl.xpath.regex.ParseException;
 
-import de.caegroup.pmodel.Process;
-import de.caegroup.pmodel.Step;
+import de.caegroup.process.Process;
+import de.caegroup.process.Step;
 
 public class Startinstance
 {
@@ -128,97 +130,105 @@ public class Startinstance
 		Process p1 = new Process();
 			
 		p1.setInfilexml( commandline.getOptionValue("definition") );
-		Process p2 = p1.readXml();
-
-		// step, an den die commits gehen, soll 'root' sein.
-		Step step = p2.getStep(p2.getRootstepname());
-		
-		// committen
-		if (commandline.hasOption("commitfile"))
-		{
-			if (new java.io.File(commandline.getOptionValue("commitfile")).exists())
-			{
-				step.commitfile(commandline.getOptionValue("commitfile"));
-			}
-			else
-			{
-				System.err.println("-commitfile "+commandline.getOptionValue("commitfile")+" does not exist.");
-				exiter();
-			}
-		}
-		
-		if (commandline.hasOption("commitvarfile"))
-		{
-			if (new java.io.File(commandline.getOptionValue("commitvarfile")).exists())
-			{
-				step.commitvarfile(commandline.getOptionValue("commitvarfile"));
-			}
-			else
-			{
-				System.err.println("-commitvarfile "+commandline.getOptionValue("commitvarfile")+" does not exist.");
-				exiter();
-			}
-		}
-		
-		if (commandline.hasOption("commitdir"))
-		{
-			if (new java.io.File(commandline.getOptionValue("commitdir")).exists())
-			{
-				step.commitdir(commandline.getOptionValue("commitdir"));
-			}
-			else
-			{
-				System.err.println("-commitdir "+commandline.getOptionValue("commitdir")+" does not exist.");
-				exiter();
-			}
-		}
-		
-		if (commandline.hasOption("commitvariable"))
-		{
-			if (commandline.getOptionValue("commitvariable").matches(".+=.+"))
-			{
-				step.commitvariable(commandline.getOptionValue("commitvariable"));
-			}
-			else
-			{
-				System.err.println("-commitvariable "+commandline.getOptionValue("commitvariable")+" does not match pattern \"NAME=VALUE\".");
-				exiter();
-			}
-		}
-		
-		if (commandline.hasOption("rootdir"))
-		{
-			p2.setRootdir(commandline.getOptionValue("rootdir"));
-		}
-		
-		p2.makeRootdir();
-		p2.writeBinary();
-		System.out.println("info: writing process instance "+p2.getOutfilebinary());
-		
-		System.out.println("info: starting processmanager for instance "+p2.getOutfilebinary());
-
+		Process p2;
 		try
 		{
-			Thread.sleep(1500, 0);
-		} catch (InterruptedException e)
+			p2 = p1.readXml();
+
+		
+			// step, an den die commits gehen, soll 'root' sein.
+			Step step = p2.getStep(p2.getRootstepname());
+			// committen
+			if (commandline.hasOption("commitfile"))
+			{
+				if (new java.io.File(commandline.getOptionValue("commitfile")).exists())
+				{
+					step.commitFile(commandline.getOptionValue("commitfile"));
+				}
+				else
+				{
+					System.err.println("-commitfile "+commandline.getOptionValue("commitfile")+" does not exist.");
+					exiter();
+				}
+			}
+			
+			if (commandline.hasOption("commitvarfile"))
+			{
+				if (new java.io.File(commandline.getOptionValue("commitvarfile")).exists())
+				{
+					step.commitvarfile(commandline.getOptionValue("commitvarfile"));
+				}
+				else
+				{
+					System.err.println("-commitvarfile "+commandline.getOptionValue("commitvarfile")+" does not exist.");
+					exiter();
+				}
+			}
+			
+			if (commandline.hasOption("commitdir"))
+			{
+				if (new java.io.File(commandline.getOptionValue("commitdir")).exists())
+				{
+					step.commitdir(commandline.getOptionValue("commitdir"));
+				}
+				else
+				{
+					System.err.println("-commitdir "+commandline.getOptionValue("commitdir")+" does not exist.");
+					exiter();
+				}
+			}
+			
+			if (commandline.hasOption("commitvariable"))
+			{
+				if (commandline.getOptionValue("commitvariable").matches(".+=.+"))
+				{
+					step.commitvariable(commandline.getOptionValue("commitvariable"));
+				}
+				else
+				{
+					System.err.println("-commitvariable "+commandline.getOptionValue("commitvariable")+" does not match pattern \"NAME=VALUE\".");
+					exiter();
+				}
+			}
+			
+			if (commandline.hasOption("rootdir"))
+			{
+				p2.setRootdir(commandline.getOptionValue("rootdir"));
+			}
+			
+			p2.makeRootdir();
+			p2.writeBinary();
+			System.out.println("info: writing process instance "+p2.getOutfilebinary());
+			
+			System.out.println("info: starting processmanager for instance "+p2.getOutfilebinary());
+	
+			try
+			{
+				Thread.sleep(1500, 0);
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Runtime.getRuntime().exec("processmanager -help");
+	
+			System.out.println("AUFRUF: processmanager -instance "+p2.getOutfilebinary());
+			String[] args_for_syscall = {"processmanager", "-instance", p2.getOutfilebinary()};
+			ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
+	
+			//		ProcessBuilder pb = new ProcessBuilder("processmanager -instance "+p2.getOutfilebinary());
+	//		Map<String,String> env = pb.environment();
+	//		String path = env.get("PATH");
+	//		System.out.println("PATH: "+path);
+	//		
+			java.lang.Process p = pb.start();
+			System.out.println("PROCESS: "+p.hashCode());
+
+		} catch (JAXBException e1)
 		{
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
-		Runtime.getRuntime().exec("processmanager -help");
-
-		System.out.println("AUFRUF: processmanager -instance "+p2.getOutfilebinary());
-		String[] args_for_syscall = {"processmanager", "-instance", p2.getOutfilebinary()};
-		ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
-
-		//		ProcessBuilder pb = new ProcessBuilder("processmanager -instance "+p2.getOutfilebinary());
-//		Map<String,String> env = pb.environment();
-//		String path = env.get("PATH");
-//		System.out.println("PATH: "+path);
-//		
-		java.lang.Process p = pb.start();
-		System.out.println("PROCESS: "+p.hashCode());
-
 	}
 	
 	private static void exiter()
