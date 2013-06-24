@@ -15,7 +15,7 @@ import org.apache.xerces.impl.xpath.regex.ParseException;
 import de.caegroup.pmodel.Process;
 import de.caegroup.pmodel.Step;
 
-public class startinstance
+public class Startinstance
 {
 
 	/*----------------------------

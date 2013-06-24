@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.caegroup.process</groupId>
-	<artifactId>startinstance</artifactId>
+	<artifactId>process-startinstance</artifactId>
 	<version>0.1</version>
 	<packaging>jar</packaging>
-	<name>startinstance</name>
+	<name>process-startinstance</name>
 	<url>http://maven.apache.org</url>
 	<build>
 		<plugins>
@@ -22,14 +22,14 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>de.caegroup.process.startinstance</mainClass>
+									<mainClass>de.caegroup.process.Startinstance</mainClass>
 <!-- 									<addClasspath>true</addClasspath> -->
 								</manifest>
 								<manifestEntries>
-									<Class-Path>processprocess-0.1.1-jar-with-dependencies.jar</Class-Path>
+									<Class-Path>process-core-0.1.1-jar-with-dependencies.jar</Class-Path>
 								</manifestEntries>
 							</archive>
-							<outputDirectory>/soft/tools/process/newest/bin-klar</outputDirectory>
+<!-- 							<outputDirectory>/soft/tools/process/newest/bin-klar</outputDirectory> -->
 						</configuration>
 					</execution>
 				</executions>
@@ -48,11 +48,11 @@
 				</executions>
 				<configuration>
 					<obfuscate>true</obfuscate>
-					<outputDirectory>/soft/tools/process/newest</outputDirectory>
-					<injar>bin-klar/${project.build.finalName}.jar</injar>
-					<outjar>bin/${project.build.finalName}.jar</outjar>
+<!-- 					<outputDirectory>/soft/tools/process/newest</outputDirectory> -->
+<!-- 					<injar>bin-klar/${project.build.finalName}.jar</injar> -->
+<!-- 					<outjar>bin/${project.build.finalName}.jar</outjar> -->
 					<options>
-						<option>-keep public class de.caegroup.process.startinstance { *; }</option>
+						<option>-keep public class de.caegroup.process.Startinstance { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
@@ -61,33 +61,33 @@
 					<proguardVersion>4.8</proguardVersion>
 				</configuration>
 			</plugin>
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 				<artifactId>maven-assembly-plugin</artifactId> -->
-<!-- 				<version>2.2.1</version> -->
-<!-- 				<configuration> -->
-<!-- 					<descriptorRefs> -->
-<!-- 						<descriptorRef>jar-with-dependencies</descriptorRef> -->
-<!-- 					</descriptorRefs> -->
-<!-- 					<outputDirectory>/soft/tools/process/newest/bin</outputDirectory> -->
-<!-- 					<finalName>${project.name}-${project.version}</finalName> -->
-<!-- 					<archive> -->
-<!-- 						<manifest> -->
-<!-- 							<mainClass>de.caegroup.process.startinstance</mainClass> -->
-<!-- 							<addClasspath>true</addClasspath> -->
-<!-- 						</manifest> -->
-<!-- 					</archive> -->
-<!-- 				</configuration> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>make-assembly</id> -->
-<!-- 						<phase>package</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>single</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+<!-- 					<outputDirectory>/tmp/pradar/bin</outputDirectory> -->
+					<finalName>${project.name}-${project.version}</finalName>
+					<archive>
+						<manifest>
+							<mainClass>de.caegroup.pradar.Startinstance</mainClass>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -98,8 +98,8 @@
 		</dependency>
 		<dependency>
 			<groupId>de.caegroup.pmodel</groupId>
-			<artifactId>pmodel-core</artifactId>
-			<version>0.1</version>
+			<artifactId>process-core</artifactId>
+			<version>0.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
