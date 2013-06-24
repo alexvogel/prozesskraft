@@ -97,7 +97,7 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>de.caegroup.pmodel</groupId>
+			<groupId>de.caegroup.process</groupId>
 			<artifactId>process-core</artifactId>
 			<version>0.1.1</version>
 		</dependency>
