@@ -35,6 +35,7 @@ public class Startinstance
 		  create boolean options
 		----------------------------*/
 		Option ohelp = new Option("help", "print this message");
+		Option ov = new Option("v", "prints version and build-date");
 		
 		/*----------------------------
 		  create argument options
@@ -80,6 +81,7 @@ public class Startinstance
 		Options options = new Options();
 		
 		options.addOption( ohelp );
+		options.addOption( ov );
 		options.addOption( orootdir );
 		options.addOption( odefinition );
 		options.addOption( odir );
@@ -114,6 +116,13 @@ public class Startinstance
 			System.exit(0);
 		}
 		
+		if ( commandline.hasOption("v"))
+		{
+			System.out.println("author:  alexander.vogel@caegroup.de");
+			System.out.println("version: [% version %]");
+			System.out.println("date:    [% date %]");
+			System.exit(0);
+		}
 		/*----------------------------
 		  ueberpruefen ob eine schlechte kombination von parametern angegeben wurde
 		----------------------------*/
