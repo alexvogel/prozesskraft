@@ -4,6 +4,9 @@ import java.io.*;
 import java.util.*;
 
 import org.apache.solr.common.util.NamedList;
+
+import de.caegroup.process.Commit;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -130,22 +133,20 @@ implements Serializable, Cloneable
 		this.setStatus("initializing");
 		boolean initializing_success = true;
 		// ueber alle inits iterieren
-		Iterator<Init> iterinit = this.getInits().iterator();
-		while (iterinit.hasNext())
+		for( Init actualInit : this.getInits())
 		{
-			Init init = iterinit.next();
 			// die init-angaben in lokale variablen uebernehmen
-			String fromobjecttype = init.getFromobjecttype();
-			String name = init.getName();
-			String returnfield = init.getReturnfield();
-			ArrayList<Step> fromsteps = parent.getSteps(init.getFromstep());
+			String fromobjecttype = actualInit.getFromobjecttype();
+			String name = actualInit.getName();
+			String returnfield = actualInit.getReturnfield();
+			ArrayList<Step> fromsteps = parent.getSteps(actualInit.getFromstep());
 			
 			Iterator<Step> iterstep = fromsteps.iterator();
 			while (iterstep.hasNext())
 			{
 				Step fromstep = iterstep.next();
 				jlog.log(Level.INFO, "init ("+name+") wants the returnfield ("+returnfield+") from a ("+fromobjecttype+") from step ("+fromstep.getName()+")");
-				ArrayList<Filter> matchs = init.getMatchs();
+				ArrayList<Match> matchs = actualInit.getMatch();
 			
 				// wenn es ein file ist
 				if (fromobjecttype.equals("file"))
@@ -153,11 +154,11 @@ implements Serializable, Cloneable
 					ArrayList<File> files_from_fromstep = fromstep.getFile();
 					ArrayList<File> files_from_fromstep_which_matched = new ArrayList<File>();
 					// wenn match-angaben vorhanden sind, wird die fileliste reduziert
-					Iterator<Filter> itermatch = matchs.iterator();
+					Iterator<Match> itermatch = matchs.iterator();
 					// iteriere ueber matchs
 					while (itermatch.hasNext())
 					{
-						Filter match = itermatch.next();
+						Match match = itermatch.next();
 						// iteriere ueber alle Files der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
 						Iterator<File> iterfile = files_from_fromstep.iterator();
 						while (iterfile.hasNext())
@@ -186,7 +187,7 @@ implements Serializable, Cloneable
 				{
 					ArrayList<Variable> variables_from_fromstep = fromstep.getVariable();
 
-					for (Filter actualMatch : matchs)
+					for (Match actualMatch : matchs)
 					{
 						// iteriere ueber alle Files der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
 						for (Variable actualVariable : variables_from_fromstep)
@@ -518,75 +519,78 @@ implements Serializable, Cloneable
 		java.io.File file = new java.io.File(absfilepathdir);
 		return commitvarfile(file);
 	}
-	
-//	public void commit() throws IOException
-//	{
-//		jlog.log(Level.INFO, "will try to commit...");
-//		this.setStatus("committing");
-//		jlog.log(Level.INFO, "status is set to "+this.getStatus());
-//
-//		// wenn es sich um root handelt, wird besonders committed
-//		if (this.getName().equals(this.parent.getRootstepname()))
-//		{
-//			this.rootcommit();
-//		}
-//		
-//		// wenn es sich nicht um root handelt
-//		else
-//		{
-//			// ueber alle commits iterieren
-//			Iterator<Commit> itercommit = this.getCommits().iterator();
-//			while (itercommit.hasNext())
-//			{
-//				Commit commit = itercommit.next();
-//				String type = commit.getType();
-//				jlog.log(Level.INFO, "commit id "+commit.getId()+" is a ...");
-//				
-//				// wenn das zu committende objekt ein File ist...
-//				if (type.equals("file"))
-//				{
-//					jlog.log(Level.INFO, "commit id "+commit.getId()+" is a "+type+" "+this.getAbsdir()+"/"+commit.getFilename());
-//					java.io.File fsfile = new java.io.File(this.getAbsdir()+"/"+commit.getFilename());
-//					if (this.commitfile(fsfile))
-//					{
-//						commit.setSuccess(true);
-//						jlog.log(Level.INFO, "commit(file) id successfull");
-//
-//						// wenn das File auch dem prozess committed werden soll, dann soll es ins instanzverzeichnis kopiert werden
-//						if (commit.getToroot())
-//						{
-//							try
-//							{
-//								Runtime.getRuntime().exec("cp "+fsfile.getAbsolutePath()+" "+this.parent.getRootdir()+"/"+fsfile.getName());
-//							}
-//							catch (Exception e)
-//							{
-//								e.printStackTrace();
-//							}
-//						}
-//					}
-//					else
-//					{
-//						jlog.log(Level.INFO, "commit(file) id NOT successfull");
-//					}
-//				}
-//				
-//				// wenn das zu committende objekt eine Variable ist...
-//				else if (type.equals("variable"))
-//				{
-//					jlog.log(Level.INFO, "commit id "+commit.getId()+" is a "+type);
-//					this.commitvariable(commit.getName(), commit.getValue());
-//					commit.setSuccess(true);
-//					jlog.log(Level.INFO, "commit(variable) id successfull");
-//				}
-//			}
-//			if (this.areAllcommitssuccessfull())
-//			{
-//				this.setStatus("finished");
-//			}
-//		}
-//	}
-	
+
+	public void commit() throws IOException
+	{
+		jlog.log(Level.INFO, "will try to commit...");
+		this.setStatus("committing");
+		jlog.log(Level.INFO, "status is set to "+this.getStatus());
+
+		// wenn es sich um root handelt, wird besonders committed
+		if (this.getName().equals(this.parent.getRootstepname()))
+		{
+			this.rootcommit();
+		}
+		
+		// wenn es sich nicht um root handelt
+		else
+		{
+			boolean success = true;
+			// ueber alle commits iterieren
+			for( Commit actualCommit : this.commit)
+			{
+				jlog.log(Level.INFO, "commit name "+actualCommit.getName());
+				
+				// wenn das zu committende objekt ein File ist...
+				for(File actualFile : actualCommit.getFile())
+				{
+					jlog.log(Level.INFO, "file id "+actualFile.getAbsfilename());
+					java.io.File fsfile = new java.io.File(actualFile.getAbsfilename());
+					if (this.commitFile(fsfile))
+					{
+						// wenn das File auch dem prozess committed werden soll, dann soll es ins instanzverzeichnis kopiert werden
+						if (actualCommit.getToroot())
+						{
+							try
+							{
+								Runtime.getRuntime().exec("cp "+fsfile.getAbsolutePath()+" "+this.parent.getRootdir()+"/"+fsfile.getName());
+							}
+							catch (Exception e)
+							{
+								e.printStackTrace();
+							}
+						}
+					}
+					else
+					{
+						success = false;
+						jlog.log(Level.INFO, "commit(file) id NOT successfull");
+					}
+				}
+				
+				// wenn das zu committende objekt eine Variable ist...
+				for(Variable actualVariable : actualCommit.getVariable())
+				{
+					if (this.commitvariable(actualVariable.getKey(), actualVariable.getValue()))
+					{
+						jlog.log(Level.INFO, "commit(variable) id successfull");
+					}
+					else
+					{
+						success = false;
+						jlog.log(Level.INFO, "commit(variable) id NOT successfull");
+					}
+				}
+				
+				actualCommit.setSuccess(success);
+			}
+			if (this.areAllcommitssuccessfull())
+			{
+				this.setStatus("finished");
+			}
+		}
+	}
+
 	public boolean areAllcommitssuccessfull()
 	{
 		boolean allcommitssuccessfull = true;

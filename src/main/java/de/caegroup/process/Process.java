@@ -72,6 +72,7 @@ implements Serializable
 	private String initcommitvarfile = new String();
 	private String architect = new String();
 	private String version = new String();
+	private boolean pradar = false;
 //	private NamedList<Step> steps = new NamedList<Step>();
 	private ArrayList<Step> step = new ArrayList<Step>();
 //	private ArrayList<Init> inits = new ArrayList<Init>();
@@ -87,6 +88,7 @@ implements Serializable
 	private String outfiledoc = new String();
 	private String filedoctemplate = new String();
 	private String rootstepname = "root";
+	private ArrayList<Log> log = new ArrayList<Log>();
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -404,7 +406,7 @@ implements Serializable
 					hd.startElement("", "", "init", atts);
 				
 					// Fuer jeden Knoten 'match'
-					Filter[] matchs = inits[j].getMatchs2();
+					Match[] matchs = inits[j].getMatch2();
 					for (int k=0; k<matchs.length; k++)
 					{
 						atts.clear();
@@ -550,7 +552,7 @@ implements Serializable
 		catch (javax.xml.bind.UnmarshalException e)
 		{
 			System.err.println("error: cannot unmarshall xml-file");
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		// die jaxb-klassen mit den domain-klassen mappen
@@ -678,7 +680,7 @@ implements Serializable
 											String matchpattern = lm.getAttribute("pattern");
 	
 											// Erstellen der Objektinstanz 'match' und einhaengen in den letzten list
-											Filter match = new Filter();
+											Match match = new Match();
 											init.addMatch(match);
 											
 											// Eintragen der gelesenen Daten in die Objektinstanz
@@ -891,13 +893,13 @@ implements Serializable
 				Init init = iterinit.next();
 				System.out.println("->     initname: "+init.getName());
 				System.out.println("       fromstep: "+init.getFromstep());
-				System.out.println("amount of matchs: "+init.getMatchs().size());
+				System.out.println("amount of matchs: "+init.getMatch().size());
 
-				ArrayList<Filter> matchs = init.getMatchs();
-				Iterator<Filter> itermatch = matchs.iterator();
+				ArrayList<Match> matchs = init.getMatch();
+				Iterator<Match> itermatch = matchs.iterator();
 				while (itermatch.hasNext())
 				{
-					Filter match = itermatch.next();
+					Match match = itermatch.next();
 					System.out.println("->        field: "+match.getField());
 					System.out.println("        pattern: "+match.getPattern());
 				}
@@ -965,6 +967,15 @@ implements Serializable
 	public void removeStep (Step step)
 	{
 		this.step.remove(step);
+	}
+	
+	/**
+	 * stores a message for the process
+	 * @param String loglevel, String logmessage
+	 */
+	public void log(String loglevel, String logmessage)
+	{
+		this.log.add(new Log(loglevel, logmessage));
 	}
 	
 	/*----------------------------
@@ -1110,6 +1121,11 @@ implements Serializable
 		return versionplain;
 	}
 
+	public boolean getPradar()
+	{
+		return this.pradar;
+	}
+	
 	public String getStatus()
 	{
 		return this.status;
@@ -1336,6 +1352,11 @@ implements Serializable
 	public void setVersion(String version)
 	{
 		this.version = version;
+	}
+
+	public void setPradar(boolean pradar)
+	{
+		this.pradar = pradar;
 	}
 
 	public void setStatus(String status)

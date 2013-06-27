@@ -34,7 +34,7 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
-	public boolean match(Filter match)
+	public boolean match(Match match)
 	{
 		String fieldname = match.getField();
 		String pattern = match.getPattern();

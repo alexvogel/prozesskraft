@@ -9,14 +9,16 @@
   </xs:element>
   <xs:element name="process">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element maxOccurs="unbounded" ref="step"/>
-      </xs:sequence>
-      <xs:attribute name="architect" use="required" type="EmailType"/>
-      <xs:attribute name="description" use="required" type="xs:string"/>
-      <xs:attribute name="name" use="required" type="xs:string"/>
-      <xs:attribute name="path" use="required" type="xs:string"/>
-      <xs:attribute name="version" use="required" type="xs:string"/>
+    	<xs:sequence>
+    		<xs:element maxOccurs="unbounded" ref="step" />
+    	</xs:sequence>
+    	<xs:attribute name="architect" use="required" type="EmailType" />
+    	<xs:attribute name="description" use="required"
+    		type="xs:string" />
+    	<xs:attribute name="name" use="required" type="xs:string" />
+    	<xs:attribute name="path" use="required" type="xs:string" />
+    	<xs:attribute name="version" use="required" type="xs:string" />
+    	<xs:attribute name="pradar" use="optional" type="xs:boolean" default="false"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="step">
@@ -52,22 +54,23 @@
   <xs:element name="init">
     <xs:complexType>
     	<xs:sequence>
-    		<xs:element ref="filter" />
+         <xs:element minOccurs="0" maxOccurs="unbounded" ref="match"/>
+   		<xs:element name="value" type="xs:string" maxOccurs="unbounded" minOccurs="0"></xs:element>
     	</xs:sequence>
     	<xs:attribute name="fromobjecttype" use="required"
     		type="ResourceType" />
     	<xs:attribute name="fromstep" use="required" />
-    	<xs:attribute name="mandatory" type="xs:boolean" />
+    	<xs:attribute name="minoccur" type="xs:integer" use="required" />
+    	<xs:attribute name="maxoccur" type="xs:integer" use="required"/>
     	<xs:attribute name="name" use="required" type="xs:string" />
     	<xs:attribute name="returnfield" type="xs:string" />
-    	<xs:attribute name="listname" type="xs:string"></xs:attribute>
-    	<xs:attribute name="insertrule" type="xs:string"></xs:attribute>
+    	<xs:attribute name="insertrule" type="xs:string"/>
     </xs:complexType>
   </xs:element>
-  <xs:element name="filter">
+  <xs:element name="match">
     <xs:complexType>
-      <xs:attribute name="field" use="required" type="xs:NCName"/>
-      <xs:attribute name="pattern" use="required"/>
+      <xs:attribute name="field" type="xs:string" use="required"/>
+      <xs:attribute name="pattern" type="xs:string" use="required"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="work">
@@ -83,7 +86,7 @@
   <xs:element name="callitem">
     <xs:complexType>
     	<xs:attribute name="loop" type="xs:string" />
-    	<xs:attribute name="loopvar" type="xs:string"></xs:attribute>
+    	<xs:attribute name="loopvar" type="xs:string"/>
     	<xs:attribute name="del" type="xs:string" />
     	<xs:attribute name="par" type="xs:string" />
     	<xs:attribute name="sequence" use="required" type="xs:integer" />
@@ -122,8 +125,8 @@
     	<xs:attribute name="value" use="optional" />
     	<xs:attribute name="maxoccur" type="xs:integer" use="optional" />
     	<xs:attribute name="minoccur" type="xs:integer" use="optional" />
-    	<xs:attribute name="free" type="xs:boolean" use="required"></xs:attribute>
-    	<xs:attribute name="description" type="xs:string"></xs:attribute>
+    	<xs:attribute name="free" type="xs:boolean" use="required"/>
+    	<xs:attribute name="description" type="xs:string"/>
     </xs:complexType>
   </xs:element>
   <xs:element name="choice" type="xs:string"/>
@@ -179,4 +182,6 @@
   		<xs:pattern value="overwrite|overlap|append"></xs:pattern>
   	</xs:restriction>
   </xs:simpleType>
+
+
 </xs:schema>

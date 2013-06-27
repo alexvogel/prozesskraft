@@ -8,13 +8,12 @@
 
 package de.caegroup.jaxb.process;
 
-import java.math.BigInteger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
 
 
 /**
@@ -26,7 +25,8 @@ import javax.xml.bind.annotation.XmlValue;
  * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}integer" />
+ *       &lt;attribute name="field" use="required" type="{http://www.w3.org/2001/XMLSchema}anySimpleType" />
+ *       &lt;attribute name="pattern" use="required" type="{http://www.w3.org/2001/XMLSchema}anySimpleType" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -35,63 +35,63 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "content"
-})
-@XmlRootElement(name = "param")
-public class Param {
+@XmlType(name = "")
+@XmlRootElement(name = "match")
+public class Match {
 
-    @XmlValue
-    protected String content;
-    @XmlAttribute(name = "id", required = true)
-    protected BigInteger id;
+    @XmlAttribute(name = "field", required = true)
+    @XmlSchemaType(name = "anySimpleType")
+    protected String field;
+    @XmlAttribute(name = "pattern", required = true)
+    @XmlSchemaType(name = "anySimpleType")
+    protected String pattern;
 
     /**
-     * Gets the value of the content property.
+     * Gets the value of the field property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getContent() {
-        return content;
+    public String getField() {
+        return field;
     }
 
     /**
-     * Sets the value of the content property.
+     * Sets the value of the field property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setContent(String value) {
-        this.content = value;
+    public void setField(String value) {
+        this.field = value;
     }
 
     /**
-     * Gets the value of the id property.
+     * Gets the value of the pattern property.
      * 
      * @return
      *     possible object is
-     *     {@link BigInteger }
+     *     {@link String }
      *     
      */
-    public BigInteger getId() {
-        return id;
+    public String getPattern() {
+        return pattern;
     }
 
     /**
-     * Sets the value of the id property.
+     * Sets the value of the pattern property.
      * 
      * @param value
      *     allowed object is
-     *     {@link BigInteger }
+     *     {@link String }
      *     
      */
-    public void setId(BigInteger value) {
-        this.id = value;
+    public void setPattern(String value) {
+        this.pattern = value;
     }
 
 }

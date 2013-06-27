@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- <root> -->
-<process name="beulen" version="0.2" description="Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert." architect="alexander.vogel@caegroup.de" path="irgendeinpath">
+<process name="beulen" version="0.2" description="Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert." architect="alexander.vogel@caegroup.de" path="irgendeinpath" pradar="false">
 	<step name="root" type="automatic">
 		<commit name="parameter" toroot="true">
 			<variable key="matdb" value="no" minoccur="1" maxoccur="1" free="false" description="choose a centrally maintained material database or 'no' if material definitions are provided with abaqus includes" >
@@ -72,24 +72,36 @@
 			</file>
 		</commit>
 	</step>
-	<step name="gen_abaqus_beulen" type="automatic" description="Die gesamte Prozesskette">
-		<init fromobjecttype="file" name="template" listname="template_abadeck" returnfield="pathfilename" fromstep="root" insertrule="overwrite">
-			<filter field="filename" pattern="beulen_abaqus_start.tt"/>
+	<step name="beulen" type="automatic" description="Die FE-Struktur wird an 1 Position auf Beulsteifigkeit und Beulfestigkeit untersucht.">
+		<init fromobjecttype="file" name="inc" returnfield="absfilename" fromstep="root" insertrule="overlap" minoccur="1" maxoccur="99">
+			<match field="filename" pattern=""/>
 		</init>
-		<init fromobjecttype="variable" name="nid" listname="template" returnfield="value" fromstep="root" insertrule="overlap">
-			<filter field="name" pattern="nid"/>
+		<init fromobjecttype="variable" name="basename" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="basename"/>
 		</init>
-		<init fromobjecttype="variable" name="matdb" listname="matdb" returnfield="value" fromstep="root" insertrule="overwrite">
-			<filter field="value" pattern="lin|nlin"/>
+		<init fromobjecttype="variable" name="matdb" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="value" pattern="no|lin|nlin"/>
 		</init>
-		<work name="starte_prozesskette" description="irgendeine beschreibung" command="beulen.pl">
-			<callitem sequence="1" val="list(script)"/>
-			<callitem sequence="2" par="--nid" del="=" val="list(nid)"/>
-			<callitem sequence="3" par="--template" del="=" val="list(template)"/>
-			<callitem sequence="4" par="--mat" del="=" val="list(materialfile)"/>
-			<callitem sequence="5" par="--inc" del="=" val="list(inc)"/>
-			<callitem sequence="6" par="--matpw" del="=" val="list(matpassword)"/>
-			<callitem sequence="7" par="--output" del="=" val="list(instancedir)/list(basename_beulanalyse_beulen)_list(nid).inp"/>
+		<init fromobjecttype="variable" name="nid" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="value" pattern="\d*"/>
+		</init>
+		<init fromobjecttype="variable" name="area" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="value" pattern="area_1|area_2|area_3"/>
+		</init>
+		<init fromobjecttype="variable" name="force" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="value" pattern="\d*"/>
+		</init>
+		<init fromobjecttype="variable" name="parttype" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="value" pattern="fkl|hkl|seite|dach"/>
+		</init>
+		<work name="starte_prozesskette" description="irgendeine beschreibung" command="beulen">
+			<callitem sequence="1" par="--basename" del="=" val="$basename"/>
+			<callitem sequence="2" par="--matdb" del="=" val="$matdb"/>
+			<callitem sequence="3" par="--nid" del="=" val="$nid"/>
+			<callitem sequence="4" par="--area" del="=" val="$area"/>
+			<callitem sequence="5" par="--force" del="=" val="$force"/>
+			<callitem sequence="6" par="--parttype" del="=" val="$parttype"/>
+			<callitem sequence="7" loop="inc" par="--inc" del="=" val="$_"/>
 		</work>
 		<commit name="name9" toroot="true">
 			<variable key="plstrain" value="" minoccur="0" maxoccur="1" free="false">

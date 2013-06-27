@@ -162,48 +162,34 @@ public class TestProcess {
 
 		//-----Step 'root' testen Ende-----
 
-		Step step1 = newProcess.getStep("gen_abaqus_beulen");
+		Step step1 = newProcess.getStep("beulen");
 		// testen der step-attribute
-		assertEquals("gen_abaqus_beulen", step1.getName());
+		assertEquals("beulen", step1.getName());
 		assertEquals("automatic", step1.getType());
-		assertEquals("Die gesamte Prozesskette", step1.getDescription());
+		assertEquals("Die FE-Struktur wird an 1 Position auf Beulsteifigkeit und Beulfestigkeit untersucht.", step1.getDescription());
 		
 		// testen der step-elemente
-		assertEquals(3, step1.getInit().size());
+		assertEquals(7, step1.getInit().size());
 
 		// testen der init0-attribute
 		Init init0 = step1.getInit(0);
-		assertEquals("template", init0.getName());
+		assertEquals("inc", init0.getName());
 		assertEquals("file", init0.getFromobjecttype());
-		assertEquals("pathfilename", init0.getReturnfield());
+		assertEquals("absfilename", init0.getReturnfield());
 		assertEquals("root", init0.getFromstep());
 
-		// testen der init1-attribute
-		Init init1 = step1.getInit(1);
-		assertEquals("nid", init1.getName());
-		assertEquals("variable", init1.getFromobjecttype());
-		assertEquals("value", init1.getReturnfield());
-		assertEquals("root", init1.getFromstep());
-		
-		// testen der init2-attribute
-		Init init2 = step1.getInit(2);
-		assertEquals("matdb", init2.getName());
-		assertEquals("variable", init2.getFromobjecttype());
-		assertEquals("value", init2.getReturnfield());
-		assertEquals("root", init2.getFromstep());
-		
 		// testen der work-attribute
 		Work work = step1.getWork();
 		assertEquals("starte_prozesskette", work.getName());
-		assertEquals("beulen.pl", work.getCommand());
+		assertEquals("beulen", work.getCommand());
 		assertEquals("irgendeine beschreibung", work.getDescription());
 
 		// testen der callitem0-attribute
 		Callitem callitem1 = work.getCallitem(1);
 		assertEquals(2, callitem1.getSequence());
-		assertEquals("--nid", callitem1.getPar());
+		assertEquals("--matdb", callitem1.getPar());
 		assertEquals("=", callitem1.getDel());
-		assertEquals("list(nid)", callitem1.getVal());
+		assertEquals("$matdb", callitem1.getVal());
 	}
 
 
