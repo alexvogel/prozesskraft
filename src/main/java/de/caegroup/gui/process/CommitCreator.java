@@ -84,6 +84,16 @@ public class CommitCreator
 		return parent;
 	}
 	
+	public Map<String,String> getContent()
+	{
+		Map<String,String> content = new HashMap<String,String>();
+		for (CommitGui actualCommitGui : commitGui)
+		{
+			content.putAll(actualCommitGui.getContent());
+		}
+		return content;
+	}
+	
 	public void commitAll()
 	{
 		for (CommitGui actualCommitGui : commitGui)

@@ -304,6 +304,21 @@ public class VariableOccurGui
 		return bindingContext;
 	}
 
+	/**
+	 * gets the actual content of input field
+	 * @return Map<String,String> keyValue
+	 */
+	public Map<String,String> getContent()
+	{
+		Map<String,String> keyValue = new HashMap<String,String>();
+		keyValue.put(this.key, this.data.getContent());
+		return keyValue;
+	}
+	
+	/**
+	 * commits the actual content of input field to process-object
+	 * @param Step step
+	 */
 	public void commit(Step step)
 	{
 		if ( data.getContent() != null )

@@ -64,6 +64,7 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -80,7 +81,7 @@ public class PrampPartUi1 extends ModelObject
 {
 	static CommandLine line;
 	private DataBindingContext bindingContextProcesses;
-	private Button button_commit = null;
+	private Button button_start = null;
 //	private Text text_logging = null;
 	private StyledText text_logging = null;
 	private Combo combo_processes = null;
@@ -90,6 +91,8 @@ public class PrampPartUi1 extends ModelObject
 	private String processDefinitionPath = null;
 	private Process process = null;
 	private String iniFile = null;
+	private String userIniFile = null;
+//	private Ini userIni = null;
 	private Text text_instancedirectory = null;
 	
 	Composite composite_12;
@@ -121,6 +124,7 @@ public class PrampPartUi1 extends ModelObject
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLocation(0, 0);
 		setIni();
+		setUserIni();
 		loadIni();
 		getInstalledProcessNames();
 		getHosts();
@@ -136,6 +140,7 @@ public class PrampPartUi1 extends ModelObject
 	{
 		setIni();
 		loadIni();
+		setUserIni();
 		getInstalledProcessNames();
 		getHosts();
 //		setRandomInstancedirectory();
@@ -150,6 +155,7 @@ public class PrampPartUi1 extends ModelObject
 	{
 		setIni("target/test-classes/etc/default.ini");
 		loadIni();
+		setUserIni();
 //		getProcesses();
 //		refresh();
 	}
@@ -253,10 +259,10 @@ public class PrampPartUi1 extends ModelObject
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpFunction.setText("function");
 		
-		button_commit = new Button(grpFunction, SWT.NONE);
-		button_commit.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		button_commit.setText("commit");
-		button_commit.addSelectionListener(listener_commit_button);
+		button_start = new Button(grpFunction, SWT.NONE);
+		button_start.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		button_start.setText("start");
+		button_start.addSelectionListener(listener_startinstance_button);
 		
 		composite_12 = new Composite(composite_1, SWT.BORDER);
 //		composite_12.setLayout(new GridLayout(1, false));
@@ -434,12 +440,12 @@ public class PrampPartUi1 extends ModelObject
 	/**
 	 * listener for Selections in of button 'refresh'
 	 */
-	SelectionAdapter listener_commit_button = new SelectionAdapter()
+	SelectionAdapter listener_startinstance_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
 //			System.out.println("button wurde gedrueckt");
-			commit();
+			startInstance();
 		}
 	};
 	
@@ -554,7 +560,7 @@ public class PrampPartUi1 extends ModelObject
 	}
 	
 	/**
-	 * loads an ini-file into the field ini
+	 * loads an ini-file
 	 */
 	void loadIni()
 	{
@@ -563,6 +569,32 @@ public class PrampPartUi1 extends ModelObject
 		try
 		{
 			ini = new Ini(getIniAsFile());
+			if (ini.get("process", "process-installation-directory") != null )
+			{
+				this.processMainDir = (ini.get("process", "process-installation-directory"));
+			}
+		}
+		catch (InvalidFileFormatException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		catch (IOException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
+	/**
+	 * loads an user-ini-file into the field userIni
+	 */
+	void loadUserIni()
+	{
+		Ini ini;
+		try
+		{
+			ini = new Ini(getUserIniAsFile());
 			if (ini.get("process", "process-installation-directory") != null )
 			{
 				this.processMainDir = (ini.get("process", "process-installation-directory"));
@@ -859,16 +891,95 @@ public class PrampPartUi1 extends ModelObject
 //		System.out.println("aktualisiere textfeld - einstellungen get.Instancedirectory: "+einstellungen.getInstancedirectory());
 	}
 	
+	/**
+	 * creates an instance directory if it does not exist
+	 * if directory already exists and is empty, returns true
+	 * if directory already exists and contains files or directories, returns false
+	 * @return true if after this method an empty directory exists
+	 */
 	private boolean createInstanceDir()
 	{
 		java.io.File instanceDir = new java.io.File(this.einstellungen.getInstancedirectory());
-		return instanceDir.mkdirs();
+		
+		boolean result = false;
+		
+		if (instanceDir.exists())
+		{
+			log("warn", "instance directory exists: "+instanceDir.getAbsoluteFile());
+			if (instanceDir.listFiles().length > 0)
+			{
+				log("error", "instance directory not empty: "+instanceDir.getAbsoluteFile());
+				log("info", "choose an empty or nonexistent instance directory.");
+				result = false;
+			}
+		}
+		else
+		{
+			result = instanceDir.mkdirs();
+		}
+		return result;
+	}
+	
+	private boolean parameterAlreadyUsed(Map<String,String> content)
+	{
+		boolean result = false;
+
+		Ini userIni;
+		try
+		{
+			userIni = new Ini(new File(this.userIniFile));
+			int processZaehler = 1;
+			while(userIni.containsKey(this.process.getName()+"-"+processZaehler))
+			{
+				Boolean comparison = null;
+				
+				Map<String,String> actualMapIni = userIni.get(this.process.getName()+"-"+processZaehler);
+				
+				// die aktuellen input-daten vergleichen mit dem block aus dem inifile
+				for(String key : content.keySet())
+				{
+					System.out.println("mapIni:  "+actualMapIni.get(key));
+					System.out.println("content: "+content.get(key));
+					if ( (actualMapIni.get(key) != null) && (content.get(key) != null) && (!(content.get(key).equals(actualMapIni.get(key)))) )
+					{
+//						log("info", "keine uebereinstimmung fuer section "+this.process.getName()+"-"+processZaehler+" key: "+key+" value-content: "+content.get(key)+" value-ini: "+actualMapIni.get(key));
+						comparison = false;
+						break;
+					}
+					else if (comparison == null)
+					{
+						comparison = true;
+					}
+				}
+				
+				// wenn beide datensaetze uebereinstimmen, dann
+				if (comparison)
+				{
+					result = true;
+					return result;
+				}
+				processZaehler++;
+			}
+
+			
+		} catch (InvalidFileFormatException e)
+		{
+			// TODO Auto-generated catch block
+			log("error", "invalid file format of user-ini file: "+this.userIniFile);
+			//	e.printStackTrace();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+//			e.printStackTrace();
+			log("error", "problems with reading user-ini file: "+this.userIniFile);
+		}
+		return result;
 	}
 	
 	/**
 	 * commit all the defined data to the process
 	 */
-	private boolean commit()
+	private boolean startInstance()
 	{
 //		System.out.println("button commit");
 
@@ -881,21 +992,82 @@ public class PrampPartUi1 extends ModelObject
 			}
 			else
 			{
+				// holen aller user-angaben aus dem formular
+				Map<String,String> content = this.commitCreatorOld.get(getActualCommitRootName()).getContent();
+
+				if(parameterAlreadyUsed(content))
+				{
+					log ("warn", "recently started an instance with same input.");
+					
+					// bestaetigungsdialog
+					Shell shell = new Shell();
+					MessageBox confirmation = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+					confirmation.setText("please confirm");
+					
+					String message = "You recently started an instance with same input.\nDo you really want to start another one.";
+					confirmation.setMessage(message);
+					
+					// open confirmation and wait for user selection
+					int returnCode = confirmation.open();
+//					System.out.println("returnCode is: "+returnCode);
+
+					// ok == 32
+					if (!(returnCode == 32))
+					{
+						return false;
+					}
+				}
+				
 				if (createInstanceDir())
 				{
 					log ("info", "all tests passed. performing commit.");
 	//				System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
+					
+					// eintragen der parameter ins ini
+					Ini userIni;
+					try
+					{
+						userIni = new Ini(new File(this.userIniFile));
+						int processZaehler = 1;
+						while(userIni.containsKey(this.process.getName()+"-"+processZaehler))
+						{
+							processZaehler++;
+						}
+						
+						for(String key : content.keySet())
+						{
+							userIni.put(this.process.getName()+"-"+processZaehler, key, content.get(key));
+						}
+						// userIni File schreiben
+						userIni.store();
+						
+					} catch (InvalidFileFormatException e)
+					{
+						// TODO Auto-generated catch block
+						log("error", "invalid file format of user-ini file: "+this.userIniFile);
+						//	e.printStackTrace();
+					} catch (IOException e)
+					{
+						// TODO Auto-generated catch block
+//						e.printStackTrace();
+						log("error", "problems with reading user-ini file: "+this.userIniFile);
+					}
+
+					// user input an den Prozess committen
 					this.commitCreatorOld.get(getActualCommitRootName()).commitAll();
 	//				System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
 					
 					process.setOutfilebinary(this.einstellungen.getInstancedirectory()+"/"+this.einstellungen.getProcess()+".bpd");
 					process.writeBinary();
 					
+					// starten des process-manager
+					// ....
+
 					return true;
 				}
 				else
 				{
-					log ("error", "problems creating instance directory.");
+					log ("error", "problems handling instance directory. doing nothing.");
 					return false;
 				}
 			}
@@ -973,6 +1145,40 @@ public class PrampPartUi1 extends ModelObject
 		return new File(this.iniFile);
 	}
 	
+	void setUserIni ()
+	{
+		File file = new File((System.getProperty("user.home")+"/.process/pramp.ini"));
+		if(!(file.exists()))
+		{
+			log("warn", "create user config directory: "+file.getParentFile().getAbsolutePath());
+			file.getParentFile().mkdirs();
+			try
+			{
+				log("warn", "create user ini file: "+file.getAbsolutePath());
+				Ini ini = new Ini();
+//				log("warn", "storing create user ini file: "+file.getAbsolutePath());
+				ini.store(file);
+				
+			} catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				log("error", "cannot create user ini file: "+file.getAbsolutePath());
+				//				e.printStackTrace();
+			}
+		}
+		this.userIniFile = file.getAbsolutePath();
+	}
+
+	String getUserIni ()
+	{
+		return this.userIniFile;
+	}
+
+	File getUserIniAsFile ()
+	{
+		return new File(this.userIniFile);
+	}
+
 	void setProcess (String process)
 	{
 		this.einstellungen.setProcess(process);

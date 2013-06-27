@@ -84,6 +84,27 @@ public class CommitGui
 		}
 	}
 	
+	/**
+	 * einsammeln der maps aus variables und files und zusammenfuehren in einem map
+	 * @return
+	 */
+	public Map<String,String> getContent()
+	{
+		Map<String,String> content = new HashMap<String,String>();
+		
+		// getContent aller variables
+		for(VariableGui actualVariableGui : variableGui)
+		{
+			content.putAll(actualVariableGui.getContent());
+		}
+		// getContent aller files
+		for(FileGui actualFileGui : fileGui)
+		{
+			content.putAll(actualFileGui.getContent());
+		}
+		return content;
+	}
+
 	public void commit(Step step)
 	{
 		// commit aller variables

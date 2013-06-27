@@ -174,6 +174,33 @@ public class VariableGui
 	}
 	
 	/**
+	 * get the content of the combo / textfield
+	 */
+	public Map<String,String> getContent ()
+	{
+		Map<String,String> content = new HashMap<String,String>();
+		for(VariableOccurGui actualVariableoccurGui : variableoccurGui)
+		{
+			// die map aus FileOccur holen
+			Map<String,String> map_actualVariableoccurGui = actualVariableoccurGui.getContent();
+			// iterieren ueber die map und schon vorhandene schluessel mit -1 hochzaehlern
+			int zaehler = 1;
+			for(String key : map_actualVariableoccurGui.keySet())
+			{
+				while(content.containsKey(key+"-"+zaehler))
+				{
+					zaehler++;
+				}
+				
+				// die schluessel-werte paare ablegen
+				content.put(key+"-"+zaehler, map_actualVariableoccurGui.get(key));
+			}
+			//content.add(actualFileoccurGui.getContent());
+		}
+		return content;
+	}
+	
+	/**
 	 * commit the content of the combo / textfield to ste step of process
 	 */
 	public void commit (Step step)
