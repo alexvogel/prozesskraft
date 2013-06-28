@@ -104,6 +104,11 @@ implements Serializable
 		return this.exitvalue;
 	}
 	
+	public Step getParent()
+	{
+		return this.parent;
+	}
+	
 	/*----------------------------
 	methods set
 	----------------------------*/

@@ -555,6 +555,9 @@ implements Serializable
 			e.printStackTrace();
 		}
 		
+		// setzen der parenteintraege aller steps
+		destObject.affiliate();
+		
 		// die jaxb-klassen mit den domain-klassen mappen
 		return destObject;
 	}
@@ -978,6 +981,18 @@ implements Serializable
 		this.log.add(new Log(loglevel, logmessage));
 	}
 	
+	/**
+	 * sets the parent of all dependents to this process
+	 */
+	public void affiliate()
+	{
+		for(Step actualStep : this.step)
+		{
+			actualStep.setParent(this);
+			actualStep.affiliate();
+		}
+	}
+	
 	/*----------------------------
 	  methods get
 	----------------------------*/
@@ -1267,14 +1282,12 @@ implements Serializable
 	{
 		ArrayList<Step> steps = new ArrayList<Step>();
 		
-		Iterator<Step> iterstep = this.getSteps().iterator();
-		while(iterstep.hasNext())
+		for(Step actualStep : this.getSteps())
 		{
-			// den namen abgleichen und merken wenn uebereinstimmung
-			Step step = iterstep.next();
-			if ( (step.getName().equals(stepname)) || (step.getName().matches("^"+stepname+"@.+")) )
+//			System.out.println("looking for "+stepname+" => "+actualStep.getName()+" does not match.");
+			if ( (actualStep.getName().equals(stepname)) || (actualStep.getName().matches("^"+stepname+"@.+")) )
 			{
-				steps.add(step);
+				steps.add(actualStep);
 			}
 		}
 		
@@ -1317,11 +1330,6 @@ implements Serializable
 	public void setStep(ArrayList<Step> step)
 	{
 		this.step = step;
-		Iterator<Step> iterStep = this.step.iterator();
-		while(iterStep.hasNext())
-		{
-			iterStep.next().setParent(this);
-		}
 	}
 
 	public void setDescription(String description)

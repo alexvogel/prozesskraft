@@ -171,6 +171,11 @@ implements Serializable
 		return this.parent.getListItems(listname);
 	}
 	
+	public Step getParent()
+	{
+		return this.parent;
+	}
+	
 	/*----------------------------
 	methods set
 	----------------------------*/

@@ -19,16 +19,17 @@ implements Serializable, Cloneable
 
 	static final long serialVersionUID = 1;
 	private String name = new String();
+	private String clip = null;
 	private String type = new String();
 	private String description = new String();
 	private ArrayList<List> list = new ArrayList<List>();
 	private ArrayList<Init> init = new ArrayList<Init>();
 	private Work work = null;
 	private ArrayList<Commit> commit = new ArrayList<Commit>();
-	private String loop = new String();
-	private String loopvar = new String();
+	private String loop = null;
+	private String loopvar = null;
 
-	private Process parent;
+	private Process parent = null;
 //	private String dir = new String();
 //	private String absdir = new String();
 //	private String abspid = new String();
@@ -60,7 +61,7 @@ implements Serializable, Cloneable
 	 */
 	public Step(String stepname)
 	{
-		this.setParent(new Process());
+//		this.setParent(new Process());
 		this.setName(stepname);
 	}
 
@@ -83,7 +84,7 @@ implements Serializable, Cloneable
 	 */
 	public Step()
 	{
-		this.setParent(new Process());
+//		this.setParent(new Process());
 		this.setName(this.genName());
 	}
 
@@ -627,6 +628,25 @@ implements Serializable, Cloneable
 //		else {return false;}
 	}
 	
+	/**
+	 * sets the parent of all dependents to this instance
+	 */
+	public void affiliate()
+	{
+		for(Init actualInit : this.init)
+		{
+			actualInit.setParent(this);
+		}
+		for(Commit actualCommit : this.commit)
+		{
+			actualCommit.setParent(this);
+		}
+		if(this.work != null)
+		{
+			this.work.setParent(this);
+		}
+	}
+
 	/*----------------------------
 	  methods add
 	----------------------------*/
@@ -681,6 +701,11 @@ implements Serializable, Cloneable
 	public String getName()
 	{
 		return this.name;
+	}
+
+	public String getClip()
+	{
+		return this.clip;
 	}
 
 	public String getAbsstdout()
@@ -964,28 +989,25 @@ implements Serializable, Cloneable
 	{
 		ArrayList<Step> fromsteps = new ArrayList<Step>();
 		// jeden init durchgehen
-		Iterator<Init> iterinit = this.getInits().iterator();
-		while(iterinit.hasNext())
+//		System.out.println("stepname: "+this.getName()+" || anzahlInits: "+this.getInit().size());
+		for(Init actualInit : this.getInit())
 		{
-			// die Namen der vorlaeufersteps feststellen
-			Init init = iterinit.next();
-			String fromstep = init.getFromstep();
-//			System.out.println("fromstep: "+fromstep);
-
 			// und diese steps in einem arraylist aufsammeln
-			ArrayList<Step> steps = this.parent.getSteps(fromstep);
-			
+//			System.out.println("anzahl aller steps im aktuellen prozess: "+this.parent.getStep().size());
+			ArrayList<Step> steps = this.parent.getSteps(actualInit.getFromstep());
+//			System.out.println("my parent is: "+this.parent.toString());
+//			System.out.println("anzahl der fromsteps im aktuellen init: "+steps.size());
+//			System.out.println("actualInit: "+actualInit.getName()+" || fromStep: "+actualInit.getFromstep());
 			// nur die noch nicht als fromstep erkannten steps der suchliste hinzufuegen
-			Iterator<Step> iterstep = steps.iterator();
-			while (iterstep.hasNext())
+			for(Step actualStep : steps)
 			{
-				Step newstep = iterstep.next();
-				if (!(fromsteps.contains(newstep)))
+				if (!(fromsteps.contains(actualStep)))
 				{
-					fromsteps.add(newstep);
+					fromsteps.add(actualStep);
 				}
 			}
 		}
+//		System.out.println("anzahl der fromsteps2: "+fromsteps.size());
 		return fromsteps;
 	}
 
@@ -1007,20 +1029,24 @@ implements Serializable, Cloneable
 	public boolean isAmultistep()
 	{
 		boolean isamultistep = false;
-		if ( !(this.getLoop().equals("")) )
+		if ( (this.getLoop() != null) )
 		{
 			isamultistep = true;
 		}
 		return isamultistep;
 	}
 	
-		
 	/*----------------------------
 	methods set
 	----------------------------*/
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+
+	public void setClip(String clip)
+	{
+		this.clip = clip;
 	}
 
 	public void setType(String type)
@@ -1057,11 +1083,6 @@ implements Serializable, Cloneable
 	public void setInit(ArrayList<Init> init)
 	{
 		this.init = init;
-		Iterator<Init> iterInit = this.init.iterator();
-		while(iterInit.hasNext())
-		{
-			iterInit.next().setParent(this);
-		}
 	}
 	
 	public void setStatus(String status)
@@ -1077,7 +1098,6 @@ implements Serializable, Cloneable
 	public void setWork(Work work)
 	{
 		this.work = work;
-		this.work.setParent(this);
 	}
 
 	public void setCommit(ArrayList<Commit> commit)

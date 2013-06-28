@@ -138,6 +138,11 @@ implements Serializable
 		return this.maxoccur;
 	}
 
+	public Step getParent()
+	{
+		return this.parent;
+	}
+
 	/*----------------------------
 	methods set
 	----------------------------*/
