@@ -28,14 +28,14 @@ public class PmodelViewProcessingStepconnector
 	private PmodelViewProcessingStepcircle stepcirclefrom = new PmodelViewProcessingStepcircle();
 	private PmodelViewProcessingStepcircle stepcircleto = new PmodelViewProcessingStepcircle();
 	
-    private PApplet parent;
+    private PmodelViewProcessingPage parent;
     private boolean nochvorhanden = true;	// bei jedem durchlauf wird geprueft ob fuer den stepcircle noch ein step existiert.
 
 
 	/*----------------------------
 	  constructors
 	----------------------------*/
-	public PmodelViewProcessingStepconnector(PApplet p, PmodelViewProcessingStepcircle stepcircle_from, PmodelViewProcessingStepcircle stepcircle_to)
+	public PmodelViewProcessingStepconnector(PmodelViewProcessingPage p, PmodelViewProcessingStepcircle stepcircle_from, PmodelViewProcessingStepcircle stepcircle_to)
 	{
 		this.parent = p;
 		
@@ -122,7 +122,7 @@ public class PmodelViewProcessingStepconnector
 		float y2;
 		float x3;
 		float y3;
-		final float SIZE = 8;
+		final float SIZE = 8 * this.parent.bezugsgroesse;
 	   
 		x2 = (float)(x0 + SIZE * PApplet.cos(lineAngle + arrowAngle));
 		y2 = (float)(y0 + SIZE * PApplet.sin(lineAngle + arrowAngle));

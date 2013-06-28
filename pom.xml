@@ -138,9 +138,9 @@
 	</profiles>
 	<dependencies>
 		<dependency>
-			<groupId>de.caegroup.pmodel</groupId>
-			<artifactId>pmodel-core</artifactId>
-			<version>0.1</version>
+			<groupId>de.caegroup.process</groupId>
+			<artifactId>process-core</artifactId>
+			<version>0.1.1</version>
 		</dependency>
     	<dependency>
 			<groupId>org.processing</groupId>

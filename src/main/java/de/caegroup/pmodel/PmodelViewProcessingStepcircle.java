@@ -7,7 +7,11 @@ import java.util.*;
 //import de.caegroup.pmodel.*;
 
 import java.lang.Math;
+
+import processing.core.PApplet;
 //import org.apache.solr.common.util.NamedList;
+
+import de.caegroup.process.Step;
 
 public class PmodelViewProcessingStepcircle
 {
@@ -21,7 +25,7 @@ public class PmodelViewProcessingStepcircle
 	private int[] color = {255,255,255};
 	private int radius = 40;
 	private float[] position = new float[3];
-	private float[] textposition = {this.position[0] + (this.radius / 2) + this.textdistance, this.position[1] + (this.textsize / 2), this.position[2]};
+//	private float[] textposition = {this.position[0] + (this.radius / 2) + this.textdistance, this.position[1] + (this.textsize / 2), this.position[2]};
 
 	private float[] speed = {0,0,0};
 //	private float maxspeed = 50;
@@ -36,7 +40,7 @@ public class PmodelViewProcessingStepcircle
 	private int textdistance = 2;
 //	private float[] textposition = new float[3];
 	private int[] textcolor = {50,50,50};
-    private int textsize = (this.radius / 2);
+//    private int textsize = (this.radius / 2);
 //    private boolean isastartingpoint = false;
     private boolean nochvorhanden = true;	// bei jedem durchlauf wird geprueft ob fuer den stepcircle noch ein step existiert.
    
@@ -53,7 +57,7 @@ public class PmodelViewProcessingStepcircle
 		this.name = s.getName();
 
 		// festlegen der initialen position
-		if (p.rootstepname.equals(this.name)) {this.setPosition(p.getWidth()/2, p.getHeight()/2, 0);}
+		if (p.rootstepname.equals(this.name)) {this.setPosition(p.getWidth()/4, p.getHeight()/2, 0);}
 //		else {this.setPosition(p.width/2+(this.generator.nextInt(10)+80), p.height/2+(this.generator.nextInt(160)-80), 0);}
 		else
 		{
@@ -72,7 +76,7 @@ public class PmodelViewProcessingStepcircle
 //		this.textcolor[2] = 0;
 
 	}
-
+	
 	public PmodelViewProcessingStepcircle()
 	{
 		
@@ -117,6 +121,16 @@ public class PmodelViewProcessingStepcircle
 		else if (this.step.getStatus().equals("canceled")) {this.setColor(240, 240, 240);}
 		else if (this.step.getStatus().equals("error")) {this.setColor(220, 0, 0);}
 		
+		
+		// wenn der stepcircle gerade markiert ist, soll die komplimentaerfarbe gewaehlt werden
+		float R = this.getColor1();
+		float G = this.getColor2();
+		float B = this.getColor3();
+		float minRGB = PApplet.min(R,PApplet.min(G,B));
+		float maxRGB = PApplet.max(R,PApplet.max(G,B));
+		float minPlusMax = minRGB + maxRGB;
+		this.setColor((int)(minPlusMax - R), (int)(minPlusMax - G), (int)(minPlusMax - B));
+		
 //		System.out.println("name is: "+this.step.getName());
 //		System.out.println("type is: "+this.step.getType());
 //		System.out.println("is a multistep?: "+this.step.isAmultistep());
@@ -124,30 +138,41 @@ public class PmodelViewProcessingStepcircle
 //		System.out.println(this.step.getName()+" is a multistep: "+this.step.isAmultistep());
 		
 		// zeichne stepsymbol
-		if ( this.step.getType().equals("automatic") && !(this.step.isAmultistep()) )
+		
+		if ( this.step.getName().equals(this.step.getParent().getRootstepname()))
+		{
+			symbol_quadrat_mit_x(this.parent.bezugsgroesse, true);
+//			System.out.println("symbol: quadrat mit x");
+		}
+		
+		else if ( this.step.getType().equals("automatic") && !(this.step.isAmultistep()) )
 		{
 			symbol_circle(this.parent.bezugsgroesse, 0, 0, true);
+//			System.out.println("symbol: kreis");
 		}
 		else if ( this.step.getType().equals("manual") && !(this.step.isAmultistep()) )
 		{
 			symbol_quadrat(this.parent.bezugsgroesse, 0 , 0, true);
+//			System.out.println("symbol: quadrat");
 		}
 		
 		else if ( this.step.getType().equals("automatic") && this.step.isAmultistep() )
 		{
 			symbol_multistep("circle");
+//			System.out.println("symbol: multi-kreis");
 		}
 
 		else if ( this.step.getType().equals("manual") && this.step.isAmultistep() )
 		{
 			symbol_multistep("quadrat");
+//			System.out.println("symbol: multi-quadrat");
 		}
 
 		
 		// root
 		else
 		{
-			symbol_quadrat_mit_x(true);
+			symbol_quadrat_mit_x(this.parent.bezugsgroesse, true);
 		}
 
 
@@ -156,8 +181,13 @@ public class PmodelViewProcessingStepcircle
 		
 		// zeichne beschriftung
 		parent.fill(this.getTextcolor1(), this.getTextcolor2(), this.getTextcolor3());
-		parent.text(this.getName(), this.getTextposition1(), this.getTextposition2());
+		float neue_textgroesse = (this.getRadius()/2)*this.parent.bezugsgroesse;
+		parent.textSize(neue_textgroesse);
+		parent.text(this.getName(), this.getPosition1()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse), this.getPosition2() + neue_textgroesse/2);
+//		parent.text(this.getName(), this.getPosition1()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse), this.getPosition2()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse));
+		parent.textSize(this.parent.textSize_gemerkt);
 
+		
 //		if (this.isastartingpoint)
 //		{
 ////			System.out.println("A Starting Point!");
@@ -202,18 +232,19 @@ public class PmodelViewProcessingStepcircle
 		}
 		parent.strokeWeight(this.getStrokethickness() * scalierung);
 		parent.stroke(getStrokecolor1(), getStrokecolor2(), getStrokecolor3());
-		parent.rect(this.getPosition1()-this.getRadius()/2-x_offset, this.getPosition2()-this.getRadius()/2-y_offset, this.getRadius() * scalierung, this.getRadius() * scalierung);
-//		parent.rect(this.getPosition1()+x_offset, this.getPosition2()+y_offset, this.getRadius() * scalierung, this.getRadius() * scalierung);
+		parent.rectMode(3);
+		parent.rect(this.getPosition1(), this.getPosition2(), this.getRadius() * scalierung, this.getRadius() * scalierung);
 	}
 
-	private void symbol_quadrat_mit_x(boolean fill)
+	private void symbol_quadrat_mit_x(float scalierung, boolean fill)
 	{
 //		parent.strokeWeight(this.getStrokethickness());
 //		parent.stroke(getStrokecolor1(), getStrokecolor2(), getStrokecolor3());
 //		parent.rect(this.getPosition1()-this.getRadius()/2, this.getPosition2()-this.getRadius()/2, this.getRadius(), this.getRadius());
-		symbol_quadrat(1, 0, 0, fill);
-		parent.line(this.getPosition1()-this.getRadius()/2, this.getPosition2()-this.getRadius()/2, this.getPosition1()+this.getRadius()/2, this.getPosition2()+this.getRadius()/2);
-		parent.line(this.getPosition1()+this.getRadius()/2, this.getPosition2()-this.getRadius()/2, this.getPosition1()-this.getRadius()/2, this.getPosition2()+this.getRadius()/2);
+		symbol_quadrat(scalierung, 0, 0, fill);
+		parent.line(this.getPosition1()+(int)((this.getRadius()/2)*0.8*scalierung), this.getPosition2()-(int)((this.getRadius()/2)*0.8*scalierung), this.getPosition1()-(int)((this.getRadius()/2)*0.8*scalierung), this.getPosition2()+(int)((this.getRadius()/2)*0.8*scalierung));
+		parent.line(this.getPosition1()+(int)((this.getRadius()/2)*0.8*scalierung), this.getPosition2()+(int)((this.getRadius()/2)*0.8*scalierung), this.getPosition1()-(int)((this.getRadius()/2)*0.8*scalierung), this.getPosition2()-(int)((this.getRadius()/2)*0.8*scalierung));
+//		parent.line(this.getPosition1()-this.getRadius()/2, this.getPosition2()+this.getRadius()/2, this.getPosition1()+this.getRadius()/2, this.getPosition2()-this.getRadius()/2);
 	}
 	
 	// multistep wird mit drei verkleinerten symbolen dargestellt
@@ -257,7 +288,7 @@ public class PmodelViewProcessingStepcircle
 	private void reposition(PmodelViewProcessingPage p)
 	{
 		// wenn der aktuell betrachtete step der 'initstep' ist, und sich ausserhalb der anzeige befindet -> auf mitte der Anzeige positionieren
-		if ((p.rootstepname.equals(this.name)) && !(p.clicked_stepcircle.getName().equals(this.name)) && ((this.getPosition1() > p.getWidth()) || (this.getPosition2() > p.getHeight()) || (this.getPosition1() < 0) || (this.getPosition2() < 0)))
+		if ((p.rootstepname.equals(this.name)) && !(p.stepcircle_clicked.getName().equals(this.name)) && ((this.getPosition1() > p.getWidth()) || (this.getPosition2() > p.getHeight()) || (this.getPosition1() < 0) || (this.getPosition2() < 0)))
 		{
 			this.setPosition(p.getWidth()/2, p.getHeight()/2, 0);
 		}
@@ -269,7 +300,7 @@ public class PmodelViewProcessingStepcircle
 
 
 		// wenn das Stepcircle gerade geklickt wird, dann auf neupositionierung verzichten
-		if (!(p.clicked_stepcircle.getName().equals(this.getName())))
+		if (!(p.stepcircle_clicked.getName().equals(this.getName())))
 		{
 			// newPosition = oldPosition + (newSpeed * time)
 			// newSpeed = (oldSpeed + speedDiff) * (1/damping)
@@ -543,34 +574,9 @@ public class PmodelViewProcessingStepcircle
 		return this.strokethickness;
 	}
 	
-	public int getTextsize()
-	{
-		return this.textsize;
-	}
-
 	public int getTextdistance()
 	{
 		return this.textdistance;
-	}
-
-	public float[] getTextposition()
-	{
-		return this.textposition;
-	}
-
-	public float getTextposition1()
-	{
-		return this.textposition[0];
-	}
-
-	public float getTextposition2()
-	{
-		return this.textposition[1];
-	}
-
-	public float getTextposition3()
-	{
-		return this.textposition[2];
 	}
 
 	public int[] getTextcolor()
@@ -704,9 +710,9 @@ public class PmodelViewProcessingStepcircle
 		this.position[0] = position1;
 		this.position[1] = position2;
 		this.position[2] = position3;
-		this.textposition[0] =this.position[0] + (this.radius / 2) + this.textdistance;
-		this.textposition[1] = this.position[1] + (this.textsize / 2);
-		this.textposition[2] = this.position[2];
+//		this.textposition[0] =this.position[0] + (this.radius / 2) + this.textdistance;
+//		this.textposition[1] = this.position[1] + (this.textsize / 2);
+//		this.textposition[2] = this.position[2];
 		
 	}
 
@@ -720,19 +726,19 @@ public class PmodelViewProcessingStepcircle
 	public void setPosition1(float position1)
 	{
 		this.position[0] = position1;
-		this.textposition[0] =this.position[0] + (this.radius / 2) + this.textdistance;
+//		this.textposition[0] =this.position[0] + (this.radius / 2) + this.textdistance;
 	}
 
 	public void setPosition2(float position2)
 	{
 		this.position[1] = position2;
-		this.textposition[1] = this.position[1] + (this.textsize / 2);
+//		this.textposition[1] = this.position[1] + (this.textsize / 2);
 	}
 
 	public void setPosition3(float position3)
 	{
 		this.position[2] = position3;
-		this.textposition[2] = this.position[2];
+//		this.textposition[2] = this.position[2];
 	}
 
 	public void setStrokecolor(int color1, int color2, int color3)
@@ -760,33 +766,6 @@ public class PmodelViewProcessingStepcircle
 	public void setStrokethickness(int strokethickness)
 	{
 		this.strokethickness = strokethickness;
-	}
-
-	public void setTextsize(int textsize)
-	{
-		this.textsize = textsize;
-	}
-
-	public void setTextposition(float position1, float position2, float position3)
-	{
-		this.textposition[0] = position1;
-		this.textposition[1] = position2;
-		this.textposition[2] = position2;
-	}
-
-	public void setTextposition1(float position1)
-	{
-		this.textposition[0] = position1;
-	}
-
-	public void setTextposition2(float position2)
-	{
-		this.textposition[1] = position2;
-	}
-
-	public void setTextposition3(float position3)
-	{
-		this.textposition[2] = position3;
 	}
 
 	public void setTextdistance(int textdistance)

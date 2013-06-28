@@ -3,6 +3,7 @@ package de.caegroup.pmodel;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.MouseWheelEvent;
+import java.sql.Timestamp;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -43,6 +44,7 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -58,16 +60,26 @@ import org.eclipse.swt.widgets.Text;
 
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StyledText;
 
 public class PmodelPartUi1 extends ModelObject
 {
 	static CommandLine line;
-	private DataBindingContext bindingContextFilter;
 	private DataBindingContext bindingContextZoom;
+	private DataBindingContext bindingContextMarked;
 	private Scale scale_zoom;
-	private PmodelViewModel einstellungen = new PmodelViewModel();
+	private Label label_marked = null;
+	public PmodelViewModel einstellungen = new PmodelViewModel();
+	private StyledText text_logging = null;
 	PmodelViewProcessingPage applet;
 	Display display;
+
+	final Color colorLogError = new Color(new Shell().getDisplay(), 215, 165, 172);
+	final Color colorLogWarn = new Color(new Shell().getDisplay(), 202, 191, 142);
+	final Color colorLogInfo = new Color(new Shell().getDisplay(), 184, 210, 176);
+
+	int logLineCount = 0;
 
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
@@ -165,7 +177,16 @@ public class PmodelPartUi1 extends ModelObject
 		btnNewButton.setText("refresh");
 		btnNewButton.addSelectionListener(listener_refresh_button);
 		
-		Composite composite_12 = new Composite(composite_1, SWT.EMBEDDED | SWT.NO_BACKGROUND);
+		label_marked = new Label(composite_11, SWT.NONE);
+		label_marked.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		label_marked.setText("New Label");
+		
+		SashForm sashForm = new SashForm(composite_1, SWT.SMOOTH);
+		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+
+		new Label(composite_1, SWT.NONE);
+
+		Composite composite_12 = new Composite(sashForm, SWT.EMBEDDED | SWT.NO_BACKGROUND);
 		composite_12.setLayout(new GridLayout(1, false));
 		GridData gd_composite_12 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
 		gd_composite_12.heightHint = 390;
@@ -173,22 +194,37 @@ public class PmodelPartUi1 extends ModelObject
 		gd_composite_12.minimumHeight = 10;
 		composite_12.setLayoutData(gd_composite_12);
 		
-		bindingContextZoom = initDataBindingsZoom();
-
 		Frame frame = SWT_AWT.new_Frame(composite_12);
 		
-		Composite composite_13 = new Composite(composite_1, SWT.NONE);
-		composite_13.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		composite_13.setLayout(new GridLayout(1, false));
-		new Label(composite_1, SWT.NONE);
-
 		frame.add(applet, BorderLayout.CENTER);
 		applet.init();
 		frame.pack();
 		frame.setLocation(0, 0);
 		frame.setVisible(true);
 
+		Composite composite_13 = new Composite(sashForm, SWT.NONE);
+		composite_13.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		composite_13.setLayout(new GridLayout(1, false));
+		new Label(composite_1, SWT.NONE);
+		
+		Composite composite_2 = new Composite(composite, SWT.NONE);
+		composite_2.setLayout(new GridLayout(1, false));
+		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+		gd_composite_2.heightHint = 164;
+		composite_2.setLayoutData(gd_composite_2);
+		
+//		text_logging = new Text(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
+//		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		text_logging = new StyledText(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
+		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+
+		bindingContextZoom = initDataBindingsZoom();
+		bindingContextMarked = initDataBindingsMarked();
+		
 		updateUserInterfaceProcessing(einstellungen);
+		
+
 	}
 
 	private static class ContentProvider implements IStructuredContentProvider {
@@ -239,7 +275,7 @@ public class PmodelPartUi1 extends ModelObject
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
-//			System.out.println("button wurde gedrueckt");
+			log("info", "refreshing data.");
 			applet_refresh();
 		}
 	};
@@ -286,6 +322,37 @@ public class PmodelPartUi1 extends ModelObject
 		//
 		return bindingContextZoom;
 	}
+	
+	protected DataBindingContext initDataBindingsMarked()
+	{
+		DataBindingContext bindingContextMarked = new DataBindingContext();
+		//
+		IObservableValue targetObservableMarked = WidgetProperties.text().observe(label_marked);
+		IObservableValue modelObservableMarked = BeanProperties.value("markedStepName").observe(einstellungen);
+		bindingContextMarked.bindValue(targetObservableMarked, modelObservableMarked, null, null);
+		//
+		return bindingContextMarked;
+	}
+	
+	void log(String level, String logstring)
+	{
+//		text_logging.setText(text_logging.getText()+logstring+"\n");
+		logstring = "["+new Timestamp(System.currentTimeMillis()) + "]:"+level+":"+logstring;
+		if (text_logging != null)
+		{
+			text_logging.append(logstring+"\n");
+//			if (level.equals("info"))		{	text_logging.setLineBackground(logLineCount, 1, colorLogWarn);}
+			if (level.equals("warn"))	{	text_logging.setLineBackground(logLineCount, 1, colorLogWarn);}
+			else if (level.equals("error"))	{	text_logging.setLineBackground(logLineCount, 1, colorLogError);}
+			logLineCount = logLineCount+1;
+			text_logging.setTopIndex(text_logging.getLineCount()-1);
+		}
+		else
+		{
+			System.out.println(logstring);
+		}
+	}
+	
 	
 	/**
 	 * @param args
@@ -372,6 +439,7 @@ public class PmodelPartUi1 extends ModelObject
 					gl_composite.marginHeight = 0;
 					if (line.hasOption("definition"))
 					{
+						System.out.println("definition is "+line.getOptionValue("definition"));
 						new PmodelPartUi1(composite, line.getOptionValue("definition"));
 					}
 					else

@@ -6,6 +6,8 @@ import java.awt.Image;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -15,8 +17,8 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.xerces.impl.xpath.regex.ParseException;
 import processing.core.*;
-import de.caegroup.pmodel.Process;
-import de.caegroup.pmodel.Step;
+import de.caegroup.process.Process;
+import de.caegroup.process.Step;
 
 
 public class PmodelViewProcessingPage extends PApplet
@@ -27,6 +29,7 @@ public class PmodelViewProcessingPage extends PApplet
 	public Process process;
 	public PmodelViewModel einstellungen;
 	
+	int textSize_gemerkt = 15;
 	int zoomfaktor = 100;
 	int zoomfaktor_min = 10;
 	int zoomfaktor_max = 200;
@@ -40,7 +43,8 @@ public class PmodelViewProcessingPage extends PApplet
 	Random generator = new Random();
 	private ArrayList<PmodelViewProcessingStepcircle> stepcircles = new ArrayList<PmodelViewProcessingStepcircle>();
 	private ArrayList<PmodelViewProcessingStepconnector> stepconnectors = new ArrayList<PmodelViewProcessingStepconnector>();
-	public PmodelViewProcessingStepcircle clicked_stepcircle = new PmodelViewProcessingStepcircle();
+	public PmodelViewProcessingStepcircle stepcircle_clicked = new PmodelViewProcessingStepcircle();
+	public PmodelViewProcessingStepcircle stepcircle_marked = null;
 	public Process p;
 	public String rootstepname = "root";
 	public boolean rootstepfull = false;
@@ -134,7 +138,7 @@ public class PmodelViewProcessingPage extends PApplet
 
 		background(255);
 		this.bezugsgroesse = (float)((float)this.zoomfaktor / 100);
-		System.out.println("bezugsgroesse         : "+this.bezugsgroesse);
+//		System.out.println("bezugsgroesse         : "+this.bezugsgroesse);
 		
 		this.now = Calendar.getInstance();
 //		System.out.println("now         : "+this.now.toString());
@@ -183,16 +187,19 @@ public class PmodelViewProcessingPage extends PApplet
 			{
 				if (PApplet.dist(mouseX, mouseY, stepcircles.get(l).getPosition1(), stepcircles.get(l).getPosition2()) < stepcircles.get(l).getRadius())
 				{
-					if (this.clicked_stepcircle.equals(stepcircles.get(l))) {break;}
-					this.clicked_stepcircle = stepcircles.get(l);
+					if (this.stepcircle_clicked.equals(stepcircles.get(l))) {break;}
+					this.stepcircle_clicked = stepcircles.get(l);
+					this.stepcircle_marked = stepcircles.get(l);
+					
+					this.einstellungen.setMarkedStepName(this.stepcircle_marked.getStep().getName());
 					
 					// wenn es ein doppelklick ist
 					if ( ( Calendar.getInstance().getTimeInMillis() - this.mousepressedlasttime.getTimeInMillis() )  < this.doubleclickperiod )
 					{
 //						System.out.println("timeperiod "+(Calendar.getInstance().getTimeInMillis() - this.mousepressedlasttime.getTimeInMillis()));
 						// feststellen des stdout/stderr des steps
-						String stdout = this.clicked_stepcircle.step.getAbsstdout();
-						String stderr = this.clicked_stepcircle.step.getAbsstderr();
+						String stdout = this.stepcircle_clicked.step.getAbsstdout();
+						String stderr = this.stepcircle_clicked.step.getAbsstderr();
 						
 						java.io.File stdoutfile = new java.io.File(stdout);
 						java.io.File stderrfile = new java.io.File(stderr);
@@ -219,6 +226,9 @@ public class PmodelViewProcessingPage extends PApplet
 						}
 					}
 //					break;
+				}
+				else
+				{
 				}
 			}
 			this.mousepressedlasttime = Calendar.getInstance();
@@ -270,14 +280,14 @@ public class PmodelViewProcessingPage extends PApplet
 		{
 			ArrayList<String> stepcirclenames_connect_from = stepcircles[i].getConnectfroms();
 			
-//			System.out.println("====\ndetermining fromsteps of stepcircle '"+stepcircles[i].getName()+"'\n----");
-//			Iterator<String> iterstring = stepcirclenames_connect_from.iterator();
-//			while(iterstring.hasNext())
-//			{
-//				String stepcirclename = iterstring.next();
-//				System.out.println(stepcirclename);
-//			}
-//			System.out.println("====");
+			System.out.println("====\ndetermining fromsteps of stepcircle '"+stepcircles[i].getName()+"'\n----");
+			Iterator<String> iterstring = stepcirclenames_connect_from.iterator();
+			while(iterstring.hasNext())
+			{
+				String stepcirclename = iterstring.next();
+				System.out.println(stepcirclename);
+			}
+			System.out.println("====");
 			for(int j=0; j<stepcirclenames_connect_from.size(); j++)
 			{
 				Iterator<PmodelViewProcessingStepcircle> iterstepcircle = this.getStepcircles(stepcirclenames_connect_from.get(j)).iterator();
@@ -383,12 +393,12 @@ public class PmodelViewProcessingPage extends PApplet
 
 	public void mouseDragged()
 	{
-		this.clicked_stepcircle.setPosition(mouseX, mouseY, 0);
+		this.stepcircle_clicked.setPosition(mouseX, mouseY, 0);
 	}
 	
 	public void mouseReleased()
 	{
-		this.clicked_stepcircle = new PmodelViewProcessingStepcircle();
+		this.stepcircle_clicked = new PmodelViewProcessingStepcircle();
 	}
 	
 	public void addStepcircle(PmodelViewProcessingStepcircle stepcircle)
@@ -461,22 +471,24 @@ public class PmodelViewProcessingPage extends PApplet
 	
 	public boolean refresh()
 	{
+		boolean result = false;
 		System.out.println("refreshing data from: "+this.process.getInfilexml());
-		this.p = process.readXml();
-//    	frame.setTitle(p.getName()+" v"+p.getVersion().toString());
-    	this.legend_processname = p.getName()+" v"+p.getVersion().toString();
-//	    	this.legend_processlastrevision = p.getArchitect().toString();
-		
-		
-    	
-//    	background(0);
-    	
-    	this.refresh_last = Calendar.getInstance();
-    	this.refresh_topology = true;
-    	
-//    	System.out.println("AMOUNT OF STEPCONNECTORS: "+this.stepconnectors.size());
-    	
-    	return true;
+		try
+		{
+			this.p = process.readXml();
+	    	this.legend_processname = p.getName()+" v"+p.getVersion().toString();
+	    	
+	    	this.refresh_last = Calendar.getInstance();
+	    	this.refresh_topology = true;
+	    	
+	    	result = true;
+		} catch (JAXBException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    	return result;
 	}
 	
 	private void effect_noise()
