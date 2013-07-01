@@ -410,7 +410,16 @@ public class PradarViewProcessingPage extends PApplet
 		text("host:     "+this.entity_nahe_maus.getHost(),    mouseX+6, mouseY-40);
 		text("checkin:  "+this.entity_nahe_maus.getCheckinAsString(), mouseX+6, mouseY-30);
 		text("checkout: "+this.entity_nahe_maus.getCheckoutAsString(),mouseX+6, mouseY-20);
-		text("exitcode: "+this.entity_nahe_maus.getExitcode(),mouseX+6, mouseY-10);
+		text(wrapText(30,"exitcode: "+this.entity_nahe_maus.getExitcode()),mouseX+6, mouseY-10);
+	}
+	
+	String wrapText(int maxLength, String text)
+	{
+		if (text.length() > maxLength)
+		{
+			return (text.substring(0, maxLength - 3) + "..");
+		}
+		return text;
 	}
 	
 	void detMouseAndEntity()

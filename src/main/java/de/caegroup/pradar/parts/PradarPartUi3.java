@@ -193,7 +193,7 @@ public class PradarPartUi3 extends ModelObject
 //		applet = new PradarViewProcessingPage(this);
 		refresh_last.setTimeInMillis(0);
 		refresh();
-		applet.refresh();
+//		applet.refresh();
 		tree.refresh();
 	}
 
@@ -210,7 +210,7 @@ public class PradarPartUi3 extends ModelObject
 		refresh_last.setTimeInMillis(0);
 		refresh();
 		createControls(composite);
-		applet.refresh();
+//		applet.refresh();
 		tree.refresh();
 	}
 
@@ -515,6 +515,7 @@ public class PradarPartUi3 extends ModelObject
 		{
 //			System.out.println("button wurde gedrueckt");
 			refresh();
+			tree.refresh();
 		}
 	};
 	
@@ -637,6 +638,8 @@ public class PradarPartUi3 extends ModelObject
 			
 			// daten und anzeige refreshen
 			refresh();
+			tree.refresh();
+
 		}
 	};	
 	
@@ -730,6 +733,8 @@ public class PradarPartUi3 extends ModelObject
 				
 				// daten und anzeige refreshen
 				refresh();
+				tree.refresh();
+
 			}
 			
 			else
@@ -986,6 +991,7 @@ public class PradarPartUi3 extends ModelObject
 //			System.out.println("refresh interval must be at least "+(this.refresh_min_interval/1000)+" seconds.");
 			
 		}
+		
 	}
 
 	/**
