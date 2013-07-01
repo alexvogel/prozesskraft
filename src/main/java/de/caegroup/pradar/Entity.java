@@ -100,9 +100,16 @@ implements Serializable
 	{
 //		System.out.println("tested entity id:"+assessedEntity.getId());
 		boolean matchStatus = true;
+
 		if (!(this.id.equals("") ) && (!(assessedEntity.getId().matches(Pattern.quote(this.id)))) )
 		{
 //			System.out.println("id does not match");
+			matchStatus = false;
+		}
+		
+		if (!(this.id2.equals("") ) && (!(assessedEntity.getId().matches(Pattern.quote(this.id2)))) )
+		{
+//			System.out.println("id2 does not match");
 			matchStatus = false;
 		}
 		
@@ -167,6 +174,7 @@ implements Serializable
 	{
 		this.toString();
 		System.out.println("id:      "+this.id);
+		System.out.println("id2:     "+this.id2);
 		System.out.println("parentid:"+this.parentid);
 		System.out.println("process: "+this.process);
 		System.out.println("user:    "+this.user);
