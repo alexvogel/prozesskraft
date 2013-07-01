@@ -194,17 +194,15 @@ public class Db
 			
 			statement.setQueryTimeout(10);
 			
+			// delete the entity
 			String sql = "DELETE FROM radar WHERE id LIKE '"+entity.getId()+"' AND user LIKE '"+entity.getUser()+"'";
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 
-			// alle children 
-			if (!(entity.getParentid().equals("0")))
-			{
-				sql = "DELETE FROM radar WHERE parentid LIKE '"+entity.getParentid()+"' AND user LIKE '"+entity.getUser()+"'";
-				System.out.println(sql);
-				statement.executeUpdate(sql);
-			}
+			// and all its children 
+			sql = "DELETE FROM radar WHERE parentid LIKE '"+entity.getId()+"' AND user LIKE '"+entity.getUser()+"'";
+			System.out.println(sql);
+			statement.executeUpdate(sql);
 			
 			this.connection.close();
 		} catch (SQLException e)
