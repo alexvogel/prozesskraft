@@ -102,6 +102,11 @@ public class Checkin
 				.withDescription("[optional] unique id over all instances of all possible processes")
 				.create("id");
 		
+		Option id2 = OptionBuilder.withArgName("id2")
+				.hasArg()
+				.withDescription("[optional] identification tag for users")
+				.create("id2");
+		
 		Option parentid = OptionBuilder.withArgName("parentid")
 				.hasArg()
 				.withDescription("[optional] id of the parent process")
@@ -128,6 +133,7 @@ public class Checkin
 		options.addOption( v );
 		options.addOption( process );
 		options.addOption( id );
+		options.addOption( id2 );
 		options.addOption( parentid );
 		options.addOption( host );
 		options.addOption( user );
@@ -191,6 +197,16 @@ public class Checkin
 		{
 //			Random generator = new Random();
 			entity.genId();
+		}
+
+		if (line.hasOption("id2"))
+		{
+			entity.setId2(line.getOptionValue("id2"));
+		}
+		else
+		{
+//			Random generator = new Random();
+			entity.setId2("noname");
 		}
 
 		if (line.hasOption("parentid"))
