@@ -34,7 +34,7 @@ public class PradarViewProcessingEntity
 	private double mass;
 	private float gravity = (float)0.01;
 	private float spring = 10;
-	private float damp = (float)0.1;
+	private float damp = (float)0.15;
 	
 	private boolean fixPosition = false;
 
