@@ -26,6 +26,7 @@ implements Serializable
 	----------------------------*/
 
 	public String id = "";
+	public String id2 = "";
 	public String parentid = "";
 	public Calendar checkin = Calendar.getInstance();
 	public Calendar checkout = Calendar.getInstance();
@@ -313,6 +314,45 @@ implements Serializable
 		return id;
 	}
 
+	public String getIdSqlPattern()
+	{
+		if (!(this.id.isEmpty()))
+		{
+			return "%"+this.id+"%";
+		}
+		else
+		{
+			return "%";
+		}
+	}
+	
+	public void setId(String id)
+	{
+		this.id = id;
+	}
+
+	public String getId2()
+	{
+		return id2;
+	}
+
+	public String getId2SqlPattern()
+	{
+		if (!(this.id.isEmpty()))
+		{
+			return "%"+this.id+"%";
+		}
+		else
+		{
+			return "%";
+		}
+	}
+	
+	public void setId2(String id2)
+	{
+		this.id2 = id2;
+	}
+
 	public String getParentid()
 	{
 		return this.parentid;
@@ -347,23 +387,6 @@ implements Serializable
 		}
 	}
 	
-	public String getIdSqlPattern()
-	{
-		if (!(this.id.isEmpty()))
-		{
-			return "%"+this.id+"%";
-		}
-		else
-		{
-			return "%";
-		}
-	}
-	
-	public void setId(String id)
-	{
-		this.id = id;
-	}
-
 	public Calendar getCheckin()
 	{
 		return checkin;
