@@ -110,6 +110,16 @@ public class PradarViewProcessingPage extends PApplet
 	----------------------------*/
 	public void draw()
 	{
+		// frameRate reduzieren, falls das radar gar nicht angezeigt wird
+		if (this.parent.einstellungen.getIsRadarVisible())
+		{
+			frameRate(10);
+		}
+		else
+		{
+			frameRate(1);
+		}
+		
 		// do this only once at start but AFTER setup
 		if (once == 0)
 		{
@@ -401,11 +411,13 @@ public class PradarViewProcessingPage extends PApplet
 		fill(255);
 		// dicke
 		strokeWeight(1);
-		rect(mouseX+3, mouseY-5, 165, -65, 5);
+		rect(mouseX+3, mouseY-5, 165, -85, 5);
 
 		fill(100);
 		textSize(9);
-		text("process:  "+this.entity_nahe_maus.getProcess(), mouseX+6, mouseY-60);
+		text("process:  "+this.entity_nahe_maus.getProcess(), mouseX+6, mouseY-80);
+		text("id:       "+this.entity_nahe_maus.getId(), mouseX+6, mouseY-70);
+		text("id2:      "+this.entity_nahe_maus.getId2(), mouseX+6, mouseY-60);
 		text("user:     "+this.entity_nahe_maus.getUser(),    mouseX+6, mouseY-50);
 		text("host:     "+this.entity_nahe_maus.getHost(),    mouseX+6, mouseY-40);
 		text("checkin:  "+this.entity_nahe_maus.getCheckinAsString(), mouseX+6, mouseY-30);

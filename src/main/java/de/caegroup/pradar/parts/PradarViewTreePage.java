@@ -102,34 +102,45 @@ public class PradarViewTreePage
 		
 		entityTree.setLinesVisible(true);
 
-		TreeColumn column1 = new TreeColumn(entityTree, SWT.LEFT);
-		column1.setAlignment(SWT.LEFT);
-		column1.setText("id");
-		column1.setWidth(160);
-		TreeColumn column2 = new TreeColumn(entityTree, SWT.RIGHT);
-		column2.setAlignment(SWT.LEFT);
-		column2.setText("process");
-		column2.setWidth(150);
-		TreeColumn column3 = new TreeColumn(entityTree, SWT.RIGHT);
-		column3.setAlignment(SWT.LEFT);
-		column3.setText("user");
-		column3.setWidth(100);
-		TreeColumn column4 = new TreeColumn(entityTree, SWT.RIGHT);
-		column4.setAlignment(SWT.LEFT);
-		column4.setText("host");
-		column4.setWidth(120);
-		TreeColumn column5 = new TreeColumn(entityTree, SWT.RIGHT);
-		column5.setAlignment(SWT.LEFT);
-		column5.setText("checkin");
-		column5.setWidth(160);
-		TreeColumn column6 = new TreeColumn(entityTree, SWT.RIGHT);
-		column6.setAlignment(SWT.LEFT);
-		column6.setText("checkout");
-		column6.setWidth(160);
-		TreeColumn column7 = new TreeColumn(entityTree, SWT.RIGHT);
-		column7.setAlignment(SWT.LEFT);
-		column7.setText("exitcode");
-		column7.setWidth(160);
+		TreeColumn columnId = new TreeColumn(entityTree, SWT.LEFT);
+		columnId.setAlignment(SWT.LEFT);
+		columnId.setText("id");
+		columnId.setWidth(160);
+
+		TreeColumn columnId2 = new TreeColumn(entityTree, SWT.LEFT);
+		columnId2.setAlignment(SWT.LEFT);
+		columnId2.setText("id2");
+		columnId2.setWidth(200);
+		
+		TreeColumn columnProcess = new TreeColumn(entityTree, SWT.RIGHT);
+		columnProcess.setAlignment(SWT.LEFT);
+		columnProcess.setText("process");
+		columnProcess.setWidth(150);
+		
+		TreeColumn columnUser = new TreeColumn(entityTree, SWT.RIGHT);
+		columnUser.setAlignment(SWT.LEFT);
+		columnUser.setText("user");
+		columnUser.setWidth(100);
+		
+		TreeColumn columnHost = new TreeColumn(entityTree, SWT.RIGHT);
+		columnHost.setAlignment(SWT.LEFT);
+		columnHost.setText("host");
+		columnHost.setWidth(120);
+		
+		TreeColumn columnCheckin = new TreeColumn(entityTree, SWT.RIGHT);
+		columnCheckin.setAlignment(SWT.LEFT);
+		columnCheckin.setText("checkin");
+		columnCheckin.setWidth(160);
+		
+		TreeColumn columnCheckout = new TreeColumn(entityTree, SWT.RIGHT);
+		columnCheckout.setAlignment(SWT.LEFT);
+		columnCheckout.setText("checkout");
+		columnCheckout.setWidth(160);
+		
+		TreeColumn columnExitcode = new TreeColumn(entityTree, SWT.RIGHT);
+		columnExitcode.setAlignment(SWT.LEFT);
+		columnExitcode.setText("exitcode");
+		columnExitcode.setWidth(160);
 		
 		myTreeViewer.setContentProvider(new EntityContentProvider());
 		myTreeViewer.setLabelProvider(new TableLabelProvider());
@@ -312,12 +323,13 @@ public class PradarViewTreePage
 			switch (columnIndex)
 			{
 				case 0: return entity.getId();
-				case 1: return entity.getProcess();
-				case 2: return entity.getUser();
-				case 3: return entity.getHost();
-				case 4: return entity.getCheckinAsString();
-				case 5: return entity.getCheckoutAsString();
-				case 6: return entity.getExitcode();
+				case 1: return entity.getId2();
+				case 2: return entity.getProcess();
+				case 3: return entity.getUser();
+				case 4: return entity.getHost();
+				case 5: return entity.getCheckinAsString();
+				case 6: return entity.getCheckoutAsString();
+				case 7: return entity.getExitcode();
 			}
 			return null;
 		}

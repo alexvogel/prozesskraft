@@ -374,6 +374,7 @@ public class PradarPartUi3 extends ModelObject
 		tabFolder_12.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		tabFolder_12.setTabPosition(SWT.TOP);
 		tabFolder_12.setTabHeight(30);
+		tabFolder_12.addSelectionListener(listener_tabFolder_selection);
 //		tabFolder_12.setFont(SWTResourceManager.getFont("Sans", 12, SWT.NORMAL));
 //		tabFolder_12.setSimple(false);
 										
@@ -420,6 +421,7 @@ public class PradarPartUi3 extends ModelObject
 		// Datenbindung der Filter
 		bindingContextFilter = initDataBindingsFilter();
 		bindingContextZoom = initDataBindingsZoom();
+		
 		// Datenbindung Processes-Combo
 		initDataBindingsComboItems();
 
@@ -752,6 +754,21 @@ public class PradarPartUi3 extends ModelObject
 		{
 //			System.out.println("button wurde gedrueckt");
 			applet_autoscale();
+		}
+	};
+	
+	SelectionAdapter listener_tabFolder_selection = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			if(tabFolder_12.getSelectionIndex() == 0)
+			{
+				einstellungen.setIsRadarVisible(true);
+			}
+			else
+			{
+				einstellungen.setIsRadarVisible(false);
+			}
 		}
 	};
 	
