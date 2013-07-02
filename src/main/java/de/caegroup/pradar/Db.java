@@ -120,7 +120,7 @@ public class Db
 	{
 		if (!(this.getDbfile().exists()))
 		{
-			this.getDbfile().mkdirs();
+			this.getDbfile().getParentFile().mkdirs();
 			initForceDb();
 		}
 	}
