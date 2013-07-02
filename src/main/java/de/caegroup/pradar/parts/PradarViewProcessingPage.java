@@ -411,21 +411,40 @@ public class PradarViewProcessingPage extends PApplet
 		fill(255);
 		// dicke
 		strokeWeight(1);
-		rect(mouseX+3, mouseY-5, 165, -85, 5);
+		rect(mouseX+3, mouseY-5, 165, -95, 5);
 
 		fill(100);
 		textSize(9);
-		text("process:  "+this.entity_nahe_maus.getProcess(), mouseX+6, mouseY-80);
-		text("id:       "+this.entity_nahe_maus.getId(), mouseX+6, mouseY-70);
-		text("id2:      "+this.entity_nahe_maus.getId2(), mouseX+6, mouseY-60);
-		text("user:     "+this.entity_nahe_maus.getUser(),    mouseX+6, mouseY-50);
-		text("host:     "+this.entity_nahe_maus.getHost(),    mouseX+6, mouseY-40);
-		text("checkin:  "+this.entity_nahe_maus.getCheckinAsString(), mouseX+6, mouseY-30);
+		text("process:  "+this.entity_nahe_maus.getProcess(), mouseX+6, mouseY-90);
+		text("id:       "+this.entity_nahe_maus.getId(), mouseX+6, mouseY-80);
+		text("id2:      "+this.entity_nahe_maus.getId2(), mouseX+6, mouseY-70);
+		text("user:     "+this.entity_nahe_maus.getUser(),    mouseX+6, mouseY-60);
+		text("host:     "+this.entity_nahe_maus.getHost(),    mouseX+6, mouseY-50);
+		text("checkin:  "+this.entity_nahe_maus.getCheckinAsString(), mouseX+6, mouseY-40);
+		drawProgressRect(105, mouseX+6, mouseY-30);
+		text("progress: "+this.entity_nahe_maus.getProgressAsString(), mouseX+6, mouseY-30);
 		text("checkout: "+this.entity_nahe_maus.getCheckoutAsString(),mouseX+6, mouseY-20);
 		text(wrapText(30,"exitcode: "+this.entity_nahe_maus.getExitcode()),mouseX+6, mouseY-10);
 	}
 	
-	String wrapText(int maxLength, String text)
+	void drawProgressRect(int length, int posX, int posY)
+	{
+		stroke(100);
+		if (this.pentity_nahe_maus != null)
+		{
+			if ( (this.entity_nahe_maus != null) && (this.entity_nahe_maus.getProgress() >= 0 ))
+			{
+				fill(this.pentity_nahe_maus.getColor("r")+100, this.pentity_nahe_maus.getColor("g")+100, this.pentity_nahe_maus.getColor("b")+100);
+				rect(posX+52, posY+1, length * this.entity_nahe_maus.getProgress(), -10, 1);
+				fill(255,255,255);
+				rect(posX+52+(length*this.entity_nahe_maus.getProgress()), posY+1, length * (1-this.entity_nahe_maus.getProgress()), -10, 1);
+			}
+				
+		}
+		fill(100);
+	}
+	
+	private String wrapText(int maxLength, String text)
 	{
 		if (text.length() > maxLength)
 		{
@@ -438,6 +457,7 @@ public class PradarViewProcessingPage extends PApplet
 	{
 		this.distanceToMouse = 1000000;
 		this.entity_nahe_maus = null;
+		this.pentity_nahe_maus = null;
 		this.entity_mit_kleinstem_abstand_mouse = null;
 		
 		// feststellen der ententy, die den kleinsten abstand zur mouse hat
@@ -457,6 +477,7 @@ public class PradarViewProcessingPage extends PApplet
 		if (this.distanceToMouse < this.maus_toleranz_pentity)
 		{
 			this.entity_nahe_maus = this.entity_mit_kleinstem_abstand_mouse;
+			this.pentity_nahe_maus = getPentityBySuperId(this.entity_nahe_maus.getSuperid());
 		}
 	}
 	
@@ -572,7 +593,7 @@ public class PradarViewProcessingPage extends PApplet
 		
 		if ( this.entity_nahe_maus != null )
 		{
-			this.pentity_nahe_maus = getPentityBySuperId(this.entity_nahe_maus.getSuperid());
+//			this.pentity_nahe_maus = getPentityBySuperId(this.entity_nahe_maus.getSuperid());
 			this.parent.einstellungen.entitySelected = this.entity_nahe_maus;
 		}
 		// period-kreis umherziehen

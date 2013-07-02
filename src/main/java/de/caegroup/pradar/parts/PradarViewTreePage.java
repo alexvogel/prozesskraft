@@ -137,6 +137,11 @@ public class PradarViewTreePage
 		columnCheckout.setText("checkout");
 		columnCheckout.setWidth(160);
 		
+		TreeColumn columnProgress = new TreeColumn(entityTree, SWT.RIGHT);
+		columnProgress.setAlignment(SWT.LEFT);
+		columnProgress.setText("progress");
+		columnProgress.setWidth(160);
+		
 		TreeColumn columnExitcode = new TreeColumn(entityTree, SWT.RIGHT);
 		columnExitcode.setAlignment(SWT.LEFT);
 		columnExitcode.setText("exitcode");
@@ -329,7 +334,8 @@ public class PradarViewTreePage
 				case 4: return entity.getHost();
 				case 5: return entity.getCheckinAsString();
 				case 6: return entity.getCheckoutAsString();
-				case 7: return entity.getExitcode();
+				case 7: return entity.getProgressAsString();
+				case 8: return entity.getExitcode();
 			}
 			return null;
 		}
