@@ -24,6 +24,7 @@ if (@ARGV)
 		print " checkout to checkout a process\n";
 		print " server   to start the server\n";
 		print " cleandb  to clean the database\n";
+		print " progress to set new progress state\n";
 		print " gui      for a gui\n";
 		exit(0);
 	}
@@ -33,7 +34,7 @@ if (@ARGV)
 	}
 }
 	
-if ( grep { $_ eq $prog } ("list", "checkin", "checkout", "init", "server", "cleandb", "gui") )
+if ( grep { $_ eq $prog } ("list", "checkin", "checkout", "init", "server", "cleandb", "progress", "gui") )
 {
 	print "basedir: " . $basedir . "\n";
 	print $basedir . "pradar-$prog @ARGV\n";
