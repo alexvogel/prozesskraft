@@ -234,6 +234,7 @@ public class Server
 			if (!(dbFile.exists()))
 			{
 				System.err.println("dbfile does not exist. this is perfectly fine at the moment.");
+				System.err.println("designated path: "+dbFile.getAbsolutePath());
 				System.err.println("make sure it exists when you start checking in new entities.");
 				System.err.println("use 'pradar-init' to initialize a dbfile.");
 			}
