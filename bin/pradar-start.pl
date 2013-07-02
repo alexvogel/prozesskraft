@@ -1,5 +1,16 @@
 #!/usr/bin/perl
 
+use strict;
+
+my ($filename, $directories, $suffix);
+BEGIN
+{
+    use File::Basename;
+    ($filename, $directories, $suffix) = fileparse ($0);
+}
+
+my $basedir = $directories . "../../../../bin/";
+
 my $prog = "gui";
 
 if (@ARGV)
@@ -24,8 +35,9 @@ if (@ARGV)
 	
 if ( grep { $_ eq $prog } ("list", "checkin", "checkout", "init", "server", "cleandb", "gui") )
 {
-#	print "pradar-$prog @ARGV\n";
-	system "pradar-$prog @ARGV";
+	print "basedir: " . $basedir . "\n";
+	print $basedir . "pradar-$prog @ARGV\n";
+	system $basedir . "pradar-$prog @ARGV";
 }
 else
 {
