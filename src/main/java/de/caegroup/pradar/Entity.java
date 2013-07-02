@@ -658,7 +658,7 @@ implements Serializable
 		}
 		else
 		{
-			return (Integer.parseInt(this.stepcountcompleted) / Integer.parseInt(this.stepcount));
+			return ((float)Integer.parseInt(this.stepcountcompleted) / (float)Integer.parseInt(this.stepcount));
 		}
 	}
 
@@ -671,7 +671,7 @@ implements Serializable
 		}
 		else
 		{
-			return(progress * 100) + "%("+this.stepcountcompleted+"/"+this.stepcount+")";
+			return ((int)(progress * 100)) + "% ("+this.stepcountcompleted+"/"+this.stepcount+")";
 		}
 	}
 

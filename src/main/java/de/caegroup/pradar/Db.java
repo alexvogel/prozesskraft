@@ -171,12 +171,14 @@ public class Db
 			if (!(entity.getStepcount().equals("")))
 			{
 				String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', stepcount='"+entity.getStepcount()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+				System.out.println(sql);
 				statement.executeUpdate(sql);
 			}
 			else
 			{
 				String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
 				statement.executeUpdate(sql);
+				System.out.println(sql);
 			}
 //			System.out.println(sql);
 			
@@ -406,7 +408,7 @@ public class Db
 				System.out.println("result is empty!");
 			}
 			
-			String formatstring = "|%-14s|%-30s|%-14s|%-11s|%-7s|%-13s|%-6s|%-12s|%-19s|%-19s|%-8s|";
+			String formatstring = "|%-14s|%-30s|%-14s|%-11s|%-7s|%-13s|%-6s|%-13s|%-19s|%-19s|%-8s|";
 
 			ausgabe.add(String.format(formatstring, "id", "id2", "parentid", "process", "user", "host", "active", "progress", "checkin", "checkout", "exitcode"));
 			ausgabe.add(String.format(formatstring, "--------------", "------------------------------", "--------------", "-----------", "-------", "-------------", "------", "------------", "-------------------", "-------------------", "--------"));
