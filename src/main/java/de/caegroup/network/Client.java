@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import de.caegroup.pradar.Db;
@@ -48,65 +49,75 @@ public class Client
 		try
 		{
 			String type   = (String) objectIn.readObject();			
-			System.out.println("setting type to: "+type);
 			if (type.equals("init"))
 			{
 				this.parent.db.initDb();
+				log("info", "creating new dbfile");
 			}
 			else if (type.equals("initforce"))
 			{
+				log("info", "creating new dbfile with force");
 				this.parent.db.initForceDb();
 			}
 			else if (type.equals("checkin"))
 			{
 				Entity entity = (Entity) objectIn.readObject();
 				
-				System.out.println("checking in entity");
+				log("info", "checking in entity id "+entity.getId());
 				this.parent.db.checkinEntity(entity);
 			}
 			else if (type.equals("checkout"))
 			{
 				Entity entity = (Entity) objectIn.readObject();
 				
-				System.out.println("checking out entity");
+				log("info", "checking out entity id "+entity.getId());
 				this.parent.db.checkoutEntity(entity);
 			}
 			else if (type.equals("list"))
 			{
 				Entity entity = (Entity) objectIn.readObject();
 				
+				log("info", "checking in entity id "+entity.getId());
 				ArrayList<String> list = this.parent.db.list(entity);
 				objectOut.writeObject(list);
 			}
 			else if (type.equals("getall"))
 			{
+				log("info", "obtaining information about all entities");
 				ArrayList<Entity> allEntities = this.parent.db.getAllEntities();
 				objectOut.writeObject(allEntities);
 			}
 			else if (type.equals("stop"))
 			{
+				log("info", "stopping pradar-server");
 				System.exit(0);
 			}
 			else if (type.equals("cleandb"))
 			{
+				log("info", "cleaning db for all users");
 				this.parent.db.cleanDb(this.parent.getSshIdRelPath(), "");
-				System.out.println("cleaning db.");
 			}
 			else if (type.equals("cleandb_user"))
 			{
 				String user = (String) objectIn.readObject();
+				log("info", "cleaning db on behalf of user "+user);
 				this.parent.db.cleanDb(this.parent.getSshIdRelPath(), user);
-				System.out.println("cleaning db for user "+user);
 			}
 			else if (type.equals("delete"))
 			{
 				Entity entity = (Entity) objectIn.readObject();
+				log("info", "deleting entity id "+entity.getId());
 				this.parent.db.deleteEntity(entity);
-				System.out.println("deleting entity (id "+entity.getId()+")");
+			}
+			else if (type.equals("progress"))
+			{
+				Entity entity = (Entity) objectIn.readObject();
+				log("info", "updating progress for entity id "+entity.getId());
+				this.parent.db.setProgress(entity);
 			}
 			else
 			{
-				System.out.println("dont know what you want: type="+type);
+				log("info", "unknown type ("+type+"). don't know what to do");
 			}
 		}
 		catch (ClassNotFoundException e)
@@ -119,6 +130,12 @@ public class Client
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	void log(String loglevel, String message)
+	{
+		String logstring = "["+new Timestamp(System.currentTimeMillis()) + "]:"+loglevel+":"+message;
+		System.out.println(logstring);
 	}
 
 }

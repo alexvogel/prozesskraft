@@ -100,7 +100,7 @@ public class Db
 			statement.setQueryTimeout(10);
 			
 			statement.executeUpdate("drop table if exists radar");
-			statement.executeUpdate("create table radar (id TEXT, id2 TEXT, parentid TEXT, process TEXT, host TEXT, user TEXT, checkin TEXT, checkout TEXT, active TEXT, exitcode TEXT, resource TEXT)");
+			statement.executeUpdate("create table radar (id TEXT, id2 TEXT, parentid TEXT, process TEXT, host TEXT, user TEXT, checkin TEXT, checkout TEXT, active TEXT, stepcount TEXT, stepcountcompleted Text, exitcode TEXT, resource TEXT)");
 			
 			this.connection.close();
 
@@ -140,9 +140,45 @@ public class Db
 			Statement statement = this.connection.createStatement();
 
 			statement.setQueryTimeout(10);
-			String sql = "INSERT INTO radar (id, id2, parentid, process, host, user, checkin, checkout, active, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getId2()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
+			String sql = "INSERT INTO radar (id, id2, parentid, process, host, user, checkin, checkout, active, stepcount, stepcountcompleted, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getId2()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getStepcount()+"', '"+entity.getStepcountcompleted()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
 //			System.out.println(sql);
 			statement.executeUpdate(sql);
+			
+			this.connection.close();
+		} catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * updating the progress information for a certain entity
+	 * setting column 'stepcountcompleted' and evtl 'stepcount' to new values
+	 * @param Entity
+	 */
+	public void setProgress(Entity entity)
+	{
+		this.sqlvoodoo();
+		this.connection = null;
+		try
+		{
+			this.getConnection();
+			Statement statement = this.connection.createStatement();
+
+			statement.setQueryTimeout(10);
+			// wenn stepcount leer ist, soll dieses feld nicht upgedated werden
+			if (!(entity.getStepcount().equals("")))
+			{
+				String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', stepcount='"+entity.getStepcount()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+				statement.executeUpdate(sql);
+			}
+			else
+			{
+				String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+				statement.executeUpdate(sql);
+			}
+//			System.out.println(sql);
 			
 			this.connection.close();
 		} catch (SQLException e)
@@ -248,6 +284,8 @@ public class Db
 				matched_entity.setCheckin(Long.valueOf(rs.getString("checkin")).longValue());
 				matched_entity.setCheckout(Long.valueOf(rs.getString("checkout")).longValue());
 				matched_entity.setActive(rs.getString("active"));
+				matched_entity.setStepcount(rs.getString("stepcount"));
+				matched_entity.setStepcountcompleted(rs.getString("stepcountcompleted"));
 				matched_entity.setExitcode(rs.getString("exitcode"));
 				matched_entity.setResource(rs.getString("resource"));
 				matches.add(matched_entity);
@@ -316,6 +354,12 @@ public class Db
 //				System.out.println(rs.getString("active"));
 				matched_entity.setActive(rs.getString("active"));
 				
+//				System.out.println(rs.getString("stepcount"));
+				matched_entity.setStepcount(rs.getString("stepcount"));
+				
+//				System.out.println(rs.getString("stepcount"));
+				matched_entity.setStepcountcompleted(rs.getString("stepcountcompleted"));
+				
 //				System.out.println(rs.getString("exitcode"));
 				matched_entity.setExitcode(rs.getString("exitcode"));
 				
@@ -362,17 +406,17 @@ public class Db
 				System.out.println("result is empty!");
 			}
 			
-			String formatstring = "|%-14s|%-30s|%-14s|%-11s|%-7s|%-13s|%-6s|%-19s|%-19s|%-8s|";
+			String formatstring = "|%-14s|%-30s|%-14s|%-11s|%-7s|%-13s|%-6s|%-12s|%-19s|%-19s|%-8s|";
 
-			ausgabe.add(String.format(formatstring, "id", "id2", "parentid", "process", "user", "host", "active", "checkin", "checkout", "exitcode"));
-			ausgabe.add(String.format(formatstring, "--------------", "------------------------------", "--------------", "-----------", "-------", "-------------", "------", "-------------------", "-------------------", "--------"));
+			ausgabe.add(String.format(formatstring, "id", "id2", "parentid", "process", "user", "host", "active", "progress", "checkin", "checkout", "exitcode"));
+			ausgabe.add(String.format(formatstring, "--------------", "------------------------------", "--------------", "-----------", "-------", "-------------", "------", "------------", "-------------------", "-------------------", "--------"));
 
 			Iterator<Entity> iterentity = matched_entities.iterator();
 			
 			while (iterentity.hasNext())
 			{
 				Entity actual_entity = iterentity.next();
-				ausgabe.add(String.format(formatstring, actual_entity.getId(), actual_entity.getId2(), actual_entity.getParentid(), actual_entity.getProcess(), actual_entity.getUser(), actual_entity.getHost(), actual_entity.getActive(), actual_entity.getCheckinAsString(), actual_entity.getCheckoutAsString(), actual_entity.getExitcode() ));
+				ausgabe.add(String.format(formatstring, actual_entity.getId(), actual_entity.getId2(), actual_entity.getParentid(), actual_entity.getProcess(), actual_entity.getUser(), actual_entity.getHost(), actual_entity.getActive(), actual_entity.getProgressAsString(), actual_entity.getCheckinAsString(), actual_entity.getCheckoutAsString(), actual_entity.getExitcode() ));
 			}
 
 			this.connection.close();

@@ -34,6 +34,8 @@ implements Serializable
 	public String host = "";
 	public String user = "";
 	public String active = "";
+	public String stepcount = "";
+	public String stepcountcompleted = "";
 	public String exitcode = "";
 	public String resource = "";
 	
@@ -586,6 +588,26 @@ implements Serializable
 		this.exitcode = exitcode;
 	}
 
+	public String getStepcount()
+	{
+		return this.stepcount;
+	}
+
+	public void setStepcount(String stepcount)
+	{
+		this.stepcount = stepcount;
+	}
+
+	public String getStepcountcompleted()
+	{
+		return this.stepcountcompleted;
+	}
+
+	public void setStepcountcompleted(String stepcountcompleted)
+	{
+		this.stepcountcompleted = stepcountcompleted;
+	}
+
 	public String getResource()
 	{
 		return this.resource;
@@ -628,5 +650,29 @@ implements Serializable
 		this.period = (long)((long)hours*3600000);
 	}
 	
-	
+	public float getProgress()
+	{
+		if(this.stepcount.equals("") ||  this.stepcountcompleted.equals(""))
+		{
+			return -1;
+		}
+		else
+		{
+			return (Integer.parseInt(this.stepcountcompleted) / Integer.parseInt(this.stepcount));
+		}
+	}
+
+	public String getProgressAsString()
+	{
+		float progress = getProgress();
+		if(progress < 0)
+		{
+			return "unknown";
+		}
+		else
+		{
+			return(progress * 100) + "%("+this.stepcountcompleted+"/"+this.stepcount+")";
+		}
+	}
+
 }
