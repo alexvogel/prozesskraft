@@ -411,20 +411,20 @@ public class PradarViewProcessingPage extends PApplet
 		fill(255);
 		// dicke
 		strokeWeight(1);
-		rect(mouseX+3, mouseY-5, 165, -95, 5);
+		rect(mouseX+3, mouseY-5, 165, -85, 5);
 
 		fill(100);
 		textSize(9);
-		text("process:  "+this.entity_nahe_maus.getProcess(), mouseX+6, mouseY-90);
-		text("id:       "+this.entity_nahe_maus.getId(), mouseX+6, mouseY-80);
+		text("process:  "+this.entity_nahe_maus.getProcess(), mouseX+6, mouseY-80);
+//		text("id:       "+this.entity_nahe_maus.getId(), mouseX+6, mouseY-80);
 		text("id2:      "+this.entity_nahe_maus.getId2(), mouseX+6, mouseY-70);
 		text("user:     "+this.entity_nahe_maus.getUser(),    mouseX+6, mouseY-60);
 		text("host:     "+this.entity_nahe_maus.getHost(),    mouseX+6, mouseY-50);
 		text("checkin:  "+this.entity_nahe_maus.getCheckinAsString(), mouseX+6, mouseY-40);
-		drawProgressRect(105, mouseX+6, mouseY-30);
-		text("progress: "+this.entity_nahe_maus.getProgressAsString(), mouseX+6, mouseY-30);
-		text("checkout: "+this.entity_nahe_maus.getCheckoutAsString(),mouseX+6, mouseY-20);
-		text(wrapText(30,"exitcode: "+this.entity_nahe_maus.getExitcode()),mouseX+6, mouseY-10);
+		text("checkout: "+this.entity_nahe_maus.getCheckoutAsString(),mouseX+6, mouseY-30);
+		text(wrapText(30,"exitcode: "+this.entity_nahe_maus.getExitcode()),mouseX+6, mouseY-20);
+		drawProgressRect(105, mouseX+6, mouseY-10);
+		text("progress:     "+this.entity_nahe_maus.getProgressAsString(), mouseX+6, mouseY-10);
 	}
 	
 	void drawProgressRect(int length, int posX, int posY)

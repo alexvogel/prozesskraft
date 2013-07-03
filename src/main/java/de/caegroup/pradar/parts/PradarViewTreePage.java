@@ -1,5 +1,7 @@
 package de.caegroup.pradar.parts;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +10,7 @@ import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -22,10 +25,15 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -47,6 +55,7 @@ public class PradarViewTreePage
 			return 0;
 		}
 	}
+	
 	private Tree entityTree;
 	private TreeViewer myTreeViewer;
 	private PradarPartUi3 parentData;
@@ -98,49 +107,52 @@ public class PradarViewTreePage
 		
 		myTreeViewer = new TreeViewer(entityTree);
 		myTreeViewer.setSorter(new Sorter());
-		
+		ColumnViewerToolTipSupport.enableFor(myTreeViewer);
 		
 		entityTree.setLinesVisible(true);
+		FontData[] fD = entityTree.getFont().getFontData();
+		fD[0].setHeight(8);
+		entityTree.setFont(new Font(entityTree.getDisplay(), fD[0]));
 
 		TreeColumn columnId = new TreeColumn(entityTree, SWT.LEFT);
 		columnId.setAlignment(SWT.LEFT);
 		columnId.setText("id");
-		columnId.setWidth(160);
+		columnId.setWidth(80);
 
 		TreeColumn columnId2 = new TreeColumn(entityTree, SWT.LEFT);
 		columnId2.setAlignment(SWT.LEFT);
 		columnId2.setText("id2");
-		columnId2.setWidth(200);
+		columnId2.setWidth(160);
 		
 		TreeColumn columnProcess = new TreeColumn(entityTree, SWT.RIGHT);
 		columnProcess.setAlignment(SWT.LEFT);
 		columnProcess.setText("process");
-		columnProcess.setWidth(150);
-		
-		TreeColumn columnUser = new TreeColumn(entityTree, SWT.RIGHT);
-		columnUser.setAlignment(SWT.LEFT);
-		columnUser.setText("user");
-		columnUser.setWidth(100);
-		
-		TreeColumn columnHost = new TreeColumn(entityTree, SWT.RIGHT);
-		columnHost.setAlignment(SWT.LEFT);
-		columnHost.setText("host");
-		columnHost.setWidth(120);
-		
-		TreeColumn columnCheckin = new TreeColumn(entityTree, SWT.RIGHT);
-		columnCheckin.setAlignment(SWT.LEFT);
-		columnCheckin.setText("checkin");
-		columnCheckin.setWidth(160);
-		
-		TreeColumn columnCheckout = new TreeColumn(entityTree, SWT.RIGHT);
-		columnCheckout.setAlignment(SWT.LEFT);
-		columnCheckout.setText("checkout");
-		columnCheckout.setWidth(160);
+		columnProcess.setWidth(120);
 		
 		TreeColumn columnProgress = new TreeColumn(entityTree, SWT.RIGHT);
 		columnProgress.setAlignment(SWT.LEFT);
 		columnProgress.setText("progress");
-		columnProgress.setWidth(160);
+		columnProgress.setWidth(120);
+		
+		TreeColumn columnUser = new TreeColumn(entityTree, SWT.RIGHT);
+		columnUser.setAlignment(SWT.LEFT);
+		columnUser.setText("user");
+		columnUser.setWidth(80);
+		
+		TreeColumn columnHost = new TreeColumn(entityTree, SWT.RIGHT);
+		columnHost.setAlignment(SWT.LEFT);
+		columnHost.setText("host");
+		columnHost.setWidth(95);
+		
+		TreeColumn columnCheckin = new TreeColumn(entityTree, SWT.RIGHT);
+		columnCheckin.setAlignment(SWT.LEFT);
+		columnCheckin.setText("checkin");
+		columnCheckin.setWidth(125);
+		
+		TreeColumn columnCheckout = new TreeColumn(entityTree, SWT.RIGHT);
+		columnCheckout.setAlignment(SWT.LEFT);
+		columnCheckout.setText("checkout");
+		columnCheckout.setWidth(125);
 		
 		TreeColumn columnExitcode = new TreeColumn(entityTree, SWT.RIGHT);
 		columnExitcode.setAlignment(SWT.LEFT);
@@ -149,6 +161,7 @@ public class PradarViewTreePage
 		
 		myTreeViewer.setContentProvider(new EntityContentProvider());
 		myTreeViewer.setLabelProvider(new TableLabelProvider());
+//		myTreeViewer.setLabelProvider(new ColumnLabelProvider());
 
 		List<Entity> entities = (List<Entity>) parentData.entities_filtered;
 //		entities.add(new Entity());
@@ -313,12 +326,50 @@ public class PradarViewTreePage
 			
 		}
 	}
-	
-	
+		
 	class TableLabelProvider implements ITableLabelProvider
 	{
 		public Image getColumnImage(Object element, int columnIndex)
 		{
+			Entity entity = ((Entity) element);
+			switch (columnIndex)
+			{
+				case 3:
+				int width = 50;
+				int height = 10;
+				
+				Image img = new Image(entityTree.getDisplay(), width, height);
+				GC gc = new GC(img);
+				gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+				gc.setForeground(entityTree.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+				gc.drawRectangle(0, 0, width-1, height-1);
+				
+				float progress = entity.getProgress();
+				if (progress >= 0)
+				{
+					if ( entity.getExitcode().equals("0") || entity.getExitcode().equals("") )
+					{
+						gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_GREEN));
+	//					gc.setForeground(entityTree.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+	//					Rectangle rect = new Rectangle(0, 0, (int)(width * entity.getProgress()), height-1);
+	//					gc.drawRectangle(rect);
+						gc.fillRectangle(1, 1, (int)((width-2) * entity.getProgress()), height-2);
+					}
+					else
+					{
+						gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_RED));
+						gc.fillRectangle(1, 1, (int)((width-2) * entity.getProgress()), height-2);
+					}
+				}
+				else
+				{
+					gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_GRAY));
+					gc.fillRectangle(1, 1, width-2, height-2);
+				}
+				
+				return img;
+//				return entity.getProgressAsString();
+			}			
 			return null;
 		}
 		
@@ -330,13 +381,14 @@ public class PradarViewTreePage
 				case 0: return entity.getId();
 				case 1: return entity.getId2();
 				case 2: return entity.getProcess();
-				case 3: return entity.getUser();
-				case 4: return entity.getHost();
-				case 5: return entity.getCheckinAsString();
-				case 6: return entity.getCheckoutAsString();
-				case 7: return entity.getProgressAsString();
+				case 3: return entity.getProgressAsString();
+				case 4: return entity.getUser();
+				case 5: return entity.getHost();
+				case 6: return entity.getCheckinAsString();
+				case 7: return entity.getCheckoutAsString();
 				case 8: return entity.getExitcode();
 			}
+			
 			return null;
 		}
 		

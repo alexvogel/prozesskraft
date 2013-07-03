@@ -186,7 +186,9 @@ public class PradarPartUi3 extends ModelObject
 		loadIni();
 //		checkLicense();
 		Shell shell = new Shell();
-		shell.setSize(633, 767);
+		shell.setSize(450, 465);
+//		shell.setSize(633, 767);
+//		shell.setSize(633, 900);
 		composite_3 = new Composite(shell, SWT.NONE);
 		composite_3.setLocation(0, 0);
 		createControls(composite_3);
@@ -220,7 +222,8 @@ public class PradarPartUi3 extends ModelObject
 	@PostConstruct
 	public void createControls(Composite composite)
 	{
-		composite.setSize(613, 738);
+//		composite.setSize(613, 738);
+//		composite.setSize(613, 900);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_composite.minimumWidth = 10;
 		gd_composite.minimumHeight = 10;
@@ -1613,6 +1616,7 @@ public class PradarPartUi3 extends ModelObject
 					Shell shell = new Shell(display);
 					shell.setText("pradar-gui "+"v[% version %]");
 					shell.setLayout(new FillLayout());
+					shell.setSize(1300, 800);
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
 					GridLayout gl_composite = new GridLayout(2, false);
 					gl_composite.marginWidth = 0;
