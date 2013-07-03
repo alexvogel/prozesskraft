@@ -117,12 +117,12 @@ public class PradarViewTreePage
 		TreeColumn columnId = new TreeColumn(entityTree, SWT.LEFT);
 		columnId.setAlignment(SWT.LEFT);
 		columnId.setText("id");
-		columnId.setWidth(80);
+		columnId.setWidth(20);
 
 		TreeColumn columnId2 = new TreeColumn(entityTree, SWT.LEFT);
 		columnId2.setAlignment(SWT.LEFT);
 		columnId2.setText("id2");
-		columnId2.setWidth(160);
+		columnId2.setWidth(220);
 		
 		TreeColumn columnProcess = new TreeColumn(entityTree, SWT.RIGHT);
 		columnProcess.setAlignment(SWT.LEFT);
