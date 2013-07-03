@@ -361,11 +361,11 @@ public class PradarViewTreePage
 						gc.fillRectangle(1, 1, (int)((width-2) * entity.getProgress()), height-2);
 					}
 				}
-				else
-				{
-					gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_GRAY));
-					gc.fillRectangle(1, 1, width-2, height-2);
-				}
+//				else
+//				{
+//					gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_GRAY));
+//					gc.fillRectangle(1, 1, width-2, height-2);
+//				}
 				
 				return img;
 //				return entity.getProgressAsString();
