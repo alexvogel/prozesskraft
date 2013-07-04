@@ -29,6 +29,9 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.PaletteData;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -60,6 +63,11 @@ public class PradarViewTreePage
 	private TreeViewer myTreeViewer;
 	private PradarPartUi3 parentData;
 	private Composite parent;
+
+	private Image img_ampel_lauf_gruen;
+	private Image img_ampel_lauf_rot;
+	private Image img_ampel_steh_gruen;
+	private Image img_ampel_steh_rot;
 	
 	Entity entity = new Entity();
 	
@@ -90,6 +98,9 @@ public class PradarViewTreePage
 		parent = p;
 		parentData = data;
 		createControls(parent);
+		
+		prepareImages();
+		
 	}
 	
 	public void createControls(Composite parent)
@@ -336,10 +347,33 @@ public class PradarViewTreePage
 			{
 				case 3:
 				int width = 50;
-				int height = 10;
+				int height = 10; // of balken
 				
-				Image img = new Image(entityTree.getDisplay(), width, height);
-				GC gc = new GC(img);
+				// Gesamtbild
+//				Image img = new Image(entityTree.getDisplay(), width + 20, height + 10);
+
+				// Das Ampelmaennchen
+				Image img_ampelmaennchen;
+				if (entity.isActive())
+				{
+					img_ampelmaennchen = img_ampel_steh_gruen;
+				}
+				else
+				{
+					if (entity.getExitcode().equals("0"))
+					{
+						img_ampelmaennchen = img_ampel_steh_gruen;
+					}
+					else
+					{
+						img_ampelmaennchen = img_ampel_steh_rot;
+					}
+				}
+				
+				// den progressbalken erstellen
+				Image img_balken = new Image(entityTree.getDisplay(), width, height);
+				
+				GC gc = new GC(img_balken);
 				gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
 				gc.setForeground(entityTree.getDisplay().getSystemColor(SWT.COLOR_BLACK));
 				gc.drawRectangle(0, 0, width-1, height-1);
@@ -349,6 +383,8 @@ public class PradarViewTreePage
 				{
 					if ( entity.getExitcode().equals("0") || entity.getExitcode().equals("") )
 					{
+						
+						
 						gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_GREEN));
 	//					gc.setForeground(entityTree.getDisplay().getSystemColor(SWT.COLOR_BLACK));
 	//					Rectangle rect = new Rectangle(0, 0, (int)(width * entity.getProgress()), height-1);
@@ -361,14 +397,11 @@ public class PradarViewTreePage
 						gc.fillRectangle(1, 1, (int)((width-2) * entity.getProgress()), height-2);
 					}
 				}
-//				else
-//				{
-//					gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_GRAY));
-//					gc.fillRectangle(1, 1, width-2, height-2);
-//				}
 				
-				return img;
-//				return entity.getProgressAsString();
+				// ampelmann und balken zusammenfuegen
+//				Image img = mergeImageHorizontally(img_ampelmaennchen, img_balken);
+				
+				return img_balken;
 			}			
 			return null;
 		}
@@ -414,14 +447,76 @@ public class PradarViewTreePage
 		
 	}
 	
+	private void prepareImages()
+	{
+		// skalieren und faerben der Ampelmaennchen
+		Image img_ampel_lauf_gruen_org = new Image(entityTree.getDisplay(), "ampelmann_lauf_gruen_mc.png");
+		Image img_ampel_lauf_rot_org = new Image(entityTree.getDisplay(), "ampelmann_lauf_rot_mc.png");
+		Image img_ampel_steh_gruen_org = new Image(entityTree.getDisplay(), "ampelmann_steh_gruen_mc.png");
+		Image img_ampel_steh_rot_org = new Image(entityTree.getDisplay(), "ampelmann_steh_rot_mc.png");
+		
+		int width = 15;
+		int height = 15;
+
+		img_ampel_lauf_gruen = setWhiteToTransparent(scaleImage(img_ampel_lauf_gruen_org, width, height));
+		img_ampel_lauf_rot   = setWhiteToTransparent(scaleImage(img_ampel_lauf_rot_org,   width, height));
+		img_ampel_steh_gruen = setWhiteToTransparent(scaleImage(img_ampel_steh_gruen_org, width, height));
+		img_ampel_steh_rot   = setWhiteToTransparent(scaleImage(img_ampel_steh_rot_org,   width, height));
+	}
+
+	private Image scaleImage(Image image, int width, int height)
+	{
+		// skalieren das laufmaennchen
+		Image scaled = new Image(entityTree.getDisplay(), width, height);
+		GC gc = new GC(scaled);
+		gc.setAntialias(SWT.ON);
+		gc.setInterpolation(SWT.HIGH);
+		gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height, 0, 0, width, height);
+		gc.dispose();
+		
+		return scaled;
+	}
 	
-//	protected DataBindingContext initDataBindings() {
-//		DataBindingContext bindingContext = new DataBindingContext();
-//		//
-//		IObservableValue observeSingleSelectionMyTreeViewer = ViewerProperties.singleSelection().observe(myTreeViewer);
-//		IObservableValue idEntityObserveValue = BeanProperties.value("entityMarked").observe(parentData.einstellungen);
-//		bindingContext.bindValue(observeSingleSelectionMyTreeViewer, idEntityObserveValue, null, null);
-//		//
-//		return bindingContext;
-//	}
+	private Image setWhiteToTransparent(Image image)
+	{
+		ImageData iD = image.getImageData();
+		int whitePixel = iD.palette.getPixel(new RGB(255, 255, 255));
+		iD.transparentPixel = whitePixel;
+
+		return (new Image(entityTree.getDisplay(), iD));
+	}
+	
+	private Image mergeImageHorizontally(Image left, Image right)
+	{
+//		ImageData leftData = left.getImageData();
+//		ImageData rightData = right.getImageData();
+		
+//		ImageData targetData = new ImageData(leftData.width + rightData.width, Math.max(leftData.height, rightData.height), rightData.depth, rightData.palette);
+//
+//		int i;
+//		i = leftData.x;
+//
+//		for (; i < leftData.width; i++)
+//		{
+//			int j = leftData.y;
+//			for (; j < leftData.height; j++)
+//			{
+//				targetData.setPixel(i, j, leftData.getPixel(i, j));
+//			}
+//		}
+//		
+//		i = leftData.width;
+//		for (; i < leftData.width + rightData.width; i++)
+//		{
+//			int j = rightData.y;
+//			for (; j < rightData.height; j++)
+//			{
+//				targetData.setPixel(i, j, rightData.getPixel(i, j));
+//			}
+//		}
+//		
+//		return (new Image(entityTree.getDisplay(), targetData));
+		return left;
+	}
+
 }
