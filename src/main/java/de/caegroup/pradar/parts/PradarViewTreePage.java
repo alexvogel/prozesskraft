@@ -64,10 +64,10 @@ public class PradarViewTreePage
 	private PradarPartUi3 parentData;
 	private Composite parent;
 
-	private Image img_ampel_lauf_gruen;
-	private Image img_ampel_lauf_rot;
-	private Image img_ampel_steh_gruen;
-	private Image img_ampel_steh_rot;
+//	private Image img_ampel_lauf_gruen;
+//	private Image img_ampel_lauf_rot;
+//	private Image img_ampel_steh_gruen;
+//	private Image img_ampel_steh_rot;
 	
 	Entity entity = new Entity();
 	
@@ -99,7 +99,7 @@ public class PradarViewTreePage
 		parentData = data;
 		createControls(parent);
 		
-		prepareImages();
+//		prepareImages();
 		
 	}
 	
@@ -445,48 +445,48 @@ public class PradarViewTreePage
 		
 	}
 	
-	private void prepareImages()
-	{
-		// skalieren und faerben der Ampelmaennchen
-		Image img_ampel_lauf_gruen_org = new Image(entityTree.getDisplay(), "ampelmann_lauf_gruen_mc.png");
-		Image img_ampel_lauf_rot_org = new Image(entityTree.getDisplay(), "ampelmann_lauf_rot_mc.png");
-		Image img_ampel_steh_gruen_org = new Image(entityTree.getDisplay(), "ampelmann_steh_gruen_mc.png");
-		Image img_ampel_steh_rot_org = new Image(entityTree.getDisplay(), "ampelmann_steh_rot_mc.png");
-		
-		int width = 15;
-		int height = 15;
-
-		img_ampel_lauf_gruen = setWhiteToTransparent(scaleImage(img_ampel_lauf_gruen_org, width, height));
-		img_ampel_lauf_rot   = setWhiteToTransparent(scaleImage(img_ampel_lauf_rot_org,   width, height));
-		img_ampel_steh_gruen = setWhiteToTransparent(scaleImage(img_ampel_steh_gruen_org, width, height));
-		img_ampel_steh_rot   = setWhiteToTransparent(scaleImage(img_ampel_steh_rot_org,   width, height));
-	}
-
-	private Image scaleImage(Image image, int width, int height)
-	{
-		// skalieren das laufmaennchen
-		Image scaled = new Image(entityTree.getDisplay(), width, height);
-//		System.out.println("param_width: "+width+"   param_height: "+height);
-//		System.out.println("org_width: "+image.getBounds().width+"   org_height: "+image.getBounds().height);
-		GC gc = new GC(scaled);
-		gc.setAntialias(SWT.ON);
-		gc.setInterpolation(SWT.HIGH);
-		gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height, 0, 0, width, height);
-		gc.dispose();
-//		System.out.println("scaled_width: "+scaled.getBounds().width+"   scaled_height: "+scaled.getBounds().height);
-		
-		return scaled;
-	}
-	
-	private Image setWhiteToTransparent(Image image)
-	{
-		ImageData iD = image.getImageData();
-		int whitePixel = iD.palette.getPixel(new RGB(255, 255, 255));
-		iD.transparentPixel = whitePixel;
-
-		return (new Image(entityTree.getDisplay(), iD));
-	}
-	
+//	private void prepareImages()
+//	{
+//		// skalieren und faerben der Ampelmaennchen
+//		Image img_ampel_lauf_gruen_org = new Image(entityTree.getDisplay(), "ampelmann_lauf_gruen_mc.png");
+//		Image img_ampel_lauf_rot_org = new Image(entityTree.getDisplay(), "ampelmann_lauf_rot_mc.png");
+//		Image img_ampel_steh_gruen_org = new Image(entityTree.getDisplay(), "ampelmann_steh_gruen_mc.png");
+//		Image img_ampel_steh_rot_org = new Image(entityTree.getDisplay(), "ampelmann_steh_rot_mc.png");
+//		
+//		int width = 15;
+//		int height = 15;
+//
+//		img_ampel_lauf_gruen = setWhiteToTransparent(scaleImage(img_ampel_lauf_gruen_org, width, height));
+//		img_ampel_lauf_rot   = setWhiteToTransparent(scaleImage(img_ampel_lauf_rot_org,   width, height));
+//		img_ampel_steh_gruen = setWhiteToTransparent(scaleImage(img_ampel_steh_gruen_org, width, height));
+//		img_ampel_steh_rot   = setWhiteToTransparent(scaleImage(img_ampel_steh_rot_org,   width, height));
+//	}
+//
+//	private Image scaleImage(Image image, int width, int height)
+//	{
+//		// skalieren das laufmaennchen
+//		Image scaled = new Image(entityTree.getDisplay(), width, height);
+////		System.out.println("param_width: "+width+"   param_height: "+height);
+////		System.out.println("org_width: "+image.getBounds().width+"   org_height: "+image.getBounds().height);
+//		GC gc = new GC(scaled);
+//		gc.setAntialias(SWT.ON);
+//		gc.setInterpolation(SWT.HIGH);
+//		gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height, 0, 0, width, height);
+//		gc.dispose();
+////		System.out.println("scaled_width: "+scaled.getBounds().width+"   scaled_height: "+scaled.getBounds().height);
+//		
+//		return scaled;
+//	}
+//	
+//	private Image setWhiteToTransparent(Image image)
+//	{
+//		ImageData iD = image.getImageData();
+//		int whitePixel = iD.palette.getPixel(new RGB(255, 255, 255));
+//		iD.transparentPixel = whitePixel;
+//
+//		return (new Image(entityTree.getDisplay(), iD));
+//	}
+//	
 	private Image mergeImageHorizontally(Image left, Image right)
 	{
 		ImageData leftData = left.getImageData();
