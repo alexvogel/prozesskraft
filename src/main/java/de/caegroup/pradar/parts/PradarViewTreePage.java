@@ -177,7 +177,7 @@ public class PradarViewTreePage
 		List<Entity> entities = (List<Entity>) parentData.entities_filtered;
 //		entities.add(new Entity());
 		myTreeViewer.setInput(entities);
-		myTreeViewer.expandAll();
+//		myTreeViewer.expandAll();
 
 		myTreeViewer.addDoubleClickListener(listener_double_click);
 		
@@ -346,62 +346,60 @@ public class PradarViewTreePage
 			switch (columnIndex)
 			{
 				case 3:
-				int width = 50;
-				int height = 10; // of balken
-				
-				// Gesamtbild
-//				Image img = new Image(entityTree.getDisplay(), width + 20, height + 10);
+				{
+//					// Das Ampelmaennchen erstellen
+//					Image img_ampelmaennchen = null;
+//					if (entity.isActive())
+//					{
+//						img_ampelmaennchen = img_ampel_steh_gruen;
+//					}
+//					else
+//					{
+//						if (entity.getExitcode().equals("0"))
+//						{
+//							img_ampelmaennchen = img_ampel_steh_gruen;
+//						}
+//						else
+//						{
+//							img_ampelmaennchen = img_ampel_steh_rot;
+//						}
+//					}
+					
+					// den progressbalken erstellen
+					int breite = 50;
+					int hoehe = 10; // of balken
 
-				// Das Ampelmaennchen
-				Image img_ampelmaennchen;
-				if (entity.isActive())
-				{
-					img_ampelmaennchen = img_ampel_steh_gruen;
+					Image img_balken = new Image(entityTree.getDisplay(), breite, hoehe);
+					
+					GC gc = new GC(img_balken);
+					gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+					gc.setForeground(entityTree.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+					gc.drawRectangle(0, 0, breite-1, hoehe-1);
+					
+					float progress = entity.getProgress();
+					if (progress >= 0)
+					{
+						if ( entity.getExitcode().equals("0") || entity.getExitcode().equals("") )
+						{
+							
+							
+							gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_GREEN));
+		//					gc.setForeground(entityTree.getDisplay().getSystemColor(SWT.COLOR_BLACK));
+		//					Rectangle rect = new Rectangle(0, 0, (int)(width * entity.getProgress()), height-1);
+		//					gc.drawRectangle(rect);
+							gc.fillRectangle(1, 1, (int)((breite-2) * entity.getProgress()), hoehe-2);
+						}
+						else
+						{
+							gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_RED));
+							gc.fillRectangle(1, 1, (int)((breite-2) * entity.getProgress()), hoehe-2);
+						}
+					}
+
+//					Image resultImage = mergeImageHorizontally(img_ampelmaennchen, img_balken);
+					
+					return img_balken;
 				}
-				else
-				{
-					if (entity.getExitcode().equals("0"))
-					{
-						img_ampelmaennchen = img_ampel_steh_gruen;
-					}
-					else
-					{
-						img_ampelmaennchen = img_ampel_steh_rot;
-					}
-				}
-				
-				// den progressbalken erstellen
-				Image img_balken = new Image(entityTree.getDisplay(), width, height);
-				
-				GC gc = new GC(img_balken);
-				gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-				gc.setForeground(entityTree.getDisplay().getSystemColor(SWT.COLOR_BLACK));
-				gc.drawRectangle(0, 0, width-1, height-1);
-				
-				float progress = entity.getProgress();
-				if (progress >= 0)
-				{
-					if ( entity.getExitcode().equals("0") || entity.getExitcode().equals("") )
-					{
-						
-						
-						gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_GREEN));
-	//					gc.setForeground(entityTree.getDisplay().getSystemColor(SWT.COLOR_BLACK));
-	//					Rectangle rect = new Rectangle(0, 0, (int)(width * entity.getProgress()), height-1);
-	//					gc.drawRectangle(rect);
-						gc.fillRectangle(1, 1, (int)((width-2) * entity.getProgress()), height-2);
-					}
-					else
-					{
-						gc.setBackground(entityTree.getDisplay().getSystemColor(SWT.COLOR_RED));
-						gc.fillRectangle(1, 1, (int)((width-2) * entity.getProgress()), height-2);
-					}
-				}
-				
-				// ampelmann und balken zusammenfuegen
-//				Image img = mergeImageHorizontally(img_ampelmaennchen, img_balken);
-				
-				return img_balken;
 			}			
 			return null;
 		}
@@ -468,11 +466,14 @@ public class PradarViewTreePage
 	{
 		// skalieren das laufmaennchen
 		Image scaled = new Image(entityTree.getDisplay(), width, height);
+//		System.out.println("param_width: "+width+"   param_height: "+height);
+//		System.out.println("org_width: "+image.getBounds().width+"   org_height: "+image.getBounds().height);
 		GC gc = new GC(scaled);
 		gc.setAntialias(SWT.ON);
 		gc.setInterpolation(SWT.HIGH);
 		gc.drawImage(image, 0, 0, image.getBounds().width, image.getBounds().height, 0, 0, width, height);
 		gc.dispose();
+//		System.out.println("scaled_width: "+scaled.getBounds().width+"   scaled_height: "+scaled.getBounds().height);
 		
 		return scaled;
 	}
@@ -488,35 +489,35 @@ public class PradarViewTreePage
 	
 	private Image mergeImageHorizontally(Image left, Image right)
 	{
-//		ImageData leftData = left.getImageData();
-//		ImageData rightData = right.getImageData();
+		ImageData leftData = left.getImageData();
+		ImageData rightData = right.getImageData();
 		
-//		ImageData targetData = new ImageData(leftData.width + rightData.width, Math.max(leftData.height, rightData.height), rightData.depth, rightData.palette);
-//
-//		int i;
-//		i = leftData.x;
-//
-//		for (; i < leftData.width; i++)
-//		{
-//			int j = leftData.y;
-//			for (; j < leftData.height; j++)
-//			{
-//				targetData.setPixel(i, j, leftData.getPixel(i, j));
-//			}
-//		}
-//		
-//		i = leftData.width;
-//		for (; i < leftData.width + rightData.width; i++)
-//		{
-//			int j = rightData.y;
-//			for (; j < rightData.height; j++)
-//			{
-//				targetData.setPixel(i, j, rightData.getPixel(i, j));
-//			}
-//		}
-//		
-//		return (new Image(entityTree.getDisplay(), targetData));
-		return left;
+		ImageData targetData = new ImageData(leftData.width + rightData.width, Math.max(leftData.height, rightData.height), rightData.depth, rightData.palette);
+
+		int i;
+		i = leftData.x;
+
+		for (; i < leftData.width; i++)
+		{
+			int j = leftData.y;
+			for (; j < leftData.height; j++)
+			{
+				targetData.setPixel(i, j, leftData.getPixel(i, j));
+			}
+		}
+		
+		i = leftData.width;
+		for (; i < leftData.width + rightData.width; i++)
+		{
+			int j = rightData.y;
+			for (; j < rightData.height; j++)
+			{
+				targetData.setPixel(i, j, rightData.getPixel(i, j));
+			}
+		}
+		
+		return (new Image(entityTree.getDisplay(), targetData));
+//		return left;
 	}
 
 }
