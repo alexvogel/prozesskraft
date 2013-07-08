@@ -179,6 +179,10 @@ public class PradarViewProcessingEntity
 	
 	public void calcPosition()
 	{
+		// wenn es diese nicht gibt
+		Entity entity = this.parent.parent.getEntityBySuperId(this.superid);
+		if (entity == null) {return;}
+		
 		this.checkin_radius = this.parent.calcRadius(this.parent.parent.getEntityBySuperId(this.superid).getCheckin());
 //		System.out.println("Radius checkin: "+this.checkin_radius);
 		this.checkin_position[0] = (this.parent.center_x) + PApplet.cos((float)this.bogenlaenge) * this.checkin_radius;

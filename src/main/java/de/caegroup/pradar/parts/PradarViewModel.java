@@ -18,9 +18,9 @@ public class PradarViewModel extends ModelObject
 	public boolean perspectiveTree = false;
 	public int zoom = 60;
 	public int refresh = 600;
-	public boolean isRadarVisible = true;
-	
+	public boolean animation = true;
 	public Entity entitySelected = null;
+	public boolean isRadarVisible = true;
 	
 	public PradarViewModel()
 	{
@@ -94,6 +94,11 @@ public class PradarViewModel extends ModelObject
 	public int getRefresh()
 	{
 		return refresh;
+	}
+
+	public boolean getAnimation()
+	{
+		return animation;
 	}
 
 	public Entity getEntitySelected()
@@ -175,6 +180,11 @@ public class PradarViewModel extends ModelObject
 	public void setRefresh(int refresh)
 	{
 		firePropertyChange("refresh", this.refresh, this.refresh = refresh);
+	}
+
+	public void setAnimation(boolean animation)
+	{
+		firePropertyChange("animation", this.animation, this.animation = animation);
 	}
 
 	public void setEntitySelected(Entity entitySelected)

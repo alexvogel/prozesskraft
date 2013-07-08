@@ -136,10 +136,10 @@ public class PradarPartUi3 extends ModelObject
 	Entity entity_filter = new Entity();
 	
 	public ArrayList<Entity> entities_all = new ArrayList<Entity>();
-	public ArrayList<Entity> entities_filtered;
+	public ArrayList<Entity> entities_filtered = new ArrayList<Entity>();
 //	public Entity entity_marked = null;
 	
-	private int refresh_min_interval = 5000;
+	private int refresh_min_interval = 2000;
 	private int refresh_interval = 600000;
 	private Calendar now = Calendar.getInstance();
 	private Calendar refresh_last = Calendar.getInstance();
@@ -932,10 +932,14 @@ public class PradarPartUi3 extends ModelObject
 	 */
 	void refresh()
 	{
+		einstellungen.animation = false;
 		checkLicense();
 		now = Calendar.getInstance();
 		if ((now.getTimeInMillis() - refresh_last.getTimeInMillis()) > refresh_min_interval)
 		{
+			einstellungen.entitySelected = null;
+//			entities_all.clear();
+//			entities_filtered.clear();
 			loadData();
 			filter();
 			applet.refresh();
@@ -1011,6 +1015,7 @@ public class PradarPartUi3 extends ModelObject
 //			System.out.println("refresh interval must be at least "+(this.refresh_min_interval/1000)+" seconds.");
 			
 		}
+		einstellungen.animation = true;
 		
 	}
 
@@ -1331,13 +1336,11 @@ public class PradarPartUi3 extends ModelObject
 	Entity getEntityBySuperId(String superId)
 	{
 		Entity entityWithSuperId = null;
-		Iterator<Entity> iterentity = this.entities_all.iterator();
-		while(iterentity.hasNext())
+		for(Entity actualEntity : entities_all)
 		{
-			Entity entity = iterentity.next();
-			if ( entity.getSuperid().equals(superId) )
+			if ( actualEntity.getSuperid().equals(superId) )
 			{
-				entityWithSuperId = entity;
+				entityWithSuperId = actualEntity;
 			}
 		}
 		return entityWithSuperId;

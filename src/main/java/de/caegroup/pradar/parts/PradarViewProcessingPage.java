@@ -110,6 +110,11 @@ public class PradarViewProcessingPage extends PApplet
 	----------------------------*/
 	public void draw()
 	{
+		if (!(parent.einstellungen.animation))
+		{
+			return;
+		}
+		
 		// frameRate reduzieren, falls das radar gar nicht angezeigt wird
 		if (this.parent.einstellungen.getIsRadarVisible())
 		{
@@ -294,12 +299,12 @@ public class PradarViewProcessingPage extends PApplet
 
 //		System.out.println("Anzahl der Entities : "+this.parent.entities_filtered.size());
 //		System.out.println("Anzahl der Pentities: "+this.pentities_filtered.size());
-		for(int x=0; x < this.pentities_filtered.size(); x++)
+		for (PradarViewProcessingEntity actualPentity : pentities_filtered)
 		{
-			PradarViewProcessingEntity pentity = this.pentities_filtered.get(x);
-			pentity.calcNewBogenlaenge();
-			pentity.calcPosition();
-			pentity.draw();
+			if (this.parent.getEntityBySuperId(actualPentity.getSuperid()) == null) {break;}
+			actualPentity.calcNewBogenlaenge();
+			actualPentity.calcPosition();
+			actualPentity.draw();
 //			System.out.println("SuperId: "+pentity.getSuperid());
 		}
 
@@ -339,6 +344,9 @@ public class PradarViewProcessingPage extends PApplet
 	
 	void syncPentities()
 	{
+		// zuerst alle bekannten pentities loeschen
+//		pentities_filtered.removeAll(pentities_filtered);
+		
 		// ueber alle entities, die angezeigt werden sollen iterieren
 		// - fuer diejenigen, die noch keine entsprechung (pentity) haben, soll eine erstellt werden
 		Iterator<Entity> iterentity = this.parent.entities_filtered.iterator();
@@ -417,7 +425,7 @@ public class PradarViewProcessingPage extends PApplet
 		textSize(9);
 		text("process:  "+this.entity_nahe_maus.getProcess(), mouseX+6, mouseY-80);
 //		text("id:       "+this.entity_nahe_maus.getId(), mouseX+6, mouseY-80);
-		text("id2:      "+this.entity_nahe_maus.getId2(), mouseX+6, mouseY-70);
+		text(wrapText(30,"id2:      "+this.entity_nahe_maus.getId2()), mouseX+6, mouseY-70);
 		text("user:     "+this.entity_nahe_maus.getUser(),    mouseX+6, mouseY-60);
 		text("host:     "+this.entity_nahe_maus.getHost(),    mouseX+6, mouseY-50);
 		text("checkin:  "+this.entity_nahe_maus.getCheckinAsString(), mouseX+6, mouseY-40);
@@ -718,6 +726,7 @@ public class PradarViewProcessingPage extends PApplet
 
 	public float calcRadius(Calendar zeitpunkt)
 	{
+		
 		if (zeitpunkt.getTimeInMillis() == 0)
 		{
 			zeitpunkt = Calendar.getInstance();
