@@ -1,6 +1,7 @@
 package de.caegroup.pradar.parts;
 
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -484,10 +485,11 @@ public class PradarViewTreePage
 	private void prepareImages()
 	{
 		// skalieren und faerben der Ampelmaennchen
-		Image img_ampel_lauf_gruen_org = new Image(entityTree.getDisplay(), "jar:file:ampelmann_lauf_gruen_mc.png");
-		Image img_ampel_lauf_rot_org = new Image(entityTree.getDisplay(), "jar:file:ampelmann_lauf_rot_mc.png");
-		Image img_ampel_steh_gruen_org = new Image(entityTree.getDisplay(), "jar:file:ampelmann_steh_gruen_mc.png");
-		Image img_ampel_steh_rot_org = new Image(entityTree.getDisplay(), "jar:file:ampelmann_steh_rot_mc.png");
+		
+		Image img_ampel_lauf_gruen_org = new Image(entityTree.getDisplay(), this.getClass().getResourceAsStream("ampelmann_lauf_gruen_mc.png"));
+		Image img_ampel_lauf_rot_org = new Image(entityTree.getDisplay(), this.getClass().getResourceAsStream("ampelmann_lauf_rot_mc.png"));
+		Image img_ampel_steh_gruen_org = new Image(entityTree.getDisplay(), this.getClass().getResourceAsStream("ampelmann_steh_gruen_mc.png"));
+		Image img_ampel_steh_rot_org = new Image(entityTree.getDisplay(), this.getClass().getResourceAsStream("ampelmann_steh_rot_mc.png"));
 		
 		int width = 15;
 		int height = 15;
