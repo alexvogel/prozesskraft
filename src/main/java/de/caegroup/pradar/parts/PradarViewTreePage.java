@@ -412,7 +412,6 @@ public class PradarViewTreePage
 					gc.drawRectangle(0, 0, breite-1, hoehe-1);
 					
 					float progress = entity.getProgress();
-					System.out.println("progress is: "+progress);
 					if (progress >= 0)
 					{
 						if ( entity.getExitcode().equals("0") || entity.getExitcode().equals("") )
