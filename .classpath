@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="src/main/java">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry including="**/*.java|**/*.png" kind="src" path="src/main/resources"/>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry including="**/*.java" kind="src" path="src/test/resources"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="lib" path="lib/core-2.0b3.jar"/>
 	<classpathentry kind="lib" path="lib/databinding-1.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/databinding.beans-1.2.200.jar"/>
@@ -35,11 +23,6 @@
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.7.2.jar"/>
 	<classpathentry kind="lib" path="lib/ini4j-0.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/commands-3.3.0-I20070605-0010.jar"/>
-	<classpathentry kind="lib" path="src/main/resources/AndaleMono-36.vlw"/>
-	<classpathentry kind="lib" path="src/main/resources/process.ico"/>
-	<classpathentry kind="lib" path="src/main/resources/process.png"/>
-	<classpathentry kind="lib" path="src/main/resources/TheSans-Plain-12.vlw"/>
-	<classpathentry kind="lib" path="src/main/resources/Univers45.vlw"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

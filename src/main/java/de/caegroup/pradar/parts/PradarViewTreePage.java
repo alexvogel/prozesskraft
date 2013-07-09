@@ -289,6 +289,7 @@ public class PradarViewTreePage
 //			}
 		}
 		myTreeViewer.refresh();
+		myTreeViewer.expandAll();
 	}
 	
 	
