@@ -484,10 +484,10 @@ public class PradarViewTreePage
 	private void prepareImages()
 	{
 		// skalieren und faerben der Ampelmaennchen
-		Image img_ampel_lauf_gruen_org = new Image(entityTree.getDisplay(), "ampelmann_lauf_gruen_mc.png");
-		Image img_ampel_lauf_rot_org = new Image(entityTree.getDisplay(), "ampelmann_lauf_rot_mc.png");
-		Image img_ampel_steh_gruen_org = new Image(entityTree.getDisplay(), "ampelmann_steh_gruen_mc.png");
-		Image img_ampel_steh_rot_org = new Image(entityTree.getDisplay(), "ampelmann_steh_rot_mc.png");
+		Image img_ampel_lauf_gruen_org = new Image(entityTree.getDisplay(), "/ampelmann_lauf_gruen_mc.png");
+		Image img_ampel_lauf_rot_org = new Image(entityTree.getDisplay(), "/ampelmann_lauf_rot_mc.png");
+		Image img_ampel_steh_gruen_org = new Image(entityTree.getDisplay(), "/ampelmann_steh_gruen_mc.png");
+		Image img_ampel_steh_rot_org = new Image(entityTree.getDisplay(), "/ampelmann_steh_rot_mc.png");
 		
 		int width = 15;
 		int height = 15;
