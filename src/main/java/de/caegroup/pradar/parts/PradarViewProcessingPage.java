@@ -344,6 +344,7 @@ public class PradarViewProcessingPage extends PApplet
 	
 	void syncPentities()
 	{
+		this.parent.einstellungen.setAnimation(false);
 		// zuerst alle bekannten pentities loeschen
 //		pentities_filtered.removeAll(pentities_filtered);
 		
@@ -363,18 +364,19 @@ public class PradarViewProcessingPage extends PApplet
 
 		// ueber alle Processingentities, die existieren, soll iteriert werden und
 		// - nicht mehr matchende sollen entfernt werden.
+		
 		ArrayList<PradarViewProcessingEntity> new_pentities_filtered = new ArrayList<PradarViewProcessingEntity>();
-		for (int x = 0; x<this.pentities_filtered.size(); x++)
+		for(PradarViewProcessingEntity actualPentity : pentities_filtered)
 		{
-			PradarViewProcessingEntity pentity = this.pentities_filtered.get(x);
-			if (isEntityPresent(pentity))
+			if (isEntityPresent(actualPentity))
 			{
-				new_pentities_filtered.add(pentity);
+				new_pentities_filtered.add(actualPentity);
 			}
 		}
 		this.pentities_filtered = new_pentities_filtered;
 //		System.out.println("Anzahl der Entities : "+this.parent.entities_filtered);
 //		System.out.println("Anzahl der Pentities: "+this.pentities_filtered);
+		this.parent.einstellungen.setAnimation(true);
 	}
 	
 	boolean isPentityPresent(Entity entity)
