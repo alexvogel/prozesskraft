@@ -138,6 +138,7 @@ public class PmodelViewProcessingPage extends PApplet
 
 		background(255);
 		this.bezugsgroesse = (float)((float)this.zoomfaktor / 100);
+		textSize(this.einstellungen.getTextsize());
 //		System.out.println("bezugsgroesse         : "+this.bezugsgroesse);
 		
 		this.now = Calendar.getInstance();
@@ -620,9 +621,29 @@ public class PmodelViewProcessingPage extends PApplet
 	/*----------------------------
 	methods set
 	----------------------------*/
-	public void setRottstepfull(boolean rootstepfull)
+	public void setRootstepfull(boolean rootstepfull)
 	{
 		this.rootstepfull = rootstepfull;
+	}
+	
+	public void setTextsize(int textsize)
+	{
+		this.einstellungen.setTextsize(textsize);
+	}
+	
+	public void setZoom(int zoom)
+	{
+		this.einstellungen.setZoom(zoom);
+	}
+	
+	public void setLabelsize(int labelsize)
+	{
+		this.einstellungen.setLabelsize(labelsize);
+	}
+	
+	public void setRootpositionratiox(float rootpositionratiox)
+	{
+		this.einstellungen.setRootpositionratiox(rootpositionratiox);
 	}
 	
 }

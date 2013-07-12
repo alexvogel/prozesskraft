@@ -66,9 +66,13 @@ import org.eclipse.swt.custom.StyledText;
 public class PmodelPartUi1 extends ModelObject
 {
 	static CommandLine line;
-	private DataBindingContext bindingContextZoom;
+	private DataBindingContext bindingContextVisual;
 	private DataBindingContext bindingContextMarked;
 	private Scale scale_zoom;
+	private Spinner spinner_textsize;
+	private Spinner spinner_labelsize;
+
+	
 	private Label label_marked = null;
 	public PmodelViewModel einstellungen = new PmodelViewModel();
 	private StyledText text_logging = null;
@@ -149,7 +153,7 @@ public class PmodelPartUi1 extends ModelObject
 		Group grpVisual = new Group(composite_11, SWT.NONE);
 		grpVisual.setText("visual");
 		grpVisual.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		grpVisual.setLayout(new GridLayout(1, false));
+		grpVisual.setLayout(new GridLayout(2, false));
 		
 		Label lblNewLabel_2 = new Label(grpVisual, SWT.NONE);
 		lblNewLabel_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -160,12 +164,32 @@ public class PmodelPartUi1 extends ModelObject
 		scale_zoom.setMaximum(200);
 		scale_zoom.setMinimum(10);
 		scale_zoom.setSelection(100);
+		scale_zoom.addMouseWheelListener(listener_mousewheel);
+		
+		Label lblNewLabel_3 = new Label(grpVisual, SWT.NONE);
+		lblNewLabel_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		lblNewLabel_3.setText("label");
+		
+		spinner_labelsize = new Spinner(grpVisual, SWT.BORDER);
+		spinner_labelsize.setMaximum(20);
+		spinner_labelsize.setSelection(10);
+		spinner_labelsize.setMinimum(0);
+//		new Label(grpVisual, SWT.NONE);
+		
+		Label lblNewLabel_4 = new Label(grpVisual, SWT.NONE);
+		lblNewLabel_4.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		lblNewLabel_4.setText("text");
+		
+		spinner_textsize = new Spinner(grpVisual, SWT.BORDER);
+		spinner_textsize.setMaximum(20);
+		spinner_textsize.setSelection(10);
+		spinner_textsize.setMinimum(0);
+		new Label(grpVisual, SWT.NONE);
 		
 		Button btnNewButton2 = new Button(grpVisual, SWT.NONE);
 		btnNewButton2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		btnNewButton2.setText("autoscale");
 		btnNewButton2.addSelectionListener(listener_autoscale_button);
-		scale_zoom.addMouseWheelListener(listener_mousewheel);
 		
 		Group grpFunction = new Group(composite_11, SWT.NONE);
 		grpFunction.setLayout(new GridLayout(1, false));
@@ -219,7 +243,7 @@ public class PmodelPartUi1 extends ModelObject
 		text_logging = new StyledText(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
 		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-		bindingContextZoom = initDataBindingsZoom();
+		bindingContextVisual = initDataBindingsVisual();
 		bindingContextMarked = initDataBindingsMarked();
 		
 		updateUserInterfaceProcessing(einstellungen);
@@ -237,7 +261,7 @@ public class PmodelPartUi1 extends ModelObject
 		}
 	}
 
-	public void applet_paint_with_new_zoom()
+	public void applet_paint_with_new_visual()
 	{
 		applet.setZoomfaktor(einstellungen.getZoom());
 	}
@@ -262,12 +286,12 @@ public class PmodelPartUi1 extends ModelObject
 //		table.setFocus();
 	}
 	
-	IChangeListener listener_zoom = new IChangeListener()
+	IChangeListener listener_visual = new IChangeListener()
 	{
 		public void handleChange(ChangeEvent event)
 		{
 //			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
-			applet_paint_with_new_zoom();
+			applet_paint_with_new_visual();
 		}
 	};
 	
@@ -303,24 +327,36 @@ public class PmodelPartUi1 extends ModelObject
 	private void updateUserInterfaceProcessing(PmodelViewModel zoom)
 	{
 //		bindingContext.dispose();
-		IObservableList bindings = bindingContextZoom.getValidationStatusProviders();
+		IObservableList bindings = bindingContextVisual.getValidationStatusProviders();
 
 		// Register the Listener for binding 'zoom'
 		
 		Binding b = (Binding) bindings.get(0);
-		b.getModel().addChangeListener(listener_zoom);
+		b.getModel().addChangeListener(listener_visual);
 	}
 
 
-	protected DataBindingContext initDataBindingsZoom()
+	protected DataBindingContext initDataBindingsVisual()
 	{
-		DataBindingContext bindingContextZoom = new DataBindingContext();
+		DataBindingContext bindingContextVisual = new DataBindingContext();
 		//
 		IObservableValue targetObservableZoom = WidgetProperties.selection().observe(scale_zoom);
 		IObservableValue modelObservableZoom = BeanProperties.value("zoom").observe(einstellungen);
-		bindingContextZoom.bindValue(targetObservableZoom, modelObservableZoom, null, null);
+		bindingContextVisual.bindValue(targetObservableZoom, modelObservableZoom, null, null);
 		//
-		return bindingContextZoom;
+		IObservableValue targetObservableZoomTooltip = WidgetProperties.tooltipText().observe(scale_zoom);
+		IObservableValue modelObservableZoomTooltip = BeanProperties.value("zoomstring").observe(einstellungen);
+		bindingContextVisual.bindValue(targetObservableZoomTooltip, modelObservableZoomTooltip, null, null);
+		//
+		IObservableValue targetObservableLabelsize = WidgetProperties.selection().observe(spinner_labelsize);
+		IObservableValue modelObservableLabelsize = BeanProperties.value("labelsize").observe(einstellungen);
+		bindingContextVisual.bindValue(targetObservableLabelsize, modelObservableLabelsize, null, null);
+		//
+		IObservableValue targetObservableTextsize = WidgetProperties.selection().observe(spinner_textsize);
+		IObservableValue modelObservableTextsize = BeanProperties.value("textsize").observe(einstellungen);
+		bindingContextVisual.bindValue(targetObservableTextsize, modelObservableTextsize, null, null);
+		//
+		return bindingContextVisual;
 	}
 	
 	protected DataBindingContext initDataBindingsMarked()

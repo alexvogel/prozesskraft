@@ -30,7 +30,7 @@ public class PmodelViewProcessingStepcircle
 	private float[] speed = {0,0,0};
 //	private float maxspeed = 50;
 	private float mass = (float)1;
-	private float gravity = (float)5;
+	private float attraction = (float)5;
 	private float spring = 10;
 	private double timestamp = 0.0;
 	
@@ -57,7 +57,7 @@ public class PmodelViewProcessingStepcircle
 		this.name = s.getName();
 
 		// festlegen der initialen position
-		if (p.rootstepname.equals(this.name)) {this.setPosition(p.getWidth()/4, p.getHeight()/2, 0);}
+		if (p.rootstepname.equals(this.name)) {this.setPosition(p.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);}
 //		else {this.setPosition(p.width/2+(this.generator.nextInt(10)+80), p.height/2+(this.generator.nextInt(160)-80), 0);}
 		else
 		{
@@ -181,9 +181,9 @@ public class PmodelViewProcessingStepcircle
 		
 		// zeichne beschriftung
 		parent.fill(this.getTextcolor1(), this.getTextcolor2(), this.getTextcolor3());
-		float neue_textgroesse = (this.getRadius()/2)*this.parent.bezugsgroesse;
+		float neue_textgroesse = (this.getRadius()/2)*this.parent.bezugsgroesse*parent.einstellungen.getLabelsize()/10;
 		parent.textSize(neue_textgroesse);
-		parent.text(this.getName(), this.getPosition1()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse), this.getPosition2() + neue_textgroesse/2);
+		parent.text(this.getName(), this.getPosition1()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse), this.getPosition2() + (neue_textgroesse/3));
 //		parent.text(this.getName(), this.getPosition1()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse), this.getPosition2()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse));
 		parent.textSize(this.parent.textSize_gemerkt);
 
@@ -313,13 +313,13 @@ public class PmodelViewProcessingStepcircle
 	//		System.out.println("Timestep: "+timestep);
 	//		System.out.println("Mass: "+this.mass);
 
-			float[] antigravitypuls = this.calAntigravitypuls(p);
-			float[] connectorpuls = this.calConnectorpuls(p);
+			float[] rejectionPuls = this.calRejectionPuls(p);
+			float[] attractionPuls = this.calAttractionPuls(p);
 
 			float[] speeddiff = new float[3];
-			speeddiff[0] = (float)(((antigravitypuls[0] + connectorpuls[0]) / this.mass));
-			speeddiff[1] = (float)(((antigravitypuls[1] + connectorpuls[1]) / this.mass));
-			speeddiff[2] = (float)(((antigravitypuls[2] + connectorpuls[2]) / this.mass));
+			speeddiff[0] = (float)(((rejectionPuls[0] + attractionPuls[0]) / this.mass));
+			speeddiff[1] = (float)(((rejectionPuls[1] + attractionPuls[1]) / this.mass));
+			speeddiff[2] = (float)(((rejectionPuls[2] + attractionPuls[2]) / this.mass));
 
 			float[] oldspeed = this.getSpeed();
 			float[] newspeed = new float[3];
@@ -362,11 +362,11 @@ public class PmodelViewProcessingStepcircle
 		}
 	}
 	
-	private float[] calAntigravitypuls(PmodelViewProcessingPage p)
+	private float[] calRejectionPuls(PmodelViewProcessingPage p)
 	{
 		Iterator<PmodelViewProcessingStepcircle> iter = p.getStepcircles().iterator();
 
-		float[] antigravitypuls = new float[3];
+		float[] rejectionPuls = new float[3];
 		
 		while(iter.hasNext())
 		{
@@ -382,22 +382,22 @@ public class PmodelViewProcessingStepcircle
 				float[] einheitsrichtungsvektor = calEinheitsrichtungsvektor(this, stepcircle);
 				
 				// antigravitation nimmt mit dem quadrat des abstands ab
-				antigravitypuls[0] += (einheitsrichtungsvektor[0] / (Math.pow((distance/100),2))) * this.gravity * (this.parent.bezugsgroesse * 3);
-				antigravitypuls[1] += (einheitsrichtungsvektor[1] / (Math.pow((distance/100),2))) * this.gravity * (this.parent.bezugsgroesse * 3);
-				antigravitypuls[2] += (einheitsrichtungsvektor[2] / (Math.pow((distance/100),2))) * this.gravity * (this.parent.bezugsgroesse * 3);
+				rejectionPuls[0] += (einheitsrichtungsvektor[0] / (Math.pow((distance/100),2))) * this.attraction * (this.parent.bezugsgroesse * 3);
+				rejectionPuls[1] += (einheitsrichtungsvektor[1] / (Math.pow((distance/100),2))) * this.attraction * (this.parent.bezugsgroesse * 3);
+				rejectionPuls[2] += (einheitsrichtungsvektor[2] / (Math.pow((distance/100),2))) * this.attraction * (this.parent.bezugsgroesse * 3);
 			}
 		}
 //		System.out.println("	Antigravitypuls: "+this.name+" "+antigravitypuls[0]+" "+antigravitypuls[1]+" "+antigravitypuls[2]);
-		return antigravitypuls;
+		return rejectionPuls;
 	}
 	
-	private float[] calConnectorpuls(PmodelViewProcessingPage p)
+	private float[] calAttractionPuls(PmodelViewProcessingPage p)
 	{
 		Iterator<PmodelViewProcessingStepcircle> iter1 = p.getStepcircles().iterator();
 //		Iterator<String> iter1 = this.connectfrom.iterator();
 //		Iterator<Stepcircle> iter2 = p.getStepcircles().iterator();
 		
-		float[] connectorpuls = new float[3];
+		float[] attractionPuls = new float[3];
 
 		while(iter1.hasNext())
 		{
@@ -416,13 +416,13 @@ public class PmodelViewProcessingStepcircle
 				float[] einheitsrichtungsvektor = calEinheitsrichtungsvektor(stepcircle, this);
 			
 			// federkraft nimmt mit dem abstand zu 
-				connectorpuls[0] += einheitsrichtungsvektor[0] * this.spring * (Math.pow((distance/100),2)) * (5*(1/this.parent.bezugsgroesse));
-				connectorpuls[1] += einheitsrichtungsvektor[1] * this.spring * (Math.pow((distance/100),2)) * (5*(1/this.parent.bezugsgroesse));
-				connectorpuls[2] += einheitsrichtungsvektor[2] * this.spring * (Math.pow((distance/100),2)) * (5*(1/this.parent.bezugsgroesse));
+				attractionPuls[0] += einheitsrichtungsvektor[0] * this.spring * (Math.pow((distance/100),2)) * (5*(1/this.parent.bezugsgroesse));
+				attractionPuls[1] += einheitsrichtungsvektor[1] * this.spring * (Math.pow((distance/100),2)) * (5*(1/this.parent.bezugsgroesse));
+				attractionPuls[2] += einheitsrichtungsvektor[2] * this.spring * (Math.pow((distance/100),2)) * (5*(1/this.parent.bezugsgroesse));
 			}
 		}
 //		System.out.println("	Connectorpuls: "+this.name+" "+connectorpuls[0]+" "+connectorpuls[1]+" "+connectorpuls[2]);
-		return connectorpuls;
+		return attractionPuls;
 	}
 	
 	private float[] calEinheitsrichtungsvektor(PmodelViewProcessingStepcircle stepcircle1, PmodelViewProcessingStepcircle stepcircle2)
