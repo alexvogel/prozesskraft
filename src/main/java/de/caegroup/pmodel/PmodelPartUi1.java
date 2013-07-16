@@ -71,12 +71,14 @@ public class PmodelPartUi1 extends ModelObject
 	private Scale scale_zoom;
 	private Spinner spinner_textsize;
 	private Spinner spinner_labelsize;
+	private Scale scale_gravx;
+	private Scale scale_gravy;
 
 	
 	private Label label_marked = null;
 	public PmodelViewModel einstellungen = new PmodelViewModel();
 	private StyledText text_logging = null;
-	PmodelViewProcessingPage applet;
+	PmodelViewPage applet;
 	Display display;
 
 	final Color colorLogError = new Color(new Shell().getDisplay(), 215, 165, 172);
@@ -96,7 +98,7 @@ public class PmodelPartUi1 extends ModelObject
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLocation(0, 0);
 		createControls(composite);
-		applet = new PmodelViewProcessingPage(einstellungen);
+		applet = new PmodelViewPage(einstellungen);
 	}
 
 	/**
@@ -105,7 +107,7 @@ public class PmodelPartUi1 extends ModelObject
 	@Inject
 	public PmodelPartUi1(Composite composite)
 	{
-		applet = new PmodelViewProcessingPage(einstellungen);
+		applet = new PmodelViewPage(einstellungen);
 		createControls(composite);
 	}
 
@@ -115,7 +117,7 @@ public class PmodelPartUi1 extends ModelObject
 	@Inject
 	public PmodelPartUi1(Composite composite, String pathToProcessFile)
 	{
-		applet = new PmodelViewProcessingPage(pathToProcessFile, einstellungen);
+		applet = new PmodelViewPage(pathToProcessFile, einstellungen);
 		createControls(composite);
 	}
 
@@ -184,10 +186,31 @@ public class PmodelPartUi1 extends ModelObject
 		spinner_textsize.setMaximum(20);
 		spinner_textsize.setSelection(10);
 		spinner_textsize.setMinimum(0);
-		new Label(grpVisual, SWT.NONE);
 		
+		scale_gravx = new Scale(grpVisual, SWT.NONE);
+		scale_gravx.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		scale_gravx.setMaximum(100);
+		scale_gravx.setMinimum(0);
+		scale_gravx.setSelection(1);
+		
+		Label lblNewLabel_5 = new Label(grpVisual, SWT.NONE);
+		lblNewLabel_5.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		lblNewLabel_5.setText("gravX");
+		
+		scale_gravy = new Scale(grpVisual, SWT.NONE);
+		scale_gravy.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		scale_gravy.setMaximum(100);
+		scale_gravy.setMinimum(0);
+		scale_gravy.setSelection(10);
+//		scale_gravx.addMouseWheelListener(listener_mousewheel);
+		
+		Label lblNewLabel_6 = new Label(grpVisual, SWT.NONE);
+		lblNewLabel_6.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		lblNewLabel_6.setText("gravX");
+		//		scale_gravx.addMouseWheelListener(listener_mousewheel);
+				
 		Button btnNewButton2 = new Button(grpVisual, SWT.NONE);
-		btnNewButton2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		btnNewButton2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
 		btnNewButton2.setText("autoscale");
 		btnNewButton2.addSelectionListener(listener_autoscale_button);
 		
@@ -246,8 +269,6 @@ public class PmodelPartUi1 extends ModelObject
 		bindingContextVisual = initDataBindingsVisual();
 		bindingContextMarked = initDataBindingsMarked();
 		
-		updateUserInterfaceProcessing(einstellungen);
-		
 
 	}
 
@@ -263,7 +284,7 @@ public class PmodelPartUi1 extends ModelObject
 
 	public void applet_paint_with_new_visual()
 	{
-		applet.setZoomfaktor(einstellungen.getZoom());
+//		applet.setZoomfaktor(einstellungen.getZoom());
 	}
 	public void applet_refresh()
 	{
@@ -271,7 +292,8 @@ public class PmodelPartUi1 extends ModelObject
 	}
 	public void applet_autoscale()
 	{
-		applet.autoscale();
+		this.einstellungen.setZoom(100);
+		//		applet.autoscale();
 	}
 	
 	
@@ -286,14 +308,14 @@ public class PmodelPartUi1 extends ModelObject
 //		table.setFocus();
 	}
 	
-	IChangeListener listener_visual = new IChangeListener()
-	{
-		public void handleChange(ChangeEvent event)
-		{
-//			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
-			applet_paint_with_new_visual();
-		}
-	};
+//	IChangeListener listener_visual = new IChangeListener()
+//	{
+//		public void handleChange(ChangeEvent event)
+//		{
+////			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
+//			applet_paint_with_new_visual();
+//		}
+//	};
 	
 	SelectionAdapter listener_refresh_button = new SelectionAdapter()
 	{
@@ -321,19 +343,19 @@ public class PmodelPartUi1 extends ModelObject
 		}
 	};
 	
-	/**
-	 * add change listener for binding 'zoom'
-	 */
-	private void updateUserInterfaceProcessing(PmodelViewModel zoom)
-	{
-//		bindingContext.dispose();
-		IObservableList bindings = bindingContextVisual.getValidationStatusProviders();
-
-		// Register the Listener for binding 'zoom'
-		
-		Binding b = (Binding) bindings.get(0);
-		b.getModel().addChangeListener(listener_visual);
-	}
+//	/**
+//	 * add change listener for binding 'zoom'
+//	 */
+//	private void updateUserInterfaceProcessing(PmodelViewModel zoom)
+//	{
+////		bindingContext.dispose();
+//		IObservableList bindings = bindingContextVisual.getValidationStatusProviders();
+//
+//		// Register the Listener for binding 'zoom'
+//		
+//		Binding b = (Binding) bindings.get(0);
+//		b.getModel().addChangeListener(listener_visual);
+//	}
 
 
 	protected DataBindingContext initDataBindingsVisual()
@@ -356,6 +378,14 @@ public class PmodelPartUi1 extends ModelObject
 		IObservableValue modelObservableTextsize = BeanProperties.value("textsize").observe(einstellungen);
 		bindingContextVisual.bindValue(targetObservableTextsize, modelObservableTextsize, null, null);
 		//
+//		IObservableValue targetObservableGravx = WidgetProperties.selection().observe(scale_gravx);
+//		IObservableValue modelObservableGravx = BeanProperties.value("gravx").observe(einstellungen);
+//		bindingContextVisual.bindValue(targetObservableGravx, modelObservableGravx, null, null);
+		//
+//		IObservableValue targetObservableGravy = WidgetProperties.selection().observe(scale_gravy);
+//		IObservableValue modelObservableGravy = BeanProperties.value("gravy").observe(einstellungen);
+//		bindingContextVisual.bindValue(targetObservableGravy, modelObservableGravy, null, null);
+		//
 		return bindingContextVisual;
 	}
 	
@@ -370,6 +400,7 @@ public class PmodelPartUi1 extends ModelObject
 		return bindingContextMarked;
 	}
 	
+		
 	void log(String level, String logstring)
 	{
 //		text_logging.setText(text_logging.getText()+logstring+"\n");

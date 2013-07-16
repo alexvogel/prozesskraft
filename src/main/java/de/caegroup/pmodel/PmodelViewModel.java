@@ -8,9 +8,10 @@ public class PmodelViewModel extends ModelObject
 	public String zoomstring = "";
 	public int labelsize = 10;
 	public int textsize = 10;
+	public int ranksize = 10;
 	public float rootpositionratiox = (float)0.5;
 	public float rootpositionratioy = (float)0.5;
-	public int gravx = 0;
+	public int gravx = 1;
 	public int gravy = 10;
 
 	private String markedStepName = "root";
@@ -78,6 +79,16 @@ public class PmodelViewModel extends ModelObject
 	public void setTextsize(int textsize)
 	{
 		firePropertyChange("textsize", this.textsize, this.textsize = textsize);
+	}
+
+	public int getRanksize()
+	{
+		return ranksize;
+	}
+
+	public void setRanksize(int ranksize)
+	{
+		firePropertyChange("ranksize", this.ranksize, this.ranksize = ranksize);
 	}
 
 	public float getRootpositionratiox()
