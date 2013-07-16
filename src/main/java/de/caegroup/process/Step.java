@@ -679,6 +679,57 @@ implements Serializable, Cloneable
 		return ""+generator.nextInt(9999999);
 	}
 
+	/**
+	 * ermittelt den level eines steps.
+	 * Hat ein Step einen Fromstep, so ist der level des Steps um 1 hoeher als der des Fromsteps
+	 * @return level
+	 */
+	public int getLevel()
+	{
+		boolean run = true;
+		ArrayList<Step> allFromsteps = this.getFromsteps();
+		// einsammeln aller fromsteps
+		while(run)
+		{
+			run = false;
+
+			ArrayList<Step> newFromsteps = new ArrayList<Step>();
+			
+			for(Step actualStep : allFromsteps)
+			{
+				ArrayList<Step> fromstepsOfActualStep = actualStep.getFromsteps();
+				for(Step actualStep2 : fromstepsOfActualStep)
+				{
+					if (!(allFromsteps.contains(actualStep2)))
+					{
+						newFromsteps.add(actualStep2);
+					}
+				}
+			}
+			
+			// wenn neue fromsteps gefunden werden, soll erneut durchlaufen werden
+			if (newFromsteps.size() > 0) {run = true;}
+			allFromsteps.addAll(newFromsteps);
+		}
+
+		int level = 0;
+		// den hoechsten level aller fromsteps ermitteln
+		for(Step actualStep : allFromsteps)
+		{
+			int rankActualStep = actualStep.getLevel();
+			if (rankActualStep > level)
+			{
+				level = rankActualStep;
+			}
+		}
+		
+		// der eigene level ist um 1 hoeher als der hoechste aller fromstep-level (auser beim rootstep)
+		if (!(this.parent.getRootstepname().equals(this.getName())))
+		{
+			level++;
+		}
+		return level;
+	}
 	
 	/*----------------------------
 	  methods get

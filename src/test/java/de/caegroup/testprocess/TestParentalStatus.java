@@ -23,15 +23,14 @@ import de.caegroup.process.Callitem;
 public class TestParentalStatus {
 
 	Process process = new Process();
-	Process p2;
 
 	@Before
 	public void setUp()
 	{
-		process.setInfilexml("/data/prog/workspace/process-core/src/test/resources/beulen.xml");
+		process.setInfilexml("src/test/resources/beulen.xml");
 		try
 		{
-			this.p2 = process.readXml();
+			process.readXml();
 		} catch (JAXBException e)
 		{
 			// TODO Auto-generated catch block
@@ -42,17 +41,17 @@ public class TestParentalStatus {
 	@Test
 	public void testParentStatusOfStep()
 	{
-		for(Step step : p2.getStep())
+		for(Step step : process.getStep())
 		{
 			assertNotNull(step.getParent());
-			assertSame(step.getParent(), p2);
+			assertSame(step.getParent(), process);
 		}
 	}
 	
 	@Test
 	public void testParentStatusOfInit()
 	{
-		for(Step actualStep : p2.getStep())
+		for(Step actualStep : process.getStep())
 		{
 			for(Init actualInit : actualStep.getInit())
 			{
@@ -65,7 +64,7 @@ public class TestParentalStatus {
 	@Test
 	public void testParentStatusOfWork()
 	{
-		for(Step actualStep : p2.getStep())
+		for(Step actualStep : process.getStep())
 		{
 			if(actualStep.getWork() != null)
 			{
@@ -79,7 +78,7 @@ public class TestParentalStatus {
 	@Test
 	public void testParentStatusOfCommit()
 	{
-		for(Step actualStep : p2.getStep())
+		for(Step actualStep : process.getStep())
 		{
 			for(Commit actualCommit : actualStep.getCommit())
 			{

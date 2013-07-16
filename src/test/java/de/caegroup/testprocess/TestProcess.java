@@ -104,32 +104,34 @@ public class TestProcess {
 	@Test
 	public void testReadXml()
 	{
-		Process newProcess = new Process();
 		String pathToXml = "src/test/resources/beulen.xml";
 		process.setInfilexml(pathToXml);
 		java.io.File file = new java.io.File(pathToXml);
 
 		try
 		{
-			newProcess = process.readXml();
+			process.readXml();
 		} catch (JAXBException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// testen der process-attribute
+		// testen der process-attribute, die durch das mapping gesetzt werden
 		assertEquals(true, file.isFile());
-		assertEquals("beulen", newProcess.getName());
-		assertEquals("0.2", newProcess.getVersion());
-		assertEquals("Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert.", newProcess.getDescription());
-		assertEquals("alexander.vogel@caegroup.de", newProcess.getArchitect());
+		assertEquals("beulen", process.getName());
+		assertEquals("0.2", process.getVersion());
+		assertEquals("Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert.", process.getDescription());
+		assertEquals("alexander.vogel@caegroup.de", process.getArchitect());
+
+		// testen des feldes, dass schon vorher gesetzt war
+		assertEquals(pathToXml, process.getInfilexml());
 		
 		// testen der process-elemente
-		assertEquals(2, newProcess.getStep().size());
+		assertEquals(2, process.getStep().size());
 
 		//-----Step 'root' testen Anfang-----
 
-		Step stepRoot = newProcess.getStep("root");
+		Step stepRoot = process.getStep("root");
 		// testen der step-attribute
 		assertEquals("root", stepRoot.getName());
 		assertEquals(2, stepRoot.getCommit().size());
@@ -163,7 +165,7 @@ public class TestProcess {
 
 		//-----Step 'root' testen Ende-----
 
-		Step step1 = newProcess.getStep("beulen");
+		Step step1 = process.getStep("beulen");
 		// testen der step-attribute
 		assertEquals("beulen", step1.getName());
 		assertEquals("automatic", step1.getType());

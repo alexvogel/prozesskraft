@@ -20,9 +20,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.xml.XMLConstants;
@@ -56,6 +59,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import de.caegroup.commons.*;
+import de.caegroup.report.*;
 
 public class Process
 implements Serializable
@@ -84,9 +88,10 @@ implements Serializable
 	private String infilebinary = new String();
 	private String infilexml = new String();
 	private String outfilebinary = new String();
-	private String outfilexml = new String();
-	private String outfiledoc = new String();
-	private String filedoctemplate = new String();
+	private String outfilexml = null;
+	private String outFileDoc = new String();
+	private String filedoctemplateodf = new String();
+	private String fileDocJrxml = new String();
 	private String rootstepname = "root";
 	private ArrayList<Log> log = new ArrayList<Log>();
 	/*----------------------------
@@ -164,14 +169,41 @@ implements Serializable
 //		this.steps.remove(stepname);
 //	}
 
+//	/**
+//	 * schreibt die aktuelle Prozess-Definition als menschenlesbare Dokumentation im pdf-Format raus (basierend auf einem jasper-report)
+//	 * @throws JRException 
+//	 * @throws FileNotFoundException 
+//	**/
+//	public void writeDoc() throws FileNotFoundException
+//	{
+//		Report document = new Report();
+//		
+//		document.setJrxml(this.getFileDocJrxml());
+//		
+//		document.setParameter("processName", this.getName());
+//		document.setParameter("processVersion", this.getVersion());
+//		document.setParameter("processArchitect", this.getArchitect());
+////		content.put("processAutomatic", this.isAutomatic());
+//		document.setParameter("processStepCount", ""+this.getStep().size());
+////		content.put("processParamCount", this.getParamCount());
+//		document.setParameter("processDescription", this.getDescription());
+////		document.setParameter("processTopologyImagePath", new FileInputStream("/austausch/avo/ampelmann_lauf.png"));
+//		
+//		document.compile();
+//		document.fillPReport();
+//		document.setPdf(this.getOutFileDoc());
+//		document.exportToPdf();
+//		
+//	}
+	
 	/*----------------------------
 	  method: 	schreibt die aktuelle process-Definition als officefile im odf-Format.
 	----------------------------*/
-	public void writeDoc()
+	public void writeDocOld()
 	{
 		try
 		{
-			java.io.File template = new java.io.File(this.filedoctemplate);
+			java.io.File template = new java.io.File(this.filedoctemplateodf);
 			
 			TextDocument document;
 			if (template.exists())
@@ -317,7 +349,7 @@ implements Serializable
 
 			}
 			
-			document.save(this.outfiledoc);
+			document.save(this.getOutFileDoc());
 
 		}
 		catch (TransformerConfigurationException e)
@@ -489,6 +521,11 @@ implements Serializable
 	
 	public Process readXml() throws JAXBException
 	{
+		if (this.getInfilexml() == null)
+		{
+			throw new NullPointerException();
+		}
+		
 		JAXBContext context = JAXBContext.newInstance(de.caegroup.jaxb.process.Process.class);
 		Unmarshaller um = context.createUnmarshaller();
 		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -532,8 +569,8 @@ implements Serializable
 			e2.printStackTrace();
 		}
 
+//		Process destObject = null;
 		// das aktuelle xml-file in die jaxb-klassen einlesen
-		Process destObject = new Process();
 		try
 		{
 			de.caegroup.jaxb.process.Process xprocess = (de.caegroup.jaxb.process.Process) um.unmarshal(new java.io.File(this.getInfilexml()));
@@ -546,20 +583,25 @@ implements Serializable
 //				}
 //			};
 			
+//			System.out.println("processName1: "+this.getName());
 			DozerBeanMapper mapper = new DozerBeanMapper();
-			destObject = mapper.map(xprocess, de.caegroup.process.Process.class);
+//			destObject = mapper.map(xprocess, de.caegroup.process.Process.class);
+			mapper.map(xprocess, this);
+//			System.out.println("processName2: "+this.getName());
+
+			// setzen der parenteintraege aller steps
+			this.affiliate();
+			// die jaxb-klassen mit den domain-klassen mappen
+//			System.out.println("processName3: "+this.getName());
+			
 		}
 		catch (javax.xml.bind.UnmarshalException e)
 		{
-			System.err.println("error: cannot unmarshall xml-file");
+			System.err.println("error: cannot unmarshall xml-file: "+this.getInfilexml());
 			e.printStackTrace();
 		}
-		
-		// setzen der parenteintraege aller steps
-		destObject.affiliate();
-		
-		// die jaxb-klassen mit den domain-klassen mappen
-		return destObject;
+
+		return this;
 	}
 	
 	/*----------------------------
@@ -824,6 +866,7 @@ implements Serializable
 		{
 			System.err.println(e.toString());
 		}
+
 //		System.out.println("NAMEN des Prozesses proc1: "+proc1.getName());
 		return null;
 	}
@@ -991,6 +1034,50 @@ implements Serializable
 			actualStep.setParent(this);
 			actualStep.affiliate();
 		}
+	}
+	
+	/**
+	 * determines the rank of the given stepname
+	 * @return rank
+	 */
+	public String detStepRank(String stepname)
+	{
+		System.out.println("ANZAHL DER STEPS AM START VON DETSTEPRANK: "+this.step.size());
+		String desiredRank = ""+0.0;
+		
+		for(int x=0; x <= this.step.size(); x++)
+		{
+			ArrayList<Step> allStepsOfLevelX = new ArrayList<Step>();			
+			// alle durchgehen und nur die des aktuellen Levels einsammeln
+			for(Step actualStep : this.step)
+			{
+				if(actualStep.getLevel() == x)
+				{
+					allStepsOfLevelX.add(actualStep);
+				}
+			}
+			ArrayList<String> allStepNamesOfLevelX = new ArrayList<String>();			
+			// die Namen extrahieren
+			for(Step actualStep : allStepsOfLevelX)
+			{
+				allStepNamesOfLevelX.add(actualStep.getName());
+			}
+			
+			// die Collection mit Namen sortieren
+			Collections.sort(allStepNamesOfLevelX);
+
+			// die ranks in den steps setzen
+			for(int y = 0; y < allStepNamesOfLevelX.size(); y++)
+			{
+				if(allStepNamesOfLevelX.get(y) == stepname)
+				{
+					desiredRank = (x+"."+(y+1));
+					return desiredRank;
+				}
+			}
+		}
+		System.out.println("ANZAHL DER STEPS AM ENDE VON DETSTEPRANK: "+this.step.size());
+		return desiredRank;
 	}
 	
 	/*----------------------------
@@ -1208,14 +1295,19 @@ implements Serializable
 		return this.outfilexml;
 	}
 
-	public String getOutfiledoc()
+	public String getOutFileDoc()
 	{
-		return this.outfiledoc;
+		return this.outFileDoc;
 	}
 
-	public String getFiledoctemplate()
+	public String getFiledoctemplateodf()
 	{
-		return this.filedoctemplate;
+		return this.filedoctemplateodf;
+	}
+
+	public String getFileDocJrxml()
+	{
+		return this.fileDocJrxml;
 	}
 
 //	public Step getStep(String stepname)
@@ -1418,14 +1510,19 @@ implements Serializable
 		this.outfilexml = file;
 	}
 
-	public void setOutfiledoc(String file)
+	public void setOutFileDoc(String file)
 	{
-		this.outfiledoc = file;
+		this.outFileDoc = file;
 	}
 
-	public void setFiledoctemplate(String file)
+	public void setFiledoctemplateodf(String file)
 	{
-		this.filedoctemplate = file;
+		this.filedoctemplateodf = file;
+	}
+
+	public void setFileDocJrxml(String file)
+	{
+		this.fileDocJrxml = file;
 	}
 
 	public void setRootstepname(String rootstepname)
