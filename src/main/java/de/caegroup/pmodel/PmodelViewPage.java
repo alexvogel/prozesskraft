@@ -100,6 +100,14 @@ public class PmodelViewPage extends PApplet
 		this.einstellungen = einstellungen;
 		this.process = new Process();
 		this.process.setInfilexml(pathToProcessFile);
+		try
+		{
+			this.process = process.readXml();
+		} catch (JAXBException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 
@@ -140,6 +148,8 @@ public class PmodelViewPage extends PApplet
 //    		System.out.println(this.millis());
 //		System.out.println("width: "+frame.getWidth());
 
+		System.out.println("amount stepcircles :"+stepcircles.size());
+		
 		size(this.einstellungen.getWidth(), this.einstellungen.getHeight());
 		background(255);
 		this.bezugsgroesse = (float)((float)this.einstellungen.getZoom() / 100);
@@ -461,12 +471,12 @@ public class PmodelViewPage extends PApplet
 	{
 		boolean result = false;
 		System.out.println("refreshing data from: "+this.process.getInfilexml());
-		try
-		{
+//		try
+//		{
 //			this.process = process.readXml();
 			System.out.println("infilexml vor dem read: "+process.getInfilexml());
 			System.out.println("processName vor dem read: "+process.getName());
-			this.process = process.readXml();
+
 			System.out.println("infilexml nach dem read: "+process.getInfilexml());
 			System.out.println("processName nach dem read: "+process.getName());
 	    	this.legend_processname = this.process.getName()+" v"+this.process.getVersion().toString();
@@ -475,11 +485,11 @@ public class PmodelViewPage extends PApplet
 	    	this.refresh_topology = true;
 	    	
 	    	result = true;
-		} catch (JAXBException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		} catch (JAXBException e)
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
     	return result;
 	}
