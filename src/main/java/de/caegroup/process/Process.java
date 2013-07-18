@@ -1042,7 +1042,6 @@ implements Serializable
 	 */
 	public String detStepRank(String stepname)
 	{
-		System.out.println("ANZAHL DER STEPS AM START VON DETSTEPRANK: "+this.step.size());
 		String desiredRank = ""+0.0;
 		
 		for(int x=0; x <= this.step.size(); x++)
@@ -1076,7 +1075,6 @@ implements Serializable
 				}
 			}
 		}
-		System.out.println("ANZAHL DER STEPS AM ENDE VON DETSTEPRANK: "+this.step.size());
 		return desiredRank;
 	}
 	

@@ -58,6 +58,8 @@ public class TestRank {
 		assertEquals("1.1", process.detStepRank("aStep"));
 		assertEquals("2.1", process.detStepRank("bStep"));
 		assertEquals("3.1", process.detStepRank("cStep"));
+		
+		assertEquals(3, process.getStep().size());
 	}
 	
 
