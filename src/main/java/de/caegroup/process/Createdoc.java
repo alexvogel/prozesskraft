@@ -262,28 +262,29 @@ public class Createdoc
 			report.setParameter("processDescription", process.getDescription());
 			
 			// konfigurieren der processing ansicht
+//			PmodelViewPage page = new PmodelViewPage(process);
 			PmodelViewPage page = new PmodelViewPage(process);
-			page.einstellungen.setZoom(50);
+			page.einstellungen.setZoom(160);
 			page.einstellungen.setLabelsize(0);
 			page.einstellungen.setTextsize(0);
-			page.einstellungen.setRanksize(10);
-			page.einstellungen.setWidth(350);
-			page.einstellungen.setHeight(375);
-			page.einstellungen.setGravx(0);
-			page.einstellungen.setGravy(5);
-			page.einstellungen.setRootpositionratiox((float)0.5);
-			page.einstellungen.setRootpositionratioy((float)0.1);
+			page.einstellungen.setRanksize(7);
+			page.einstellungen.setWidth(1500);
+			page.einstellungen.setHeight(750);
+			page.einstellungen.setGravx(20);
+			page.einstellungen.setGravy(0);
+			page.einstellungen.setRootpositionratiox((float)0.1);
+			page.einstellungen.setRootpositionratioy((float)0.5);
 
 			createContents(page);
-//			open();
+			open();
 
 			System.out.println("Anzahl der Steps ist: "+process.getStep().size());
 			// verzoegerung, damit die symbole sich gut ausrichten koennen
 			long start = System.currentTimeMillis();
-			System.out.println("sleeping for 3 seconds.");
+//			System.out.println("sleeping for 3 seconds.");
 
-			while(System.currentTimeMillis() < (start + 3000))
-			{
+//			while(System.currentTimeMillis() < (start + 3000))
+//			{
 //				try
 //				{
 //					System.out.println("sleeping.");
@@ -294,18 +295,18 @@ public class Createdoc
 //					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
-			}
+//			}
 			
 			// bild speichern
-			String randomPath = "/tmp/"+System.currentTimeMillis()+".jpg";
+			String randomPath = "/tmp/"+System.currentTimeMillis()+".png";
 			page.save(randomPath);
 			page.destroy();
 			
 			// Tabelle erzeugen
 
-			System.out.println("Anzahl der Steps ist: "+process.getStep().size());
+//			System.out.println("Anzahl der Steps ist: "+process.getStep().size());
 			ArrayList<Step> steps = process.getStep();
-			System.out.println("Anzahl der Steps ist: "+process.getStep().size());
+//			System.out.println("Anzahl der Steps ist: "+process.getStep().size());
 //			System.exit(1);
 			for(int x = 0; x < steps.size(); x++)
 			{
@@ -314,15 +315,15 @@ public class Createdoc
 
 				// erste Spalte ist 'rank'
 				row.put("stepRank", process.detStepRank(actualStep.getName()));
-				System.out.println("stepRank: "+process.detStepRank(actualStep.getName()));
+//				System.out.println("stepRank: "+process.detStepRank(actualStep.getName()));
 				
 				// zweite Spalte ist 'stepname'
 				row.put("stepName", actualStep.getName());
-				System.out.println("stepName: "+actualStep.getName());
+//				System.out.println("stepName: "+actualStep.getName());
 
 				// dritte Spalte ist 'Beschreibung'
 				row.put("stepDescription", actualStep.getDescription());
-				System.out.println("stepRank: "+actualStep.getDescription());
+//				System.out.println("stepRank: "+actualStep.getDescription());
 
 				report.addField(row);
 			}
@@ -395,7 +396,7 @@ public class Createdoc
 	protected static void createContents(PmodelViewPage page)
 	{
 		shell = new Shell();
-		shell.setSize(1200, 800);
+		shell.setSize(1500, 750);
 		shell.setText("SWT Application");
 		shell.setLayout(new GridLayout(1, false));
 		
