@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9c4a5649-093c-47a8-b59a-d8fc5724781d">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="processName" class="java.lang.String"/>
 	<parameter name="processVersion" class="java.lang.String"/>
 	<parameter name="processArchitect" class="java.lang.String"/>
+	<parameter name="processTopologyImagePath" class="java.lang.String"/>
 	<field name="stepRank" class="java.lang.String"/>
 	<field name="stepName" class="java.lang.String"/>
 	<field name="stepDescription" class="java.lang.String"/>
@@ -80,29 +80,17 @@
 			</textField>
 		</band>
 	</pageHeader>
-	<detail>
-		<band height="397" splitType="Stretch">
-			<subreport>
-				<reportElement uuid="43e701eb-24c6-4e5c-bc00-ca99c9fbf8ec" x="10" y="11" width="765" height="386">
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+	<columnHeader>
+		<band height="400" splitType="Stretch">
+			<image onErrorType="Blank">
+				<reportElement uuid="40740120-e8e9-4612-8aab-5e967bcb3d6a" key="" x="25" y="10" width="750" height="390">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
-				<subreportParameter name="processArchitect">
-					<subreportParameterExpression><![CDATA[$P{processArchitect}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="processVersion">
-					<subreportParameterExpression><![CDATA[$P{processVersion}]]></subreportParameterExpression>
-				</subreportParameter>
-				<subreportParameter name="processName">
-					<subreportParameterExpression><![CDATA[$P{processName}]]></subreportParameterExpression>
-				</subreportParameter>
-				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA["/home/avo/jasper.jasper"]]></subreportExpression>
-			</subreport>
+				<imageExpression><![CDATA[$P{processTopologyImagePath}]]></imageExpression>
+			</image>
 		</band>
-	</detail>
+	</columnHeader>
 	<columnFooter>
 		<band height="13" splitType="Stretch"/>
 	</columnFooter>
@@ -114,7 +102,7 @@
 			<staticText>
 				<reportElement uuid="b51dadc7-54ba-4ce9-bc21-61af0e77a030" x="0" y="5" width="200" height="15"/>
 				<textElement/>
-				<text><![CDATA[Prozessschritte]]></text>
+				<text><![CDATA[Prozesstopologie]]></text>
 			</staticText>
 			<textField>
 				<reportElement uuid="d03dc1af-bd29-47af-bdaa-6955026abf90" x="775" y="3" width="25" height="15"/>

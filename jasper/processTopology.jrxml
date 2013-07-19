@@ -8,7 +8,7 @@
 	</background>
 	<columnHeader>
 		<band height="375" splitType="Stretch">
-			<image onErrorType="Blank">
+			<image onErrorType="Icon">
 				<reportElement uuid="40740120-e8e9-4612-8aab-5e967bcb3d6a" key="" x="0" y="0" width="750" height="375">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
