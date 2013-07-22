@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version last-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9c4a5649-093c-47a8-b59a-d8fc5724781d">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9c4a5649-093c-47a8-b59a-d8fc5724781d">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="processName" class="java.lang.String"/>
 	<parameter name="processVersion" class="java.lang.String"/>
 	<parameter name="processArchitect" class="java.lang.String"/>
 	<parameter name="processTopologyImagePath" class="java.lang.String"/>
-	<field name="stepRank" class="java.lang.String"/>
-	<field name="stepName" class="java.lang.String"/>
-	<field name="stepDescription" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -81,18 +79,15 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="400" splitType="Stretch">
-			<image onErrorType="Blank">
-				<reportElement uuid="40740120-e8e9-4612-8aab-5e967bcb3d6a" key="" x="25" y="10" width="750" height="390">
-					<property name="local_mesure_unity" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
+		<band height="450" splitType="Stretch">
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement uuid="2f8b20f7-9c56-45a5-b06a-c25044db6ec6" stretchType="RelativeToBandHeight" x="60" y="50" width="670" height="330"/>
 				<imageExpression><![CDATA[$P{processTopologyImagePath}]]></imageExpression>
 			</image>
 		</band>
 	</columnHeader>
 	<columnFooter>
-		<band height="13" splitType="Stretch"/>
+		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
 		<band height="20" splitType="Stretch">
@@ -102,7 +97,7 @@
 			<staticText>
 				<reportElement uuid="b51dadc7-54ba-4ce9-bc21-61af0e77a030" x="0" y="5" width="200" height="15"/>
 				<textElement/>
-				<text><![CDATA[Prozesstopologie]]></text>
+				<text><![CDATA[Prozess Topologie]]></text>
 			</staticText>
 			<textField>
 				<reportElement uuid="d03dc1af-bd29-47af-bdaa-6955026abf90" x="775" y="3" width="25" height="15"/>

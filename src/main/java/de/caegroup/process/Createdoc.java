@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
+import de.caegroup.commons.AutoCropBorder;
 import de.caegroup.commons.WhereAmI;
 import de.caegroup.pmodel.PmodelViewPage;
 import de.caegroup.process.Process;
@@ -47,6 +48,7 @@ public class Createdoc
 	static Ini ini;
 	static Display display = Display.getDefault();
 	protected static Shell shell;
+	static String processTopologyImagePath;
 	
 	/*----------------------------
 	  constructors
@@ -232,146 +234,370 @@ public class Createdoc
 		----------------------------*/
 		
 		Process process = new Process();
-		Report report = new Report();
+		Report report;
 
 		process.setInfilexml(definition);
 		
 		System.out.println("info: reading process definition "+definition);
 
+		
 		try
 		{
-			System.out.println("Anzahl der Steps ist: "+process.getStep().size());
 			process.readXml();
-			System.out.println("Anzahl der Steps ist: "+process.getStep().size());
-
-			// feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
-			if (ini.get("process-createdoc", type+"-jrxml") != null )
-			{
-				report.setJrxml(ini.get("process-createdoc", type+"-jrxml"));
-			}
-			else
-			{
-				System.err.println("no entry '"+type+"-jrxml' found in ini file");
-				System.exit(1);
-			}
-			
-			report.setParameter("processName", process.getName());
-			report.setParameter("processVersion", process.getVersion());
-			report.setParameter("processArchitect", process.getArchitect());
-			report.setParameter("processStepCount", process.getStep().size());
-			report.setParameter("processDescription", process.getDescription());
-			
-			// konfigurieren der processing ansicht
-//			PmodelViewPage page = new PmodelViewPage(process);
-			PmodelViewPage page = new PmodelViewPage(process);
-			page.einstellungen.setZoom(160);
-			page.einstellungen.setLabelsize(0);
-			page.einstellungen.setTextsize(0);
-			page.einstellungen.setRanksize(7);
-			page.einstellungen.setWidth(1500);
-			page.einstellungen.setHeight(750);
-			page.einstellungen.setGravx(20);
-			page.einstellungen.setGravy(0);
-			page.einstellungen.setRootpositionratiox((float)0.1);
-			page.einstellungen.setRootpositionratioy((float)0.5);
-
-			createContents(page);
-			open();
-
-			System.out.println("Anzahl der Steps ist: "+process.getStep().size());
-			// verzoegerung, damit die symbole sich gut ausrichten koennen
-			long start = System.currentTimeMillis();
-//			System.out.println("sleeping for 3 seconds.");
-
-//			while(System.currentTimeMillis() < (start + 3000))
-//			{
-//				try
-//				{
-//					System.out.println("sleeping.");
-//					Thread.sleep(1000);
-//					page.einstellungen.setGravy(5);
-//				} catch (InterruptedException e)
-//				{
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-			
-			// bild speichern
-			String randomPath = "/tmp/"+System.currentTimeMillis()+".png";
-			page.save(randomPath);
-			page.destroy();
-			
-			// Tabelle erzeugen
-
-//			System.out.println("Anzahl der Steps ist: "+process.getStep().size());
-			ArrayList<Step> steps = process.getStep();
-//			System.out.println("Anzahl der Steps ist: "+process.getStep().size());
-//			System.exit(1);
-			for(int x = 0; x < steps.size(); x++)
-			{
-				HashMap<String,Object> row = new HashMap<String,Object>();
-				Step actualStep = steps.get(x);
-
-				// erste Spalte ist 'rank'
-				row.put("stepRank", process.detStepRank(actualStep.getName()));
-//				System.out.println("stepRank: "+process.detStepRank(actualStep.getName()));
-				
-				// zweite Spalte ist 'stepname'
-				row.put("stepName", actualStep.getName());
-//				System.out.println("stepName: "+actualStep.getName());
-
-				// dritte Spalte ist 'Beschreibung'
-				row.put("stepDescription", actualStep.getDescription());
-//				System.out.println("stepRank: "+actualStep.getDescription());
-
-				report.addField(row);
-			}
-			
-			// fenster schliessen
-//			shell.close();
-//			shell.dispose();
-//			display.dispose();
-
-			report.setParameter("processTopologyImagePath", randomPath);
-
-			report.setJasper("/home/avo/jasper.jasper");
-			report.setJasperFilled("/home/avo/jasperFilled.jasper");
-			
-			report.compile();
-			report.fillPReport();
-			
-			// mit dem ensprechenden exporter den report rausschreiben
-			if (format.equals("pdf"))
-			{
-				report.setPdf(output);
-				report.exportToPdf();
-			}
-			if (format.equals("odt"))
-			{
-				report.setOdt(output);
-				report.exportToOdt();
-			}
-			if (format.equals("docx"))
-			{
-				report.setDocx(output);
-				report.exportToDocx();
-			}
-			if (format.equals("html"))
-			{
-				report.setHtml(output);
-				report.exportToHtml();
-			}
-			
 		}
+		
 		catch (JAXBException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("info: writing process documentation "+output);
+		
+		//festlegen des temporaeren verzeichnisses fuer die Daten und Pfade erzeugen
+		long jetztMillis = System.currentTimeMillis();
+		String randomPathJasperFilled = "/tmp/"+jetztMillis+"_jasperFilled";
+		String randomPathPng          = "/tmp/"+jetztMillis+"_png";
+		String randomPathPdf          = "/tmp/"+jetztMillis+"_pdf";
+		
+		new File(randomPathJasperFilled).mkdirs();
+		new File(randomPathPng).mkdirs();
+		new File(randomPathPdf).mkdirs();
+		
+//////////////////////////////////////////
+
+		// erstellen der Bilder
+		
+		// konfigurieren der processing ansicht
+//		PmodelViewPage page = new PmodelViewPage(process);
+		PmodelViewPage page = new PmodelViewPage(process);
+		page.einstellungen.setZoom(160);
+		page.einstellungen.setLabelsize(0);
+		page.einstellungen.setTextsize(0);
+		page.einstellungen.setRanksize(7);
+		page.einstellungen.setWidth(1500);
+		page.einstellungen.setHeight(750);
+		page.einstellungen.setGravx(20);
+		page.einstellungen.setGravy(0);
+		page.einstellungen.setRootpositionratiox((float)0.1);
+		page.einstellungen.setRootpositionratioy((float)0.5);
+	
+		createContents(page);
+		open();
+		
+		// VORBEREITUNG) bild speichern
+		processTopologyImagePath = randomPathPng+"/processTopology.png";
+		page.save(processTopologyImagePath);
+		page.destroy();
+
+		//  VORBEREITUNG) Autocrop all images
+		new AutoCropBorder(processTopologyImagePath);
+		
+		
+//////////////////////////////////////////
+		 report = new Report();
+		
+		// P1) erstellen des p1
+		System.out.println("info: generating p1.");
+		
+		// P1) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
+		if (ini.get("process-createdoc", "p1") != null )
+		{
+			report.setJasper(ini.get("process-createdoc", "p1"));
+			report.setJasperFilled(randomPathJasperFilled+"/p1.jasperFilled");
+			report.setPdf(randomPathPdf+"/p1.pdf");
+		}
+		else
+		{
+			System.err.println("no entry 'p1' found in ini file");
+			System.exit(1);
+		}
+		
+		report.setParameter("processName", process.getName());
+		report.setParameter("processVersion", process.getVersion());
+		report.setParameter("processArchitect", process.getArchitect());
+		
+		// P1) bild an report melden
+		report.setParameter("processTopologyImagePath", processTopologyImagePath);
+
+		// P1) report fuellen
+		report.fillPReport();
+
+		// P1) pdf schreiben
+		report.exportToPdf();
+
+		report = null;
+		
+//		System.exit(0);
+//////////////////////////////////////////
+		
+		report = new Report();
+			
+		// P2) erstellen des p2
+		System.out.println("info: generating p2.");
+		
+		// P2) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
+		if (ini.get("process-createdoc", "p2") != null )
+		{
+			report.setJasper(ini.get("process-createdoc", "p2"));
+			report.setJasperFilled(randomPathJasperFilled+"/p2.jasperFilled");
+			report.setPdf(randomPathPdf+"/p2.pdf");
+		}
+		else
+		{
+			System.err.println("no entry 'p2' found in ini file");
+			System.exit(1);
+		}
+		
+		report.setParameter("processName", process.getName());
+		report.setParameter("processVersion", process.getVersion());
+		report.setParameter("processArchitect", process.getArchitect());
+		
+		// Tabelle erzeugen
+
+		ArrayList<Step> steps = process.getStep();
+		for(int x = 0; x < steps.size(); x++)
+		{
+			HashMap<String,Object> row = new HashMap<String,Object>();
+			Step actualStep = steps.get(x);
+
+			// erste Spalte ist 'rank'
+			row.put("stepRank", process.detStepRank(actualStep.getName()));
+			
+			// zweite Spalte ist 'stepname'
+			row.put("stepName", actualStep.getName());
+//				System.out.println("stepName: "+actualStep.getName());
+
+			// dritte Spalte ist 'Beschreibung'
+			row.put("stepDescription", actualStep.getDescription());
+//				System.out.println("stepRank: "+actualStep.getDescription());
+
+			report.addField(row);
+		}
+		
+		// P2) report fuellen
+		report.fillPReport();
+
+		// P2) pdf schreiben
+		report.exportToPdf();
+		
+		report = null;
+		
+//////////////////////////////////////////
+		
+		report = new Report();
+		
+		// P3) erstellen des p3
+		System.out.println("info: generating p3.");
+		
+		// P3) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
+		if (ini.get("process-createdoc", "p3") != null )
+		{
+			report.setJasper(ini.get("process-createdoc", "p3"));
+			report.setJasperFilled(randomPathJasperFilled+"/p3.jasperFilled");
+			report.setPdf(randomPathPdf+"/p3.pdf");
+		}
+		else
+		{
+			System.err.println("no entry 'p3' found in ini file");
+			System.exit(1);
+		}
+		
+		report.setParameter("processName", process.getName());
+		report.setParameter("processVersion", process.getVersion());
+		report.setParameter("processArchitect", process.getArchitect());
+		// P3) bild an report melden
+		report.setParameter("processTopologyImagePath", processTopologyImagePath);
+		
+		// rootstep holen
+		Step rootStep = process.getStep(process.getRootstepname());
+		
+		// ueber alle commit iterieren
+		for(Commit actualCommit : rootStep.getCommit())
+		{
+			
+			// ueber alle files iterieren
+			for(de.caegroup.process.File actualFile : actualCommit.getFile())
+			{
+				HashMap<String,Object> row = new HashMap<String,Object>();
+				
+				// Spalte 'objectType'
+				row.put("origin", "extern");
+				
+				// Spalte 'objectType'
+				row.put("objectType", "datei");
+				
+				// Spalte 'minOccur'
+				row.put("minOccur", ""+actualFile.getMinoccur());
+				
+				// Spalte 'maxOccur'
+				row.put("maxOccur", ""+actualFile.getMaxoccur());
+				
+				// Spalte 'objectKey'
+				row.put("objectKey", actualFile.getKey());
+				
+				// Spalte 'objectDescription'
+				row.put("objectDescription", actualFile.getDescription());
+
+				// Datensatz dem report hinzufuegen
+				report.addField(row);
+			}
+
+			// ueber alle variablen iterieren
+			for(de.caegroup.process.Variable actualVariable : actualCommit.getVariable())
+			{
+				HashMap<String,Object> row = new HashMap<String,Object>();
+				
+				// Spalte 'objectType'
+				row.put("origin", "extern");
+				
+				// Spalte 'objectType'
+				row.put("objectType", "wert");
+				
+				// Spalte 'minOccur'
+				row.put("minOccur", ""+actualVariable.getMinoccur());
+				
+				// Spalte 'maxOccur'
+				row.put("maxOccur", ""+actualVariable.getMaxoccur());
+				
+				// Spalte 'objectKey'
+				row.put("objectKey", actualVariable.getKey());
+				
+				// Spalte 'objectDescription'
+				row.put("objectDescription", actualVariable.getDescription());
+
+				// Datensatz dem report hinzufuegen
+				report.addField(row);
+			}
+
+		}
+
+		// P3) report fuellen
+		report.fillPReport();
+
+		// P3) pdf schreiben
+		report.exportToPdf();
+		
+		report = null;
+		
+//////////////////////////////////////////
+
+		report = new Report();
+		
+		// P4) erstellen des p4
+		System.out.println("info: generating p4.");
+		
+		// P4) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
+		if (ini.get("process-createdoc", "p4") != null )
+		{
+			report.setJasper(ini.get("process-createdoc", "p4"));
+			report.setJasperFilled(randomPathJasperFilled+"/p4.jasperFilled");
+			report.setPdf(randomPathPdf+"/p4.pdf");
+		}
+		else
+		{
+			System.err.println("no entry 'p4' found in ini file");
+			System.exit(1);
+		}
+		
+		report.setParameter("processName", process.getName());
+		report.setParameter("processVersion", process.getVersion());
+		report.setParameter("processArchitect", process.getArchitect());
+		// P4) bild an report melden
+		report.setParameter("processTopologyImagePath", processTopologyImagePath);
+		
+		// ueber alle steps iterieren (ausser root)
+		for(Step actualStep : process.getStep())
+		{
+			
+			// ueberspringen wenn es sich um root handelt
+			if(actualStep.getName().equals(process.getRootstepname()))
+			{
+				break;
+			}
+		
+			// ueber alle commit iterieren
+			for(Commit actualCommit : actualStep.getCommit())
+			{
+				
+				// nur die, die toroot=true ( und spaeter auch tosdm=true)
+				if(actualCommit.getToroot())
+				{
+
+					// ueber alle files iterieren
+					for(de.caegroup.process.File actualFile : actualCommit.getFile())
+					{
+
+						HashMap<String,Object> row = new HashMap<String,Object>();
+					
+						// Spalte 'objectType'
+						row.put("destination", "extern");
+						
+						// Spalte 'objectType'
+						row.put("objectType", "datei");
+						
+						// Spalte 'minOccur'
+						row.put("minOccur", ""+actualFile.getMinoccur());
+						
+						// Spalte 'maxOccur'
+						row.put("maxOccur", ""+actualFile.getMaxoccur());
+						
+						// Spalte 'objectKey'
+						row.put("objectKey", actualFile.getKey());
+						
+						// Spalte 'objectDescription'
+						row.put("objectDescription", actualFile.getDescription());
+	
+						// Datensatz dem report hinzufuegen
+						report.addField(row);
+					}
+
+					// ueber alle variablen iterieren
+					for(de.caegroup.process.Variable actualVariable : actualCommit.getVariable())
+					{
+						HashMap<String,Object> row = new HashMap<String,Object>();
+						
+						// Spalte 'objectType'
+						row.put("destination", "extern");
+						
+	
+						// Spalte 'objectType'
+						row.put("objectType", "wert");
+						
+						// Spalte 'minOccur'
+						row.put("minOccur", ""+actualVariable.getMinoccur());
+						
+						// Spalte 'maxOccur'
+						row.put("maxOccur", ""+actualVariable.getMaxoccur());
+						
+						// Spalte 'objectKey'
+						row.put("objectKey", actualVariable.getKey());
+						
+						// Spalte 'objectDescription'
+						row.put("objectDescription", actualVariable.getDescription());
+	
+						// Datensatz dem report hinzufuegen
+						report.addField(row);
+					}
+				}
+			}
+
+		}
+		
+		// P4) report fuellen
+		report.fillPReport();
+
+		// P4) pdf schreiben
+		report.exportToPdf();
+		
+		report = null;
+	
+
+		
+		
+		System.out.println("info: generating process documentation ready.");
 		System.exit(0);
 	}
+//////////////////////////////////////////
+
 	
 	/**
 	 * Open the window.
