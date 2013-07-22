@@ -63,6 +63,8 @@ public class PmodelViewPage extends PApplet
 	public int height = 800;
 	public int framerate = 50;
 	float bezugsgroesse = (float) 1.0;
+	boolean saveActualPic = false;
+	String pathActualPic = "";
 //	public float damp = (float)0.2;
 
 
@@ -148,7 +150,7 @@ public class PmodelViewPage extends PApplet
 //    		System.out.println(this.millis());
 //		System.out.println("width: "+frame.getWidth());
 
-		System.out.println("amount stepcircles :"+stepcircles.size());
+//		System.out.println("amount stepcircles :"+stepcircles.size());
 		
 		size(this.einstellungen.getWidth(), this.einstellungen.getHeight());
 		background(255);
@@ -189,6 +191,12 @@ public class PmodelViewPage extends PApplet
 			this.display();
 		}
 	
+		if (this.saveActualPic)
+		{
+			System.out.println("saving actual drawing to: "+this.pathActualPic);
+			this.save(this.pathActualPic);
+			this.saveActualPic = false;
+		}
 
 	}
 
@@ -618,6 +626,12 @@ public class PmodelViewPage extends PApplet
 		else if (damp > 0.9) {damp = (float)0.9;}
 //		System.out.println("damp: "+damp);
 		return damp;
+	}
+	
+	public void savePic(String pathToPic)
+	{
+		this.pathActualPic = pathToPic;
+		this.saveActualPic = true;
 	}
 	
 	/*----------------------------
