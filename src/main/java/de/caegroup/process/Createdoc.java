@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
@@ -49,7 +50,7 @@ public class Createdoc
 	static Display display = Display.getDefault();
 	protected static Shell shell;
 	static String processTopologyImagePath;
-	
+	static Map<String,String> stepTopologyImagePath = new HashMap<String,String>();
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -285,15 +286,56 @@ public class Createdoc
 		
 		// VORBEREITUNG) bild speichern
 		processTopologyImagePath = randomPathPng+"/processTopology.png";
-		page.save(processTopologyImagePath);
+		page.savePic(processTopologyImagePath);
+		// zuerst 1 sekunde warten, dann autocrop
+		long jetzt = System.currentTimeMillis();
+		while (System.currentTimeMillis() < jetzt + 1000)
+		{
+			
+		}
+		new AutoCropBorder(processTopologyImagePath);
+
+		// VORBEREITUNG) fuer jeden step ein bild speichern
+		for(Step actualStep : process.getStep())
+		{
+			
+			// root ueberspringen
+			if (actualStep.getName().equals(process.getRootstepname()));
+			
+			String stepImagePath = randomPathPng+"/step_"+actualStep.getName()+"_Topology.png";
+			
+			// Farbe des Steps auf working aendern
+			actualStep.setStatus("initializing");
+			
+			page.savePic(stepImagePath);
+			// zuerst 1 sekunde warten, dann autocrop
+			long jetzt3 = System.currentTimeMillis();
+			while (System.currentTimeMillis() < jetzt3 + 1000)
+			{
+				
+			}
+			new AutoCropBorder(stepImagePath);
+			stepTopologyImagePath.put(actualStep.getName(), stepImagePath);
+			
+			// farbe wieder auf grau aendern
+			actualStep.setStatus("waiting");
+			
+			System.out.println("fuer step: "+actualStep.getName());
+
+			page.frameRate(50);
+			long jetzt2 = System.currentTimeMillis();
+			while (System.currentTimeMillis() < jetzt2 + 1000)
+			{
+				
+			}
+
+		}
+		
 		page.destroy();
 
-		//  VORBEREITUNG) Autocrop all images
-		new AutoCropBorder(processTopologyImagePath);
-		
 		
 //////////////////////////////////////////
-		 report = new Report();
+		report = new Report();
 		
 		// P1) erstellen des p1
 		System.out.println("info: generating p1.");
@@ -420,7 +462,7 @@ public class Createdoc
 				HashMap<String,Object> row = new HashMap<String,Object>();
 				
 				// Spalte 'objectType'
-				row.put("origin", "extern");
+				row.put("origin", "user/cb2");
 				
 				// Spalte 'objectType'
 				row.put("objectType", "datei");
@@ -447,7 +489,7 @@ public class Createdoc
 				HashMap<String,Object> row = new HashMap<String,Object>();
 				
 				// Spalte 'objectType'
-				row.put("origin", "extern");
+				row.put("origin", "user/cb2");
 				
 				// Spalte 'objectType'
 				row.put("objectType", "wert");
@@ -590,7 +632,223 @@ public class Createdoc
 		
 		report = null;
 	
+//////////////////////////////////////////
 
+		// fuer jeden Step einen eigenen Input Report erzeugen
+		
+		for(Step actualStep : process.getStep())
+		{
+			// root-step ueberspringen
+			if (actualStep.getName().equals(process.getRootstepname()))
+			{
+				System.out.println("skipping step root");
+			}
+			
+			// alle anderen auswerten
+			else
+			{
+				
+				report = new Report();
+				
+				// P51x) erstellen des p51
+				System.out.println("info: generating p51 for step "+process.detStepRank(actualStep.getName())+" => "+actualStep.getName());
+				
+				String stepRank = process.detStepRank(actualStep.getName());
+				
+				// P51x) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
+				if (ini.get("process-createdoc", "p51") != null )
+				{
+					report.setJasper(ini.get("process-createdoc", "p51"));
+					report.setJasperFilled(randomPathJasperFilled+"/p5."+stepRank+".1.jasperFilled");
+					report.setPdf(randomPathPdf+"/p5."+stepRank+".1.pdf");
+				}
+				else
+				{
+					System.err.println("no entry 'p51' found in ini file");
+					System.exit(1);
+				}
+	
+				report.setParameter("processName", process.getName());
+				report.setParameter("processVersion", process.getVersion());
+				report.setParameter("processArchitect", process.getArchitect());
+
+				report.setParameter("stepName", actualStep.getName());
+				report.setParameter("stepRank", stepRank);
+				// P51x) bild an report melden
+				report.setParameter("stepTopologyImagePath", stepTopologyImagePath.get(actualStep.getName()));
+	
+			
+				// ueber alle inits iterieren
+				for(Init actualInit : actualStep.getInit())
+				{
+					HashMap<String,Object> row = new HashMap<String,Object>();
+					
+					// Spalte 'Woher?'
+					row.put("origin", actualInit.getFromstep());
+					
+					// Spalte 'typ'
+					row.put("objectType", actualInit.getFromobjecttype());
+					
+					// Spalte 'minOccur'
+					row.put("minOccur", ""+actualInit.getMinoccur());
+					
+					// Spalte 'maxOccur'
+					row.put("maxOccur", ""+actualInit.getMaxoccur());
+					
+					// Spalte 'Label'
+					row.put("objectKey", actualInit.getName());
+	
+					report.addField(row);
+				}
+	
+				// P51x) report fuellen
+				report.fillPReport();
+	
+				// P51x) pdf schreiben
+				report.exportToPdf();
+				
+				report = null;
+			}
+		}
+		
+//////////////////////////////////////////
+
+// fuer jeden Step einen eigenen Output Report erzeugen
+
+		for(Step actualStep : process.getStep())
+		{
+			// root-step ueberspringen
+			if (actualStep.getName().equals(process.getRootstepname()))
+			{
+				System.out.println("skipping step root");
+			}
+			
+			// alle anderen auswerten
+			else
+			{
+			
+				report = new Report();
+				
+				// P52x) erstellen des p52
+				System.out.println("info: generating p52 for step "+process.detStepRank(actualStep.getName())+" => "+actualStep.getName());
+				
+				String stepRank = process.detStepRank(actualStep.getName());
+				
+				// P52x) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
+				if (ini.get("process-createdoc", "p52") != null )
+				{
+					report.setJasper(ini.get("process-createdoc", "p52"));
+					report.setJasperFilled(randomPathJasperFilled+"/p5."+stepRank+".2.jasperFilled");
+					report.setPdf(randomPathPdf+"/p5."+stepRank+".2.pdf");
+				}
+				else
+				{
+					System.err.println("no entry 'p52' found in ini file");
+					System.exit(1);
+				}
+				
+				report.setParameter("processName", process.getName());
+				report.setParameter("processVersion", process.getVersion());
+				report.setParameter("processArchitect", process.getArchitect());
+				
+				report.setParameter("stepName", actualStep.getName());
+				report.setParameter("stepRank", stepRank);
+				// P52x) bild an report melden
+				report.setParameter("stepTopologyImagePath", stepTopologyImagePath.get(actualStep.getName()));
+				
+				
+				// ueber alle inits iterieren
+				for(Commit actualCommit : actualStep.getCommit())
+				{
+				
+					// ueber alle files iterieren
+					for(de.caegroup.process.File actualFile : actualCommit.getFile())
+					{
+
+						HashMap<String,Object> row = new HashMap<String,Object>();
+					
+						// Spalte 'destination'
+						if (actualCommit.getToroot())
+						{
+							row.put("destination", "user/cb2");
+						}
+						else
+						{
+							row.put("destination", "prozessintern");
+						}
+						
+						// Spalte 'objectType'
+						row.put("objectType", "datei");
+						
+						// Spalte 'minOccur'
+						row.put("minOccur", ""+actualFile.getMinoccur());
+						
+						// Spalte 'maxOccur'
+						row.put("maxOccur", ""+actualFile.getMaxoccur());
+						
+						// Spalte 'objectKey'
+						row.put("objectKey", actualFile.getKey());
+						
+						// Spalte 'objectDescription'
+						row.put("objectDescription", actualFile.getDescription());
+	
+						// Datensatz dem report hinzufuegen
+						report.addField(row);
+					}
+
+					// ueber alle variablen iterieren
+					for(de.caegroup.process.Variable actualVariable : actualCommit.getVariable())
+					{
+						HashMap<String,Object> row = new HashMap<String,Object>();
+						
+						// Spalte 'destination'
+						if (actualCommit.getToroot())
+						{
+							row.put("destination", "user/cb2");
+						}
+						else
+						{
+							row.put("destination", "prozessintern");
+						}
+						
+						// Spalte 'objectType'
+						row.put("objectType", "wert");
+						
+						// Spalte 'minOccur'
+						row.put("minOccur", ""+actualVariable.getMinoccur());
+						
+						// Spalte 'maxOccur'
+						row.put("maxOccur", ""+actualVariable.getMaxoccur());
+						
+						// Spalte 'objectKey'
+						row.put("objectKey", actualVariable.getKey());
+						
+						// Spalte 'objectDescription'
+						row.put("objectDescription", actualVariable.getDescription());
+	
+						// Datensatz dem report hinzufuegen
+						report.addField(row);
+					}
+					
+					// P52x) report fuellen
+					report.fillPReport();
+					
+					// P52x) pdf schreiben
+					report.exportToPdf();
+					
+					report = null;
+				}
+			}
+		}
+
+		
+
+		
+		
+		
+		
+		
+		
 		
 		
 		System.out.println("info: generating process documentation ready.");

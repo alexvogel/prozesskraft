@@ -124,7 +124,7 @@
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{stepRank}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement uuid="c3e77bb6-493a-4deb-aea5-d07216afd7d1" x="70" y="0" width="145" height="15">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -136,7 +136,7 @@
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{stepName}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement uuid="f42bac54-d2bb-4691-8b4b-965ecf4a196e" x="220" y="0" width="575" height="15">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>

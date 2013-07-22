@@ -124,7 +124,7 @@
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
-				<box>
+				<box padding="5">
 					<topPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
 					<bottomPen lineWidth="0.1" lineStyle="Solid" lineColor="#000000"/>
@@ -225,7 +225,7 @@
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{objectType}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement uuid="f42bac54-d2bb-4691-8b4b-965ecf4a196e" x="270" y="0" width="510" height="15">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -257,7 +257,7 @@
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{maxOccur}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isStretchWithOverflow="true">
 				<reportElement uuid="8a6f6755-18b4-4ded-abfe-a6dc1eb59865" x="180" y="0" width="90" height="15">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
