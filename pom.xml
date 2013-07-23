@@ -152,11 +152,6 @@
 			<version>3.4.0</version>
 	    </dependency>
 	    <dependency>
-			<groupId>org.apache.odftoolkit</groupId>
-			<artifactId>simple-odf</artifactId>
-			<version>0.7-incubating</version>
-	    </dependency>
-	    <dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.1</version>
@@ -176,11 +171,6 @@
 			<groupId>de.caegroup.commons</groupId>
 			<artifactId>avoge-commons</artifactId>
 			<version>0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>de.caegroup.report</groupId>
-			<artifactId>report-core</artifactId>
-			<version>0.0.1</version>
 		</dependency>
 <!-- 		<dependency> -->
 <!-- 			<groupId>net.sf.jasperreports</groupId> -->

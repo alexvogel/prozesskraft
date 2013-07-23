@@ -3,8 +3,6 @@ package de.caegroup.process;
 import java.io.*;
 import java.util.*;
 
-import org.apache.solr.common.util.NamedList;
-
 import de.caegroup.process.Commit;
 
 import java.util.logging.Level;
@@ -39,7 +37,8 @@ implements Serializable, Cloneable
 	private ArrayList<Variable> variable = new ArrayList<Variable>();
 	private String status = "waiting";	// waiting/initializing/working/committing/ finished/broken/cancelled
 	
-	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
+	private ArrayList<Log> log = new ArrayList<Log>();
+//	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -146,7 +145,7 @@ implements Serializable, Cloneable
 			while (iterstep.hasNext())
 			{
 				Step fromstep = iterstep.next();
-				jlog.log(Level.INFO, "init ("+name+") wants the returnfield ("+returnfield+") from a ("+fromobjecttype+") from step ("+fromstep.getName()+")");
+
 				ArrayList<Match> matchs = actualInit.getMatch();
 			
 				// wenn es ein file ist
@@ -328,7 +327,7 @@ implements Serializable, Cloneable
 	// eine extra methode fuer den step 'root'. es werden alle files/variablen aus 'path' committet
 	public void rootcommit() throws IOException
 	{
-		jlog.log(Level.INFO, "will commit everything in root directory and all directories of process-path");
+
 		// alle verzeichnisse, die committed werden sollen zusammensuchen
 		ArrayList<java.io.File> allcommitdirs = this.parent.getInitcommitdirs2();
 		
@@ -356,23 +355,23 @@ implements Serializable, Cloneable
 	// den inhalt eines ganzen directories in den aktuellen step committen
 	public boolean commitdir(java.io.File dir)
 	{
-		jlog.log(Level.INFO, "will commit directory "+dir.toString());
-		jlog.log(Level.INFO, "test whether it is a directory "+dir.toString());
+		this.log("info", "will commit directory "+dir.toString());
+		this.log("info", "test whether it is a directory "+dir.toString());
 		
 		if (dir.isDirectory())
 		{
 			boolean all_commitfiles_ok = true;
 			
-			jlog.log(Level.INFO, "it is really a directory");
+			this.log("info", "it is really a directory");
 			ArrayList<java.io.File> allfiles = new ArrayList<java.io.File>(Arrays.asList(dir.listFiles()));
 			Iterator<java.io.File> iterfile = allfiles.iterator();
 			while (iterfile.hasNext())
 			{
 				java.io.File file = iterfile.next();
-				jlog.log(Level.INFO, "test whether it is a file "+file.toString());
+				this.log("info", "test whether it is a file "+file.toString());
 				if (file.isFile())
 				{
-					jlog.log(Level.INFO, "it is a file");
+					this.log("info", "it is a file");
 					if (!(this.commitFile(file)))
 					{
 						all_commitfiles_ok = false;
@@ -380,14 +379,14 @@ implements Serializable, Cloneable
 				}
 				else
 				{
-					jlog.log(Level.INFO, "it is NOT a file - skipping");
+					this.log("info", "it is NOT a file - skipping");
 				}
 			}
 			return all_commitfiles_ok;
 		}
 		else
 		{
-			jlog.log(Level.INFO, "it is not a directory - skipping");
+			this.log("info", "it is not a directory - skipping");
 			return false;
 		}
 	}
@@ -407,13 +406,13 @@ implements Serializable, Cloneable
 			newfile.setFilename(file.getName());
 			newfile.setAbsfilename(file.getPath());
 			this.addFile(newfile);
-			jlog.log(Level.INFO, "file committed: "+newfile.getAbsfilename());
+			this.log("info", "file committed: "+newfile.getAbsfilename());
 			System.out.println("AMOUNT OF FILES ARE NOW: "+this.file.size());
 			return true;
 		}
 		else
 		{
-			jlog.log(Level.INFO, "file NOT committed (CANT READ!): "+file.getAbsolutePath());
+			this.log("info", "file NOT committed (CANT READ!): "+file.getAbsolutePath());
 			return false;
 		}
 	}
@@ -441,7 +440,7 @@ implements Serializable, Cloneable
 		variable.setKey(name);
 		variable.setValue(value);
 		this.addVariable(variable);
-		jlog.log(Level.INFO, "variable committed as (name=value): "+variable.getKey()+"="+variable.getValue());
+		this.log("info", "variable committed as (name=value): "+variable.getKey()+"="+variable.getValue());
 		return true;
 	}
 
@@ -491,7 +490,7 @@ implements Serializable, Cloneable
 							variable.setKey(linelist[0]);
 							variable.setValue(linelist[1]);
 							this.addVariable(variable);
-							jlog.log(Level.INFO, "variable committed from file: "+file.getAbsolutePath()+" name: "+variable.getKey()+" value: "+variable.getValue());
+							this.log("info", "variable committed from file: "+file.getAbsolutePath()+" name: "+variable.getKey()+" value: "+variable.getValue());
 						}
 					}
 				}
@@ -503,14 +502,14 @@ implements Serializable, Cloneable
 			}
 			else
 			{
-				jlog.log(Level.INFO, "file is to big (>100kB) to commit content as variables: "+file.getAbsolutePath());
+				this.log("info", "file is to big (>100kB) to commit content as variables: "+file.getAbsolutePath());
 				return false;
 			}
 		}
 		catch (FileNotFoundException e)
 		{
 			e.printStackTrace();
-			jlog.log(Level.INFO, "variables not committed (cannot read file): "+file.getAbsolutePath());
+			this.log("info", "variables not committed (cannot read file): "+file.getAbsolutePath());
 			return false;
 		}
 	}
@@ -523,9 +522,9 @@ implements Serializable, Cloneable
 
 	public void commit() throws IOException
 	{
-		jlog.log(Level.INFO, "will try to commit...");
+		this.log("info", "will try to commit...");
 		this.setStatus("committing");
-		jlog.log(Level.INFO, "status is set to "+this.getStatus());
+		this.log("info", "status is set to "+this.getStatus());
 
 		// wenn es sich um root handelt, wird besonders committed
 		if (this.getName().equals(this.parent.getRootstepname()))
@@ -540,12 +539,12 @@ implements Serializable, Cloneable
 			// ueber alle commits iterieren
 			for( Commit actualCommit : this.commit)
 			{
-				jlog.log(Level.INFO, "commit name "+actualCommit.getName());
+				this.log("info", "commit name "+actualCommit.getName());
 				
 				// wenn das zu committende objekt ein File ist...
 				for(File actualFile : actualCommit.getFile())
 				{
-					jlog.log(Level.INFO, "file id "+actualFile.getAbsfilename());
+					this.log("info", "file id "+actualFile.getAbsfilename());
 					java.io.File fsfile = new java.io.File(actualFile.getAbsfilename());
 					if (this.commitFile(fsfile))
 					{
@@ -565,7 +564,7 @@ implements Serializable, Cloneable
 					else
 					{
 						success = false;
-						jlog.log(Level.INFO, "commit(file) id NOT successfull");
+						this.log("info", "commit(file) id NOT successfull");
 					}
 				}
 				
@@ -574,12 +573,12 @@ implements Serializable, Cloneable
 				{
 					if (this.commitvariable(actualVariable.getKey(), actualVariable.getValue()))
 					{
-						jlog.log(Level.INFO, "commit(variable) id successfull");
+						this.log("info", "commit(variable) id successfull");
 					}
 					else
 					{
 						success = false;
-						jlog.log(Level.INFO, "commit(variable) id NOT successfull");
+						this.log("info", "commit(variable) id NOT successfull");
 					}
 				}
 				
@@ -731,6 +730,16 @@ implements Serializable, Cloneable
 		return level;
 	}
 	
+	/**
+	 * stores a message for the process
+	 * @param String loglevel, String logmessage
+	 */
+	public void log(String loglevel, String logmessage)
+	{
+		this.log.add(new Log(loglevel, logmessage));
+	}
+	
+
 	/*----------------------------
 	  methods get
 	----------------------------*/

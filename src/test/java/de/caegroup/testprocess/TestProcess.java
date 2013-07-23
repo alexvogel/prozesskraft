@@ -121,7 +121,7 @@ public class TestProcess {
 		assertEquals("beulen", process.getName());
 		assertEquals("0.2", process.getVersion());
 		assertEquals("Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert.", process.getDescription());
-		assertEquals("alexander.vogel@caegroup.de", process.getArchitect());
+		assertEquals("alexander.vogel@caegroup.de", process.getArchitectMail());
 
 		// testen des feldes, dass schon vorher gesetzt war
 		assertEquals(pathToXml, process.getInfilexml());

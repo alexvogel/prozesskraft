@@ -12,13 +12,20 @@
     	<xs:sequence>
     		<xs:element maxOccurs="unbounded" ref="step" />
     	</xs:sequence>
-    	<xs:attribute name="architect" use="required" type="EmailType" />
+    	<xs:attribute name="architectMail" use="required"
+    		type="EmailType" />
+    	<xs:attribute name="architectName" type="xs:string"></xs:attribute>
+    	<xs:attribute name="architectCompany" type="xs:string"></xs:attribute>
+    	<xs:attribute name="customerMail" type="xs:string"></xs:attribute>
+    	<xs:attribute name="customerName" type="xs:string"></xs:attribute>
+    	<xs:attribute name="customerCompany" type="xs:string"></xs:attribute>
     	<xs:attribute name="description" use="required"
     		type="xs:string" />
     	<xs:attribute name="name" use="required" type="xs:string" />
     	<xs:attribute name="path" use="required" type="xs:string" />
     	<xs:attribute name="version" use="required" type="xs:string" />
-    	<xs:attribute name="pradar" use="optional" type="xs:boolean" default="false"/>
+    	<xs:attribute name="pradar" use="optional" type="xs:boolean"
+    		default="false" />
     </xs:complexType>
   </xs:element>
   <xs:element name="step">

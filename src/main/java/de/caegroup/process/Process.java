@@ -1,7 +1,5 @@
 package de.caegroup.process;
 
-//import de.caegroup.process.Step;
-//import java.io.File;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -15,17 +13,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import javax.xml.XMLConstants;
@@ -45,21 +37,14 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.dozer.DozerBeanMapper;
-import org.dozer.Mapper;
-import org.dozer.loader.api.BeanMappingBuilder;
-import org.odftoolkit.simple.TextDocument;
-import org.odftoolkit.simple.style.Font;
-import org.odftoolkit.simple.style.StyleTypeDefinitions.FontStyle;
-import org.odftoolkit.simple.style.StyleTypeDefinitions.HorizontalAlignmentType;
-import org.odftoolkit.simple.text.Paragraph;
+//import org.dozer.Mapper;
+//import org.dozer.loader.api.BeanMappingBuilder;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import de.caegroup.commons.*;
-import de.caegroup.report.*;
 
 public class Process
 implements Serializable
@@ -74,7 +59,12 @@ implements Serializable
 	private String path = new String();
 	private String initcommitdir = new String();
 	private String initcommitvarfile = new String();
-	private String architect = new String();
+	private String architectName = new String();
+	private String architectCompany = new String();
+	private String architectMail = new String();
+	private String customerName = new String();
+	private String customerCompany = new String();
+	private String customerMail = new String();
 	private String version = new String();
 	private boolean pradar = false;
 //	private NamedList<Step> steps = new NamedList<Step>();
@@ -197,182 +187,6 @@ implements Serializable
 //	}
 	
 	/*----------------------------
-	  method: 	schreibt die aktuelle process-Definition als officefile im odf-Format.
-	----------------------------*/
-	public void writeDocOld()
-	{
-		try
-		{
-			java.io.File template = new java.io.File(this.filedoctemplateodf);
-			
-			TextDocument document;
-			if (template.exists())
-			{
-				document = TextDocument.loadDocument("/data/prog/workspace/larry/prozessdefinitionen/template_beulen.ott");
-			}
-			else
-			{
-				document = TextDocument.newTextDocument();
-			}
-			
-			// erstelle eines headers
-//			Header docheader = document.getHeader();
-//			Table tabheader = docheader.addTable(1, 2);
-//			tabheader.getCellByPosition(0,0).setStringValue("caegroup");
-//			tabheader.getCellByPosition(1,0).setStringValue("alexander.vogel@caegroup.de");
-			
-			// erster Absatz ist ueberschrift
-			Paragraph para1 = document.addParagraph("process '"+this.getName()+"'");
-//			HorizontalAlignmentType align = para1.getHorizontalAlignment();
-			para1.setHorizontalAlignment(HorizontalAlignmentType.CENTER);
-			Font fontbold = para1.getFont();
-			fontbold.setSize(20);
-			fontbold.setFontStyle(FontStyle.BOLD);
-			para1.setFont(fontbold);
-			
-			// neuer Absatz
-			document.addParagraph("");	// leere Zeile
-			Paragraph para2 = document.addParagraph("process-name:");	// ueberschrift2
-//			para2.setHorizontalAlignment(HorizontalAlignmentType.LEFT);
-			Font fontbold2 = para1.getFont();
-			fontbold2.setSize(12);
-			fontbold2.setFontStyle(FontStyle.BOLD);
-			para2.setFont(fontbold2);
-			document.addParagraph(this.getName());	// inhalt
-			
-			// neuer Absatz
-			document.addParagraph("");	// leere Zeile
-			para2 = document.addParagraph("process-version:");	// ueberschrift2
-			para2.setFont(fontbold2);
-			document.addParagraph(this.getVersion());	// inhalt
-
-			// neuer Absatz
-			document.addParagraph("");	// leere Zeile
-			para2 = document.addParagraph("process-architect:");	// ueberschrift2
-			para2.setFont(fontbold2);
-			document.addParagraph(this.getArchitect());	// leere Zeile
-			
-			// neuer Absatz
-			document.addParagraph("");	// leere Zeile
-			para2 = document.addParagraph("process-decription:");	// ueberschrift2
-			para2.setFont(fontbold2);
-			document.addParagraph(this.getDescription());	// inhalt
-
-			// neuer Absatz
-			document.addParagraph("");	// leere Zeile
-			para2 = document.addParagraph("process-topology:");	// ueberschrift2
-			para2.setFont(fontbold2);
-			
-			// die vorhandenen steps ermitteln und fuer jeden step durchfuehren (seite hinzufuegen und beschreibung)
-			for (int i=0; i<this.step.size();i++)
-			{
-				document.addPageBreak();
-			
-				Step actualStep = step.get(i);
-				
-				// erster Absatz ist ueberschrift
-				Paragraph spara1 = document.addParagraph("step '"+actualStep.getName()+"'");
-				spara1.setHorizontalAlignment(HorizontalAlignmentType.CENTER);
-				Font sfontbold = spara1.getFont();
-				sfontbold.setSize(20);
-				sfontbold.setFontStyle(FontStyle.BOLD);
-				spara1.setFont(fontbold);
-				
-				// neuer Absatz
-				document.addParagraph("");	// leere Zeile
-				Paragraph spara2 = document.addParagraph("step-name:");	// ueberschrift2
-//				para2.setHorizontalAlignment(HorizontalAlignmentType.LEFT);
-				Font sfontbold2 = para1.getFont();
-				sfontbold2.setSize(12);
-				sfontbold2.setFontStyle(FontStyle.BOLD);
-				spara2.setFont(sfontbold2);
-				document.addParagraph(actualStep.getName());	// inhalt
-				
-				// neuer Absatz
-				document.addParagraph("");	// leere Zeile
-				spara2 = document.addParagraph("step-type:");	// ueberschrift2
-				spara2.setFont(fontbold2);
-				document.addParagraph(actualStep.getType());	// leere Zeile
-				
-				// neuer Absatz
-				document.addParagraph("");	// leere Zeile
-				spara2 = document.addParagraph("step-description:");	// ueberschrift2
-				spara2.setFont(fontbold2);
-				document.addParagraph(actualStep.getDescription());	// leere Zeile
-				
-				// neuer Absatz
-				document.addParagraph("");	// leere Zeile
-				spara2 = document.addParagraph("step-input:");	// ueberschrift2
-				spara2.setFont(fontbold2);
-
-				ArrayList<Init> sinits = actualStep.getInits();
-				for (int j=0; j<sinits.size();j++)
-				{
-					Init init = sinits.get(j);
-					document.addParagraph(init.getFromobjecttype()+" '"+init.getName()+"' from step '"+init.getFromstep()+"'");	// ueberschrift2
-				}
-
-				// neuer Absatz
-				document.addParagraph("");	// leere Zeile
-				spara2 = document.addParagraph("step-work:");	// ueberschrift2
-				spara2.setFont(fontbold2);
-
-				Work swork = actualStep.getWork();
-				document.addParagraph("work '"+swork.getName()+"' will be done with command '"+swork.getCommand()+"'");	// ueberschrift2
-
-				// neuer Absatz
-				document.addParagraph("");	// leere Zeile
-				spara2 = document.addParagraph("step-output:");	// ueberschrift2
-				spara2.setFont(fontbold2);
-
-				ArrayList<Commit> scommits = actualStep.getCommits();
-				for (int j=0; j<scommits.size();j++)
-				{
-					Commit commit = scommits.get(j);
-//					document.addParagraph(commit.getType()+" '"+commit.getName()+"' will get stored temporarily (while instance is alive).");
-				}
-
-				// neuer Absatz
-				document.addParagraph("");	// leere Zeile
-				spara2 = document.addParagraph("step-output-to-root:");	// ueberschrift2
-				spara2.setFont(fontbold2);
-
-//				ArrayList<Commit> scommits = step.getCommits();
-				for (int j=0; j<scommits.size();j++)
-				{
-					Commit commit = scommits.get(j);
-					if (commit.getToroot())
-					{
-//						document.addParagraph(commit.getType()+" '"+commit.getName()+"' will get stored permanently.");
-					}
-				}
-
-			}
-			
-			document.save(this.getOutFileDoc());
-
-		}
-		catch (TransformerConfigurationException e)
-		{
-			System.out.println(e.toString());
-		}
-		catch (SAXException e)
-		{
-			System.out.println(e.toString());
-		}
-		catch (IOException e)
-		{
-			System.out.println(e.toString());
-		}
-		catch (Exception e)
-		{
-			System.out.println(e.toString());
-		}
-		
-	
-	}
-
-	/*----------------------------
 	  method: 	liest eine Prozessdefinition aus einer xml-Datei in dieses Prozessobjekt ein.
 	  			Alle bestehenden Definitionen gehen verloren. (Ausser infilebinary, infilexml, outfilebinary, outfilexml) 
 	----------------------------*/
@@ -409,7 +223,7 @@ implements Serializable
 			atts.addAttribute("", "", "path", "CDATA", this.path);
 			atts.addAttribute("", "", "initcommitdir", "CDATA", this.path);
 			atts.addAttribute("", "", "initcommitvarfile", "CDATA", this.path);
-			atts.addAttribute("", "", "architect", "CDATA", this.architect);
+			atts.addAttribute("", "", "architectMail", "CDATA", this.architectMail);
 			
 			hd.startElement("", "", "process", atts);
 
@@ -645,7 +459,7 @@ implements Serializable
 					String processpath = lp.getAttribute("path");
 					String processinitcommitdir = lp.getAttribute("initcommitdir");
 					String processinitcommitvarfile = lp.getAttribute("initcommitvarfile");
-					String processarchitect = lp.getAttribute("architect");
+					String processarchitect = lp.getAttribute("architectName");
 	
 					// Eintragen der gelesenen Daten in die Objektinstanz
 					proc.setName(processname);
@@ -654,7 +468,7 @@ implements Serializable
 					proc.setPath(processpath);
 					proc.setInitcommitdir(processinitcommitdir);
 					proc.setInitcommitvarfile(processinitcommitvarfile);
-					proc.setArchitect(processarchitect);
+					proc.setArchitectName(processarchitect);
 					
 					// Ermitteln aller Childnodes
 					NodeList nodes_j = lp.getChildNodes();
@@ -905,7 +719,7 @@ implements Serializable
 		System.out.println("        version: "+this.getVersion());
 		System.out.println("    description: "+this.getDescription());
 		System.out.println("           path: "+this.getPath());
-		System.out.println("      architect: "+this.getArchitect());
+		System.out.println("      architect: "+this.getArchitectName());
 		System.out.println("number of steps: "+this.getSteps().size());
 		Iterator<Step> iterstep = this.getSteps().iterator();
 		while(iterstep.hasNext())
@@ -1200,9 +1014,34 @@ implements Serializable
 		return initcommitvarfiles;
 	}
 
-	public String getArchitect()
+	public String getArchitectName()
 	{
-		return this.architect;
+		return this.architectName;
+	}
+
+	public String getArchitectCompany()
+	{
+		return this.architectCompany;
+	}
+
+	public String getArchitectMail()
+	{
+		return this.architectMail;
+	}
+
+	public String getCustomerName()
+	{
+		return this.customerName;
+	}
+
+	public String getCustomerCompany()
+	{
+		return this.customerCompany;
+	}
+
+	public String getCustomerMail()
+	{
+		return this.customerMail;
 	}
 
 	public String getVersion()
@@ -1442,9 +1281,34 @@ implements Serializable
 		this.initcommitvarfile = initcommitvarfile;
 	}
 
-	public void setArchitect(String architect)
+	public void setArchitectName(String architectName)
 	{
-		this.architect = architect;
+		this.architectName = architectName;
+	}
+
+	public void setArchitectCompany(String architectCompany)
+	{
+		this.architectCompany = architectCompany;
+	}
+
+	public void setArchitectMail(String architectMail)
+	{
+		this.architectMail = architectMail;
+	}
+
+	public void setCustomerName(String customerName)
+	{
+		this.customerName = customerName;
+	}
+
+	public void setCustomerCompany(String customerCompany)
+	{
+		this.customerCompany = customerCompany;
+	}
+
+	public void setCustomerMail(String customerMail)
+	{
+		this.customerMail = customerMail;
 	}
 
 	public void setVersion(String version)
