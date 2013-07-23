@@ -4,34 +4,18 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="processName" class="java.lang.String"/>
 	<parameter name="processVersion" class="java.lang.String"/>
-	<parameter name="processArchitect" class="java.lang.String"/>
+	<parameter name="processArchitectName" class="java.lang.String"/>
+	<parameter name="processArchitectCompany" class="java.lang.String"/>
+	<parameter name="processArchitectMail" class="java.lang.String"/>
+	<parameter name="processCustomerName" class="java.lang.String"/>
+	<parameter name="processCustomerCompany" class="java.lang.String"/>
+	<parameter name="processCustomerMail" class="java.lang.String"/>
 	<parameter name="processTopologyImagePath" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
 		<band height="51">
-			<staticText>
-				<reportElement uuid="1e89b1de-020b-43c6-9cc4-af6d620990cb" x="0" y="0" width="200" height="15"/>
-				<textElement>
-					<font isItalic="false"/>
-				</textElement>
-				<text><![CDATA[caegroup Ingenieure]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="7793f4ad-5642-45e8-b93d-5504ec21ace6" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="30" width="200" height="15"/>
-				<textElement markup="none">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[+49 171 / 42 777 11]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="b24c3646-3475-4f8c-a869-bb7a3cb91673" positionType="Float" stretchType="RelativeToTallestObject" x="550" y="0" width="250" height="15"/>
-				<textElement textAlignment="Right" markup="none">
-					<font size="10"/>
-				</textElement>
-				<text><![CDATA[BMW]]></text>
-			</staticText>
 			<line>
 				<reportElement uuid="c01db5a5-259e-4283-88b0-69db3094a6e9" x="0" y="45" width="800" height="1"/>
 			</line>
@@ -50,7 +34,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[$P{processArchitect}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{processArchitectName}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="f5192ffd-cc8a-4275-a15e-1df759aec403" x="300" y="15" width="200" height="15">
@@ -75,6 +59,66 @@
 				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$P{processVersion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e85ae724-de6e-49d4-9093-490a4a96aec5" x="0" y="0" width="200" height="15">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$P{processArchitectCompany}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6a202ef1-87f9-445d-acd8-da9262400022" x="0" y="30" width="200" height="15">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" markup="none">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{processArchitectMail}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9c6e17dc-b03b-4cad-a2bf-47db6533cd40" x="600" y="0" width="200" height="15">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" markup="none">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{processCustomerCompany}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f49259b6-28c2-4b1d-b739-78e3c3eafcc2" x="600" y="15" width="200" height="15">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$P{processCustomerName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6e8816ef-4e3e-4ede-9d93-4c490471dbf9" x="600" y="30" width="200" height="15">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" markup="none">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{processCustomerMail}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

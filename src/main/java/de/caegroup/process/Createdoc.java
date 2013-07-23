@@ -7,13 +7,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
+//import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -22,7 +24,10 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-import org.apache.xerces.impl.xpath.regex.ParseException;
+import org.apache.pdfbox.exceptions.COSVisitorException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+//import org.apache.xerces.impl.xpath.regex.ParseException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.layout.GridData;
@@ -51,6 +56,7 @@ public class Createdoc
 	protected static Shell shell;
 	static String processTopologyImagePath;
 	static Map<String,String> stepTopologyImagePath = new HashMap<String,String>();
+	static Map<String,String> pdfRankFiles = new HashMap<String,String>();
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -140,16 +146,8 @@ public class Createdoc
 		  create the parser
 		----------------------------*/
 		CommandLineParser parser = new GnuParser();
-		try
-		{
-			// parse the command line arguments
-			line = parser.parse( options,  args );
-		}
-		catch ( ParseException exp )
-		{
-			// oops, something went wrong
-			System.err.println( "Parsing failed. Reason: "+ exp.getMessage());
-		}
+		// parse the command line arguments
+		line = parser.parse( options,  args );
 		
 		/*----------------------------
 		  usage/help
@@ -282,7 +280,17 @@ public class Createdoc
 		page.einstellungen.setRootpositionratioy((float)0.5);
 	
 		createContents(page);
-		open();
+
+		// mit open kann die page angezeigt werden
+//		open();
+		
+		// 20 sekunden warten
+		System.out.println("20 sekunden warten.");
+		long jetzt5 = System.currentTimeMillis();
+		while (System.currentTimeMillis() < jetzt5 + 20000)
+		{
+			
+		}
 		
 		// VORBEREITUNG) bild speichern
 		processTopologyImagePath = randomPathPng+"/processTopology.png";
@@ -293,7 +301,14 @@ public class Createdoc
 		{
 			
 		}
-		new AutoCropBorder(processTopologyImagePath);
+		try
+		{
+			new AutoCropBorder(processTopologyImagePath);
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// VORBEREITUNG) fuer jeden step ein bild speichern
 		for(Step actualStep : process.getStep())
@@ -305,7 +320,14 @@ public class Createdoc
 			String stepImagePath = randomPathPng+"/step_"+actualStep.getName()+"_Topology.png";
 			
 			// Farbe des Steps auf working aendern
-			actualStep.setStatus("initializing");
+			actualStep.setStatus("working");
+			
+			// etwas warten, bis die farbe bezeichnet wurde
+			long jetzt4 = System.currentTimeMillis();
+			while (System.currentTimeMillis() < jetzt4 + 500)
+			{
+				
+			}
 			
 			page.savePic(stepImagePath);
 			// zuerst 1 sekunde warten, dann autocrop
@@ -314,7 +336,14 @@ public class Createdoc
 			{
 				
 			}
-			new AutoCropBorder(stepImagePath);
+			try
+			{
+				new AutoCropBorder(stepImagePath);
+			} catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			stepTopologyImagePath.put(actualStep.getName(), stepImagePath);
 			
 			// farbe wieder auf grau aendern
@@ -322,7 +351,6 @@ public class Createdoc
 			
 			System.out.println("fuer step: "+actualStep.getName());
 
-			page.frameRate(50);
 			long jetzt2 = System.currentTimeMillis();
 			while (System.currentTimeMillis() < jetzt2 + 1000)
 			{
@@ -346,6 +374,7 @@ public class Createdoc
 			report.setJasper(ini.get("process-createdoc", "p1"));
 			report.setJasperFilled(randomPathJasperFilled+"/p1.jasperFilled");
 			report.setPdf(randomPathPdf+"/p1.pdf");
+			pdfRankFiles.put("0.0.1", randomPathPdf+"/p1.pdf");
 		}
 		else
 		{
@@ -355,16 +384,43 @@ public class Createdoc
 		
 		report.setParameter("processName", process.getName());
 		report.setParameter("processVersion", process.getVersion());
-		report.setParameter("processArchitect", process.getArchitect());
+		report.setParameter("processArchitectCompany", process.getArchitectCompany());
+		report.setParameter("processArchitectName", process.getArchitectName());
+		report.setParameter("processArchitectMail", process.getArchitectMail());
+		report.setParameter("processCustomerCompany", process.getCustomerCompany());
+		report.setParameter("processCustomerName", process.getCustomerName());
+		report.setParameter("processCustomerMail", process.getCustomerMail());
 		
 		// P1) bild an report melden
 		report.setParameter("processTopologyImagePath", processTopologyImagePath);
 
 		// P1) report fuellen
-		report.fillPReport();
+		try
+		{
+			report.fillPReport();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// P1) pdf schreiben
-		report.exportToPdf();
+		try
+		{
+			report.exportToPdf();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		report = null;
 		
@@ -382,6 +438,7 @@ public class Createdoc
 			report.setJasper(ini.get("process-createdoc", "p2"));
 			report.setJasperFilled(randomPathJasperFilled+"/p2.jasperFilled");
 			report.setPdf(randomPathPdf+"/p2.pdf");
+			pdfRankFiles.put("0.0.2", randomPathPdf+"/p2.pdf");
 		}
 		else
 		{
@@ -391,8 +448,16 @@ public class Createdoc
 		
 		report.setParameter("processName", process.getName());
 		report.setParameter("processVersion", process.getVersion());
-		report.setParameter("processArchitect", process.getArchitect());
+		report.setParameter("processArchitectCompany", process.getArchitectCompany());
+		report.setParameter("processArchitectName", process.getArchitectName());
+		report.setParameter("processArchitectMail", process.getArchitectMail());
+		report.setParameter("processCustomerCompany", process.getCustomerCompany());
+		report.setParameter("processCustomerName", process.getCustomerName());
+		report.setParameter("processCustomerMail", process.getCustomerMail());
 		
+		// P2) bild an report melden
+		report.setParameter("processTopologyImagePath", processTopologyImagePath);
+
 		// Tabelle erzeugen
 
 		ArrayList<Step> steps = process.getStep();
@@ -412,14 +477,40 @@ public class Createdoc
 			row.put("stepDescription", actualStep.getDescription());
 //				System.out.println("stepRank: "+actualStep.getDescription());
 
-			report.addField(row);
+			// wenn nicht der root-step, dann row eintragen
+			if (!(actualStep.getName().equals(process.getRootstepname())))
+			{
+				report.addField(row);
+			}
 		}
 		
 		// P2) report fuellen
-		report.fillPReport();
+		try
+		{
+			report.fillPReport();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// P2) pdf schreiben
-		report.exportToPdf();
+		try
+		{
+			report.exportToPdf();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		report = null;
 		
@@ -436,6 +527,7 @@ public class Createdoc
 			report.setJasper(ini.get("process-createdoc", "p3"));
 			report.setJasperFilled(randomPathJasperFilled+"/p3.jasperFilled");
 			report.setPdf(randomPathPdf+"/p3.pdf");
+			pdfRankFiles.put("0.0.3", randomPathPdf+"/p3.pdf");
 		}
 		else
 		{
@@ -445,7 +537,13 @@ public class Createdoc
 		
 		report.setParameter("processName", process.getName());
 		report.setParameter("processVersion", process.getVersion());
-		report.setParameter("processArchitect", process.getArchitect());
+		report.setParameter("processArchitectCompany", process.getArchitectCompany());
+		report.setParameter("processArchitectName", process.getArchitectName());
+		report.setParameter("processArchitectMail", process.getArchitectMail());
+		report.setParameter("processCustomerCompany", process.getCustomerCompany());
+		report.setParameter("processCustomerName", process.getCustomerName());
+		report.setParameter("processCustomerMail", process.getCustomerMail());
+
 		// P3) bild an report melden
 		report.setParameter("processTopologyImagePath", processTopologyImagePath);
 		
@@ -513,10 +611,32 @@ public class Createdoc
 		}
 
 		// P3) report fuellen
-		report.fillPReport();
+		try
+		{
+			report.fillPReport();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// P3) pdf schreiben
-		report.exportToPdf();
+		try
+		{
+			report.exportToPdf();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		report = null;
 		
@@ -533,6 +653,7 @@ public class Createdoc
 			report.setJasper(ini.get("process-createdoc", "p4"));
 			report.setJasperFilled(randomPathJasperFilled+"/p4.jasperFilled");
 			report.setPdf(randomPathPdf+"/p4.pdf");
+			pdfRankFiles.put("0.0.4", randomPathPdf+"/p4.pdf");
 		}
 		else
 		{
@@ -542,7 +663,13 @@ public class Createdoc
 		
 		report.setParameter("processName", process.getName());
 		report.setParameter("processVersion", process.getVersion());
-		report.setParameter("processArchitect", process.getArchitect());
+		report.setParameter("processArchitectCompany", process.getArchitectCompany());
+		report.setParameter("processArchitectName", process.getArchitectName());
+		report.setParameter("processArchitectMail", process.getArchitectMail());
+		report.setParameter("processCustomerCompany", process.getCustomerCompany());
+		report.setParameter("processCustomerName", process.getCustomerName());
+		report.setParameter("processCustomerMail", process.getCustomerMail());
+
 		// P4) bild an report melden
 		report.setParameter("processTopologyImagePath", processTopologyImagePath);
 		
@@ -571,7 +698,7 @@ public class Createdoc
 						HashMap<String,Object> row = new HashMap<String,Object>();
 					
 						// Spalte 'objectType'
-						row.put("destination", "extern");
+						row.put("destination", "user/cb2");
 						
 						// Spalte 'objectType'
 						row.put("objectType", "datei");
@@ -598,7 +725,7 @@ public class Createdoc
 						HashMap<String,Object> row = new HashMap<String,Object>();
 						
 						// Spalte 'objectType'
-						row.put("destination", "extern");
+						row.put("destination", "user/cb2");
 						
 	
 						// Spalte 'objectType'
@@ -625,10 +752,32 @@ public class Createdoc
 		}
 		
 		// P4) report fuellen
-		report.fillPReport();
+		try
+		{
+			report.fillPReport();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// P4) pdf schreiben
-		report.exportToPdf();
+		try
+		{
+			report.exportToPdf();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		report = null;
 	
@@ -661,6 +810,7 @@ public class Createdoc
 					report.setJasper(ini.get("process-createdoc", "p51"));
 					report.setJasperFilled(randomPathJasperFilled+"/p5."+stepRank+".1.jasperFilled");
 					report.setPdf(randomPathPdf+"/p5."+stepRank+".1.pdf");
+					pdfRankFiles.put(stepRank+".1", randomPathPdf+"/p5."+stepRank+".1.pdf");
 				}
 				else
 				{
@@ -670,7 +820,12 @@ public class Createdoc
 	
 				report.setParameter("processName", process.getName());
 				report.setParameter("processVersion", process.getVersion());
-				report.setParameter("processArchitect", process.getArchitect());
+				report.setParameter("processArchitectCompany", process.getArchitectCompany());
+				report.setParameter("processArchitectName", process.getArchitectName());
+				report.setParameter("processArchitectMail", process.getArchitectMail());
+				report.setParameter("processCustomerCompany", process.getCustomerCompany());
+				report.setParameter("processCustomerName", process.getCustomerName());
+				report.setParameter("processCustomerMail", process.getCustomerMail());
 
 				report.setParameter("stepName", actualStep.getName());
 				report.setParameter("stepRank", stepRank);
@@ -684,7 +839,14 @@ public class Createdoc
 					HashMap<String,Object> row = new HashMap<String,Object>();
 					
 					// Spalte 'Woher?'
-					row.put("origin", actualInit.getFromstep());
+					if(actualInit.getFromstep().equals(process.getRootstepname()))
+					{
+						row.put("origin", "user/cb2");
+					}
+					else
+					{
+						row.put("origin", actualInit.getFromstep());
+					}
 					
 					// Spalte 'typ'
 					row.put("objectType", actualInit.getFromobjecttype());
@@ -702,10 +864,32 @@ public class Createdoc
 				}
 	
 				// P51x) report fuellen
-				report.fillPReport();
+				try
+				{
+					report.fillPReport();
+				} catch (FileNotFoundException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JRException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	
 				// P51x) pdf schreiben
-				report.exportToPdf();
+				try
+				{
+					report.exportToPdf();
+				} catch (FileNotFoundException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JRException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				report = null;
 			}
@@ -740,6 +924,7 @@ public class Createdoc
 					report.setJasper(ini.get("process-createdoc", "p52"));
 					report.setJasperFilled(randomPathJasperFilled+"/p5."+stepRank+".2.jasperFilled");
 					report.setPdf(randomPathPdf+"/p5."+stepRank+".2.pdf");
+					pdfRankFiles.put(stepRank+".2", randomPathPdf+"/p5."+stepRank+".2.pdf");
 				}
 				else
 				{
@@ -749,7 +934,12 @@ public class Createdoc
 				
 				report.setParameter("processName", process.getName());
 				report.setParameter("processVersion", process.getVersion());
-				report.setParameter("processArchitect", process.getArchitect());
+				report.setParameter("processArchitectCompany", process.getArchitectCompany());
+				report.setParameter("processArchitectName", process.getArchitectName());
+				report.setParameter("processArchitectMail", process.getArchitectMail());
+				report.setParameter("processCustomerCompany", process.getCustomerCompany());
+				report.setParameter("processCustomerName", process.getCustomerName());
+				report.setParameter("processCustomerMail", process.getCustomerMail());
 				
 				report.setParameter("stepName", actualStep.getName());
 				report.setParameter("stepRank", stepRank);
@@ -831,17 +1021,39 @@ public class Createdoc
 					}
 					
 					// P52x) report fuellen
-					report.fillPReport();
+					try
+					{
+						report.fillPReport();
+					} catch (FileNotFoundException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (JRException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 					// P52x) pdf schreiben
-					report.exportToPdf();
+					try
+					{
+						report.exportToPdf();
+					} catch (FileNotFoundException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (JRException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 					report = null;
 				}
 			}
 		}
 
-		
+		mergePdf(pdfRankFiles, output);
 
 		
 		
@@ -856,6 +1068,50 @@ public class Createdoc
 	}
 //////////////////////////////////////////
 
+	
+	/**
+	 * merge the pdfs
+	 */
+	private static void mergePdf(Map<String,String> pdfRankFiles, String output)
+	{
+		System.out.println("merging pdfs to a single file");
+		
+		Set<String> keySet = pdfRankFiles.keySet();
+		ArrayList<String> listKey = new ArrayList(keySet);
+		Collections.sort(listKey);
+		
+		try
+		{
+			PDDocument document = new PDDocument();
+			for(String actualKey : listKey)
+			{
+
+				PDDocument part = PDDocument.load(pdfRankFiles.get(actualKey));
+				System.out.println("merging "+pdfRankFiles.get(actualKey));
+				ArrayList<PDPage> list = (ArrayList<PDPage>)part.getDocumentCatalog().getAllPages();
+				for(PDPage page : list)
+				{
+					document.addPage(page);
+				}
+				
+			}
+			try
+			{
+				System.out.println("writing "+output);
+				document.save(output);
+			} catch (COSVisitorException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	
 	/**
 	 * Open the window.

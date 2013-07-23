@@ -24,7 +24,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-import org.apache.xerces.impl.xpath.regex.ParseException;
+//import org.apache.xerces.impl.xpath.regex.ParseException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.layout.GridData;
@@ -123,16 +123,8 @@ public class Compilejrxml
 		  create the parser
 		----------------------------*/
 		CommandLineParser parser = new GnuParser();
-		try
-		{
-			// parse the command line arguments
-			line = parser.parse( options,  args );
-		}
-		catch ( ParseException exp )
-		{
-			// oops, something went wrong
-			System.err.println( "Parsing failed. Reason: "+ exp.getMessage());
-		}
+		// parse the command line arguments
+		line = parser.parse( options,  args );
 		
 		/*----------------------------
 		  usage/help
@@ -230,7 +222,14 @@ public class Compilejrxml
 
 				report.setJrxml(actualFile.getAbsolutePath());
 				report.setJasper(outFile.getAbsolutePath());
-				report.compile();
+				try
+				{
+					report.compile();
+				} catch (JRException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 
 			}
 			else
