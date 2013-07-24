@@ -98,6 +98,7 @@ public class Createdoc
 		  create boolean options
 		----------------------------*/
 		Option ohelp = new Option("help", "print this message");
+		Option ov = new Option("v", "prints version and build-date");
 		
 		/*----------------------------
 		  create argument options
@@ -136,6 +137,7 @@ public class Createdoc
 		Options options = new Options();
 		
 		options.addOption( ohelp );
+		options.addOption( ov );
 		options.addOption( odefinition );
 		options.addOption( otype );
 		options.addOption( oformat );
@@ -156,6 +158,14 @@ public class Createdoc
 		{
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("createdoc", options);
+			System.exit(0);
+		}
+		
+		if ( line.hasOption("v"))
+		{
+			System.out.println("author:  alexander.vogel@caegroup.de");
+			System.out.println("version: [% version %]");
+			System.out.println("date:    [% date %]");
 			System.exit(0);
 		}
 		
