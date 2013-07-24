@@ -4,9 +4,11 @@ import java.util.*;
 import java.awt.Toolkit;
 import java.awt.Image;
 import java.io.IOException;
+
 //import java.io.InputStream;
 //
 import javax.xml.bind.JAXBException;
+
 //
 //import org.apache.commons.cli.CommandLine;
 //import org.apache.commons.cli.CommandLineParser;
@@ -17,6 +19,7 @@ import javax.xml.bind.JAXBException;
 //import org.apache.commons.cli.Options;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 import processing.core.*;
+import de.caegroup.jaxb.process.File;
 import de.caegroup.process.Process;
 import de.caegroup.process.Step;
 
@@ -91,6 +94,12 @@ public class PmodelViewPage extends PApplet
 		this.process = process;
 	}
 	
+	public PmodelViewPage(Process process, PmodelViewModel einstellungen)
+	{
+		this.einstellungen = einstellungen;
+		this.process = process;
+	}
+	
 	public PmodelViewPage(PmodelViewModel einstellungen)
 	{
 		this.einstellungen = einstellungen;
@@ -101,18 +110,7 @@ public class PmodelViewPage extends PApplet
 	{
 		this.einstellungen = einstellungen;
 		this.process = new Process();
-		this.process.setInfilexml(pathToProcessFile);
-		try
-		{
-			this.process = process.readXml();
-		} catch (JAXBException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
-
-
     
 	/*----------------------------
 	  method setup Processing

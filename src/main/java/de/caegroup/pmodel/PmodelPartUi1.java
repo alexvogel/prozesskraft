@@ -4,10 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.MouseWheelEvent;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
+import javax.xml.bind.JAXBException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -57,11 +60,14 @@ import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
+
+import de.caegroup.process.Process;
 
 public class PmodelPartUi1 extends ModelObject
 {
@@ -74,12 +80,15 @@ public class PmodelPartUi1 extends ModelObject
 	private Scale scale_gravx;
 	private Scale scale_gravy;
 
+	private Process process = new Process();
 	
 	private Label label_marked = null;
 	public PmodelViewModel einstellungen = new PmodelViewModel();
 	private StyledText text_logging = null;
 	PmodelViewPage applet;
 	Display display;
+
+	Map<String,Composite> insight = new HashMap();
 
 	final Color colorLogError = new Color(new Shell().getDisplay(), 215, 165, 172);
 	final Color colorLogWarn = new Color(new Shell().getDisplay(), 202, 191, 142);
@@ -117,7 +126,35 @@ public class PmodelPartUi1 extends ModelObject
 	@Inject
 	public PmodelPartUi1(Composite composite, String pathToProcessFile)
 	{
-		applet = new PmodelViewPage(pathToProcessFile, einstellungen);
+		// binary file einlesen
+		if (pathToProcessFile.matches(".+\\.pmb$"))
+		{
+			log("warn", "assuming binary format.");
+			this.process.setInfilebinary(pathToProcessFile);
+			this.process = this.process.readBinary();
+		}
+		
+		// xml-format einlesen
+		else if(pathToProcessFile.matches(".+\\.xml$|.+\\.pmx$"))
+		{
+			log("warn", "assuming xml format.");
+			this.process.setInfilexml(pathToProcessFile);
+			try
+			{
+				this.process = process.readXml();
+			} catch (JAXBException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		else
+		{
+			log("fatal", "unknown file extension. please use only 'pmb', 'pmx' or 'xml'.");
+		}
+		
+		applet = new PmodelViewPage(process, einstellungen);
 		createControls(composite);
 	}
 
@@ -252,6 +289,7 @@ public class PmodelPartUi1 extends ModelObject
 		Composite composite_13 = new Composite(sashForm, SWT.NONE);
 		composite_13.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		composite_13.setLayout(new GridLayout(1, false));
+//		tabFolder_13.addSelectionListener(listener_tabFolder_selection);
 		new Label(composite_1, SWT.NONE);
 		
 		Composite composite_2 = new Composite(composite, SWT.NONE);
@@ -266,12 +304,26 @@ public class PmodelPartUi1 extends ModelObject
 		text_logging = new StyledText(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
 		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
+		createControlsInsight(composite_13);
+		
+		
 		bindingContextVisual = initDataBindingsVisual();
 		bindingContextMarked = initDataBindingsMarked();
 		
-
+		
 	}
 
+	public void createControlsInsight(Composite parent)
+	{
+		// wenn es fuer diese ansicht schon einen composite gibt, dann diesen anzeigen
+		if ( this.insight.containsKey(einstellungen.getMarkedStepName()) )
+		{
+			this.insight.get(einstellungen.getMarkedStepName()).setParent(parent);
+			
+		}
+
+	}
+	
 	private static class ContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object inputElement) {
 			return new Object[0];

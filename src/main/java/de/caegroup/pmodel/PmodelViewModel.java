@@ -13,7 +13,6 @@ public class PmodelViewModel extends ModelObject
 	public float rootpositionratioy = (float)0.5;
 	public int gravx = 0;
 	public int gravy = 10;
-
 	private String markedStepName = "root";
 	
 	public PmodelViewModel()
