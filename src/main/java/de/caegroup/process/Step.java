@@ -141,17 +141,14 @@ implements Serializable, Cloneable
 			String returnfield = actualInit.getReturnfield();
 			ArrayList<Step> fromsteps = parent.getSteps(actualInit.getFromstep());
 			
-			Iterator<Step> iterstep = fromsteps.iterator();
-			while (iterstep.hasNext())
+			for(Step actualFromStep : fromsteps)
 			{
-				Step fromstep = iterstep.next();
-
 				ArrayList<Match> matchs = actualInit.getMatch();
 			
 				// wenn es ein file ist
 				if (fromobjecttype.equals("file"))
 				{
-					ArrayList<File> files_from_fromstep = fromstep.getFile();
+					ArrayList<File> files_from_fromstep = actualFromStep.getFile();
 					ArrayList<File> files_from_fromstep_which_matched = new ArrayList<File>();
 					// wenn match-angaben vorhanden sind, wird die fileliste reduziert
 					Iterator<Match> itermatch = matchs.iterator();
@@ -185,28 +182,27 @@ implements Serializable, Cloneable
 				// wenn es ein variable ist
 				else if (fromobjecttype.equals("variable"))
 				{
-					ArrayList<Variable> variables_from_fromstep = fromstep.getVariable();
+					ArrayList<Variable> variables_from_fromstep = actualFromStep.getVariable();
+					ArrayList<Variable> variables_from_fromstep_which_matched = new ArrayList<Variable>();
 
 					for (Match actualMatch : matchs)
 					{
-						// iteriere ueber alle Files der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
+						// iteriere ueber alle Variablen der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
 						for (Variable actualVariable : variables_from_fromstep)
 						{
-							if (!(actualVariable.match(actualMatch)))
+							if (actualVariable.match(actualMatch))
 							{
-								variables_from_fromstep.remove(actualVariable);
+								variables_from_fromstep_which_matched.add(actualVariable);
 							}
 						}
 					}
-					if (variables_from_fromstep.size() == 0) {initializing_success = false;}
+					if (variables_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
 					// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
 					List liste = new List();
 					this.addList(liste);
-					Iterator<Variable> itervariable = variables_from_fromstep.iterator();
-					while (itervariable.hasNext())
+					for(Variable actualVariable : variables_from_fromstep_which_matched)
 					{
-						Variable variable = itervariable.next();
-						liste.addItem(variable.getField(returnfield));
+						liste.addItem(actualVariable.getField(returnfield));
 					}
 				}
 			}

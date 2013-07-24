@@ -656,11 +656,9 @@ implements Serializable
 			ObjectInputStream is = new ObjectInputStream(fs);
 			Process proc = (Process)is.readObject();
 			// den parent eintrag aller steps auf das neue objekt erneuern, da die referenz noch die alte ist
-			Iterator<Step> iterstep = proc.getSteps().iterator();
-			while(iterstep.hasNext())
-			{
-				Step step = iterstep.next();
-				step.setParent(proc);
+			for(Step actualStep : proc.getStep())
+			{				
+				actualStep.setParent(proc);
 			}
 			is.close();
 //			proc1 = proc;
