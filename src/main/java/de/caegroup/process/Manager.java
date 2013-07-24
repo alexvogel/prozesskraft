@@ -57,6 +57,7 @@ public class Manager
 		  create boolean options
 		----------------------------*/
 		Option help = new Option("help", "print this message");
+		Option v = new Option("v", "prints version and build-date");
 		
 		/*----------------------------
 		  create argument options
@@ -73,6 +74,7 @@ public class Manager
 		Options options = new Options();
 		
 		options.addOption( help );
+		options.addOption( v );
 		options.addOption( instance );
 		
 		/*----------------------------
@@ -99,6 +101,14 @@ public class Manager
 		{
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("manager", options);
+			System.exit(0);
+		}
+		
+		else if ( line.hasOption("v"))
+		{
+			System.out.println("author:  alexander.vogel@caegroup.de");
+			System.out.println("version: [% version %]");
+			System.out.println("date:    [% date %]");
 			System.exit(0);
 		}
 		
