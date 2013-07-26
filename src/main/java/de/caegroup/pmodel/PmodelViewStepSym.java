@@ -296,7 +296,7 @@ public class PmodelViewStepSym
 		// wenn der aktuell betrachtete step der 'initstep' ist, und sich ausserhalb der anzeige befindet -> auf mitte der Anzeige positionieren
 		if ((p.rootstepname.equals(this.name)) && !(p.stepcircle_clicked.getName().equals(this.name)) && ((this.getPosition1() > p.getWidth()) || (this.getPosition2() > p.getHeight()) || (this.getPosition1() < 0) || (this.getPosition2() < 0)))
 		{
-			this.setPosition(p.getWidth()/2, p.getHeight()/2, 0);
+			this.setPosition(p.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);
 		}
 //		// wenn der aktuell betrachtete step ein 'startingpoint' ist, und sich ausserhalb der anzeige befindet -> auf zufaellige position innerhalb des fensters
 //		else if ((this.isastartingpoint) && !(p.clicked_stepcircle.getName().equals(this.name)) && ((this.getPosition1() > p.width) || (this.getPosition2() > p.height) || (this.getPosition1() < 0) || (this.getPosition2() < 0)))

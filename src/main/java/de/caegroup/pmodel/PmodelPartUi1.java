@@ -67,6 +67,7 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
 
+import de.caegroup.gui.step.insight.InsightCreator;
 import de.caegroup.process.Process;
 
 public class PmodelPartUi1 extends ModelObject
@@ -88,7 +89,10 @@ public class PmodelPartUi1 extends ModelObject
 	PmodelViewPage applet;
 	Display display;
 
-	Map<String,Composite> insight = new HashMap();
+	Shell shell_dummy_insight;
+	Composite actualStepInsight = null;
+	CTabFolder tabFolder_12;
+	Map<String,Composite> stepInsight = new HashMap();
 
 	final Color colorLogError = new Color(new Shell().getDisplay(), 215, 165, 172);
 	final Color colorLogWarn = new Color(new Shell().getDisplay(), 202, 191, 142);
@@ -154,6 +158,8 @@ public class PmodelPartUi1 extends ModelObject
 			log("fatal", "unknown file extension. please use only 'pmb', 'pmx' or 'xml'.");
 		}
 		
+		einstellungen.setRootpositionratiox((float)0.5);
+		einstellungen.setRootpositionratioy((float)0.1);
 		applet = new PmodelViewPage(process, einstellungen);
 		createControls(composite);
 	}
@@ -286,9 +292,12 @@ public class PmodelPartUi1 extends ModelObject
 		frame.setLocation(0, 0);
 		frame.setVisible(true);
 
-		Composite composite_13 = new Composite(sashForm, SWT.NONE);
-		composite_13.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		composite_13.setLayout(new GridLayout(1, false));
+		Composite composite_13 = new Composite(sashForm, SWT.BORDER);
+		composite_13.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridLayout gl_composite_13 = new GridLayout(1, false);
+		gl_composite_13.marginWidth = 0;
+		gl_composite_13.marginHeight = 0;
+		composite_13.setLayout(gl_composite_13);
 //		tabFolder_13.addSelectionListener(listener_tabFolder_selection);
 		new Label(composite_1, SWT.NONE);
 		
@@ -304,8 +313,12 @@ public class PmodelPartUi1 extends ModelObject
 		text_logging = new StyledText(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
 		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-		createControlsInsight(composite_13);
+		// virtuelle ablage fuer gerade nicht anzuzeigende composites
+		shell_dummy_insight = new Shell(display);
+//		shell_dummy_insight.setLayout(new FillLayout());
 		
+		// erzeugen der 'step-insight'-Ansicht
+		createControlsInsight(composite_13);
 		
 		bindingContextVisual = initDataBindingsVisual();
 		bindingContextMarked = initDataBindingsMarked();
@@ -313,13 +326,56 @@ public class PmodelPartUi1 extends ModelObject
 		
 	}
 
+	/**
+	 * erzeugen der 'insight'-Ansicht fuer den aktuell markierten step
+	 * @param parent
+	 */
 	public void createControlsInsight(Composite parent)
 	{
+
+		log("info", "showing details for step "+einstellungen.getMarkedStepName());
+		
 		// wenn es fuer diese ansicht schon einen composite gibt, dann diesen anzeigen
-		if ( this.insight.containsKey(einstellungen.getMarkedStepName()) )
+		if ( this.stepInsight.containsKey(einstellungen.getMarkedStepName()) )
 		{
-			this.insight.get(einstellungen.getMarkedStepName()).setParent(parent);
+			if (actualStepInsight != null)
+			{
+				// das aktuell sichtbare composite 'stepInsight' wegnehmen
+				actualStepInsight.setParent(shell_dummy_insight);
+				actualStepInsight.setVisible(false);
+			}
 			
+			// um es spaeter wieder umlegen zu koennen im field ablegen
+			actualStepInsight = this.stepInsight.get(einstellungen.getMarkedStepName());
+			
+			// das bestehende composite auf das parent setzen
+			actualStepInsight.setParent(parent);
+			log("debug", "reactivating existing controls");
+		}
+
+		else
+		{
+			// ein eventuell aktuell angezeigtes composite wegnehemn
+			if (actualStepInsight != null)
+			{
+				// das aktuell sichtbare composite 'stepInsight' wegnehmen
+				actualStepInsight.setParent(shell_dummy_insight);
+				actualStepInsight.setVisible(false);
+			}
+			
+			// ein neues composite erzeugen und mit inhalt befuellen
+			actualStepInsight = new Composite(shell_dummy_insight, SWT.NONE);
+			actualStepInsight.setLayout(new FillLayout());
+			GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+			actualStepInsight.setLayoutData(gd_composite);
+
+			new InsightCreator(actualStepInsight, process.getStep(einstellungen.getMarkedStepName()));
+			
+			// im stapel ablegen fuer spaeter
+			this.stepInsight.put(einstellungen.getMarkedStepName(), actualStepInsight);
+			
+			// und auf die sichtbare flaeche legen
+			actualStepInsight.setParent(parent);
 		}
 
 	}

@@ -62,8 +62,8 @@ public class PmodelViewPage extends PApplet
     private int mybackground = 255;
     private Map<String,String> statuscolors = new HashMap<String,String>();
 //	private boolean initial_resized = false;	// ohne erstmaligen resize stellt der renderer 'JAVA2D' den fensterinhalt nicht korrekt dar.
-	public int width = 1200;
-	public int height = 800;
+//	public int width = 1200;
+//	public int height = 800;
 	public int framerate = 50;
 	float bezugsgroesse = (float) 1.0;
 	boolean saveActualPic = false;
@@ -125,13 +125,12 @@ public class PmodelViewPage extends PApplet
 //    	Image icon = Toolkit.getDefaultToolkit().getImage("/data/prog/workspace/larry/icon/process.png");
     	Image icon = Toolkit.getDefaultToolkit().getImage(PmodelViewPage.class.getClassLoader().getResource("process.png"));
 		textSize(15);
-		size(this.width, this.height, JAVA2D);
+		size(this.einstellungen.getWidth(), this.einstellungen.getHeight(), JAVA2D);
 //  	size(this.width, this.height, OPENGL);
 //    	size(this.width, this.height, P2D);
     	background(this.mybackground);
 //    	frame.setTitle("unnamed");
 //    	frame.setIconImage(icon);
-//		frame.setResizable(true);
 		
     	frameRate(50);
 //    	this.frame.setResizable(true);
@@ -150,7 +149,7 @@ public class PmodelViewPage extends PApplet
 
 //		System.out.println("amount stepcircles :"+stepcircles.size());
 		
-		size(this.einstellungen.getWidth(), this.einstellungen.getHeight());
+//		size(this.einstellungen.getWidth(), this.einstellungen.getHeight());
 		background(255);
 		this.bezugsgroesse = (float)((float)this.einstellungen.getZoom() / 100);
 		textSize(this.einstellungen.getTextsize());
