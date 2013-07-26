@@ -80,7 +80,6 @@ public class PmodelPartUi1 extends ModelObject
 	private Spinner spinner_labelsize;
 	private Scale scale_gravx;
 	private Scale scale_gravy;
-
 	private Process process = new Process();
 	
 	private Label label_marked = null;
@@ -93,6 +92,7 @@ public class PmodelPartUi1 extends ModelObject
 	Composite actualStepInsight = null;
 	CTabFolder tabFolder_12;
 	Map<String,Composite> stepInsight = new HashMap();
+	private Composite composite_13;
 
 	final Color colorLogError = new Color(new Shell().getDisplay(), 215, 165, 172);
 	final Color colorLogWarn = new Color(new Shell().getDisplay(), 202, 191, 142);
@@ -292,7 +292,7 @@ public class PmodelPartUi1 extends ModelObject
 		frame.setLocation(0, 0);
 		frame.setVisible(true);
 
-		Composite composite_13 = new Composite(sashForm, SWT.BORDER);
+		composite_13 = new Composite(sashForm, SWT.BORDER);
 		composite_13.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		GridLayout gl_composite_13 = new GridLayout(1, false);
 		gl_composite_13.marginWidth = 0;
@@ -317,12 +317,15 @@ public class PmodelPartUi1 extends ModelObject
 		shell_dummy_insight = new Shell(display);
 //		shell_dummy_insight.setLayout(new FillLayout());
 		
-		// erzeugen der 'step-insight'-Ansicht
-		createControlsInsight(composite_13);
 		
 		bindingContextVisual = initDataBindingsVisual();
 		bindingContextMarked = initDataBindingsMarked();
 		
+		// erzeugen der 'step-insight' listeners beim wechsel der markierung
+		generateNewInsight(einstellungen);
+
+		// erzeugen der ersten insight ansicht fuer den aktuell markierten step (root)
+		createControlsInsight();
 		
 	}
 
@@ -330,7 +333,7 @@ public class PmodelPartUi1 extends ModelObject
 	 * erzeugen der 'insight'-Ansicht fuer den aktuell markierten step
 	 * @param parent
 	 */
-	public void createControlsInsight(Composite parent)
+	public void createControlsInsight()
 	{
 
 		log("info", "showing details for step "+einstellungen.getMarkedStepName());
@@ -349,8 +352,11 @@ public class PmodelPartUi1 extends ModelObject
 			actualStepInsight = this.stepInsight.get(einstellungen.getMarkedStepName());
 			
 			// das bestehende composite auf das parent setzen
-			actualStepInsight.setParent(parent);
+			actualStepInsight.setParent(composite_13);
 			log("debug", "reactivating existing controls");
+			
+			actualStepInsight.setVisible(true);
+			composite_13.layout(true);
 		}
 
 		else
@@ -375,9 +381,12 @@ public class PmodelPartUi1 extends ModelObject
 			this.stepInsight.put(einstellungen.getMarkedStepName(), actualStepInsight);
 			
 			// und auf die sichtbare flaeche legen
-			actualStepInsight.setParent(parent);
-		}
+			actualStepInsight.setParent(composite_13);
 
+			actualStepInsight.setVisible(true);
+			composite_13.layout(true);
+		}
+		
 	}
 	
 	private static class ContentProvider implements IStructuredContentProvider {
@@ -451,19 +460,28 @@ public class PmodelPartUi1 extends ModelObject
 		}
 	};
 	
-//	/**
-//	 * add change listener for binding 'zoom'
-//	 */
-//	private void updateUserInterfaceProcessing(PmodelViewModel zoom)
-//	{
-////		bindingContext.dispose();
-//		IObservableList bindings = bindingContextVisual.getValidationStatusProviders();
-//
-//		// Register the Listener for binding 'zoom'
-//		
-//		Binding b = (Binding) bindings.get(0);
-//		b.getModel().addChangeListener(listener_visual);
-//	}
+	IChangeListener listener_marked = new IChangeListener()
+	{
+		public void handleChange(ChangeEvent event)
+		{
+//			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
+			createControlsInsight();
+		}
+	};
+	
+	/**
+	 * add change listener for binding 'marked'
+	 */
+	private void generateNewInsight(PmodelViewModel einstellungen)
+	{
+//		bindingContext.dispose();
+		IObservableList bindings = bindingContextMarked.getValidationStatusProviders();
+
+		// Register the Listener for binding 'zoom'
+		
+		Binding b = (Binding) bindings.get(0);
+		b.getModel().addChangeListener(listener_marked);
+	}
 
 
 	protected DataBindingContext initDataBindingsVisual()

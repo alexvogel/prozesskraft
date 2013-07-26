@@ -198,6 +198,11 @@
 			<version>1.4.200</version>
 		</dependency>
 		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>commands</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.e4</groupId>
 			<artifactId>ui.di</artifactId>
 			<version>0.11.0</version>
