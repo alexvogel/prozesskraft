@@ -14,7 +14,7 @@ implements Serializable
 
 	static final long serialVersionUID = 1;
 	private String key = "";
-	private String filename = "";
+//	private String filename = "";
 	private String description = "";
 	private String absfilename = "";
 	private ArrayList<Test> test = new ArrayList<Test>();
@@ -147,7 +147,8 @@ implements Serializable
 
 	public String getFilename()
 	{
-		return this.filename;
+		java.io.File f = new java.io.File(this.absfilename);
+		return f.getName();
 	}
 
 	public String getDescription()
@@ -245,11 +246,11 @@ implements Serializable
 		this.key = key;
 	}
 
-	public void setFilename(String filename)
-	{
-		this.filename = filename;
-	}
-
+//	public void setFilename(String filename)
+//	{
+//		this.filename = filename;
+//	}
+//
 	public void setDescription(String description)
 	{
 		this.description = description;

@@ -399,7 +399,6 @@ implements Serializable, Cloneable
 		if (file.canRead())
 		{
 			File newfile = new File();
-			newfile.setFilename(file.getName());
 			newfile.setAbsfilename(file.getPath());
 			this.addFile(newfile);
 			this.log("info", "file committed: "+newfile.getAbsfilename());
@@ -1090,6 +1089,11 @@ implements Serializable, Cloneable
 			isamultistep = true;
 		}
 		return isamultistep;
+	}
+	
+	public ArrayList<Log> getLog()
+	{
+		return this.log;
 	}
 	
 	/*----------------------------
