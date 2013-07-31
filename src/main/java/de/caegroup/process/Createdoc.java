@@ -393,7 +393,7 @@ public class Createdoc
 		}
 		
 		report.setParameter("processName", process.getName());
-		report.setParameter("processVersion", process.getVersion());
+		report.setParameter("processVersion", process.getModelVersion());
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
 		report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -457,7 +457,7 @@ public class Createdoc
 		}
 		
 		report.setParameter("processName", process.getName());
-		report.setParameter("processVersion", process.getVersion());
+		report.setParameter("processVersion", process.getModelVersion());
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
 		report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -546,7 +546,7 @@ public class Createdoc
 		}
 		
 		report.setParameter("processName", process.getName());
-		report.setParameter("processVersion", process.getVersion());
+		report.setParameter("processVersion", process.getModelVersion());
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
 		report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -672,7 +672,7 @@ public class Createdoc
 		}
 		
 		report.setParameter("processName", process.getName());
-		report.setParameter("processVersion", process.getVersion());
+		report.setParameter("processVersion", process.getModelVersion());
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
 		report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -829,7 +829,7 @@ public class Createdoc
 				}
 	
 				report.setParameter("processName", process.getName());
-				report.setParameter("processVersion", process.getVersion());
+				report.setParameter("processVersion", process.getModelVersion());
 				report.setParameter("processArchitectCompany", process.getArchitectCompany());
 				report.setParameter("processArchitectName", process.getArchitectName());
 				report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -943,7 +943,7 @@ public class Createdoc
 				}
 				
 				report.setParameter("processName", process.getName());
-				report.setParameter("processVersion", process.getVersion());
+				report.setParameter("processVersion", process.getModelVersion());
 				report.setParameter("processArchitectCompany", process.getArchitectCompany());
 				report.setParameter("processArchitectName", process.getArchitectName());
 				report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -1030,36 +1030,36 @@ public class Createdoc
 						report.addField(row);
 					}
 					
-					// P52x) report fuellen
-					try
-					{
-						report.fillPReport();
-					} catch (FileNotFoundException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (JRException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					// P52x) pdf schreiben
-					try
-					{
-						report.exportToPdf();
-					} catch (FileNotFoundException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (JRException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					report = null;
 				}
+				// P52x) report fuellen
+				try
+				{
+					report.fillPReport();
+				} catch (FileNotFoundException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JRException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				// P52x) pdf schreiben
+				try
+				{
+					report.exportToPdf();
+				} catch (FileNotFoundException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JRException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				report = null;
 			}
 		}
 
