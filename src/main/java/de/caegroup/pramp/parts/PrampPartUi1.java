@@ -4,8 +4,11 @@ import de.caegroup.commons.*;
 import de.caegroup.gui.process.CommitCreator;
 
 import java.awt.Frame;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.NotDirectoryException;
@@ -67,10 +70,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.eclipse.swt.widgets.Combo;
+
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
 
 import de.caegroup.process.Commit;
 import de.caegroup.process.Process;
@@ -803,6 +809,10 @@ public class PrampPartUi1 extends ModelObject
 			if ( this.commitRootOld.containsKey(getActualCommitRootName()) )
 			{
 				
+				// den bisher angezeigten prozess ausblenden
+				commitRoot.setParent(shell_dummy_commitRoot);
+				commitRoot.setVisible(false);
+
 //				Composite old = this.commitRootOld.get((combo_processes.getText()+combo_versions.getText()));
 				commitRoot = this.commitRootOld.get(getActualCommitRootName());
 				commitRoot.setParent(parent);
@@ -814,6 +824,9 @@ public class PrampPartUi1 extends ModelObject
 			// ein neues composite erstellen
 			else if (this.process.isStep("root"))
 			{
+				// den bisher angezeigten prozess ausblenden
+				commitRoot.setParent(shell_dummy_commitRoot);
+				commitRoot.setVisible(false);
 
 				Composite actualComposite = new Composite(shell_dummy_commitRoot, SWT.NONE);
 //				actualComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -1057,13 +1070,55 @@ public class PrampPartUi1 extends ModelObject
 					this.commitCreatorOld.get(getActualCommitRootName()).commitAll();
 	//				System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
 					
-					process.setOutfilebinary(this.einstellungen.getInstancedirectory()+"/"+this.einstellungen.getProcess()+".bpd");
+					process.setOutfilebinary(this.einstellungen.getInstancedirectory()+"/"+this.einstellungen.getProcess()+".pmb");
 					process.writeBinary();
 					
 					// starten des process-manager
 					// ....
+					String sshIdAbsPath = System.getProperty("user.home")+"/"+WhereAmI.getDefaultSshIdRsa();
+					System.out.println("using ssh-id-rsa: "+sshIdAbsPath);
+					try
+					{
+						JSch jsch = new JSch();
 
+						jsch.addIdentity(sshIdAbsPath);
+
+						log ("info", "opening ssh-session with user: "+System.getProperty("user.name")+", host: "+combo_hosts.getText());
+						Session session = jsch.getSession(System.getProperty("user.name"), combo_hosts.getText(), 22);
+						session.setConfig("StrictHostKeyChecking", "no");
+						session.connect();
+						
+						ChannelExec channelExec = (ChannelExec)session.openChannel("exec");
+
+						InputStream in = channelExec.getInputStream();
+						log ("info", "executing 'process-manager -instance "+process.getOutfilebinary()+"'");
+						String command = "process-manager -instance "+process.getOutfilebinary();
+
+						channelExec.setCommand(command);
+
+//						System.out.println("setting command to: "+command);
+						channelExec.connect();
+
+						BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+						String line;
+
+						while((line = reader.readLine()) != null)
+						{
+							System.out.println(line);
+						}
+
+						channelExec.disconnect();
+						session.disconnect();
+
+					}
+					catch(Exception e)
+					{
+						e.printStackTrace();
+					}
+						
 					return true;
+
 				}
 				else
 				{
