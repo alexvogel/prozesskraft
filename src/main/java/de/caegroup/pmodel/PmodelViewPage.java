@@ -475,16 +475,18 @@ public class PmodelViewPage extends PApplet
 	public boolean refresh()
 	{
 		boolean result = false;
-		System.out.println("refreshing data from: "+this.process.getInfilexml());
+//		System.out.println("refreshing data from: "+this.process.getInfilexml());
 //		try
 //		{
 //			this.process = process.readXml();
-			System.out.println("infilexml vor dem read: "+process.getInfilexml());
-			System.out.println("processName vor dem read: "+process.getName());
-
-			System.out.println("infilexml nach dem read: "+process.getInfilexml());
-			System.out.println("processName nach dem read: "+process.getName());
-	    	this.legend_processname = this.process.getName()+" v"+this.process.getVersion().toString();
+//			System.out.println("infilexml vor dem read: "+process.getInfilexml());
+//			System.out.println("processName vor dem read: "+process.getName());
+//
+//			System.out.println("infilexml nach dem read: "+process.getInfilexml());
+//			System.out.println("processName nach dem read: "+process.getName());
+//	    	this.legend_processname = this.process.getName()+" v"+this.process.getModelVersion().toString();
+	    	this.legend_processname = this.process.getName();
+//	    	this.legend_processname = "I am Legend";
 	    	
 	    	this.refresh_last = Calendar.getInstance();
 	    	this.refresh_topology = true;
