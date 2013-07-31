@@ -34,7 +34,7 @@ public class TestProcess {
 	public void testGetInitcommitdirs()
 	{
 		process.setInitCommitDir("/home/qxb0117/etc");
-		ArrayList<String> initcommitdirs = process.getInitcommitdirs();
+		ArrayList<String> initcommitdirs = process.getInitCommitDirs();
 		assertEquals(1, initcommitdirs.size());
 	}
 	
@@ -42,7 +42,7 @@ public class TestProcess {
 	public void testGetInitcommitdirs2()
 	{
 		process.setInitCommitDir("/home/qxb0117/etc:/home/irgendwas");
-		ArrayList<String> initcommitdirs = process.getInitcommitdirs();
+		ArrayList<String> initcommitdirs = process.getInitCommitDirs();
 		assertEquals(2, initcommitdirs.size());
 	}
 
@@ -50,7 +50,7 @@ public class TestProcess {
 	public void testGetInitcommitdirs3()
 	{
 		process.setInitCommitDir("/home/qxb0117/etc:/home/irgendwas::");
-		ArrayList<String> initcommitdirs = process.getInitcommitdirs();
+		ArrayList<String> initcommitdirs = process.getInitCommitDirs();
 		assertEquals(2, initcommitdirs.size());
 	}
 

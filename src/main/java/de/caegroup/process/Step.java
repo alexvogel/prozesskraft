@@ -324,15 +324,10 @@ implements Serializable, Cloneable
 	public void rootcommit() throws IOException
 	{
 
-		// alle verzeichnisse, die committed werden sollen zusammensuchen
-		ArrayList<java.io.File> allcommitdirs = this.parent.getInitcommitdirs2();
-		
-		//ueber alle verzeichnisse iterieren
-		Iterator<java.io.File> itercommitdir = allcommitdirs.iterator();
-		while (itercommitdir.hasNext())
+		//ueber alle initCommitDirs verzeichnisse iterieren
+		for(java.io.File actualCommitDir : this.parent.getInitCommitDirs2())
 		{
-			java.io.File commitdir = itercommitdir.next();
-			this.commitdir(commitdir);
+			this.commitdir(actualCommitDir);
 		}
 
 		// alle varfiles, die committed werden sollen zusammensuchen

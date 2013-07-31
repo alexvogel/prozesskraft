@@ -935,6 +935,7 @@ implements Serializable
 	 * eines Strings "pfad:pfad:pfad" zurueck
 	 * @return
 	 * einen string, der die absoluten pfade aller 'initcommitdir' enthaelt. trennzeichen ist ':'
+	 * relative pfade werden auf absolute pfade umgesetzt, wobei getInfileXml als Basisverzeichnis verwendet wird
 	 */
 	public String getInitCommitDir()
 	{
@@ -946,16 +947,31 @@ implements Serializable
 	 * eines ArrayList<String> zurueck
 	 * @return
 	 * die absoluten pfadnamen aller 'initcommitdir' 
+	 * relative pfade werden auf absolute pfade umgesetzt, wobei getInfileXml als Basisverzeichnis verwendet wird
 	 */
-	public ArrayList<String> getInitcommitdirs()
+	public ArrayList<String> getInitCommitDirs()
 	{
-		ArrayList<String> initcommitdirs = new ArrayList<String>();
+		ArrayList<String> newDirarray = new ArrayList<String>();
 		if (!(this.initCommitDir.equals("")))
 		{
-			String[] dirharray = this.initCommitDir.split(":");
-			initcommitdirs = new ArrayList<String>(Arrays.asList(dirharray));
+			String[] dirarray = this.initCommitDir.split(":");
+			
+			for(String actualInitCommitDir : dirarray)
+			{
+				String newInitCommitDir = "";
+				if (!(actualInitCommitDir.matches("^/")))
+				{
+					newInitCommitDir = this.getInfilexml() + "/" + actualInitCommitDir;
+				}
+				else
+				{
+					newInitCommitDir = actualInitCommitDir;
+				}
+				newDirarray.add(newInitCommitDir);
+			}
+			
 		}
-		return initcommitdirs;
+		return newDirarray;
 	}
 
 	/**
@@ -963,16 +979,17 @@ implements Serializable
 	 * eines ArrayList<java.io.File> zurueck
 	 * @return
 	 * die directories aller 'initcommitdir'
+	 * relative pfade werden auf absolute pfade umgesetzt, wobei getInfileXml als Basisverzeichnis verwendet wird
 	 */
-	public ArrayList<java.io.File> getInitcommitdirs2()
+	public ArrayList<java.io.File> getInitCommitDirs2()
 	{
-		ArrayList<java.io.File> initcommitdirs = new ArrayList<java.io.File>();
-		Iterator<String> iterinitcommitdir = this.getInitcommitdirs().iterator();
-		while(iterinitcommitdir.hasNext())
+		ArrayList<java.io.File> initcommitdir = new ArrayList<java.io.File>();
+		for(String actualInitCommitDir : this.getInitCommitDirs())
 		{
-			initcommitdirs.add(new java.io.File(iterinitcommitdir.next()));
+			initcommitdir.add(new java.io.File(actualInitCommitDir));
 		}
-		return initcommitdirs;
+		
+		return initcommitdir;
 	}
 
 	public String getInitcommitvarfile()
