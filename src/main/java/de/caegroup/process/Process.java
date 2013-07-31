@@ -57,15 +57,15 @@ implements Serializable
 	private String name = new String();
 	private String description = new String();
 	private String path = new String();
-	private String initcommitdir = new String();
-	private String initcommitvarfile = new String();
+	private String initCommitDir = new String();
+	private String initCommitVarfile = new String();
 	private String architectName = new String();
 	private String architectCompany = new String();
 	private String architectMail = new String();
 	private String customerName = new String();
 	private String customerCompany = new String();
 	private String customerMail = new String();
-	private String version = new String();
+	private String modelVersion = new String();
 	private boolean pradar = false;
 //	private NamedList<Step> steps = new NamedList<Step>();
 	private ArrayList<Step> step = new ArrayList<Step>();
@@ -218,7 +218,7 @@ implements Serializable
 			
 			// Definition der Attribute des 'process'-Elementes
 			atts.addAttribute("", "", "name", "CDATA", this.name);
-			atts.addAttribute("", "", "version", "CDATA", this.version);
+			atts.addAttribute("", "", "version", "CDATA", this.modelVersion);
 			atts.addAttribute("", "", "description", "CDATA", this.description);
 			atts.addAttribute("", "", "path", "CDATA", this.path);
 			atts.addAttribute("", "", "initcommitdir", "CDATA", this.path);
@@ -466,8 +466,8 @@ implements Serializable
 					proc.setVersion(processversion);
 					proc.setDescription(processdescription);
 					proc.setPath(processpath);
-					proc.setInitcommitdir(processinitcommitdir);
-					proc.setInitcommitvarfile(processinitcommitvarfile);
+					proc.setInitCommitDir(processinitcommitdir);
+					proc.setInitCommitVarfile(processinitcommitvarfile);
 					proc.setArchitectName(processarchitect);
 					
 					// Ermitteln aller Childnodes
@@ -714,7 +714,7 @@ implements Serializable
 	public void printToc()
 	{
 		System.out.println("---TOC---instance<"+this.getName()+">---TOC---");
-		System.out.println("        version: "+this.getVersion());
+		System.out.println("        version: "+this.getModelVersion());
 		System.out.println("    description: "+this.getDescription());
 		System.out.println("           path: "+this.getPath());
 		System.out.println("      architect: "+this.getArchitectName());
@@ -936,9 +936,9 @@ implements Serializable
 	 * @return
 	 * einen string, der die absoluten pfade aller 'initcommitdir' enthaelt. trennzeichen ist ':'
 	 */
-	public String getInitcommitdir()
+	public String getInitCommitDir()
 	{
-		return this.initcommitdir;
+		return this.initCommitDir;
 	}
 	
 	/**
@@ -950,9 +950,9 @@ implements Serializable
 	public ArrayList<String> getInitcommitdirs()
 	{
 		ArrayList<String> initcommitdirs = new ArrayList<String>();
-		if (!(this.initcommitdir.equals("")))
+		if (!(this.initCommitDir.equals("")))
 		{
-			String[] dirharray = this.initcommitdir.split(":");
+			String[] dirharray = this.initCommitDir.split(":");
 			initcommitdirs = new ArrayList<String>(Arrays.asList(dirharray));
 		}
 		return initcommitdirs;
@@ -977,15 +977,15 @@ implements Serializable
 
 	public String getInitcommitvarfile()
 	{
-		return this.initcommitvarfile;
+		return this.initCommitVarfile;
 	}
 
 	public ArrayList<String> getInitcommitvarfiles()
 	{
 		ArrayList<String> initcommitvarfiles = new ArrayList<String>();
-		if (!(this.initcommitvarfile.isEmpty()))
+		if (!(this.initCommitVarfile.isEmpty()))
 		{
-			String[] filesarray = this.initcommitvarfile.split(":");
+			String[] filesarray = this.initCommitVarfile.split(":");
 			initcommitvarfiles = new ArrayList<String>(Arrays.asList(filesarray));
 		}
 		return initcommitvarfiles;
@@ -1042,18 +1042,18 @@ implements Serializable
 		return this.customerMail;
 	}
 
-	public String getVersion()
+	public String getModelVersion()
 	{
-		return this.version;
+		return this.modelVersion;
 	}
 	
 	/**
 	 * 
 	 * @return versionsnummer ohne punkte
 	 */
-	public String getVersionplain()
+	public String getModelVersionPlain()
 	{
-		String versionplain = this.version;
+		String versionplain = this.modelVersion;
 		versionplain.replaceAll("\\.", "");
 		return versionplain;
 	}
@@ -1085,7 +1085,7 @@ implements Serializable
 				generator.setSeed(time);
 				int randomnumber = generator.nextInt(9999999);
 				
-				this.rootdir = (currentdir.getCanonicalPath()+"/"+this.getName()+"_v"+this.getVersionplain()+"_"+randomnumber);
+				this.rootdir = (currentdir.getCanonicalPath()+"/"+this.getName()+"_v"+this.getModelVersionPlain()+"_"+randomnumber);
 			}
 			catch (IOException e)
 			{
@@ -1269,14 +1269,14 @@ implements Serializable
 		this.path = path;
 	}
 
-	public void setInitcommitdir(String initcommitdir)
+	public void setInitCommitDir(String initcommitdir)
 	{
-		this.initcommitdir = initcommitdir;
+		this.initCommitDir = initcommitdir;
 	}
 
-	public void setInitcommitvarfile(String initcommitvarfile)
+	public void setInitCommitVarfile(String initcommitvarfile)
 	{
-		this.initcommitvarfile = initcommitvarfile;
+		this.initCommitVarfile = initcommitvarfile;
 	}
 
 	public void setArchitectName(String architectName)
@@ -1311,7 +1311,7 @@ implements Serializable
 
 	public void setVersion(String version)
 	{
-		this.version = version;
+		this.modelVersion = version;
 	}
 
 	public void setPradar(boolean pradar)

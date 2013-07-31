@@ -33,7 +33,7 @@ public class TestProcess {
 	@Test
 	public void testGetInitcommitdirs()
 	{
-		process.setInitcommitdir("/home/qxb0117/etc");
+		process.setInitCommitDir("/home/qxb0117/etc");
 		ArrayList<String> initcommitdirs = process.getInitcommitdirs();
 		assertEquals(1, initcommitdirs.size());
 	}
@@ -41,7 +41,7 @@ public class TestProcess {
 	@Test
 	public void testGetInitcommitdirs2()
 	{
-		process.setInitcommitdir("/home/qxb0117/etc:/home/irgendwas");
+		process.setInitCommitDir("/home/qxb0117/etc:/home/irgendwas");
 		ArrayList<String> initcommitdirs = process.getInitcommitdirs();
 		assertEquals(2, initcommitdirs.size());
 	}
@@ -49,7 +49,7 @@ public class TestProcess {
 	@Test
 	public void testGetInitcommitdirs3()
 	{
-		process.setInitcommitdir("/home/qxb0117/etc:/home/irgendwas::");
+		process.setInitCommitDir("/home/qxb0117/etc:/home/irgendwas::");
 		ArrayList<String> initcommitdirs = process.getInitcommitdirs();
 		assertEquals(2, initcommitdirs.size());
 	}
@@ -57,7 +57,7 @@ public class TestProcess {
 	@Test
 	public void testGetInitcommitvarfiles()
 	{
-		process.setInitcommitvarfile("/home/qxb0117/etc/bla");
+		process.setInitCommitVarfile("/home/qxb0117/etc/bla");
 		ArrayList<String> initcommitvarfiles = process.getInitcommitvarfiles();
 		assertEquals(1, initcommitvarfiles.size());
 	}
@@ -65,7 +65,7 @@ public class TestProcess {
 	@Test
 	public void testGetInitcommitvarfiles2()
 	{
-		process.setInitcommitvarfile("/home/qxb0117/etc/bla:/home/qxb0117/etc/blu");
+		process.setInitCommitVarfile("/home/qxb0117/etc/bla:/home/qxb0117/etc/blu");
 		ArrayList<String> initcommitvarfiles = process.getInitcommitvarfiles();
 		assertEquals(2, initcommitvarfiles.size());
 		Iterator<String> iterstring = initcommitvarfiles.iterator();
@@ -78,7 +78,7 @@ public class TestProcess {
 	@Test
 	public void testGetInitcommitvarfiless3()
 	{
-		process.setInitcommitvarfile("/home/qxb0117/etc/bla:/home/qxb0117/etc/blu::");
+		process.setInitCommitVarfile("/home/qxb0117/etc/bla:/home/qxb0117/etc/blu::");
 		ArrayList<String> initcommitvarfiles = process.getInitcommitvarfiles();
 		assertEquals(2, initcommitvarfiles.size());
 		Iterator<String> iterstring = initcommitvarfiles.iterator();
@@ -91,7 +91,7 @@ public class TestProcess {
 	@Test
 	public void testGetInitcommitvarfiless4()
 	{
-		process.setInitcommitvarfile("/home/qxb0117/etc/bla:/home/qxb0117/etc/blu::");
+		process.setInitCommitVarfile("/home/qxb0117/etc/bla:/home/qxb0117/etc/blu::");
 		ArrayList<java.io.File> initcommitvarfiles = process.getInitcommitvarfiles2();
 		assertEquals(2, initcommitvarfiles.size());
 		Iterator<java.io.File> iterfile = initcommitvarfiles.iterator();
@@ -119,7 +119,7 @@ public class TestProcess {
 		// testen der process-attribute, die durch das mapping gesetzt werden
 		assertEquals(true, file.isFile());
 		assertEquals("beulen", process.getName());
-		assertEquals("0.2", process.getVersion());
+		assertEquals("0.2", process.getModelVersion());
 		assertEquals("Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert.", process.getDescription());
 		assertEquals("alexander.vogel@caegroup.de", process.getArchitectMail());
 

@@ -16,6 +16,7 @@ implements Serializable
 	private String key = "";
 	private String value = "";
 	private String description = "";
+	private String glob = "";
 	private ArrayList<String> choice = new ArrayList<String>();
 	private ArrayList<Test> test = new ArrayList<Test>();
 	private int minoccur = 0;
@@ -149,6 +150,11 @@ implements Serializable
 		return this.key;
 	}
 
+	public String getGlob()
+	{
+		return this.glob;
+	}
+
 	public String getValue()
 	{
 		return this.value;
@@ -204,6 +210,11 @@ implements Serializable
 	public void setKey(String key)
 	{
 		this.key = key;
+	}
+
+	public void setGlob(String glob)
+	{
+		this.glob = glob;
 	}
 
 	public void setValue(String value)
