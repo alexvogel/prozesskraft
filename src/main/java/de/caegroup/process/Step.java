@@ -397,7 +397,7 @@ implements Serializable, Cloneable
 			newfile.setAbsfilename(file.getPath());
 			this.addFile(newfile);
 			this.log("info", "file committed: "+newfile.getAbsfilename());
-			System.out.println("AMOUNT OF FILES ARE NOW: "+this.file.size());
+//			System.out.println("AMOUNT OF FILES ARE NOW: "+this.file.size());
 			return true;
 		}
 		else
@@ -415,6 +415,7 @@ implements Serializable, Cloneable
 
 	public void commitFile(File file)
 	{
+		this.log("info", "file committed: "+file.getAbsfilename());
 		addFile(file);
 	}
 

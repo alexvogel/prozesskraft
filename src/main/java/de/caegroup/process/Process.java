@@ -463,7 +463,7 @@ implements Serializable
 	
 					// Eintragen der gelesenen Daten in die Objektinstanz
 					proc.setName(processname);
-					proc.setVersion(processversion);
+					proc.setModelVersion(processversion);
 					proc.setDescription(processdescription);
 					proc.setPath(processpath);
 					proc.setInitCommitDir(processinitcommitdir);
@@ -1326,9 +1326,9 @@ implements Serializable
 		this.customerMail = customerMail;
 	}
 
-	public void setVersion(String version)
+	public void setModelVersion(String modelVersion)
 	{
-		this.modelVersion = version;
+		this.modelVersion = modelVersion;
 	}
 
 	public void setPradar(boolean pradar)
