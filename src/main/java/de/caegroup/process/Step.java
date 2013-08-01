@@ -331,7 +331,7 @@ implements Serializable, Cloneable
 		}
 
 		// alle varfiles, die committed werden sollen zusammensuchen
-		ArrayList<java.io.File> allcommitvarfiles = this.parent.getInitcommitvarfiles2();
+		ArrayList<java.io.File> allcommitvarfiles = this.parent.getInitCommitVarfiles2();
 
 		//ueber alle varfiles iterieren
 		Iterator<java.io.File> itercommitvarfile = allcommitvarfiles.iterator();

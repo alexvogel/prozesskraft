@@ -58,7 +58,7 @@ public class TestProcess {
 	public void testGetInitcommitvarfiles()
 	{
 		process.setInitCommitVarfile("/home/qxb0117/etc/bla");
-		ArrayList<String> initcommitvarfiles = process.getInitcommitvarfiles();
+		ArrayList<String> initcommitvarfiles = process.getInitCommitVarfiles();
 		assertEquals(1, initcommitvarfiles.size());
 	}
 	
@@ -66,7 +66,7 @@ public class TestProcess {
 	public void testGetInitcommitvarfiles2()
 	{
 		process.setInitCommitVarfile("/home/qxb0117/etc/bla:/home/qxb0117/etc/blu");
-		ArrayList<String> initcommitvarfiles = process.getInitcommitvarfiles();
+		ArrayList<String> initcommitvarfiles = process.getInitCommitVarfiles();
 		assertEquals(2, initcommitvarfiles.size());
 		Iterator<String> iterstring = initcommitvarfiles.iterator();
 //		while (iterstring.hasNext())
@@ -79,7 +79,7 @@ public class TestProcess {
 	public void testGetInitcommitvarfiless3()
 	{
 		process.setInitCommitVarfile("/home/qxb0117/etc/bla:/home/qxb0117/etc/blu::");
-		ArrayList<String> initcommitvarfiles = process.getInitcommitvarfiles();
+		ArrayList<String> initcommitvarfiles = process.getInitCommitVarfiles();
 		assertEquals(2, initcommitvarfiles.size());
 		Iterator<String> iterstring = initcommitvarfiles.iterator();
 //		while (iterstring.hasNext())
@@ -92,7 +92,7 @@ public class TestProcess {
 	public void testGetInitcommitvarfiless4()
 	{
 		process.setInitCommitVarfile("/home/qxb0117/etc/bla:/home/qxb0117/etc/blu::");
-		ArrayList<java.io.File> initcommitvarfiles = process.getInitcommitvarfiles2();
+		ArrayList<java.io.File> initcommitvarfiles = process.getInitCommitVarfiles2();
 		assertEquals(2, initcommitvarfiles.size());
 		Iterator<java.io.File> iterfile = initcommitvarfiles.iterator();
 //		while (iterfile.hasNext())

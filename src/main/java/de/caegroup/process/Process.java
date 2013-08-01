@@ -961,7 +961,7 @@ implements Serializable
 				String newInitCommitDir = "";
 				if (!(actualInitCommitDir.matches("^/")))
 				{
-					newInitCommitDir = this.getInfilexml() + "/" + actualInitCommitDir;
+					newInitCommitDir = new java.io.File(this.getInfilexml()).getParent() + "/" + actualInitCommitDir;
 				}
 				else
 				{
@@ -992,41 +992,58 @@ implements Serializable
 		return initcommitdir;
 	}
 
-	public String getInitcommitvarfile()
+	public String getInitCommitVarfile()
 	{
 		return this.initCommitVarfile;
 	}
 
-	public ArrayList<String> getInitcommitvarfiles()
+	/**
+	 * liefert alle files 'initcommitvarfiles' zurueck in Form
+	 * eines ArrayList<String> zurueck
+	 * @return
+	 * die absoluten pfadnamen aller 'initcommitvarfiles' 
+	 * relative pfade werden auf absolute pfade umgesetzt, wobei das directory von getInfileXml als Basisverzeichnis verwendet wird
+	 */
+	public ArrayList<String> getInitCommitVarfiles()
 	{
-		ArrayList<String> initcommitvarfiles = new ArrayList<String>();
+		ArrayList<String> newinitcommitvarfiles = new ArrayList<String>();
 		if (!(this.initCommitVarfile.isEmpty()))
 		{
 			String[] filesarray = this.initCommitVarfile.split(":");
-			initcommitvarfiles = new ArrayList<String>(Arrays.asList(filesarray));
+
+			for(String actualInitCommitVarfile : filesarray)
+			{
+				String newInitCommitVarfile = "";
+				if (!(actualInitCommitVarfile.matches("^/")))
+				{
+					newInitCommitVarfile = new java.io.File(this.getInfilexml()).getParent() + "/" + actualInitCommitVarfile;
+				}
+				else
+				{
+					newInitCommitVarfile = actualInitCommitVarfile;
+				}
+				newinitcommitvarfiles.add(newInitCommitVarfile);
+			}
 		}
-		return initcommitvarfiles;
+		return newinitcommitvarfiles;
 	}
 
 	/**
 	 * liefert alle files 'initcommitvarfile' zurueck in Form
-	 * eines ArrayList<java.io.File>
+	 * eines ArrayList<java.io.File> zurueck
 	 * @return
-	 * die files aller 'initcommitvarfile'
+	 * die files aller 'initcommitvarfiles'
+	 * relative pfade werden auf absolute pfade umgesetzt, wobei das directory von getInfileXml als Basisverzeichnis verwendet wird
 	 */
-	public ArrayList<java.io.File> getInitcommitvarfiles2()
+	public ArrayList<java.io.File> getInitCommitVarfiles2()
 	{
-		ArrayList<java.io.File> initcommitvarfiles = new ArrayList<java.io.File>();
-//		System.out.println("HELLO");
-		Iterator<String> iterinitcommitvarfile = this.getInitcommitvarfiles().iterator();
-		while(iterinitcommitvarfile.hasNext())
+		ArrayList<java.io.File> initcommitvarfile = new ArrayList<java.io.File>();
+		for(String actualInitCommitVarfile : this.getInitCommitVarfiles())
 		{
-			String initcommitvarfile = iterinitcommitvarfile.next();
-			java.io.File initcommitvarfile_file = new java.io.File(initcommitvarfile);
-//			System.out.println("commitvarfile: "+initcommitvarfile_file.getAbsolutePath());
-			initcommitvarfiles.add(initcommitvarfile_file);
+			initcommitvarfile.add(new java.io.File(actualInitCommitVarfile));
 		}
-		return initcommitvarfiles;
+		
+		return initcommitvarfile;
 	}
 
 	public String getArchitectName()
