@@ -124,23 +124,26 @@ public class Manager
 		
 		// prozessinstanz einlesen
 		p1.setInfilebinary(line.getOptionValue("instance"));
-		p1.log("info", "setting binary file for input to: "+line.getOptionValue("instance"));
+		
+		Process p2;
+		p2 = p1.readBinary();
+		
+		p2.log("info", "setting binary file for input to: "+line.getOptionValue("instance"));
 		System.out.println("setting binary file for input to: "+line.getOptionValue("instance"));
 
-		p1.readBinary();
-		p1.log("info", "reading binary file: "+line.getOptionValue("instance"));
+		p2.log("info", "reading binary file: "+line.getOptionValue("instance"));
 
-		p1.setOutfilebinary(line.getOptionValue("instance"));
-		p1.log("info", "setting binary file for output: "+line.getOptionValue("instance"));
+		p2.setOutfilebinary(line.getOptionValue("instance"));
+		p2.log("info", "setting binary file for output: "+line.getOptionValue("instance"));
 
 		// neue manager id generieren und sofort in die instanz auf platte schreiben
 		double managerid = p1.genManagerid();
-		p1.setManagerid(managerid);
-		p1.log("info", "setting manager-id to: "+managerid);
+		p2.setManagerid(managerid);
+		p2.log("info", "setting manager-id to: "+managerid);
 		System.out.println("setting manager-id to: "+managerid);
 
-		p1.writeBinary();
-		p1.log("info", "writing process to binary file: "+managerid);
+		p2.writeBinary();
+		p2.log("info", "writing process to binary file: "+managerid);
 
 		boolean incharge = true;
 		
