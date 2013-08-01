@@ -158,13 +158,13 @@ public class PmodelViewStepSym
 		
 		else if ( this.step.getType().equals("automatic") && this.step.isAmultistep() )
 		{
-			symbol_multistep("circle");
+			symbol_multistep(this.parent.bezugsgroesse, "circle");
 //			System.out.println("symbol: multi-kreis");
 		}
 
 		else if ( this.step.getType().equals("manual") && this.step.isAmultistep() )
 		{
-			symbol_multistep("quadrat");
+			symbol_multistep(this.parent.bezugsgroesse, "quadrat");
 //			System.out.println("symbol: multi-quadrat");
 		}
 
@@ -254,39 +254,37 @@ public class PmodelViewStepSym
 	}
 	
 	// multistep wird mit drei verkleinerten symbolen dargestellt
-	private void symbol_multistep(String type)
+	private void symbol_multistep(float scalierung, String type)
 	{
 		int anzahl_symbole = 3;
 //		double laenge_vektor = (double)((0.5 + (0.5 - (1.0 / anzahl_symbole))) * this.radius);
 		double laenge_vektor = (double)(0.6 * this.radius);
-		float scalierung = (float)(0.45);
+		float verkl_faktor = (float)(0.45)*scalierung;
 
 		//
 		if (type.equals("circle"))
 		{
-			symbol_circle(1, 0, 0, false);
+			symbol_circle(scalierung, 0, 0, false);
 		}
 		else if (type.equals("quadrat"))
 		{
-			symbol_quadrat(1, 0, 0, false);
+			symbol_quadrat(scalierung, 0, 0, false);
 		}
 		
 		
 		for (int x = 0; x < anzahl_symbole; x++)
 		{
-			double x_offset = ( java.lang.Math.sin(((java.lang.Math.PI * 2) / anzahl_symbole) * x) * laenge_vektor * scalierung );
+			double x_offset = ( java.lang.Math.sin(((java.lang.Math.PI * 2) / anzahl_symbole) * x) * laenge_vektor * verkl_faktor );
 //			System.out.println(((((java.lang.Math.PI * 2) / anzahl_symbole) * x)) * laenge_vektor);
-			double y_offset = ( java.lang.Math.cos(((java.lang.Math.PI * 2) / anzahl_symbole) * x) * laenge_vektor * scalierung ) * (-1);
+			double y_offset = ( java.lang.Math.cos(((java.lang.Math.PI * 2) / anzahl_symbole) * x) * laenge_vektor * verkl_faktor ) * (-1);
 			
 			if (type.equals("circle"))
 			{
-				symbol_circle(scalierung, (float)x_offset, (float)y_offset, true);
-//				System.out.println("laenge_vektor = "+laenge_vektor+" | +scalierung = "+scalierung+" | x_offset "+x_offset+" | y_offset "+y_offset);
+				symbol_circle(verkl_faktor, (float)x_offset, (float)y_offset, true);
 			}
 			else if (type.equals("quadrat"))
 			{
-				symbol_quadrat(scalierung, (float)x_offset, (float)y_offset, true);
-//				System.out.println("laenge_vektor = "+laenge_vektor+" | +scalierung = "+scalierung+" | x_offset "+x_offset+" | y_offset "+y_offset);
+				symbol_quadrat(verkl_faktor, (float)x_offset, (float)y_offset, true);
 			}
 		}
 	}
