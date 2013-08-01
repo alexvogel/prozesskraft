@@ -68,6 +68,7 @@ public class VariableOccurGui
 		this.parent_variablegui = parent_variablegui;
 		this.parent = parent;
 		this.variable = variable;
+		this.variable.setKey(key);
 		this.key = key;
 		this.free = free;
 		this.comboexist = comboexist;

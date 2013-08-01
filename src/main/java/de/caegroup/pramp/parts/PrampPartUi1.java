@@ -554,7 +554,7 @@ public class PrampPartUi1 extends ModelObject
 	{
 		DataBindingContext bindingContextInstancedirectory = new DataBindingContext();
 		//
-		IObservableValue targetObservableInstancedirectory = WidgetProperties.text().observe(text_instancedirectory);
+		IObservableValue targetObservableInstancedirectory = WidgetProperties.text(SWT.Modify).observe(text_instancedirectory);
 		IObservableValue modelObservableInstancedirectory = BeanProperties.value("instancedirectory").observe(einstellungen);
 		bindingContextInstancedirectory.bindValue(targetObservableInstancedirectory, modelObservableInstancedirectory, null, null);
 		//
@@ -813,12 +813,16 @@ public class PrampPartUi1 extends ModelObject
 				commitRoot.setParent(shell_dummy_commitRoot);
 				commitRoot.setVisible(false);
 
+				// den schon vorhandenen prozess einblenden
 //				Composite old = this.commitRootOld.get((combo_processes.getText()+combo_versions.getText()));
 				commitRoot = this.commitRootOld.get(getActualCommitRootName());
 				commitRoot.setParent(parent);
 				commitRoot.setVisible(true);
 				parent.layout(true);
 				log("info", "reactivating an existent commitRoot page");
+				
+				// das feld aktuell halten
+				this.process = this.commitCreatorOld.get(getActualCommitRootName()).getStep().getParent();
 			}
 			
 			// ein neues composite erstellen
@@ -835,6 +839,7 @@ public class PrampPartUi1 extends ModelObject
 				actualComposite.setLayout(new FillLayout());
 
 				CommitCreator commitCreator = new CommitCreator(actualComposite, this.process.getStep("root"));
+
 				actualComposite = commitCreator.createControls();
 //				actualComposite.pack();
 				
@@ -951,8 +956,8 @@ public class PrampPartUi1 extends ModelObject
 				// die aktuellen input-daten vergleichen mit dem block aus dem inifile
 				for(String key : content.keySet())
 				{
-					System.out.println("mapIni:  "+actualMapIni.get(key));
-					System.out.println("content: "+content.get(key));
+//					System.out.println("mapIni:  "+actualMapIni.get(key));
+//					System.out.println("content: "+content.get(key));
 					if ( (actualMapIni.get(key) != null) && (content.get(key) != null) && (!(content.get(key).equals(actualMapIni.get(key)))) )
 					{
 //						log("info", "keine uebereinstimmung fuer section "+this.process.getName()+"-"+processZaehler+" key: "+key+" value-content: "+content.get(key)+" value-ini: "+actualMapIni.get(key));
@@ -1068,11 +1073,12 @@ public class PrampPartUi1 extends ModelObject
 
 					// user input an den Prozess committen
 					this.commitCreatorOld.get(getActualCommitRootName()).commitAll();
-	//				System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
+//					System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
+//					System.out.println("Id des Prozesses: "+process.getRandomId());
 					
 					process.setOutfilebinary(this.einstellungen.getInstancedirectory()+"/"+this.einstellungen.getProcess()+".pmb");
 					process.writeBinary();
-					
+
 					// starten des process-manager
 					// ....
 					String sshIdAbsPath = System.getProperty("user.home")+"/"+WhereAmI.getDefaultSshIdRsa();
@@ -1099,14 +1105,14 @@ public class PrampPartUi1 extends ModelObject
 //						System.out.println("setting command to: "+command);
 						channelExec.connect();
 
-						BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-						String line;
-
-						while((line = reader.readLine()) != null)
-						{
-							System.out.println(line);
-						}
+//						BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+//
+//						String line;
+//
+//						while((line = reader.readLine()) != null)
+//						{
+//							System.out.println(line);
+//						}
 
 						channelExec.disconnect();
 						session.disconnect();

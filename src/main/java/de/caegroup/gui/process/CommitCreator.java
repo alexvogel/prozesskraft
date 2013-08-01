@@ -114,4 +114,9 @@ public class CommitCreator
 		
 		return true;
 	}
+	
+	public Step getStep()
+	{
+		return this.step;
+	}
 }

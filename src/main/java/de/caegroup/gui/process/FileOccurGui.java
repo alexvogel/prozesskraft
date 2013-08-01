@@ -71,6 +71,7 @@ public class FileOccurGui
 		this.parent_filegui = parent_filegui;
 		this.parent = parent;
 		this.file = file;
+		this.file.setKey(key);
 		this.key = key;
 		this.textexist = textexist;
 		this.buttonexist = buttonexist;
@@ -316,7 +317,7 @@ public class FileOccurGui
 					}
 				}
 				controlDecorationCombo.setDescriptionText( file.getFirstFailedTestsFeedback() );
-				System.out.println(file.getFailedTestsFeedback());
+//				System.out.println(file.getFailedTestsFeedback());
 				controlDecorationCombo.show();
 				return ValidationStatus.error("at least one test failed");
 			}
@@ -333,6 +334,10 @@ public class FileOccurGui
 		IObservableValue modelObservableContent = BeanProperties.value("content").observe(data);
 		bindingContext.bindValue(targetObservableContent, modelObservableContent, strategyTest, null);
 
+		IObservableValue targetObservableContentTooltip = WidgetProperties.tooltipText().observe(text);
+		IObservableValue modelObservableInstancedirectoryTooltip = BeanProperties.value("content").observe(data);
+		bindingContext.bindValue(targetObservableContentTooltip, modelObservableInstancedirectoryTooltip, null, null);
+		//
 		return bindingContext;
 	}
 
@@ -356,6 +361,7 @@ public class FileOccurGui
 		if ( data.getContent() != null )
 		{
 			step.commitFile(file);
+//			System.out.println("Id des Prozesses: "+step.getParent().getRandomId());
 		}
 	}
 
