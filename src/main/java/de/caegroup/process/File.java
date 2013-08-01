@@ -51,11 +51,11 @@ implements Serializable
 	
 	public void performAllTests()
 	{
-		System.out.println("performing "+this.test.size()+" file tests");
+//		System.out.println("performing "+this.test.size()+" file tests");
 		for(Test t : this.test)
 		{
 			t.performTest(this);
-			System.out.println("performing test "+t.getName());
+//			System.out.println("performing test "+t.getName());
 		}
 	}
 	
