@@ -13,7 +13,7 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private String key = "";
+	private String key = "default";
 	private String glob = "";
 	//	private String filename = "";
 	private String description = "";
