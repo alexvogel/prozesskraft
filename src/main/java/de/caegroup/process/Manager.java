@@ -173,10 +173,10 @@ public class Manager
 			Calendar time_entry = Calendar.getInstance();
 			
 			// jeden step durchgehen
-		//	for(Step actualStep : p3.getSteps())
+//			for(Step actualStep : p3.getSteps())
 			Iterator<Step> iterstep = p3.getSteps().iterator();
 			boolean pradar =  p3.getPradar();
-			System.out.println("Anzahl Steps: "+p3.getSteps().size());
+//			System.out.println("Anzahl Steps: "+p3.getSteps().size());
 			while(iterstep.hasNext())
 			{
 				Step step = new Step(p3);
@@ -188,17 +188,14 @@ public class Manager
 				{
 					break;
 				}
-				String status = step.getStatus();
-//				System.out.println("step: "+step.getName()+" | status: "+step.getStatus());
+
 				// if step is waiting
-				if (status.equals("waiting"))
+				if (step.getStatus().equals("waiting"))
 				{
 					if (!(step.getName().equals("root")))
 					{
 						// versuchen zu initialisieren
-						System.out.println("step: "+step.getName()+" => start initializing");
 						boolean erfolgreich = step.initialize();
-						if (!(erfolgreich)) {System.out.println("step: "+step.getName()+" => start initializing not successfull");}
 					}
 					else
 					{
@@ -210,7 +207,7 @@ public class Manager
 						catch (IOException e)
 						{
 							// TODO Auto-generated catch block
-							System.out.println("problems with commit in step "+step.getName());
+//							System.out.println("problems with commit in step "+step.getName());
 							e.printStackTrace();
 						}
 //						catch (NullPointerException e)
@@ -223,25 +220,25 @@ public class Manager
 					}
 				}
 
-				if (status.equals("initialized"))
+				if (step.getStatus().equals("initialized"))
 				{
 					// versuchen den step aufzufaechern
 					step.fan();
 				}
 
-				if (status.equals("fanned"))
+				if (step.getStatus().equals("fanned"))
 				{
 					// versuchen alle works zu starten
 					step.work();
 				}
 
-				if (status.equals("working"))
+				if (step.getStatus().equals("working"))
 				{
 					// ueberpruefen ob work noch laeuft
 					step.work();
 				}
 
-				if (status.equals("worked"))
+				if (step.getStatus().equals("worked"))
 				{
 					// versuchen zu comitten
 					try
@@ -250,18 +247,18 @@ public class Manager
 					} catch (IOException e)
 					{
 						// TODO Auto-generated catch block
-						System.out.println("problems with commit in step "+step.getName());
+//						System.out.println("problems with commit in step "+step.getName());
 						e.printStackTrace();
 					}
 				}
 
-				if (status.equals("committing"))
+				if (step.getStatus().equals("committing"))
 				{
 					// ueberpruefen ob work noch laeuft
 //					step.commit();
 				}
 
-				if (status.equals("committed"))
+				if (step.getStatus().equals("committed"))
 				{
 					if (pradar)
 					{
