@@ -46,7 +46,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 
-public class Process
+public class Process extends ModelObject
 implements Serializable
 {
 	/*----------------------------
@@ -1339,6 +1339,7 @@ implements Serializable
 	public void setStatus(String status)
 	{
 		this.status = status;
+		firePropertyChange("status", this.status, this.status = status);
 	}
 
 	public void setRootdir(String rootdir)
