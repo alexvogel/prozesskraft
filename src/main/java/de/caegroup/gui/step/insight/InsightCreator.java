@@ -143,6 +143,25 @@ public class InsightCreator
 		tabItem_variables.setControl(composite_tabItem_variables);
 		new VariableGui(composite_tabItem_variables, step);
 
+//		if(step.getList().size() != 0)
+//		{
+			// ein tabItem fuer 'lists' erzeugen
+			CTabItem tabItem_lists = new CTabItem(tabFolder, SWT.NONE);
+			tabItem_lists.setText("lists");
+	
+			// erstellen eines composites fuer 'lists'
+			Composite composite_tabItem_lists = new Composite(tabFolder, SWT.NONE);
+			composite_tabItem_lists.setLayout(new GridLayout(1, false));
+			GridData gd_composite_lists = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+			gd_composite_lists.heightHint = 390;
+			gd_composite_lists.minimumWidth = 10;
+			gd_composite_lists.minimumHeight = 10;
+			composite_tabItem_lists.setLayoutData(gd_composite_lists);
+	
+			// befuellen des composites fuer 'lists'
+			tabItem_lists.setControl(composite_tabItem_lists);
+			new ListsGui(composite_tabItem_lists, step);
+//		}
 //		// wenn nicht 'root'
 //		if (!(step.getName().equals(step.getParent().getRootstepname())))
 //		{

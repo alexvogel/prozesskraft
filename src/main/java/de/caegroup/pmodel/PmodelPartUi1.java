@@ -75,6 +75,7 @@ public class PmodelPartUi1 extends ModelObject
 	static CommandLine line;
 	private DataBindingContext bindingContextVisual;
 	private DataBindingContext bindingContextMarked;
+	private DataBindingContext bindingContextProcess;
 	private Scale scale_zoom;
 	private Spinner spinner_textsize;
 	private Spinner spinner_labelsize;
@@ -83,6 +84,8 @@ public class PmodelPartUi1 extends ModelObject
 	private Process process = new Process();
 	
 	private Label label_marked = null;
+	private Label label_status = null;
+	
 	public PmodelViewModel einstellungen = new PmodelViewModel();
 	private StyledText text_logging = null;
 	PmodelViewPage applet;
@@ -92,7 +95,8 @@ public class PmodelPartUi1 extends ModelObject
 	Composite actualStepInsight = null;
 	CTabFolder tabFolder_12;
 	Map<String,Composite> stepInsight = new HashMap();
-	private Composite composite_13;
+	private Composite composite_131;
+	private Composite composite_132;
 
 	final Color colorLogError = new Color(new Shell().getDisplay(), 215, 165, 172);
 	final Color colorLogWarn = new Color(new Shell().getDisplay(), 202, 191, 142);
@@ -292,7 +296,7 @@ public class PmodelPartUi1 extends ModelObject
 		frame.setLocation(0, 0);
 		frame.setVisible(true);
 
-		composite_13 = new Composite(sashForm, SWT.BORDER);
+		Composite composite_13 = new Composite(sashForm, SWT.NONE);
 		composite_13.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		GridLayout gl_composite_13 = new GridLayout(1, false);
 		gl_composite_13.marginWidth = 0;
@@ -300,7 +304,48 @@ public class PmodelPartUi1 extends ModelObject
 		composite_13.setLayout(gl_composite_13);
 //		tabFolder_13.addSelectionListener(listener_tabFolder_selection);
 		new Label(composite_1, SWT.NONE);
+
+		SashForm sashForm_13 = new SashForm(composite_13, SWT.SMOOTH | SWT.VERTICAL);
+		sashForm_13.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+
+		composite_131 = new Composite(sashForm_13, SWT.BORDER);
+		composite_131.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridLayout gl_composite_131 = new GridLayout(2, false);
+		gl_composite_131.marginWidth = 0;
+		gl_composite_131.marginHeight = 0;
+		composite_131.setLayout(gl_composite_131);
+
+		Label label_1 = new Label(composite_131, SWT.NONE);
+		label_1.setText("process: ");
 		
+		Label label_processname = new Label(composite_131, SWT.NONE);
+		label_processname.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		label_processname.setText(this.process.getName());
+		
+		Label label_2 = new Label(composite_131, SWT.NONE);
+		label_2.setText("directory: ");
+		
+		Label label_instancedir = new Label(composite_131, SWT.NONE);
+		label_instancedir.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		if ((new java.io.File(this.process.getInfilebinary()).getParent()) != null)
+		{
+			label_instancedir.setText((new java.io.File(this.process.getInfilebinary()).getParent()));
+		}
+		
+		Label label_3 = new Label(composite_131, SWT.NONE);
+		label_3.setText("status: ");
+		
+		label_status = new Label(composite_131, SWT.NONE);
+		label_status.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		label_status.setText("unknown");
+		
+		composite_132 = new Composite(sashForm_13, SWT.BORDER);
+		composite_132.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridLayout gl_composite_132 = new GridLayout(1, false);
+		gl_composite_132.marginWidth = 0;
+		gl_composite_132.marginHeight = 0;
+		composite_132.setLayout(gl_composite_132);
+
 		Composite composite_2 = new Composite(composite, SWT.NONE);
 		composite_2.setLayout(new GridLayout(1, false));
 		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
@@ -320,6 +365,7 @@ public class PmodelPartUi1 extends ModelObject
 		
 		bindingContextVisual = initDataBindingsVisual();
 		bindingContextMarked = initDataBindingsMarked();
+		bindingContextProcess = initDataBindingsProcess();
 		
 		// erzeugen der 'step-insight' listeners beim wechsel der markierung
 		generateNewInsight(einstellungen);
@@ -352,11 +398,11 @@ public class PmodelPartUi1 extends ModelObject
 			actualStepInsight = this.stepInsight.get(einstellungen.getMarkedStepName());
 			
 			// das bestehende composite auf das parent setzen
-			actualStepInsight.setParent(composite_13);
+			actualStepInsight.setParent(composite_132);
 			log("debug", "reactivating existing controls");
 			
 			actualStepInsight.setVisible(true);
-			composite_13.layout(true);
+			composite_132.layout(true);
 		}
 
 		else
@@ -381,10 +427,10 @@ public class PmodelPartUi1 extends ModelObject
 			this.stepInsight.put(einstellungen.getMarkedStepName(), actualStepInsight);
 			
 			// und auf die sichtbare flaeche legen
-			actualStepInsight.setParent(composite_13);
+			actualStepInsight.setParent(composite_132);
 
 			actualStepInsight.setVisible(true);
-			composite_13.layout(true);
+			composite_132.layout(true);
 		}
 		
 	}
@@ -524,6 +570,17 @@ public class PmodelPartUi1 extends ModelObject
 		bindingContextMarked.bindValue(targetObservableMarked, modelObservableMarked, null, null);
 		//
 		return bindingContextMarked;
+	}
+	
+	protected DataBindingContext initDataBindingsProcess()
+	{
+		DataBindingContext bindingContextProcess = new DataBindingContext();
+		//
+		IObservableValue targetObservableStatus = WidgetProperties.text().observe(label_status);
+		IObservableValue modelObservableStatus = BeanProperties.value("status").observe(process);
+		bindingContextProcess.bindValue(targetObservableStatus, modelObservableStatus, null, null);
+		//
+		return bindingContextProcess;
 	}
 	
 		
