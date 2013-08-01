@@ -84,6 +84,7 @@ implements Serializable
 	private String fileDocJrxml = new String();
 	private String rootstepname = "root";
 	private ArrayList<Log> log = new ArrayList<Log>();
+	private int randomId = 0;  
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -92,6 +93,10 @@ implements Serializable
 		name = "unnamed";
 		description = "without description";
 		status = "waiting";
+		
+		Random generator = new Random();
+		generator.setSeed(System.currentTimeMillis());
+		randomId = generator.nextInt();
 		
 //		Step step = new Step(this);
 //		step.setName(this.rootstepname);
@@ -1278,6 +1283,11 @@ implements Serializable
 	public String getRootstepname()
 	{
 		return rootstepname;
+	}
+
+	public int getRandomId()
+	{
+		return randomId;
 	}
 
 	/*----------------------------
