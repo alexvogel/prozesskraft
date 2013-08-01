@@ -131,6 +131,7 @@ implements Serializable, Cloneable
 		}
 		
 		this.setStatus("initializing");
+		log("info", "setting status to 'initializing'");
 		boolean initializing_success = true;
 		// ueber alle inits iterieren
 		for( Init actualInit : this.getInits())
@@ -139,72 +140,79 @@ implements Serializable, Cloneable
 			String fromobjecttype = actualInit.getFromobjecttype();
 			String name = actualInit.getName();
 			String returnfield = actualInit.getReturnfield();
-			ArrayList<Step> fromsteps = parent.getSteps(actualInit.getFromstep());
+			Step fromstep = parent.getStep(actualInit.getFromstep());
 			
-			for(Step actualFromStep : fromsteps)
+			log("debug", "init '"+name+"': looking for field '"+returnfield+"' from a "+fromobjecttype+" of step '"+fromstep.getName()+"'");
+
+			ArrayList<Match> matchs = actualInit.getMatch();
+		
+			// wenn es ein file ist
+			if (fromobjecttype.equals("file"))
 			{
-				ArrayList<Match> matchs = actualInit.getMatch();
-			
-				// wenn es ein file ist
-				if (fromobjecttype.equals("file"))
+				ArrayList<File> files_from_fromstep = fromstep.getFile();
+				ArrayList<File> files_from_fromstep_which_matched = new ArrayList<File>();
+				// wenn match-angaben vorhanden sind, wird die fileliste reduziert
+				
+				for(Match actualMatch : matchs)
 				{
-					ArrayList<File> files_from_fromstep = actualFromStep.getFile();
-					ArrayList<File> files_from_fromstep_which_matched = new ArrayList<File>();
-					// wenn match-angaben vorhanden sind, wird die fileliste reduziert
-					Iterator<Match> itermatch = matchs.iterator();
-					// iteriere ueber matchs
-					while (itermatch.hasNext())
+					log("debug", "init '"+name+"': accepting only "+fromobjecttype+"(s) which match '"+actualMatch.getPattern()+"' and field '"+actualMatch.getField()+"'");
+					// iteriere ueber alle Files der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
+					for(File actualFile : files_from_fromstep)
 					{
-						Match match = itermatch.next();
-						// iteriere ueber alle Files der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
-						Iterator<File> iterfile = files_from_fromstep.iterator();
-						while (iterfile.hasNext())
+						if (actualFile.match(actualMatch))
 						{
-							File file = iterfile.next();
-							if (file.match(match))
-							{
-								files_from_fromstep_which_matched.add(file);
-							}
+							files_from_fromstep_which_matched.add(actualFile);
 						}
 					}
-					// wenn die fileliste leer ist, dann ist initialisierung fehlgeschlagen
-					if (files_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
-					// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
-					List liste = new List();
-					this.addList(liste);
-					
-					for (File actualFile : files_from_fromstep_which_matched)
-					{
-						liste.addItem(actualFile.getField(returnfield));
-					}
 				}
+				// wenn die fileliste leer ist, dann ist initialisierung fehlgeschlagen
+				if (files_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
+				// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
+				List liste = new List();
 
-				// wenn es ein variable ist
-				else if (fromobjecttype.equals("variable"))
+				// hinzufuegen der listitems
+				for (File actualFile : files_from_fromstep_which_matched)
 				{
-					ArrayList<Variable> variables_from_fromstep = actualFromStep.getVariable();
-					ArrayList<Variable> variables_from_fromstep_which_matched = new ArrayList<Variable>();
+					liste.addItem(actualFile.getField(returnfield));
+				}
+				
+				this.addList(liste);
+				liste.setName(actualInit.getName());
 
-					for (Match actualMatch : matchs)
+				log("debug", "init '"+name+"': new list '"+liste.getName()+"' with "+liste.getItem().size()+" item(s).");
+				
+			}
+			// wenn es ein variable ist
+			else if (fromobjecttype.equals("variable"))
+			{
+				ArrayList<Variable> variables_from_fromstep = fromstep.getVariable();
+				ArrayList<Variable> variables_from_fromstep_which_matched = new ArrayList<Variable>();
+
+				for (Match actualMatch : matchs)
+				{
+					log("debug", "init '"+name+"': accepting only "+fromobjecttype+"(s) which match '"+actualMatch.getPattern()+"' and field '"+actualMatch.getField()+"'");
+					// iteriere ueber alle Variablen der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
+					for (Variable actualVariable : variables_from_fromstep)
 					{
-						// iteriere ueber alle Variablen der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
-						for (Variable actualVariable : variables_from_fromstep)
+						if (actualVariable.match(actualMatch))
 						{
-							if (actualVariable.match(actualMatch))
-							{
-								variables_from_fromstep_which_matched.add(actualVariable);
-							}
+							variables_from_fromstep_which_matched.add(actualVariable);
 						}
 					}
-					if (variables_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
-					// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
-					List liste = new List();
-					this.addList(liste);
-					for(Variable actualVariable : variables_from_fromstep_which_matched)
-					{
-						liste.addItem(actualVariable.getField(returnfield));
-					}
 				}
+				if (variables_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
+				// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
+				List liste = new List();
+
+				for(Variable actualVariable : variables_from_fromstep_which_matched)
+				{
+					liste.addItem(actualVariable.getField(returnfield));
+				}
+				
+				this.addList(liste);
+				liste.setName(actualInit.getName());
+
+				log("debug", "init '"+name+"': new list '"+liste.getName()+"' with "+liste.getItem().size()+" item(s).");
 			}
 		}
 		// wenn alle initialisierung funktioniert habenn den status aendern
@@ -212,17 +220,21 @@ implements Serializable, Cloneable
 		if (initializing_success)
 		{
 			this.setStatus("initialized");
+			log("info", "setting status to 'initialized'");
 						
 			return true;
-		};
-		return false;
+		}
+		else
+		{
+			log("debug", "initialization failed.");
+			return false;
+		}
 	}
 	
 	public void fan() throws CloneNotSupportedException
 	{
 		this.setStatus("fanning");
-		
-		System.out.println("anzahl der Steps im Prozess vor dem fanning: "+this.parent.getSteps().size());
+		log("info", "setting status to 'fanning'");
 		
 		if (!(this.loop.equals("")))
 		{
@@ -239,13 +251,17 @@ implements Serializable, Cloneable
 					newstep.setLoop("");
 					newstep.setName(newstep.getName()+"@"+x);
 					newstep.setStatus("fanned");
+					newstep.log("info", "setting status to 'fanned'");
 					this.parent.addStep(newstep);
 					x++;
 				}
 				this.parent.removeStep(this);
 			}
 		}
+		
+		// falls kein loop, soll der status trotzdem gesetzt werden
 		this.setStatus("fanned");
+		log("info", "setting status to 'fanned'");
 		System.out.println("anzahl der Steps im Prozess nach dem fanning: "+this.parent.getSteps().size());
 	}
 

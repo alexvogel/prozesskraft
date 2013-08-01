@@ -41,7 +41,8 @@ implements Serializable
 		String pattern = match.getPattern();
 		
 		String string_to_test = new String();
-		if      (fieldname.equals("filename")) 	{string_to_test = this.getFilename();}
+		if      (fieldname.equals("key")) 	{string_to_test = this.getKey();}
+		else if (fieldname.equals("filename")) 	{string_to_test = this.getFilename();}
 		else if (fieldname.equals("absfilename")) 	{string_to_test = this.getAbsfilename();}
 
 		if (string_to_test.matches(".*"+pattern+".*")) { return true;	}
