@@ -1291,6 +1291,12 @@ implements Serializable
 		return randomId;
 	}
 
+	public ArrayList<Log> getLog()
+	{
+		return this.log;
+	}
+
+
 	/*----------------------------
 	  methods set
 	----------------------------*/
