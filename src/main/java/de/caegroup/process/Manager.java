@@ -219,6 +219,7 @@ public class Manager
 						p3.log("debug", "manager "+managerid+": committing step '"+step.getName()+"'");
 						try
 						{
+							p3.log("debug", "manager "+managerid+": infileXml is now: "+p3.getInfilexml());
 							if (step.commit())
 							{
 								p3.log("debug", "manager "+managerid+": commit of step '"+step.getName()+"' succesfull");
