@@ -237,7 +237,7 @@ implements Serializable, Cloneable
 		this.setStatus("fanning");
 		log("info", "setting status to 'fanning'");
 		
-		if (!(this.loop.equals("")))
+		if (this.loop!=null && !(this.loop.equals("")))
 		{
 			// wenn die loopliste mindestens 1 wert enthaelt, ueber dioe liste iterieren und fuer jeden wert den aktuellen step clonen
 			if (this.getListItems(this.loop).size() > 0)

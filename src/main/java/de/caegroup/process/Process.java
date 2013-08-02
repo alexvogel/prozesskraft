@@ -13,6 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -85,6 +86,7 @@ implements Serializable
 	private String rootstepname = "root";
 	private ArrayList<Log> log = new ArrayList<Log>();
 	private int randomId = 0;  
+	private String touch = "";
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -1296,6 +1298,10 @@ implements Serializable
 		return this.log;
 	}
 
+	public String getTouch()
+	{
+		return touch;
+	}
 
 	/*----------------------------
 	  methods set
@@ -1441,4 +1447,16 @@ implements Serializable
 	{
 		this.rootstepname = rootstepname;
 	}
+
+	public void touch()
+	{
+		setTouch(new Timestamp(System.currentTimeMillis()).toString());
+	}
+
+	public void setTouch(String touch)
+	{
+//		this.touch = (new Timestamp(System.currentTimeMillis())).toString();
+		firePropertyChange("touch", this.touch, this.touch = touch);
+	}
+
 }
