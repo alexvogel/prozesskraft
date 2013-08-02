@@ -763,6 +763,7 @@ public class PrampPartUi1 extends ModelObject
 			try
 			{
 				this.process = tmp.readXml();
+				this.process.setInfilexml(processDefinition);
 			} catch (JAXBException e)
 			{
 				// TODO Auto-generated catch block
@@ -1077,6 +1078,9 @@ public class PrampPartUi1 extends ModelObject
 //					System.out.println("Id des Prozesses: "+process.getRandomId());
 					
 					process.setOutfilebinary(this.einstellungen.getInstancedirectory()+"/"+this.einstellungen.getProcess()+".pmb");
+					process.setInfilebinary(this.einstellungen.getInstancedirectory()+"/"+this.einstellungen.getProcess()+".pmb");
+					process.setRootdir(this.einstellungen.getInstancedirectory());
+					
 					process.writeBinary();
 
 					// starten des process-manager
