@@ -122,28 +122,32 @@ public class Manager
 		
 		long loop_period_seconds = 20;
 		
+		double managerid = p1.genManagerid();
+
 		// prozessinstanz einlesen
 		p1.setInfilebinary(line.getOptionValue("instance"));
 		
 		Process p2;
 		p2 = p1.readBinary();
 		
-		p2.log("info", "setting binary file for input to: "+line.getOptionValue("instance"));
-		System.out.println("setting binary file for input to: "+line.getOptionValue("instance"));
-
-		p2.log("info", "reading binary file: "+line.getOptionValue("instance"));
-
-		p2.setOutfilebinary(line.getOptionValue("instance"));
-		p2.log("info", "setting binary file for output: "+line.getOptionValue("instance"));
-
-		// neue manager id generieren und sofort in die instanz auf platte schreiben
-		double managerid = p1.genManagerid();
 		p2.setManagerid(managerid);
-		p2.log("info", "setting manager-id to: "+managerid);
-		System.out.println("setting manager-id to: "+managerid);
+		p2.log("info", "manager "+managerid+": occupying instance.");
+		p2.log("debug", "manager "+managerid+": setting new manager-id to signal other running managers that they are not longer needed.");
 
+		p2.log("debug", "manager "+managerid+": setting binary file for input to: "+line.getOptionValue("instance"));
+//		System.out.println("setting binary file for input to: "+line.getOptionValue("instance"));
+
+		p2.log("debug", "manager "+managerid+": reading binary file: "+line.getOptionValue("instance"));
+
+		p2.setInfilebinary(line.getOptionValue("instance"));
+		p2.setOutfilebinary(line.getOptionValue("instance"));
+		p2.log("debug", "manager "+managerid+": setting binary file for output: "+line.getOptionValue("instance"));
+
+		// instanz auf platte schreiben (um anderen managern zu signalisieren, dass sie nicht mehr gebraucht werden
+//		System.out.println("setting manager-id to: "+managerid);
+
+		p2.log("debug", "manager "+managerid+": writing process to binary file to occupy instance.");
 		p2.writeBinary();
-		p2.log("info", "writing process to binary file: "+managerid);
 
 		boolean incharge = true;
 		
@@ -151,21 +155,25 @@ public class Manager
 		{
 			// processinstanz frisch einlesen
 			Process p3 = p1.readBinary();
-			p3.log("info", "reading binary file: "+p1.getInfilebinary());
+			p3.setInfilebinary(p1.getInfilebinary());
+			p3.setOutfilebinary(p1.getOutfilebinary());
+
+			p3.log("debug", "manager "+managerid+": reading binary file: "+p1.getInfilebinary());
 			p3.setOutfilebinary(line.getOptionValue("instance"));
 			
 			// wenn der prozess den status 'finished' hat, soll dieses programm beendet werden
 			if (p3.getStatus().equals("finished"))
 			{
-				p3.log("info", "process instance is finished. goodbye from manager id "+p3.getManagerid());
-				System.out.println("process instance is finished. goodbye from manager id "+managerid+".");
+				p3.log("info", "manager "+managerid+": process instance is finished. goodbye from manager id "+p3.getManagerid());
+				p3.writeBinary();
+//				System.out.println("process instance is finished. goodbye from manager id "+managerid+".");
 				System.exit(0);
 			}
 			
 			// die manager-id mit eigener vergleichen. wenn nicht gleich, dann beenden.
 			if (!(p3.getManagerid() == managerid))
 			{
-				p3.log("warn", "it appears that another manager (id: "+p3.getManagerid()+") took over. killing myself. bye.");
+//				p3.log("warn", "manager "+managerid+": it appears that another manager (id: "+p3.getManagerid()+") took over. killing myself. bye.");
 				System.out.println("it appears another instance of manager (id: "+p3.getManagerid()+") took over. so i'm (id: "+managerid+") not longer needed. killing myself. byebye.");
 				System.exit(1);
 			}
@@ -195,59 +203,100 @@ public class Manager
 					if (!(step.getName().equals("root")))
 					{
 						// versuchen zu initialisieren
-						boolean erfolgreich = step.initialize();
+						p3.log("debug", "manager "+managerid+": initializing step '"+step.getName()+"'");
+						if (step.initialize())
+						{
+							p3.log("debug", "manager "+managerid+": initialisation of step '"+step.getName()+"' succesfull");
+						}
+						else
+						{
+							p3.log("debug", "manager "+managerid+": initialisation of step '"+step.getName()+"' failed");
+						}
 					}
 					else
 					{
 						// versuchen zu comitten
+						p3.log("debug", "manager "+managerid+": committing step '"+step.getName()+"'");
 						try
 						{
-							step.commit();
+							if (step.commit())
+							{
+								p3.log("debug", "manager "+managerid+": commit of step '"+step.getName()+"' succesfull");
+							}
+							else
+							{
+								p3.log("debug", "manager "+managerid+": commit of step '"+step.getName()+"' failed");
+							}
 						}
 						catch (IOException e)
 						{
-							// TODO Auto-generated catch block
-//							System.out.println("problems with commit in step "+step.getName());
+							p3.log("debug", "manager "+managerid+": caught an IOException.");
 							e.printStackTrace();
 						}
-//						catch (NullPointerException e)
-//						{
-//							// TODO Auto-generated catch block
-//							System.out.println("problems with commit in step "+step.getName());
-//							e.printStackTrace();
-//						}
-//						System.out.println("step: "+step.getName()+" => start committing");
 					}
 				}
 
 				if (step.getStatus().equals("initialized"))
 				{
 					// versuchen den step aufzufaechern
-					step.fan();
+					p3.log("debug", "manager "+managerid+": fanning step '"+step.getName()+"'");
+					if (step.fan())
+					{
+						p3.log("debug", "manager "+managerid+": fan-out of step '"+step.getName()+"' succesfull");
+					}
+					else
+					{
+						p3.log("debug", "manager "+managerid+": fan-out of step '"+step.getName()+"' failed");
+					}
 				}
 
 				if (step.getStatus().equals("fanned"))
 				{
+					p3.log("debug", "manager "+managerid+": working step '"+step.getName()+"'");
 					// versuchen alle works zu starten
-					step.work();
+					if (step.work())
+					{
+						p3.log("debug", "manager "+managerid+": launching work-program of step '"+step.getName()+"' succesfull");
+					}
+					else
+					{
+						p3.log("debug", "manager "+managerid+": launching work-program of step '"+step.getName()+"' failed");
+					}
 				}
 
 				if (step.getStatus().equals("working"))
 				{
 					// ueberpruefen ob work noch laeuft
-					step.work();
+					p3.log("debug", "manager "+managerid+": check whether work-program of step '"+step.getName()+"' is still running");
+					if (step.work())
+					{
+						p3.log("debug", "manager "+managerid+": work-program of step '"+step.getName()+"' finished");
+					}
+					else
+					{
+						p3.log("debug", "manager "+managerid+": work-program of step '"+step.getName()+"' is still running");
+					}
 				}
 
 				if (step.getStatus().equals("worked"))
 				{
 					// versuchen zu comitten
+					p3.log("debug", "manager "+managerid+": commit of step '"+step.getName()+"'");
 					try
 					{
-						step.commit();
+						if (step.commit())
+						{
+							p3.log("debug", "manager "+managerid+": commit of step '"+step.getName()+"' succesfull");
+						}
+						else
+						{
+							p3.log("debug", "manager "+managerid+": commit of step '"+step.getName()+"' failed");
+						}
 					} catch (IOException e)
 					{
 						// TODO Auto-generated catch block
 //						System.out.println("problems with commit in step "+step.getName());
+						p3.log("debug", "manager "+managerid+": caught an IOException.");
 						e.printStackTrace();
 					}
 				}
@@ -277,11 +326,12 @@ public class Manager
 				
 			}
 			
-			p3.printToc();
+//			p3.printToc();
 			p3.setDatetonow();
+			p3.touch();
 			p3.detStatus(); 
 			p3.writeBinary();
-			
+
 			Calendar time_exit = Calendar.getInstance();
 			long seconds_for_loop = (time_exit.getTimeInMillis() - time_entry.getTimeInMillis()) / 1000;
 			
