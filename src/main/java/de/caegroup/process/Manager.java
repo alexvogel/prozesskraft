@@ -147,6 +147,7 @@ public class Manager
 //		System.out.println("setting manager-id to: "+managerid);
 
 		p2.log("debug", "manager "+managerid+": writing process to binary file to occupy instance.");
+		p2.log("debug", "manager "+managerid+": p2: infileXml is now: "+p2.getInfilexml());
 		p2.writeBinary();
 
 		boolean incharge = true;
@@ -155,11 +156,9 @@ public class Manager
 		{
 			// processinstanz frisch einlesen
 			Process p3 = p1.readBinary();
-			p3.setInfilebinary(p1.getInfilebinary());
-			p3.setOutfilebinary(p1.getOutfilebinary());
+			p3.log("debug", "manager "+managerid+": p3: infileXml is now: "+p3.getInfilexml());
 
 			p3.log("debug", "manager "+managerid+": reading binary file: "+p1.getInfilebinary());
-			p3.setOutfilebinary(line.getOptionValue("instance"));
 			
 			// wenn der prozess den status 'finished' hat, soll dieses programm beendet werden
 			if (p3.getStatus().equals("finished"))
@@ -219,7 +218,6 @@ public class Manager
 						p3.log("debug", "manager "+managerid+": committing step '"+step.getName()+"'");
 						try
 						{
-							p3.log("debug", "manager "+managerid+": infileXml is now: "+p3.getInfilexml());
 							if (step.commit())
 							{
 								p3.log("debug", "manager "+managerid+": commit of step '"+step.getName()+"' succesfull");
