@@ -231,8 +231,9 @@ implements Serializable, Cloneable
 		}
 	}
 	
-	public void fan() throws CloneNotSupportedException
+	public boolean fan() throws CloneNotSupportedException
 	{
+		boolean success = false;
 		this.setStatus("fanning");
 		log("info", "setting status to 'fanning'");
 		
@@ -251,23 +252,28 @@ implements Serializable, Cloneable
 					newstep.setLoop("");
 					newstep.setName(newstep.getName()+"@"+x);
 					newstep.setStatus("fanned");
+					newstep.log("info", "this step '"+newstep.getName()+"' was fanned out from step '"+this.getName()+"'");
 					newstep.log("info", "setting status to 'fanned'");
 					this.parent.addStep(newstep);
 					x++;
 				}
 				this.parent.removeStep(this);
+				return true;
 			}
 		}
 		
 		// falls kein loop, soll der status trotzdem gesetzt werden
 		this.setStatus("fanned");
 		log("info", "setting status to 'fanned'");
-		System.out.println("anzahl der Steps im Prozess nach dem fanning: "+this.parent.getSteps().size());
+		return true;
+//		System.out.println("anzahl der Steps im Prozess nach dem fanning: "+this.parent.getSteps().size());
 	}
 
-	public void work()
+	public boolean work()
 	{
+		boolean success = true;
 		this.setStatus("working");
+		log("info", "setting status to 'working'");
 
 		Work work = this.work;
 //			String call = work.generateCall(this.getListall());
@@ -280,43 +286,54 @@ implements Serializable, Cloneable
 		if (this.isPidfileexistent())
 		{
 			String pid = this.getPid();	// aus der absdir des 'work' soll aus der Datei '.pid' die pid ermittelt werden. wenn noch keine existiert, wurde der schritt noch nicht gestartet
-			System.out.println("PROCESS-STEP BEREITS GESTARTET: "+pid);
+			log("info", "process work (script,program,..) already launched. pid="+pid);
+//			System.out.println("PROCESS-STEP BEREITS GESTARTET: "+pid);
 			
 			if (Step.isPidalive(pid))
 			{
-				System.out.println("PROCESS-STEP LAEUFT NOCH: "+pid);
+				log("info", "process work (script,program,..) still running. pid="+pid);
+				success = false;
+//				System.out.println("PROCESS-STEP LAEUFT NOCH: "+pid);
 			}
 			else
 			{
-				System.out.println("PROCESS-STEP LAEUFT NICHT MEHR: "+pid);
+				log("info", "process work (script,program,..) already finished. pid="+pid);
+//				System.out.println("PROCESS-STEP LAEUFT NICHT MEHR: "+pid);
 				this.setStatus("worked");
+				log("info", "setting status to 'worked'");
+				success = true;
 			}
 		}
 		// wenn schritt noch nicht gestartet wurde
 		else 
 		{
-			System.out.println("PROCESS-STEP IST NOCH NICHT GESTARTET");
+//			System.out.println("PROCESS-STEP IST NOCH NICHT GESTARTET");
+			log("info", "process work (script,program,..) not lauched yet");
+			log("info", "creating directory "+this.getAbsdir());
 			this.mkdir(this.getAbsdir());
 			
 			try
 			{
 //					System.out.println("AUFRUF: /bin/bash /home/avo/bin/procsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
 //					String[] args_for_syscall = {"/bin/bash", "/home/avo/bin/procsyscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
-				System.out.println("AUFRUF: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
+//				System.out.println("AUFRUF: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
 				String[] args_for_syscall = {"processsyscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
 				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
+//				log("info", "constructing the systemcall to: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
 
 				// erweitern des PATHs um den prozesseigenen path
 				Map<String,String> env = pb.environment();
 				String path = env.get("PATH");
 				path = this.parent.getPath()+":"+path;
 				env.put("PATH", path);
-				System.out.println("new PATH: "+path);
+				log("info", "path: "+path);
+//				System.out.println("new PATH: "+path);
 				
 				java.io.File directory = new java.io.File(this.getAbsdir());
 				pb.directory(directory);
 				java.io.File checkdirectory = pb.directory().getAbsoluteFile();
-				System.out.println("ALS AKTUELLES VERZEICHNIS WIRD GESETZT+GECHECKT: "+checkdirectory);
+//				System.out.println("ALS AKTUELLES VERZEICHNIS WIRD GESETZT+GECHECKT: "+checkdirectory);
+				log("info", "calling: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
 				java.lang.Process p = pb.start();
 //					Map<String,String> env = pb.environment();
 //					String cwd = env.get("PWD");
@@ -326,18 +343,24 @@ implements Serializable, Cloneable
 //					pb.directory(directory);
 //					java.lang.Process p = pb.start();
 //					java.lang.Process p = Runtime.getRuntime().exec(args_for_syscall);
-				System.out.println("PROCESS: "+p.hashCode());
+//				System.out.println("PROCESS: "+p.hashCode());
+				log("info", "process work (script,program,..) lauched. pid="+p.hashCode());
+				success = true;
 			}			
 			catch (Exception e2)
 			{
-				e2.printStackTrace();
+//				e2.printStackTrace();
+				
+				log("error", "something went wrong. an exception...");
+				success = false;
 			}
 		}
+		return success;
 	}
 	
 
 	// eine extra methode fuer den step 'root'. es werden alle files/variablen aus 'path' committet
-	public void rootcommit() throws IOException
+	public boolean rootcommit() throws IOException
 	{
 
 		//ueber alle initCommitDirs verzeichnisse iterieren
@@ -357,6 +380,8 @@ implements Serializable, Cloneable
 			this.commitvarfile(commitvarfile);
 		}
 		this.setStatus("finished");
+		
+		return true;
 	}
 	
 	// den inhalt eines ganzen directories in den aktuellen step committen
@@ -527,8 +552,10 @@ implements Serializable, Cloneable
 		return commitvarfile(file);
 	}
 
-	public void commit() throws IOException
+	public boolean commit() throws IOException
 	{
+		boolean success = true;
+
 		this.log("info", "will try to commit...");
 		this.setStatus("committing");
 		this.log("info", "status is set to "+this.getStatus());
@@ -536,13 +563,12 @@ implements Serializable, Cloneable
 		// wenn es sich um root handelt, wird besonders committed
 		if (this.getName().equals(this.parent.getRootstepname()))
 		{
-			this.rootcommit();
+			success = this.rootcommit();
 		}
 		
 		// wenn es sich nicht um root handelt
 		else
 		{
-			boolean success = true;
 			// ueber alle commits iterieren
 			for( Commit actualCommit : this.commit)
 			{
@@ -596,6 +622,7 @@ implements Serializable, Cloneable
 				this.setStatus("finished");
 			}
 		}
+		return success;
 	}
 
 	public boolean areAllcommitssuccessfull()
