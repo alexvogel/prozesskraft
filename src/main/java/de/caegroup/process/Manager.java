@@ -124,8 +124,20 @@ public class Manager
 		
 		double managerid = p1.genManagerid();
 
+		java.io.File fileBinary = new java.io.File(line.getOptionValue("instance"));
+		String pathBinary = "";
+		
+		if (fileBinary.exists())
+		{
+			pathBinary = fileBinary.getAbsolutePath();
+		}
+		else
+		{
+			System.out.println("file does not exist: "+fileBinary.getAbsolutePath());
+		}
+		
 		// prozessinstanz einlesen
-		p1.setInfilebinary(line.getOptionValue("instance"));
+		p1.setInfilebinary(pathBinary);
 		
 		Process p2;
 		p2 = p1.readBinary();
@@ -134,20 +146,20 @@ public class Manager
 		p2.log("info", "manager "+managerid+": occupying instance.");
 		p2.log("debug", "manager "+managerid+": setting new manager-id to signal other running managers that they are not longer needed.");
 
-		p2.log("debug", "manager "+managerid+": setting binary file for input to: "+line.getOptionValue("instance"));
+		p2.log("debug", "manager "+managerid+": setting binary file for input to: "+pathBinary);
 //		System.out.println("setting binary file for input to: "+line.getOptionValue("instance"));
 
-		p2.log("debug", "manager "+managerid+": reading binary file: "+line.getOptionValue("instance"));
+		p2.log("debug", "manager "+managerid+": reading binary file: "+pathBinary);
 
-		p2.setInfilebinary(line.getOptionValue("instance"));
-		p2.setOutfilebinary(line.getOptionValue("instance"));
-		p2.log("debug", "manager "+managerid+": setting binary file for output: "+line.getOptionValue("instance"));
+		p2.setInfilebinary(pathBinary);
+		p2.setOutfilebinary(pathBinary);
+		p2.log("debug", "manager "+managerid+": setting binary file for output: "+pathBinary);
 
 		// instanz auf platte schreiben (um anderen managern zu signalisieren, dass sie nicht mehr gebraucht werden
 //		System.out.println("setting manager-id to: "+managerid);
 
 		p2.log("debug", "manager "+managerid+": writing process to binary file to occupy instance.");
-		p2.log("debug", "manager "+managerid+": p2: infileXml is now: "+p2.getInfilexml());
+
 		p2.writeBinary();
 
 		boolean incharge = true;
@@ -156,7 +168,6 @@ public class Manager
 		{
 			// processinstanz frisch einlesen
 			Process p3 = p1.readBinary();
-			p3.log("debug", "manager "+managerid+": p3: infileXml is now: "+p3.getInfilexml());
 
 			p3.log("debug", "manager "+managerid+": reading binary file: "+p1.getInfilebinary());
 			
