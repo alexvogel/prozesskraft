@@ -167,10 +167,10 @@ public class Manager
 		while(incharge)
 		{
 			// processinstanz frisch einlesen
-			Process p3 = p1.readBinary();
+			Process p3 = p2.readBinary();
 
 			p3.log("debug", "manager "+managerid+": actual infilexml is: "+p3.getInfilexml());
-			p3.log("debug", "manager "+managerid+": reading binary file: "+p1.getInfilebinary());
+			p3.log("debug", "manager "+managerid+": reading binary file: "+p2.getInfilebinary());
 			
 			// wenn der prozess den status 'finished' hat, soll dieses programm beendet werden
 			if (p3.getStatus().equals("finished"))
