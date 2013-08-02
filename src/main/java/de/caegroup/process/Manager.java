@@ -82,6 +82,7 @@ public class Manager
 		options.addOption( help );
 		options.addOption( v );
 		options.addOption( instance );
+		options.addOption( stop );
 		
 		/*----------------------------
 		  create the parser
