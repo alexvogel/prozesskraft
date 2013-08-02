@@ -153,7 +153,7 @@ public class Manager
 			p2.setManagerid(0);
 			p2.setOutfilebinary(pathBinary);
 			p2.writeBinary();
-			exiter();
+			System.exit(0);
 		}
 		
 		// prozessinstanz einlesen
