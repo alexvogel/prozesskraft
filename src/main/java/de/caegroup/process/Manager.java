@@ -68,6 +68,12 @@ public class Manager
 //				.isRequired()
 				.create("instance");
 				
+		Option stop = OptionBuilder.withArgName("stop")
+//				.hasArg()
+				.withDescription("[optional] stops a running manager for given instance")
+//				.isRequired()
+				.create("stop");
+				
 		/*----------------------------
 		  create options object
 		----------------------------*/
@@ -134,6 +140,15 @@ public class Manager
 		else
 		{
 			System.out.println("file does not exist: "+fileBinary.getAbsolutePath());
+		}
+		
+		if ( line.hasOption("stop") )
+		{
+			p1.setInfilebinary(pathBinary);
+			Process p2 = p1.readBinary();
+			p2.setManagerid(0);
+			p2.writeBinary();
+			exiter();
 		}
 		
 		// prozessinstanz einlesen
