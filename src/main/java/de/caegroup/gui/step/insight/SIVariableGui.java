@@ -24,10 +24,10 @@ import de.caegroup.process.Log;
 import de.caegroup.process.Step;
 import de.caegroup.process.Variable;
 
-public class ListGui
+public class SIVariableGui
 {
 	private Composite parent;
-	private de.caegroup.process.List list;
+	private Step step;
 	
 	TableViewer viewer;
 //	Composite composite;
@@ -35,10 +35,10 @@ public class ListGui
 //	ArrayList<VariableGui> variableGui = new ArrayList<VariableGui>();
 //	ArrayList<FileGui> fileGui = new ArrayList<FileGui>();
 
-	public ListGui(Composite parent, de.caegroup.process.List list)
+	public SIVariableGui(Composite parent, Step step)
 	{
 		this.parent = parent;
-		this.list = list;
+		this.step = step;
 		Composite composite = new Composite(this.parent, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 		composite.setLayoutData(gd_composite);
@@ -59,15 +59,19 @@ public class ListGui
 		fD[0].setHeight(8);
 		table.setFont(new Font(table.getDisplay(), fD[0]));
 
-		TableColumn colItem = new TableColumn(table, SWT.LEFT);
-		colItem.setText("item");
-		colItem.setWidth(80);
+		TableColumn colTime = new TableColumn(table, SWT.LEFT);
+		colTime.setText("key");
+		colTime.setWidth(80);
 		
+		TableColumn colLevel = new TableColumn(table, SWT.LEFT);
+		colLevel.setText("value");
+		colLevel.setWidth(150);
+
 		viewer.setContentProvider(new MyContentProvider());
 		viewer.setLabelProvider(new MyLabelProvider());
-		viewer.setInput(list.getItem());
+		viewer.setInput(step.getVariable());
 		
-//		System.out.println("Anzahl ist: "+list.getItem().size());
+		System.out.println("Anzahl ist: "+step.getLog().size());
 	}
 	
 	public class MyContentProvider implements IStructuredContentProvider
@@ -126,12 +130,15 @@ public class ListGui
 
 		public String getColumnText(Object element, int columnIndex)
 		{
-			String item = (String) element;
+			Variable v = (Variable) element;
 			
 			switch(columnIndex)
 			{
 				case 0:
-					return item;
+					return v.getKey();
+					
+				case 1:
+					return v.getValue();
 			}
 			// should never get here
 			return "";

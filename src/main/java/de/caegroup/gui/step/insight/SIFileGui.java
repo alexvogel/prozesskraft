@@ -23,7 +23,7 @@ import de.caegroup.process.File;
 import de.caegroup.process.Log;
 import de.caegroup.process.Step;
 
-public class FileGui
+public class SIFileGui
 {
 	private Composite parent;
 	private Step step;
@@ -34,7 +34,7 @@ public class FileGui
 //	ArrayList<VariableGui> variableGui = new ArrayList<VariableGui>();
 //	ArrayList<FileGui> fileGui = new ArrayList<FileGui>();
 
-	public FileGui(Composite parent, Step step)
+	public SIFileGui(Composite parent, Step step)
 	{
 		this.parent = parent;
 		this.step = step;

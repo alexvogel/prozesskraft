@@ -33,7 +33,7 @@ import de.caegroup.process.Step;
 import de.caegroup.process.Variable;
 import de.caegroup.process.Process;
 
-public class InsightCreator
+public class SIInsightCreator
 {
 	Step step;
 	Composite parent;
@@ -43,7 +43,7 @@ public class InsightCreator
 	
 //	ArrayList<CommitGui> commitGui = new ArrayList<CommitGui>();
 //	
-	public InsightCreator(Composite parent, Step step)
+	public SIInsightCreator(Composite parent, Step step)
 	{
 		this.parent = parent;
 		this.step = step;
@@ -107,7 +107,7 @@ public class InsightCreator
 
 		// befuellen des composites fuer 'log'
 		tabItem_log.setControl(composite_tabItem_log);
-		new LogGui(composite_tabItem_log, step);
+		new SILogGui(composite_tabItem_log, step);
 
 		// ein tabItem fuer 'files' erzeugen
 		CTabItem tabItem_files = new CTabItem(tabFolder, SWT.NONE);
@@ -124,7 +124,7 @@ public class InsightCreator
 
 		// befuellen des composites fuer 'files'
 		tabItem_files.setControl(composite_tabItem_files);
-		new FileGui(composite_tabItem_files, step);
+		new SIFileGui(composite_tabItem_files, step);
 
 		// ein tabItem fuer 'variables' erzeugen
 		CTabItem tabItem_variables = new CTabItem(tabFolder, SWT.NONE);
@@ -141,7 +141,7 @@ public class InsightCreator
 
 		// befuellen des composites fuer 'variables'
 		tabItem_variables.setControl(composite_tabItem_variables);
-		new VariableGui(composite_tabItem_variables, step);
+		new SIVariableGui(composite_tabItem_variables, step);
 
 //		if(step.getList().size() != 0)
 //		{
@@ -160,7 +160,7 @@ public class InsightCreator
 	
 			// befuellen des composites fuer 'lists'
 			tabItem_lists.setControl(composite_tabItem_lists);
-			new ListsGui(composite_tabItem_lists, step);
+			new SIListsGui(composite_tabItem_lists, step);
 //		}
 //		// wenn nicht 'root'
 //		if (!(step.getName().equals(step.getParent().getRootstepname())))

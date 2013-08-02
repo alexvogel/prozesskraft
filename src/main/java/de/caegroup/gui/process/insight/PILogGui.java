@@ -1,4 +1,4 @@
-package de.caegroup.gui.step.insight;
+package de.caegroup.gui.process.insight;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -20,12 +20,12 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import de.caegroup.process.Log;
-import de.caegroup.process.Step;
+import de.caegroup.process.Process;
 
-public class LogGui
+public class PILogGui
 {
 	private Composite parent;
-	private Step step;
+	private Process process;
 	
 	TableViewer viewer;
 //	Composite composite;
@@ -33,12 +33,12 @@ public class LogGui
 //	ArrayList<VariableGui> variableGui = new ArrayList<VariableGui>();
 //	ArrayList<FileGui> fileGui = new ArrayList<FileGui>();
 
-	public LogGui(Composite parent, Step step)
+	public PILogGui(Composite parent, Process process)
 	{
 		this.parent = parent;
-		this.step = step;
+		this.process = process;
 		Composite composite = new Composite(this.parent, SWT.NONE);
-		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
+		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		composite.setLayoutData(gd_composite);
 		composite.setLayout(new GridLayout(1, false));
 
@@ -47,7 +47,7 @@ public class LogGui
 
 	public void createControls(Composite composite)
 	{
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		viewer = new TableViewer(composite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 		
 		Table table = viewer.getTable();
 		table.setHeaderVisible(true);
@@ -71,9 +71,10 @@ public class LogGui
 
 		viewer.setContentProvider(new MyContentProvider());
 		viewer.setLabelProvider(new MyLabelProvider());
-		viewer.setInput(step.getLog());
+		viewer.setInput(process.getLog());
 		
-		System.out.println("Anzahl ist: "+step.getLog().size());
+		// auf die letzte zeile fokussieren
+		table.setSelection(table.getItemCount()-1);
 	}
 	
 	public class MyContentProvider implements IStructuredContentProvider

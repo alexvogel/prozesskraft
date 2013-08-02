@@ -67,7 +67,8 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
 
-import de.caegroup.gui.step.insight.InsightCreator;
+import de.caegroup.gui.process.insight.PIInsightCreator;
+import de.caegroup.gui.step.insight.SIInsightCreator;
 import de.caegroup.process.Process;
 
 public class PmodelPartUi1 extends ModelObject
@@ -75,7 +76,6 @@ public class PmodelPartUi1 extends ModelObject
 	static CommandLine line;
 	private DataBindingContext bindingContextVisual;
 	private DataBindingContext bindingContextMarked;
-	private DataBindingContext bindingContextProcess;
 	private Scale scale_zoom;
 	private Spinner spinner_textsize;
 	private Spinner spinner_labelsize;
@@ -84,7 +84,6 @@ public class PmodelPartUi1 extends ModelObject
 	private Process process = new Process();
 	
 	private Label label_marked = null;
-	private Label label_status = null;
 	
 	public PmodelViewModel einstellungen = new PmodelViewModel();
 	private StyledText text_logging = null;
@@ -94,6 +93,7 @@ public class PmodelPartUi1 extends ModelObject
 	Shell shell_dummy_insight;
 	Composite actualStepInsight = null;
 	CTabFolder tabFolder_12;
+	Composite processInsight = null;
 	Map<String,Composite> stepInsight = new HashMap();
 	private Composite composite_131;
 	private Composite composite_132;
@@ -134,37 +134,48 @@ public class PmodelPartUi1 extends ModelObject
 	@Inject
 	public PmodelPartUi1(Composite composite, String pathToProcessFile)
 	{
-		// binary file einlesen
-		if (pathToProcessFile.matches(".+\\.pmb$"))
-		{
-			log("warn", "assuming binary format.");
-			this.process.setInfilebinary(pathToProcessFile);
-			this.process = this.process.readBinary();
-		}
+		java.io.File inFile = new java.io.File(pathToProcessFile);
 		
-		// xml-format einlesen
-		else if(pathToProcessFile.matches(".+\\.xml$|.+\\.pmx$"))
+		if (inFile.exists())
 		{
-			log("warn", "assuming xml format.");
-			this.process.setInfilexml(pathToProcessFile);
-			try
+			// binary file einlesen
+			if (pathToProcessFile.matches(".+\\.pmb$"))
 			{
-				this.process = process.readXml();
-			} catch (JAXBException e)
+				log("warn", "assuming binary format.");
+//				System.out.println(inFile.getAbsolutePath());
+				this.process.setInfilebinary(inFile.getAbsolutePath());
+				this.process = this.process.readBinary();
+			}
+		
+			// xml-format einlesen
+			else if(pathToProcessFile.matches(".+\\.xml$|.+\\.pmx$"))
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log("warn", "assuming xml format.");
+				this.process.setInfilexml(pathToProcessFile);
+				try
+				{
+					this.process = process.readXml();
+				} catch (JAXBException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		
+			else
+			{
+				log("fatal", "unknown file extension. please use only 'pmb', 'pmx' or 'xml'.");
 			}
 		}
 		
 		else
 		{
-			log("fatal", "unknown file extension. please use only 'pmb', 'pmx' or 'xml'.");
+			System.out.println("file does not exist: "+inFile.getAbsolutePath());
 		}
-		
+
 		einstellungen.setRootpositionratiox((float)0.5);
 		einstellungen.setRootpositionratioy((float)0.1);
-		applet = new PmodelViewPage(process, einstellungen);
+		applet = new PmodelViewPage(this, einstellungen);
 		createControls(composite);
 	}
 
@@ -315,30 +326,6 @@ public class PmodelPartUi1 extends ModelObject
 		gl_composite_131.marginHeight = 0;
 		composite_131.setLayout(gl_composite_131);
 
-		Label label_1 = new Label(composite_131, SWT.NONE);
-		label_1.setText("process: ");
-		
-		Label label_processname = new Label(composite_131, SWT.NONE);
-		label_processname.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		label_processname.setText(this.process.getName());
-		
-		Label label_2 = new Label(composite_131, SWT.NONE);
-		label_2.setText("directory: ");
-		
-		Label label_instancedir = new Label(composite_131, SWT.NONE);
-		label_instancedir.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		if ((new java.io.File(this.process.getInfilebinary()).getParent()) != null)
-		{
-			label_instancedir.setText((new java.io.File(this.process.getInfilebinary()).getParent()));
-		}
-		
-		Label label_3 = new Label(composite_131, SWT.NONE);
-		label_3.setText("status: ");
-		
-		label_status = new Label(composite_131, SWT.NONE);
-		label_status.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		label_status.setText("unknown");
-		
 		composite_132 = new Composite(sashForm_13, SWT.BORDER);
 		composite_132.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		GridLayout gl_composite_132 = new GridLayout(1, false);
@@ -365,21 +352,56 @@ public class PmodelPartUi1 extends ModelObject
 		
 		bindingContextVisual = initDataBindingsVisual();
 		bindingContextMarked = initDataBindingsMarked();
-		bindingContextProcess = initDataBindingsProcess();
 		
 		// erzeugen der 'step-insight' listeners beim wechsel der markierung
 		generateNewInsight(einstellungen);
 
+		// erzeugen den insight fuer den Prozess
+		createControlsProcessInsight(composite_131);
+		
 		// erzeugen der ersten insight ansicht fuer den aktuell markierten step (root)
-		createControlsInsight();
+		createControlsStepInsight(composite_132);
 		
 	}
 
 	/**
+	 * erzeugen der 'insight'-Ansicht fuer den aktuellen prozess
+	 * @param parent
+	 */
+	public void createControlsProcessInsight(Composite composite)
+	{
+		log("info", "showing details for process "+this.process.getName());
+
+		
+////		 ein neues composite erzeugen und mit inhalt befuellen. falls es existiert, soll es zuerst disposed werden
+//		if (processInsight != null)
+//		{
+//			processInsight.dispose();
+//			processInsight = null;
+//		}
+		
+		processInsight = new Composite(composite, SWT.NONE);
+		processInsight.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		GridLayout gl_processInsight = new GridLayout(2, false);
+		gl_processInsight.marginWidth = 0;
+		gl_processInsight.marginHeight = 0;
+		processInsight.setLayout(gl_processInsight);
+
+//		processInsight.setLayout(new FillLayout());
+//		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+//		processInsight.setLayoutData(gd_composite);
+
+		// erstellen der Prozess-Insight-Ansicht
+		new PIInsightCreator(processInsight, process);
+		
+		composite.layout(true);
+	}
+	
+	/**
 	 * erzeugen der 'insight'-Ansicht fuer den aktuell markierten step
 	 * @param parent
 	 */
-	public void createControlsInsight()
+	public void createControlsStepInsight(Composite composite)
 	{
 
 		log("info", "showing details for step "+einstellungen.getMarkedStepName());
@@ -398,11 +420,11 @@ public class PmodelPartUi1 extends ModelObject
 			actualStepInsight = this.stepInsight.get(einstellungen.getMarkedStepName());
 			
 			// das bestehende composite auf das parent setzen
-			actualStepInsight.setParent(composite_132);
+			actualStepInsight.setParent(composite);
 			log("debug", "reactivating existing controls");
 			
 			actualStepInsight.setVisible(true);
-			composite_132.layout(true);
+			composite.layout(true);
 		}
 
 		else
@@ -421,16 +443,16 @@ public class PmodelPartUi1 extends ModelObject
 			GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 			actualStepInsight.setLayoutData(gd_composite);
 
-			new InsightCreator(actualStepInsight, process.getStep(einstellungen.getMarkedStepName()));
+			new SIInsightCreator(actualStepInsight, process.getStep(einstellungen.getMarkedStepName()));
 			
 			// im stapel ablegen fuer spaeter
 			this.stepInsight.put(einstellungen.getMarkedStepName(), actualStepInsight);
 			
 			// und auf die sichtbare flaeche legen
-			actualStepInsight.setParent(composite_132);
+			actualStepInsight.setParent(composite);
 
 			actualStepInsight.setVisible(true);
-			composite_132.layout(true);
+			composite.layout(true);
 		}
 		
 	}
@@ -485,9 +507,33 @@ public class PmodelPartUi1 extends ModelObject
 		public void widgetSelected(SelectionEvent event)
 		{
 			log("info", "refreshing data.");
-			applet_refresh();
+			refreshAppletAndUi();
 		}
 	};
+	
+	public void refreshAppletAndUi()
+	{
+		// process frisch einlesen
+		this.process = process.readBinary();
+
+		// die prozessdarstellung zerstoeren und neu erstellen lassen
+		processInsight.dispose();
+		processInsight = null;
+		createControlsProcessInsight(composite_131);
+
+		// die stepdarstellungen disposen und den aktuellen neu erstellen lassen
+		for(Composite actualStepInsight : stepInsight.values())
+		{
+			actualStepInsight.dispose();
+		}
+		stepInsight = new HashMap();
+		actualStepInsight = null;
+		createControlsStepInsight(composite_132);
+
+		// die processing darstellung refreshen
+		applet_refresh();
+
+	}
 	
 	SelectionAdapter listener_autoscale_button = new SelectionAdapter()
 	{
@@ -511,7 +557,7 @@ public class PmodelPartUi1 extends ModelObject
 		public void handleChange(ChangeEvent event)
 		{
 //			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
-			createControlsInsight();
+			createControlsStepInsight(composite_132);
 		}
 	};
 	
@@ -572,18 +618,6 @@ public class PmodelPartUi1 extends ModelObject
 		return bindingContextMarked;
 	}
 	
-	protected DataBindingContext initDataBindingsProcess()
-	{
-		DataBindingContext bindingContextProcess = new DataBindingContext();
-		//
-		IObservableValue targetObservableStatus = WidgetProperties.text().observe(label_status);
-		IObservableValue modelObservableStatus = BeanProperties.value("status").observe(process);
-		bindingContextProcess.bindValue(targetObservableStatus, modelObservableStatus, null, null);
-		//
-		return bindingContextProcess;
-	}
-	
-		
 	void log(String level, String logstring)
 	{
 //		text_logging.setText(text_logging.getText()+logstring+"\n");
@@ -603,6 +637,10 @@ public class PmodelPartUi1 extends ModelObject
 		}
 	}
 	
+	public Process getProcess()
+	{
+		return this.process;
+	}
 	
 	/**
 	 * @param args

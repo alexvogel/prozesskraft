@@ -27,7 +27,7 @@ import de.caegroup.process.Log;
 import de.caegroup.process.Step;
 import de.caegroup.process.Variable;
 
-public class ListsGui
+public class SIListsGui
 {
 	private Composite parent;
 	private Step step;
@@ -38,7 +38,7 @@ public class ListsGui
 //	ArrayList<VariableGui> variableGui = new ArrayList<VariableGui>();
 //	ArrayList<FileGui> fileGui = new ArrayList<FileGui>();
 
-	public ListsGui(Composite parent, Step step)
+	public SIListsGui(Composite parent, Step step)
 	{
 		this.parent = parent;
 		this.step = step;
@@ -77,7 +77,7 @@ public class ListsGui
 	
 			// befuellen des composites fuer 'list'
 			tabItem_list.setControl(composite_tabItem_list);
-			new ListGui(composite_tabItem_list, actualList);
+			new SIListGui(composite_tabItem_list, actualList);
 		}
 		
 		tabFolder.setSelection(0);

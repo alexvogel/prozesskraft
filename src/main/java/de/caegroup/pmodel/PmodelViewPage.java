@@ -29,9 +29,8 @@ public class PmodelViewPage extends PApplet
 	/*----------------------------
 	  structure
 	----------------------------*/
-	public Process process;
 	public PmodelViewModel einstellungen;
-	
+	private PmodelPartUi1 parent;
 	int textSize_gemerkt = 15;
 //	int zoomfaktor = 100;
 //	int zoomfaktor_min = 10;
@@ -85,31 +84,27 @@ public class PmodelViewPage extends PApplet
 	public PmodelViewPage()
 	{
 		this.einstellungen = new PmodelViewModel();
-		this.process = new Process();
 	}
 	
-	public PmodelViewPage(Process process)
-	{
-		this.einstellungen = new PmodelViewModel();
-		this.process = process;
-	}
-	
-	public PmodelViewPage(Process process, PmodelViewModel einstellungen)
+//	public PmodelViewPage(Process process)
+//	{
+//		this.einstellungen = new PmodelViewModel();
+//	}
+//	
+	public PmodelViewPage(PmodelPartUi1 parent, PmodelViewModel einstellungen)
 	{
 		this.einstellungen = einstellungen;
-		this.process = process;
+		this.parent = parent;
 	}
 	
 	public PmodelViewPage(PmodelViewModel einstellungen)
 	{
 		this.einstellungen = einstellungen;
-		this.process = new Process();
 	}
 	
 	public PmodelViewPage(String pathToProcessFile, PmodelViewModel einstellungen)
 	{
 		this.einstellungen = einstellungen;
-		this.process = new Process();
 	}
     
 	/*----------------------------
@@ -261,7 +256,7 @@ public class PmodelViewPage extends PApplet
 
 		if (this.refresh_topology) {this.markAllstepcirclestodelete();}
 		// erstellen eines Stepcircles fuer jeden vorkommenden Step in process, falls es ihn noch nicht gibt. stepcircles fuer die es keinen step mehr gibt, sollen geloescht werden
-		Step[] steps = process.getSteps2();
+		Step[] steps = this.parent.getProcess().getSteps2();
 		// den virtuellen step 'root' hinzufuegen
 		// System.out.println("Anzahl der Steps: "+steps.length);
 		for(int i=0; i<steps.length; i++)
@@ -485,7 +480,7 @@ public class PmodelViewPage extends PApplet
 //			System.out.println("infilexml nach dem read: "+process.getInfilexml());
 //			System.out.println("processName nach dem read: "+process.getName());
 //	    	this.legend_processname = this.process.getName()+" v"+this.process.getModelVersion().toString();
-	    	this.legend_processname = this.process.getName();
+	    	this.legend_processname = this.parent.getProcess().getName();
 //	    	this.legend_processname = "I am Legend";
 	    	
 	    	this.refresh_last = Calendar.getInstance();

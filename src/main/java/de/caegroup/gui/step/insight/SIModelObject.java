@@ -3,7 +3,7 @@ package de.caegroup.gui.step.insight;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class ModelObject
+public class SIModelObject
 {
 
 	private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);

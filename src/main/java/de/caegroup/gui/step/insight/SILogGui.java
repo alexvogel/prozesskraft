@@ -19,12 +19,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import de.caegroup.process.File;
 import de.caegroup.process.Log;
 import de.caegroup.process.Step;
-import de.caegroup.process.Variable;
 
-public class VariableGui
+public class SILogGui
 {
 	private Composite parent;
 	private Step step;
@@ -35,7 +33,7 @@ public class VariableGui
 //	ArrayList<VariableGui> variableGui = new ArrayList<VariableGui>();
 //	ArrayList<FileGui> fileGui = new ArrayList<FileGui>();
 
-	public VariableGui(Composite parent, Step step)
+	public SILogGui(Composite parent, Step step)
 	{
 		this.parent = parent;
 		this.step = step;
@@ -60,18 +58,24 @@ public class VariableGui
 		table.setFont(new Font(table.getDisplay(), fD[0]));
 
 		TableColumn colTime = new TableColumn(table, SWT.LEFT);
-		colTime.setText("key");
-		colTime.setWidth(80);
+		colTime.setText("time");
+		colTime.setWidth(150);
 		
 		TableColumn colLevel = new TableColumn(table, SWT.LEFT);
-		colLevel.setText("value");
-		colLevel.setWidth(150);
+		colLevel.setText("level");
+		colLevel.setWidth(80);
+
+		TableColumn colMessage = new TableColumn(table, SWT.LEFT);
+		colMessage.setText("message");
+		colMessage.setWidth(100);
 
 		viewer.setContentProvider(new MyContentProvider());
 		viewer.setLabelProvider(new MyLabelProvider());
-		viewer.setInput(step.getVariable());
+		viewer.setInput(step.getLog());
 		
-		System.out.println("Anzahl ist: "+step.getLog().size());
+		// auf die letzte zeile fokussieren
+		table.setSelection(table.getItemCount()-1);
+//		System.out.println("Anzahl ist: "+step.getLog().size());
 	}
 	
 	public class MyContentProvider implements IStructuredContentProvider
@@ -130,15 +134,18 @@ public class VariableGui
 
 		public String getColumnText(Object element, int columnIndex)
 		{
-			Variable v = (Variable) element;
+			Log l = (Log) element;
 			
 			switch(columnIndex)
 			{
 				case 0:
-					return v.getKey();
+					return (new Timestamp(l.getTime())).toString();
 					
 				case 1:
-					return v.getValue();
+					return l.getLevel();
+					
+				case 2:
+					return l.getMsg();
 			}
 			// should never get here
 			return "";
