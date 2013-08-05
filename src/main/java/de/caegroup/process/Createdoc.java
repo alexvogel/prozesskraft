@@ -277,7 +277,8 @@ public class Createdoc
 		
 		// konfigurieren der processing ansicht
 //		PmodelViewPage page = new PmodelViewPage(process);
-		PmodelViewPage page = new PmodelViewPage(process);
+		PmodelViewPage page = new PmodelViewPage();
+		page.einstellungen.setProcess(process);
 		page.einstellungen.setZoom(160);
 		page.einstellungen.setLabelsize(0);
 		page.einstellungen.setTextsize(0);
