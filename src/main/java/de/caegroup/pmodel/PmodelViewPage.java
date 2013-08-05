@@ -23,7 +23,6 @@ import de.caegroup.jaxb.process.File;
 import de.caegroup.process.Process;
 import de.caegroup.process.Step;
 
-
 public class PmodelViewPage extends PApplet
 {
 	/*----------------------------
@@ -90,7 +89,7 @@ public class PmodelViewPage extends PApplet
 //	{
 //		this.einstellungen = new PmodelViewModel();
 //	}
-//	
+	
 	public PmodelViewPage(PmodelPartUi1 parent, PmodelViewModel einstellungen)
 	{
 		this.einstellungen = einstellungen;
@@ -256,7 +255,7 @@ public class PmodelViewPage extends PApplet
 
 		if (this.refresh_topology) {this.markAllstepcirclestodelete();}
 		// erstellen eines Stepcircles fuer jeden vorkommenden Step in process, falls es ihn noch nicht gibt. stepcircles fuer die es keinen step mehr gibt, sollen geloescht werden
-		Step[] steps = this.parent.getProcess().getSteps2();
+		Step[] steps = this.einstellungen.getProcess().getSteps2();
 		// den virtuellen step 'root' hinzufuegen
 		// System.out.println("Anzahl der Steps: "+steps.length);
 		for(int i=0; i<steps.length; i++)
@@ -480,7 +479,7 @@ public class PmodelViewPage extends PApplet
 //			System.out.println("infilexml nach dem read: "+process.getInfilexml());
 //			System.out.println("processName nach dem read: "+process.getName());
 //	    	this.legend_processname = this.process.getName()+" v"+this.process.getModelVersion().toString();
-	    	this.legend_processname = this.parent.getProcess().getName();
+	    	this.legend_processname = this.einstellungen.getProcess().getName();
 //	    	this.legend_processname = "I am Legend";
 	    	
 	    	this.refresh_last = Calendar.getInstance();

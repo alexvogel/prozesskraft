@@ -1,7 +1,11 @@
 package de.caegroup.pmodel;
 
+import de.caegroup.process.*;
+import de.caegroup.process.Process;
+
 public class PmodelViewModel extends ModelObject
 {
+	private Process process = new Process();
 	public int width = 1200;
 	public int height = 800;
 	public int zoom = 100;
@@ -19,6 +23,16 @@ public class PmodelViewModel extends ModelObject
 	{
 	}
 	
+	public Process getProcess()
+	{
+		return process;
+	}
+
+	public void setProcess(Process process)
+	{
+		firePropertyChange("process", this.process, this.process = process);
+	}
+
 	public int getWidth()
 	{
 		return width;

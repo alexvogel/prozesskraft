@@ -81,7 +81,7 @@ public class PmodelPartUi1 extends ModelObject
 	private Spinner spinner_labelsize;
 	private Scale scale_gravx;
 	private Scale scale_gravy;
-	private Process process = new Process();
+//	private Process process = new Process();
 	
 	private Label label_marked = null;
 	
@@ -143,18 +143,18 @@ public class PmodelPartUi1 extends ModelObject
 			{
 				log("warn", "assuming binary format.");
 //				System.out.println(inFile.getAbsolutePath());
-				this.process.setInfilebinary(inFile.getAbsolutePath());
-				this.process = this.process.readBinary();
+				this.einstellungen.getProcess().setInfilebinary(inFile.getAbsolutePath());
+				this.einstellungen.setProcess(this.einstellungen.getProcess().readBinary());
 			}
 		
 			// xml-format einlesen
 			else if(pathToProcessFile.matches(".+\\.xml$|.+\\.pmx$"))
 			{
 				log("warn", "assuming xml format.");
-				this.process.setInfilexml(pathToProcessFile);
+				this.einstellungen.getProcess().setInfilexml(pathToProcessFile);
 				try
 				{
-					this.process = process.readXml();
+					this.einstellungen.setProcess(this.einstellungen.getProcess().readXml());
 				} catch (JAXBException e)
 				{
 					// TODO Auto-generated catch block
@@ -370,7 +370,7 @@ public class PmodelPartUi1 extends ModelObject
 	 */
 	public void createControlsProcessInsight(Composite composite)
 	{
-		log("info", "showing details for process "+this.process.getName());
+		log("info", "showing details for process "+this.einstellungen.getProcess().getName());
 
 		
 ////		 ein neues composite erzeugen und mit inhalt befuellen. falls es existiert, soll es zuerst disposed werden
@@ -392,7 +392,7 @@ public class PmodelPartUi1 extends ModelObject
 //		processInsight.setLayoutData(gd_composite);
 
 		// erstellen der Prozess-Insight-Ansicht
-		new PIInsightCreator(processInsight, process);
+		new PIInsightCreator(processInsight, this.einstellungen.getProcess());
 		
 		composite.layout(true);
 	}
@@ -443,7 +443,7 @@ public class PmodelPartUi1 extends ModelObject
 			GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 			actualStepInsight.setLayoutData(gd_composite);
 
-			new SIInsightCreator(actualStepInsight, process.getStep(einstellungen.getMarkedStepName()));
+			new SIInsightCreator(actualStepInsight, this.einstellungen.getProcess().getStep(einstellungen.getMarkedStepName()));
 			
 			// im stapel ablegen fuer spaeter
 			this.stepInsight.put(einstellungen.getMarkedStepName(), actualStepInsight);
@@ -514,7 +514,7 @@ public class PmodelPartUi1 extends ModelObject
 	public void refreshAppletAndUi()
 	{
 		// process frisch einlesen
-		this.process = process.readBinary();
+		this.einstellungen.setProcess(this.einstellungen.getProcess().readBinary());
 
 		// die prozessdarstellung zerstoeren und neu erstellen lassen
 		processInsight.dispose();
@@ -639,7 +639,7 @@ public class PmodelPartUi1 extends ModelObject
 	
 	public Process getProcess()
 	{
-		return this.process;
+		return this.einstellungen.getProcess();
 	}
 	
 	/**
