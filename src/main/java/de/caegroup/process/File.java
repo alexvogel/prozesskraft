@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class File
-implements Serializable
+implements Serializable, Cloneable
 {
 	/*----------------------------
 	  structure
@@ -35,6 +35,20 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
+	@Override
+	public File clone()
+	{
+		try
+		{
+			return (File) super.clone();
+		}
+		catch ( CloneNotSupportedException e )
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public boolean match(Match match)
 	{
 		String fieldname = match.getField();

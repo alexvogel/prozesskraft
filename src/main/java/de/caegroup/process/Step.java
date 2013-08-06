@@ -8,6 +8,8 @@ import de.caegroup.process.Commit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+
 public class Step
 implements Serializable, Cloneable
 {
@@ -324,7 +326,7 @@ implements Serializable, Cloneable
 				// erweitern des PATHs um den prozesseigenen path
 				Map<String,String> env = pb.environment();
 				String path = env.get("PATH");
-				log("info", "adding to path: "+this.parent.getPath());
+				log("info", "adding to path: "+this.parent.getAbsPath());
 				path = this.parent.getAbsPath()+":"+path;
 				env.put("PATH", path);
 				log("info", "path: "+path);
@@ -578,7 +580,64 @@ implements Serializable, Cloneable
 				// wenn das zu committende objekt ein File ist...
 				for(File actualFile : actualCommit.getFile())
 				{
-					this.log("info", "file id "+actualFile.getAbsfilename());
+					
+					// ausfuehren von evtl. vorhandenen globs in den files
+					for(File actualfile : this.getFile())
+					{
+						if(actualfile.getAbsfilename().equals(""))
+						{
+							if(!(actualfile.getGlob().equals("")))
+							{
+								log("info", "globbing for files with'"+actualfile.getGlob()+"'");
+								java.io.File dir = new java.io.File(this.getAbsdir());
+								FileFilter fileFilter = new WildcardFileFilter(actualfile.getGlob());
+								java.io.File[] files = dir.listFiles(fileFilter);
+								if(files.length == 0)
+								{
+									log("info", "no file matched glob '"+actualfile.getGlob()+"'");
+								}
+								
+								else
+								{
+									log("info", files.length+" file(s) matched glob '"+actualfile.getGlob()+"'");
+								}
+								
+								// passt es bzgl. minoccur und maxoccur?
+								log("info", "checking amount of occurances.");
+								if (files.length < actualfile.getMinoccur())
+								{
+									log("error", "minoccur is "+actualfile.getMinoccur()+" but only "+files.length+" file(s) globbed.");
+								}
+								else if (files.length > actualfile.getMaxoccur())
+								{
+									log("error", "maxoccur is "+actualfile.getMaxoccur()+" but "+files.length+" file(s) globbed.");
+								}
+								
+								else
+								{
+									for(int x = 0; x < files.length; x++)
+									{
+										// ist es der letzte glob? Dann soll das urspruengliche file object verwendet werden
+										if((x+1) == files.length)
+										{
+											actualfile.setAbsfilename(files[x].getAbsolutePath());
+											log("info", "setting absolute filename to: "+actualfile.getAbsfilename());
+										}
+										// alle anderen werden aus einem clon erstellt
+										else
+										{
+											log("info", "cloning file-object and setting filename: "+actualfile.getAbsfilename());
+											File pFile = actualfile.clone();
+											pFile.setAbsfilename(files[x].getAbsolutePath());
+											this.addFile(pFile);
+										}
+									}
+								}
+							}
+						}
+					}
+					
+					this.log("info", "file "+actualFile.getAbsfilename());
 					java.io.File fsfile = new java.io.File(actualFile.getAbsfilename());
 					if (this.commitFile(fsfile))
 					{
@@ -598,7 +657,7 @@ implements Serializable, Cloneable
 					else
 					{
 						success = false;
-						this.log("info", "commit(file) id NOT successfull");
+						this.log("info", "commit of file not successfull");
 					}
 				}
 				

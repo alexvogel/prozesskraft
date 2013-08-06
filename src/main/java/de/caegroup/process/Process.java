@@ -938,13 +938,13 @@ implements Serializable
 		String absPath = "";
 		for(java.io.File dir : getPaths2())
 		{
-			if (path.equals(""))
+			if (absPath.equals(""))
 			{
-				path = dir.getAbsolutePath();
+				absPath = dir.getAbsolutePath();
 			}
 			else
 			{
-				path = path + ":" + dir.getAbsolutePath();
+				absPath = absPath + ":" + dir.getAbsolutePath();
 			}
 		}
 		return absPath;
@@ -973,7 +973,6 @@ implements Serializable
 				log("error", "path "+path+" does not exist");
 			}
 		}
-		
 		return paths;
 	}
 
