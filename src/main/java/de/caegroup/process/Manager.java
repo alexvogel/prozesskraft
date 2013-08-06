@@ -151,6 +151,7 @@ public class Manager
 			p1.setInfilebinary(pathBinary);
 			Process p2 = p1.readBinary();
 			p2.setManagerid(0);
+			p2.setStatus("paused");
 			p2.setOutfilebinary(pathBinary);
 			p2.writeBinary();
 			System.exit(0);
