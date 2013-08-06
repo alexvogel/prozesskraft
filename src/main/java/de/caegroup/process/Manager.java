@@ -153,6 +153,7 @@ public class Manager
 			p2.setManagerid(0);
 			p2.setStatus("paused");
 			p2.setOutfilebinary(pathBinary);
+			p2.log("info", "stopping manager.");
 			p2.writeBinary();
 			System.exit(0);
 		}
