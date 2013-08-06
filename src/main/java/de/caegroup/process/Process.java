@@ -72,21 +72,22 @@ implements Serializable
 	private ArrayList<Step> step = new ArrayList<Step>();
 //	private ArrayList<Init> inits = new ArrayList<Init>();
 	
-	private String status = new String();	// waiting/working/ finished/broken
-	private String rootdir = new String();
+	private String status = new String();	// waiting/working/finished/broken/paused
+	private String rootdir = "";
 	private double managerid = -1;
 	private Date date = new Date();
-	private String infilebinary = new String();
-	private String infilexml = new String();
-	private String outfilebinary = new String();
-	private String outfilexml = null;
+	private String infilebinary = "";
+	private String infilexml = "";
+	private String outfilebinary = "";
+	private String outfilexml = "";
 	private String outFileDoc = new String();
 	private String filedoctemplateodf = new String();
 	private String fileDocJrxml = new String();
 	private String rootstepname = "root";
 	private ArrayList<Log> log = new ArrayList<Log>();
 	private int randomId = 0;  
-	private String touch = "";
+	private String touchAsString = "";
+	private long touchInMillis = 0;
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -672,6 +673,22 @@ implements Serializable
 //			System.out.println("NAMEN des Prozesses proc: "+proc.getName());
 //			System.out.println("NAMEN des Prozesses proc1: "+proc1.getName());
 
+			// wenn der eingelesene prozess in den file-feldern inhalte hat, sollen diese beibehalten werden
+			// ansonsten sollen die inhalte von 'this' uebernommen werden
+			
+			proc.setInfilebinary(this.getInfilebinary());
+			proc.setOutfilebinary(this.getOutfilebinary());
+			
+			if (proc.getInfilexml().equals(""))
+			{
+				proc.setInfilexml(this.getInfilexml());
+			}
+			
+			if (proc.getOutfilexml().equals(""))
+			{
+				proc.setOutfilexml(this.getOutfilexml());
+			}
+			
 			return proc;
 		}
 		catch (ClassNotFoundException e)
@@ -916,6 +933,23 @@ implements Serializable
 		return this.path;
 	}
 
+	public String getAbsPath()
+	{
+		String absPath = "";
+		for(java.io.File dir : getPaths2())
+		{
+			if (path.equals(""))
+			{
+				path = dir.getAbsolutePath();
+			}
+			else
+			{
+				path = path + ":" + dir.getAbsolutePath();
+			}
+		}
+		return absPath;
+	}
+
 	public ArrayList<String> getPaths()
 	{
 		String[] patharray = this.path.split(":");
@@ -1117,7 +1151,7 @@ implements Serializable
 	 */
 	public String getRootdir()
 	{
-		if (this.rootdir.isEmpty())
+		if (this.rootdir.equals(""))
 		{
 			java.io.File currentdir = new java.io.File (".");
 			try
@@ -1155,10 +1189,6 @@ implements Serializable
 
 	public String getOutfilebinary()
 	{
-		if (this.outfilebinary.isEmpty())
-		{
-			this.outfilebinary = this.getRootdir()+"/"+this.getName()+".lri";
-		}
 		return this.outfilebinary;
 	}
 
@@ -1298,9 +1328,14 @@ implements Serializable
 		return this.log;
 	}
 
-	public String getTouch()
+	public String getTouchAsString()
 	{
-		return touch;
+		return touchAsString;
+	}
+
+	public long getTouchInMillis()
+	{
+		return touchInMillis;
 	}
 
 	/*----------------------------
@@ -1450,13 +1485,19 @@ implements Serializable
 
 	public void touch()
 	{
-		setTouch(new Timestamp(System.currentTimeMillis()).toString());
+		long now = System.currentTimeMillis();
+		setTouchAsString(new Timestamp(now).toString());
+		setTouchInMillis(now);
 	}
 
-	public void setTouch(String touch)
+	public void setTouchAsString(String touchAsString)
 	{
-//		this.touch = (new Timestamp(System.currentTimeMillis())).toString();
-		firePropertyChange("touch", this.touch, this.touch = touch);
+		firePropertyChange("touchAsString", this.touchAsString, this.touchAsString = touchAsString);
+	}
+
+	public void setTouchInMillis(long touchInMillis)
+	{
+		this.touchInMillis = touchInMillis;
 	}
 
 }

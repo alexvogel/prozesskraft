@@ -310,20 +310,21 @@ implements Serializable, Cloneable
 //			System.out.println("PROCESS-STEP IST NOCH NICHT GESTARTET");
 			log("info", "process work (script,program,..) not lauched yet");
 			log("info", "creating directory "+this.getAbsdir());
-			this.mkdir(this.getAbsdir());
+			success = this.mkdir(this.getAbsdir());
 			
 			try
 			{
 //					System.out.println("AUFRUF: /bin/bash /home/avo/bin/procsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
 //					String[] args_for_syscall = {"/bin/bash", "/home/avo/bin/procsyscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
 //				System.out.println("AUFRUF: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
-				String[] args_for_syscall = {"processsyscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
+				String[] args_for_syscall = {"process-syscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
 				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
 //				log("info", "constructing the systemcall to: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
 
 				// erweitern des PATHs um den prozesseigenen path
 				Map<String,String> env = pb.environment();
 				String path = env.get("PATH");
+				log("info", "adding to path: "+this.parent.getPath());
 				path = this.parent.getPath()+":"+path;
 				env.put("PATH", path);
 				log("info", "path: "+path);
@@ -333,7 +334,7 @@ implements Serializable, Cloneable
 				pb.directory(directory);
 				java.io.File checkdirectory = pb.directory().getAbsoluteFile();
 //				System.out.println("ALS AKTUELLES VERZEICHNIS WIRD GESETZT+GECHECKT: "+checkdirectory);
-				log("info", "calling: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
+				log("info", "calling: process-syscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
 				java.lang.Process p = pb.start();
 //					Map<String,String> env = pb.environment();
 //					String cwd = env.get("PWD");
@@ -638,27 +639,38 @@ implements Serializable, Cloneable
 		return allcommitssuccessfull;
 	}
 	
-	public void mkdir(String directory)
+	public boolean mkdir(String directory)
 	{
 		java.io.File dir = new java.io.File(directory);
 		// wenn directory existiert, dann die darin befindlichen files loeschen
 		if (dir.exists())
 		{
+			log("debug", "directory already exists. deleting all content of "+directory);
 			java.io.File[] files = dir.listFiles();
 			for(int i=0; i<files.length; i++)
 			{
+				log("debug", "deleting file "+files[i].getAbsolutePath());
 				files[i].delete();
 			}
 		}
 		// ansonsten ein directory anlegen
 		else
 		{
+			log("debug", "directory does not exist. creating directory "+directory);
 			dir.mkdir();
 		}
 		
 		// zum schluss testen ob es existiert und beschreibbar ist
-//		if ((dir.exists()) && (dir.canWrite()))	{return true;}
-//		else {return false;}
+		if ((dir.exists()) && (dir.canWrite()))
+		{
+			log("debug", "directory exists and writable "+directory);
+			return true;
+		}
+		else
+		{
+			log("debug", "directory does not exist or is not writable "+directory);
+			return false;
+		}
 	}
 	
 	/**
