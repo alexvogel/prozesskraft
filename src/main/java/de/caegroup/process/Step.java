@@ -325,7 +325,7 @@ implements Serializable, Cloneable
 				Map<String,String> env = pb.environment();
 				String path = env.get("PATH");
 				log("info", "adding to path: "+this.parent.getPath());
-				path = this.parent.getPath()+":"+path;
+				path = this.parent.getAbsPath()+":"+path;
 				env.put("PATH", path);
 				log("info", "path: "+path);
 //				System.out.println("new PATH: "+path);

@@ -959,17 +959,22 @@ implements Serializable
 
 	public ArrayList<java.io.File> getPaths2()
 	{
-		ArrayList<java.io.File> paths2 = new ArrayList<java.io.File>();
-		ArrayList<String> paths = this.getPaths();
-		Iterator<String> iterpath = paths.iterator();
-		while (iterpath.hasNext())
+		ArrayList<java.io.File> paths = new ArrayList<java.io.File>();
+		for(String path : this.getPaths())
 		{
-			String path = iterpath.next();
-			java.io.File dir = new java.io.File(path);
-			paths2.add(dir);
+			java.io.File dir = new java.io.File(new java.io.File(this.getInfilexml()).getParent()+"/"+path);
+			
+			if (dir.exists())
+			{
+				paths.add(dir.getAbsoluteFile());
+			}
+			else
+			{
+				log("error", "path "+path+" does not exist");
+			}
 		}
 		
-		return paths2;
+		return paths;
 	}
 
 	/**
