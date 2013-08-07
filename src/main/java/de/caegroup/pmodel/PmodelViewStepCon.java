@@ -311,4 +311,40 @@ public class PmodelViewStepCon
 	}
 
 
+	/**
+	 * @return the stepcirclefrom
+	 */
+	public PmodelViewStepSym getStepcirclefrom()
+	{
+		return this.stepcirclefrom;
+	}
+
+
+	/**
+	 * @return the stepcircleto
+	 */
+	public PmodelViewStepSym getStepcircleto()
+	{
+		return this.stepcircleto;
+	}
+
+
+	/**
+	 * @param stepcirclefrom the stepcirclefrom to set
+	 */
+	public void setStepcirclefrom(PmodelViewStepSym stepcirclefrom)
+	{
+		this.stepcirclefrom = stepcirclefrom;
+	}
+
+
+	/**
+	 * @param stepcircleto the stepcircleto to set
+	 */
+	public void setStepcircleto(PmodelViewStepSym stepcircleto)
+	{
+		this.stepcircleto = stepcircleto;
+	}
+
+
 }

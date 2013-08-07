@@ -92,7 +92,7 @@ public class PIInsightCreator
 		label_processName2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		label_processName2.setText(this.process.getName());
 		
-		// instanceDirectory
+		// instanceFile
 		Label label_instanceDirectory1 = new Label(fieldComposite, SWT.NONE);
 		label_instanceDirectory1.setText("instance file: ");
 		
@@ -105,6 +105,21 @@ public class PIInsightCreator
 		else
 		{
 			label_instanceDirectory2.setText("unknown");
+		}
+
+		// rootDirectory
+		Label label_rootDirectory1 = new Label(fieldComposite, SWT.NONE);
+		label_rootDirectory1.setText("root directory: ");
+		
+		Label label_rootDirectory2 = new Label(fieldComposite, SWT.NONE);
+		label_rootDirectory2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		if ((new java.io.File(this.process.getRootdir()).getParent()) != null)
+		{
+			label_rootDirectory2.setText(new java.io.File(this.process.getRootdir()).getAbsolutePath());
+		}
+		else
+		{
+			label_rootDirectory2.setText("unknown");
 		}
 
 		// definitionDirectory
@@ -121,7 +136,7 @@ public class PIInsightCreator
 		{
 			label_definitionDirectory2.setText("unknown");
 		}
-		
+
 		// lastTouchByManager
 		Label label_lastTouch1 = new Label(fieldComposite, SWT.NONE);
 		label_lastTouch1.setText("last touch: ");
@@ -129,11 +144,11 @@ public class PIInsightCreator
 		label_lastTouch2 = new Label(fieldComposite, SWT.NONE);
 		label_lastTouch2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		label_lastTouch2.setText("unknown");
-		
+
 		// processStatus
 		Label label_processStatus1 = new Label(fieldComposite, SWT.NONE);
 		label_processStatus1.setText("status: ");
-		
+
 		label_processStatus2 = new Label(fieldComposite, SWT.NONE);
 		label_processStatus2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		label_processStatus2.setText("unknown");
@@ -143,7 +158,7 @@ public class PIInsightCreator
 
 		// databinding
 		initDataBindingsProcess();
-		
+
 		return parent;
 	}
 	
@@ -156,7 +171,7 @@ public class PIInsightCreator
 		bindingContextProcess.bindValue(targetObservableStatus, modelObservableStatus, null, null);
 		//
 		IObservableValue targetObservableTouch = WidgetProperties.text().observe(label_lastTouch2);
-		IObservableValue modelObservableTouch = BeanProperties.value("touch").observe(process);
+		IObservableValue modelObservableTouch = BeanProperties.value("touchAsString").observe(process);
 		bindingContextProcess.bindValue(targetObservableTouch, modelObservableTouch, null, null);
 		//
 		return bindingContextProcess;

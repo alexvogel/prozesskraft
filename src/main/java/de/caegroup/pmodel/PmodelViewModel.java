@@ -5,7 +5,7 @@ import de.caegroup.process.Process;
 
 public class PmodelViewModel extends ModelObject
 {
-	private Process process = new Process();
+	public Process process = new Process();
 	public int width = 1200;
 	public int height = 800;
 	public int zoom = 100;
@@ -16,8 +16,15 @@ public class PmodelViewModel extends ModelObject
 	public float rootpositionratiox = (float)0.5;
 	public float rootpositionratioy = (float)0.5;
 	public int gravx = 0;
-	public int gravy = 10;
+	public int gravy = 5;
 	private String markedStepName = "root";
+	private int refreshInterval = 300;
+	private int nextRefreshSeconds = refreshInterval;
+	private String nextRefreshSecondsText = "refresh ("+nextRefreshSeconds+")";
+	private int lastRefreshSeconds = 0;
+	private int lastRefreshCheckSeconds = 0;
+	private String buttonManagerText = "unknown";
+	private Boolean managerActive = null;
 	
 	public PmodelViewModel()
 	{
@@ -154,6 +161,64 @@ public class PmodelViewModel extends ModelObject
 		firePropertyChange("markedStepName", this.markedStepName, this.markedStepName = markedStepName);
 	}
 	
-	
+	public int getRefreshInterval()
+	{
+		return this.refreshInterval;
+	}
 
+	public void setRefreshInterval(int refreshInterval)
+	{
+		firePropertyChange("refreshInterval", this.refreshInterval, this.refreshInterval = refreshInterval);
+	}
+	
+	public int getNextRefreshSeconds()
+	{
+		return this.nextRefreshSeconds;
+	}
+
+	public void setNextRefreshSeconds(int nextRefreshSeconds)
+	{
+		firePropertyChange("nextRefreshSeconds", this.nextRefreshSeconds, this.nextRefreshSeconds = nextRefreshSeconds);
+		setNextRefreshSecondsText("refresh("+this.nextRefreshSeconds+")");
+	}
+	
+	public String getNextRefreshSecondsText()
+	{
+		return this.nextRefreshSecondsText;
+	}
+
+	public void setNextRefreshSecondsText(String nextRefreshSecondsText)
+	{
+		firePropertyChange("nextRefreshSecondsText", this.nextRefreshSecondsText, this.nextRefreshSecondsText = nextRefreshSecondsText);
+	}
+	
+	public int getLastRefreshSeconds()
+	{
+		return this.lastRefreshSeconds;
+	}
+
+	public void setLastRefreshSeconds(int lastRefreshSeconds)
+	{
+		firePropertyChange("lastRefreshSeconds", this.lastRefreshSeconds, this.lastRefreshSeconds = lastRefreshSeconds);
+	}
+	
+	public int getLastRefreshCheckSeconds()
+	{
+		return this.lastRefreshCheckSeconds;
+	}
+
+	public void setLastRefreshCheckSeconds(int lastRefreshCheckSeconds)
+	{
+		firePropertyChange("lastRefreshCheckSeconds", this.lastRefreshCheckSeconds, this.lastRefreshCheckSeconds = lastRefreshCheckSeconds);
+	}
+	
+	public String getButtonManagerText()
+	{
+		return this.buttonManagerText;
+	}
+
+	public void setButtonManagerText(String buttonManagerText)
+	{
+		firePropertyChange("buttonManagerText", this.buttonManagerText, this.buttonManagerText = buttonManagerText);
+	}
 }

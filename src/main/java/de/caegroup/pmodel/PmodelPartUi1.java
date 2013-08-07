@@ -3,6 +3,8 @@ package de.caegroup.pmodel;
 import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.MouseWheelEvent;
+import java.io.EOFException;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,9 +78,14 @@ public class PmodelPartUi1 extends ModelObject
 	static CommandLine line;
 	private DataBindingContext bindingContextVisual;
 	private DataBindingContext bindingContextMarked;
+	private DataBindingContext bindingContextRefresh;
 	private Scale scale_zoom;
 	private Spinner spinner_textsize;
+	private Spinner spinner_refreshinterval;
 	private Spinner spinner_labelsize;
+	private Button button_refresh;
+	private Button button_startmanager;
+	private Button button_stopmanager;
 	private Scale scale_gravx;
 	private Scale scale_gravy;
 //	private Process process = new Process();
@@ -248,7 +255,7 @@ public class PmodelPartUi1 extends ModelObject
 		scale_gravx = new Scale(grpVisual, SWT.NONE);
 		scale_gravx.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		scale_gravx.setMaximum(100);
-		scale_gravx.setMinimum(0);
+		scale_gravx.setMinimum(1);
 		scale_gravx.setSelection(1);
 		
 		Label lblNewLabel_5 = new Label(grpVisual, SWT.NONE);
@@ -273,14 +280,36 @@ public class PmodelPartUi1 extends ModelObject
 		btnNewButton2.addSelectionListener(listener_autoscale_button);
 		
 		Group grpFunction = new Group(composite_11, SWT.NONE);
-		grpFunction.setLayout(new GridLayout(1, false));
+		grpFunction.setLayout(new GridLayout(2, false));
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpFunction.setText("function");
 		
-		Button btnNewButton = new Button(grpFunction, SWT.NONE);
-		btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		btnNewButton.setText("refresh");
-		btnNewButton.addSelectionListener(listener_refresh_button);
+		button_refresh = new Button(grpFunction, SWT.NONE);
+		button_refresh.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		button_refresh.setText("refresh");
+		button_refresh.addSelectionListener(listener_refresh_button);
+		
+		spinner_refreshinterval = new Spinner(grpFunction, SWT.BORDER);
+		spinner_refreshinterval.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+		spinner_refreshinterval.setMaximum(999);
+		spinner_refreshinterval.setSelection(300);
+		spinner_refreshinterval.setMinimum(60);
+		
+		button_startmanager = new Button(grpFunction, SWT.NONE);
+		button_startmanager.setSelection(true);
+		GridData gd_btnNewButton = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd_btnNewButton.widthHint = 69;
+		button_startmanager.setLayoutData(gd_btnNewButton);
+		button_startmanager.setText("start new manager");
+		button_startmanager.addSelectionListener(listener_startmanager_button);
+		
+		button_stopmanager = new Button(grpFunction, SWT.NONE);
+		button_stopmanager.setSelection(true);
+		GridData gd_button_stopmanager = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd_button_stopmanager.widthHint = 69;
+		button_stopmanager.setLayoutData(gd_button_stopmanager);
+		button_stopmanager.setText("stop manager");
+		button_stopmanager.addSelectionListener(listener_stopmanager_button);
 		
 		label_marked = new Label(composite_11, SWT.NONE);
 		label_marked.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -352,12 +381,14 @@ public class PmodelPartUi1 extends ModelObject
 		
 		bindingContextVisual = initDataBindingsVisual();
 		bindingContextMarked = initDataBindingsMarked();
+		bindingContextRefresh = initDataBindingsRefresh();
 		
 		// erzeugen der 'step-insight' listeners beim wechsel der markierung
 		generateNewInsight(einstellungen);
 
 		// erzeugen den insight fuer den Prozess
 		createControlsProcessInsight(composite_131);
+		new Label(composite_131, SWT.NONE);
 		
 		// erzeugen der ersten insight ansicht fuer den aktuell markierten step (root)
 		createControlsStepInsight(composite_132);
@@ -371,14 +402,6 @@ public class PmodelPartUi1 extends ModelObject
 	public void createControlsProcessInsight(Composite composite)
 	{
 		log("info", "showing details for process "+this.einstellungen.getProcess().getName());
-
-		
-////		 ein neues composite erzeugen und mit inhalt befuellen. falls es existiert, soll es zuerst disposed werden
-//		if (processInsight != null)
-//		{
-//			processInsight.dispose();
-//			processInsight = null;
-//		}
 		
 		processInsight = new Composite(composite, SWT.NONE);
 		processInsight.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -386,10 +409,6 @@ public class PmodelPartUi1 extends ModelObject
 		gl_processInsight.marginWidth = 0;
 		gl_processInsight.marginHeight = 0;
 		processInsight.setLayout(gl_processInsight);
-
-//		processInsight.setLayout(new FillLayout());
-//		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-//		processInsight.setLayoutData(gd_composite);
 
 		// erstellen der Prozess-Insight-Ansicht
 		new PIInsightCreator(processInsight, this.einstellungen.getProcess());
@@ -506,16 +525,41 @@ public class PmodelPartUi1 extends ModelObject
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
-			log("info", "refreshing data.");
 			refreshAppletAndUi();
 		}
 	};
 	
 	public void refreshAppletAndUi()
 	{
+		log("info", "refreshing data.");
 		// process frisch einlesen
-		this.einstellungen.setProcess(this.einstellungen.getProcess().readBinary());
-
+		
+		// binary in ein neues Process-Object einlesen
+		Process p = this.einstellungen.getProcess().readBinary();
+		
+		int zaehler = 0;
+		while(p == null)
+		{
+			log("error", "problems while reading process object. trying once again.");
+			try
+			{
+				Thread.sleep(2000);
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			p = this.einstellungen.getProcess().readBinary();
+			zaehler ++;
+			if (zaehler > 5)
+			{
+				System.out.println("several errors occured while reading process object.");
+			}
+		}
+		
+		// wenn das neu eingelesene Object 'gut' ist, wird es uebernommen
+		this.einstellungen.setProcess(p);
+		
 		// die prozessdarstellung zerstoeren und neu erstellen lassen
 		processInsight.dispose();
 		processInsight = null;
@@ -533,6 +577,73 @@ public class PmodelPartUi1 extends ModelObject
 		// die processing darstellung refreshen
 		applet_refresh();
 
+	}
+
+	SelectionAdapter listener_startmanager_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			managerActivate();
+		}
+	};
+	
+	public void managerActivate()
+	{
+		String aufruf = "process-manager -instance "+this.einstellungen.process.getInfilebinary();
+		try
+		{
+			log("info", aufruf);
+			java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+			
+			try
+			{
+				log("info", "waiting a second for process become available on disk");
+				Thread.sleep(1000);
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			refreshAppletAndUi();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	SelectionAdapter listener_stopmanager_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			managerDeactivate();
+		}
+	};
+	
+	public void managerDeactivate()
+	{
+		String aufruf = "process-manager -stop -instance "+this.einstellungen.process.getInfilebinary();
+		try
+		{
+			log("info", aufruf);
+			java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+			try
+			{
+				log("info", "waiting a second for process become available on disk");
+				Thread.sleep(1000);
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			refreshAppletAndUi();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	SelectionAdapter listener_autoscale_button = new SelectionAdapter()
@@ -617,6 +728,36 @@ public class PmodelPartUi1 extends ModelObject
 		//
 		return bindingContextMarked;
 	}
+	
+	protected DataBindingContext initDataBindingsRefresh()
+	{
+		DataBindingContext bindingContextRefresh = new DataBindingContext();
+		//
+		IObservableValue targetObservableRefresh = WidgetProperties.text().observe(button_refresh);
+		IObservableValue modelObservableRefresh = BeanProperties.value("nextRefreshSecondsText").observe(einstellungen);
+		bindingContextRefresh.bindValue(targetObservableRefresh, modelObservableRefresh, null, null);
+		//
+		IObservableValue targetObservableRefreshInterval = WidgetProperties.selection().observe(spinner_refreshinterval);
+		IObservableValue modelObservableRefreshInterval = BeanProperties.value("refreshInterval").observe(einstellungen);
+		bindingContextRefresh.bindValue(targetObservableRefreshInterval, modelObservableRefreshInterval, null, null);
+		//
+		return bindingContextRefresh;
+	}
+	
+//	protected DataBindingContext initDataBindingsManager()
+//	{
+//		DataBindingContext bindingContextManager = new DataBindingContext();
+//		//
+//		IObservableValue targetObservableManager = WidgetProperties.text().observe(button_manager);
+//		IObservableValue modelObservableManager = BeanProperties.value("buttonManagerText").observe(einstellungen);
+//		bindingContextManager.bindValue(targetObservableManager, modelObservableManager, null, null);
+//		//
+//		IObservableValue targetObservableProcessStatus = WidgetProperties.selection().observe(button_manager);
+//		IObservableValue modelObservableProcessStatus = BeanProperties.value("managerActive").observe(einstellungen.process);
+//		bindingContextManager.bindValue(targetObservableProcessStatus, modelObservableProcessStatus, null, null);
+//		//
+//		return bindingContextManager;
+//	}
 	
 	void log(String level, String logstring)
 	{

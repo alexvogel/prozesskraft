@@ -5,9 +5,13 @@ import java.awt.Toolkit;
 import java.awt.Image;
 import java.io.IOException;
 
+
+
 //import java.io.InputStream;
 //
 import javax.xml.bind.JAXBException;
+
+
 
 //
 //import org.apache.commons.cli.CommandLine;
@@ -34,13 +38,13 @@ public class PmodelViewPage extends PApplet
 //	int zoomfaktor = 100;
 //	int zoomfaktor_min = 10;
 //	int zoomfaktor_max = 200;
-	Calendar refresh_last = Calendar.getInstance();
-	Calendar refresh_next = Calendar.getInstance();
+//	Calendar refresh_last = Calendar.getInstance();
+//	Calendar refresh_next = Calendar.getInstance();
 	Calendar now = Calendar.getInstance();
 	Calendar mousepressedlasttime = Calendar.getInstance();
-	int refresh_interval = 300;
+//	int refresh_interval = 300;
 	int doubleclickperiod = 300;	// seconds
-	boolean refresh_topology = false;
+//	boolean refresh_topology = false;
 	Random generator = new Random();
 	private ArrayList<PmodelViewStepSym> stepcircles = new ArrayList<PmodelViewStepSym>();
 	private ArrayList<PmodelViewStepCon> stepconnectors = new ArrayList<PmodelViewStepCon>();
@@ -128,7 +132,7 @@ public class PmodelViewPage extends PApplet
 		
     	frameRate(50);
 //    	this.frame.setResizable(true);
-    	refresh_last.setTimeInMillis(0);
+//    	refresh_last.setTimeInMillis(0);
     	smooth();
 //   	noLoop();
     }
@@ -155,36 +159,61 @@ public class PmodelViewPage extends PApplet
 //		System.out.println("last refresh: "+this.refresh_last.toString());
 //		System.out.println("difference between now and last in millis: "+(this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()));
 //		wenn refresh-interval verstrichen ist seit letztem refresh oder wenn space (jedoch nicht vor mindestens 1 Sekunde) gedrueckt wurde
-		if ((now.after(this.refresh_next)) || ((this.keyPressed) && (this.key == ' ') && ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > 1000)))
-		{
-			this.refresh();
-			this.refresh_last = this.now;
-			this.refresh_next = Calendar.getInstance();
-			this.refresh_next.add(13, this.refresh_interval);
-		}
+//		if ((now.after(this.refresh_next)) || ((this.keyPressed) && (this.key == ' ') && ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > 1000)))
+//		{
+//			this.refresh();
+//			this.refresh_last = this.now;
+//			this.refresh_next = Calendar.getInstance();
+//			this.refresh_next.add(13, this.refresh_interval);
+//		}
 		
-		// wenn der letzte refresh in der letzten 0,5 sekunden passiert ist, dann nur noise darstellen
-		else if ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) < 100)
-		{
-//			this.effect_noise();
-			this.effect_fade();
-		}
+//		// wenn der letzte refresh in der letzten 0,5 sekunden passiert ist, dann nur noise darstellen
+//		else if ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) < 100)
+//		{
+////			this.effect_noise();
+//			this.effect_fade();
+//		}
 		
-		else
-		{
-//			System.out.println("refresh_topology: "+this.refresh_topology);
+//		else
+//		{
+////			System.out.println("refresh_topology: "+this.refresh_topology);
 
-			if (this.refresh_topology) {draw_stepcircles();}
-			if (this.refresh_topology) {draw_stepconnectors();}
-			
-			if (this.mousePressed) {mouse_pressed_action();}
+		// wieviel sekunden muesseen vom refresh-Countdown abgezogen werden?
+		long sekundenSeitLetztemRefreshCheck = ((System.currentTimeMillis()/1000) - this.einstellungen.getLastRefreshCheckSeconds());
+//		System.out.println("sekunden seit dem letzten refreshCheck: "+sekundenSeitLetztemRefreshCheck);
 		
+		// refresh Countdown aktualisieren
+		if ( sekundenSeitLetztemRefreshCheck > 0)
+		{
+			this.einstellungen.setNextRefreshSeconds((int)(this.einstellungen.getNextRefreshSeconds()-sekundenSeitLetztemRefreshCheck));
+			this.einstellungen.setLastRefreshCheckSeconds((int)(System.currentTimeMillis()/1000));
+//			System.out.println("refresh in "+this.einstellungen.getNextRefreshSeconds());
+		}
+		
+		// wenn refresh-Countdown < 0 ist, soll refresht werden
+		if (this.einstellungen.getNextRefreshSeconds() <= 0)
+		{
+			refresh();
+		}
+			
+		if (this.mousePressed) {mouse_pressed_action();}
+	
+		try
+		{
 			this.display();
 		}
+		catch (ConcurrentModificationException e)
+		{
+			System.err.println("data has been changed while drawing. drawing skipped.");
+			
+		}
+		
+		
+//		}
 	
 		if (this.saveActualPic)
 		{
-			System.out.println("saving actual drawing to: "+this.pathActualPic);
+//			System.out.println("saving actual drawing to: "+this.pathActualPic);
 			this.save(this.pathActualPic);
 			this.saveActualPic = false;
 		}
@@ -253,7 +282,6 @@ public class PmodelViewPage extends PApplet
 	private void draw_stepcircles()
 	{
 
-		if (this.refresh_topology) {this.markAllstepcirclestodelete();}
 		// erstellen eines Stepcircles fuer jeden vorkommenden Step in process, falls es ihn noch nicht gibt. stepcircles fuer die es keinen step mehr gibt, sollen geloescht werden
 		Step[] steps = this.einstellungen.getProcess().getSteps2();
 		// den virtuellen step 'root' hinzufuegen
@@ -278,17 +306,15 @@ public class PmodelViewPage extends PApplet
 					PmodelViewStepSym oldstepcircle = this.getStepcircle(steps[i].getName());
 					// und den step setzen (damit die daten aktualisiert werden)
 					oldstepcircle.setStep(steps[i]);
-					if (this.refresh_topology) {oldstepcircle.setNochvorhanden(true);}
+					oldstepcircle.setNochvorhanden(true);
 				}
 			}
 		}
-		if (this.refresh_topology) {this.expungeStepcircles();}
 	}
 	
 	private void draw_stepconnectors()
 	{
 		
-		if (this.refresh_topology) {this.markAllstepconnectorstodelete();}
 		// erstellen eines Stepconnectors fuer jeden vorkommenden fromstep-eintrag
 		PmodelViewStepSym[] stepcircles = this.getStepcircles2();
 		for(int i=0; i<stepcircles.length; i++)
@@ -319,12 +345,11 @@ public class PmodelViewPage extends PApplet
 					else
 					{
 						PmodelViewStepCon oldstepconnector = this.getStepconnector(stepconnector.getName());
-						if (this.refresh_topology) {oldstepconnector.setNochvorhanden(true);}
+						oldstepconnector.setNochvorhanden(true);
 					}
 				}
 			}
 		}
-		if (this.refresh_topology) {this.expungeStepconnectors();}
 	}
 	
 	
@@ -350,33 +375,38 @@ public class PmodelViewPage extends PApplet
 		}
 	}
 
+	/**
+	 * es wird ueberprueft ob fuer jeden stepConnector beide steps im prozess existieren.
+	 * falls einer der beiden steps nicht mehr existiert, wird der stepconnector geloescht.
+	 */
 	private void expungeStepconnectors()
 	{
-		Iterator<PmodelViewStepCon> iterstepconnector = this.getStepconnectors().iterator();
-		while ( iterstepconnector.hasNext() )
+		ArrayList<PmodelViewStepCon> cleanedStepconnectors = new ArrayList<PmodelViewStepCon>();
+		for(PmodelViewStepCon actualStepconnector : this.getStepconnectors())
 		{
-			PmodelViewStepCon stepconnector = iterstepconnector.next();
-			if ( !(stepconnector.isNochvorhanden()) )
+			if ( (this.einstellungen.getProcess().getStep(actualStepconnector.getStepcirclefrom().getName()) != null) && (this.einstellungen.getProcess().getStep(actualStepconnector.getStepcircleto().getName()) != null) )
 			{
-//				System.out.println("loesche connector: "+stepconnector.getName()+"    "+stepconnector.toString());
-				iterstepconnector.remove();
+				cleanedStepconnectors.add(actualStepconnector);
 			}
 		}
-		this.refresh_topology = false;
+		this.stepconnectors = cleanedStepconnectors;
 	}
 
+	/**
+	 * es wird ueberprueft ob fuer jeden stepcircle auch ein step im prozess existiert.
+	 * falls der step nicht mehr existiert, wird der stepcircle geloescht.
+	 */
 	private void expungeStepcircles()
 	{
-		Iterator<PmodelViewStepSym> iterstepcircle = this.getStepcircles().iterator();
-		while ( iterstepcircle.hasNext() )
+		ArrayList<PmodelViewStepSym> cleanedStepcircles = new ArrayList<PmodelViewStepSym>();
+		for(PmodelViewStepSym actualStepcircle : this.getStepcircles())
 		{
-			PmodelViewStepSym stepcircle = iterstepcircle.next();
-			if ( !(stepcircle.isNochvorhanden()) )
+			if ( this.einstellungen.getProcess().getStep(actualStepcircle.getName()) != null )
 			{
-//				System.out.println("loesche stepcircle: "+stepcircle.getName());
-				iterstepcircle.remove();
+				cleanedStepcircles.add(actualStepcircle);
 			}
 		}
+		this.stepcircles = cleanedStepcircles;
 	}
 
 	private void markAllstepcirclestodelete()
@@ -443,7 +473,7 @@ public class PmodelViewPage extends PApplet
 		this.text(this.legend_processname, this.legendposition[0]+this.legendsize/2, this.legendposition[1]+2*this.legendsize+0);
 		this.text(this.legend_processlastrevision, this.legendposition[0]+this.legendsize/2, this.legendposition[1]+4*this.legendsize+0);
 		this.text(this.legend_processstatus, this.legendposition[0]+this.legendsize/2, this.legendposition[1]+6*this.legendsize+0);
-		this.text((int)(((this.refresh_next.getTimeInMillis() - this.now.getTimeInMillis())/1000)+1), this.legendsize/2, this.getHeight() -40);
+//		this.text((int)(((this.refresh_next.getTimeInMillis() - this.now.getTimeInMillis())/1000)+1), this.legendsize/2, this.getHeight() -40);
 		this.text(((int)(this.frameRate)), this.getWidth() - this.legendsize/2 - this.legendsize*3, this.getHeight() - 40);
 
 		// Stepconnectoren ausgeben
@@ -466,34 +496,34 @@ public class PmodelViewPage extends PApplet
 		
 	}
 	
-	public boolean refresh()
+	public void refresh()
 	{
-		boolean result = false;
-//		System.out.println("refreshing data from: "+this.process.getInfilexml());
-//		try
-//		{
-//			this.process = process.readXml();
-//			System.out.println("infilexml vor dem read: "+process.getInfilexml());
-//			System.out.println("processName vor dem read: "+process.getName());
-//
-//			System.out.println("infilexml nach dem read: "+process.getInfilexml());
-//			System.out.println("processName nach dem read: "+process.getName());
-//	    	this.legend_processname = this.process.getName()+" v"+this.process.getModelVersion().toString();
-	    	this.legend_processname = this.einstellungen.getProcess().getName();
-//	    	this.legend_processname = "I am Legend";
-	    	
-	    	this.refresh_last = Calendar.getInstance();
-	    	this.refresh_topology = true;
-	    	
-	    	result = true;
-//		} catch (JAXBException e)
-//		{
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
-    	return result;
-	}
+//		System.out.println("Es wird refresht");
+//		System.out.println("refreshInterval: "+this.einstellungen.getRefreshInterval());
+//		System.out.println("lastRefreshSeconds: "+this.einstellungen.getLastRefreshSeconds());
+//		System.out.println("nextRefreshSeconds: "+this.einstellungen.getNextRefreshSeconds());
+		try
+		{
+			Thread.sleep(1000);
+		} catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+//		this.markAllstepcirclestodelete();
+//		this.markAllstepconnectorstodelete();
+		this.expungeStepcircles();
+		this.expungeStepconnectors();
+		draw_stepcircles();
+		draw_stepconnectors();
+		
+    	this.einstellungen.setLastRefreshSeconds((int)(System.currentTimeMillis()/1000));
+    	this.einstellungen.setNextRefreshSeconds(this.einstellungen.getRefreshInterval());
+//		System.out.println("lastRefreshSeconds: "+this.einstellungen.getLastRefreshSeconds());
+//		System.out.println("nextRefreshSeconds: "+this.einstellungen.getNextRefreshSeconds());
+    	
+ 	}
 	
 	private void effect_noise()
 	{
