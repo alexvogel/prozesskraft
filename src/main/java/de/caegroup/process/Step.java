@@ -10,6 +10,8 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
+import com.rits.cloning.Cloner;
+
 public class Step
 implements Serializable, Cloneable
 {
@@ -92,19 +94,19 @@ implements Serializable, Cloneable
 	/*----------------------------
 	  methods 
 	----------------------------*/
-	@Override
-	public Step clone()
-	{
-		try
-		{
-			return (Step) super.clone();
-		}
-		catch ( CloneNotSupportedException e )
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
+//	@Override
+//	public Step clone()
+//	{
+//		try
+//		{
+//			return (Step) super.clone();
+//		}
+//		catch ( CloneNotSupportedException e )
+//		{
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
 	
 	public boolean areFromstepsfinished()
 	{
@@ -139,82 +141,106 @@ implements Serializable, Cloneable
 		for( Init actualInit : this.getInits())
 		{
 			// die init-angaben in lokale variablen uebernehmen
-			String fromobjecttype = actualInit.getFromobjecttype();
-			String name = actualInit.getName();
-			String returnfield = actualInit.getReturnfield();
-			Step fromstep = parent.getStep(actualInit.getFromstep());
+//			String fromobjecttype = actualInit.getFromobjecttype();
+//			String name = actualInit.getName();
+//			String returnfield = actualInit.getReturnfield();
+			ArrayList<Step> fromsteps = parent.getSteps(actualInit.getFromstep());
 			
-			log("debug", "init '"+name+"': looking for field '"+returnfield+"' from a "+fromobjecttype+" of step '"+fromstep.getName()+"'");
-
-			ArrayList<Match> matchs = actualInit.getMatch();
-		
-			// wenn es ein file ist
-			if (fromobjecttype.equals("file"))
+			// ueber alle fromsteps gehen und die gefordterte liste erstellen (nur EINE insgesamt, nicht eine PRO fromstep)
+			for (Step actualFromstep : fromsteps)
 			{
-				ArrayList<File> files_from_fromstep = fromstep.getFile();
-				ArrayList<File> files_from_fromstep_which_matched = new ArrayList<File>();
-				// wenn match-angaben vorhanden sind, wird die fileliste reduziert
-				
-				for(Match actualMatch : matchs)
+				log("debug", "init '"+actualInit.getName()+"': looking for field '"+actualInit.getReturnfield()+"' from a "+actualInit.getFromobjecttype()+" of step '"+actualFromstep.getName()+"'");
+	
+				ArrayList<Match> matchs = actualInit.getMatch();
+			
+				// wenn es ein file ist
+				if (actualInit.getFromobjecttype().equals("file"))
 				{
-					log("debug", "init '"+name+"': accepting only "+fromobjecttype+"(s) which match '"+actualMatch.getPattern()+"' and field '"+actualMatch.getField()+"'");
-					// iteriere ueber alle Files der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
-					for(File actualFile : files_from_fromstep)
+					ArrayList<File> files_from_fromstep = actualFromstep.getFile();
+					ArrayList<File> files_from_fromstep_which_matched = new ArrayList<File>();
+					// wenn match-angaben vorhanden sind, wird die fileliste reduziert
+					
+					for(Match actualMatch : matchs)
 					{
-						if (actualFile.match(actualMatch))
+						log("debug", "init '"+name+"': accepting only "+actualInit.getFromobjecttype()+"(s) which match '"+actualMatch.getPattern()+"' and field '"+actualMatch.getField()+"'");
+						// iteriere ueber alle Files der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
+						for(File actualFile : files_from_fromstep)
 						{
-							files_from_fromstep_which_matched.add(actualFile);
+							if (actualFile.match(actualMatch))
+							{
+								files_from_fromstep_which_matched.add(actualFile);
+							}
 						}
 					}
-				}
-				// wenn die fileliste leer ist, dann ist initialisierung fehlgeschlagen
-				if (files_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
-				// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
-				List liste = new List();
+					// wenn die fileliste leer ist, dann ist initialisierung fehlgeschlagen
+					if (files_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
 
-				// hinzufuegen der listitems
-				for (File actualFile : files_from_fromstep_which_matched)
-				{
-					liste.addItem(actualFile.getField(returnfield));
-				}
-				
-				this.addList(liste);
-				liste.setName(actualInit.getName());
-
-				log("debug", "init '"+name+"': new list '"+liste.getName()+"' with "+liste.getItem().size()+" item(s).");
-				
-			}
-			// wenn es ein variable ist
-			else if (fromobjecttype.equals("variable"))
-			{
-				ArrayList<Variable> variables_from_fromstep = fromstep.getVariable();
-				ArrayList<Variable> variables_from_fromstep_which_matched = new ArrayList<Variable>();
-
-				for (Match actualMatch : matchs)
-				{
-					log("debug", "init '"+name+"': accepting only "+fromobjecttype+"(s) which match '"+actualMatch.getPattern()+"' and field '"+actualMatch.getField()+"'");
-					// iteriere ueber alle Variablen der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
-					for (Variable actualVariable : variables_from_fromstep)
+					// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
+					// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
+					List list;
+					if (this.getList(actualInit.getName()) != null)
 					{
-						if (actualVariable.match(actualMatch))
+						list = this.getList(actualInit.getName());
+					}
+					// ansonsten eine anlegen und this hinzufuegen
+					else
+					{
+						list = new List();
+						list.setName(actualInit.getName());
+						this.addList(list);
+					}
+
+					// hinzufuegen der listitems
+					for (File actualFile : files_from_fromstep_which_matched)
+					{
+						list.addItem(actualFile.getField(actualInit.getReturnfield()));
+					}
+						
+					log("debug", "init '"+name+"': new list '"+list.getName()+"' with "+list.getItem().size()+" item(s).");
+					
+				}
+				// wenn es ein variable ist
+				else if (actualInit.getFromobjecttype().equals("variable"))
+				{
+					ArrayList<Variable> variables_from_fromstep = actualFromstep.getVariable();
+					ArrayList<Variable> variables_from_fromstep_which_matched = new ArrayList<Variable>();
+	
+					for (Match actualMatch : matchs)
+					{
+						log("debug", "init '"+name+"': accepting only "+actualInit.getFromobjecttype()+"(s) which match '"+actualMatch.getPattern()+"' and field '"+actualMatch.getField()+"'");
+						// iteriere ueber alle Variablen der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
+						for (Variable actualVariable : variables_from_fromstep)
 						{
-							variables_from_fromstep_which_matched.add(actualVariable);
+							if (actualVariable.match(actualMatch))
+							{
+								variables_from_fromstep_which_matched.add(actualVariable);
+							}
 						}
 					}
+					if (variables_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
+					// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
+					// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
+					List list;
+					if (this.getList(actualInit.getName()) != null)
+					{
+						list = this.getList(actualInit.getName());
+					}
+					// ansonsten eine anlegen und this hinzufuegen
+					else
+					{
+						list = new List();
+						list.setName(actualInit.getName());
+						this.addList(list);
+					}
+	
+					// hinzufuegen der listitems
+					for(Variable actualVariable : variables_from_fromstep_which_matched)
+					{
+						list.addItem(actualVariable.getField(actualInit.getReturnfield()));
+					}
+					
+					log("debug", "init '"+name+"': new list '"+list.getName()+"' with "+list.getItem().size()+" item(s).");
 				}
-				if (variables_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
-				// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
-				List liste = new List();
-
-				for(Variable actualVariable : variables_from_fromstep_which_matched)
-				{
-					liste.addItem(actualVariable.getField(returnfield));
-				}
-				
-				this.addList(liste);
-				liste.setName(actualInit.getName());
-
-				log("debug", "init '"+name+"': new list '"+liste.getName()+"' with "+liste.getItem().size()+" item(s).");
 			}
 		}
 		// wenn alle initialisierung funktioniert habenn den status aendern
@@ -235,7 +261,6 @@ implements Serializable, Cloneable
 	
 	public boolean fan() throws CloneNotSupportedException
 	{
-		boolean success = false;
 		this.setStatus("fanning");
 		log("info", "setting status to 'fanning'");
 		
@@ -244,21 +269,32 @@ implements Serializable, Cloneable
 			// wenn die loopliste mindestens 1 wert enthaelt, ueber dioe liste iterieren und fuer jeden wert den aktuellen step clonen
 			if (this.getListItems(this.loop).size() > 0)
 			{
-				Iterator<String> itervalue = this.getListItems(this.loop).iterator();
+				// cloner erstellen fuer einen deep-copy
+				Cloner cloner = new Cloner();
 				int x = 1;
-				while (itervalue.hasNext())
+				for(String loopVariable : this.getListItems(this.loop))
 				{
-					String value = itervalue.next();
-					Step newstep = this.clone();
-					newstep.setLoopvar(value);
-					newstep.setLoop("");
+					// einen neuen step erzeugen (klon von this)
+					Step newstep = cloner.deepClone(this);
+					newstep.setLoopvar(loopVariable);
+					newstep.setLoop(null);
 					newstep.setName(newstep.getName()+"@"+x);
 					newstep.setStatus("fanned");
 					newstep.log("info", "this step '"+newstep.getName()+"' was fanned out from step '"+this.getName()+"'");
 					newstep.log("info", "setting status to 'fanned'");
+
+					// eine liste mit dem namen 'loop' anlegen und darin die loopvar speichern
+					List listLoop = new List();
+					listLoop.setName("loopvar");
+					listLoop.addItem(loopVariable);
+					newstep.addList(listLoop);
+
+					// den neuen step (klon von this) dem prozess hinzufuegen
 					this.parent.addStep(newstep);
 					x++;
 				}
+				
+				// den urspruenglichen step (this) aus dem prozess entfernen
 				this.parent.removeStep(this);
 				return true;
 			}
@@ -407,7 +443,7 @@ implements Serializable, Cloneable
 				if (file.isFile())
 				{
 					this.log("info", "it is a file");
-					if (!(this.commitFile(file)))
+					if (!(this.commitFile("default", file)))
 					{
 						all_commitfiles_ok = false;
 					}
@@ -433,12 +469,13 @@ implements Serializable, Cloneable
 	}
 
 	// ein file in den aktuellen step committen
-	public boolean commitFile(java.io.File file)
+	public boolean commitFile(String key, java.io.File file)
 	{
 		if (file.canRead())
 		{
 			File newfile = new File();
 			newfile.setAbsfilename(file.getPath());
+			newfile.setKey(key);
 			this.addFile(newfile);
 			this.log("info", "file committed: "+newfile.getAbsfilename());
 //			System.out.println("AMOUNT OF FILES ARE NOW: "+this.file.size());
@@ -451,10 +488,10 @@ implements Serializable, Cloneable
 		}
 	}
 
-	public boolean commitFile(String absfilepathdir)
+	public boolean commitFile(String key, String absfilepathdir)
 	{
 		java.io.File file = new java.io.File(absfilepathdir);
-		return commitFile(file);
+		return commitFile(key, file);
 	}
 
 	public void commitFile(File file)
@@ -580,84 +617,84 @@ implements Serializable, Cloneable
 				// wenn das zu committende objekt ein File ist...
 				for(File actualFile : actualCommit.getFile())
 				{
-					
-					// ausfuehren von evtl. vorhandenen globs in den files
-					for(File actualfile : this.getFile())
+					this.log("info", "actual file is key "+actualFile.getKey());
+									// ausfuehren von evtl. vorhandenen globs in den files
+					if(actualFile.getAbsfilename().equals(""))
 					{
-						if(actualfile.getAbsfilename().equals(""))
+						if(!(actualFile.getGlob().equals("")))
 						{
-							if(!(actualfile.getGlob().equals("")))
+							log("info", "globbing for files with'"+actualFile.getGlob()+"'");
+							java.io.File dir = new java.io.File(this.getAbsdir());
+							FileFilter fileFilter = new WildcardFileFilter(actualFile.getGlob());
+							java.io.File[] files = dir.listFiles(fileFilter);
+							if(files.length == 0)
 							{
-								log("info", "globbing for files with'"+actualfile.getGlob()+"'");
-								java.io.File dir = new java.io.File(this.getAbsdir());
-								FileFilter fileFilter = new WildcardFileFilter(actualfile.getGlob());
-								java.io.File[] files = dir.listFiles(fileFilter);
-								if(files.length == 0)
+								log("info", "no file matched glob '"+actualFile.getGlob()+"'");
+							}
+							
+							else
+							{
+								log("info", files.length+" file(s) matched glob '"+actualFile.getGlob()+"'");
+							}
+							
+							// globeintrag im File loeschen, damit es nicht erneut geglobbt wird
+							actualFile.setGlob("");
+							
+							// passt es bzgl. minoccur und maxoccur?
+							log("info", "checking amount of occurances.");
+							if (files.length < actualFile.getMinoccur())
+							{
+								log("error", "minoccur is "+actualFile.getMinoccur()+" but only "+files.length+" file(s) globbed.");
+							}
+							else if (files.length > actualFile.getMaxoccur())
+							{
+								log("error", "maxoccur is "+actualFile.getMaxoccur()+" but "+files.length+" file(s) globbed.");
+							}
+							
+							else
+							{
+								for(int x = 0; x < files.length; x++)
 								{
-									log("info", "no file matched glob '"+actualfile.getGlob()+"'");
-								}
-								
-								else
-								{
-									log("info", files.length+" file(s) matched glob '"+actualfile.getGlob()+"'");
-								}
-								
-								// passt es bzgl. minoccur und maxoccur?
-								log("info", "checking amount of occurances.");
-								if (files.length < actualfile.getMinoccur())
-								{
-									log("error", "minoccur is "+actualfile.getMinoccur()+" but only "+files.length+" file(s) globbed.");
-								}
-								else if (files.length > actualfile.getMaxoccur())
-								{
-									log("error", "maxoccur is "+actualfile.getMaxoccur()+" but "+files.length+" file(s) globbed.");
-								}
-								
-								else
-								{
-									for(int x = 0; x < files.length; x++)
+									// ist es der letzte glob? Dann soll das urspruengliche file object verwendet werden
+									if((x+1) == files.length)
 									{
-										// ist es der letzte glob? Dann soll das urspruengliche file object verwendet werden
-										if((x+1) == files.length)
-										{
-											actualfile.setAbsfilename(files[x].getAbsolutePath());
-											log("info", "setting absolute filename to: "+actualfile.getAbsfilename());
-										}
-										// alle anderen werden aus einem clon erstellt
-										else
-										{
-											log("info", "cloning file-object and setting filename: "+actualfile.getAbsfilename());
-											File pFile = actualfile.clone();
-											pFile.setAbsfilename(files[x].getAbsolutePath());
-											this.addFile(pFile);
-										}
+										actualFile.setAbsfilename(files[x].getAbsolutePath());
+										log("info", "setting absolute filename to: "+actualFile.getAbsfilename());
+									}
+									// alle anderen werden aus einem clon erstellt
+									else
+									{
+										log("info", "cloning file-object and setting filename: "+actualFile.getAbsfilename());
+										File pFile = actualFile.clone();
+										pFile.setAbsfilename(files[x].getAbsolutePath());
+										// das zusaetzliche file dem commit hinzufuegen
+										actualCommit.addFile(pFile);
 									}
 								}
 							}
 						}
 					}
+				}
+				
+				// ueber alle files des commits iterieren und dem step hinzufuegen
+				for(File actualFile : actualCommit.getFile())
+				{
 					
-					this.log("info", "file "+actualFile.getAbsfilename());
-					java.io.File fsfile = new java.io.File(actualFile.getAbsfilename());
-					if (this.commitFile(fsfile))
+					this.log("info", "committing file "+actualFile.getAbsfilename());
+					this.commitFile(actualFile);
 					{
-						// wenn das File auch dem prozess committed werden soll, dann soll es ins instanzverzeichnis kopiert werden
+						// wenn das File auch dem prozess committed werden soll, dann soll es ins rootverzeichnis kopiert werden
 						if (actualCommit.getToroot())
 						{
 							try
 							{
-								Runtime.getRuntime().exec("cp "+fsfile.getAbsolutePath()+" "+this.parent.getRootdir()+"/"+fsfile.getName());
+								Runtime.getRuntime().exec("cp "+actualFile.getAbsfilename()+" "+this.parent.getRootdir()+"/"+actualFile.getFilename());
 							}
 							catch (Exception e)
 							{
 								e.printStackTrace();
 							}
 						}
-					}
-					else
-					{
-						success = false;
-						this.log("info", "commit of file not successfull");
 					}
 				}
 				
@@ -1094,14 +1131,9 @@ implements Serializable, Cloneable
 		return listnames;
 	}
 
-	public List getList(String listname) throws ListNotFoundException
+	public List getList(String listname)
 	{
 		List list = null;
-		
-		if (!(this.isListPresent(listname)))
-		{
-			throw new ListNotFoundException();
-		}
 		
 		Iterator<List> iterList = this.list.iterator();
 		while(iterList.hasNext())
@@ -1128,17 +1160,14 @@ implements Serializable, Cloneable
 	
 	public ArrayList<String> getListItems(String listname)
 	{
-		List list = null;
-		try
+		if(this.getList(listname) != null)
 		{
-			list = this.getList(listname);
-		} catch (ListNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return this.getList(listname).getItem();
 		}
-
-		return list.getItem();
+		else
+		{
+			return null;
+		}
 	}
 
 	public Work getWork()

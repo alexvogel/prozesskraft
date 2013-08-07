@@ -49,13 +49,20 @@ implements Serializable
 	// ein file in den aktuellen step committen
 	public void commitfile(java.io.File file)
 	{
-		this.parent.commitFile(file);
+		this.parent.commitFile("default", file);
 	}
 
 	public void commitvariable(String name, String value)
 	{
 		this.parent.commitvariable(name, value);
 	}
+
+	public void addFile(File file)
+	{
+		this.file.add(file);
+//		System.out.println("NOW FILES AMOUNT: "+this.files.size());
+	}
+
 	/*----------------------------
 	  methods get
 	----------------------------*/
