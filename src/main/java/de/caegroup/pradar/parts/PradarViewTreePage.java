@@ -1,46 +1,29 @@
 package de.caegroup.pradar.parts;
 
-import java.awt.Graphics;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeanProperties;
-import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -48,8 +31,6 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import de.caegroup.pradar.Entity;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.jface.databinding.viewers.ViewerProperties;
-import org.eclipse.core.databinding.beans.PojoProperties;
 
 
 public class PradarViewTreePage
@@ -323,6 +304,8 @@ public class PradarViewTreePage
 				Entity entity = ((Entity) element);
 				Entity filter_entity = new Entity();
 				filter_entity.setId(entity.getParentid());
+				filter_entity.setUser(entity.getUser());
+				filter_entity.setHost(entity.getHost());
 				
 				Object parentEntity = null;
 				if (filter_entity.getAllMatches(parentData.entities_filtered).size() > 0)
@@ -341,6 +324,8 @@ public class PradarViewTreePage
 				Entity entity = ((Entity) element);
 				Entity filter_entity = new Entity();
 				filter_entity.setParentid(entity.getId());
+				filter_entity.setUser(entity.getUser());
+				filter_entity.setHost(entity.getHost());
 				
 				int amountChildren = filter_entity.getAllMatches(parentData.entities_filtered).size();
 				return amountChildren > 0;
