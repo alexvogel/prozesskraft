@@ -195,6 +195,7 @@ public class PradarPartUi3 extends ModelObject
 //		applet = new PradarViewProcessingPage(this);
 		refresh_last.setTimeInMillis(0);
 		refresh();
+//		filter();
 //		applet.refresh();
 		tree.refresh();
 	}
@@ -213,6 +214,7 @@ public class PradarPartUi3 extends ModelObject
 		refresh();
 		createControls(composite);
 //		applet.refresh();
+//		filter();
 		tree.refresh();
 	}
 
@@ -1311,26 +1313,35 @@ public class PradarPartUi3 extends ModelObject
 	
 	void filter()
 	{
+//		System.out.println("children is: "+this.einstellungen.getChildren());
 		this.entities_filtered = entity_filter.getAllMatches(this.entities_all);
+
 		// falls auch children angezeigt werden sollen
 		if (einstellungen.getChildren())
 		{
 			for(int x=0; x<this.entities_filtered.size(); x++)
 			{
-				Entity entity = this.entities_filtered.get(x);
+				Entity actualEntity = this.entities_filtered.get(x);
 				for(int y=0; y<this.entities_all.size(); y++)
 				{
-					Entity possible_child = this.entities_all.get(y);
-					if (possible_child.getParentid().equals(entity.getId()))
+					Entity actualEntityPossibleChild = this.entities_all.get(y);
+//					if (possible_child.getParentid().equals(entity.getId()))
+//					Entity possible_child = this.entities_all.get(y);
+					if ( (actualEntityPossibleChild.getParentid().equals(actualEntity.getId())) && (actualEntityPossibleChild.getHost().equals(actualEntity.getHost())) && (actualEntityPossibleChild.getUser().equals(actualEntity.getUser())) && (actualEntityPossibleChild.getCheckinInMillis() > actualEntity.getCheckinInMillis()) )
+//					if ( (actualEntityPossibleChild.getParentid().equals(actualEntity.getId())) && (actualEntityPossibleChild.getHost().equals(actualEntity.getHost())) && (actualEntityPossibleChild.getUser().equals(actualEntity.getUser()))  )
+//					if (actualEntityPossibleChild.getParentid().equals(actualEntity.getId()) && actualEntityPossibleChild.getUser().equals(actualEntity.getUser()) )
+//					if (actualEntityPossibleChild.getParentid().equals(actualEntity.getId())  )
 					{
-						this.entities_filtered.add(possible_child);
+//						if(!(this.entities_filtered.contains(actualEntityPossibleChild)))
+						this.entities_filtered.add(actualEntityPossibleChild);
+//						System.out.println("another child found");
 					}
 				}
 			}
 		}
 		log("info", "setting filter...");
+		log("info", "total amount of entities: "+this.entities_all.size());
 		log("info", "amount of entities passing filter: "+this.entities_filtered.size());
-
 	}
 
 	Entity getEntityBySuperId(String superId)

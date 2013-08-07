@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 import javax.inject.Inject;
@@ -16,6 +17,7 @@ import org.eclipse.swt.widgets.Display;
 
 //import org.eclipse.swt.events.MouseEvent;
 //import org.eclipse.swt.events.MouseWheelListener;
+
 
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -56,6 +58,7 @@ public class PradarViewProcessingPage extends PApplet
 	float distanceToMouse = 100000;
 	float maus_toleranz_pentity = 20;
 	float maus_toleranz_period = 5;
+//	int periodKreis = 24;
 	private float[] legendposition = {0,0,0};
 	private int[] legendcolor = {0,0,0};
     private int legendsize = (10);
@@ -150,6 +153,7 @@ public class PradarViewProcessingPage extends PApplet
 		this.radius_jahr = this.radius_basis * 5;
 		Calendar period = Calendar.getInstance();
 		period.setTimeInMillis(System.currentTimeMillis()-(long)(this.parent.einstellungen.getPeriod()) * 3600000);
+//		period.setTimeInMillis(System.currentTimeMillis()-(long)(this.periodKreis) * 3600000);
 		this.radius_period = (int) this.calcRadius(period);
 		
 		this.durchmesser_stunde= this.radius_stunde * 2;
@@ -299,17 +303,21 @@ public class PradarViewProcessingPage extends PApplet
 
 //		System.out.println("Anzahl der Entities : "+this.parent.entities_filtered.size());
 //		System.out.println("Anzahl der Pentities: "+this.pentities_filtered.size());
-		ArrayList<PradarViewProcessingEntity> copy_entities_filtered = pentities_filtered;
-		for (PradarViewProcessingEntity actualPentity : copy_entities_filtered)
+		try
 		{
-			if (this.parent.getEntityBySuperId(actualPentity.getSuperid()) == null) {break;}
-			actualPentity.calcNewBogenlaenge();
-			actualPentity.calcPosition();
-			actualPentity.draw();
-//			System.out.println("SuperId: "+pentity.getSuperid());
+			for (PradarViewProcessingEntity actualPentity : pentities_filtered)
+			{
+				if (this.parent.getEntityBySuperId(actualPentity.getSuperid()) == null) {break;}
+				actualPentity.calcNewBogenlaenge();
+				actualPentity.calcPosition();
+				actualPentity.draw();
+			}
+			detMouseAndEntity();
 		}
-
-		detMouseAndEntity();
+		catch (ConcurrentModificationException e)
+		{
+			System.out.println("warn: filter function altered the data while drawing. skipping draw.");
+		}
 		
 		// fahne zeichnen, falls bedingungen erfuellt
 		if (this.entity_nahe_maus != null)
@@ -471,16 +479,14 @@ public class PradarViewProcessingPage extends PApplet
 		this.pentity_nahe_maus = null;
 		this.entity_mit_kleinstem_abstand_mouse = null;
 		
-		// feststellen der ententy, die den kleinsten abstand zur mouse hat
-		Iterator<PradarViewProcessingEntity> iterpentity = this.pentities_filtered.iterator();
-		while (iterpentity.hasNext())
+		// feststellen der entity, die den kleinsten abstand zur mouse hat
+		for(PradarViewProcessingEntity actualPentity : this.pentities_filtered)
 		{
-			PradarViewProcessingEntity pentity = iterpentity.next();
-			float actualDistanceToMouse = pentity.calcDistToMouse();
+			float actualDistanceToMouse = actualPentity.calcDistToMouse();
 			if (actualDistanceToMouse < this.distanceToMouse)
 			{
 				this.distanceToMouse = actualDistanceToMouse;
-				entity_mit_kleinstem_abstand_mouse = this.parent.getEntityBySuperId(pentity.getSuperid());
+				entity_mit_kleinstem_abstand_mouse = this.parent.getEntityBySuperId(actualPentity.getSuperid());
 			}
 		}
 
@@ -629,7 +635,7 @@ public class PradarViewProcessingPage extends PApplet
 		if (this.period_kreis_folgt_der_maus)
 		{
 			this.period_kreis_folgt_der_maus = false;
-			this.parent.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
+//			this.parent.einstellungen.setPeriod(this.periodKreis);
 		}
 	}
 	
@@ -642,16 +648,14 @@ public class PradarViewProcessingPage extends PApplet
 				this.pentity_nahe_maus.setBogenlaenge(calcBogenlaengeFromPosition(mouseX, mouseY));
 			}
 			
+			// period-kreis umherziehen
 			else if (this.period_kreis_folgt_der_maus)
 			{
-	//			this.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
-//				float radius = calcRadiusFromPosition(mouseX, mouseY);
-//				Calendar time = calcTimeFromRadius(radius);
-//				int period = calcPeriodFromTime(time);
+//				periodKreis = (calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
 				this.parent.einstellungen.setPeriod(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))));
-	//			this.parent.entity_filter.setPeriodInMillis((long) (3600000 * (long)(calcPeriodFromTime(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY))))) );
 			}
 			
+			// hintergrund umherziehen
 			else
 			{
 				//		System.out.println("Ja mouse dragged: mouse_pressed_x="+mouse_pressed_x+"  || mouseX="+mouseX+" || center_x="+center_x);

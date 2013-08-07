@@ -156,7 +156,7 @@ public class PradarViewProcessingEntity
 		PradarViewProcessingEntity pentity = null;
 		for(PradarViewProcessingEntity actualPentity : pentities)
 		{
-			if ((actualPentity.getId().equals(child.getEntity().getParentid())) && (actualPentity.getEntity().getHost().equals(child.getEntity().getHost()))  && (actualPentity.getEntity().getUser().equals(child.getEntity().getUser())) )
+			if ((actualPentity.getEntity().getId().equals(child.getEntity().getParentid())) && (actualPentity.getEntity().getHost().equals(child.getEntity().getHost()))  && (actualPentity.getEntity().getUser().equals(child.getEntity().getUser())) )
 			{
 				return actualPentity;
 			}
