@@ -11,7 +11,7 @@ public class PrampViewModel extends ModelObject
 	public String process = null;
 	public String version = null;
 	public String host = null;
-	public String instancedirectory = null;
+	public String rootDirectory = null;
 	
 	public PrampViewModel()
 	{
@@ -22,44 +22,14 @@ public class PrampViewModel extends ModelObject
 		return processes;
 	}
 
-	public String[] getHosts()
-	{
-		return hosts;
-	}
-
-	public String[] getVersions()
-	{
-		return versions;
-	}
-
-	public String getProcess()
-	{
-		return process;
-	}
-
-	public String getVersion()
-	{
-		return version;
-	}
-
-	public String getHost()
-	{
-		return host;
-	}
-
-	public String getInstancedirectory()
-	{
-		return instancedirectory;
-	}
-
 	public void setProcesses(String[] processes)
 	{
 		firePropertyChange("processes", this.processes, this.processes = processes);
 	}
 
-	public void setVersions(String[] versions)
+	public String[] getHosts()
 	{
-		firePropertyChange("versions", this.versions, this.versions = versions);
+		return hosts;
 	}
 
 	public void setHosts(String[] hosts)
@@ -67,9 +37,29 @@ public class PrampViewModel extends ModelObject
 		firePropertyChange("hosts", this.hosts, this.hosts = hosts);
 	}
 
+	public String[] getVersions()
+	{
+		return versions;
+	}
+
+	public void setVersions(String[] versions)
+	{
+		firePropertyChange("versions", this.versions, this.versions = versions);
+	}
+
+	public String getProcess()
+	{
+		return process;
+	}
+
 	public void setProcess(String process)
 	{
 		firePropertyChange("process", this.process, this.process = process);
+	}
+
+	public String getVersion()
+	{
+		return version;
 	}
 
 	public void setVersion(String version)
@@ -77,14 +67,24 @@ public class PrampViewModel extends ModelObject
 		firePropertyChange("version", this.version, this.version = version);
 	}
 
+	public String getHost()
+	{
+		return host;
+	}
+
 	public void setHost(String host)
 	{
 		firePropertyChange("host", this.host, this.host = host);
 	}
 
-	public void setInstancedirectory(String instancedirectory)
+	public String getRootDirectory()
 	{
-		firePropertyChange("instancedirectory", this.instancedirectory, this.instancedirectory = instancedirectory);
+		return rootDirectory;
+	}
+
+	public void setRootDirectory(String rootDirectory)
+	{
+		firePropertyChange("rootDirectory", this.rootDirectory, this.rootDirectory = rootDirectory);
 	}
 
 }

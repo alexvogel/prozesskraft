@@ -99,7 +99,7 @@ public class PrampPartUi1 extends ModelObject
 	private String iniFile = null;
 	private String userIniFile = null;
 //	private Ini userIni = null;
-	private Text text_instancedirectory = null;
+	private Text text_rootdirectory = null;
 	
 	Composite composite_12;
 	Shell shell_dummy_hinweis;
@@ -134,7 +134,7 @@ public class PrampPartUi1 extends ModelObject
 		loadIni();
 		getInstalledProcessNames();
 		getHosts();
-//		setRandomInstancedirectory();
+//		setRandomRootdirectory();
 		createControls(composite);
 	}
 
@@ -149,7 +149,7 @@ public class PrampPartUi1 extends ModelObject
 		setUserIni();
 		getInstalledProcessNames();
 		getHosts();
-//		setRandomInstancedirectory();
+//		setRandomRootdirectory();
 		createControls(composite);
 	}
 
@@ -240,14 +240,14 @@ public class PrampPartUi1 extends ModelObject
 		combo_hosts.setLayoutData(gd_combo_hosts);
 		new Label(grpVisual, SWT.NONE);
 		
-		Label lblInstancedirectory = new Label(grpVisual, SWT.NONE);
-		lblInstancedirectory.setToolTipText("directory for instance data");
-		lblInstancedirectory.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
-		lblInstancedirectory.setText("instancedirectory");
+		Label lblRootdirectory = new Label(grpVisual, SWT.NONE);
+		lblRootdirectory.setToolTipText("directory for instance data");
+		lblRootdirectory.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
+		lblRootdirectory.setText("root directory");
 		new Label(grpVisual, SWT.NONE);
 		
-		text_instancedirectory = new Text(grpVisual, SWT.BORDER);
-		text_instancedirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		text_rootdirectory = new Text(grpVisual, SWT.BORDER);
+		text_rootdirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 //		text_instancedirectory.addModifyListener(listener_text_instancedirectory);
 		
 		Button btnA = new Button(grpVisual, SWT.NONE);
@@ -422,7 +422,7 @@ public class PrampPartUi1 extends ModelObject
 
 	        // Set the initial filter path according
 	        // to anything they've selected or typed in
-	        dlg.setFilterPath(text_instancedirectory.getText());
+	        dlg.setFilterPath(text_rootdirectory.getText());
 
 	        // Change the title bar text
 	        dlg.setText("Instance Directory Dialog");
@@ -436,7 +436,7 @@ public class PrampPartUi1 extends ModelObject
 	        String dir = dlg.open();
 	        if (dir != null) {
 	          // Set the text box to the new selection
-	        	einstellungen.setInstancedirectory(dir);
+	        	einstellungen.setRootDirectory(dir);
 	        	log("info", "setting instancedirectory: "+dir);
 //	        	text_instancedirectory.setText(dir);
 	        }
@@ -554,12 +554,12 @@ public class PrampPartUi1 extends ModelObject
 	{
 		DataBindingContext bindingContextInstancedirectory = new DataBindingContext();
 		//
-		IObservableValue targetObservableInstancedirectory = WidgetProperties.text(SWT.Modify).observe(text_instancedirectory);
-		IObservableValue modelObservableInstancedirectory = BeanProperties.value("instancedirectory").observe(einstellungen);
+		IObservableValue targetObservableInstancedirectory = WidgetProperties.text(SWT.Modify).observe(text_rootdirectory);
+		IObservableValue modelObservableInstancedirectory = BeanProperties.value("rootDirectory").observe(einstellungen);
 		bindingContextInstancedirectory.bindValue(targetObservableInstancedirectory, modelObservableInstancedirectory, null, null);
 		//
-		IObservableValue targetObservableInstancedirectoryTooltip = WidgetProperties.tooltipText().observe(text_instancedirectory);
-		IObservableValue modelObservableInstancedirectoryTooltip = BeanProperties.value("instancedirectory").observe(einstellungen);
+		IObservableValue targetObservableInstancedirectoryTooltip = WidgetProperties.tooltipText().observe(text_rootdirectory);
+		IObservableValue modelObservableInstancedirectoryTooltip = BeanProperties.value("rootDirectory").observe(einstellungen);
 		bindingContextInstancedirectory.bindValue(targetObservableInstancedirectoryTooltip, modelObservableInstancedirectoryTooltip, null, null);
 		//
 		return bindingContextInstancedirectory;
@@ -904,7 +904,7 @@ public class PrampPartUi1 extends ModelObject
 		
 		String path = cwd + "/" + stringProcess + "_v" + stringVersion + "_" + stringYear + stringMonth + stringDay + "_" + stringHour + stringMinute + stringSecond + "_" + stringMilli; 
 
-		einstellungen.setInstancedirectory(path);
+		einstellungen.setRootDirectory(path);
     	log("info", "setting instancedirectory: "+path);
 //		System.out.println("pfad sollte sein: "+path);
 //		System.out.println("aktualisiere textfeld - einstellungen get.Instancedirectory: "+einstellungen.getInstancedirectory());
@@ -918,7 +918,7 @@ public class PrampPartUi1 extends ModelObject
 	 */
 	private boolean createInstanceDir()
 	{
-		java.io.File instanceDir = new java.io.File(this.einstellungen.getInstancedirectory());
+		java.io.File instanceDir = new java.io.File(this.einstellungen.getRootDirectory());
 		
 		boolean result = false;
 		
@@ -1077,9 +1077,9 @@ public class PrampPartUi1 extends ModelObject
 //					System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
 //					System.out.println("Id des Prozesses: "+process.getRandomId());
 					
-					process.setOutfilebinary(this.einstellungen.getInstancedirectory()+"/"+this.einstellungen.getProcess()+".pmb");
-					process.setInfilebinary(this.einstellungen.getInstancedirectory()+"/"+this.einstellungen.getProcess()+".pmb");
-					process.setRootdir(this.einstellungen.getInstancedirectory());
+					process.setOutfilebinary(this.einstellungen.getRootDirectory()+"/"+this.einstellungen.getProcess()+".pmb");
+					process.setInfilebinary(this.einstellungen.getRootDirectory()+"/"+this.einstellungen.getProcess()+".pmb");
+					process.setRootdir(this.einstellungen.getRootDirectory());
 					
 					process.writeBinary();
 
