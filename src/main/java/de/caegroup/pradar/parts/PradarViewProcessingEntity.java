@@ -69,7 +69,7 @@ public class PradarViewProcessingEntity
 		// falls es einen eintrag im parent-id gibt, soll das parent mit abgelegt werden
 		if (!( (entity.getParentid().equals("")) || (entity.getParentid().equals("0")) ))
 		{
-			this.pentity_parent = getPentityBySuperId(entity.getParentid(), this.parent.pentities_filtered);
+			this.pentity_parent = getParentPentity(this, this.parent.pentities_filtered);
 			this.mass = 100;
 		}
 		
@@ -144,6 +144,19 @@ public class PradarViewProcessingEntity
 		for(PradarViewProcessingEntity actualPentity : pentities)
 		{
 			if (actualPentity.getSuperid().equals(superid))
+			{
+				return actualPentity;
+			}
+		}
+		return pentity;
+	}
+	
+	private PradarViewProcessingEntity getParentPentity(PradarViewProcessingEntity child, ArrayList<PradarViewProcessingEntity> pentities)
+	{
+		PradarViewProcessingEntity pentity = null;
+		for(PradarViewProcessingEntity actualPentity : pentities)
+		{
+			if ((actualPentity.getId().equals(child.getEntity().getParentid())) && (actualPentity.getEntity().getHost().equals(child.getEntity().getHost()))  && (actualPentity.getEntity().getUser().equals(child.getEntity().getUser())) )
 			{
 				return actualPentity;
 			}
