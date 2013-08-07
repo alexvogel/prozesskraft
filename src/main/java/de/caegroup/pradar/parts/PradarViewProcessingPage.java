@@ -299,7 +299,8 @@ public class PradarViewProcessingPage extends PApplet
 
 //		System.out.println("Anzahl der Entities : "+this.parent.entities_filtered.size());
 //		System.out.println("Anzahl der Pentities: "+this.pentities_filtered.size());
-		for (PradarViewProcessingEntity actualPentity : pentities_filtered)
+		ArrayList<PradarViewProcessingEntity> copy_entities_filtered = pentities_filtered;
+		for (PradarViewProcessingEntity actualPentity : copy_entities_filtered)
 		{
 			if (this.parent.getEntityBySuperId(actualPentity.getSuperid()) == null) {break;}
 			actualPentity.calcNewBogenlaenge();
