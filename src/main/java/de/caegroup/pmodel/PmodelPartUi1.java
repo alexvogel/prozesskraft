@@ -25,6 +25,8 @@ import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.beans.PojoProperties;
 import org.eclipse.core.databinding.observable.ChangeEvent;
 import org.eclipse.core.databinding.observable.IChangeListener;
 import org.eclipse.core.databinding.observable.Realm;
@@ -56,8 +58,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -284,16 +288,17 @@ public class PmodelPartUi1 extends ModelObject
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpFunction.setText("function");
 		
-		button_refresh = new Button(grpFunction, SWT.NONE);
+		button_refresh = new Button(grpFunction, SWT.NONE | SWT.RADIO);
 		button_refresh.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		button_refresh.setText("refresh");
-		button_refresh.addSelectionListener(listener_refresh_button);
+//		button_refresh.addSelectionListener(listener_refresh_button);
+		button_refresh.addListener(SWT.Selection, (Listener) listener_refresh_button);
 		
 		spinner_refreshinterval = new Spinner(grpFunction, SWT.BORDER);
 		spinner_refreshinterval.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
 		spinner_refreshinterval.setMaximum(999);
-		spinner_refreshinterval.setSelection(300);
-		spinner_refreshinterval.setMinimum(60);
+		spinner_refreshinterval.setSelection(20);
+		spinner_refreshinterval.setMinimum(10);
 		
 		button_startmanager = new Button(grpFunction, SWT.NONE);
 		button_startmanager.setSelection(true);
@@ -521,9 +526,17 @@ public class PmodelPartUi1 extends ModelObject
 //		}
 //	};
 	
-	SelectionAdapter listener_refresh_button = new SelectionAdapter()
+//	SelectionAdapter listener_refresh_button = new SelectionAdapter()
+//	{
+//		public void widgetSelected(SelectionEvent event)
+//		{
+//			refreshAppletAndUi();
+//		}
+//	};
+	
+	Listener listener_refresh_button = new Listener()
 	{
-		public void widgetSelected(SelectionEvent event)
+		public void handleEvent(Event e)
 		{
 			refreshAppletAndUi();
 		}
@@ -740,6 +753,12 @@ public class PmodelPartUi1 extends ModelObject
 		IObservableValue targetObservableRefreshInterval = WidgetProperties.selection().observe(spinner_refreshinterval);
 		IObservableValue modelObservableRefreshInterval = BeanProperties.value("refreshInterval").observe(einstellungen);
 		bindingContextRefresh.bindValue(targetObservableRefreshInterval, modelObservableRefreshInterval, null, null);
+		//
+//		IObservableValue targetObservableRefreshHit = WidgetProperties.selection().observe(button_refresh);
+		IObservableValue targetObservableRefreshHit = SWTObservables.observeSelection(button_refresh);
+//		IObservableValue modelObservableRefreshHit = BeansObservables.observeValue(einstellungen, "refreshNow");
+		IObservableValue modelObservableRefreshHit = BeanProperties.value("refreshNow").observe(einstellungen);
+		bindingContextRefresh.bindValue(targetObservableRefreshHit, modelObservableRefreshHit, null, null);
 		//
 		return bindingContextRefresh;
 	}

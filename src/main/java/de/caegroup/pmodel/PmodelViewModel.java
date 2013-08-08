@@ -18,7 +18,8 @@ public class PmodelViewModel extends ModelObject
 	public int gravx = 0;
 	public int gravy = 5;
 	private String markedStepName = "root";
-	private int refreshInterval = 300;
+	private int refreshInterval = 10;
+	private boolean refreshNow = false;
 	private int nextRefreshSeconds = refreshInterval;
 	private String nextRefreshSecondsText = "refresh ("+nextRefreshSeconds+")";
 	private int lastRefreshSeconds = 0;
@@ -171,6 +172,17 @@ public class PmodelViewModel extends ModelObject
 		firePropertyChange("refreshInterval", this.refreshInterval, this.refreshInterval = refreshInterval);
 	}
 	
+	public boolean getRefreshNow()
+	{
+		return this.refreshNow;
+	}
+
+	public void setRefreshNow(boolean refreshNow)
+	{
+		firePropertyChange("refreshNow", this.refreshNow, this.refreshNow = refreshNow);
+		System.err.println("setRefreshNow to "+refreshNow);
+	}
+	
 	public int getNextRefreshSeconds()
 	{
 		return this.nextRefreshSeconds;
@@ -180,6 +192,14 @@ public class PmodelViewModel extends ModelObject
 	{
 		firePropertyChange("nextRefreshSeconds", this.nextRefreshSeconds, this.nextRefreshSeconds = nextRefreshSeconds);
 		setNextRefreshSecondsText("refresh("+this.nextRefreshSeconds+")");
+		if(nextRefreshSeconds == 0)
+		{
+			setRefreshNow(true);
+		}
+		else
+		{
+			setRefreshNow(false);
+		}
 	}
 	
 	public String getNextRefreshSecondsText()

@@ -7,9 +7,11 @@ import java.io.IOException;
 
 
 
+
 //import java.io.InputStream;
 //
 import javax.xml.bind.JAXBException;
+
 
 
 
@@ -191,7 +193,7 @@ public class PmodelViewPage extends PApplet
 		}
 		
 		// wenn refresh-Countdown < 0 ist, soll refresht werden
-		if (this.einstellungen.getNextRefreshSeconds() <= 0)
+		if (this.einstellungen.getNextRefreshSeconds() < 0)
 		{
 			refresh();
 		}
@@ -502,14 +504,15 @@ public class PmodelViewPage extends PApplet
 //		System.out.println("refreshInterval: "+this.einstellungen.getRefreshInterval());
 //		System.out.println("lastRefreshSeconds: "+this.einstellungen.getLastRefreshSeconds());
 //		System.out.println("nextRefreshSeconds: "+this.einstellungen.getNextRefreshSeconds());
-		try
-		{
-			Thread.sleep(1000);
-		} catch (InterruptedException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+//		try
+//		{
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e)
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 //		this.markAllstepcirclestodelete();
 //		this.markAllstepconnectorstodelete();
