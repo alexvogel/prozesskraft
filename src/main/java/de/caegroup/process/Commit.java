@@ -47,14 +47,14 @@ implements Serializable
 	----------------------------*/
 
 	// ein file in den aktuellen step committen
-	public void commitfile(java.io.File file)
+	public void commitFile(java.io.File file)
 	{
 		this.parent.commitFile("default", file);
 	}
 
-	public void commitvariable(String name, String value)
+	public void commitVariable(String name, String value)
 	{
-		this.parent.commitvariable(name, value);
+		this.parent.commitVariable(name, value);
 	}
 
 	public void addFile(File file)

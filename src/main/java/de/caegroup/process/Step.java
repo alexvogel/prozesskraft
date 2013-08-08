@@ -476,10 +476,7 @@ implements Serializable, Cloneable
 			File newfile = new File();
 			newfile.setAbsfilename(file.getPath());
 			newfile.setKey(key);
-			this.addFile(newfile);
-			this.log("info", "file committed: "+newfile.getAbsfilename());
-//			System.out.println("AMOUNT OF FILES ARE NOW: "+this.file.size());
-			return true;
+			return this.commitFile(newfile);
 		}
 		else
 		{
@@ -494,41 +491,75 @@ implements Serializable, Cloneable
 		return commitFile(key, file);
 	}
 
-	public void commitFile(File file)
-	{
-		this.log("info", "file committed: "+file.getAbsfilename());
-		addFile(file);
-	}
-
 	/**
-	 * commit einer variable aus zwei strings (name, value)
-	 *
-	 * der erste string wird als 'name' verwendet
-	 * der zweite wert wird als 'value' verwendet
-	*/	
-	public boolean commitvariable(String name, String value)
+	 * das file wird in das step-verzeichnis (oder root) kopiert, falls es nicht schon dort liegt
+	 * dieses file im step-verzeichnis (oder root) wird in die file-ablage des step-objects aufgenommen 
+	 * @param file
+	 * @return success
+	 */
+	public boolean commitFile(File file)
 	{
-		Variable variable = new Variable();
-		variable.setKey(name);
-		variable.setValue(value);
-		this.addVariable(variable);
-		this.log("info", "variable committed as (name=value): "+variable.getKey()+"="+variable.getValue());
+		this.log("info", "commit: planning for file: "+file.getAbsfilename());
+
+		// wenn der pfad des files NICHT identisch ist mit dem pfad des step-directories
+		if (!(new java.io.File(file.getAbsfilename()).getParent().equals(this.getAbsdir())))
+		{
+			// wenn sich das file nicht im step-verzeichnis gefunden wird, soll es dorthin kopiert werden
+			java.io.File zielFile = new java.io.File(this.getAbsdir()+"/"+file.getFilename());
+			if(!(zielFile.exists()))
+			{
+				log("info", "commit: copying file to step-directory.");
+				try
+				{
+					// copy
+					String aufruf = "cp "+file.getAbsfilename()+" "+zielFile.getAbsolutePath();
+					log("info", "commit: call: "+aufruf);
+					Runtime.getRuntime().exec(aufruf);
+					
+					// anpassen des pfads
+					file.setAbsfilename(zielFile.getAbsolutePath());
+				} catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					log("error", "IOException while copying file.");
+					e.printStackTrace();
+					return false;
+				}
+			}
+		}
+		else
+		{
+			log("info", "commit: file already found in step-directory. skipping copy.");
+		}
+		
+		log("info", "commit: adding file to step object: "+file.getAbsfilename());
+		this.addFile(file);
+//		System.out.println("AMOUNT OF FILES ARE NOW: "+this.file.size());
 		return true;
 	}
 
 	/**
-	 * commit einer variable aus einem string des musters (name=wert)
-	 *
-	 * der linke wert wird als 'name' verwendet
-	 * der rechte wert wird als 'value' verwendet
+	 * commit einer variable aus zwei strings (name, value)
+	 * @input key, value
+	 * @return success
 	*/	
-	public void commitvariable(String namevalue)
+	public boolean commitVariable(String key, String value)
 	{
-		if (namevalue.matches("^[^#]([^= \n]+)=([^= \n]+) *\n?"))
-		{
-			String[] linelist = namevalue.split("=", 2);
-			this.commitvariable(linelist[0], linelist[1]);
-		}
+		Variable variable = new Variable();
+		variable.setKey(value);
+		variable.setValue(value);
+		return this.commitVariable(variable);
+	}
+
+	/**
+	 * commit einer variable an this
+	 * @input variable
+	 * @return success
+	*/	
+	public boolean commitVariable(Variable variable)
+	{
+		this.addVariable(variable);
+		return true;
 	}
 	
 	/**
@@ -679,21 +710,20 @@ implements Serializable, Cloneable
 				// ueber alle files des commits iterieren und dem step hinzufuegen
 				for(File actualFile : actualCommit.getFile())
 				{
-					
-					this.log("info", "committing file "+actualFile.getAbsfilename());
-					this.commitFile(actualFile);
+					this.log("info", "commit: file "+actualFile.getKey()+":"+actualFile.getAbsfilename());
+					if(!(this.commitFile(actualFile)))
 					{
-						// wenn das File auch dem prozess committed werden soll, dann soll es ins rootverzeichnis kopiert werden
-						if (actualCommit.getToroot())
+						success = false;
+					}
+
+					// wenn das File auch dem prozess committed werden soll...
+					if (actualCommit.getToroot())
+					{
+						this.log("info", "commit to root: file "+actualFile.getKey()+":"+actualFile.getAbsfilename());
+						// dem root-step committen
+						if (!(this.parent.getStep(this.parent.getRootstepname()).commitFile(actualFile)))
 						{
-							try
-							{
-								Runtime.getRuntime().exec("cp "+actualFile.getAbsfilename()+" "+this.parent.getRootdir()+"/"+actualFile.getFilename());
-							}
-							catch (Exception e)
-							{
-								e.printStackTrace();
-							}
+							success = false;
 						}
 					}
 				}
@@ -701,14 +731,21 @@ implements Serializable, Cloneable
 				// wenn das zu committende objekt eine Variable ist...
 				for(Variable actualVariable : actualCommit.getVariable())
 				{
-					if (this.commitvariable(actualVariable.getKey(), actualVariable.getValue()))
-					{
-						this.log("info", "commit(variable) id successfull");
-					}
-					else
+					this.log("info", "commit: variable "+actualVariable.getKey()+":"+actualVariable.getValue());
+					if (!(this.commitVariable(actualVariable)))
 					{
 						success = false;
-						this.log("info", "commit(variable) id NOT successfull");
+					}
+
+					// wenn die Variable auch dem prozess committed werden soll...
+					if (actualCommit.getToroot())
+					{
+						this.log("info", "commit to root: variable "+actualVariable.getKey()+":"+actualVariable.getValue());
+						// dem root-step committen
+						if (!(this.parent.getStep(this.parent.getRootstepname()).commitVariable(actualVariable)))
+						{
+							success = false;
+						}
 					}
 				}
 				
@@ -1116,7 +1153,16 @@ implements Serializable, Cloneable
 
 	public String getAbsdir()
 	{
-		return this.parent.getRootdir()+"/STEP_"+this.getName();
+		String absDir = "";
+		if (this.getName().equals(this.parent.getRootdir()))
+		{
+			absDir = this.parent.getRootdir();
+		}
+		else
+		{
+			absDir = this.parent.getRootdir()+"/STEP_"+this.getName();
+		}
+		return absDir;
 	}
 
 	public ArrayList<String> getListnames()
