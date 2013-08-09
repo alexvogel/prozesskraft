@@ -176,7 +176,7 @@ public class TestProcess {
 
 		// testen der init0-attribute
 		Init init0 = step1.getInit(0);
-		assertEquals("inc", init0.getName());
+		assertEquals("inc", init0.getListname());
 		assertEquals("file", init0.getFromobjecttype());
 		assertEquals("absfilename", init0.getReturnfield());
 		assertEquals("root", init0.getFromstep());

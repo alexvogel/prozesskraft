@@ -252,7 +252,7 @@ implements Serializable
 				for (int j=0; j<inits.length; j++)
 				{
 					atts.clear();
-					atts.addAttribute("", "", "name", "CDATA", inits[j].getName());
+					atts.addAttribute("", "", "name", "CDATA", inits[j].getListname());
 					atts.addAttribute("", "", "fromobjecttype", "CDATA", inits[j].getFromobjecttype());
 					atts.addAttribute("", "", "returnfield", "CDATA", inits[j].getReturnfield());
 					atts.addAttribute("", "", "fromstep", "CDATA", inits[j].getFromstep());
@@ -527,7 +527,7 @@ implements Serializable
 									step.addInit(init);
 									
 									// Eintragen der gelesenen Daten in die Objektinstanz
-									init.setName(initname);
+									init.setListname(initname);
 									init.setFromobjecttype(initfromobjecttype);
 									init.setReturnfield(initreturnfield);
 									init.setFromstep(initfromstep);
@@ -774,7 +774,7 @@ implements Serializable
 			while (iterinit.hasNext())
 			{
 				Init init = iterinit.next();
-				System.out.println("->     initname: "+init.getName());
+				System.out.println("->     initname: "+init.getListname());
 				System.out.println("       fromstep: "+init.getFromstep());
 				System.out.println("amount of matchs: "+init.getMatch().size());
 

@@ -149,7 +149,7 @@ implements Serializable, Cloneable
 			// ueber alle fromsteps gehen und die gefordterte liste erstellen (nur EINE insgesamt, nicht eine PRO fromstep)
 			for (Step actualFromstep : fromsteps)
 			{
-				log("debug", "init '"+actualInit.getName()+"': looking for field '"+actualInit.getReturnfield()+"' from a "+actualInit.getFromobjecttype()+" of step '"+actualFromstep.getName()+"'");
+				log("debug", "init '"+actualInit.getListname()+"': looking for field '"+actualInit.getReturnfield()+"' from a "+actualInit.getFromobjecttype()+" of step '"+actualFromstep.getName()+"'");
 	
 				ArrayList<Match> matchs = actualInit.getMatch();
 			
@@ -178,15 +178,15 @@ implements Serializable, Cloneable
 					// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
 					// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
 					List list;
-					if (this.getList(actualInit.getName()) != null)
+					if (this.getList(actualInit.getListname()) != null)
 					{
-						list = this.getList(actualInit.getName());
+						list = this.getList(actualInit.getListname());
 					}
 					// ansonsten eine anlegen und this hinzufuegen
 					else
 					{
 						list = new List();
-						list.setName(actualInit.getName());
+						list.setName(actualInit.getListname());
 						this.addList(list);
 					}
 
@@ -221,15 +221,15 @@ implements Serializable, Cloneable
 					// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
 					// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
 					List list;
-					if (this.getList(actualInit.getName()) != null)
+					if (this.getList(actualInit.getListname()) != null)
 					{
-						list = this.getList(actualInit.getName());
+						list = this.getList(actualInit.getListname());
 					}
 					// ansonsten eine anlegen und this hinzufuegen
 					else
 					{
 						list = new List();
-						list.setName(actualInit.getName());
+						list.setName(actualInit.getListname());
 						this.addList(list);
 					}
 	
@@ -1039,7 +1039,7 @@ implements Serializable, Cloneable
 		for(int i=0; i<init.size(); i++)
 		{
 			Init actualInit = init.get(i);
-			if (actualInit.getName() == initname)
+			if (actualInit.getListname() == initname)
 			{
 				return actualInit;
 			}
@@ -1077,7 +1077,7 @@ implements Serializable, Cloneable
 		String[] initnames = new String[this.init.size()];
 		for (int i=0; i<this.init.size(); i++)
 		{
-			initnames[i] = this.init.get(i).getName(); 
+			initnames[i] = this.init.get(i).getListname(); 
 		}
 		return initnames;
 	}

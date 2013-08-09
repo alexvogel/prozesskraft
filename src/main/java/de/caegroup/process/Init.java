@@ -15,7 +15,7 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private String name = new String();
+	private String listname = new String();
 	private String fromobjecttype = new String();
 	private String returnfield = new String();
 	private String fromstep = new String();
@@ -36,7 +36,7 @@ implements Serializable
 	----------------------------*/
 	public Init()
 	{
-		name = "unnamed";
+		listname = "unnamed";
 	}
 
 
@@ -58,9 +58,9 @@ implements Serializable
 	/*----------------------------
 	  methods get
 	----------------------------*/
-	public String getName()
+	public String getListname()
 	{
-		return this.name;
+		return this.listname;
 	}
 
 	public String getFromobjecttype()
@@ -146,9 +146,9 @@ implements Serializable
 	/*----------------------------
 	methods set
 	----------------------------*/
-	public void setName(String name)
+	public void setListname(String listname)
 	{
-		this.name = name;
+		this.listname = listname;
 	}
 
 	public void setFromobjecttype(String fromobjecttype)

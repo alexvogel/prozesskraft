@@ -72,7 +72,7 @@
     	<xs:attribute name="fromstep" use="required" />
     	<xs:attribute name="minoccur" type="xs:integer" use="required" />
     	<xs:attribute name="maxoccur" type="xs:integer" use="required"/>
-    	<xs:attribute name="name" use="required" type="xs:string" />
+    	<xs:attribute name="listname" use="required" type="xs:string" />
     	<xs:attribute name="returnfield" type="xs:string" />
     	<xs:attribute name="insertrule" type="xs:string"/>
     </xs:complexType>
@@ -109,7 +109,7 @@
     		<xs:element ref="file" minOccurs="0" maxOccurs="unbounded" />
     		<xs:element ref="variable" minOccurs="0" maxOccurs="unbounded" />
     	</xs:choice>
-    	<xs:attribute name="name" use="required" type="xs:string" />
+    	<xs:attribute name="name" use="optional" type="xs:string" />
     	<xs:attribute name="toroot" use="required" type="xs:boolean" />
     </xs:complexType>
   </xs:element>
