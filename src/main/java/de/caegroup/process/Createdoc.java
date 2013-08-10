@@ -840,6 +840,32 @@ public class Createdoc
 				report.setParameter("stepTopologyImagePath", stepTopologyImagePath.get(actualStep.getName()));
 	
 			
+				// ueber alle lists iterieren
+				for(List actualList : actualStep.getList())
+				{
+					HashMap<String,Object> row = new HashMap<String,Object>();
+					
+					// Spalte 'Woher?'
+					row.put("origin", "-");
+					
+					// Spalte 'typ'
+					row.put("objectType", "wert");
+					
+					// Spalte 'minOccur'
+					row.put("minOccur", "-");
+					
+					// Spalte 'maxOccur'
+					row.put("maxOccur", "-");
+
+					// Spalte 'Label'
+					row.put("objectKey", actualList.getName());
+	
+					// Spalte 'Label'
+					row.put("objectDescription", "keine Beschreibung");
+	
+					report.addField(row);
+				}
+				
 				// ueber alle inits iterieren
 				for(Init actualInit : actualStep.getInit())
 				{
@@ -866,6 +892,9 @@ public class Createdoc
 					
 					// Spalte 'Label'
 					row.put("objectKey", actualInit.getListname());
+	
+					// Spalte 'Label'
+					row.put("objectDescription", "keine Beschreibung");
 	
 					report.addField(row);
 				}

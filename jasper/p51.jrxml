@@ -18,6 +18,7 @@
 	<field name="minOccur" class="java.lang.String"/>
 	<field name="maxOccur" class="java.lang.String"/>
 	<field name="objectKey" class="java.lang.String"/>
+	<field name="objectDescription" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -202,9 +203,8 @@
 				<text><![CDATA[max]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="23da0661-990b-4ec4-967c-e15d19c9e09d" x="275" y="130" width="90" height="20">
+				<reportElement uuid="23da0661-990b-4ec4-967c-e15d19c9e09d" x="275" y="130" width="120" height="20">
 					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -216,12 +216,12 @@
 				<text><![CDATA[Label]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="231caa9f-4bc9-4721-846e-9b92ebcb818f" x="365" y="130" width="415" height="20">
+				<reportElement uuid="231caa9f-4bc9-4721-846e-9b92ebcb818f" x="395" y="130" width="385" height="20">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
 				<textElement>
 					<font isBold="true"/>
@@ -267,7 +267,6 @@
 	<detail>
 		<band height="18" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
 				<reportElement uuid="d535fd9a-13af-4ad2-a14b-8983c499100b" x="20" y="0" width="145" height="17">
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -306,10 +305,11 @@
 				<textFieldExpression><![CDATA[$F{maxOccur}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="8a6f6755-18b4-4ded-abfe-a6dc1eb59865" x="275" y="0" width="90" height="17">
+				<reportElement uuid="8a6f6755-18b4-4ded-abfe-a6dc1eb59865" x="275" y="0" width="120" height="17">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<textElement markup="none">
 					<font size="10"/>
@@ -327,6 +327,20 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="6702a25f-f1ec-4b38-b17e-27276dcdf063" x="395" y="0" width="385" height="17">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement markup="none">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{objectDescription}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>
