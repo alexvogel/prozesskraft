@@ -1,5 +1,6 @@
 package de.caegroup.pmodel;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.awt.Toolkit;
 import java.awt.Image;
@@ -8,9 +9,11 @@ import java.io.IOException;
 
 
 
+
 //import java.io.InputStream;
 //
 import javax.xml.bind.JAXBException;
+
 
 
 
@@ -144,6 +147,7 @@ public class PmodelViewPage extends PApplet
 	----------------------------*/
 	public void draw()
 	{
+//		makeTimeStamp("1");
 //    		System.out.println(this.millis());
 //		System.out.println("width: "+frame.getWidth());
 
@@ -184,6 +188,7 @@ public class PmodelViewPage extends PApplet
 		long sekundenSeitLetztemRefreshCheck = ((System.currentTimeMillis()/1000) - this.einstellungen.getLastRefreshCheckSeconds());
 //		System.out.println("sekunden seit dem letzten refreshCheck: "+sekundenSeitLetztemRefreshCheck);
 		
+//		makeTimeStamp("2");
 		// refresh Countdown aktualisieren
 		if ( sekundenSeitLetztemRefreshCheck > 0)
 		{
@@ -192,14 +197,17 @@ public class PmodelViewPage extends PApplet
 //			System.out.println("refresh in "+this.einstellungen.getNextRefreshSeconds());
 		}
 		
+//		makeTimeStamp("3");
 		// wenn refresh-Countdown < 0 ist, soll refresht werden
 		if (this.einstellungen.getNextRefreshSeconds() < 0)
 		{
 			refresh();
 		}
 			
+//		makeTimeStamp("4");
 		if (this.mousePressed) {mouse_pressed_action();}
 	
+//		makeTimeStamp("5");
 		try
 		{
 			this.display();
@@ -209,6 +217,7 @@ public class PmodelViewPage extends PApplet
 			System.err.println("data has been changed while drawing. drawing skipped.");
 			
 		}
+//		makeTimeStamp("6");
 		
 		
 //		}
@@ -470,6 +479,7 @@ public class PmodelViewPage extends PApplet
 	
 	public void display()
 	{
+//		makeTimeStamp("1");
 		// legende ausgeben
 		this.fill(this.legendcolor[0], this.legendcolor[1], this.legendcolor[2]);
 		this.text(this.legend_processname, this.legendposition[0]+this.legendsize/2, this.legendposition[1]+2*this.legendsize+0);
@@ -478,19 +488,23 @@ public class PmodelViewPage extends PApplet
 //		this.text((int)(((this.refresh_next.getTimeInMillis() - this.now.getTimeInMillis())/1000)+1), this.legendsize/2, this.getHeight() -40);
 		this.text(((int)(this.frameRate)), this.getWidth() - this.legendsize/2 - this.legendsize*3, this.getHeight() - 40);
 
+//		makeTimeStamp("51");
 		// Stepconnectoren ausgeben
 		Iterator<PmodelViewStepCon> iterconn = this.stepconnectors.iterator();
 		while(iterconn.hasNext())
 		{
 			PmodelViewStepCon stepconnector = iterconn.next();
 			stepconnector.display();
+//			makeTimeStamp("511");
 		}
+//		makeTimeStamp("52");
 		// Stepcircles ausgeben
 		Iterator<PmodelViewStepSym> itercirc = this.stepcircles.iterator();
 		while(itercirc.hasNext())
 		{
 			PmodelViewStepSym stepcircle = itercirc.next();
 			stepcircle.display();
+//			makeTimeStamp("521");
 		}
 		
 //		System.out.println("Anzahl der Stepcircles    : "+this.stepcircles.size());
@@ -498,6 +512,13 @@ public class PmodelViewPage extends PApplet
 		
 	}
 	
+	private void makeTimeStamp(String string)
+	{
+		System.err.println(string+": "+new Timestamp(System.currentTimeMillis()));
+		// TODO Auto-generated method stub
+		
+	}
+
 	public void refresh()
 	{
 //		System.out.println("Es wird refresht");

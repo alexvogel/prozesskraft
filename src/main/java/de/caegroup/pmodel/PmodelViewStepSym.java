@@ -1,11 +1,8 @@
 package de.caegroup.pmodel;
 
 //import java.io.*;
+import java.sql.Timestamp;
 import java.util.*;
-
-//import processing.core.*;
-//import de.caegroup.pmodel.*;
-
 import java.lang.Math;
 
 import processing.core.PApplet;
@@ -44,6 +41,7 @@ public class PmodelViewStepSym
 //    private boolean isastartingpoint = false;
     private boolean nochvorhanden = true;	// bei jedem durchlauf wird geprueft ob fuer den stepcircle noch ein step existiert.
    
+    private String rank = "";
 	
     private PmodelViewPage parent;
     public Step step;
@@ -56,8 +54,12 @@ public class PmodelViewStepSym
 		this.step = s;
 		this.name = s.getName();
 
-		// festlegen der initialen position
-		if (p.rootstepname.equals(this.name)) {this.setPosition(p.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);}
+		// festlegen der initialen position und rank
+		if (p.rootstepname.equals(this.name))
+		{
+			this.setPosition(p.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);
+//			this.rank = "";
+		}
 //		else {this.setPosition(p.width/2+(this.generator.nextInt(10)+80), p.height/2+(this.generator.nextInt(160)-80), 0);}
 		else
 		{
@@ -66,6 +68,7 @@ public class PmodelViewStepSym
 			this.setPosition(initx, inity, 0);
 		}
 		
+		this.rank = this.step.getParent().detStepRank(this.step.getName());
 //		System.out.println("Step "+this.name+": "+this.position[0]+" "+this.position[1]+" "+this.position[2]);
 		
 //		this.textposition[0] = this.position[0] + (this.radius / 2) + this.textdistance;
@@ -112,6 +115,7 @@ public class PmodelViewStepSym
 //		System.out.println("Speed: "+this.name+" "+this.speed[0]+" "+this.speed[1]+" "+this.speed[2]);
 //		System.out.println(this.getColor1()+" "+this.getColor2()+" "+this.getColor3());
 
+//		makeTimeStamp("5211");
 		// festlegen der circle color in Abhaengigkeit des stepstatus
 		if (this.step.getStatus().equals("waiting")) {this.setColor(200, 200, 200);}
 		else if (this.step.getStatus().matches("initializing|initialized|committing|committed|fanning|fanned")) {this.setColor(155, 213, 255);}
@@ -121,6 +125,7 @@ public class PmodelViewStepSym
 		else if (this.step.getStatus().equals("canceled")) {this.setColor(240, 240, 240);}
 		else if (this.step.getStatus().equals("error")) {this.setColor(220, 0, 0);}
 		
+//		makeTimeStamp("5212");
 		
 		// wenn der stepcircle gerade markiert ist, soll die komplimentaerfarbe gewaehlt werden
 		float R = this.getColor1();
@@ -131,6 +136,7 @@ public class PmodelViewStepSym
 		float minPlusMax = minRGB + maxRGB;
 		this.setColor((int)(minPlusMax - R), (int)(minPlusMax - G), (int)(minPlusMax - B));
 		
+//		makeTimeStamp("5213");
 //		System.out.println("name is: "+this.step.getName());
 //		System.out.println("type is: "+this.step.getType());
 //		System.out.println("is a multistep?: "+this.step.isAmultistep());
@@ -139,6 +145,7 @@ public class PmodelViewStepSym
 		
 		// zeichne stepsymbol
 		
+//		makeTimeStamp("5214");
 		if ( this.step.getName().equals(this.step.getParent().getRootstepname()))
 		{
 			symbol_quadrat_mit_x(this.parent.bezugsgroesse, true);
@@ -175,9 +182,9 @@ public class PmodelViewStepSym
 			symbol_quadrat_mit_x(this.parent.bezugsgroesse, true);
 		}
 		
+//		makeTimeStamp("5215");
 		// schreibe die ranknummer in das symbol
 		parent.fill(this.getTextcolor1(), this.getTextcolor2(), this.getTextcolor3());
-		String rank = this.step.getParent().detStepRank(this.step.getName());
 		float neue_rankgroesse = (this.getRadius()/2)*this.parent.bezugsgroesse*parent.einstellungen.getRanksize()/10;
 		parent.textSize(neue_rankgroesse);
 		if (!(rank.matches("0.1")))
@@ -185,6 +192,7 @@ public class PmodelViewStepSym
 			parent.text(rank, this.getPosition1() - rank.length()*(neue_rankgroesse/6), this.getPosition2() + (neue_rankgroesse/3));
 		}
 		
+//		makeTimeStamp("5216");
 		// zeichne beschriftung
 		parent.fill(this.getTextcolor1(), this.getTextcolor2(), this.getTextcolor3());
 		float neue_textgroesse = (this.getRadius()/2)*this.parent.bezugsgroesse*parent.einstellungen.getLabelsize()/10;
@@ -201,6 +209,7 @@ public class PmodelViewStepSym
 //			parent.text("S", this.getPosition1()-4, this.getPosition2()+5);
 //		}
 
+//		makeTimeStamp("5217");
 		// reposition for next display
 		this.reposition(this.parent);
 		if (this.position[2] > 0.)
@@ -209,6 +218,13 @@ public class PmodelViewStepSym
 			System.exit(1);
 		}
 
+	}
+
+	private void makeTimeStamp(String string)
+	{
+		System.err.println(string+": "+new Timestamp(System.currentTimeMillis()));
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void symbol_circle(float scalierung, float x_offset, float y_offset, boolean fill)

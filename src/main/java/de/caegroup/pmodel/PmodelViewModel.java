@@ -180,7 +180,6 @@ public class PmodelViewModel extends ModelObject
 	public void setRefreshNow(boolean refreshNow)
 	{
 		firePropertyChange("refreshNow", this.refreshNow, this.refreshNow = refreshNow);
-		System.err.println("setRefreshNow to "+refreshNow);
 	}
 	
 	public int getNextRefreshSeconds()
