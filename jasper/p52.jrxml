@@ -217,14 +217,50 @@
 				</textElement>
 				<text><![CDATA[Label]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="7c1e5e69-27e1-4a8a-abdb-eba1d37a8f28" x="520" y="50" width="260" height="25">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Output aus Prozessschritt]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="c888a0dc-2b48-4848-b7fd-0a1341133b47" x="520" y="75" width="260" height="15">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{stepRank}+" : "+$P{stepName}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="f484c106-2da4-4817-905a-e8b6822cb35d" x="20" y="145" width="760" height="1">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+			</line>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="15" splitType="Stretch">
+		<band height="18" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement uuid="d535fd9a-13af-4ad2-a14b-8983c499100b" x="20" y="0" width="45" height="15">
+				<reportElement uuid="d535fd9a-13af-4ad2-a14b-8983c499100b" x="20" y="0" width="45" height="17">
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -232,9 +268,8 @@
 				<textFieldExpression><![CDATA[$F{destination}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c3e77bb6-493a-4deb-aea5-d07216afd7d1" x="70" y="0" width="50" height="15">
+				<reportElement uuid="c3e77bb6-493a-4deb-aea5-d07216afd7d1" x="70" y="0" width="50" height="17">
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -243,17 +278,15 @@
 				<textFieldExpression><![CDATA[$F{objectType}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="f42bac54-d2bb-4691-8b4b-965ecf4a196e" x="270" y="0" width="510" height="15">
+				<reportElement uuid="f42bac54-d2bb-4691-8b4b-965ecf4a196e" x="270" y="0" width="510" height="17">
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{objectDescription}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="45daf9be-49b9-4ec4-891a-b1fd6ff9df72" x="120" y="0" width="30" height="15">
+				<reportElement uuid="45daf9be-49b9-4ec4-891a-b1fd6ff9df72" x="120" y="0" width="30" height="17">
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -263,9 +296,8 @@
 				<textFieldExpression><![CDATA[$F{minOccur}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="49c6d2c6-9eac-4928-a039-8481095f38d2" x="150" y="0" width="30" height="15">
+				<reportElement uuid="49c6d2c6-9eac-4928-a039-8481095f38d2" x="150" y="0" width="30" height="17">
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -275,9 +307,8 @@
 				<textFieldExpression><![CDATA[$F{maxOccur}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement uuid="8a6f6755-18b4-4ded-abfe-a6dc1eb59865" x="180" y="0" width="90" height="15">
+				<reportElement uuid="8a6f6755-18b4-4ded-abfe-a6dc1eb59865" x="180" y="0" width="90" height="17">
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -287,6 +318,17 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{objectKey}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement uuid="f2ce6b55-0b72-47a4-9cf3-aed44ebcfcb2" positionType="FixRelativeToBottom" x="20" y="17" width="760" height="1" forecolor="#E5E5E5">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+			</line>
 		</band>
 	</detail>
 	<columnFooter>

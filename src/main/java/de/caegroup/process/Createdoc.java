@@ -296,7 +296,7 @@ public class Createdoc
 //		open();
 		
 		// 20 sekunden warten
-		System.out.println("20 sekunden warten.");
+		System.out.println("20 sekunden warten bis ansicht stabilisiert.");
 		long jetzt5 = System.currentTimeMillis();
 		while (System.currentTimeMillis() < jetzt5 + 20000)
 		{
@@ -360,7 +360,7 @@ public class Createdoc
 			// farbe wieder auf grau aendern
 			actualStep.setStatus("waiting");
 			
-			System.out.println("fuer step: "+actualStep.getName());
+			System.out.println("erstelle bild fuer step: "+actualStep.getName());
 
 			long jetzt2 = System.currentTimeMillis();
 			while (System.currentTimeMillis() < jetzt2 + 1000)
@@ -685,77 +685,73 @@ public class Createdoc
 		report.setParameter("processTopologyImagePath", processTopologyImagePath);
 		
 		// ueber alle steps iterieren (ausser root)
-		for(Step actualStep : process.getStep())
+		for(Step actualStep : (ArrayList<Step>)process.getStep())
 		{
 			
 			// ueberspringen wenn es sich um root handelt
-			if(actualStep.getName().equals(process.getRootstepname()))
+			if(!(actualStep.getName().equals(process.getRootstepname())))
 			{
-				break;
-			}
-		
-			// ueber alle commit iterieren
-			for(Commit actualCommit : actualStep.getCommit())
-			{
-				
-				// nur die, die toroot=true ( und spaeter auch tosdm=true)
-				if(actualCommit.getToroot())
+				// ueber alle commit iterieren
+				for(Commit actualCommit : actualStep.getCommit())
 				{
 
-					// ueber alle files iterieren
-					for(de.caegroup.process.File actualFile : actualCommit.getFile())
+					// nur die, die toroot=true ( und spaeter auch tosdm=true)
+					if(actualCommit.getToroot())
 					{
-
-						HashMap<String,Object> row = new HashMap<String,Object>();
-					
-						// Spalte 'objectType'
-						row.put("destination", "user/cb2");
-						
-						// Spalte 'objectType'
-						row.put("objectType", "datei");
-						
-						// Spalte 'minOccur'
-						row.put("minOccur", ""+actualFile.getMinoccur());
-						
-						// Spalte 'maxOccur'
-						row.put("maxOccur", ""+actualFile.getMaxoccur());
-						
-						// Spalte 'objectKey'
-						row.put("objectKey", actualFile.getKey());
-						
-						// Spalte 'objectDescription'
-						row.put("objectDescription", actualFile.getDescription());
+						// ueber alle files iterieren
+						for(de.caegroup.process.File actualFile : actualCommit.getFile())
+						{
 	
-						// Datensatz dem report hinzufuegen
-						report.addField(row);
-					}
-
-					// ueber alle variablen iterieren
-					for(de.caegroup.process.Variable actualVariable : actualCommit.getVariable())
-					{
-						HashMap<String,Object> row = new HashMap<String,Object>();
+							HashMap<String,Object> row = new HashMap<String,Object>();
 						
-						// Spalte 'objectType'
-						row.put("destination", "user/cb2");
-						
+							// Spalte 'objectType'
+							row.put("destination", "user/cb2");
+							
+							// Spalte 'objectType'
+							row.put("objectType", "datei");
+							
+							// Spalte 'minOccur'
+							row.put("minOccur", ""+actualFile.getMinoccur());
+							
+							// Spalte 'maxOccur'
+							row.put("maxOccur", ""+actualFile.getMaxoccur());
+							
+							// Spalte 'objectKey'
+							row.put("objectKey", actualFile.getKey());
+							
+							// Spalte 'objectDescription'
+							row.put("objectDescription", actualFile.getDescription());
+		
+							// Datensatz dem report hinzufuegen
+							report.addField(row);
+						}
 	
-						// Spalte 'objectType'
-						row.put("objectType", "wert");
-						
-						// Spalte 'minOccur'
-						row.put("minOccur", ""+actualVariable.getMinoccur());
-						
-						// Spalte 'maxOccur'
-						row.put("maxOccur", ""+actualVariable.getMaxoccur());
-						
-						// Spalte 'objectKey'
-						row.put("objectKey", actualVariable.getKey());
-						
-						// Spalte 'objectDescription'
-						row.put("objectDescription", actualVariable.getDescription());
-	
-						// Datensatz dem report hinzufuegen
-						report.addField(row);
+						// ueber alle variablen iterieren
+						for(de.caegroup.process.Variable actualVariable : actualCommit.getVariable())
+						{
+							HashMap<String,Object> row = new HashMap<String,Object>();
+							
+							// Spalte 'objectType'
+							row.put("destination", "user/cb2");
+		
+							// Spalte 'objectType'
+							row.put("objectType", "wert");
+							
+							// Spalte 'minOccur'
+							row.put("minOccur", ""+actualVariable.getMinoccur());
+							
+							// Spalte 'maxOccur'
+							row.put("maxOccur", ""+actualVariable.getMaxoccur());
+							
+							// Spalte 'objectKey'
+							row.put("objectKey", actualVariable.getKey());
+							
+							// Spalte 'objectDescription'
+							row.put("objectDescription", actualVariable.getDescription());
+		
+							// Datensatz dem report hinzufuegen
+							report.addField(row);
+						}
 					}
 				}
 			}
@@ -869,7 +865,7 @@ public class Createdoc
 					row.put("maxOccur", ""+actualInit.getMaxoccur());
 					
 					// Spalte 'Label'
-					row.put("objectKey", actualInit.getName());
+					row.put("objectKey", actualInit.getListname());
 	
 					report.addField(row);
 				}
