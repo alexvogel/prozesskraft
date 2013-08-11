@@ -15,67 +15,67 @@
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="51">
+		<band height="40">
+			<property name="local_mesure_unitheight" value="pixel"/>
 			<line>
-				<reportElement uuid="c01db5a5-259e-4283-88b0-69db3094a6e9" x="0" y="45" width="800" height="1"/>
+				<reportElement uuid="c01db5a5-259e-4283-88b0-69db3094a6e9" x="0" y="39" width="800" height="1">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 			</line>
 			<staticText>
-				<reportElement uuid="9743b25d-7ebe-475f-84f8-1d57a277f5eb" x="300" y="0" width="200" height="15"/>
+				<reportElement uuid="9743b25d-7ebe-475f-84f8-1d57a277f5eb" x="300" y="0" width="200" height="12">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Center" rotation="None"/>
 				<text><![CDATA[Prozessdokumentation]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="562bc48d-a78b-4901-b8c3-75f26eb7f208" x="0" y="15" width="200" height="15">
+				<reportElement uuid="562bc48d-a78b-4901-b8c3-75f26eb7f208" x="0" y="12" width="200" height="12">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{processArchitectName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f5192ffd-cc8a-4275-a15e-1df759aec403" x="300" y="15" width="200" height="15">
+				<reportElement uuid="f5192ffd-cc8a-4275-a15e-1df759aec403" x="300" y="12" width="200" height="12">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$P{processName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="2f136916-c80f-4ff3-af2a-fc847cf50d5e" x="300" y="30" width="200" height="15">
+				<reportElement uuid="2f136916-c80f-4ff3-af2a-fc847cf50d5e" x="300" y="24" width="200" height="12">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$P{processVersion}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="e85ae724-de6e-49d4-9093-490a4a96aec5" x="0" y="0" width="200" height="15">
+				<reportElement uuid="e85ae724-de6e-49d4-9093-490a4a96aec5" x="0" y="0" width="200" height="12">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$P{processArchitectCompany}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="6a202ef1-87f9-445d-acd8-da9262400022" x="0" y="30" width="200" height="15">
+				<reportElement uuid="6a202ef1-87f9-445d-acd8-da9262400022" x="0" y="24" width="200" height="12">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" markup="none">
 					<font size="10"/>
@@ -83,11 +83,10 @@
 				<textFieldExpression><![CDATA[$P{processArchitectMail}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="9c6e17dc-b03b-4cad-a2bf-47db6533cd40" x="600" y="0" width="200" height="15">
+				<reportElement uuid="9c6e17dc-b03b-4cad-a2bf-47db6533cd40" x="600" y="0" width="200" height="12">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
@@ -97,23 +96,21 @@
 				<textFieldExpression><![CDATA[$P{processCustomerCompany}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f49259b6-28c2-4b1d-b739-78e3c3eafcc2" x="600" y="15" width="200" height="15">
+				<reportElement uuid="f49259b6-28c2-4b1d-b739-78e3c3eafcc2" x="600" y="12" width="200" height="12">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$P{processCustomerName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="6e8816ef-4e3e-4ede-9d93-4c490471dbf9" x="600" y="30" width="200" height="15">
+				<reportElement uuid="6e8816ef-4e3e-4ede-9d93-4c490471dbf9" x="600" y="24" width="200" height="12">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" markup="none">
 					<font size="10"/>
@@ -125,9 +122,29 @@
 	<columnHeader>
 		<band height="450" splitType="Stretch">
 			<image hAlign="Center" vAlign="Middle">
-				<reportElement uuid="2f8b20f7-9c56-45a5-b06a-c25044db6ec6" stretchType="RelativeToBandHeight" x="60" y="50" width="670" height="330"/>
+				<reportElement uuid="2f8b20f7-9c56-45a5-b06a-c25044db6ec6" stretchType="RelativeToBandHeight" x="20" y="60" width="760" height="370">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+				</reportElement>
 				<imageExpression><![CDATA[$P{processTopologyImagePath}]]></imageExpression>
 			</image>
+			<staticText>
+				<reportElement uuid="5a3db47a-5080-4422-b2ab-4d51db84a556" x="300" y="10" width="200" height="40">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="22"/>
+				</textElement>
+				<text><![CDATA[Prozess Topologie]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<columnFooter>
@@ -145,10 +162,10 @@
 			</staticText>
 			<textField>
 				<reportElement uuid="d03dc1af-bd29-47af-bdaa-6955026abf90" x="775" y="3" width="25" height="15"/>
-				<textElement markup="none">
+				<textElement textAlignment="Right" markup="none">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["I"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

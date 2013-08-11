@@ -1,11 +1,12 @@
 eclipse.preferences.version=1
-encoding//jasper/AddressReport.jrxml=UTF-8
-encoding//jasper/MasterReport.jrxml=UTF-8
+encoding//jasper/beispiel_subreport/AddressReport.jrxml=UTF-8
+encoding//jasper/beispiel_subreport/MasterReport.jrxml=UTF-8
+encoding//jasper/beispiel_subreport/pall.jrxml=UTF-8
+encoding//jasper/p05.jrxml=UTF-8
 encoding//jasper/p1.jrxml=UTF-8
 encoding//jasper/p2.jrxml=UTF-8
 encoding//jasper/p3.jrxml=UTF-8
 encoding//jasper/p4.jrxml=UTF-8
 encoding//jasper/p51.jrxml=UTF-8
 encoding//jasper/p52.jrxml=UTF-8
-encoding//jasper/pall.jrxml=UTF-8
 encoding//jasper/weg/p4.jrxml=UTF-8

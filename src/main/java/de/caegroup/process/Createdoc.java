@@ -6,6 +6,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,6 +20,11 @@ import javax.xml.bind.JAXBException;
 
 import net.sf.jasperreports.engine.JRException;
 //import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
+
+
+
+
+
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -55,6 +64,7 @@ public class Createdoc
 	static Display display = Display.getDefault();
 	protected static Shell shell;
 	static String processTopologyImagePath;
+	static String processTopologyFadedImagePath;
 	static Map<String,String> stepTopologyImagePath = new HashMap<String,String>();
 	static Map<String,String> pdfRankFiles = new HashMap<String,String>();
 	/*----------------------------
@@ -321,6 +331,21 @@ public class Createdoc
 			e.printStackTrace();
 		}
 
+		// VORBEREITUNG) eine Kopie der ProzessTopologie erstellen
+		processTopologyFadedImagePath = randomPathPng+"/processTopologyFaded.png";
+		Path copySourcePath = Paths.get(processTopologyImagePath);
+		Path copyTargetPath = Paths.get(processTopologyFadedImagePath);
+		try
+		{
+			Files.copy(copySourcePath, copyTargetPath);
+		} catch (IOException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		// VORBEREITUNG) FadedGradient anwenden
+
 		// VORBEREITUNG) fuer jeden step ein bild speichern
 		for(Step actualStep : process.getStep())
 		{
@@ -372,7 +397,67 @@ public class Createdoc
 		
 		page.destroy();
 
+//////////////////////////////////////////
+		report = new Report();
 		
+		// P05) erstellen des p05
+		System.out.println("info: generating p05.");
+		
+		// P05) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
+		if (ini.get("process-createdoc", "p05") != null )
+		{
+			report.setJasper(ini.get("process-createdoc", "p05"));
+			report.setJasperFilled(randomPathJasperFilled+"/p05.jasperFilled");
+			report.setPdf(randomPathPdf+"/p05.pdf");
+			pdfRankFiles.put("0.0.05", randomPathPdf+"/p05.pdf");
+		}
+		else
+		{
+			System.err.println("no entry 'p1' found in ini file");
+			System.exit(1);
+		}
+		
+			report.setParameter("processName", process.getName());
+			report.setParameter("processVersion", process.getModelVersion());
+			report.setParameter("processArchitectCompany", process.getArchitectCompany());
+			report.setParameter("processArchitectName", process.getArchitectName());
+			report.setParameter("processArchitectMail", process.getArchitectMail());
+			report.setParameter("processCustomerCompany", process.getCustomerCompany());
+			report.setParameter("processCustomerName", process.getCustomerName());
+			report.setParameter("processCustomerMail", process.getCustomerMail());
+		
+		// P05) report fuellen
+		try
+		{
+			report.fillPReport();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// P05) pdf schreiben
+		try
+		{
+			report.exportToPdf();
+		} catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		report = null;
+		
+		//System.exit(0);
+				
 //////////////////////////////////////////
 		report = new Report();
 		
@@ -861,7 +946,8 @@ public class Createdoc
 					row.put("objectKey", actualList.getName());
 	
 					// Spalte 'Label'
-					row.put("objectDescription", "keine Beschreibung");
+					String listString = actualList.getItem().toString();
+					row.put("objectDescription", listString.substring(1, listString.length()-1));
 	
 					report.addField(row);
 				}
@@ -894,7 +980,7 @@ public class Createdoc
 					row.put("objectKey", actualInit.getListname());
 	
 					// Spalte 'Label'
-					row.put("objectDescription", "keine Beschreibung");
+					row.put("objectDescription", "-");
 	
 					report.addField(row);
 				}
