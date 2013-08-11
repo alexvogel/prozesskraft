@@ -332,14 +332,14 @@ public class PmodelViewPage extends PApplet
 		{
 			ArrayList<String> stepcirclenames_connect_from = stepcircles[i].getConnectfroms();
 			
-			System.out.println("====\ndetermining fromsteps of stepcircle '"+stepcircles[i].getName()+"'\n----");
+//			System.out.println("====\ndetermining fromsteps of stepcircle '"+stepcircles[i].getName()+"'\n----");
 			Iterator<String> iterstring = stepcirclenames_connect_from.iterator();
 			while(iterstring.hasNext())
 			{
 				String stepcirclename = iterstring.next();
-				System.out.println(stepcirclename);
+//				System.out.println(stepcirclename);
 			}
-			System.out.println("====");
+//			System.out.println("====");
 			for(int j=0; j<stepcirclenames_connect_from.size(); j++)
 			{
 				Iterator<PmodelViewStepSym> iterstepcircle = this.getStepcircles(stepcirclenames_connect_from.get(j)).iterator();
