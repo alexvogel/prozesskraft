@@ -105,12 +105,14 @@
   </xs:element>
   <xs:element name="commit">
     <xs:complexType>
-            <xs:choice minOccurs="0">
+    	<xs:choice minOccurs="0">
     		<xs:element ref="file" minOccurs="0" maxOccurs="unbounded" />
-    		<xs:element ref="variable" minOccurs="0" maxOccurs="unbounded" />
+    		<xs:element ref="variable" minOccurs="0"
+    			maxOccurs="unbounded" />
     	</xs:choice>
     	<xs:attribute name="name" use="optional" type="xs:string" />
     	<xs:attribute name="toroot" use="required" type="xs:boolean" />
+    	<xs:attribute name="loop" type="xs:string"></xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="file">
