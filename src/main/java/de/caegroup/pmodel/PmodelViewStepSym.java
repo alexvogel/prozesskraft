@@ -68,7 +68,7 @@ public class PmodelViewStepSym
 			this.setPosition(initx, inity, 0);
 		}
 		
-		this.rank = this.step.getParent().detStepRank(this.step.getName());
+		this.rank = this.step.getRank();
 //		System.out.println("Step "+this.name+": "+this.position[0]+" "+this.position[1]+" "+this.position[2]);
 		
 //		this.textposition[0] = this.position[0] + (this.radius / 2) + this.textdistance;
@@ -503,7 +503,6 @@ public class PmodelViewStepSym
 		}
 	}
 	
-	
 	/*----------------------------
 	  methods get
 	----------------------------*/
@@ -829,4 +828,11 @@ public class PmodelViewStepSym
 	{
 		this.nochvorhanden = nochvorhanden;
 	}
+
+	public void setRank(String rank)
+	{
+		this.rank = rank;
+	}
+	
+	
 }

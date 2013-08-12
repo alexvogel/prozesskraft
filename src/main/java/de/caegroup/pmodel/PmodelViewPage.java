@@ -292,77 +292,52 @@ public class PmodelViewPage extends PApplet
 	
 	private void draw_stepcircles()
 	{
-
-		// erstellen eines Stepcircles fuer jeden vorkommenden Step in process, falls es ihn noch nicht gibt. stepcircles fuer die es keinen step mehr gibt, sollen geloescht werden
-		Step[] steps = this.einstellungen.getProcess().getSteps2();
-		// den virtuellen step 'root' hinzufuegen
-		// System.out.println("Anzahl der Steps: "+steps.length);
-		for(int i=0; i<steps.length; i++)
+		// alle steps durchgehen und nur stepcircles erzeugen, wenn es noch keinen mit dem gleichen Namen gibt wie einen Step
+		for(Step actualStep : this.einstellungen.getProcess().getSteps2())
 		{
-			
-//				Step step = steps[i];
-			PmodelViewStepSym stepcircle = new PmodelViewStepSym(this, steps[i]);
-			// wenn es noch keinen stepcircle mit diesem namen gibt, dann hinzufuegen zur page
-//			if ((!(this.isStepcirclepresent_by_name(stepcircle.getName()))) && (!(stepcircle.getName().equals(rootstepname))))
-			if (!(this.isStepcirclepresent_by_name(stepcircle.getName())))
+			// wenn es noch keinen stepcircle mit diesem namen gibt, dann einen erzeugen und hinzufuegen zur page
+			if (!(this.hasStepcircle(actualStep.getName())))
 			{
-				this.addStepcircle(stepcircle);
+//				System.out.println("Es muss ein stepcircle erzeugt werden fuer step "+actualStep.getName());
+//				makeTimeStamp("1");
+				this.addStepcircle(new PmodelViewStepSym(this, actualStep));
+//				makeTimeStamp("2");
 			}
 			else
 			{
 				// den stepcircle feststellen, der diesen step bereits repraesentiert
-				stepcircle = null;
-				if (this.hasStepcircle(steps[i].getName()))
-				{
-					PmodelViewStepSym oldstepcircle = this.getStepcircle(steps[i].getName());
-					// und den step setzen (damit die daten aktualisiert werden)
-					oldstepcircle.setStep(steps[i]);
-					oldstepcircle.setNochvorhanden(true);
-				}
+				// das step-object darin ablegen (es koennte sein, dass es sich geaendert hat)
+				PmodelViewStepSym oldstepcircle = this.getStepcircle(actualStep.getName());
+				// und den step setzen (damit die daten aktualisiert werden)
+				oldstepcircle.setStep(actualStep);
+				oldstepcircle.setNochvorhanden(true);
 			}
 		}
 	}
 	
 	private void draw_stepconnectors()
 	{
-		
 		// erstellen eines Stepconnectors fuer jeden vorkommenden fromstep-eintrag
-		PmodelViewStepSym[] stepcircles = this.getStepcircles2();
-		for(int i=0; i<stepcircles.length; i++)
+		for(PmodelViewStepSym actualStepcircle : this.getStepcircles2())
 		{
-			ArrayList<String> stepcirclenames_connect_from = stepcircles[i].getConnectfroms();
-			
-//			System.out.println("====\ndetermining fromsteps of stepcircle '"+stepcircles[i].getName()+"'\n----");
-			Iterator<String> iterstring = stepcirclenames_connect_from.iterator();
-			while(iterstring.hasNext())
+			for(String actualFromStepcircleName : actualStepcircle.getConnectfroms())
 			{
-				String stepcirclename = iterstring.next();
-//				System.out.println(stepcirclename);
-			}
-//			System.out.println("====");
-			for(int j=0; j<stepcirclenames_connect_from.size(); j++)
-			{
-				Iterator<PmodelViewStepSym> iterstepcircle = this.getStepcircles(stepcirclenames_connect_from.get(j)).iterator();
-				while (iterstepcircle.hasNext())
+				for(PmodelViewStepSym actualFromStepcircle : this.getStepcircles(actualFromStepcircleName))
 				{
-					PmodelViewStepSym stepcircle = iterstepcircle.next();
-					PmodelViewStepCon stepconnector = new PmodelViewStepCon(this, stepcircle, stepcircles[i]);
 					// wenn es noch keinen stepconnector mit diesem Namen gibt, dann hinzufuegen zur Page
-					if (!(this.isStepconnectorpresent_by_name(stepconnector.getName())))
+					if (!(this.hasStepconnector(actualFromStepcircle.getName()+actualStepcircle.getName())))
 					{
-						this.addStepconnector(stepconnector);
+						this.addStepconnector(new PmodelViewStepCon(this, actualFromStepcircle, actualStepcircle));
 					}
 					// wenn es ihn schon auf der page gibt, dann markieren um ihn zu behalten
 					else
 					{
-						PmodelViewStepCon oldstepconnector = this.getStepconnector(stepconnector.getName());
-						oldstepconnector.setNochvorhanden(true);
+						this.getStepconnector(actualFromStepcircle.getName()+actualStepcircle.getName()).setNochvorhanden(true);
 					}
 				}
 			}
 		}
 	}
-	
 	
 	private boolean hasStepconnector(String name)
 	{
@@ -449,20 +424,6 @@ public class PmodelViewPage extends PApplet
 		this.stepconnectors.add(stepconnector);
 	}
 	
-	public boolean isStepcirclepresent_by_name(String stepcirclename)
-	{
-		boolean returnvalue = false;
-		PmodelViewStepSym[] stepcircles = this.getStepcircles2();
-		for(int i=0; i<stepcircles.length; i++)
-		{
-			if(stepcircles[i].getName().equals(stepcirclename))
-			{
-				returnvalue = true;
-			}
-		}
-		return returnvalue;
-	}
-	
 	public boolean isStepconnectorpresent_by_name(String stepconnectorname)
 	{
 		boolean returnvalue = false;
@@ -537,6 +498,7 @@ public class PmodelViewPage extends PApplet
 		
 //		this.markAllstepcirclestodelete();
 //		this.markAllstepconnectorstodelete();
+//		this.einstellungen.getProcess().setStepRanks();
 		this.expungeStepcircles();
 		this.expungeStepconnectors();
 		draw_stepcircles();
