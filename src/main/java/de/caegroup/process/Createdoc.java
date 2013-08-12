@@ -263,6 +263,7 @@ public class Createdoc
 		try
 		{
 			process.readXml();
+			process.setStepRanks();
 		}
 		
 		catch (JAXBException e)
@@ -290,14 +291,15 @@ public class Createdoc
 		PmodelViewPage page = new PmodelViewPage();
 		page.einstellungen.setProcess(process);
 		page.einstellungen.setZoom(160);
+//		page.einstellungen.setZoom(8 * 100/process.getMaxLevel());
 		page.einstellungen.setLabelsize(0);
 		page.einstellungen.setTextsize(0);
 		page.einstellungen.setRanksize(7);
-		page.einstellungen.setWidth(1500);
+		page.einstellungen.setWidth(2500);
 		page.einstellungen.setHeight(750);
-		page.einstellungen.setGravx(20);
+		page.einstellungen.setGravx(300);
 		page.einstellungen.setGravy(0);
-		page.einstellungen.setRootpositionratiox((float)0.1);
+		page.einstellungen.setRootpositionratiox((float)0.05);
 		page.einstellungen.setRootpositionratioy((float)0.5);
 	
 		createContents(page);
@@ -305,14 +307,25 @@ public class Createdoc
 		// mit open kann die page angezeigt werden
 //		open();
 		
-		// 20 sekunden warten
-		System.out.println("20 sekunden warten bis ansicht stabilisiert.");
+		// warten
+		System.out.println("stabilisierung ansicht: 5 sekunden warten gravitation = "+page.einstellungen.getGravx());
 		long jetzt5 = System.currentTimeMillis();
-		while (System.currentTimeMillis() < jetzt5 + 20000)
+		while (System.currentTimeMillis() < jetzt5 + 5000)
 		{
 			
 		}
-		
+
+		page.einstellungen.setGravx(10);
+
+		// warten
+		int wartezeitSeconds =  page.einstellungen.getProcess().getStep().size()*10;
+		System.out.println("stabilisierung ansicht: "+wartezeitSeconds+" sekunden warten gravitation = "+page.einstellungen.getGravx());
+		long jetzt6 = System.currentTimeMillis();
+		while (System.currentTimeMillis() < jetzt6 + (wartezeitSeconds * 1000))
+		{
+			
+		}
+
 		// VORBEREITUNG) bild speichern
 		processTopologyImagePath = randomPathPng+"/processTopology.png";
 		page.savePic(processTopologyImagePath);
@@ -563,7 +576,7 @@ public class Createdoc
 			Step actualStep = steps.get(x);
 
 			// erste Spalte ist 'rank'
-			row.put("stepRank", process.detStepRank(actualStep.getName()));
+			row.put("stepRank", actualStep.getRank());
 			
 			// zweite Spalte ist 'stepname'
 			row.put("stepName", actualStep.getName());
@@ -892,9 +905,9 @@ public class Createdoc
 				report = new Report();
 				
 				// P51x) erstellen des p51
-				System.out.println("info: generating p51 for step "+process.detStepRank(actualStep.getName())+" => "+actualStep.getName());
+				System.out.println("info: generating p51 for step "+actualStep.getRank()+" => "+actualStep.getName());
 				
-				String stepRank = process.detStepRank(actualStep.getName());
+				String stepRank = actualStep.getRank();
 				
 				// P51x) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
 				if (ini.get("process-createdoc", "p51") != null )
@@ -902,8 +915,16 @@ public class Createdoc
 					report.setJasper(ini.get("process-createdoc", "p51"));
 					report.setJasperFilled(randomPathJasperFilled+"/p5."+stepRank+".1.jasperFilled");
 					report.setPdf(randomPathPdf+"/p5."+stepRank+".1.pdf");
-					pdfRankFiles.put(stepRank+".1", randomPathPdf+"/p5."+stepRank+".1.pdf");
-				}
+					String[] rankArray = stepRank.split("\\.");
+					Integer[] rankArrayInt = new Integer[rankArray.length];
+					for(int x=0; x < rankArray.length; x++)
+					{
+						rankArrayInt[x] = Integer.parseInt(rankArray[x]);
+					}
+					String rankFormated = String.format("%03d.%03d", rankArrayInt);
+
+					pdfRankFiles.put(rankFormated+".1", randomPathPdf+"/p5."+stepRank+".1.pdf");
+}
 				else
 				{
 					System.err.println("no entry 'p51' found in ini file");
@@ -1036,9 +1057,9 @@ public class Createdoc
 				report = new Report();
 				
 				// P52x) erstellen des p52
-				System.out.println("info: generating p52 for step "+process.detStepRank(actualStep.getName())+" => "+actualStep.getName());
+				System.out.println("info: generating p52 for step "+actualStep.getRank()+" => "+actualStep.getName());
 				
-				String stepRank = process.detStepRank(actualStep.getName());
+				String stepRank = actualStep.getRank();
 				
 				// P52x) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
 				if (ini.get("process-createdoc", "p52") != null )
@@ -1046,7 +1067,15 @@ public class Createdoc
 					report.setJasper(ini.get("process-createdoc", "p52"));
 					report.setJasperFilled(randomPathJasperFilled+"/p5."+stepRank+".2.jasperFilled");
 					report.setPdf(randomPathPdf+"/p5."+stepRank+".2.pdf");
-					pdfRankFiles.put(stepRank+".2", randomPathPdf+"/p5."+stepRank+".2.pdf");
+					String[] rankArray = stepRank.split("\\.");
+					Integer[] rankArrayInt = new Integer[rankArray.length];
+					for(int x=0; x < rankArray.length; x++)
+					{
+						rankArrayInt[x] = Integer.parseInt(rankArray[x]);
+					}
+					String rankFormated = String.format("%03d.%03d", rankArrayInt);
+					
+					pdfRankFiles.put(rankFormated+".2", randomPathPdf+"/p5."+stepRank+".2.pdf");
 				}
 				else
 				{
@@ -1258,7 +1287,7 @@ public class Createdoc
 	protected static void createContents(PmodelViewPage page)
 	{
 		shell = new Shell();
-		shell.setSize(1500, 750);
+		shell.setSize(3500, 1500);
 		shell.setText("SWT Application");
 		shell.setLayout(new GridLayout(1, false));
 		
