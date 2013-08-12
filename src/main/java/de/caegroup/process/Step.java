@@ -42,6 +42,7 @@ implements Serializable, Cloneable
 	private String status = "waiting";	// waiting/initializing/working/committing/ finished/broken/cancelled
 	
 	private ArrayList<Log> log = new ArrayList<Log>();
+	private String rank = "";
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 	/*----------------------------
 	  constructors
@@ -1281,6 +1282,11 @@ implements Serializable, Cloneable
 		return this.log;
 	}
 	
+	public String getRank()
+	{
+		return this.rank;
+	}
+	
 	/*----------------------------
 	methods set
 	----------------------------*/
@@ -1355,4 +1361,9 @@ implements Serializable, Cloneable
 		}
 	}
 	
+	public void setRank(String rank)
+	{
+		this.rank = rank;
+	}
+
 }

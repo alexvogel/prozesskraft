@@ -51,13 +51,15 @@ public class TestRank {
 	@Test
 	public void testGetRank()
 	{
+		process.setStepRanks();
+		
 		assertEquals(1, aStep.getLevel());
 		assertEquals(2, bStep.getLevel());
 		assertEquals(3, cStep.getLevel());
 
-		assertEquals("1.1", process.detStepRank("aStep"));
-		assertEquals("2.1", process.detStepRank("bStep"));
-		assertEquals("3.1", process.detStepRank("cStep"));
+		assertEquals("1.1", aStep.getRank());
+		assertEquals("2.1", bStep.getRank());
+		assertEquals("3.1", cStep.getRank());
 		
 		assertEquals(3, process.getStep().size());
 	}

@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
 import javax.xml.XMLConstants;
@@ -873,46 +875,72 @@ implements Serializable
 		}
 	}
 	
+	public int getMaxLevel()
+	{
+		int maxLevel = 0;
+		for(Step actualStep : this.getStep())
+		{
+			int actualLevel = actualStep.getLevel();
+			if(actualLevel > maxLevel)
+			{
+				maxLevel = actualLevel;
+			}
+		}
+		return maxLevel;
+	}
+	
 	/**
-	 * determines the rank of the given stepname
+	 * sets the actual stepranks
 	 * @return rank
 	 */
-	public String detStepRank(String stepname)
+	public void setStepRanks()
 	{
-		String desiredRank = ""+0.0;
-		
-		for(int x=0; x <= this.step.size(); x++)
+//		System.out.println("IN: "+new Timestamp(System.currentTimeMillis()));
+		Map<Step,Integer> mapStepLevel = new HashMap<Step,Integer>();
+		Map<String,Step> mapStepnameStep = new HashMap<String,Step>();
+		int maxLevel = 0;
+
+		for(Step actualStep : this.getStep())
 		{
-			ArrayList<Step> allStepsOfLevelX = new ArrayList<Step>();			
-			// alle durchgehen und nur die des aktuellen Levels einsammeln
-			for(Step actualStep : this.step)
+			int actualStepLevel = actualStep.getLevel();
+			mapStepLevel.put(actualStep, actualStepLevel);
+			if (actualStepLevel > maxLevel)
 			{
-				if(actualStep.getLevel() == x)
+				maxLevel = actualStepLevel;
+			}
+			mapStepnameStep.put(actualStep.getName(), actualStep);
+		}
+		
+//		System.out.println("1: "+new Timestamp(System.currentTimeMillis()));
+
+		for(int x = 0; x <= maxLevel; x++)
+		{
+//			System.out.println("11: "+new Timestamp(System.currentTimeMillis()));
+			ArrayList<String> allStepNamesOfLevelX = new ArrayList<String>();			
+			// alle durchgehen und nur die des aktuellen Levels einsammeln
+			for(Step actualStep : mapStepLevel.keySet())
+			{
+//				System.out.println("111: "+new Timestamp(System.currentTimeMillis()));
+				if(mapStepLevel.get(actualStep) == x)
 				{
-					allStepsOfLevelX.add(actualStep);
+					allStepNamesOfLevelX.add(actualStep.getName());
 				}
 			}
-			ArrayList<String> allStepNamesOfLevelX = new ArrayList<String>();			
-			// die Namen extrahieren
-			for(Step actualStep : allStepsOfLevelX)
-			{
-				allStepNamesOfLevelX.add(actualStep.getName());
-			}
-			
+
 			// die Collection mit Namen sortieren
+//			System.out.println("12: "+new Timestamp(System.currentTimeMillis()));
 			Collections.sort(allStepNamesOfLevelX);
+//			System.out.println("13: "+new Timestamp(System.currentTimeMillis()));
 
 			// die ranks in den steps setzen
 			for(int y = 0; y < allStepNamesOfLevelX.size(); y++)
 			{
-				if(allStepNamesOfLevelX.get(y) == stepname)
-				{
-					desiredRank = (x+"."+(y+1));
-					return desiredRank;
-				}
+//				System.out.println("132: "+new Timestamp(System.currentTimeMillis()));
+				mapStepnameStep.get(allStepNamesOfLevelX.get(y)).setRank(x+"."+(y+1));
+//				System.out.println("133: "+new Timestamp(System.currentTimeMillis()));
 			}
 		}
-		return desiredRank;
+//		System.out.println("OUT: "+new Timestamp(System.currentTimeMillis()));
 	}
 	
 	/*----------------------------
