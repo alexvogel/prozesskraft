@@ -8,6 +8,7 @@ public class PmodelViewModel extends ModelObject
 	public Process process = new Process();
 	public int width = 1200;
 	public int height = 800;
+	public int size = 100;
 	public int zoom = 100;
 	public String zoomstring = "";
 	public int labelsize = 10;
@@ -16,7 +17,7 @@ public class PmodelViewModel extends ModelObject
 	public float rootpositionratiox = (float)0.5;
 	public float rootpositionratioy = (float)0.5;
 	public int gravx = 0;
-	public int gravy = 5;
+	public int gravy = 10;
 	private String markedStepName = "root";
 	private int refreshInterval = 10;
 	private boolean refreshNow = false;
@@ -25,7 +26,8 @@ public class PmodelViewModel extends ModelObject
 	private int lastRefreshSeconds = 0;
 	private int lastRefreshCheckSeconds = 0;
 	private String buttonManagerText = "unknown";
-	private Boolean managerActive = null;
+//	private Boolean managerActive = null;
+	private boolean rootReposition = true;
 	
 	public PmodelViewModel()
 	{
@@ -59,6 +61,22 @@ public class PmodelViewModel extends ModelObject
 	public void setHeight(int height)
 	{
 		firePropertyChange("height", this.height, this.height = height);
+	}
+
+	public int getSize()
+	{
+		return size;
+	}
+
+	public void setSize(int size)
+	{
+		firePropertyChange("size", this.size, this.size = size);
+		setZoomstring(""+size);
+	}
+
+	public String getSizestring()
+	{
+		return ""+size;
 	}
 
 	public int getZoom()
@@ -239,5 +257,15 @@ public class PmodelViewModel extends ModelObject
 	public void setButtonManagerText(String buttonManagerText)
 	{
 		firePropertyChange("buttonManagerText", this.buttonManagerText, this.buttonManagerText = buttonManagerText);
+	}
+
+	public boolean getRootReposition()
+	{
+		return this.rootReposition;
+	}
+
+	public void setRootReposition(boolean rootReposition)
+	{
+		firePropertyChange("rootReposition", this.rootReposition, this.rootReposition = rootReposition);
 	}
 }

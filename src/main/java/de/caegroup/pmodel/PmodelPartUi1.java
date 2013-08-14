@@ -83,6 +83,7 @@ public class PmodelPartUi1 extends ModelObject
 	private DataBindingContext bindingContextVisual;
 	private DataBindingContext bindingContextMarked;
 	private DataBindingContext bindingContextRefresh;
+	private Scale scale_size;
 	private Scale scale_zoom;
 	private Spinner spinner_textsize;
 	private Spinner spinner_refreshinterval;
@@ -231,14 +232,25 @@ public class PmodelPartUi1 extends ModelObject
 		
 		Label lblNewLabel_2 = new Label(grpVisual, SWT.NONE);
 		lblNewLabel_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblNewLabel_2.setText("zoom");
+		lblNewLabel_2.setText("size");
+		
+		scale_size = new Scale(grpVisual, SWT.NONE);
+		scale_size.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		scale_size.setMaximum(200);
+		scale_size.setMinimum(10);
+		scale_size.setSelection(100);
+		scale_size.addMouseWheelListener(listener_mousewheel_size);
+		
+		Label lblNewLabel_21 = new Label(grpVisual, SWT.NONE);
+		lblNewLabel_21.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		lblNewLabel_21.setText("zoom");
 		
 		scale_zoom = new Scale(grpVisual, SWT.NONE);
 		scale_zoom.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		scale_zoom.setMaximum(200);
 		scale_zoom.setMinimum(10);
 		scale_zoom.setSelection(100);
-		scale_zoom.addMouseWheelListener(listener_mousewheel);
+		scale_zoom.addMouseWheelListener(listener_mousewheel_zoom);
 		
 		Label lblNewLabel_3 = new Label(grpVisual, SWT.NONE);
 		lblNewLabel_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -291,18 +303,18 @@ public class PmodelPartUi1 extends ModelObject
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpFunction.setText("function");
 		
-		button_refresh = new Button(grpFunction, SWT.NONE | SWT.RADIO);
+		button_refresh = new Button(grpFunction, SWT.NONE | SWT.PUSH);
 		button_refresh.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		button_refresh.setText("refresh");
 //		button_refresh.addSelectionListener(listener_refresh_button);
 		button_refresh.addListener(SWT.Selection, (Listener) listener_refresh_button);
 		
-		spinner_refreshinterval = new Spinner(grpFunction, SWT.BORDER);
-		spinner_refreshinterval.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
-		spinner_refreshinterval.setMaximum(999);
-		spinner_refreshinterval.setSelection(20);
-		spinner_refreshinterval.setMinimum(10);
-		
+//		spinner_refreshinterval = new Spinner(grpFunction, SWT.BORDER);
+//		spinner_refreshinterval.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+//		spinner_refreshinterval.setMaximum(999);
+//		spinner_refreshinterval.setSelection(20);
+//		spinner_refreshinterval.setMinimum(10);
+//		
 		button_startmanager = new Button(grpFunction, SWT.NONE);
 		button_startmanager.setSelection(true);
 		GridData gd_btnNewButton = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
@@ -401,6 +413,9 @@ public class PmodelPartUi1 extends ModelObject
 		// erzeugen der ersten insight ansicht fuer den aktuell markierten step (root)
 		createControlsStepInsight(composite_132);
 		
+		// die processing darstellung refreshen
+		applet_refresh();
+
 	}
 
 	/**
@@ -496,7 +511,7 @@ public class PmodelPartUi1 extends ModelObject
 
 	public void applet_paint_with_new_visual()
 	{
-//		applet.setZoomfaktor(einstellungen.getZoom());
+//		applet.setSizefaktor(einstellungen.getSize());
 	}
 	public void applet_refresh()
 	{
@@ -504,7 +519,7 @@ public class PmodelPartUi1 extends ModelObject
 	}
 	public void applet_autoscale()
 	{
-		this.einstellungen.setZoom(100);
+		this.einstellungen.setSize(100);
 		//		applet.autoscale();
 	}
 	
@@ -671,7 +686,15 @@ public class PmodelPartUi1 extends ModelObject
 		}
 	};
 	
-	MouseWheelListener listener_mousewheel = new MouseWheelListener()
+	MouseWheelListener listener_mousewheel_size = new MouseWheelListener()
+	{
+		public void mouseScrolled(MouseEvent me)
+		{
+			scale_size.setSelection(scale_size.getSelection() + (me.count*5));
+		}
+	};
+	
+	MouseWheelListener listener_mousewheel_zoom = new MouseWheelListener()
 	{
 		public void mouseScrolled(MouseEvent me)
 		{
@@ -696,7 +719,7 @@ public class PmodelPartUi1 extends ModelObject
 //		bindingContext.dispose();
 		IObservableList bindings = bindingContextMarked.getValidationStatusProviders();
 
-		// Register the Listener for binding 'zoom'
+		// Register the Listener for binding 'size'
 		
 		Binding b = (Binding) bindings.get(0);
 		b.getModel().addChangeListener(listener_marked);
@@ -707,12 +730,20 @@ public class PmodelPartUi1 extends ModelObject
 	{
 		DataBindingContext bindingContextVisual = new DataBindingContext();
 		//
+		IObservableValue targetObservableSize = WidgetProperties.selection().observe(scale_size);
+		IObservableValue modelObservableSize = BeanProperties.value("size").observe(einstellungen);
+		bindingContextVisual.bindValue(targetObservableSize, modelObservableSize, null, null);
+		//
+		IObservableValue targetObservableSizeTooltip = WidgetProperties.tooltipText().observe(scale_size);
+		IObservableValue modelObservableSizeTooltip = BeanProperties.value("sizestring").observe(einstellungen);
+		bindingContextVisual.bindValue(targetObservableSizeTooltip, modelObservableSizeTooltip, null, null);
+		//
 		IObservableValue targetObservableZoom = WidgetProperties.selection().observe(scale_zoom);
 		IObservableValue modelObservableZoom = BeanProperties.value("zoom").observe(einstellungen);
 		bindingContextVisual.bindValue(targetObservableZoom, modelObservableZoom, null, null);
 		//
 		IObservableValue targetObservableZoomTooltip = WidgetProperties.tooltipText().observe(scale_zoom);
-		IObservableValue modelObservableZoomTooltip = BeanProperties.value("zoomstring").observe(einstellungen);
+		IObservableValue modelObservableZoomTooltip = BeanProperties.value("sizestring").observe(einstellungen);
 		bindingContextVisual.bindValue(targetObservableZoomTooltip, modelObservableZoomTooltip, null, null);
 		//
 		IObservableValue targetObservableLabelsize = WidgetProperties.selection().observe(spinner_labelsize);
@@ -749,14 +780,14 @@ public class PmodelPartUi1 extends ModelObject
 	{
 		DataBindingContext bindingContextRefresh = new DataBindingContext();
 		//
-		IObservableValue targetObservableRefresh = WidgetProperties.text().observe(button_refresh);
-		IObservableValue modelObservableRefresh = BeanProperties.value("nextRefreshSecondsText").observe(einstellungen);
-		bindingContextRefresh.bindValue(targetObservableRefresh, modelObservableRefresh, null, null);
+//		IObservableValue targetObservableRefresh = WidgetProperties.text().observe(button_refresh);
+//		IObservableValue modelObservableRefresh = BeanProperties.value("nextRefreshSecondsText").observe(einstellungen);
+//		bindingContextRefresh.bindValue(targetObservableRefresh, modelObservableRefresh, null, null);
 		//
-		IObservableValue targetObservableRefreshInterval = WidgetProperties.selection().observe(spinner_refreshinterval);
-		IObservableValue modelObservableRefreshInterval = BeanProperties.value("refreshInterval").observe(einstellungen);
-		bindingContextRefresh.bindValue(targetObservableRefreshInterval, modelObservableRefreshInterval, null, null);
-		//
+//		IObservableValue targetObservableRefreshInterval = WidgetProperties.selection().observe(spinner_refreshinterval);
+//		IObservableValue modelObservableRefreshInterval = BeanProperties.value("refreshInterval").observe(einstellungen);
+//		bindingContextRefresh.bindValue(targetObservableRefreshInterval, modelObservableRefreshInterval, null, null);
+//		//
 //		IObservableValue targetObservableRefreshHit = WidgetProperties.selection().observe(button_refresh);
 		IObservableValue targetObservableRefreshHit = SWTObservables.observeSelection(button_refresh);
 //		IObservableValue modelObservableRefreshHit = BeansObservables.observeValue(einstellungen, "refreshNow");

@@ -16,7 +16,7 @@ public class PmodelViewStepSym
 	  structure
 	----------------------------*/
 //	private double maxspeed = 0;
-	
+	private long nanoTime = System.nanoTime();
 	private Random generator = new Random();
 	private String name = new String();
 	private int[] color = {255,255,255};
@@ -58,14 +58,25 @@ public class PmodelViewStepSym
 		if (p.rootstepname.equals(this.name))
 		{
 			this.setPosition(p.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);
+			System.out.println(this.step.getName()+" " + this.step.getLevel() + " position: "+this.getPosition1()+", "+this.getPosition2());
 //			this.rank = "";
 		}
 //		else {this.setPosition(p.width/2+(this.generator.nextInt(10)+80), p.height/2+(this.generator.nextInt(160)-80), 0);}
 		else
 		{
-			int initx = this.generator.nextInt(p.getWidth());
-			int inity = this.generator.nextInt(p.getHeight());
+			String rank = this.step.getRank();
+			String[] rankStringArray = rank.split("\\.");
+			int level = Integer.parseInt(rankStringArray[0]);
+			int posi = Integer.parseInt(rankStringArray[1]);
+			
+//			float initx = p.getWidth()*this.parent.einstellungen.getRootpositionratiox() + (posi * (p.getWidth()/10));
+//			float initx = (posi * (p.getWidth()/10));
+			float initx = (p.getWidth()*this.parent.einstellungen.getRootpositionratiox() + this.generator.nextInt(50));
+			float inity = p.getHeight()*this.parent.einstellungen.getRootpositionratioy()+(this.parent.bezugsgroesse*80*level);
+//			int initx = this.generator.nextInt(p.getWidth());
+//			int inity = this.generator.nextInt(p.getHeight());
 			this.setPosition(initx, inity, 0);
+			System.out.println(this.step.getName()+" " + this.step.getRank() + " position: "+this.getPosition1()+", "+this.getPosition2());
 		}
 		
 		this.rank = this.step.getRank();
@@ -115,6 +126,8 @@ public class PmodelViewStepSym
 //		System.out.println("Speed: "+this.name+" "+this.speed[0]+" "+this.speed[1]+" "+this.speed[2]);
 //		System.out.println(this.getColor1()+" "+this.getColor2()+" "+this.getColor3());
 
+//		tickTimer("5211");
+		
 //		makeTimeStamp("5211");
 		// festlegen der circle color in Abhaengigkeit des stepstatus
 		if (this.step.getStatus().equals("waiting")) {this.setColor(200, 200, 200);}
@@ -125,6 +138,7 @@ public class PmodelViewStepSym
 		else if (this.step.getStatus().equals("canceled")) {this.setColor(240, 240, 240);}
 		else if (this.step.getStatus().equals("error")) {this.setColor(220, 0, 0);}
 		
+//		tickTimer("5212");
 //		makeTimeStamp("5212");
 		
 		// wenn der stepcircle gerade markiert ist, soll die komplimentaerfarbe gewaehlt werden
@@ -145,6 +159,7 @@ public class PmodelViewStepSym
 		
 		// zeichne stepsymbol
 		
+//		tickTimer("5214");
 //		makeTimeStamp("5214");
 		if ( this.step.getName().equals(this.step.getParent().getRootstepname()))
 		{
@@ -182,6 +197,7 @@ public class PmodelViewStepSym
 			symbol_quadrat_mit_x(this.parent.bezugsgroesse, true);
 		}
 		
+//		tickTimer("5215");
 //		makeTimeStamp("5215");
 		// schreibe die ranknummer in das symbol
 		parent.fill(this.getTextcolor1(), this.getTextcolor2(), this.getTextcolor3());
@@ -192,6 +208,7 @@ public class PmodelViewStepSym
 			parent.text(rank, this.getPosition1() - rank.length()*(neue_rankgroesse/6), this.getPosition2() + (neue_rankgroesse/3));
 		}
 		
+//		tickTimer("5216");
 //		makeTimeStamp("5216");
 		// zeichne beschriftung
 		parent.fill(this.getTextcolor1(), this.getTextcolor2(), this.getTextcolor3());
@@ -209,9 +226,12 @@ public class PmodelViewStepSym
 //			parent.text("S", this.getPosition1()-4, this.getPosition2()+5);
 //		}
 
+//		tickTimer("5217");
 //		makeTimeStamp("5217");
 		// reposition for next display
 		this.reposition(this.parent);
+//		tickTimer("5218");
+//		makeTimeStamp("5218");
 		if (this.position[2] > 0.)
 		{
 			System.err.println(this.name+": Achtung: z > Null!!!"+this.position[0]+" "+this.position[1]+" "+this.position[2]);
@@ -223,6 +243,17 @@ public class PmodelViewStepSym
 	private void makeTimeStamp(String string)
 	{
 		System.err.println(string+": "+new Timestamp(System.currentTimeMillis()));
+		System.err.println("nano: "+System.nanoTime());
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void tickTimer(String string)
+	{
+		long nanoTimeNew = System.nanoTime();
+		System.err.println(string+": nano since last print: "+(nanoTimeNew - nanoTime));
+		this.nanoTime = nanoTimeNew;
+		
 		// TODO Auto-generated method stub
 		
 	}
@@ -307,78 +338,99 @@ public class PmodelViewStepSym
 	
 	private void reposition(PmodelViewPage p)
 	{
-		// wenn der aktuell betrachtete step der 'initstep' ist, und sich ausserhalb der anzeige befindet -> auf mitte der Anzeige positionieren
-		if ((p.rootstepname.equals(this.name)) && !(p.stepcircle_clicked.getName().equals(this.name)) && ((this.getPosition1() > p.getWidth()) || (this.getPosition2() > p.getHeight()) || (this.getPosition1() < 0) || (this.getPosition2() < 0)))
-		{
-			this.setPosition(p.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);
-		}
+		// wenn der aktuell betrachtete step der 'rootstep' ist, und sich ausserhalb der anzeige befindet -> auf mitte der Anzeige positionieren
+//		if ((p.rootstepname.equals(this.name)) && (p.stepcircle_clicked != null) && !(p.stepcircle_clicked.getName().equals(this.name)) && ((this.getPosition1() > p.getWidth()) || (this.getPosition2() > p.getHeight()) || (this.getPosition1() < 0) || (this.getPosition2() < 0)))
+//		if ((p.rootstepname.equals(this.name)) && !(p.stepcircle_clicked.getName().equals(this.name)) && ((this.getPosition1() > p.getWidth()) || (this.getPosition2() > p.getHeight()) || (this.getPosition1() < 0) || (this.getPosition2() < 0)))
+//		if ((p.rootstepname.equals(this.name)) && !(p.stepcircle_clicked.getName().equals(this.name)) && ((this.getPosition1() > p.getWidth()) || (this.getPosition2() > p.getHeight()) || (this.getPosition1() < 0) || (this.getPosition2() < 0)))
+//		{
+//			this.setPosition(p.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);
+//		}
 //		// wenn der aktuell betrachtete step ein 'startingpoint' ist, und sich ausserhalb der anzeige befindet -> auf zufaellige position innerhalb des fensters
 //		else if ((this.isastartingpoint) && !(p.clicked_stepcircle.getName().equals(this.name)) && ((this.getPosition1() > p.width) || (this.getPosition2() > p.height) || (this.getPosition1() < 0) || (this.getPosition2() < 0)))
 //		{
 //			this.setPosition(p.width/2+(this.generator.nextInt(200)-100), p.height/2+(this.generator.nextInt(200)-100), 0);
 //		}
-
-
-		// wenn das Stepcircle gerade geklickt wird, dann auf neupositionierung verzichten
-		if (!(p.stepcircle_clicked.getName().equals(this.getName())))
+		
+		// wenn es der root-step ist
+		if (p.rootstepname.equals(this.name))
 		{
-			// newPosition = oldPosition + (newSpeed * time)
-			// newSpeed = (oldSpeed + speedDiff) * (1/damping)
-			// speedDiff = ((antiGravity_impuls + connectorForce) / mass) * time
-	//		double newtimestamp = (p.millis()/1000);
-			double newtimestamp = (p.millis());
-			double timestep = newtimestamp - this.timestamp;
-			this.timestamp = newtimestamp;
-	//		System.out.println("NewTimestamp: "+newtimestamp);
-	//		System.out.println("Timestep: "+timestep);
-	//		System.out.println("Mass: "+this.mass);
-
-			float[] rejectionPuls = this.calRejectionPuls(p);
-			float[] attractionPuls = this.calAttractionPuls(p);
-
-			float[] speeddiff = new float[3];
-			speeddiff[0] = (float)(((rejectionPuls[0] + attractionPuls[0]) / this.mass + this.parent.einstellungen.getGravx()));
-			speeddiff[1] = (float)(((rejectionPuls[1] + attractionPuls[1]) / this.mass + this.parent.einstellungen.getGravy()));
-			speeddiff[2] = (float)(((rejectionPuls[2] + attractionPuls[2]) / this.mass));
-
-			float[] oldspeed = this.getSpeed();
-			float[] newspeed = new float[3];
-			newspeed[0] = (oldspeed[0] + speeddiff[0]) * (1-this.parent.getDamp());
-			newspeed[1] = (oldspeed[1] + speeddiff[1]) * (1-this.parent.getDamp());
-			newspeed[2] = (oldspeed[2] + speeddiff[2]) * (1-this.parent.getDamp());
-
-			// wenn initialer step, dann festhalten
-			if (this.name.equals(p.rootstepname))
+			// wenn er automatisch repositioniert werden darf
+			if(this.parent.einstellungen.getRootReposition())
 			{
-				newspeed[0] = 0;
-				newspeed[1] = 0;
-				newspeed[2] = 0;
+				// wenn er sich ausserhalb des sichtbaren bereichs befindet
+				if((this.getPosition1() > p.getWidth()) || (this.getPosition2() > p.getHeight()) || (this.getPosition1() < 0) || (this.getPosition2() < 0))
+				{
+					this.setPosition(p.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);
+				}
 			}
-
-			this.speed = newspeed;
-
-			float[] oldposition = this.getPosition();
-			float[] newposition = new float[3];
-			float[] repositionvektor = new float[3];
-			
-			repositionvektor[0] = (float)(newspeed[0] * timestep*0.001);
-			repositionvektor[1] = (float)(newspeed[1] * timestep*0.001);
-			repositionvektor[2] = (float)(newspeed[2] * timestep*0.001);
-			
-			newposition[0] = (float)(oldposition[0] + repositionvektor[0]);
-			newposition[1] = (float)(oldposition[1] + repositionvektor[1]);
-			newposition[2] = (float)(oldposition[2] + repositionvektor[2]);
+		}
+		
+		// wenn this NICHT der rootstep ist 
+		else
+		{
+			// und this gerade nicht geklickt wird
+			if (!this.isClicked())
+			{
+				
+				// fuer alle anderen gilt: repositionieren
+				// newPosition = oldPosition + (newSpeed * time)
+				// newSpeed = (oldSpeed + speedDiff) * (1/damping)
+				// speedDiff = ((antiGravity_impuls + connectorForce) / mass) * time
+		//		double newtimestamp = (p.millis()/1000);
+				double newtimestamp = (p.millis());
+				double timestep = newtimestamp - this.timestamp;
+				this.timestamp = newtimestamp;
+		//		System.out.println("NewTimestamp: "+newtimestamp);
+		//		System.out.println("Timestep: "+timestep);
+		//		System.out.println("Mass: "+this.mass);
 	
-			// die newposition darf im extremfall nicht zu stark vom fenster abweichen +- 1Fenstergrösse in jede Richtung			
-			if (newposition[0] > this.parent.width*2) 		{newposition[0] = this.parent.width*2;}
-			if (newposition[0] < this.parent.width*(-1)) 	{newposition[0] = this.parent.width*(-1);}
-			if (newposition[1] > this.parent.height*2) 		{newposition[1] = this.parent.height*2;}
-			if (newposition[1] < this.parent.height*(-1)) 	{newposition[1] = this.parent.height*(-1);}
-
-			
-			
-			this.setPosition(newposition[0], newposition[1], newposition[2]);
-//			System.out.println(this.getName()+" new position is: "+newposition[0]+" | "+newposition[1]);
+				float[] rejectionPuls = this.calRejectionPuls(p);
+				float[] attractionPuls = this.calAttractionPuls(p);
+	
+				float[] speeddiff = new float[3];
+				speeddiff[0] = (float)(((rejectionPuls[0] + attractionPuls[0]) / this.mass + this.parent.einstellungen.getGravx()));
+				speeddiff[1] = (float)(((rejectionPuls[1] + attractionPuls[1]) / this.mass + this.parent.einstellungen.getGravy()));
+				speeddiff[2] = (float)(((rejectionPuls[2] + attractionPuls[2]) / this.mass));
+	
+				float[] oldspeed = this.getSpeed();
+				float[] newspeed = new float[3];
+				newspeed[0] = (oldspeed[0] + speeddiff[0]) * (1-this.parent.getDamp());
+				newspeed[1] = (oldspeed[1] + speeddiff[1]) * (1-this.parent.getDamp());
+				newspeed[2] = (oldspeed[2] + speeddiff[2]) * (1-this.parent.getDamp());
+	
+				// wenn initialer step, dann festhalten
+				if (this.name.equals(p.rootstepname))
+				{
+					newspeed[0] = 0;
+					newspeed[1] = 0;
+					newspeed[2] = 0;
+				}
+	
+				this.speed = newspeed;
+	
+				float[] oldposition = this.getPosition();
+				float[] newposition = new float[3];
+				float[] repositionvektor = new float[3];
+				
+				repositionvektor[0] = (float)(newspeed[0] * timestep*0.001);
+				repositionvektor[1] = (float)(newspeed[1] * timestep*0.001);
+				repositionvektor[2] = (float)(newspeed[2] * timestep*0.001);
+				
+				newposition[0] = (float)(oldposition[0] + repositionvektor[0]);
+				newposition[1] = (float)(oldposition[1] + repositionvektor[1]);
+				newposition[2] = (float)(oldposition[2] + repositionvektor[2]);
+		
+				// die newposition darf im extremfall nicht zu stark vom fenster abweichen +- 1Fenstergrösse in jede Richtung			
+				if (newposition[0] > this.parent.width*2) 		{newposition[0] = this.parent.width*2;}
+				if (newposition[0] < this.parent.width*(-1)) 	{newposition[0] = this.parent.width*(-1);}
+				if (newposition[1] > this.parent.height*2) 		{newposition[1] = this.parent.height*2;}
+				if (newposition[1] < this.parent.height*(-1)) 	{newposition[1] = this.parent.height*(-1);}
+	
+				
+				
+				this.setPosition(newposition[0], newposition[1], newposition[2]);
+	//			System.out.println(this.getName()+" new position is: "+newposition[0]+" | "+newposition[1]);
+			}
 		}
 	}
 	
@@ -494,6 +546,28 @@ public class PmodelViewStepSym
 	private boolean isConnected (String stepname)
 	{
 		if (this.getConnectfroms().contains(stepname))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public void translate(int deltax, int deltay)
+	{
+		this.position[0] = (this.position[0] + deltax);
+		this.position[1] = (this.position[1] + deltay);
+	}
+	
+	private boolean isClicked()
+	{
+		if(this.parent.stepcircle_clicked == null)
+		{
+			return false;
+		}
+		else if (this.parent.stepcircle_clicked.getName().equals(this.getName()))
 		{
 			return true;
 		}

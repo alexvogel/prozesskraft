@@ -10,9 +10,11 @@ import java.io.IOException;
 
 
 
+
 //import java.io.InputStream;
 //
 import javax.xml.bind.JAXBException;
+
 
 
 
@@ -46,6 +48,7 @@ public class PmodelViewPage extends PApplet
 //	Calendar refresh_last = Calendar.getInstance();
 //	Calendar refresh_next = Calendar.getInstance();
 	Calendar now = Calendar.getInstance();
+	long startTimeMillis = System.currentTimeMillis();
 	Calendar mousepressedlasttime = Calendar.getInstance();
 //	int refresh_interval = 300;
 	int doubleclickperiod = 300;	// seconds
@@ -53,7 +56,7 @@ public class PmodelViewPage extends PApplet
 	Random generator = new Random();
 	private ArrayList<PmodelViewStepSym> stepcircles = new ArrayList<PmodelViewStepSym>();
 	private ArrayList<PmodelViewStepCon> stepconnectors = new ArrayList<PmodelViewStepCon>();
-	public PmodelViewStepSym stepcircle_clicked = new PmodelViewStepSym();
+	public PmodelViewStepSym stepcircle_clicked = null;
 	public PmodelViewStepSym stepcircle_marked = null;
 //	public Process p;
 	public String rootstepname = "root";
@@ -76,6 +79,12 @@ public class PmodelViewPage extends PApplet
 	boolean saveActualPic = false;
 	String pathActualPic = "";
 //	public float damp = (float)0.2;
+	
+	// um den hintergrund draagen zu koennen
+	int deltax = 0;
+	int deltay = 0;
+	int mouse_pressed_x;
+	int mouse_pressed_y;
 
 
     
@@ -147,62 +156,38 @@ public class PmodelViewPage extends PApplet
 	----------------------------*/
 	public void draw()
 	{
-//		makeTimeStamp("1");
-//    		System.out.println(this.millis());
-//		System.out.println("width: "+frame.getWidth());
+		// zoom from the center of the scetch
+		translate(width/2, height/2); // use translate around scale
+		scale((float)this.einstellungen.getZoom()/100);
+		translate(-width/2, -height/2);
 
-//		System.out.println("amount stepcircles :"+stepcircles.size());
-		
-//		size(this.einstellungen.getWidth(), this.einstellungen.getHeight());
+		//		makeTimeStamp("1");
+
 		background(255);
-		this.bezugsgroesse = (float)((float)this.einstellungen.getZoom() / 100);
+		this.bezugsgroesse = (float)((float)this.einstellungen.getSize() / 100);
 		textSize(this.einstellungen.getTextsize());
 //		System.out.println("bezugsgroesse         : "+this.bezugsgroesse);
 		
 		this.now = Calendar.getInstance();
-//		System.out.println("now         : "+this.now.toString());
-//		System.out.println("next refresh: "+this.refresh_next.toString());
-//		System.out.println("last refresh: "+this.refresh_last.toString());
-//		System.out.println("difference between now and last in millis: "+(this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()));
-//		wenn refresh-interval verstrichen ist seit letztem refresh oder wenn space (jedoch nicht vor mindestens 1 Sekunde) gedrueckt wurde
-//		if ((now.after(this.refresh_next)) || ((this.keyPressed) && (this.key == ' ') && ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) > 1000)))
-//		{
-//			this.refresh();
-//			this.refresh_last = this.now;
-//			this.refresh_next = Calendar.getInstance();
-//			this.refresh_next.add(13, this.refresh_interval);
-//		}
-		
-//		// wenn der letzte refresh in der letzten 0,5 sekunden passiert ist, dann nur noise darstellen
-//		else if ((this.now.getTimeInMillis() - this.refresh_last.getTimeInMillis()) < 100)
-//		{
-////			this.effect_noise();
-//			this.effect_fade();
-//		}
-		
-//		else
-//		{
-////			System.out.println("refresh_topology: "+this.refresh_topology);
 
-		// wieviel sekunden muesseen vom refresh-Countdown abgezogen werden?
-		long sekundenSeitLetztemRefreshCheck = ((System.currentTimeMillis()/1000) - this.einstellungen.getLastRefreshCheckSeconds());
-//		System.out.println("sekunden seit dem letzten refreshCheck: "+sekundenSeitLetztemRefreshCheck);
-		
-//		makeTimeStamp("2");
-		// refresh Countdown aktualisieren
-		if ( sekundenSeitLetztemRefreshCheck > 0)
-		{
-			this.einstellungen.setNextRefreshSeconds((int)(this.einstellungen.getNextRefreshSeconds()-sekundenSeitLetztemRefreshCheck));
-			this.einstellungen.setLastRefreshCheckSeconds((int)(System.currentTimeMillis()/1000));
-//			System.out.println("refresh in "+this.einstellungen.getNextRefreshSeconds());
-		}
-		
-//		makeTimeStamp("3");
-		// wenn refresh-Countdown < 0 ist, soll refresht werden
-		if (this.einstellungen.getNextRefreshSeconds() < 0)
-		{
-			refresh();
-		}
+//		// wieviel sekunden muesseen vom refresh-Countdown abgezogen werden?
+//		long sekundenSeitLetztemRefreshCheck = ((System.currentTimeMillis()/1000) - this.einstellungen.getLastRefreshCheckSeconds());
+//		
+////		makeTimeStamp("2");
+//		// refresh Countdown aktualisieren
+//		if ( sekundenSeitLetztemRefreshCheck > 0)
+//		{
+//			this.einstellungen.setNextRefreshSeconds((int)(this.einstellungen.getNextRefreshSeconds()-sekundenSeitLetztemRefreshCheck));
+//			this.einstellungen.setLastRefreshCheckSeconds((int)(System.currentTimeMillis()/1000));
+////			System.out.println("refresh in "+this.einstellungen.getNextRefreshSeconds());
+//		}
+//		
+////		makeTimeStamp("3");
+//		// wenn refresh-Countdown < 0 ist, soll refresht werden
+//		if (this.einstellungen.getNextRefreshSeconds() < 0)
+//		{
+//			refresh();
+//		}
 			
 //		makeTimeStamp("4");
 		if (this.mousePressed) {mouse_pressed_action();}
@@ -217,6 +202,15 @@ public class PmodelViewPage extends PApplet
 			System.err.println("data has been changed while drawing. drawing skipped.");
 			
 		}
+		
+		// wenn alles verschoben werden soll, alle stepsymbole translaten
+		if((deltax != 0) || (deltay != 0))
+		{
+			translateStepsymbols(deltax, deltay);
+			deltax = 0;
+			deltay = 0;
+		}
+		
 //		makeTimeStamp("6");
 		
 		
@@ -234,61 +228,6 @@ public class PmodelViewPage extends PApplet
 	/*----------------------------
 	  methods
 	----------------------------*/
-	
-	private void mouse_pressed_action()
-	{
-		{
-			for(int l=0; l<this.stepcircles.size(); l++)
-			{
-				if (PApplet.dist(mouseX, mouseY, stepcircles.get(l).getPosition1(), stepcircles.get(l).getPosition2()) < stepcircles.get(l).getRadius())
-				{
-					if (this.stepcircle_clicked.equals(stepcircles.get(l))) {break;}
-					this.stepcircle_clicked = stepcircles.get(l);
-					this.stepcircle_marked = stepcircles.get(l);
-					
-					this.einstellungen.setMarkedStepName(this.stepcircle_marked.getStep().getName());
-					
-					// wenn es ein doppelklick ist
-					if ( ( Calendar.getInstance().getTimeInMillis() - this.mousepressedlasttime.getTimeInMillis() )  < this.doubleclickperiod )
-					{
-//						System.out.println("timeperiod "+(Calendar.getInstance().getTimeInMillis() - this.mousepressedlasttime.getTimeInMillis()));
-						// feststellen des stdout/stderr des steps
-						String stdout = this.stepcircle_clicked.step.getAbsstdout();
-						String stderr = this.stepcircle_clicked.step.getAbsstderr();
-						
-						java.io.File stdoutfile = new java.io.File(stdout);
-						java.io.File stderrfile = new java.io.File(stderr);
-						
-						String neditstring = new String();
-						
-						if (stdoutfile.exists())
-						{
-							neditstring = neditstring+" "+stdout;
-						}
-						
-						if (stderrfile.exists())
-						{
-							neditstring = neditstring+" "+stderr;
-						}
-						
-						if (!(neditstring.isEmpty()))
-						// Aufruf taetigen
-						try {
-							java.lang.Process sysproc = Runtime.getRuntime().exec("nedit "+neditstring);
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-//					break;
-				}
-				else
-				{
-				}
-			}
-			this.mousepressedlasttime = Calendar.getInstance();
-		}
-	}
 	
 	private void draw_stepcircles()
 	{
@@ -404,14 +343,101 @@ public class PmodelViewPage extends PApplet
 		}
 	}
 
+	public void mousePressed()
+	{
+		mouse_pressed_x = mouseX;
+		mouse_pressed_y = mouseY;
+		System.out.println("mouseX: "+mouseX);
+	}
+
+	/*----------------------------
+		  methods
+		----------------------------*/
+		
+	private void mouse_pressed_action()
+	{
+		for(int l=0; l<this.stepcircles.size(); l++)
+		{
+			if (PApplet.dist(mouseX, mouseY, stepcircles.get(l).getPosition1(), stepcircles.get(l).getPosition2()) < stepcircles.get(l).getRadius())
+			{
+//				if (this.stepcircle_clicked != null && this.stepcircle_clicked.equals(stepcircles.get(l))) {break;}
+				this.stepcircle_clicked = stepcircles.get(l);
+				this.stepcircle_marked = stepcircles.get(l);
+				
+				this.einstellungen.setMarkedStepName(this.stepcircle_marked.getStep().getName());
+				
+				// wenn es ein doppelklick ist
+				if ( ( Calendar.getInstance().getTimeInMillis() - this.mousepressedlasttime.getTimeInMillis() )  < this.doubleclickperiod )
+				{
+//						System.out.println("timeperiod "+(Calendar.getInstance().getTimeInMillis() - this.mousepressedlasttime.getTimeInMillis()));
+					// feststellen des stdout/stderr des steps
+					String stdout = this.stepcircle_clicked.step.getAbsstdout();
+					String stderr = this.stepcircle_clicked.step.getAbsstderr();
+					
+					java.io.File stdoutfile = new java.io.File(stdout);
+					java.io.File stderrfile = new java.io.File(stderr);
+					
+					String neditstring = new String();
+					
+					if (stdoutfile.exists())
+					{
+						neditstring = neditstring+" "+stdout;
+					}
+					
+					if (stderrfile.exists())
+					{
+						neditstring = neditstring+" "+stderr;
+					}
+					
+					if (!(neditstring.isEmpty()))
+					// Aufruf taetigen
+					try {
+						java.lang.Process sysproc = Runtime.getRuntime().exec("nedit "+neditstring);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+//					break;
+			}
+			else
+			{
+			}
+		}
+		this.mousepressedlasttime = Calendar.getInstance();
+	}
+
 	public void mouseDragged()
 	{
-		this.stepcircle_clicked.setPosition(mouseX, mouseY, 0);
+		// stepcircle umherziehen
+		if (this.stepcircle_clicked != null)
+		{
+			this.stepcircle_clicked.setPosition(mouseX, mouseY, 0);
+		}
+		
+		// hintergrund umherziehen
+		else
+		{
+			int newDeltax = mouseX-mouse_pressed_x;
+			int newDeltay = mouseY-mouse_pressed_y;
+			
+			mouse_pressed_x = mouseX;
+			mouse_pressed_y = mouseY;
+			
+			deltax += newDeltax;
+			deltay += newDeltay;
+			
+			// wenn die flaeche gedraggt wurde, soll ab diesem moment der rootstep nicht mehr repositioniert werden.
+			this.einstellungen.setRootReposition(false);
+			
+//			System.out.println("deltax="+deltax+": deltay="+deltay);
+		}
 	}
 	
 	public void mouseReleased()
 	{
-		this.stepcircle_clicked = new PmodelViewStepSym();
+//		this.stepcircle_clicked = new PmodelViewStepSym();
+		this.stepcircle_clicked = null;
 	}
 	
 	public void addStepcircle(PmodelViewStepSym stepcircle)
@@ -471,6 +497,14 @@ public class PmodelViewPage extends PApplet
 //		System.out.println("Anzahl der Stepcircles    : "+this.stepcircles.size());
 //		System.out.println("Anzahl der Stepconnectoren: "+this.stepconnectors.size());
 		
+	}
+	
+	private void translateStepsymbols(int deltax, int deltay)
+	{
+		for(PmodelViewStepSym actualStepsymbol : this.stepcircles)
+		{
+			actualStepsymbol.translate(deltax, deltay);
+		}
 	}
 	
 	private void makeTimeStamp(String string)
@@ -630,6 +664,12 @@ public class PmodelViewPage extends PApplet
 
 	public float getDamp()
 	{
+		// die ersten sekunden soll die daempfung sehr hoch sein
+		if((now.getTimeInMillis() - startTimeMillis) < 5000)
+		{
+			return 0.8f;
+		}
+		
 		float damp = (float)((5 / this.frameRate));
 		if (damp < 0.1) {damp = (float)0.1;}
 		else if (damp > 0.9) {damp = (float)0.9;}
@@ -656,9 +696,9 @@ public class PmodelViewPage extends PApplet
 		this.einstellungen.setTextsize(textsize);
 	}
 	
-	public void setZoom(int zoom)
+	public void setSize(int size)
 	{
-		this.einstellungen.setZoom(zoom);
+		this.einstellungen.setSize(size);
 	}
 	
 	public void setLabelsize(int labelsize)
