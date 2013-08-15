@@ -874,9 +874,9 @@ implements Serializable, Cloneable
 
 			ArrayList<Step> newFromsteps = new ArrayList<Step>();
 			
-			for(Step actualStep : allFromsteps)
+			for(Step actualFromstep : allFromsteps)
 			{
-				ArrayList<Step> fromstepsOfActualStep = actualStep.getFromsteps();
+				ArrayList<Step> fromstepsOfActualStep = actualFromstep.getFromsteps();
 				for(Step actualStep2 : fromstepsOfActualStep)
 				{
 					if (!(allFromsteps.contains(actualStep2)))

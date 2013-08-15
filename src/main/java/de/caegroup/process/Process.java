@@ -889,6 +889,20 @@ implements Serializable
 		return maxLevel;
 	}
 	
+	public int getAmountStepsOfLevel(int level)
+	{
+		int amountSteps = 0;
+		for(Step actualStep : this.getStep())
+		{
+			int actualLevel = actualStep.getLevel();
+			if(actualLevel == level)
+			{
+				amountSteps++;
+			}
+		}
+		return amountSteps;
+	}
+	
 	/**
 	 * sets the actual stepranks
 	 * @return rank
