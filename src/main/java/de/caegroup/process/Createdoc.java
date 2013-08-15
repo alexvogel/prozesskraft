@@ -64,9 +64,11 @@ public class Createdoc
 	static Display display = Display.getDefault();
 	protected static Shell shell;
 	static String processTopologyImagePath;
-	static String processTopologyFadedImagePath;
+	static String processTopologyFrontImagePath;
 	static Map<String,String> stepTopologyImagePath = new HashMap<String,String>();
 	static Map<String,String> pdfRankFiles = new HashMap<String,String>();
+	static boolean produktiv = false;
+
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -290,14 +292,15 @@ public class Createdoc
 //		PmodelViewPage page = new PmodelViewPage(process);
 		PmodelViewPage page = new PmodelViewPage();
 		page.einstellungen.setProcess(process);
-		page.einstellungen.setZoom(160);
+		page.einstellungen.getProcess().setStepRanks();
+		page.einstellungen.setSize(100);
 //		page.einstellungen.setZoom(8 * 100/process.getMaxLevel());
 		page.einstellungen.setLabelsize(0);
 		page.einstellungen.setTextsize(0);
 		page.einstellungen.setRanksize(7);
 		page.einstellungen.setWidth(2500);
 		page.einstellungen.setHeight(750);
-		page.einstellungen.setGravx(300);
+		page.einstellungen.setGravx(10);
 		page.einstellungen.setGravy(0);
 		page.einstellungen.setRootpositionratiox((float)0.05);
 		page.einstellungen.setRootpositionratioy((float)0.5);
@@ -305,7 +308,7 @@ public class Createdoc
 		createContents(page);
 
 		// mit open kann die page angezeigt werden
-//		open();
+		open();
 		
 		// warten
 		System.out.println("stabilisierung ansicht: 5 sekunden warten gravitation = "+page.einstellungen.getGravx());
@@ -318,7 +321,8 @@ public class Createdoc
 		page.einstellungen.setGravx(10);
 
 		// warten
-		int wartezeitSeconds =  page.einstellungen.getProcess().getStep().size()*10;
+		int wartezeitSeconds = 1;
+		if (produktiv) {wartezeitSeconds = page.einstellungen.getProcess().getStep().size()*10;}
 		System.out.println("stabilisierung ansicht: "+wartezeitSeconds+" sekunden warten gravitation = "+page.einstellungen.getGravx());
 		long jetzt6 = System.currentTimeMillis();
 		while (System.currentTimeMillis() < jetzt6 + (wartezeitSeconds * 1000))
@@ -343,22 +347,7 @@ public class Createdoc
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// VORBEREITUNG) eine Kopie der ProzessTopologie erstellen
-		processTopologyFadedImagePath = randomPathPng+"/processTopologyFaded.png";
-		Path copySourcePath = Paths.get(processTopologyImagePath);
-		Path copyTargetPath = Paths.get(processTopologyFadedImagePath);
-		try
-		{
-			Files.copy(copySourcePath, copyTargetPath);
-		} catch (IOException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		
-		// VORBEREITUNG) FadedGradient anwenden
-
 		// VORBEREITUNG) fuer jeden step ein bild speichern
 		for(Step actualStep : process.getStep())
 		{
@@ -405,10 +394,115 @@ public class Createdoc
 			{
 				
 			}
+		}
 
+		// VORBEREITUNG) Bild erstellen mit vertikaler Ausrichtung und etwas anderen Parametern
+		page.einstellungen.setSize(100);
+		page.einstellungen.setGravy(300);
+		page.einstellungen.setGravx(0);
+		
+		// warten
+		System.out.println("stabilisierung ansicht: 5 sekunden warten gravitation in y = "+page.einstellungen.getGravy());
+		long jetzt11 = System.currentTimeMillis();
+		while (System.currentTimeMillis() < jetzt11 + 5000)
+		{
+			
+		}
+
+		page.einstellungen.setGravy(10);
+
+		// warten
+		if (produktiv) {wartezeitSeconds = page.einstellungen.getProcess().getStep().size()*10;}
+		System.out.println("stabilisierung ansicht: "+wartezeitSeconds+" sekunden warten gravitation in y = "+page.einstellungen.getGravy());
+		long jetzt12 = System.currentTimeMillis();
+		while (System.currentTimeMillis() < jetzt12 + (wartezeitSeconds * 1000))
+		{
+			
+		}
+
+		// VORBEREITUNG) bild speichern
+		processTopologyFrontImagePath = randomPathPng+"/processTopologyFront.png";
+		page.savePic(processTopologyFrontImagePath);
+		// zuerst 1 sekunde warten, dann autocrop
+		long jetzt21 = System.currentTimeMillis();
+		while (System.currentTimeMillis() < jetzt21 + 1000)
+		{
+			
+		}
+		try
+		{
+			new AutoCropBorder(processTopologyFrontImagePath);
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		page.destroy();
+
+//////////////////////////////////////////
+		report = new Report();
+		
+		// P03) erstellen des p03
+		System.out.println("info: generating p03.");
+		
+		// P03) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
+		if (ini.get("process-createdoc", "p03") != null )
+		{
+			report.setJasper(ini.get("process-createdoc", "p03"));
+			report.setJasperFilled(randomPathJasperFilled+"/p03.jasperFilled");
+			report.setPdf(randomPathPdf+"/p03.pdf");
+			pdfRankFiles.put("0.0.03", randomPathPdf+"/p03.pdf");
+		}
+		else
+		{
+			System.err.println("no entry 'p03' found in ini file");
+			System.exit(1);
+		}
+		
+		report.setParameter("processName", process.getName());
+		report.setParameter("processVersion", process.getModelVersion());
+		report.setParameter("processArchitectCompany", process.getArchitectCompany());
+		report.setParameter("processArchitectName", process.getArchitectName());
+		report.setParameter("processArchitectMail", process.getArchitectMail());
+		report.setParameter("processCustomerCompany", process.getCustomerCompany());
+		report.setParameter("processCustomerName", process.getCustomerName());
+		report.setParameter("processCustomerMail", process.getCustomerMail());
+		
+		// P03) bild an report melden
+		report.setParameter("processTopologyFrontImagePath", processTopologyFrontImagePath);
+
+		// P03) report fuellen
+		try
+		{
+			report.fillPReport();
+		} catch (FileNotFoundException e)
+		{
+		// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e)
+		{
+		// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// P05) pdf schreiben
+		try
+		{
+			report.exportToPdf();
+		} catch (FileNotFoundException e)
+		{
+		// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e)
+		{
+		// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		report = null;
+		
+//System.exit(0);
 
 //////////////////////////////////////////
 		report = new Report();
@@ -426,7 +520,7 @@ public class Createdoc
 		}
 		else
 		{
-			System.err.println("no entry 'p1' found in ini file");
+			System.err.println("no entry 'p05' found in ini file");
 			System.exit(1);
 		}
 		
@@ -576,7 +670,15 @@ public class Createdoc
 			Step actualStep = steps.get(x);
 
 			// erste Spalte ist 'rank'
-			row.put("stepRank", actualStep.getRank());
+			// um die korrekte sortierung zu erhalten soll der rank-string auf jeweils 2 Stellen erweitert werden
+			String[] rankArray = actualStep.getRank().split("\\.");
+			Integer[] rankArrayInt = new Integer[rankArray.length];
+			for(int y=0; y < rankArray.length; y++)
+			{
+				rankArrayInt[y] = Integer.parseInt(rankArray[y]);
+			}
+			String rankFormated = String.format("%02d.%02d", rankArrayInt);
+			row.put("stepRank", rankFormated);
 			
 			// zweite Spalte ist 'stepname'
 			row.put("stepName", actualStep.getName());
@@ -942,6 +1044,24 @@ public class Createdoc
 
 				report.setParameter("stepName", actualStep.getName());
 				report.setParameter("stepRank", stepRank);
+				report.setParameter("stepDescription", actualStep.getDescription());
+				
+				// zusammensetzen des scriptaufrufs
+				String aufruf = actualStep.getWork().getCommand();
+				for(Callitem actualCallitem : actualStep.getWork().getCallitem())
+				{
+					aufruf += " "+actualCallitem.getPar();
+					if( !(actualCallitem.getDel() == null) )
+					{
+						aufruf += actualCallitem.getDel();
+					}
+					if( !(actualCallitem.getVal() == null) )
+					{
+						aufruf += actualCallitem.getVal();
+					}
+				}
+				report.setParameter("stepWorkCall", aufruf);
+				
 				// P51x) bild an report melden
 				report.setParameter("stepTopologyImagePath", stepTopologyImagePath.get(actualStep.getName()));
 	
@@ -1316,6 +1436,8 @@ public class Createdoc
 		frame.pack();
 		frame.setLocation(0, 0);
 		frame.setVisible(true);
+		
+		page.refresh();
 	}
 
 	

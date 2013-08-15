@@ -13,6 +13,7 @@
 	<field name="stepRank" class="java.lang.String"/>
 	<field name="stepName" class="java.lang.String"/>
 	<field name="stepDescription" class="java.lang.String"/>
+	<sortField name="stepRank"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
