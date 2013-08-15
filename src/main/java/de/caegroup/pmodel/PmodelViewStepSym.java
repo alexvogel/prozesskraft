@@ -57,7 +57,7 @@ public class PmodelViewStepSym
 		// festlegen der initialen position und rank
 		if (p.rootstepname.equals(this.name))
 		{
-			this.setPosition(p.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);
+			this.setPosition(p.einstellungen.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.einstellungen.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);
 			System.out.println(this.step.getName()+" " + this.step.getLevel() + " position: "+this.getPosition1()+", "+this.getPosition2());
 //			this.rank = "";
 		}
@@ -71,8 +71,12 @@ public class PmodelViewStepSym
 			
 //			float initx = p.getWidth()*this.parent.einstellungen.getRootpositionratiox() + (posi * (p.getWidth()/10));
 //			float initx = (posi * (p.getWidth()/10));
-			float initx = (p.getWidth()*this.parent.einstellungen.getRootpositionratiox() + this.generator.nextInt(50));
-			float inity = p.getHeight()*this.parent.einstellungen.getRootpositionratioy()+(this.parent.bezugsgroesse*80*level);
+			
+			int zufall = this.generator.nextInt(10) - 5;
+			float zufall2 = zufall;
+			
+			float initx = p.einstellungen.getWidth()*this.parent.einstellungen.getRootpositionratiox() + this.parent.einstellungen.getGravx()*level + zufall;
+			float inity = (p.einstellungen.getHeight()*this.parent.einstellungen.getRootpositionratioy()+ this.parent.einstellungen.getGravy()*level + zufall);
 //			int initx = this.generator.nextInt(p.getWidth());
 //			int inity = this.generator.nextInt(p.getHeight());
 			this.setPosition(initx, inity, 0);
@@ -357,10 +361,14 @@ public class PmodelViewStepSym
 			// wenn er automatisch repositioniert werden darf
 			if(this.parent.einstellungen.getRootReposition())
 			{
-				// wenn er sich ausserhalb des sichtbaren bereichs befindet
+				// wenn er sich ausserhalb des sichtbaren bereichs befindet, soll die gesamte flaeche verschoben werden
 				if((this.getPosition1() > p.getWidth()) || (this.getPosition2() > p.getHeight()) || (this.getPosition1() < 0) || (this.getPosition2() < 0))
 				{
-					this.setPosition(p.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);
+//					System.out.println("rootpositionratiox: "+this.parent.einstellungen.getRootpositionratiox());
+//					System.out.println("rootpositionratioy: "+this.parent.einstellungen.getRootpositionratioy());
+					this.parent.deltax = (int) ((p.getWidth() * this.parent.einstellungen.getRootpositionratiox()) - this.getPosition1());
+					this.parent.deltay = (int) ((p.getHeight() * this.parent.einstellungen.getRootpositionratioy()) - this.getPosition2());
+//					this.setPosition(p.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);
 				}
 			}
 		}

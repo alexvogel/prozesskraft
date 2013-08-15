@@ -14,8 +14,8 @@ public class PmodelViewModel extends ModelObject
 	public int labelsize = 10;
 	public int textsize = 10;
 	public int ranksize = 10;
-	public float rootpositionratiox = (float)0.5;
-	public float rootpositionratioy = (float)0.5;
+	public float rootpositionratiox = 0f;
+	public float rootpositionratioy = 0f;
 	public int gravx = 0;
 	public int gravy = 10;
 	private String markedStepName = "root";

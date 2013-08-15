@@ -40,13 +40,7 @@ public class PmodelViewPage extends PApplet
 	  structure
 	----------------------------*/
 	public PmodelViewModel einstellungen;
-	private PmodelPartUi1 parent;
 	int textSize_gemerkt = 15;
-//	int zoomfaktor = 100;
-//	int zoomfaktor_min = 10;
-//	int zoomfaktor_max = 200;
-//	Calendar refresh_last = Calendar.getInstance();
-//	Calendar refresh_next = Calendar.getInstance();
 	Calendar now = Calendar.getInstance();
 	long startTimeMillis = System.currentTimeMillis();
 	Calendar mousepressedlasttime = Calendar.getInstance();
@@ -108,11 +102,11 @@ public class PmodelViewPage extends PApplet
 //		this.einstellungen = new PmodelViewModel();
 //	}
 	
-	public PmodelViewPage(PmodelPartUi1 parent, PmodelViewModel einstellungen)
-	{
-		this.einstellungen = einstellungen;
-		this.parent = parent;
-	}
+//	public PmodelViewPage(PmodelPartUi1 parent, PmodelViewModel einstellungen)
+//	{
+//		this.einstellungen = einstellungen;
+//		this.parent = parent;
+//	}
 	
 	public PmodelViewPage(PmodelViewModel einstellungen)
 	{
