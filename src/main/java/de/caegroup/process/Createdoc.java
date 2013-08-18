@@ -333,7 +333,7 @@ public class Createdoc
 			
 		}
 
-		page.einstellungen.setReposition(false);
+		page.einstellungen.setFix(true);
 		
 		// VORBEREITUNG) bild speichern
 		processTopologyImagePath = randomPathPng+"/processTopology.png";
