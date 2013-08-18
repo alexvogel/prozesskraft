@@ -64,10 +64,9 @@ public class Createdoc
 	static Display display = Display.getDefault();
 	protected static Shell shell;
 	static String processTopologyImagePath;
-	static String processTopologyFrontImagePath;
 	static Map<String,String> stepTopologyImagePath = new HashMap<String,String>();
 	static Map<String,String> pdfRankFiles = new HashMap<String,String>();
-	static boolean produktiv = false;
+	static boolean produktiv = true;
 
 	/*----------------------------
 	  constructors
@@ -294,6 +293,7 @@ public class Createdoc
 		page.einstellungen.setProcess(process);
 		page.einstellungen.getProcess().setStepRanks();
 		page.einstellungen.setSize(100);
+		page.einstellungen.setZoom(100);
 //		page.einstellungen.setZoom(8 * 100/process.getMaxLevel());
 		page.einstellungen.setLabelsize(0);
 		page.einstellungen.setTextsize(0);
@@ -308,21 +308,24 @@ public class Createdoc
 		createContents(page);
 
 		// mit open kann die page angezeigt werden
-		open();
-		
-		// warten
-		System.out.println("stabilisierung ansicht: 5 sekunden warten gravitation = "+page.einstellungen.getGravx());
-		long jetzt5 = System.currentTimeMillis();
-		while (System.currentTimeMillis() < jetzt5 + 5000)
+		if (!(produktiv))
 		{
-			
+			open();
 		}
-
-		page.einstellungen.setGravx(10);
-
+		
+//		// warten
+//		System.out.println("stabilisierung ansicht: 5 sekunden warten gravitation = "+page.einstellungen.getGravx());
+//		long jetzt5 = System.currentTimeMillis();
+//		while (System.currentTimeMillis() < jetzt5 + 5000)
+//		{
+//			
+//		}
+//
+//		page.einstellungen.setGravx(10);
+//
 		// warten
 		int wartezeitSeconds = 1;
-		if (produktiv) {wartezeitSeconds = page.einstellungen.getProcess().getStep().size()*10;}
+		if (produktiv) {wartezeitSeconds = page.einstellungen.getProcess().getStep().size()*2;}
 		System.out.println("stabilisierung ansicht: "+wartezeitSeconds+" sekunden warten gravitation = "+page.einstellungen.getGravx());
 		long jetzt6 = System.currentTimeMillis();
 		while (System.currentTimeMillis() < jetzt6 + (wartezeitSeconds * 1000))
@@ -330,6 +333,8 @@ public class Createdoc
 			
 		}
 
+		page.einstellungen.setReposition(false);
+		
 		// VORBEREITUNG) bild speichern
 		processTopologyImagePath = randomPathPng+"/processTopology.png";
 		page.savePic(processTopologyImagePath);
@@ -396,48 +401,6 @@ public class Createdoc
 			}
 		}
 
-		// VORBEREITUNG) Bild erstellen mit vertikaler Ausrichtung und etwas anderen Parametern
-		page.einstellungen.setSize(100);
-		page.einstellungen.setGravy(300);
-		page.einstellungen.setGravx(0);
-		
-		// warten
-		System.out.println("stabilisierung ansicht: 5 sekunden warten gravitation in y = "+page.einstellungen.getGravy());
-		long jetzt11 = System.currentTimeMillis();
-		while (System.currentTimeMillis() < jetzt11 + 5000)
-		{
-			
-		}
-
-		page.einstellungen.setGravy(10);
-
-		// warten
-		if (produktiv) {wartezeitSeconds = page.einstellungen.getProcess().getStep().size()*10;}
-		System.out.println("stabilisierung ansicht: "+wartezeitSeconds+" sekunden warten gravitation in y = "+page.einstellungen.getGravy());
-		long jetzt12 = System.currentTimeMillis();
-		while (System.currentTimeMillis() < jetzt12 + (wartezeitSeconds * 1000))
-		{
-			
-		}
-
-		// VORBEREITUNG) bild speichern
-		processTopologyFrontImagePath = randomPathPng+"/processTopologyFront.png";
-		page.savePic(processTopologyFrontImagePath);
-		// zuerst 1 sekunde warten, dann autocrop
-		long jetzt21 = System.currentTimeMillis();
-		while (System.currentTimeMillis() < jetzt21 + 1000)
-		{
-			
-		}
-		try
-		{
-			new AutoCropBorder(processTopologyFrontImagePath);
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		page.destroy();
 
 //////////////////////////////////////////
@@ -469,9 +432,6 @@ public class Createdoc
 		report.setParameter("processCustomerName", process.getCustomerName());
 		report.setParameter("processCustomerMail", process.getCustomerMail());
 		
-		// P03) bild an report melden
-		report.setParameter("processTopologyFrontImagePath", processTopologyFrontImagePath);
-
 		// P03) report fuellen
 		try
 		{

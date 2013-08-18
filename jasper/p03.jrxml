@@ -11,7 +11,6 @@
 	<parameter name="processCustomerName" class="java.lang.String"/>
 	<parameter name="processCustomerCompany" class="java.lang.String"/>
 	<parameter name="processCustomerMail" class="java.lang.String"/>
-	<parameter name="processTopologyFrontImagePath" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -224,18 +223,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{processDatum}]]></textFieldExpression>
 			</textField>
-			<image hAlign="Center" vAlign="Middle">
-				<reportElement uuid="2f8b20f7-9c56-45a5-b06a-c25044db6ec6" stretchType="RelativeToBandHeight" x="0" y="60" width="360" height="315">
-					<property name="local_mesure_unitx" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.x" value="px"/>
-					<property name="local_mesure_unity" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="local_mesure_unitheight" value="pixel"/>
-				</reportElement>
-				<imageExpression><![CDATA[$P{processTopologyFrontImagePath}]]></imageExpression>
-			</image>
 			<line>
 				<reportElement uuid="83df9c9a-b5ef-43ba-a24c-de6fe202ab9e" x="0" y="40" width="801" height="1">
 					<property name="local_mesure_unity" value="pixel"/>
