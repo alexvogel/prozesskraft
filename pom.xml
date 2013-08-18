@@ -53,6 +53,7 @@
 					<options>
 <!-- 					abhaengigkeiten in anderen packages (durch import) koennen nur aufgeloest werden, wenn diese klassen public bleiben -->
 						<option>-keep public class de.caegroup.commons.WhereAmI { *; }</option>
+						<option>-keep public class de.caegroup.commons.AutoCropBorder { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
@@ -90,6 +91,11 @@
 		</plugins>
 	</build>
 	<dependencies>
+	    <dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.50</version>
+	    </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

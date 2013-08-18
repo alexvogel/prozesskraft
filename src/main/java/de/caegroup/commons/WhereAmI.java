@@ -33,6 +33,7 @@ public class WhereAmI {
 	{
 		File myPosition = WhereAmI(clazz);
 		String iniFilepath = myPosition.getParentFile().getAbsolutePath()+"/etc/default.ini";
+		System.out.println("assuming ini-file: "+iniFilepath);
 		File iniFile = new File(iniFilepath);
 		return iniFile;
 	}
@@ -79,7 +80,7 @@ public class WhereAmI {
 
 	public static String getDefaultSshIdRsa()
 	{
-		return "/.ssh/id_rsa";
+		return ".ssh/id_rsa";
 	}
 }
 
