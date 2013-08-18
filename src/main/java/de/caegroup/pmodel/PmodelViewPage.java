@@ -4,7 +4,10 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.awt.Toolkit;
 import java.awt.Image;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.IOException;
+
 
 
 
@@ -14,6 +17,7 @@ import java.io.IOException;
 //import java.io.InputStream;
 //
 import javax.xml.bind.JAXBException;
+
 
 
 
@@ -143,6 +147,8 @@ public class PmodelViewPage extends PApplet
 //    	refresh_last.setTimeInMillis(0);
     	smooth();
 //   	noLoop();
+		addMouseWheelListener(listener_mousewheel);
+
     }
     
 	/*----------------------------
@@ -151,9 +157,9 @@ public class PmodelViewPage extends PApplet
 	public void draw()
 	{
 		// zoom from the center of the scetch
-		translate(width/2, height/2); // use translate around scale
-		scale((float)this.einstellungen.getZoom()/100);
-		translate(-width/2, -height/2);
+//		translate(width/2, height/2); // use translate around scale
+//		scale((float)this.einstellungen.getZoom()/100);
+//		translate(-width/2, -height/2);
 
 		//		makeTimeStamp("1");
 
@@ -184,7 +190,7 @@ public class PmodelViewPage extends PApplet
 //		}
 			
 //		makeTimeStamp("4");
-		if (this.mousePressed) {mouse_pressed_action();}
+//		if (this.mousePressed) {mouse_pressed_action();}
 	
 //		makeTimeStamp("5");
 		try
@@ -195,6 +201,13 @@ public class PmodelViewPage extends PApplet
 		{
 			System.err.println("data has been changed while drawing. drawing skipped.");
 			
+		}
+		
+		// wenn das bild fixiert werden soll, dann soll die geschwindigkeit aller stepsymbols auf 000 gesetzt werden
+		if(this.einstellungen.getFix())
+		{
+			this.startTimeMillis = System.currentTimeMillis();
+//			setStepsymbolSpeed(0f, 0f, 0f);
 		}
 		
 		// wenn alles verschoben werden soll, alle stepsymbole translaten
@@ -342,17 +355,10 @@ public class PmodelViewPage extends PApplet
 		mouse_pressed_x = mouseX;
 		mouse_pressed_y = mouseY;
 		System.out.println("mouseX: "+mouseX);
-	}
 
-	/*----------------------------
-		  methods
-		----------------------------*/
-		
-	private void mouse_pressed_action()
-	{
 		for(int l=0; l<this.stepcircles.size(); l++)
 		{
-			if (PApplet.dist(mouseX, mouseY, stepcircles.get(l).getPosition1(), stepcircles.get(l).getPosition2()) < stepcircles.get(l).getRadius())
+			if (PApplet.dist(mouseX, mouseY, stepcircles.get(l).getDrawPosition1(), stepcircles.get(l).getDrawPosition2()) < stepcircles.get(l).getRadius())
 			{
 //				if (this.stepcircle_clicked != null && this.stepcircle_clicked.equals(stepcircles.get(l))) {break;}
 				this.stepcircle_clicked = stepcircles.get(l);
@@ -406,7 +412,7 @@ public class PmodelViewPage extends PApplet
 		// stepcircle umherziehen
 		if (this.stepcircle_clicked != null)
 		{
-			this.stepcircle_clicked.setPosition(mouseX, mouseY, 0);
+			this.stepcircle_clicked.setPosition((mouseX - this.width/2) * (float)1/((float)this.einstellungen.getZoom()/100) + this.width/2, (mouseY - this.height/2) * (float)1/((float)this.einstellungen.getZoom()/100) + this.height/2, 0);
 		}
 		
 		// hintergrund umherziehen
@@ -418,8 +424,8 @@ public class PmodelViewPage extends PApplet
 			mouse_pressed_x = mouseX;
 			mouse_pressed_y = mouseY;
 			
-			deltax += newDeltax;
-			deltay += newDeltay;
+			deltax += newDeltax * (float)1/((float)this.einstellungen.getZoom()/100);
+			deltay += newDeltay * (float)1/((float)this.einstellungen.getZoom()/100);
 			
 			// wenn die flaeche gedraggt wurde, soll ab diesem moment der rootstep nicht mehr repositioniert werden.
 			this.einstellungen.setRootReposition(false);
@@ -458,6 +464,25 @@ public class PmodelViewPage extends PApplet
 		return returnvalue;
 	}
 	
+	public void mouseWheel(int delta)
+	{
+//		System.out.println("mouse has moved by "+delta+" units");
+		int newzoomfaktor = (delta * 20) + this.einstellungen.getZoom();
+		newzoomfaktor = Math.min(200, newzoomfaktor);
+		newzoomfaktor = Math.max(10, newzoomfaktor);
+		
+		// neuen zoomfaktor setzen
+		this.einstellungen.setZoom(newzoomfaktor);
+	}
+	
+	java.awt.event.MouseWheelListener listener_mousewheel = new MouseWheelListener()
+	{
+		public void mouseWheelMoved(MouseWheelEvent me)
+		{
+			mouseWheel(me.getWheelRotation());
+		}
+	};
+
 	public void display()
 	{
 //		makeTimeStamp("1");
@@ -491,6 +516,14 @@ public class PmodelViewPage extends PApplet
 //		System.out.println("Anzahl der Stepcircles    : "+this.stepcircles.size());
 //		System.out.println("Anzahl der Stepconnectoren: "+this.stepconnectors.size());
 		
+	}
+	
+	private void setStepsymbolSpeed(float speedX, float speedY, float speedZ)
+	{
+		for(PmodelViewStepSym actualStepsymbol : this.stepcircles)
+		{
+			actualStepsymbol.setSpeed(speedX, speedY, speedZ);
+		}
 	}
 	
 	private void translateStepsymbols(int deltax, int deltay)
@@ -658,15 +691,14 @@ public class PmodelViewPage extends PApplet
 
 	public float getDamp()
 	{
-		// die ersten sekunden soll die daempfung sehr hoch sein
-		if((now.getTimeInMillis() - startTimeMillis) < 5000)
-		{
-			return 0.8f;
-		}
+		float damp;
 		
-		float damp = (float)((5 / this.frameRate));
-		if (damp < 0.1) {damp = (float)0.1;}
-		else if (damp > 0.9) {damp = (float)0.9;}
+		// die ersten sekunden soll die daempfung sehr hoch sein
+		long millisSeitStart = (now.getTimeInMillis() - startTimeMillis);
+		
+		// das maximum (abwaertsrampe die ersten 10 sekunden oder 5/frameRate)
+		damp = Math.max((float)(1.0f - (millisSeitStart / 10000f)), (float)((5 / this.frameRate)) );
+
 //		System.out.println("damp: "+damp);
 		return damp;
 	}

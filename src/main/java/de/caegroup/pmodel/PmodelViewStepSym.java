@@ -72,11 +72,11 @@ public class PmodelViewStepSym
 //			float initx = p.getWidth()*this.parent.einstellungen.getRootpositionratiox() + (posi * (p.getWidth()/10));
 //			float initx = (posi * (p.getWidth()/10));
 			
-			int zufall = this.generator.nextInt(10) - 5;
+			int zufall = this.generator.nextInt(20) - 10;
 			float zufall2 = zufall;
 			
-			float initx = p.einstellungen.getWidth()*this.parent.einstellungen.getRootpositionratiox() + this.parent.einstellungen.getGravx()*level + zufall;
-			float inity = (p.einstellungen.getHeight()*this.parent.einstellungen.getRootpositionratioy()+ this.parent.einstellungen.getGravy()*level + zufall);
+			float initx = p.einstellungen.getWidth()*this.parent.einstellungen.getRootpositionratiox() + this.parent.einstellungen.getGravx()*10*level + this.parent.einstellungen.getGravy()*zufall;
+			float inity = (p.einstellungen.getHeight()*this.parent.einstellungen.getRootpositionratioy()+ this.parent.einstellungen.getGravy()*10*level + this.parent.einstellungen.getGravx()*zufall);
 //			int initx = this.generator.nextInt(p.getWidth());
 //			int inity = this.generator.nextInt(p.getHeight());
 			this.setPosition(initx, inity, 0);
@@ -167,30 +167,30 @@ public class PmodelViewStepSym
 //		makeTimeStamp("5214");
 		if ( this.step.getName().equals(this.step.getParent().getRootstepname()))
 		{
-			symbol_quadrat_mit_x(this.parent.bezugsgroesse, true);
+			symbol_quadrat_mit_x(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, true);
 //			System.out.println("symbol: quadrat mit x");
 		}
 		
 		else if ( this.step.getType().equals("automatic") && !(this.step.isAmultistep()) )
 		{
-			symbol_circle(this.parent.bezugsgroesse, 0, 0, true);
+			symbol_circle(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, 0, 0, true);
 //			System.out.println("symbol: kreis");
 		}
 		else if ( this.step.getType().equals("manual") && !(this.step.isAmultistep()) )
 		{
-			symbol_quadrat(this.parent.bezugsgroesse, 0 , 0, true);
+			symbol_quadrat(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, 0 , 0, true);
 //			System.out.println("symbol: quadrat");
 		}
 		
 		else if ( this.step.getType().equals("automatic") && this.step.isAmultistep() )
 		{
-			symbol_multistep(this.parent.bezugsgroesse, "circle");
+			symbol_multistep(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, "circle");
 //			System.out.println("symbol: multi-kreis");
 		}
 
 		else if ( this.step.getType().equals("manual") && this.step.isAmultistep() )
 		{
-			symbol_multistep(this.parent.bezugsgroesse, "quadrat");
+			symbol_multistep(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, "quadrat");
 //			System.out.println("symbol: multi-quadrat");
 		}
 
@@ -198,27 +198,27 @@ public class PmodelViewStepSym
 		// root
 		else
 		{
-			symbol_quadrat_mit_x(this.parent.bezugsgroesse, true);
+			symbol_quadrat_mit_x(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, true);
 		}
 		
 //		tickTimer("5215");
 //		makeTimeStamp("5215");
 		// schreibe die ranknummer in das symbol
 		parent.fill(this.getTextcolor1(), this.getTextcolor2(), this.getTextcolor3());
-		float neue_rankgroesse = (this.getRadius()/2)*this.parent.bezugsgroesse*parent.einstellungen.getRanksize()/10;
+		float neue_rankgroesse = (this.getRadius()/2)*this.parent.bezugsgroesse*parent.einstellungen.getRanksize()/10 *  this.parent.einstellungen.getZoom()/100;
 		parent.textSize(neue_rankgroesse);
 		if (!(rank.matches("0.1")))
 		{ 
-			parent.text(rank, this.getPosition1() - rank.length()*(neue_rankgroesse/6), this.getPosition2() + (neue_rankgroesse/3));
+			parent.text(rank, this.getDrawPosition1() - rank.length()*(neue_rankgroesse/6), this.getDrawPosition2() + (neue_rankgroesse/3));
 		}
 		
 //		tickTimer("5216");
 //		makeTimeStamp("5216");
 		// zeichne beschriftung
 		parent.fill(this.getTextcolor1(), this.getTextcolor2(), this.getTextcolor3());
-		float neue_textgroesse = (this.getRadius()/2)*this.parent.bezugsgroesse*parent.einstellungen.getLabelsize()/10;
+		float neue_textgroesse = (this.getRadius()/2)*this.parent.bezugsgroesse*parent.einstellungen.getLabelsize()/10 * this.parent.einstellungen.getZoom()/100;
 		parent.textSize(neue_textgroesse);
-		parent.text(this.getName(), this.getPosition1()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse), this.getPosition2() + (neue_textgroesse/3));
+		parent.text(this.getName(), this.getDrawPosition1()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse), this.getDrawPosition2() + (neue_textgroesse/3));
 //		parent.text(this.getName(), this.getPosition1()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse), this.getPosition2()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse));
 		parent.textSize(this.parent.textSize_gemerkt);
 
@@ -233,15 +233,18 @@ public class PmodelViewStepSym
 //		tickTimer("5217");
 //		makeTimeStamp("5217");
 		// reposition for next display
-		this.reposition(this.parent);
+		if(!(this.parent.einstellungen.getFix()))
+		{
+			this.reposition(this.parent);
+			this.timestamp = System.currentTimeMillis();
+		}
+		else
+		{
+			this.speed = new float[] {0, 0, 0};
+			this.timestamp = System.currentTimeMillis();
+		}
 //		tickTimer("5218");
 //		makeTimeStamp("5218");
-		if (this.position[2] > 0.)
-		{
-			System.err.println(this.name+": Achtung: z > Null!!!"+this.position[0]+" "+this.position[1]+" "+this.position[2]);
-			System.exit(1);
-		}
-
 	}
 
 	private void makeTimeStamp(String string)
@@ -274,7 +277,7 @@ public class PmodelViewStepSym
 		}
 		parent.strokeWeight(this.getStrokethickness());
 		parent.stroke(getStrokecolor1(), getStrokecolor2(), getStrokecolor3());
-		parent.ellipse(this.getPosition1() + x_offset, this.getPosition2() + y_offset, this.getRadius() * scalierung, this.getRadius() * scalierung);
+		parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung, this.getRadius() * scalierung);
 	}
 	
 	private void symbol_quadrat(float scalierung, float x_offset, float y_offset, boolean fill)
@@ -290,7 +293,7 @@ public class PmodelViewStepSym
 		parent.strokeWeight(this.getStrokethickness() * scalierung);
 		parent.stroke(getStrokecolor1(), getStrokecolor2(), getStrokecolor3());
 		parent.rectMode(3);
-		parent.rect(this.getPosition1(), this.getPosition2(), this.getRadius() * scalierung, this.getRadius() * scalierung);
+		parent.rect(this.getDrawPosition1(), this.getDrawPosition2(), this.getRadius() * scalierung, this.getRadius() * scalierung);
 	}
 
 	private void symbol_quadrat_mit_x(float scalierung, boolean fill)
@@ -299,8 +302,8 @@ public class PmodelViewStepSym
 //		parent.stroke(getStrokecolor1(), getStrokecolor2(), getStrokecolor3());
 //		parent.rect(this.getPosition1()-this.getRadius()/2, this.getPosition2()-this.getRadius()/2, this.getRadius(), this.getRadius());
 		symbol_quadrat(scalierung, 0, 0, fill);
-		parent.line(this.getPosition1()+(int)((this.getRadius()/2)*0.8*scalierung), this.getPosition2()-(int)((this.getRadius()/2)*0.8*scalierung), this.getPosition1()-(int)((this.getRadius()/2)*0.8*scalierung), this.getPosition2()+(int)((this.getRadius()/2)*0.8*scalierung));
-		parent.line(this.getPosition1()+(int)((this.getRadius()/2)*0.8*scalierung), this.getPosition2()+(int)((this.getRadius()/2)*0.8*scalierung), this.getPosition1()-(int)((this.getRadius()/2)*0.8*scalierung), this.getPosition2()-(int)((this.getRadius()/2)*0.8*scalierung));
+		parent.line(this.getDrawPosition1()+(int)((this.getRadius()/2)*0.8*scalierung), this.getDrawPosition2()-(int)((this.getRadius()/2)*0.8*scalierung), this.getDrawPosition1()-(int)((this.getRadius()/2)*0.8*scalierung), this.getDrawPosition2()+(int)((this.getRadius()/2)*0.8*scalierung));
+		parent.line(this.getDrawPosition1()+(int)((this.getRadius()/2)*0.8*scalierung), this.getDrawPosition2()+(int)((this.getRadius()/2)*0.8*scalierung), this.getDrawPosition1()-(int)((this.getRadius()/2)*0.8*scalierung), this.getDrawPosition2()-(int)((this.getRadius()/2)*0.8*scalierung));
 //		parent.line(this.getPosition1()-this.getRadius()/2, this.getPosition2()+this.getRadius()/2, this.getPosition1()+this.getRadius()/2, this.getPosition2()-this.getRadius()/2);
 	}
 	
@@ -385,33 +388,46 @@ public class PmodelViewStepSym
 				// newSpeed = (oldSpeed + speedDiff) * (1/damping)
 				// speedDiff = ((antiGravity_impuls + connectorForce) / mass) * time
 		//		double newtimestamp = (p.millis()/1000);
-				double newtimestamp = (p.millis());
-				double timestep = newtimestamp - this.timestamp;
-				this.timestamp = newtimestamp;
+//				double newtimestamp = (p.millis());
+//				double timestep = Math.min(100, newtimestamp - this.timestamp);
+//				this.timestamp = newtimestamp;
 		//		System.out.println("NewTimestamp: "+newtimestamp);
 		//		System.out.println("Timestep: "+timestep);
 		//		System.out.println("Mass: "+this.mass);
-	
-				float[] rejectionPuls = this.calRejectionPuls(p);
-				float[] attractionPuls = this.calAttractionPuls(p);
-	
+
+				float[] rejectionPuls = null;
+				float[] attractionPuls = null;
+				double timestep = Math.min(300, (System.currentTimeMillis() - this.timestamp));
+
+//				System.out.println(timestep);
+
+				if (this.parent.einstellungen.getFix())
+				{
+					rejectionPuls = new float[] {0, 0, 0};
+					attractionPuls = new float[] {0, 0, 0};
+				}
+				else
+				{
+					rejectionPuls = this.calRejectionPuls(p);
+					attractionPuls = this.calAttractionPuls(p);
+				}
+				
 				float[] speeddiff = new float[3];
 				speeddiff[0] = (float)(((rejectionPuls[0] + attractionPuls[0]) / this.mass + this.parent.einstellungen.getGravx()));
 				speeddiff[1] = (float)(((rejectionPuls[1] + attractionPuls[1]) / this.mass + this.parent.einstellungen.getGravy()));
-				speeddiff[2] = (float)(((rejectionPuls[2] + attractionPuls[2]) / this.mass));
-	
+
 				float[] oldspeed = this.getSpeed();
 				float[] newspeed = new float[3];
 				newspeed[0] = (oldspeed[0] + speeddiff[0]) * (1-this.parent.getDamp());
 				newspeed[1] = (oldspeed[1] + speeddiff[1]) * (1-this.parent.getDamp());
-				newspeed[2] = (oldspeed[2] + speeddiff[2]) * (1-this.parent.getDamp());
+//				newspeed[0] = Math.min((float)(oldspeed[0] * 1.01), (oldspeed[0] + speeddiff[0]) * (1-this.parent.getDamp()));
+//				newspeed[1] = Math.min((float)(oldspeed[1] * 1.01), (oldspeed[1] + speeddiff[1]) * (1-this.parent.getDamp()));
 	
 				// wenn initialer step, dann festhalten
 				if (this.name.equals(p.rootstepname))
 				{
 					newspeed[0] = 0;
 					newspeed[1] = 0;
-					newspeed[2] = 0;
 				}
 	
 				this.speed = newspeed;
@@ -422,17 +438,16 @@ public class PmodelViewStepSym
 				
 				repositionvektor[0] = (float)(newspeed[0] * timestep*0.001);
 				repositionvektor[1] = (float)(newspeed[1] * timestep*0.001);
-				repositionvektor[2] = (float)(newspeed[2] * timestep*0.001);
 				
 				newposition[0] = (float)(oldposition[0] + repositionvektor[0]);
 				newposition[1] = (float)(oldposition[1] + repositionvektor[1]);
-				newposition[2] = (float)(oldposition[2] + repositionvektor[2]);
 		
-				// die newposition darf im extremfall nicht zu stark vom fenster abweichen +- 1Fenstergrösse in jede Richtung			
-				if (newposition[0] > this.parent.width*2) 		{newposition[0] = this.parent.width*2;}
-				if (newposition[0] < this.parent.width*(-1)) 	{newposition[0] = this.parent.width*(-1);}
-				if (newposition[1] > this.parent.height*2) 		{newposition[1] = this.parent.height*2;}
-				if (newposition[1] < this.parent.height*(-1)) 	{newposition[1] = this.parent.height*(-1);}
+				// die newposition darf im extremfall nicht zu stark vom fenster abweichen +- 1Fenstergrösse in jede Richtung
+				float antizoom = 1/((float)this.parent.einstellungen.getZoom()/100);
+				if (newposition[0] > this.parent.width*2*antizoom) 		{newposition[0] = this.parent.width*2*antizoom;}
+				if (newposition[0] < this.parent.width*(-1)*antizoom) 	{newposition[0] = this.parent.width*(-1)*antizoom;}
+				if (newposition[1] > this.parent.height*2*antizoom) 		{newposition[1] = this.parent.height*2*antizoom;}
+				if (newposition[1] < this.parent.height*(-1)*antizoom) 	{newposition[1] = this.parent.height*(-1)*antizoom;}
 	
 				
 				
@@ -642,6 +657,16 @@ public class PmodelViewStepSym
 	public float getPosition3()
 	{
 		return this.position[2];
+	}
+
+	public float getDrawPosition1()
+	{
+		return (this.position[0] - this.parent.getWidth()/2) * ((float)this.parent.einstellungen.getZoom()/100) + this.parent.getWidth()/2;
+	}
+
+	public float getDrawPosition2()
+	{
+		return (this.position[1] - this.parent.getHeight()/2) * ((float)this.parent.einstellungen.getZoom()/100) + this.parent.getHeight()/2;
 	}
 
 	public float[] getSpeed()

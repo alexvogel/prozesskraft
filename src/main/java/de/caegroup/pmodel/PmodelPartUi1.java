@@ -88,6 +88,7 @@ public class PmodelPartUi1 extends ModelObject
 	private Spinner spinner_textsize;
 	private Spinner spinner_refreshinterval;
 	private Spinner spinner_labelsize;
+	private Button button_fix;
 	private Button button_refresh;
 	private Button button_startmanager;
 	private Button button_stopmanager;
@@ -294,6 +295,10 @@ public class PmodelPartUi1 extends ModelObject
 		lblNewLabel_6.setText("gravX");
 		//		scale_gravx.addMouseWheelListener(listener_mousewheel);
 				
+		button_fix = new Button(grpVisual, SWT.NONE | SWT.TOGGLE);
+		button_fix.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		button_fix.setText("fix");
+		
 		Button btnNewButton2 = new Button(grpVisual, SWT.NONE);
 		btnNewButton2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
 		btnNewButton2.setText("autoscale");
@@ -762,6 +767,10 @@ public class PmodelPartUi1 extends ModelObject
 //		IObservableValue targetObservableGravy = WidgetProperties.selection().observe(scale_gravy);
 //		IObservableValue modelObservableGravy = BeanProperties.value("gravy").observe(einstellungen);
 //		bindingContextVisual.bindValue(targetObservableGravy, modelObservableGravy, null, null);
+		//
+		IObservableValue targetObservableFix = WidgetProperties.selection().observe(button_fix);
+		IObservableValue modelObservableFix = BeanProperties.value("fix").observe(einstellungen);
+		bindingContextVisual.bindValue(targetObservableFix, modelObservableFix, null, null);
 		//
 		return bindingContextVisual;
 	}

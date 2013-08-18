@@ -65,7 +65,7 @@ public class PmodelViewStepCon
 		parent.strokeWeight(this.getThickness());
 		parent.stroke(getColor1(), getColor2(), getColor3());
 		parent.fill(this.getColor1(), this.getColor2(), this.getColor3());
-		this.arrowLine(this.getPositionfrom1(), this.getPositionfrom2(), this.getPositionto1(), this.getPositionto2(), 0, (float)0.5, true);
+		this.arrowLine(this.getDrawPositionfrom1(), this.getDrawPositionfrom2(), this.getDrawPositionto1(), this.getDrawPositionto2(), 0, (float)0.5, true);
 //		System.out.println("line "+this.positionfrom[0]+" "+this.positionfrom[1]+" "+this.positionto[0]+" "+this.positionto[1]);
 //		System.out.println("line "+this.getPositionfrom1()+" "+this.getPositionfrom2()+" "+this.getPositionto1()+" "+this.getPositionto2());
 //		System.exit(0);
@@ -97,11 +97,11 @@ public class PmodelViewStepCon
 	  
 	  if (startAngle != 0)
 	  {
-	    arrowhead(p0x, p0y, PApplet.atan2(y1 - y0, x1 - x0), startAngle, solid);
+	    arrowhead(p0x, p0y, PApplet.atan2(y1 - y0, x1 - x0), startAngle, solid, (float)this.parent.einstellungen.getZoom()/100);
 	  }
 	  if (endAngle != 0)
 	  {
-	    arrowhead(p1x, p1y, PApplet.atan2(y0 - y1, x0 - x1), endAngle, solid);
+	    arrowhead(p1x, p1y, PApplet.atan2(y0 - y1, x0 - x1), endAngle, solid, (float)this.parent.einstellungen.getZoom()/100);
 	  }
 	}
 	 
@@ -113,7 +113,7 @@ public class PmodelViewStepCon
 	 * arrowAngle - angle between arrow and line (radians)
 	 * solid - true for a solid arrow, false for an "open" arrow
 	 */
-	void arrowhead(float x0, float y0, float lineAngle, float arrowAngle, boolean solid)
+	void arrowhead(float x0, float y0, float lineAngle, float arrowAngle, boolean solid, float zoom)
 	{
 //		float phi;
 		
@@ -122,7 +122,7 @@ public class PmodelViewStepCon
 		float y2;
 		float x3;
 		float y3;
-		final float SIZE = 8 * this.parent.bezugsgroesse;
+		final float SIZE = 8 * this.parent.bezugsgroesse * zoom;
 	   
 		x2 = (float)(x0 + SIZE * PApplet.cos(lineAngle + arrowAngle));
 		y2 = (float)(y0 + SIZE * PApplet.sin(lineAngle + arrowAngle));
@@ -191,6 +191,16 @@ public class PmodelViewStepCon
 		return this.positionfrom[2];
 	}
 
+	public float getDrawPositionfrom1()
+	{
+		return (this.positionfrom[0] - this.parent.getWidth()/2) * ((float)this.parent.einstellungen.getZoom()/100) + this.parent.getWidth()/2;
+	}
+
+	public float getDrawPositionfrom2()
+	{
+		return (this.positionfrom[1] - this.parent.getHeight()/2) * ((float)this.parent.einstellungen.getZoom()/100) + this.parent.getHeight()/2;
+	}
+
 	public float[] getPositionto()
 	{
 		return this.positionto;
@@ -209,6 +219,16 @@ public class PmodelViewStepCon
 	public float getPositionto3()
 	{
 		return this.positionto[2];
+	}
+
+	public float getDrawPositionto1()
+	{
+		return (this.positionto[0] - this.parent.getWidth()/2) * ((float)this.parent.einstellungen.getZoom()/100) + this.parent.getWidth()/2;
+	}
+
+	public float getDrawPositionto2()
+	{
+		return (this.positionto[1] - this.parent.getHeight()/2) * ((float)this.parent.einstellungen.getZoom()/100) + this.parent.getHeight()/2;
 	}
 
 

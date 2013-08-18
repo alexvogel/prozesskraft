@@ -28,6 +28,7 @@ public class PmodelViewModel extends ModelObject
 	private String buttonManagerText = "unknown";
 //	private Boolean managerActive = null;
 	private boolean rootReposition = true;
+	private boolean fix = false;
 	
 	public PmodelViewModel()
 	{
@@ -267,5 +268,15 @@ public class PmodelViewModel extends ModelObject
 	public void setRootReposition(boolean rootReposition)
 	{
 		firePropertyChange("rootReposition", this.rootReposition, this.rootReposition = rootReposition);
+	}
+
+	public boolean getFix()
+	{
+		return this.fix;
+	}
+
+	public void setFix(boolean fix)
+	{
+		firePropertyChange("fix", this.fix, this.fix = fix);
 	}
 }
