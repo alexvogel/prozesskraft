@@ -85,12 +85,16 @@
   </xs:element>
   <xs:element name="work">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="callitem"/>
-      </xs:sequence>
-      <xs:attribute name="command" use="required"/>
-      <xs:attribute name="description" use="required"/>
-      <xs:attribute name="name" use="required"/>
+    	<xs:sequence>
+    		<xs:element minOccurs="0" maxOccurs="unbounded"
+    			ref="callitem" />
+    		<xs:element minOccurs="0" maxOccurs="unbounded" ref="exit" />
+    	</xs:sequence>
+    	<xs:attribute name="interpreter" type="xs:string"></xs:attribute>
+    	<xs:attribute name="command" use="required" />
+    	<xs:attribute name="description" use="required" />
+    	<xs:attribute name="name" use="required" />
+    	<xs:attribute name="logfile" type="xs:string"></xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="callitem">
@@ -102,6 +106,12 @@
     	<xs:attribute name="sequence" use="required" type="xs:integer" />
     	<xs:attribute name="val" use="optional" type="xs:string" />
     </xs:complexType>
+  </xs:element>
+  <xs:element name="exit">
+	<xs:complexType>
+		<xs:attribute name="value" type="xs:integer"></xs:attribute>
+		<xs:attribute name="msg" type="xs:string"></xs:attribute>
+	</xs:complexType>
   </xs:element>
   <xs:element name="commit">
     <xs:complexType>
@@ -197,6 +207,7 @@
   		<xs:pattern value="overwrite|overlap|append"></xs:pattern>
   	</xs:restriction>
   </xs:simpleType>
+
 
 
 

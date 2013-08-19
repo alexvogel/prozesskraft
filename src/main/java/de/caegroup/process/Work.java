@@ -16,8 +16,11 @@ implements Serializable
 	static final long serialVersionUID = 1;
 	private String name = "unnamed";
 	private String description = "no description";
-	private String command = new String();
+	private String interpreter = "";
+	private String command = "";
+	private String logfile = "";
 	private ArrayList<Callitem> callitem = new ArrayList<Callitem>();
+	private ArrayList<Exit> exit = new ArrayList<Exit>();
 	private String loop = new String();
 	private String loopvar = new String();
 	
@@ -80,9 +83,19 @@ implements Serializable
 		return this.description;
 	}
 
+	public String getInterpreter()
+	{
+		return this.interpreter;
+	}
+
 	public String getCommand()
 	{
 		return this.command;
+	}
+
+	public String getLogfile()
+	{
+		return this.logfile;
 	}
 
 	public ArrayList<Callitem> getCallitems()
@@ -146,6 +159,11 @@ implements Serializable
 		return callitems;
 	}
 
+	public ArrayList<Exit> getExit()
+	{
+		return this.exit;
+	}
+	
 	public String getLoop()
 	{
 		return this.loop;
@@ -189,9 +207,19 @@ implements Serializable
 		this.description = description;
 	}
 
+	public void setInterpreter(String interpreter)
+	{
+		this.interpreter = interpreter;
+	}
+
 	public void setCommand(String command)
 	{
 		this.command = command;
+	}
+
+	public void setLogfile(String logfile)
+	{
+		this.logfile = logfile;
 	}
 
 	public void setLoop(String loop)
@@ -228,6 +256,14 @@ implements Serializable
 	public void setCallitem(ArrayList<Callitem> callitem)
 	{
 		this.callitem = callitem;
+	}
+
+	/**
+	 * @param ArrayList<Callitem> the callitem to set
+	 */
+	public void setExit(ArrayList<Exit> exit)
+	{
+		this.exit = exit;
 	}
 
 }

@@ -14,7 +14,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
 
 
 /**
@@ -26,7 +25,8 @@ import javax.xml.bind.annotation.XmlValue;
  * &lt;complexType>
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}integer" />
+ *       &lt;attribute name="value" type="{http://www.w3.org/2001/XMLSchema}integer" />
+ *       &lt;attribute name="msg" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -35,63 +35,61 @@ import javax.xml.bind.annotation.XmlValue;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
-    "content"
-})
-@XmlRootElement(name = "param")
-public class Param {
+@XmlType(name = "")
+@XmlRootElement(name = "exit")
+public class Exit {
 
-    @XmlValue
-    protected String content;
-    @XmlAttribute(name = "id", required = true)
-    protected BigInteger id;
+    @XmlAttribute(name = "value")
+    protected BigInteger value;
+    @XmlAttribute(name = "msg")
+    protected String msg;
 
     /**
-     * Gets the value of the content property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getContent() {
-        return content;
-    }
-
-    /**
-     * Sets the value of the content property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setContent(String value) {
-        this.content = value;
-    }
-
-    /**
-     * Gets the value of the id property.
+     * Gets the value of the value property.
      * 
      * @return
      *     possible object is
      *     {@link BigInteger }
      *     
      */
-    public BigInteger getId() {
-        return id;
+    public BigInteger getValue() {
+        return value;
     }
 
     /**
-     * Sets the value of the id property.
+     * Sets the value of the value property.
      * 
      * @param value
      *     allowed object is
      *     {@link BigInteger }
      *     
      */
-    public void setId(BigInteger value) {
-        this.id = value;
+    public void setValue(BigInteger value) {
+        this.value = value;
+    }
+
+    /**
+     * Gets the value of the msg property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getMsg() {
+        return msg;
+    }
+
+    /**
+     * Sets the value of the msg property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setMsg(String value) {
+        this.msg = value;
     }
 
 }
