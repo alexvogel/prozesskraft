@@ -259,14 +259,37 @@
 	</columnFooter>
 	<pageFooter>
 		<band height="20" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<line>
 				<reportElement uuid="c58948d2-1dae-45fa-9d90-ca984412d3d9" x="0" y="0" width="800" height="1"/>
 			</line>
 			<staticText>
-				<reportElement uuid="b51dadc7-54ba-4ce9-bc21-61af0e77a030" x="0" y="5" width="200" height="15"/>
-				<textElement/>
+				<reportElement uuid="b51dadc7-54ba-4ce9-bc21-61af0e77a030" x="20" y="0" width="200" height="20">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[Inhalt]]></text>
 			</staticText>
+			<image>
+				<reportElement uuid="184b18ac-8501-4506-9d91-5a97547e7ca8" x="0" y="0" width="20" height="20">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box padding="3"/>
+				<imageExpression><![CDATA["logo-trans.png"]]></imageExpression>
+			</image>
 		</band>
 	</pageFooter>
 	<summary>

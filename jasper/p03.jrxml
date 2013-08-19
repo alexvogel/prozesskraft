@@ -21,6 +21,11 @@
 	</pageHeader>
 	<columnHeader>
 		<band height="470" splitType="Stretch">
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement uuid="1031623a-262c-4e54-9628-554281472b0c" x="90" y="142" width="180" height="160"/>
+				<box padding="0"/>
+				<imageExpression><![CDATA["logo-trans.png"]]></imageExpression>
+			</image>
 			<staticText>
 				<reportElement uuid="9e5b689f-bdb1-42ad-b79f-3d4b5d1f768f" x="370" y="60" width="390" height="40">
 					<property name="local_mesure_unitwidth" value="pixel"/>

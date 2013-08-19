@@ -1007,7 +1007,7 @@ public class Createdoc
 				report.setParameter("stepDescription", actualStep.getDescription());
 				
 				// zusammensetzen des scriptaufrufs
-				String aufruf = actualStep.getWork().getCommand();
+				String aufruf = actualStep.getWork().getInterpreter()+" "+actualStep.getWork().getCommand();
 				for(Callitem actualCallitem : actualStep.getWork().getCallitem())
 				{
 					aufruf += " "+actualCallitem.getPar();
@@ -1174,6 +1174,26 @@ public class Createdoc
 				
 				report.setParameter("stepName", actualStep.getName());
 				report.setParameter("stepRank", stepRank);
+				
+				// logfile ermitteln
+				if (actualStep.getWork().getLogfile() == null || actualStep.getWork().getLogfile().equals(""))
+				{
+					report.setParameter("stepWorkLogfile", "-");
+				}
+				else
+				{
+					report.setParameter("stepWorkLogfile", actualStep.getWork().getLogfile());
+				}
+
+				// zusammensetzen der return/exitcode informationen
+				String exitInfo = "exit 0 = kein fehler aufgetreten";
+				exitInfo += "\nexit >0 = ein fehler ist aufgetreten.";
+				for(Exit actualExit : actualStep.getWork().getExit())
+				{
+					exitInfo += "\nexit "+actualExit.getValue()+" = "+actualExit.getMsg();
+				}
+				report.setParameter("stepWorkExit", exitInfo);
+				
 				// P52x) bild an report melden
 				report.setParameter("stepTopologyImagePath", stepTopologyImagePath.get(actualStep.getName()));
 				

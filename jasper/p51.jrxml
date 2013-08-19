@@ -282,6 +282,15 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{stepDescription}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement uuid="194b48be-347c-4165-bc6f-214163b1f8ed" positionType="Float" x="20" y="147" width="760" height="1">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+			</line>
 		</band>
 	</columnHeader>
 	<detail>
@@ -378,14 +387,25 @@
 				<reportElement uuid="c58948d2-1dae-45fa-9d90-ca984412d3d9" x="0" y="0" width="800" height="1"/>
 			</line>
 			<textField>
-				<reportElement uuid="d03dc1af-bd29-47af-bdaa-6955026abf90" x="760" y="3" width="40" height="15"/>
-				<textElement markup="none">
+				<reportElement uuid="d03dc1af-bd29-47af-bdaa-6955026abf90" x="720" y="3" width="80" height="15"/>
+				<textElement textAlignment="Right" markup="none">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["V - "+$V{PAGE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["V - "+$P{stepRank}+" - "+$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="1982d4e3-658e-4504-9c1a-e4ef9dff8e00" x="0" y="5" width="380" height="15">
+				<reportElement uuid="1982d4e3-658e-4504-9c1a-e4ef9dff8e00" x="20" y="0" width="380" height="20">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA["Prozess Schritt Input "+$P{stepRank}+" "+$P{stepName}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="b6a7f469-97ff-4d0b-8a52-39bed3c69fce" x="0" y="0" width="20" height="20">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
@@ -395,9 +415,9 @@
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement/>
-				<textFieldExpression><![CDATA["Prozess Schritt Input "+$P{stepRank}+" "+$P{stepName}]]></textFieldExpression>
-			</textField>
+				<box padding="3"/>
+				<imageExpression><![CDATA["logo-trans.png"]]></imageExpression>
+			</image>
 		</band>
 	</pageFooter>
 	<summary>
