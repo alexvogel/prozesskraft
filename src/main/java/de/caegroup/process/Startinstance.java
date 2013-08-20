@@ -12,7 +12,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-import org.apache.xerces.impl.xpath.regex.ParseException;
 
 import de.caegroup.process.Process;
 import de.caegroup.process.Step;
@@ -93,18 +92,9 @@ public class Startinstance
 		  create the parser
 		----------------------------*/
 		CommandLineParser parser = new GnuParser();
-		try
-		{
-			// parse the command line arguments
-			commandline = parser.parse( options,  args );
-			
-		}
-		catch ( ParseException exp )
-		{
-			// oops, something went wrong
-			System.err.println( "Parsing failed. Reason: "+ exp.getMessage());
-			exiter();
-		}
+		// parse the command line arguments
+		commandline = parser.parse( options,  args );
+		
 		
 		/*----------------------------
 		  usage/help
@@ -150,9 +140,10 @@ public class Startinstance
 			// committen
 			if (commandline.hasOption("commitfile"))
 			{
-				if (new java.io.File(commandline.getOptionValue("commitfile")).exists())
+				java.io.File fileCommit = new java.io.File(commandline.getOptionValue("commitfile"));
+				if (fileCommit.exists())
 				{
-					step.commitFile(commandline.getOptionValue("commitfile"));
+					step.commitFile("default", fileCommit);
 				}
 				else
 				{
@@ -191,7 +182,7 @@ public class Startinstance
 			{
 				if (commandline.getOptionValue("commitvariable").matches(".+=.+"))
 				{
-					step.commitvariable(commandline.getOptionValue("commitvariable"));
+					step.commitVariable("default", commandline.getOptionValue("commitvariable"));
 				}
 				else
 				{
