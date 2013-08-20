@@ -1,43 +1,43 @@
-package de.caegroup.pramp.parts;
-
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-
-import org.junit.Test;
-import org.junit.Before;
-import org.junit.Ignore;
-
-public class TestPrampPartUi1
-{
-	/*----------------------------
-	  fields
-	----------------------------*/
-	PrampPartUi1 ui = new PrampPartUi1("irgendwas");
-	String processDir = "target/test-classes/processes";
-//	String processDir = "src/test/resources/processes";
-	String iniFile = "target/etc/default.ini";
-	
-	/*----------------------------
-	  setup
-	----------------------------*/
-	@Before
-	public void setUp()
-	{
-//		ui.setProcessMainDir(processDir);
-		ui.setIni(iniFile);
-	}
-
-	/*----------------------------
-	  tests
-	----------------------------*/
-	@Test
-	public void testSetIniToDefault()
-	{
-		ui.setIni();
-		assertNotNull(ui.getIni());
-	}
-
+//package de.caegroup.pramp.parts;
+//
+//import static org.junit.Assert.*;
+//
+//import java.util.ArrayList;
+//
+//import org.junit.Test;
+//import org.junit.Before;
+//import org.junit.Ignore;
+//
+//public class TestPrampPartUi1
+//{
+//	/*----------------------------
+//	  fields
+//	----------------------------*/
+//	PrampPartUi1 ui = new PrampPartUi1("irgendwas");
+//	String processDir = "target/test-classes/processes";
+////	String processDir = "src/test/resources/processes";
+//	String iniFile = "target/etc/default.ini";
+//	
+//	/*----------------------------
+//	  setup
+//	----------------------------*/
+//	@Before
+//	public void setUp()
+//	{
+////		ui.setProcessMainDir(processDir);
+//		ui.setIni(iniFile);
+//	}
+//
+//	/*----------------------------
+//	  tests
+//	----------------------------*/
+//	@Test
+//	public void testSetIniToDefault()
+//	{
+//		ui.setIni();
+//		assertNotNull(ui.getIni());
+//	}
+//
 //	@Test
 //	public void testLoadIni()
 //	{
@@ -79,5 +79,5 @@ public class TestPrampPartUi1
 //		System.out.println(processDefinition);
 //		assertEquals(processDir+"/"+processName+"/"+version+"/process.xml", processDefinition);
 //	}
-	
-}
+//	
+//}
