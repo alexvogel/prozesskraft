@@ -38,34 +38,34 @@ public class TestPrampPartUi1
 		assertNotNull(ui.getIni());
 	}
 
-	@Test
-	public void testLoadIni()
-	{
-		ui.loadIni();
-		assertEquals("/data/prog/workspace/pramp-gui/src/test/resources/processes", ui.getProcessMainDir());
-	}
-
-	@Test
-	public void testGetProcesses()
-	{
-		ui.loadIni();
-		ArrayList<String> processNames = ui.getInstalledProcessNames();
-		// test ob die richtige Anzahl festgestellt wurde
-		assertEquals(3, processNames.size());
-		// test auf richtige sortierung innerhalb der liste
-		assertEquals(processNames.get(0), "beulen");
-		assertEquals(processNames.get(1), "modal");
-		assertEquals(processNames.get(2), "multibeulen");
-	}
-
-	@Test
-	public void testGetVersions()
-	{
-		ui.loadIni();
-		String processName = "beulen";
-		ArrayList<String> versionNames = ui.getInstalledVersionNames(processName);
-		assertEquals(2, versionNames.size());
-	}
+//	@Test
+//	public void testLoadIni()
+//	{
+//		ui.loadIni();
+//		assertEquals("/data/prog/workspace/pramp-gui/src/test/resources/processes", ui.getProcessMainDir());
+//	}
+//
+//	@Test
+//	public void testGetProcesses()
+//	{
+//		ui.loadIni();
+//		ArrayList<String> processNames = ui.getInstalledProcessNames();
+//		// test ob die richtige Anzahl festgestellt wurde
+//		assertEquals(3, processNames.size());
+//		// test auf richtige sortierung innerhalb der liste
+//		assertEquals(processNames.get(0), "beulen");
+//		assertEquals(processNames.get(1), "modal");
+//		assertEquals(processNames.get(2), "multibeulen");
+//	}
+//
+//	@Test
+//	public void testGetVersions()
+//	{
+//		ui.loadIni();
+//		String processName = "beulen";
+//		ArrayList<String> versionNames = ui.getInstalledVersionNames(processName);
+//		assertEquals(2, versionNames.size());
+//	}
 
 //	@Test
 //	public void testGetProcessDefinition()
