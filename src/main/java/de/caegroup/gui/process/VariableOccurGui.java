@@ -78,7 +78,7 @@ public class VariableOccurGui
 		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
 		composite.setLayoutData(gd_composite);
 		composite.setLayout(new FormLayout());
-		
+
 		createControls();
 	}
 	
@@ -324,7 +324,7 @@ public class VariableOccurGui
 	{
 		if ( data.getContent() != null )
 		{
-			step.commitvariable(this.key, data.getContent());
+			step.commitVariable(this.key, data.getContent());
 		}
 	}
 

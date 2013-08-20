@@ -760,16 +760,16 @@ public class PrampPartUi1 extends ModelObject
 	    	log("info", "setting process definition: "+processDefinition);
 			Process tmp = new Process();
 			tmp.setInfilexml(processDefinition);
-			try
-			{
+				try
+				{
 				this.process = tmp.readXml();
+				} catch (JAXBException e)
+				{
+					// TODO Auto-generated catch block
+					log("error", "cannot unmarshal data from process definition.");
+//						e.printStackTrace();
+				}
 				this.process.setInfilexml(processDefinition);
-			} catch (JAXBException e)
-			{
-				// TODO Auto-generated catch block
-				log("error", "cannot unmarshal data from process definition.");
-//				e.printStackTrace();
-			}
 			
 		}
 		this.processDefinitionPath = processDefinition;
