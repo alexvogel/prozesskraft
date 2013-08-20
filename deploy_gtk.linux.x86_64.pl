@@ -8,8 +8,8 @@ $|=1;
 
 # tmp-target-directory loeschen
 print "loeschen des targetverzeichnisses\n";
-print "rm -rf /tmp/pradar\n";
-system "rm -rf /tmp/pradar";
+print "rm -rf /tmp/pramp\n";
+system "rm -rf /tmp/pramp";
 
 # maven ausfuehren
 print "**\n";
