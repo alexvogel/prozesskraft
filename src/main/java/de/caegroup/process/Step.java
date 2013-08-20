@@ -1366,4 +1366,25 @@ implements Serializable, Cloneable
 		this.rank = rank;
 	}
 
+	/*----------------------------
+	  methods consistent
+	----------------------------*/
+
+	/**
+	 * checks whether the content of step is consistent
+	 * @return result
+	 */
+	public boolean isStepConsistent()
+	{
+		boolean result = true;
+
+		// check all inits
+		for (Init actualInit : this.getInit())
+		{
+			if ( !actualInit.isInitConsistent() ) {result = false;	this.parent.log("error", "error in init '"+actualInit.getListname()+"'");}
+		}
+		
+		return result;
+	}
+	
 }

@@ -806,6 +806,17 @@ implements Serializable
 		}
 	}
 
+	/**
+	 * prints the content of log to stdout
+	 */
+	public void printLog()
+	{
+		for(Log actualLog : this.getLog())
+		{
+			actualLog.print();
+		}
+	}
+	
 	/*----------------------------
 	  method: generiert eine neue managerid. aus aktueller zeit + zufallszahl
 	----------------------------*/
@@ -958,16 +969,36 @@ implements Serializable
 	}
 	
 	/*----------------------------
-	  methods get
+	  methods getter / setter
 	----------------------------*/
 	public String getName()
 	{
 		return this.name;
 	}
 
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
+	public String getModelVersion()
+	{
+		return this.modelVersion;
+	}
+
+	public void setModelVersion(String modelVersion)
+	{
+		this.modelVersion = modelVersion;
+	}
+
 	public String getDescription()
 	{
 		return this.description;
+	}
+
+	public void setDescription(String description)
+	{
+		this.description = description;
 	}
 
 	public String getPath()
@@ -1164,11 +1195,6 @@ implements Serializable
 		return this.customerMail;
 	}
 
-	public String getModelVersion()
-	{
-		return this.modelVersion;
-	}
-	
 	/**
 	 * 
 	 * @return versionsnummer ohne punkte
@@ -1291,7 +1317,11 @@ implements Serializable
 		return this.step;
 	}
 
-	// liefert nur den step zurueck dessen namen exakt passt
+	/**
+	 * liefert den step zurueck auf den der namen exakt passt
+	 * @param stepname
+	 * @return step
+	 */
 	public Step getStep(String stepname)
 	{
 		Iterator<Step> iterstep = this.getSteps().iterator();
@@ -1307,7 +1337,11 @@ implements Serializable
 		return null;
 	}
 
-	// liefert nur den step zurueck dessen namen exakt passt
+	/**
+	 * liefert die information ob ein step mit dem angegebenen namen existiert
+	 * @param stepname
+	 * @return exists
+	 */
 	public boolean isStep(String stepname)
 	{
 		boolean vorhanden = false;
@@ -1322,7 +1356,12 @@ implements Serializable
 	}
 
 	
-	// liefert die steps zurueck auf die der namen passt (inkl. aufgefaecherte steps mit der namenserweiterung @...)
+	/**
+	 * liefert den step zurueck auf den der namen exakt passt
+	 * inkl. aller aufgefaecherter steps
+	 * @param stepname
+	 * @return steps
+	 */
 	public ArrayList<Step> getSteps(String stepname)
 	{
 		ArrayList<Step> steps = new ArrayList<Step>();
@@ -1384,22 +1423,9 @@ implements Serializable
 		return touchInMillis;
 	}
 
-	/*----------------------------
-	  methods set
-	----------------------------*/
-	public void setName(String name)
-	{
-		this.name = name;
-	}
-
 	public void setStep(ArrayList<Step> step)
 	{
 		this.step = step;
-	}
-
-	public void setDescription(String description)
-	{
-		this.description = description;
 	}
 
 	public void setPath(String path)
@@ -1445,11 +1471,6 @@ implements Serializable
 	public void setCustomerMail(String customerMail)
 	{
 		this.customerMail = customerMail;
-	}
-
-	public void setModelVersion(String modelVersion)
-	{
-		this.modelVersion = modelVersion;
 	}
 
 	public void setPradar(boolean pradar)
@@ -1546,4 +1567,70 @@ implements Serializable
 		this.touchInMillis = touchInMillis;
 	}
 
+	/*----------------------------
+	  methods consistent
+	----------------------------*/
+
+	/**
+	 * checks whether the content of field is consistent
+	 * @return result
+	 */
+	public boolean isNameConsistent()
+	{
+		if(this.getName().equals("") || this.getName().matches("<|>|:|\"|/|\\|?|\\*|\\||\\)|\\(") )
+		{
+			this.log("error", "process/name contains at least one bad character ()<>:\"\\?*|");
+			return false;
+		}
+		else
+		{
+			this.log("debug", "content of process/name is ok");
+			return true;
+		}
+	}
+
+	/**
+	 * checks whether the content of field is consistent
+	 * @return result
+	 */
+	public boolean isModelVersionConsistent()
+	{
+		if(this.getModelVersion().equals("") || this.getModelVersion().matches("<|>|:|\"|/|\\|?|\\*|\\||\\)|\\(") )
+		{
+			this.log("error", "process/modelVersion contains at least one bad character ()<>:\"\\?*|");
+			return false;
+		}
+		else
+		{
+			this.log("debug", "content of process/modelVersion is ok");
+			return true;
+		}
+	}
+
+	/**
+	 * checks whether the content of process is consistent
+	 * @return result
+	 */
+	public boolean isProcessConsistent()
+	{
+		boolean result = true;
+
+		// check the name
+		if( !this.isNameConsistent() )			{result = false;	log("error", "error in process/name");}
+		
+		// check the modelVersion
+		if( !this.isModelVersionConsistent() )	{result = false;	log("error", "error in process/modelVersion");}
+		
+		// gibt es einen root-step?
+		if ( this.getStep(this.getRootstepname()) == null ) {result = false;	log("error", "there is no initial step with expected name "+this.getRootstepname());}
+		
+		// check all steps
+		for (Step actualStep : this.getStep())
+		{
+			if ( !actualStep.isStepConsistent() ) {result = false;	log("error", "error in step '"+actualStep.getName()+"'");}
+			else {log("debug", "content of step '"+actualStep.getName()+"' is ok");}
+		}
+		
+		return result;
+	}
 }

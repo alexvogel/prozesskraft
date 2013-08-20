@@ -214,4 +214,23 @@ implements Serializable
 		this.maxoccur = maxoccur;
 	}
 
+	/*----------------------------
+	  methods consistent
+	----------------------------*/
+
+	/**
+	 * checks whether the content of init is consistent
+	 * @return result
+	 */
+	public boolean isInitConsistent()
+	{
+		boolean result = true;
+
+		// check fromstep
+		if( !(this.getParent().getParent().isStep(this.getFromstep())) ) {result = false; this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': fromstep '"+this.getFromstep()+"' does not exist in processModel");}
+		
+		return result;
+	}
+	
+
 }

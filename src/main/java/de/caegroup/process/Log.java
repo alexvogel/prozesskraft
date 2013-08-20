@@ -1,6 +1,7 @@
 package de.caegroup.process;
 
 import java.io.*;
+import java.sql.Timestamp;
 //import java.util.*;
 //import org.apache.solr.common.util.NamedList;
 import java.util.ArrayList;
@@ -40,7 +41,11 @@ implements Serializable
 	  methods
 	----------------------------*/
 
-
+	public void print()
+	{
+		System.out.println("["+new Timestamp(this.time)+"]:"+this.getLevel()+":"+this.getMsg());
+	}
+	
 	/*----------------------------
 	  methods getter & setter
 	----------------------------*/

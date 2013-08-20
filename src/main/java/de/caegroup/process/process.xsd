@@ -150,7 +150,7 @@
     	<xs:attribute name="glob" type="xs:string"></xs:attribute>
     	<xs:attribute name="maxoccur" type="xs:integer" use="optional" />
     	<xs:attribute name="minoccur" type="xs:integer" use="optional" />
-    	<xs:attribute name="free" type="xs:boolean" use="optional" />
+    	<xs:attribute name="free" type="xs:boolean" use="optional" default="true"/>
     	<xs:attribute name="description" type="xs:string" />
     </xs:complexType>
   </xs:element>

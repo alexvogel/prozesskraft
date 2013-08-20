@@ -21,7 +21,7 @@ implements Serializable
 	private ArrayList<Test> test = new ArrayList<Test>();
 	private int minoccur = 0;
 	private int maxoccur = 999999;
-	private Boolean free = null;
+	private boolean free = true;
 	
 
 	/*----------------------------
