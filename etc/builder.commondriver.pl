@@ -219,12 +219,29 @@ unless (grep { $_ eq $version } @all_versions)
 my @callpossibilities = glob("$installdir/$version/bin/*");
 my @caller;
 #print "$versionen{$version} @neue_argumente\n";
+
+# wenn ein einstiegsprogramm gefunden wird, das genauso heisst wie dieses, soll das verwendet werden
 if (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename$/ } @callpossibilities)
 {
 	if (@caller == 1)
 	{
 #		print "$installdir/$version/bin/$filename @neue_argumente\n";
 		exec "$installdir/$version/bin/$filename @neue_argumente";
+	}
+	else
+	{
+		print "don't know what to call - @caller\n";
+		exit(1);
+	}
+}
+
+# wenn ein einstiegsprogramm gefunden wird, das 'start.sh'
+elsif (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/start\.sh$/ } @callpossibilities)
+{
+	if (@caller == 1)
+	{
+#		print "$caller[0] @neue_argumente\n";
+		exec "$caller[0] @neue_argumente";
 	}
 	else
 	{
