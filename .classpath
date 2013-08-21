@@ -24,6 +24,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/gtk.linux.x86_64-3.101.0.jar"/>
+	<classpathentry kind="lib" path="lib64/gtk.linux.x86_64-3.101.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
