@@ -1,2 +1,5 @@
 #!/bin/sh
-java -Djava.ext.dirs=../lib/:../lib64/ -jar *.jar
+
+BASEDIR=$(dirname $0)
+#java -Djava.ext.dirs=$BASEDIR/../lib/:$BASEDIR/../lib64/ -jar $BASEDIR/*.jar
+java -Djava.ext.dirs=$BASEDIR/../lib/ -jar $BASEDIR/*.jar
