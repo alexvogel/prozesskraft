@@ -29,8 +29,6 @@ print "cp -r $cwd/bin $auslieferungsverzeichnis/.\n";
 system "cp -r $cwd/bin $auslieferungsverzeichnis/.";
 print "cp -r $target/*with-my-dep* $auslieferungsverzeichnis/bin/.\n";
 system "cp -r $target/*with-my-dep* $auslieferungsverzeichnis/bin/.";
-print "cp -r $target/lib $auslieferungsverzeichnis/bin/.\n";
-system "cp -r $target/lib $auslieferungsverzeichnis/bin/.";
 
 
 # kopieren von resourcen ausserhalb des jars ins auslieferungsverzeichnis
