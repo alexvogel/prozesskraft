@@ -1277,7 +1277,7 @@ public class PradarPartUi3 extends ModelObject
 				}
 				else
 				{
-					System.out.println("license NICHT null");
+					System.out.println("license NICHT null: "+license.toString());
 					
 				}
 				
@@ -1289,8 +1289,7 @@ public class PradarPartUi3 extends ModelObject
 				}
 				else
 				{
-					System.out.println("license NICHT null");
-					
+					System.out.println("license NICHT null: "+license.toString());
 				}
 				
 				
