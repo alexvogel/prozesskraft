@@ -9,23 +9,43 @@
 	<url>http://maven.apache.org</url>
 	<build>
 
-<!-- setzen des outputDirectories fuer die *.class-Files (die von maven-compiler-plugin erzeugt werden) -->
-<!-- 		<outputDirectory>target/classes</outputDirectory> -->
+<!-- der block mit dem pluginManagement laesst die m2e-fehlermeldung im plugin maven-dependency-plugin verschwinden -->
+		<pluginManagement>
+			<plugins>
+	    	<!-- Ignore/Execute plugin execution -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<!-- copy-dependency plugin -->
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>copy-dependencies</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+
 
 		<plugins>
 
-<!-- compiliert alle *.java files zu *.class files-->
-<!-- 			<plugin> -->
-<!-- 				<artifactId>maven-compiler-plugin</artifactId> -->
-<!-- 				<version>3.0</version> -->
-<!-- 				<configuration> -->
-<!-- 					<includes> -->
-<!-- 						<include>${project.build.outputDirectory}/../src/de/caegroup/pradar/parts/*.java</include> -->
-<!-- 					</includes> -->
-<!-- 				</configuration> -->
-<!-- 			</plugin> -->
-
-<!-- packt alle class-Files in ein jar legt es im classDirectory ab-->
+<!-- packt alle class-Files in ein jar legt es im classDirectory ab -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.2</version>
@@ -40,58 +60,47 @@
 							<archive>
 								<manifest>
 									<mainClass>de.caegroup.pramp.parts.PrampPartUi1</mainClass>
-									<addClasspath>true</addClasspath>
 								</manifest>
 							</archive>
-<!-- ${project.build.outputDirectory} = ./target/classes -->
-<!-- 							<classesDirectory>/target</classesDirectory> -->
-<!-- 							<classesDirectory>/src/de/caegroup/pradar/parts</classesDirectory> -->
-<!-- 							<outputDirectory>/tmp/pradar/bin-klar</outputDirectory> -->
-<!-- 							<outputDirectory>${project.build.outputDirectory}</outputDirectory> -->
-<!-- 							<includes> -->
-<!-- 								<include>*</include> -->
-<!-- 							</includes> -->
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<finalName>${project.name}-${project.version}-nonObf</finalName>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 
 <!-- erstellt eines assembly mit allen eigenen (von mir erstellten) Abhaengigkeiten-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.1</version>
-				<configuration>
-					<formats>
-						<format>jar</format>
-					</formats>
-					<descriptors>
-						<descriptor>src/main/assembly/descriptor.xml</descriptor>
-					</descriptors>
-					<finalName>${project.name}-${project.version}</finalName>
-					<archive>
-						<manifest>
-							<mainClass>de.caegroup.pramp.parts.PrampPartUi1</mainClass>
-							<addClasspath>true</addClasspath>
-						</manifest>
-<!-- 						<manifestEntries> -->
-<!-- 							<Class-Path>irgendein/pfad</Class-Path> -->
-<!-- 						</manifestEntries> -->
-					</archive>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-<!-- 							<goal>assembly</goal> -->
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 				<artifactId>maven-assembly-plugin</artifactId> -->
+<!-- 				<version>2.2.1</version> -->
+<!-- 				<configuration> -->
+<!-- 					<formats> -->
+<!-- 						<format>jar</format> -->
+<!-- 					</formats> -->
+<!-- 					<descriptors> -->
+<!-- 						<descriptor>src/main/assembly/descriptor.xml</descriptor> -->
+<!-- 					</descriptors> -->
+<!-- 					<finalName>${project.name}-${project.version}</finalName> -->
+<!-- 					<archive> -->
+<!-- 						<manifest> -->
+<!-- 							<mainClass>de.caegroup.pramp.parts.PrampPartUi1</mainClass> -->
+<!-- 							<addClasspath>true</addClasspath> -->
+<!-- 						</manifest> -->
+<!-- 					</archive> -->
+<!-- 				</configuration> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>make-assembly</id> -->
+<!-- 						<phase>package</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>single</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
 
-<!-- Obfuskieren eines jars -->
+<!-- Obfuskieren des jars. das output ueberschreibt das default-jar, welches durch 'maven-jar-plugin' id=default produziert wurde -->
 			<plugin>
 				<groupId>com.pyx4me</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
@@ -105,15 +114,14 @@
 					</execution>
 				</executions>
 				<configuration>
-					<includeDependency>true</includeDependency>
+<!-- 					<includeDependency>true</includeDependency> -->
 					<obfuscate>true</obfuscate>
 					<outputDirectory>${project.build.directory}</outputDirectory>
-<!-- 					<injar>${project.build.finalName}.jar</injar> -->
-					<injar>${project.name}-${project.version}-with-my-dep.jar</injar>
-					<outjar>${project.name}-${project.version}-with-my-dep-and-obf.jar</outjar>
-<!-- 					<outjar>${project.build.finalName}.jar</outjar> -->
+					<injar>${project.name}-${project.version}-nonObf.jar</injar>
+					<outjar>${project.name}-${project.version}.jar</outjar>
 					<options>
 						<option>-keep public class de.caegroup.pramp.parts.PrampPartUi1 { *; }</option>
+						<option>-keep public class de.caegroup.pramp.parts.PrampViewModel { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
@@ -122,6 +130,7 @@
 				</configuration>
 			</plugin>
 			
+<!-- Alle unter dependency definierten Abhaengigkeiten werden aus dem maven-repo in ein eigenes lib-verzeichnis kopiert -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -139,7 +148,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 	<profiles>
