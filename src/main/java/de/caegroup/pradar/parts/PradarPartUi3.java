@@ -108,8 +108,6 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import com.license4j.DefaultFloatingLicenseInvalidHandlerImpl;
-import com.license4j.DefaultFloatingLicenseServerConnectionErrorHandlerImpl;
 import com.license4j.License;
 import com.license4j.LicenseValidator;
 import com.license4j.util.FileUtils;
@@ -173,7 +171,7 @@ public class PradarPartUi3 extends ModelObject
 	
 	ArrayList<String> pradar_server_port_at_hostname = new ArrayList<String>();
 	ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
-//	License license = null;
+	License license = null;
 
 	private Text txtTesttext;
 	private Composite composite_3;
@@ -1239,10 +1237,10 @@ public class PradarPartUi3 extends ModelObject
 
 		boolean license_valid = false;		
 		boolean das_erste_mal = false;
-//		if (license == null)
-//		{
-//			das_erste_mal = true;
-//		}
+		if (license == null)
+		{
+			das_erste_mal = true;
+		}
 		
 		for(String portAtHost : this.license_server_port_at_hostname)
 		{
@@ -1252,78 +1250,24 @@ public class PradarPartUi3 extends ModelObject
 			{
 				inetAddressHost = InetAddress.getByName(port_and_host[1]);
 
+				license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
+
 				// logging nur beim ersten mal
 				if (das_erste_mal)
 				{
 					log("info", "trying license-server "+portAtHost);
-				}
-
-				// hier soll ueberprueft werdden ob es den rechner ueberhaupt gibt im netzwerk
-				System.out.println("publicKey: "+publicKey);
-				System.out.println("Product-Id: "+"1");
-				System.out.println("Product-Edition: "+"user-edition");
-				System.out.println("Current product version: "+"0.1");
-				System.out.println("Current Date: "+null);
-				System.out.println("Current product release date: "+null);
-				System.out.println("host: "+inetAddressHost);
-				System.out.println("port@host: "+Integer.parseInt(port_and_host[0]));
-				System.out.println("keine Ahnung: "+null);
-				System.out.println("handler1: "+null);
-				System.out.println("handler2: "+null);
-				
-//				if (license == null)
-//				{
-//					System.out.println("license IST null");
-//				}
-//				else
-//				{
-//					System.out.println("license NICHT null: "+license.toString());
-//					
-//				}
-				
-				License license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
-
-				if (license == null)
-				{
-					System.out.println("license IST null");
-				}
-				else
-				{
-					System.out.println("license NICHT null: "+license.toString());
+					log("info", "license validation returns "+license.getValidationStatus().toString());
+					log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
 				}
 				
-				
-//				license = LicenseValidator.validate(
-//	            publicKey,
-//                "1", // Product ID
-//                "user-edition", // Product edition
-//                "0.1", // Current product version
-//                null, // Current date
-//                null, // Current product release date
-//                inetAddressHost,
-//                Integer.parseInt(port_and_host[0]),
-//                null,
-//                null, // new DefaultFloatingLicenseInvalidHandlerImpl("License Invalid, System.exit will be called.", true),
-//                null); // new DefaultFloatingLicenseServerConnectionErrorHandlerImpl("Server Connection Error, System.exit will be called.", true));
-				
-				// logging nur beim ersten mal
-				if (license != null)
+				switch(license.getValidationStatus())
 				{
-					if (das_erste_mal)
-					{
-						log("info", "license validation returns "+license.getValidationStatus().toString());
-						log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
-					}
-					
-					switch(license.getValidationStatus())
-					{
-						case LICENSE_VALID:
-							license_valid = true;
-							das_erste_mal = false;
-							break;
-						default:
-							license_valid = false;
-					}
+					case LICENSE_VALID:
+						license_valid = true;
+						das_erste_mal = false;
+						break;
+					default:
+						license_valid = false;
 				}
 			}
 			catch (UnknownHostException e)
@@ -1342,7 +1286,6 @@ public class PradarPartUi3 extends ModelObject
 		if (!(license_valid))
 		{
 			log("fatal", "no valid license found. forcing exit.");
-			System.err.println("fatal: no valid license found. forcing exit.");
 			try
 			{
 				Thread.sleep(10000);
