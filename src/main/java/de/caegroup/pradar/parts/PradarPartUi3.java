@@ -108,6 +108,8 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import com.license4j.DefaultFloatingLicenseInvalidHandlerImpl;
+import com.license4j.DefaultFloatingLicenseServerConnectionErrorHandlerImpl;
 import com.license4j.License;
 import com.license4j.LicenseValidator;
 import com.license4j.util.FileUtils;
@@ -1250,8 +1252,28 @@ public class PradarPartUi3 extends ModelObject
 			{
 				inetAddressHost = InetAddress.getByName(port_and_host[1]);
 
-				license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
+				// hier soll ueberprueft werdden ob es den rechner ueberhaupt gibt im netzwerk
+//				license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
+				
+				// logging nur beim ersten mal
+				if (das_erste_mal)
+				{
+					log("info", "trying license-server "+portAtHost);
+				}
 
+				license = LicenseValidator.validate(
+	            publicKey,
+                "1", // Product ID
+                "user-edition", // Product edition
+                "0.1", // Current product version
+                null, // Current date
+                null, // Current product release date
+                inetAddressHost,
+                Integer.parseInt(port_and_host[0]),
+                null,
+                null, // new DefaultFloatingLicenseInvalidHandlerImpl("License Invalid, System.exit will be called.", true),
+                null); // new DefaultFloatingLicenseServerConnectionErrorHandlerImpl("Server Connection Error, System.exit will be called.", true));
+				
 				// logging nur beim ersten mal
 				if (das_erste_mal)
 				{

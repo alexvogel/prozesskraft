@@ -90,7 +90,11 @@
 					<outjar>${project.name}-${project.version}.jar</outjar>
 					<options>
 						<option>-keep public class de.caegroup.pradar.parts.PradarPartUi3 { *; }</option>
-<!-- 						<option>-keep public class de.caegroup.pradar.parts.PradarViewModel { *; }</option> -->
+						<option>-keep public class de.caegroup.pradar.parts.PradarViewModel { *; }</option>
+						<option>-keep public class de.caegroup.pradar.parts.PradarViewProcessingPage { *; }</option>
+						<option>-keep public class de.caegroup.pradar.parts.PradarViewProcessingEntity { *; }</option>
+						<option>-keep public class de.caegroup.pradar.parts.PradarViewTreePage { *; }</option>
+						<option>-keep public class de.caegroup.pradar.parts.PradarViewLogPage { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
