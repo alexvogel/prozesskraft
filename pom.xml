@@ -59,7 +59,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>de.caegroup.pramp.parts.PradarPartUi3</mainClass>
+									<mainClass>de.caegroup.pradar.parts.PradarPartUi3</mainClass>
 								</manifest>
 							</archive>
 							<outputDirectory>${project.build.directory}</outputDirectory>
