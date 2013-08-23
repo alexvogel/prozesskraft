@@ -1282,6 +1282,16 @@ public class PradarPartUi3 extends ModelObject
 				}
 				
 				license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
+				if (license == null)
+				{
+					System.out.println("license IST null");
+				}
+				else
+				{
+					System.out.println("license NICHT null");
+					
+				}
+				
 				
 //				license = LicenseValidator.validate(
 //	            publicKey,
