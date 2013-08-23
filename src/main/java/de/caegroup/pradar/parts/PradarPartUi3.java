@@ -1282,6 +1282,7 @@ public class PradarPartUi3 extends ModelObject
 				}
 				
 				license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
+
 				if (license == null)
 				{
 					System.out.println("license IST null");
@@ -1307,20 +1308,23 @@ public class PradarPartUi3 extends ModelObject
 //                null); // new DefaultFloatingLicenseServerConnectionErrorHandlerImpl("Server Connection Error, System.exit will be called.", true));
 				
 				// logging nur beim ersten mal
-				if (das_erste_mal)
+				if (license != null)
 				{
-					log("info", "license validation returns "+license.getValidationStatus().toString());
-					log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
-				}
-				
-				switch(license.getValidationStatus())
-				{
-					case LICENSE_VALID:
-						license_valid = true;
-						das_erste_mal = false;
-						break;
-					default:
-						license_valid = false;
+					if (das_erste_mal)
+					{
+						log("info", "license validation returns "+license.getValidationStatus().toString());
+						log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
+					}
+					
+					switch(license.getValidationStatus())
+					{
+						case LICENSE_VALID:
+							license_valid = true;
+							das_erste_mal = false;
+							break;
+						default:
+							license_valid = false;
+					}
 				}
 			}
 			catch (UnknownHostException e)
@@ -1339,6 +1343,7 @@ public class PradarPartUi3 extends ModelObject
 		if (!(license_valid))
 		{
 			log("fatal", "no valid license found. forcing exit.");
+			System.err.println("fatal: no valid license found. forcing exit.");
 			try
 			{
 				Thread.sleep(10000);
