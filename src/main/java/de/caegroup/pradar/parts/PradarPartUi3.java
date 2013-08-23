@@ -1252,32 +1252,31 @@ public class PradarPartUi3 extends ModelObject
 			{
 				inetAddressHost = InetAddress.getByName(port_and_host[1]);
 
-				// hier soll ueberprueft werdden ob es den rechner ueberhaupt gibt im netzwerk
-//				license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
-				
 				// logging nur beim ersten mal
 				if (das_erste_mal)
 				{
 					log("info", "trying license-server "+portAtHost);
 				}
 
-				license = LicenseValidator.validate(
-	            publicKey,
-                "1", // Product ID
-                "user-edition", // Product edition
-                "0.1", // Current product version
-                null, // Current date
-                null, // Current product release date
-                inetAddressHost,
-                Integer.parseInt(port_and_host[0]),
-                null,
-                null, // new DefaultFloatingLicenseInvalidHandlerImpl("License Invalid, System.exit will be called.", true),
-                null); // new DefaultFloatingLicenseServerConnectionErrorHandlerImpl("Server Connection Error, System.exit will be called.", true));
+				// hier soll ueberprueft werdden ob es den rechner ueberhaupt gibt im netzwerk
+				license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
+				
+//				license = LicenseValidator.validate(
+//	            publicKey,
+//                "1", // Product ID
+//                "user-edition", // Product edition
+//                "0.1", // Current product version
+//                null, // Current date
+//                null, // Current product release date
+//                inetAddressHost,
+//                Integer.parseInt(port_and_host[0]),
+//                null,
+//                null, // new DefaultFloatingLicenseInvalidHandlerImpl("License Invalid, System.exit will be called.", true),
+//                null); // new DefaultFloatingLicenseServerConnectionErrorHandlerImpl("Server Connection Error, System.exit will be called.", true));
 				
 				// logging nur beim ersten mal
 				if (das_erste_mal)
 				{
-					log("info", "trying license-server "+portAtHost);
 					log("info", "license validation returns "+license.getValidationStatus().toString());
 					log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
 				}
