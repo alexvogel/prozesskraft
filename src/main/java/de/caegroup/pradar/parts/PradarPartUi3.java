@@ -173,7 +173,7 @@ public class PradarPartUi3 extends ModelObject
 	
 	ArrayList<String> pradar_server_port_at_hostname = new ArrayList<String>();
 	ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
-	License license = null;
+//	License license = null;
 
 	private Text txtTesttext;
 	private Composite composite_3;
@@ -1239,10 +1239,10 @@ public class PradarPartUi3 extends ModelObject
 
 		boolean license_valid = false;		
 		boolean das_erste_mal = false;
-		if (license == null)
-		{
-			das_erste_mal = true;
-		}
+//		if (license == null)
+//		{
+//			das_erste_mal = true;
+//		}
 		
 		for(String portAtHost : this.license_server_port_at_hostname)
 		{
@@ -1271,17 +1271,17 @@ public class PradarPartUi3 extends ModelObject
 				System.out.println("handler1: "+null);
 				System.out.println("handler2: "+null);
 				
-				if (license == null)
-				{
-					System.out.println("license IST null");
-				}
-				else
-				{
-					System.out.println("license NICHT null: "+license.toString());
-					
-				}
+//				if (license == null)
+//				{
+//					System.out.println("license IST null");
+//				}
+//				else
+//				{
+//					System.out.println("license NICHT null: "+license.toString());
+//					
+//				}
 				
-				license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
+				License license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
 
 				if (license == null)
 				{
