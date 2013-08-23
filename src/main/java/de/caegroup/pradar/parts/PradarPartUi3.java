@@ -1259,6 +1259,17 @@ public class PradarPartUi3 extends ModelObject
 				}
 
 				// hier soll ueberprueft werdden ob es den rechner ueberhaupt gibt im netzwerk
+				System.out.println("publicKey: "+publicKey);
+				System.out.println("Product-Id: "+"1");
+				System.out.println("Product-Edition: "+"user-edition");
+				System.out.println("Current product version: "+"0.1");
+				System.out.println("Current Date: "+null);
+				System.out.println("Current product release date: "+null);
+				System.out.println("host: "+inetAddressHost);
+				System.out.println("port@host: "+Integer.parseInt(port_and_host[0]));
+				System.out.println("keine Ahnung: "+null);
+				System.out.println("handler1: "+null);
+				System.out.println("handler2: "+null);
 				license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
 				
 //				license = LicenseValidator.validate(
