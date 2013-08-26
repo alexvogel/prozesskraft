@@ -171,8 +171,9 @@ public class PradarPartUi3 extends ModelObject
 	
 	ArrayList<String> pradar_server_port_at_hostname = new ArrayList<String>();
 	ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
-	License license = null;
-
+//	License license = null;
+	boolean erster_license_check = true;
+	
 	private Text txtTesttext;
 	private Composite composite_3;
 
@@ -1236,11 +1237,6 @@ public class PradarPartUi3 extends ModelObject
 							+ "1d00b916fbde2ebb7954dfe2531abdb5174835b5c09413a6f0203010001";
 
 		boolean license_valid = false;		
-		boolean das_erste_mal = false;
-		if (license == null)
-		{
-			das_erste_mal = true;
-		}
 		
 		for(String portAtHost : this.license_server_port_at_hostname)
 		{
@@ -1250,21 +1246,21 @@ public class PradarPartUi3 extends ModelObject
 			{
 				inetAddressHost = InetAddress.getByName(port_and_host[1]);
 
-				license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
+				License license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
 
 				// logging nur beim ersten mal
-				if (das_erste_mal)
+				if (erster_license_check)
 				{
 					log("info", "trying license-server "+portAtHost);
 					log("info", "license validation returns "+license.getValidationStatus().toString());
 					log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
+					erster_license_check = false;
 				}
 				
 				switch(license.getValidationStatus())
 				{
 					case LICENSE_VALID:
 						license_valid = true;
-						das_erste_mal = false;
 						break;
 					default:
 						license_valid = false;
