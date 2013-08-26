@@ -1251,7 +1251,7 @@ public class PradarPartUi3 extends ModelObject
 				// logging nur beim ersten mal
 				if (erster_license_check)
 				{
-					log("info", "trying license-server "+portAtHost);
+					log("info", "trying license-servero "+portAtHost);
 					log("info", "license validation returns "+license.getValidationStatus().toString());
 					log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
 					erster_license_check = false;
