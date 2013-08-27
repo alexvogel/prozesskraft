@@ -80,7 +80,7 @@ public class PmodelViewStepSym
 //			int initx = this.generator.nextInt(p.getWidth());
 //			int inity = this.generator.nextInt(p.getHeight());
 			this.setPosition(initx, inity, 0);
-			System.out.println(this.step.getName()+" " + this.step.getRank() + " position: "+this.getPosition1()+", "+this.getPosition2());
+//			System.out.println(this.step.getName()+" " + this.step.getRank() + " position: "+this.getPosition1()+", "+this.getPosition2());
 		}
 		
 		this.rank = this.step.getRank();
