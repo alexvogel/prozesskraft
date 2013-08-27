@@ -77,6 +77,8 @@ import org.eclipse.swt.widgets.Combo;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
+import com.license4j.License;
+import com.license4j.LicenseValidator;
 
 import de.caegroup.process.Commit;
 import de.caegroup.process.Process;
@@ -98,6 +100,10 @@ public class PrampPartUi1 extends ModelObject
 	private Process process = null;
 	private String iniFile = null;
 	private String userIniFile = null;
+	
+	private ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
+	
+	private boolean erster_license_check = true;
 //	private Ini userIni = null;
 	private Text text_rootdirectory = null;
 	
@@ -132,6 +138,7 @@ public class PrampPartUi1 extends ModelObject
 		setIni();
 		setUserIni();
 		loadIni();
+		checkLicense();
 		getInstalledProcessNames();
 		getHosts();
 //		setRandomRootdirectory();
@@ -146,6 +153,7 @@ public class PrampPartUi1 extends ModelObject
 	{
 		setIni();
 		loadIni();
+		checkLicense();
 		setUserIni();
 		getInstalledProcessNames();
 		getHosts();
@@ -161,6 +169,7 @@ public class PrampPartUi1 extends ModelObject
 	{
 		setIni("target/test-classes/etc/default.ini");
 		loadIni();
+		checkLicense();
 		setUserIni();
 //		getProcesses();
 //		refresh();
@@ -571,7 +580,8 @@ public class PrampPartUi1 extends ModelObject
 	void loadIni()
 	{
 		Ini ini;
-		
+		ArrayList<String> license_server_list = new ArrayList<String>();
+
 		try
 		{
 			ini = new Ini(getIniAsFile());
@@ -579,6 +589,16 @@ public class PrampPartUi1 extends ModelObject
 			{
 				this.processMainDir = (ini.get("process", "process-installation-directory"));
 			}
+			// einlesen der ini-section [license-server]
+			for(int x = 1; x <= 3; x++)
+			{
+				if (ini.get("license-server", "license-server-"+x) != null )
+				{
+					license_server_list.add(ini.get("license-server", "license-server-"+x));
+				}
+			}
+			this.license_server_port_at_hostname = license_server_list;
+
 		}
 		catch (InvalidFileFormatException e1)
 		{
@@ -1144,40 +1164,41 @@ public class PrampPartUi1 extends ModelObject
 		}
 	}
 	
-	void load()
-	{
-		// inifile parsen
-		// directory fuer prozesse feststellen
-		// erzeugen der prozessliste (directory parsen)
-		// erzeugen der versionslisten (directory parsen)
-		
-		File inifile = new File(getIni());
-		Ini ini;
-		
-		ArrayList<String> pradar_server_list = new ArrayList<String>();
-		
-		try
-		{
-			ini = new Ini(inifile);
-			for(int x = 1; x <= 5; x++)
-			{
-				if (ini.get("pradar-server", "pradar-server-"+x) != null )
-				{
-					pradar_server_list.add(ini.get("pradar-server", "pradar-server-"+x));
-				}
-			}
-		}
-		catch (InvalidFileFormatException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		catch (IOException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	}
+//	void load()
+//	{
+//		// inifile parsen
+//		// directory fuer prozesse feststellen
+//		// erzeugen der prozessliste (directory parsen)
+//		// erzeugen der versionslisten (directory parsen)
+//		
+//		File inifile = new File(getIni());
+//		Ini ini;
+//		
+//		ArrayList<String> pradar_server_list = new ArrayList<String>();
+//		
+//		try
+//		{
+//			ini = new Ini(inifile);
+//			for(int x = 1; x <= 5; x++)
+//			{
+//				if (ini.get("pradar-server", "pradar-server-"+x) != null )
+//				{
+//					pradar_server_list.add(ini.get("pradar-server", "pradar-server-"+x));
+//				}
+//			}
+//
+//		}
+//		catch (InvalidFileFormatException e1)
+//		{
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//		catch (IOException e1)
+//		{
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//	}
 
 	void setProcessMainDir (String processMainDir)
 	{
@@ -1283,6 +1304,83 @@ public class PrampPartUi1 extends ModelObject
 		}
 	}
 	
+	/**
+	 * checkout License from floatingLicenseServer
+	 * @return void
+	 */
+	void checkLicense()
+	{
+		String publicKey =	"30819f300d06092a864886f70d010101050003818d003081893032301006"
+							+ "072a8648ce3d02002EC311215SHA512withECDSA106052b81040006031e0"
+							+ "004b460a863476ce8d60591192b45e656da25433f85feb56f0911f79c69G"
+							+ "02818100b89d68e21006ec20808c60ba29d992bf3fc519c2109cb7f85f24"
+							+ "07bbbd0ba620cf5b40148a4a5ba61e67e2423b528cb73e7db95013405d01"
+							+ "a5e083a519fc5ebb5861aa51e785df6e9e2afd7c9dc89b9cbd4edde24278"
+							+ "0f52dc58c07f8259c7d803RSA4102413SHA512withRSA5645cb91606642d"
+							+ "1d00b916fbde2ebb7954dfe2531abdb5174835b5c09413a6f0203010001";
+
+		boolean license_valid = false;		
+		
+		for(String portAtHost : this.license_server_port_at_hostname)
+		{
+			String[] port_and_host = portAtHost.split("@");
+			InetAddress inetAddressHost;
+			try
+			{
+				inetAddressHost = InetAddress.getByName(port_and_host[1]);
+
+				License license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
+
+				// logging nur beim ersten mal
+				if (erster_license_check)
+				{
+					log("info", "trying license-server "+portAtHost);
+					log("info", "license validation returns "+license.getValidationStatus().toString());
+					log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
+					erster_license_check = false;
+				}
+				
+				switch(license.getValidationStatus())
+				{
+					case LICENSE_VALID:
+						license_valid = true;
+						break;
+					default:
+						license_valid = false;
+				}
+			}
+			catch (UnknownHostException e)
+			{
+				// TODO Auto-generated catch block
+				log("warn", "unknown host "+port_and_host[1]);
+	//			e.printStackTrace();
+			}
+			
+			if (license_valid)
+			{
+				break;
+			}
+		}
+		
+		if (!(license_valid))
+		{
+			log("fatal", "no valid license found. forcing exit.");
+			try
+			{
+				Thread.sleep(10000);
+				System.exit(1);
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+//			log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
+		}
+	}
+
 	/**
 	 * @param args
 	 */
