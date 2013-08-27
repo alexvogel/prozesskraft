@@ -5,9 +5,6 @@ import java.util.*;
 
 import de.caegroup.process.Commit;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import com.rits.cloning.Cloner;
