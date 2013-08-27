@@ -1251,7 +1251,7 @@ public class PradarPartUi3 extends ModelObject
 				// logging nur beim ersten mal
 				if (erster_license_check)
 				{
-					log("info", "trying license-servero "+portAtHost);
+					log("info", "trying license-server "+portAtHost);
 					log("info", "license validation returns "+license.getValidationStatus().toString());
 					log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
 					erster_license_check = false;
@@ -1551,6 +1551,11 @@ public class PradarPartUi3 extends ModelObject
 		{
 			throw new RuntimeException("Java 1.6 or higher is required to run this app. (found version "+javaVersion+")");
 		}
+		
+		System.out.println("java.home:   "+System.getProperty("java.home"));
+		System.out.println("java.vendor: "+System.getProperty("java.vendor"));
+		System.out.println("java.version:"+System.getProperty("java.version"));
+		System.out.println("java.home: "+System.getProperty("java.home"));
 	}
 	
 	/**
