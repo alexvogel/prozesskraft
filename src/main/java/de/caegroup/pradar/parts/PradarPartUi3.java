@@ -1545,18 +1545,17 @@ public class PradarPartUi3 extends ModelObject
 	{
 		String javaVersion = System.getProperty("java.version");
 		char minor = javaVersion.charAt(2);
-		char point = javaVersion.charAt(4);
 		
 		if (minor < '6')
 		{
 			throw new RuntimeException("Java 1.6 or higher is required to run this app. (found version "+javaVersion+")");
 		}
 		
-		System.out.println("java.home:       "+System.getProperty("java.home"));
-		System.out.println("java.vendor:     "+System.getProperty("java.vendor"));
-		System.out.println("java.version:    "+System.getProperty("java.version"));
-		System.out.println("java.home:       "+System.getProperty("java.home"));
-		System.out.println("java.class.path: "+System.getProperty("java.class.path"));
+//		System.out.println("java.home:       "+System.getProperty("java.home"));
+//		System.out.println("java.vendor:     "+System.getProperty("java.vendor"));
+//		System.out.println("java.version:    "+System.getProperty("java.version"));
+//		System.out.println("java.home:       "+System.getProperty("java.home"));
+//		System.out.println("java.class.path: "+System.getProperty("java.class.path"));
 	}
 	
 	/**

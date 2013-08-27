@@ -1,5 +1,6 @@
 #!/bin/sh
 
+MAINCLASS="de.caegroup.pradar.parts.PradarPartUi3"
 BASEDIR=$(dirname $0)
 
 # wenn eine lokale javaversion vorhanden ist, soll diese bevorzugt verwendet werden
@@ -12,10 +13,10 @@ if [ -f $BASEDIR/../../../java/latest/bin/java ];
 		if [ "$ERRORSTRING" == "Error" ];
 			then
 				echo its a 64-Bit java
-				$BASEDIR/../../../java/latest/bin/java -Djava.ext.dirs=$BASEDIR/../lib/:$BASEDIR/../lib64/ -jar $BASEDIR/*.jar
+				$BASEDIR/../../../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib64/*:pradar-gui-0.4.0.jar" $MAINCLASS
 			else
 				echo its a 32-Bit java
-				$BASEDIR/../../../java/latest/bin/java -Djava.ext.dirs=$BASEDIR/../lib/:$BASEDIR/../lib32/ -jar $BASEDIR/*.jar
+				$BASEDIR/../../../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib32/*:pradar-gui-0.4.0.jar" $MAINCLASS
 		fi
 	else
 		echo using central java-installation
@@ -24,10 +25,10 @@ if [ -f $BASEDIR/../../../java/latest/bin/java ];
 		if [ "$ERRORSTRING" == "Error" ];
 			then
 				echo its a 64-Bit java
-				java -Djava.ext.dirs=$BASEDIR/../lib/:$BASEDIR/../lib64/ -jar $BASEDIR/*.jar
+				java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib64/*:pradar-gui-0.4.0.jar" $MAINCLASS
 			else
 				echo its a 32-Bit java
-				java -Djava.ext.dirs=$BASEDIR/../lib/:$BASEDIR/../lib32/ -jar $BASEDIR/*.jar
+				java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib32/*:pradar-gui-0.4.0.jar" $MAINCLASS
 		fi
 		
 fi
