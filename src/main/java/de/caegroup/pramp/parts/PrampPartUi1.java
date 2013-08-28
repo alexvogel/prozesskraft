@@ -1103,7 +1103,7 @@ public class PrampPartUi1 extends ModelObject
 					
 					process.writeBinary();
 
-					// starten des process-manager
+					// starten des process-manager remote
 					// ....
 					String sshIdAbsPath = System.getProperty("user.home")+"/"+WhereAmI.getDefaultSshIdRsa();
 					System.out.println("using ssh-id-rsa: "+sshIdAbsPath);
