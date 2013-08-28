@@ -467,7 +467,7 @@ public class PmodelViewPage extends PApplet
 	public void mouseWheel(int delta)
 	{
 //		System.out.println("mouse has moved by "+delta+" units");
-		int newzoomfaktor = (delta * 20) + this.einstellungen.getZoom();
+		int newzoomfaktor = this.einstellungen.getZoom() - (delta * 20);
 		newzoomfaktor = Math.min(200, newzoomfaktor);
 		newzoomfaktor = Math.max(10, newzoomfaktor);
 		

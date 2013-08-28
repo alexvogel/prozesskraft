@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.caegroup.pmodel</groupId>
+	<groupId>de.caegroup.pmodel.parts</groupId>
 	<artifactId>pmodel-gui</artifactId>
 	<packaging>jar</packaging>
 	<version>0.1.1</version>
@@ -9,23 +9,41 @@
 	<url>http://maven.apache.org</url>
 	<build>
 
-<!-- setzen des outputDirectories fuer die *.class-Files (die von maven-compiler-plugin erzeugt werden) -->
-<!-- 		<outputDirectory>target/classes</outputDirectory> -->
+<!-- der block mit dem pluginManagement laesst die m2e-fehlermeldung im plugin maven-dependency-plugin verschwinden -->
+		<pluginManagement>
+			<plugins>
+	    	<!-- Ignore/Execute plugin execution -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<!-- copy-dependency plugin -->
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>copy-dependencies</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 
 		<plugins>
 
-<!-- compiliert alle *.java files zu *.class files-->
-<!-- 			<plugin> -->
-<!-- 				<artifactId>maven-compiler-plugin</artifactId> -->
-<!-- 				<version>3.0</version> -->
-<!-- 				<configuration> -->
-<!-- 					<includes> -->
-<!-- 						<include>${project.build.outputDirectory}/../src/de/caegroup/pradar/parts/*.java</include> -->
-<!-- 					</includes> -->
-<!-- 				</configuration> -->
-<!-- 			</plugin> -->
-
-<!-- packt alle class-Files in ein jar legt es im classDirectory ab-->
+<!-- packt alle class-Files in ein jar legt es im classDirectory ab -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.2</version>
@@ -39,23 +57,48 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>de.caegroup.pmodel.PmodelPartUi1</mainClass>
-									<addClasspath>true</addClasspath>
+									<mainClass>de.caegroup.pmodel.parts.PmodelPartUi1</mainClass>
 								</manifest>
 							</archive>
-<!-- ${project.build.outputDirectory} = ./target/classes -->
-<!-- 							<classesDirectory>/target</classesDirectory> -->
-<!-- 							<classesDirectory>/src/de/caegroup/pradar/parts</classesDirectory> -->
-<!-- 							<outputDirectory>/tmp/pradar/bin-klar</outputDirectory> -->
-<!-- 							<outputDirectory>${project.build.outputDirectory}</outputDirectory> -->
-<!-- 							<includes> -->
-<!-- 								<include>*</include> -->
-<!-- 							</includes> -->
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<finalName>${project.name}-${project.version}-nonObf</finalName>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 
+<!-- erstellt eines assembly mit allen eigenen (von mir erstellten) Abhaengigkeiten-->
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 				<artifactId>maven-assembly-plugin</artifactId> -->
+<!-- 				<version>2.2.1</version> -->
+<!-- 				<configuration> -->
+<!-- 					<formats> -->
+<!-- 						<format>jar</format> -->
+<!-- 					</formats> -->
+<!-- 					<descriptors> -->
+<!-- 						<descriptor>src/main/assembly/descriptor.xml</descriptor> -->
+<!-- 					</descriptors> -->
+<!-- 					<finalName>${project.name}-${project.version}</finalName> -->
+<!-- 					<archive> -->
+<!-- 						<manifest> -->
+<!-- 							<mainClass>de.caegroup.pramp.parts.PrampPartUi1</mainClass> -->
+<!-- 							<addClasspath>true</addClasspath> -->
+<!-- 						</manifest> -->
+<!-- 					</archive> -->
+<!-- 				</configuration> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>make-assembly</id> -->
+<!-- 						<phase>package</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>single</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
+
+<!-- Obfuskieren des jars. das output ueberschreibt das default-jar, welches durch 'maven-jar-plugin' id=default produziert wurde -->
 			<plugin>
 				<groupId>com.pyx4me</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
@@ -69,15 +112,14 @@
 					</execution>
 				</executions>
 				<configuration>
+<!-- 					<includeDependency>true</includeDependency> -->
 					<obfuscate>true</obfuscate>
-<!-- 					<outputDirectory>/tmp/pradar</outputDirectory> -->
 					<outputDirectory>${project.build.directory}</outputDirectory>
-<!-- 					<injar>bin-klar/${project.build.finalName}.jar</injar> -->
-					<injar>${project.build.finalName}.jar</injar>
-					<outjar>obfuscated_jar/${project.build.finalName}.jar</outjar>
+					<injar>${project.name}-${project.version}-nonObf.jar</injar>
+					<outjar>${project.name}-${project.version}.jar</outjar>
 					<options>
-						<option>-keep public class de.caegroup.pmodel.PmodelPartUi1 { *; }</option>
-						<option>-keep public class de.caegroup.pmodel.PmodelViewModel { *; }</option>
+						<option>-keep public class de.caegroup.pmodel.parts.PmodelPartUi1 { *; }</option>
+						<option>-keep public class de.caegroup.pmodel.parts.PmodelViewModel { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
@@ -85,33 +127,26 @@
 					<proguardVersion>4.8</proguardVersion>
 				</configuration>
 			</plugin>
+			
+<!-- Alle unter dependency definierten Abhaengigkeiten werden aus dem maven-repo in ein eigenes lib-verzeichnis kopiert -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.1</version>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-<!-- 					<outputDirectory>/tmp/pradar/bin</outputDirectory> -->
-					<finalName>${project.name}-${project.version}</finalName>
-					<archive>
-						<manifest>
-							<mainClass>de.caegroup.pradar.PmodelPartUi1</mainClass>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-				</configuration>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.8</version>
 				<executions>
 					<execution>
-						<id>make-assembly</id>
+						<id>copy-dependencies</id>
 						<phase>package</phase>
 						<goals>
-							<goal>single</goal>
+							<goal>copy-dependencies</goal>
 						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 	<profiles>
