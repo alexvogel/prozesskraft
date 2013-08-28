@@ -878,6 +878,7 @@ public class PmodelPartUi1 extends ModelObject
 		options.addOption( help );
 		options.addOption( v );
 		options.addOption( definition );
+		options.addOption( instance );
 				
 		/*----------------------------
 		  create the parser
@@ -913,6 +914,12 @@ public class PmodelPartUi1 extends ModelObject
 			System.exit(0);
 		}
 		
+		if (!( line.hasOption("definition")) && !( line.hasOption("instance")))
+		{
+			System.out.println("either -definition or -instance needed. call -help for help.");
+			System.exit(0);
+		}
+		
 
 		// gui
 		final Display display = new Display();
@@ -934,9 +941,10 @@ public class PmodelPartUi1 extends ModelObject
 						System.out.println("definition is "+line.getOptionValue("definition"));
 						new PmodelPartUi1(composite, line.getOptionValue("definition"));
 					}
-					else
+					else if (line.hasOption("instance"))
 					{
-						new PmodelPartUi1(composite);
+						System.out.println("instance is "+line.getOptionValue("instance"));
+						new PmodelPartUi1(composite, line.getOptionValue("instance"));
 					}
 					
 					try
