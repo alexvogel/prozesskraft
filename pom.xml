@@ -10,6 +10,8 @@
 	
 	<build>
 		<plugins>
+		
+<!-- packt alle class-Files in ein jar legt es im classDirectory ab -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.2</version>
@@ -21,17 +23,14 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
-							<archive>
-								<manifest>
-<!-- 									<mainClass>de.caegroup.process.commit</mainClass> -->
-									<addClasspath>true</addClasspath>
-								</manifest>
-							</archive>
-							<outputDirectory>/soft/tools/process/newest/bin-klar</outputDirectory>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<finalName>${project.name}-${project.version}-nonObf</finalName>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+
+<!-- Obfuskieren des jars. das output ueberschreibt das default-jar, welches durch 'maven-jar-plugin' id=default produziert wurde -->
 			<plugin>
 				<groupId>com.pyx4me</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
@@ -45,10 +44,11 @@
 					</execution>
 				</executions>
 				<configuration>
+<!-- 					<includeDependency>true</includeDependency> -->
 					<obfuscate>true</obfuscate>
-					<outputDirectory>/soft/tools/process/newest</outputDirectory>
-					<injar>bin-klar/${project.build.finalName}.jar</injar>
-					<outjar>bin/${project.build.finalName}.jar</outjar>
+					<outputDirectory>${project.build.directory}</outputDirectory>
+					<injar>${project.name}-${project.version}-nonObf.jar</injar>
+					<outjar>${project.name}-${project.version}.jar</outjar>
 					<options>
 						<option>-keep public class de.caegroup.process.Process { *; }</option>
 					</options>
@@ -58,54 +58,7 @@
 					<proguardVersion>4.8</proguardVersion>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.1</version>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-<!-- 					<outputDirectory>/soft/tools/process/newest/bin</outputDirectory> -->
-					<finalName>${project.name}-${project.version}</finalName>
-					<archive>
-						<manifest>
-							<mainClass>de.caegroup.process.Manager</mainClass>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-<!-- zum kompilieren aller jasperreports im verzeichnis /src/main/jasperreports -->
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.codehaus.mojo</groupId> -->
-<!-- 				<artifactId>jasperreports-maven-plugin</artifactId> -->
-<!-- 				<version>1.0-beta-2</version> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<goals> -->
-<!-- 							<goal>compile-reports</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- das muss hier wiederholt werden um die richtige xml-validierung anzuziehen -->
-<!-- 				<dependencies> -->
-<!-- 					<dependency> -->
-<!-- 						<groupId>net.sf.jasperreports</groupId> -->
-<!-- 						<artifactId>jasperreports</artifactId> -->
-<!-- 						<version>5.2.0</version> -->
-<!-- 					</dependency> -->
-<!-- 				</dependencies> -->
-<!-- 			</plugin> -->
+			
 		</plugins>
 	</build>
 	<dependencies>
