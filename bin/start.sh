@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.caegroup.pmodel.parts.PmodelPartUi1"
+MAINCLASS="de.caegroup.pmodel.PmodelPartUi1"
 BASEDIR=$(dirname $0)
 
 # wenn eine lokale javaversion vorhanden ist, soll diese bevorzugt verwendet werden
