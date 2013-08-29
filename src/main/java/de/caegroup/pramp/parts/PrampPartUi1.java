@@ -951,6 +951,10 @@ public class PrampPartUi1 extends ModelObject
 				log("info", "choose an empty or nonexistent instance directory.");
 				result = false;
 			}
+			else
+			{
+				log("info", "instance directory is empty - thats good..");
+			}
 		}
 		else
 		{
@@ -1105,48 +1109,24 @@ public class PrampPartUi1 extends ModelObject
 
 					// starten des process-manager remote
 					// ....
-					String sshIdAbsPath = System.getProperty("user.home")+"/"+WhereAmI.getDefaultSshIdRsa();
-					System.out.println("using ssh-id-rsa: "+sshIdAbsPath);
+					log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
+
+
+					String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"process-manager -instance "+process.getOutfilebinary()+"\""};
+
+					ProcessBuilder pb = new ProcessBuilder(args_for_command);
+					
 					try
 					{
-						JSch jsch = new JSch();
-
-						jsch.addIdentity(sshIdAbsPath);
-
-						log ("info", "opening ssh-session with user: "+System.getProperty("user.name")+", host: "+combo_hosts.getText());
-						Session session = jsch.getSession(System.getProperty("user.name"), combo_hosts.getText(), 22);
-						session.setConfig("StrictHostKeyChecking", "no");
-						session.connect();
-						
-						ChannelExec channelExec = (ChannelExec)session.openChannel("exec");
-
-						InputStream in = channelExec.getInputStream();
-						log ("info", "executing 'process-manager -instance "+process.getOutfilebinary()+"'");
-						String command = "process-manager -instance "+process.getOutfilebinary();
-
-						channelExec.setCommand(command);
-
-//						System.out.println("setting command to: "+command);
-						channelExec.connect();
-
-//						BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-//
-//						String line;
-//
-//						while((line = reader.readLine()) != null)
-//						{
-//							System.out.println(line);
-//						}
-
-						channelExec.disconnect();
-						session.disconnect();
-
-					}
-					catch(Exception e)
+						java.lang.Process p = pb.start();
+						log ("info", "calling: "+"ssh"+" "+System.getProperty("user.name")+"@"+combo_hosts.getText()+" "+"\"process-manager -instance "+process.getOutfilebinary()+"\"");
+						log ("debug", "hashCode="+p.hashCode());
+					} catch (IOException e)
 					{
+						// TODO Auto-generated catch block
+						log ("error", "IOException: problems with executing via ssh");
 						e.printStackTrace();
 					}
-						
 					return true;
 
 				}
