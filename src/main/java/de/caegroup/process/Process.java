@@ -356,7 +356,7 @@ implements Serializable
 		Schema schema;
 		try
 		{
-			// stream auf das schema liegt im selbem verzeichnis wie die class-files oeffnen
+			// stream auf das schema oeffnen (liegt im root verezichnis des jars in das es gepack wird)
 			InputStream schemaStream = this.getClass().getResourceAsStream("/process.xsd");
 			BufferedReader schemaReader = new BufferedReader(new InputStreamReader(schemaStream));
 
