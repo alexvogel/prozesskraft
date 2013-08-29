@@ -1310,6 +1310,11 @@ public class PrampPartUi1 extends ModelObject
 
 		boolean license_valid = false;		
 		
+		if (this.license_server_port_at_hostname.size() == 0)
+		{
+			log("error", "no license server defined. check configuration.");
+		}
+		
 		for(String portAtHost : this.license_server_port_at_hostname)
 		{
 			String[] port_and_host = portAtHost.split("@");
