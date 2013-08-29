@@ -10,7 +10,7 @@
 	<build>
 		<plugins>
 
-<!-- packt alle class-Files in ein jar legt es im target ab-->
+<!-- packt alle class-Files in ein jar legt es im classDirectory ab -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.2</version>
@@ -22,75 +22,13 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
-							<archive>
-								<manifest>
-<!--									<mainClass>de.caegroup.process.createdoc</mainClass> -->
- 									<addClasspath>true</addClasspath>
-								</manifest>
-							</archive>
-<!-- 							<outputDirectory>/tmp/pradar/bin-klar</outputDirectory> -->
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<finalName>${project.name}-${project.version}</finalName>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>com.pyx4me</groupId>
-				<artifactId>proguard-maven-plugin</artifactId>
-				<version>2.0.4</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>proguard</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<obfuscate>true</obfuscate>
-<!-- 					<outputDirectory>/tmp/pradar</outputDirectory> -->
-<!-- 					<injar>bin-klar/${project.build.finalName}.jar</injar> -->
-<!-- 					<outjar>bin/${project.build.finalName}.jar</outjar> -->
-					<options>
-<!-- 					abhaengigkeiten in anderen packages (durch import) koennen nur aufgeloest werden, wenn diese klassen public bleiben -->
-						<option>-keep public class de.caegroup.pradar.Db { *; }</option>
-						<option>-keep public class de.caegroup.pradar.Entity { *; }</option>
-						<option>-keep public class de.caegroup.pradar.WhereAmI { *; }</option>
-						<option>-keep public class de.caegroup.network.ConcurrentServer { *; }</option>
-						<option>-keep public class de.caegroup.network.Client { *; }</option>
-					</options>
-					<libs>
-						<lib>${java.home}/lib/rt.jar</lib>
-					</libs>
-					<proguardVersion>4.8</proguardVersion>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.1</version>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-<!-- 					<outputDirectory>/tmp/pradar/bin</outputDirectory> -->
-					<finalName>${project.name}-${project.version}</finalName>
-					<archive>
-						<manifest>
-<!-- 							<mainClass>de.caegroup.pradar.Manager</mainClass> -->
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+
 		</plugins>
 	</build>
 	<dependencies>
