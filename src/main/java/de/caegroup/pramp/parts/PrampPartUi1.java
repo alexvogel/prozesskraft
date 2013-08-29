@@ -74,12 +74,13 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.eclipse.swt.widgets.Combo;
 
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
+//import com.jcraft.jsch.ChannelExec;
+//import com.jcraft.jsch.JSch;
+//import com.jcraft.jsch.Session;
 import com.license4j.License;
 import com.license4j.LicenseValidator;
 
+import de.caegroup.commons.*;
 import de.caegroup.process.Commit;
 import de.caegroup.process.Process;
 import de.caegroup.process.Variable;
@@ -588,6 +589,14 @@ public class PrampPartUi1 extends ModelObject
 			if (ini.get("process", "process-installation-directory") != null )
 			{
 				this.processMainDir = (ini.get("process", "process-installation-directory"));
+				
+				// wenn es sich um einen relativen path handelt, soll dieser mit dem installationsverzeichnis ergaenzt werden
+				if(!(this.processMainDir.equals("^/")))
+				{
+					
+					this.processMainDir = WhereAmI.getInstallDirectoryAbsolutePath(this.getClass())+"/"+this.processMainDir;
+				}
+				
 			}
 			// einlesen der ini-section [license-server]
 			for(int x = 1; x <= 3; x++)
