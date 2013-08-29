@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.caegroup.pradar.parts.PradarPartUi3"
+MAINCLASS="de.caegroup.pradar.Checkin"
 BASEDIR=$(dirname $0)
 
 # wenn eine lokale javaversion vorhanden ist, soll diese bevorzugt verwendet werden
