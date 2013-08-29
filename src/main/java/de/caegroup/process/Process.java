@@ -361,7 +361,7 @@ implements Serializable
 			BufferedReader schemaReader = new BufferedReader(new InputStreamReader(schemaStream));
 
 			// und in dieses temp-verzeichnis schreiben
-			java.io.File tmpFile = java.io.File.createTempFile("avoge2013", "/process.xsd");
+			java.io.File tmpFile = java.io.File.createTempFile("avoge2013", "process.xsd");
 			FileWriter fstream = new FileWriter(tmpFile);
 			BufferedWriter schemaWriter = new BufferedWriter(fstream);
 
