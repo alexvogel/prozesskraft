@@ -357,11 +357,11 @@ implements Serializable
 		try
 		{
 			// stream auf das schema liegt im selbem verzeichnis wie die class-files oeffnen
-			InputStream schemaStream = this.getClass().getResourceAsStream("process.xsd");
+			InputStream schemaStream = this.getClass().getResourceAsStream("/../../../process.xsd");
 			BufferedReader schemaReader = new BufferedReader(new InputStreamReader(schemaStream));
 
 			// und in dieses temp-verzeichnis schreiben
-			java.io.File tmpFile = java.io.File.createTempFile("avoge2013", "process.xsd");
+			java.io.File tmpFile = java.io.File.createTempFile("avoge2013", "/process.xsd");
 			FileWriter fstream = new FileWriter(tmpFile);
 			BufferedWriter schemaWriter = new BufferedWriter(fstream);
 
