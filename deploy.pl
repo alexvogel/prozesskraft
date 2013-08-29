@@ -33,5 +33,9 @@ system "cp -r $target/*jar-with-dependencies* $auslieferungsverzeichnis/bin/.";
 # kopieren von resourcen ausserhalb des jars ins auslieferungsverzeichnis
 system "cp -r $cwd/etc $auslieferungsverzeichnis/.";
 
+# kopieren der allgemeinen lib ins auslieferungsverzeichnis
+print "cp -r $target/lib $auslieferungsverzeichnis/.\n";
+system "cp -r $target/lib $auslieferungsverzeichnis/.";
+
 # nachfolgern bescheid geben wie das auslieferungsverzeichnis heisst
 print "<newdir>$auslieferungsverzeichnis<newdir>\n";

@@ -61,7 +61,7 @@
 								</manifest>
 							</archive>
 							<outputDirectory>${project.build.directory}</outputDirectory>
-							<finalName>${project.name}-${project.version}-nonObf</finalName>
+							<finalName>${project.name}-${project.version}</finalName>
 						</configuration>
 					</execution>
 				</executions>
@@ -83,7 +83,7 @@
 				<configuration>
 					<obfuscate>true</obfuscate>
 					<outputDirectory>${project.build.directory}</outputDirectory>
-					<injar>${project.name}-${project.version}-nonObf.jar</injar>
+					<injar>${project.name}-${project.version}.jar</injar>
 					<outjar>${project.name}-${project.version}.jar</outjar>
 					<options>
 						<option>-keep public class de.caegroup.pradar.Checkin { *; }</option>
