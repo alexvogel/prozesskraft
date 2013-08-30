@@ -1126,7 +1126,7 @@ implements Serializable
 	public ArrayList<String> getInitCommitVarfiles()
 	{
 		ArrayList<String> newinitcommitvarfiles = new ArrayList<String>();
-		if (!(this.initCommitVarfile.isEmpty()))
+		if ((this.initCommitVarfile != null) && (!(this.initCommitVarfile.equals(""))))
 		{
 			String[] filesarray = this.initCommitVarfile.split(":");
 
