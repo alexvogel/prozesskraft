@@ -4,8 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.event.MouseWheelEvent;
 import java.io.EOFException;
+import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,7 +76,13 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
+import org.ini4j.Ini;
+import org.ini4j.InvalidFileFormatException;
 
+import com.license4j.License;
+import com.license4j.LicenseValidator;
+
+import de.caegroup.commons.WhereAmI;
 import de.caegroup.gui.process.insight.PIInsightCreator;
 import de.caegroup.gui.step.insight.SIInsightCreator;
 import de.caegroup.process.Process;
@@ -95,6 +105,9 @@ public class PmodelPartUi1 extends ModelObject
 	private Scale scale_gravx;
 	private Scale scale_gravy;
 //	private Process process = new Process();
+	private String iniFile = null;
+	private ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
+	private boolean erster_license_check = true;
 	
 	private Label label_marked = null;
 	
@@ -127,6 +140,9 @@ public class PmodelPartUi1 extends ModelObject
 		shell.setSize(633, 688);
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLocation(0, 0);
+		setIni();
+		loadIni();
+		checkLicense();
 		createControls(composite);
 		this.einstellungen.getProcess().setStepRanks();
 		applet = new PmodelViewPage(einstellungen);
@@ -138,6 +154,9 @@ public class PmodelPartUi1 extends ModelObject
 	@Inject
 	public PmodelPartUi1(Composite composite)
 	{
+		setIni();
+		loadIni();
+		checkLicense();
 		this.einstellungen.getProcess().setStepRanks();
 		applet = new PmodelViewPage(einstellungen);
 		createControls(composite);
@@ -822,6 +841,57 @@ public class PmodelPartUi1 extends ModelObject
 //		return bindingContextManager;
 //	}
 	
+	void setIni ()
+	{
+		File file = WhereAmI.getDefaultInifile(this.getClass());
+		this.iniFile = file.getAbsolutePath();
+	}
+
+	String getIni ()
+	{
+		return this.iniFile;
+	}
+	
+	File getIniAsFile ()
+	{
+		return new File(this.iniFile);
+	}
+	
+	/**
+	 * loads an ini-file
+	 */
+	void loadIni()
+	{
+		Ini ini;
+		ArrayList<String> license_server_list = new ArrayList<String>();
+
+		try
+		{
+			ini = new Ini(getIniAsFile());
+
+			// einlesen der ini-section [license-server]
+			for(int x = 1; x <= 3; x++)
+			{
+				if (ini.get("license-server", "license-server-"+x) != null )
+				{
+					license_server_list.add(ini.get("license-server", "license-server-"+x));
+				}
+			}
+			this.license_server_port_at_hostname = license_server_list;
+
+		}
+		catch (InvalidFileFormatException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		catch (IOException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
 	void log(String level, String logstring)
 	{
 //		text_logging.setText(text_logging.getText()+logstring+"\n");
@@ -846,6 +916,88 @@ public class PmodelPartUi1 extends ModelObject
 		return this.einstellungen.getProcess();
 	}
 	
+	/**
+	 * checkout License from floatingLicenseServer
+	 * @return void
+	 */
+	void checkLicense()
+	{
+		String publicKey =	"30819f300d06092a864886f70d010101050003818d003081893032301006"
+							+ "072a8648ce3d02002EC311215SHA512withECDSA106052b81040006031e0"
+							+ "004b460a863476ce8d60591192b45e656da25433f85feb56f0911f79c69G"
+							+ "02818100b89d68e21006ec20808c60ba29d992bf3fc519c2109cb7f85f24"
+							+ "07bbbd0ba620cf5b40148a4a5ba61e67e2423b528cb73e7db95013405d01"
+							+ "a5e083a519fc5ebb5861aa51e785df6e9e2afd7c9dc89b9cbd4edde24278"
+							+ "0f52dc58c07f8259c7d803RSA4102413SHA512withRSA5645cb91606642d"
+							+ "1d00b916fbde2ebb7954dfe2531abdb5174835b5c09413a6f0203010001";
+
+		boolean license_valid = false;		
+		
+		if (this.license_server_port_at_hostname.size() == 0)
+		{
+			log("error", "no license server defined. check configuration.");
+		}
+		
+		for(String portAtHost : this.license_server_port_at_hostname)
+		{
+			String[] port_and_host = portAtHost.split("@");
+			InetAddress inetAddressHost;
+			try
+			{
+				inetAddressHost = InetAddress.getByName(port_and_host[1]);
+
+				License license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
+
+				// logging nur beim ersten mal
+				if (erster_license_check)
+				{
+					log("info", "trying license-server "+portAtHost);
+					log("info", "license validation returns "+license.getValidationStatus().toString());
+					log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
+					erster_license_check = false;
+				}
+				
+				switch(license.getValidationStatus())
+				{
+					case LICENSE_VALID:
+						license_valid = true;
+						break;
+					default:
+						license_valid = false;
+				}
+			}
+			catch (UnknownHostException e)
+			{
+				// TODO Auto-generated catch block
+				log("warn", "unknown host "+port_and_host[1]);
+	//			e.printStackTrace();
+			}
+			
+			if (license_valid)
+			{
+				break;
+			}
+		}
+		
+		if (!(license_valid))
+		{
+			log("fatal", "no valid license found. forcing exit.");
+			try
+			{
+				Thread.sleep(10000);
+				System.exit(1);
+			} catch (InterruptedException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+//			log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
+		}
+	}
+
 	/**
 	 * @param args
 	 */
