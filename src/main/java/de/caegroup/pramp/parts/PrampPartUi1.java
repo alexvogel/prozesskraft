@@ -1149,7 +1149,7 @@ public class PrampPartUi1 extends ModelObject
 					log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
 
 
-					String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"process-manager -instance "+process.getOutfilebinary()+"\""};
+					String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\\\"process-manager -instance "+process.getOutfilebinary()+"\\\""};
 
 					ProcessBuilder pb = new ProcessBuilder(args_for_command);
 					
