@@ -45,7 +45,9 @@ implements Serializable
 	----------------------------*/
 	public void addCallitem(Callitem callitem)
 	{
+		callitem.setParent(this);
 		this.callitem.add(callitem);
+		
 	}
 	
 

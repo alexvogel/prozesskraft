@@ -1341,6 +1341,7 @@ implements Serializable, Cloneable
 	public void setWork(Work work)
 	{
 		this.work = work;
+		work.setParent(this);
 	}
 
 	public void setCommit(ArrayList<Commit> commit)

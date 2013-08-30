@@ -36,26 +36,27 @@ implements Serializable
 		this.parent = new Work();
 	}
 
-	public Callitem(Work parent)
+	public Callitem(Work work)
 	{
-		this.parent = parent;
+		this.parent = work;
 	}
 
 	/*----------------------------
 	  methods resolve
 	----------------------------*/
 
-	private String resolve(String stringToResolve)
+	public String resolve(String stringToResolve)
 	{
 		String resolvedString = null;
 
-		String patt = "\\{$(.+)\\}";
+		String patt = "\\{\\$(.+)\\}";
 		Pattern r = Pattern.compile(patt);
 		Matcher m = r.matcher(stringToResolve);
 		
 		if (m.find())
 		{
 			String listname = m.group(1);
+			System.out.println("listname needed: "+listname);
 			// die liste ermitteln, die den Namen traegt wie das gematchte substring
 			List list = this.parent.parent.getList(listname);
 			
@@ -68,7 +69,10 @@ implements Serializable
 			resolvedString = m.replaceAll(list.getItem().get(0));
 			log("info", "resolved {$"+listname+"} to "+resolvedString);
 		}
-
+		else
+		{
+			log("error", "pattern '"+patt+"' not found in String '"+stringToResolve+"'");
+		}
 		return resolvedString;
 	}
 	
@@ -174,6 +178,11 @@ implements Serializable
 	public void setStatus(String status)
 	{
 		this.status = status;
+	}
+
+	public void setParent(Work work)
+	{
+		this.parent = work;
 	}
 
 }
