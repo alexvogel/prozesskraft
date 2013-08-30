@@ -76,6 +76,7 @@ import org.ini4j.InvalidFileFormatException;
 import org.eclipse.swt.widgets.Combo;
 
 
+
 //import com.jcraft.jsch.ChannelExec;
 //import com.jcraft.jsch.JSch;
 //import com.jcraft.jsch.Session;
@@ -1055,7 +1056,7 @@ public class PrampPartUi1 extends ModelObject
 			}
 			else if(!(process.isProcessConsistent()))
 			{
-				log ("error", "process data seems to be inconsistent. check process definition.");
+				log ("error", "process data appears to be inconsistent. check process definition.");
 				return false;
 			}
 			else
@@ -1131,7 +1132,18 @@ public class PrampPartUi1 extends ModelObject
 					process.setRootdir(this.einstellungen.getRootDirectory());
 					
 					process.writeBinary();
-
+					log ("info", "writing binary instance file to disk "+process.getOutfilebinary());
+					
+					// kurz schlafen damit der schreibvorgang beendet werden kann
+					try
+					{
+						Thread.sleep(1000);
+					} catch (InterruptedException e1)
+					{
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
 					// starten des process-manager remote
 					// ....
 					log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
