@@ -1063,6 +1063,7 @@ public class PmodelPartUi1 extends ModelObject
 			System.out.println("author:  alexander.vogel@caegroup.de");
 			System.out.println("version: [% version %]");
 			System.out.println("date:    [% date %]");
+			System.out.println("baby schimmerlos");
 			System.exit(0);
 		}
 		
