@@ -1053,6 +1053,11 @@ public class PrampPartUi1 extends ModelObject
 				log ("error", "not all tests passed. commit refused. check input.");
 				return false;
 			}
+			else if(!(process.isProcessConsistent()))
+			{
+				log ("error", "process data seems to be inconsistent. check process definition.");
+				return false;
+			}
 			else
 			{
 				// holen aller user-angaben aus dem formular
