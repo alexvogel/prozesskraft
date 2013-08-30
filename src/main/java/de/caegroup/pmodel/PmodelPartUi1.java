@@ -5,6 +5,7 @@ import java.awt.Frame;
 import java.awt.event.MouseWheelEvent;
 import java.io.EOFException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -154,7 +155,6 @@ public class PmodelPartUi1 extends ModelObject
 	@Inject
 	public PmodelPartUi1(Composite composite)
 	{
-		System.out.println("baby schimmerlos");
 		setIni();
 		loadIni();
 		checkLicense();
@@ -207,6 +207,10 @@ public class PmodelPartUi1 extends ModelObject
 		{
 			System.out.println("file does not exist: "+inFile.getAbsolutePath());
 		}
+
+		setIni();
+		loadIni();
+		checkLicense();
 
 		einstellungen.setRootpositionratiox((float)0.5);
 		einstellungen.setRootpositionratioy((float)0.1);
@@ -881,15 +885,24 @@ public class PmodelPartUi1 extends ModelObject
 			this.license_server_port_at_hostname = license_server_list;
 
 		}
+		catch (FileNotFoundException e)
+		{
+			log("fatal", "file not found: "+this.iniFile);
+			System.exit(1);
+		}
 		catch (InvalidFileFormatException e1)
 		{
+			log("fatal", "invalid file format: "+this.iniFile);
+			System.exit(1);
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+//			e1.printStackTrace();
 		}
 		catch (IOException e1)
 		{
+			log("fatal", "problems while reading file (IOException): "+this.iniFile);
+			System.exit(1);
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+//			e1.printStackTrace();
 		}
 	}
 
