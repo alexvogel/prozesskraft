@@ -1071,7 +1071,7 @@ implements Serializable
 	public ArrayList<String> getInitCommitDirs()
 	{
 		ArrayList<String> newDirarray = new ArrayList<String>();
-		if (!(this.initCommitDir.equals("")))
+		if ((this.initCommitDir != null) && (!(this.initCommitDir.equals(""))))
 		{
 			String[] dirarray = this.initCommitDir.split(":");
 			
