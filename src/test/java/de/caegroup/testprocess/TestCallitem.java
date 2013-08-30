@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
+import de.caegroup.process.Callitem;
+
 public class TestCallitem {
 
 	@Before
@@ -13,10 +15,12 @@ public class TestCallitem {
 		
 	}
 	
-//	@Test
-//	public void testResolvePar()
-//	{
-//		fail("Not yet implemented");
-//	}
+	@Test
+	public void testResolvePar()
+	{
+		Callitem callitem1 = new Callitem();
+		callitem1.setPar("{$irgendwas}");
+		fail("Not yet implemented");
+	}
 
 }

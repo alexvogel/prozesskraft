@@ -5,6 +5,7 @@ import java.util.*;
 //import java.util.HashMap;
 //import java.util.Map;
 import java.util.regex.*;
+
 import org.apache.solr.common.util.NamedList;
 
 public class Callitem
@@ -25,6 +26,7 @@ implements Serializable
 	private String status = new String();	// waiting/initializing/working/committing/ finished/broken/cancelled
 
 	private Work parent = null;
+	private ArrayList<Log> log = new ArrayList<Log>();
 
 	/*----------------------------
 	  constructors
@@ -47,24 +49,42 @@ implements Serializable
 	{
 		String resolvedString = null;
 
-		String patt = "list\\((.+)\\)";
+		String patt = "\\{$(.+)\\}";
 		Pattern r = Pattern.compile(patt);
 		Matcher m = r.matcher(stringToResolve);
 		
 		if (m.find())
 		{
-			String substitution = new String();
-//			this.parent.getList(m.group(1));
-			ArrayList<String> listItems = (this.parent.getListItems(m.group(1)));
-			Iterator<String> iterListItem = listItems.iterator();
-			while(iterListItem.hasNext())
+			String listname = m.group(1);
+			// die liste ermitteln, die den Namen traegt wie das gematchte substring
+			List list = this.parent.parent.getList(listname);
+			
+			if (list == null)
 			{
-				substitution = substitution + iterListItem.next();
+				log("error", "list '"+listname+"' not found in step '"+this.parent.parent.getName()+"' but needed for resolving.");
 			}
-			resolvedString = m.replaceAll(substitution);
+			
+			// das muster soll durch den ersten eintrag in der list ersetzt werden
+			resolvedString = m.replaceAll(list.getItem().get(0));
+			log("info", "resolved {$"+listname+"} to "+resolvedString);
 		}
+
 		return resolvedString;
 	}
+	
+	/*----------------------------
+	  methods misc
+	----------------------------*/
+	/**
+	 * stores a message for the process
+	 * @param String loglevel, String logmessage
+	 */
+	public void log(String loglevel, String logmessage)
+	{
+		this.log.add(new Log(loglevel, logmessage));
+	}
+	
+
 	/*----------------------------
 	  methods get
 	----------------------------*/

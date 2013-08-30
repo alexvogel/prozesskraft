@@ -1177,19 +1177,14 @@ implements Serializable, Cloneable
 
 	public List getList(String listname)
 	{
-		List list = null;
-		
-		Iterator<List> iterList = this.list.iterator();
-		while(iterList.hasNext())
+		for(List actualList : this.list)
 		{
-			List actualList = iterList.next();
 			if (actualList.getName().equals(listname))
 			{
-				list = actualList;
-				return list;
+				return actualList;
 			}
 		}
-		return list;
+		return null;
 	}
 	
 	public List getList(int index)

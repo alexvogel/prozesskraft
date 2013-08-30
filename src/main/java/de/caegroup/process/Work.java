@@ -26,7 +26,7 @@ implements Serializable
 	
 	private String status = new String();	// waiting/initializing/working/committing/ finished/broken/cancelled
 	private int exitvalue;
-	private Step parent;
+	public Step parent;
 	/*----------------------------
 	  constructors
 	----------------------------*/
