@@ -1125,16 +1125,24 @@ public class PradarPartUi3 extends ModelObject
 			}
 			this.license_server_port_at_hostname = license_server_list;
 		}
+		catch (FileNotFoundException e)
+		{
+			log("fatal", "problems with configuration: file not found: "+inifile.getAbsolutePath());
+			System.exit(1);
+		}
 		catch (InvalidFileFormatException e1)
 		{
-			log("error", "invalid fileformat of inifile: "+inifile);
+			log("fatal", "problems with configuration: invalid file format: "+inifile.getAbsolutePath());
+			System.exit(1);
 			// TODO Auto-generated catch block
 //			e1.printStackTrace();
 		}
 		catch (IOException e1)
 		{
+			log("fatal", "problems with configuration: problems while reading file (IOException): "+inifile.getAbsolutePath());
+			System.exit(1);
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+//			e1.printStackTrace();
 		}
 			
 		// einchecken in die DB
