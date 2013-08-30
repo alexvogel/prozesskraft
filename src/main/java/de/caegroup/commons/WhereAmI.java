@@ -29,6 +29,12 @@ public class WhereAmI {
     }
   }
   
+  	public static String getInstallDirectoryAbsolutePath(Class clazz)
+  	{
+  		File myPosition = WhereAmI(clazz);
+  		return myPosition.getAbsolutePath();
+  	}
+  
 	public static File getDefaultInifile(Class clazz)
 	{
 		File myPosition = WhereAmI(clazz);
