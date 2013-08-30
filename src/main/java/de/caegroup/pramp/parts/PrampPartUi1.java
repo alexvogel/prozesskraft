@@ -613,19 +613,19 @@ public class PrampPartUi1 extends ModelObject
 		}
 		catch (FileNotFoundException e)
 		{
-			log("fatal", "file not found: "+this.iniFile);
+			log("fatal", "problems with configuration: file not found: "+this.iniFile);
 			System.exit(1);
 		}
 		catch (InvalidFileFormatException e1)
 		{
-			log("fatal", "invalid file format: "+this.iniFile);
+			log("fatal", "problems with configuration: invalid file format: "+this.iniFile);
 			System.exit(1);
 			// TODO Auto-generated catch block
 //			e1.printStackTrace();
 		}
 		catch (IOException e1)
 		{
-			log("fatal", "problems while reading file (IOException): "+this.iniFile);
+			log("fatal", "problems with configuration: problems while reading file (IOException): "+this.iniFile);
 			System.exit(1);
 			// TODO Auto-generated catch block
 //			e1.printStackTrace();
