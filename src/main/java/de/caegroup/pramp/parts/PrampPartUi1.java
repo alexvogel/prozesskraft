@@ -6,6 +6,7 @@ import de.caegroup.gui.process.CommitCreator;
 import java.awt.Frame;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -73,6 +74,7 @@ import org.eclipse.swt.widgets.Text;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.eclipse.swt.widgets.Combo;
+
 
 //import com.jcraft.jsch.ChannelExec;
 //import com.jcraft.jsch.JSch;
@@ -609,15 +611,24 @@ public class PrampPartUi1 extends ModelObject
 			this.license_server_port_at_hostname = license_server_list;
 
 		}
+		catch (FileNotFoundException e)
+		{
+			log("fatal", "file not found: "+this.iniFile);
+			System.exit(1);
+		}
 		catch (InvalidFileFormatException e1)
 		{
+			log("fatal", "invalid file format: "+this.iniFile);
+			System.exit(1);
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+//			e1.printStackTrace();
 		}
 		catch (IOException e1)
 		{
+			log("fatal", "problems while reading file (IOException): "+this.iniFile);
+			System.exit(1);
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+//			e1.printStackTrace();
 		}
 	}
 
