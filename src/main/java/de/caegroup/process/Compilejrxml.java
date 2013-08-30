@@ -222,14 +222,7 @@ public class Compilejrxml
 
 				report.setJrxml(actualFile.getAbsolutePath());
 				report.setJasper(outFile.getAbsolutePath());
-				try
-				{
-					report.compile();
-				} catch (JRException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				report.compile();
 
 			}
 			else

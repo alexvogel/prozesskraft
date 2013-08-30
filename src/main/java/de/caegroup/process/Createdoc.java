@@ -432,33 +432,9 @@ public class Createdoc
 		report.setParameter("processCustomerName", process.getCustomerName());
 		report.setParameter("processCustomerMail", process.getCustomerMail());
 		
-		// P03) report fuellen
-		try
-		{
-			report.fillPReport();
-		} catch (FileNotFoundException e)
-		{
-		// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e)
-		{
-		// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		report.fillPReport();
 		
-		// P05) pdf schreiben
-		try
-		{
-			report.exportToPdf();
-		} catch (FileNotFoundException e)
-		{
-		// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e)
-		{
-		// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		report.exportToPdf();
 		
 		report = null;
 		
@@ -493,33 +469,9 @@ public class Createdoc
 			report.setParameter("processCustomerName", process.getCustomerName());
 			report.setParameter("processCustomerMail", process.getCustomerMail());
 		
-		// P05) report fuellen
-		try
-		{
-			report.fillPReport();
-		} catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		report.fillPReport();
 		
-		// P05) pdf schreiben
-		try
-		{
-			report.exportToPdf();
-		} catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		report.exportToPdf();
 		
 		report = null;
 		
@@ -557,33 +509,9 @@ public class Createdoc
 		// P1) bild an report melden
 		report.setParameter("processTopologyImagePath", processTopologyImagePath);
 
-		// P1) report fuellen
-		try
-		{
-			report.fillPReport();
-		} catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		report.fillPReport();
 
-		// P1) pdf schreiben
-		try
-		{
-			report.exportToPdf();
-		} catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		report.exportToPdf();
 
 		report = null;
 		
@@ -655,33 +583,9 @@ public class Createdoc
 			}
 		}
 		
-		// P2) report fuellen
-		try
-		{
-			report.fillPReport();
-		} catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		report.fillPReport();
 
-		// P2) pdf schreiben
-		try
-		{
-			report.exportToPdf();
-		} catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		report.exportToPdf();
 		
 		report = null;
 		
@@ -781,33 +685,9 @@ public class Createdoc
 
 		}
 
-		// P3) report fuellen
-		try
-		{
-			report.fillPReport();
-		} catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		report.fillPReport();
 
-		// P3) pdf schreiben
-		try
-		{
-			report.exportToPdf();
-		} catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		report.exportToPdf();
 		
 		report = null;
 		
@@ -918,33 +798,9 @@ public class Createdoc
 
 		}
 		
-		// P4) report fuellen
-		try
-		{
-			report.fillPReport();
-		} catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		report.fillPReport();
 
-		// P4) pdf schreiben
-		try
-		{
-			report.exportToPdf();
-		} catch (FileNotFoundException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		report.exportToPdf();
 		
 		report = null;
 	
@@ -1086,33 +942,9 @@ public class Createdoc
 					report.addField(row);
 				}
 	
-				// P51x) report fuellen
-				try
-				{
-					report.fillPReport();
-				} catch (FileNotFoundException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (JRException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				report.fillPReport();
 	
-				// P51x) pdf schreiben
-				try
-				{
-					report.exportToPdf();
-				} catch (FileNotFoundException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (JRException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				report.exportToPdf();
 				
 				report = null;
 			}
@@ -1272,33 +1104,9 @@ public class Createdoc
 					}
 					
 				}
-				// P52x) report fuellen
-				try
-				{
-					report.fillPReport();
-				} catch (FileNotFoundException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (JRException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				report.fillPReport();
 				
-				// P52x) pdf schreiben
-				try
-				{
-					report.exportToPdf();
-				} catch (FileNotFoundException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (JRException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				report.exportToPdf();
 				
 				report = null;
 			}
