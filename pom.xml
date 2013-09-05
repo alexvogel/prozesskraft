@@ -5,7 +5,7 @@
 	<artifactId>process-createdoc</artifactId>
 	<packaging>jar</packaging>
 	<version>0.0.1</version>
-	<name>processcreatedoc</name>
+	<name>process-createdoc</name>
 	<url>http://maven.apache.org</url>
 	<build>
 
