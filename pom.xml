@@ -119,6 +119,7 @@
 					<options>
 						<option>-keep public class de.caegroup.pmodel.PmodelPartUi1 { *; }</option>
 						<option>-keep public class de.caegroup.pmodel.PmodelViewModel { *; }</option>
+						<option>-keep public class de.caegroup.pmodel.PmodelViewPage { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
