@@ -39,6 +39,10 @@ system "cp -r $target/*[0123456789].jar $auslieferungsverzeichnis/bin/.";
 # kopieren von resourcen ausserhalb des jars ins auslieferungsverzeichnis
 system "cp -r $cwd/etc $auslieferungsverzeichnis/.";
 
+# loeschen von 32-Bit/64-Bit Jars aus dem allgemeinen lib-Verzeichnis
+print "rm -rf $target/lib/gtk.linux.x86*\n";
+system "rm -rf $target/lib/gtk.linux.x86*";
+
 # kopieren der allgemeinen lib ins auslieferungsverzeichnis
 print "cp -r $target/lib $auslieferungsverzeichnis/.\n";
 system "cp -r $target/lib $auslieferungsverzeichnis/.";
