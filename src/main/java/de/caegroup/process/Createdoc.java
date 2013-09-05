@@ -117,7 +117,7 @@ public class Createdoc
 		Option odefinition = OptionBuilder.withArgName("definition")
 				.hasArg()
 				.withDescription("[mandatory] process definition file")
-				.isRequired()
+//				.isRequired()
 				.create("definition");
 		
 		Option otype = OptionBuilder.withArgName("type")
@@ -133,7 +133,7 @@ public class Createdoc
 		Option ooutput = OptionBuilder.withArgName("output")
 				.hasArg()
 				.withDescription("[mandatory] output file (pdf) with documentation of process definition")
-				.isRequired()
+//				.isRequired()
 				.create("output");
 		
 ////		Option property = OptionBuilder.withArgName( "property=value" )
