@@ -344,14 +344,7 @@ public class Createdoc
 		{
 			
 		}
-		try
-		{
-			new AutoCropBorder(processTopologyImagePath);
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		new AutoCropBorder(processTopologyImagePath);
 		
 		// VORBEREITUNG) fuer jeden step ein bild speichern
 		for(Step actualStep : process.getStep())
@@ -379,14 +372,7 @@ public class Createdoc
 			{
 				
 			}
-			try
-			{
-				new AutoCropBorder(stepImagePath);
-			} catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			new AutoCropBorder(stepImagePath);
 			stepTopologyImagePath.put(actualStep.getName(), stepImagePath);
 			
 			// farbe wieder auf grau aendern
