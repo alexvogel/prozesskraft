@@ -29,6 +29,10 @@ print "cp -r $cwd/bin $auslieferungsverzeichnis/.\n";
 system "cp -r $cwd/bin $auslieferungsverzeichnis/.";
 print "cp -r $cwd/jasper $auslieferungsverzeichnis/.\n";
 system "cp -r $cwd/jasper $auslieferungsverzeichnis/.";
+print "cp -r $cwd/lib32 $auslieferungsverzeichnis/.\n";
+system "cp -r $cwd/lib32 $auslieferungsverzeichnis/.";
+print "cp -r $cwd/lib64 $auslieferungsverzeichnis/.\n";
+system "cp -r $cwd/lib64 $auslieferungsverzeichnis/.";
 print "cp -r $target/*[0123456789].jar $auslieferungsverzeichnis/bin/.\n";
 system "cp -r $target/*[0123456789].jar $auslieferungsverzeichnis/bin/.";
 
