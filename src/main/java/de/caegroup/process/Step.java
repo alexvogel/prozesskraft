@@ -3,6 +3,7 @@ package de.caegroup.process;
 import java.io.*;
 import java.util.*;
 
+import de.caegroup.codegen.Script;
 import de.caegroup.process.Commit;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -105,6 +106,12 @@ implements Serializable, Cloneable
 //		}
 //		return null;
 //	}
+	
+	public ArrayList<String> getPerlcode()
+	{
+		Script script = new Script();
+		return script.getAll();
+	}
 	
 	public boolean areFromstepsfinished()
 	{

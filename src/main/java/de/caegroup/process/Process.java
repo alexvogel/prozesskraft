@@ -48,6 +48,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+import de.caegroup.codegen.Script;
+
 
 public class Process extends ModelObject
 implements Serializable
@@ -162,6 +164,12 @@ implements Serializable
 		step.setParent(this);
 		this.step.add(step);
 		return true;
+	}
+
+	public ArrayList<String> getPerlcode()
+	{
+		Script script = new Script();
+		return script.getAll();
 	}
 
 //	public void removeStep(String stepname)

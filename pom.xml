@@ -161,6 +161,11 @@
 			<artifactId>avoge-commons</artifactId>
 			<version>0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>de.caegroup.codegen</groupId>
+			<artifactId>codegen-core</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 <!-- 		<dependency> -->
 <!-- 			<groupId>net.sf.jasperreports</groupId> -->
 <!-- 			<artifactId>jasperreports</artifactId> -->
