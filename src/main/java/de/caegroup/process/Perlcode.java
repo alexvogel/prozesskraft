@@ -1,6 +1,7 @@
 package de.caegroup.process;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import org.apache.commons.cli.CommandLine;
@@ -158,12 +159,21 @@ public class Perlcode
 			perlcode = p2.getPerlcode();
 		}
 		
+		// Ausgabedatei festlegen
+		String output = "out.pl";
+		if (commandline.hasOption("output"))
+		{
+			output = commandline.getOptionValue("output");
+		}
+		System.out.println("info: generating perlcode and exporting in file: "+output);
+		
 		// perlcode in Datei schreiben
-		
-		
-		p2.writeBinary();
-		System.out.println("info: writing process instance "+p2.getOutfilebinary());
-		
+		PrintWriter writer = new PrintWriter(output, "UTF-8");
+		for (String line : perlcode)
+		{
+			writer.println(line);
+		}
+		writer.close();
 	}
 	
 	private static void exiter()
