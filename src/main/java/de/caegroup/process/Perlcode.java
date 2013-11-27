@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -119,10 +121,17 @@ public class Perlcode
 		ArrayList<String> perlcode = new ArrayList<String>();
 		Process p1 = new Process();
 		
-		p1.setInfilebinary( commandline.getOptionValue("definition") );
+		p1.setInfilexml( commandline.getOptionValue("definition") );
 		System.err.println("info: reading process definition "+commandline.getOptionValue("definition"));
-		Process p2 = p1.readBinary();
-		p2.setOutfilebinary(commandline.getOptionValue("instance"));
+		Process p2 = null;
+		try {
+			p2 = p1.readXml();
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.err.println("error");
+			exiter();
+		}
 		
 		// perlcode generieren
 		if (commandline.hasOption("step"))
