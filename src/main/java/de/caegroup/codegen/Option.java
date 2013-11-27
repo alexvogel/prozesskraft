@@ -35,10 +35,10 @@ implements Serializable, Cloneable
 	/*----------------------------
 	  methods 
 	----------------------------*/
-	public String getContent()
+	public ArrayList<String> getContent()
 	{
-		String content = "";
-		content      += "				'" + this.name + "' => {'minoccur' => '" + this.minoccur + ", 'maxoccur' => '" + this.maxoccur + ", 'definition' => '" + this.definition + ", 'check' => '" + this.check + ", 'default' => '" + this.def + ", 'text1' => '" + this.text1 + ", 'text2' => '" + this.text2 + "'},";
+		ArrayList<String> content = new ArrayList<String>();
+		content.add("				'" + this.name + "' => {'minoccur' => '" + this.minoccur + ", 'maxoccur' => '" + this.maxoccur + ", 'definition' => '" + this.definition + ", 'check' => '" + this.check + ", 'default' => '" + this.def + ", 'text1' => '" + this.text1 + ", 'text2' => '" + this.text2 + "'},");
 		return content;
 	}
 }

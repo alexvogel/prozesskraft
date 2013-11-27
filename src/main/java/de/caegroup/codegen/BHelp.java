@@ -28,42 +28,50 @@ implements Serializable, Cloneable
 	/*----------------------------
 	  methods 
 	----------------------------*/
-	public String getBlock()
+	public ArrayList<String> getBlock()
 	{
 		
-		String content = getContent();
+		ArrayList<String> content = getContent();
 		BigInteger md5 = this.parent.genMd5(content);
-		return this.parent.genBlockStart("help") + "# md5="+md5+"\n" + content + "# md5="+md5+"\n" + this.parent.genBlockEnd("help");
+		
+		ArrayList<String> block = new ArrayList<String>();
+		block.add(this.parent.genBlockStart("help"));
+		block.add("# md5="+md5);
+		block.addAll(content);
+		block.add("# md5="+md5);
+		block.add(this.parent.genBlockEnd("help"));
+		
+		return block;
 	}
 	
-	private String getContent()
+	private ArrayList<String> getContent()
 	{
-		String content = "";
+		ArrayList<String> content = new ArrayList<String>();
 
-		content      += "my $helptext;\n";
-		content      += "\n";
-		content      += "$helptext .= 'usage: $filename PARAMETER\\n';\n";
-		content      += "$helptext .= '\\n';\n";
-		content      += "$helptext .= 'Parameter\n';\n";
-		content      += "\n";
-		content      += "foreach(sort keys %OPTHELP)\n";
-		content      += "{\n";
-		content      += "\t$helptext .= sprintf (' --%s%s\\n', $_, ${$OPTHELP{$_}}{'text1'});\n";
-		content      += "\n";
-		content      += "\t# helptext nach ca. 60 Zeichen umbrechen\n";
-		content      += "\t${$OPTHELP{$_}}{'text2'} =~ s/(.{60}[^\\s]*)\\s+/$1\\n/g;\n";
-		content      += "\n";
-		content      += "\tforeach(split ('\n', ${$OPTHELP{$_}}{'text2'}))\n";
-		content      += "\t{\n";
-		content      += "\t\t$helptext .= sprintf ('       %s\\n',  $_);\n";
-		content      += "\t}\n";
-		content      += "\t$helptext .= '\\n';\n";
-		content      += "}\n";
-		content      += "\n";
-		content      += "$helptext .= '\\n';\n";
-		content      += "$helptext .= 'example: $filename --scope model --submodel_vat f34_vat.nas --submodel_rk f34_rk.nas\n';\\n";
-		content      += "$helptext .= '\\n';\n";
-		content      += "$helptext .= 'author: alexander.vogel\\@caegroup.de | version: $version | date: $date\\n';\n";
+		content.add("my $helptext;\n");
+		content.add("\n");
+		content.add("$helptext .= 'usage: $filename PARAMETER\\n';\n");
+		content.add("$helptext .= '\\n';\n");
+		content.add("$helptext .= 'Parameter\n';\n");
+		content.add("\n");
+		content.add("foreach(sort keys %OPTHELP)\n");
+		content.add("{\n");
+		content.add("\t$helptext .= sprintf (' --%s%s\\n', $_, ${$OPTHELP{$_}}{'text1'});\n");
+		content.add("\n");
+		content.add("\t# helptext nach ca. 60 Zeichen umbrechen\n");
+		content.add("\t${$OPTHELP{$_}}{'text2'} =~ s/(.{60}[^\\s]*)\\s+/$1\\n/g;\n");
+		content.add("\n");
+		content.add("\tforeach(split ('\n', ${$OPTHELP{$_}}{'text2'}))\n");
+		content.add("\t{\n");
+		content.add("\t\t$helptext .= sprintf ('       %s\\n',  $_);\n");
+		content.add("\t}\n");
+		content.add("\t$helptext .= '\\n';\n");
+		content.add("}\n");
+		content.add("\n");
+		content.add("$helptext .= '\\n';\n");
+		content.add("$helptext .= 'example: $filename --scope model --submodel_vat f34_vat.nas --submodel_rk f34_rk.nas\n';\\n");
+		content.add("$helptext .= '\\n';\n");
+		content.add("$helptext .= 'author: alexander.vogel\\@caegroup.de | version: $version | date: $date\\n';\n");
 
 		return content;
 	}

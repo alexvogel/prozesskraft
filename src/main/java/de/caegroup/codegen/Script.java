@@ -54,17 +54,32 @@ implements Serializable, Cloneable
 	 * @return String
 	 */
 	
-	public String getAll()
+	public ArrayList<String> getAll()
 	{
-		String perl = "#" + this.interpreter + "\n";
+		ArrayList<String> perl = new ArrayList<String>();
+		perl.add("#!" + this.interpreter);
 		
 		BMeta meta = new BMeta(this);
 		BModules modules = new BModules(this);
 		BPath path = new BPath(this);
 		BConfig config = new BConfig(this);
+		BOptions options = new BOptions(this);
+		BHelp help = new BHelp(this);
+		BCalls calls = new BCalls(this);
+		BChecks checks = new BChecks(this);
+		BBusiness business = new BBusiness(this);
+		BSubs subs = new BSubs(this);
 		
-		
-		perl += meta.getBlock() + modules.getBlock() + path.getBlock() + config.getBlock();
+		perl.addAll(meta.getBlock());
+		perl.addAll(modules.getBlock());
+		perl.addAll(path.getBlock());
+		perl.addAll(config.getBlock());
+		perl.addAll(options.getBlock());
+		perl.addAll(help.getBlock());
+		perl.addAll(calls.getBlock());
+		perl.addAll(checks.getBlock());
+		perl.addAll(business.getBlock());
+		perl.addAll(subs.getBlock());
 		
 		return perl;
 	}
@@ -91,11 +106,21 @@ implements Serializable, Cloneable
 		return text;
 	}
 	
-	public BigInteger genMd5(String content)
+	public BigInteger genMd5(ArrayList<String> content)
 	{
 		BigInteger bigInt = null;
 		try {
-			byte[] bytesOfContent = content.getBytes("UTF-8");
+			
+			// den gesamten content in einen String einfuegen
+			String contentString = "";
+			
+			for(String line : content)
+			{
+				contentString += line+"\n";
+			}
+			
+			// und dann md5 erzeugen
+			byte[] bytesOfContent = contentString.getBytes("UTF-8");
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			byte[] thedigest = md.digest(bytesOfContent);
 			bigInt = new BigInteger(1, thedigest);

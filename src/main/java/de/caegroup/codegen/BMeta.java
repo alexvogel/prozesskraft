@@ -30,19 +30,28 @@ implements Serializable, Cloneable
 	/*----------------------------
 	  methods 
 	----------------------------*/
-	public String getBlock()
+	public ArrayList<String> getBlock()
 	{
 		
-		String content = getContent();
+		ArrayList<String> content = getContent();
 		BigInteger md5 = this.parent.genMd5(content);
-		return this.parent.genBlockStart("meta") + "# md5="+md5+"\n" + content + "# md5="+md5+"\n" + this.parent.genBlockEnd("meta");
+		
+		ArrayList<String> block = new ArrayList<String>();
+		block.add(this.parent.genBlockStart("checks"));
+		block.add("# md5="+md5);
+		block.addAll(content);
+		block.add("# md5="+md5);
+		block.add(this.parent.genBlockEnd("checks"));
+		
+		return block;
 	}
 	
-	private String getContent()
+	private ArrayList<String> getContent()
 	{
-		String content = "";
-		content      += "my $version = \"[% version %]\";";
-		content      += "my $date = \"[% date %]\";";
+		ArrayList<String> content = new ArrayList<String>();
+
+		content.add("my $version = \"[% version %]\");");
+		content.add("my $date = \"[% date %]\");");
 		
 		return content;
 	}

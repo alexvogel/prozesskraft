@@ -28,37 +28,45 @@ implements Serializable, Cloneable
 	/*----------------------------
 	  methods 
 	----------------------------*/
-	public String getBlock()
+	public ArrayList<String> getBlock()
 	{
 		
-		String content = getContent();
+		ArrayList<String> content = getContent();
 		BigInteger md5 = this.parent.genMd5(content);
-		return this.parent.genBlockStart("calls") + "# md5="+md5+"\n" + content + "# md5="+md5+"\n" + this.parent.genBlockEnd("calls");
+		
+		ArrayList<String> block = new ArrayList<String>();
+		block.add(this.parent.genBlockStart("calls"));
+		block.add("# md5="+md5);
+		block.addAll(content);
+		block.add("# md5="+md5);
+		block.add(this.parent.genBlockEnd("calls"));
+		
+		return block;
 	}
-	
-	private String getContent()
-	{
-		String content = "";
 
-		content      += "my $helptext;\n";
-		content      += "if (${$OPT{'help'}})\n";
-		content      += "{\n";
-		content      += "\tprint STDERR $helptext;\n";
-		content      += "\texit(0);\n";
-		content      += "}\n";
-		content      += "if (${$OPT{'doc'}})\n";
-		content      += "{\n";
-		content      += "\tif (stat $doc_path)\n";
-		content      += "\t{\n";
-		content      += "\t\tlogit('info', 'showing documentation');\n";
-		content      += "\t\texec 'acroread ' . $doc_path;\n";
-		content      += "\t}\n";
-		content      += "\telse\n";
-		content      += "\t{\n";
-		content      += "\t\tlogit('info', 'no documentation installed ('.$doc_path.')');\n";
-		content      += "\t}\n";
-		content      += "\texit(0);\n";
-		content      += "}\n";
+	private ArrayList<String> getContent()
+	{
+		ArrayList<String> content = new ArrayList<String>();
+
+		content.add("my $helptext;");
+		content.add("if (${$OPT{'help'}})");
+		content.add("{");
+		content.add("\tprint STDERR $helptext;");
+		content.add("\texit(0);");
+		content.add("}");
+		content.add("if (${$OPT{'doc'}})");
+		content.add("{");
+		content.add("\tif (stat $doc_path)");
+		content.add("\t{");
+		content.add("\t\tlogit('info', 'showing documentation');");
+		content.add("\t\texec 'acroread ' . $doc_path;");
+		content.add("\t}");
+		content.add("\telse");
+		content.add("\t{");
+		content.add("\t\tlogit('info', 'no documentation installed ('.$doc_path.')');");
+		content.add("\t}");
+		content.add("\texit(0);");
+		content.add("}");
 
 		return content;
 	}

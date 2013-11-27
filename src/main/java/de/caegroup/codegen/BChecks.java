@@ -28,39 +28,47 @@ implements Serializable, Cloneable
 	/*----------------------------
 	  methods 
 	----------------------------*/
-	public String getBlock()
+	public ArrayList<String> getBlock()
 	{
 		
-		String content = getContent();
+		ArrayList<String> content = getContent();
 		BigInteger md5 = this.parent.genMd5(content);
-		return this.parent.genBlockStart("checks") + "# md5="+md5+"\n" + content + "# md5="+md5+"\n" + this.parent.genBlockEnd("checks");
+		
+		ArrayList<String> block = new ArrayList<String>();
+		block.add(this.parent.genBlockStart("checks"));
+		block.add("# md5="+md5);
+		block.addAll(content);
+		block.add("# md5="+md5);
+		block.add(this.parent.genBlockEnd("checks"));
+		
+		return block;
 	}
 	
-	private String getContent()
+	private ArrayList<String> getContent()
 	{
-		String content = "";
+		ArrayList<String> content = new ArrayList<String>();
 
-		content      += "my $helptext;\n";
-		content      += "my $error_param_mandatory;\n";
-		content      += "my $error;\n";
-		content      += "\n";
-		content      += "foreach my $submodel ($FILES->getSubmodels())\n";
-		content      += "{\n";
-		content      += "\tforeach my $submodelitem (@{$OPT{$submodel}})\n";
-		content      += "\t{\n";
-		content      += "\t\tif (!(stat $submodelitem))\n";
-		content      += "\t\t{\n";
-		content      += "\t\t\tlogit('fatal', 'file not readable: ' . $submodelitem);\n";
-		content      += "\t\t\t$error++;\n";
-		content      += "\t\t}\n";
-		content      += "\t}\n";
-		content      += "}\n";
-		content      += "\n";
-		content      += "if ($error)\n";
-		content      += "{\n";
-		content      += "\tlogit('info', 'while checking for existance of files at least one fatal error occured. exit.');\n";
-		content      += "\texit(1);\n";
-		content      += "}\n";
+		content.add("my $helptext;\n");
+		content.add("my $error_param_mandatory;\n");
+		content.add("my $error;\n");
+		content.add("\n");
+		content.add("foreach my $submodel ($FILES->getSubmodels())\n");
+		content.add("{\n");
+		content.add("\tforeach my $submodelitem (@{$OPT{$submodel}})\n");
+		content.add("\t{\n");
+		content.add("\t\tif (!(stat $submodelitem))\n");
+		content.add("\t\t{\n");
+		content.add("\t\t\tlogit('fatal', 'file not readable: ' . $submodelitem);\n");
+		content.add("\t\t\t$error++;\n");
+		content.add("\t\t}\n");
+		content.add("\t}\n");
+		content.add("}\n");
+		content.add("\n");
+		content.add("if ($error)\n");
+		content.add("{\n");
+		content.add("\tlogit('info', 'while checking for existance of files at least one fatal error occured. exit.');\n");
+		content.add("\texit(1);\n");
+		content.add("}\n");
 
 		return content;
 	}

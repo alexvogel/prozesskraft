@@ -14,7 +14,6 @@ implements Serializable, Cloneable
 
 	static final long serialVersionUID = 1;
 	Script parent = null;
-	ArrayList<Option> option = new ArrayList<Option>();
 	
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 	/*----------------------------
@@ -28,21 +27,27 @@ implements Serializable, Cloneable
 	/*----------------------------
 	  methods 
 	----------------------------*/
-	public String getBlock()
+	public ArrayList<String> getBlock()
 	{
 		
-		String content = getContent();
+		ArrayList<String> content = getContent();
 		BigInteger md5 = this.parent.genMd5(content);
-		return this.parent.genBlockStart("business") + "# md5="+md5+"\n" + content + "# md5="+md5+"\n" + this.parent.genBlockEnd("business");
+		
+		ArrayList<String> block = new ArrayList<String>();
+		block.add(this.parent.genBlockStart("business"));
+		block.add("# md5="+md5);
+		block.addAll(content);
+		block.add("# md5="+md5);
+		block.add(this.parent.genBlockEnd("business"));
+		
+		return block;
 	}
 	
-	private String getContent()
+	private ArrayList<String> getContent()
 	{
-		String content = "";
+		ArrayList<String> content = new ArrayList<String>();
 
-		content      += "# place your business logic here.\n";
-		content      += "\n";
-
+		content.add("# place your business logic here.");
 		return content;
 	}
 }

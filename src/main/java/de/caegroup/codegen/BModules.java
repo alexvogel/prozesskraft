@@ -27,22 +27,31 @@ implements Serializable, Cloneable
 	/*----------------------------
 	  methods 
 	----------------------------*/
-	public String getBlock()
+	public ArrayList<String> getBlock()
 	{
 		
-		String content = getContent();
+		ArrayList<String> content = getContent();
 		BigInteger md5 = this.parent.genMd5(content);
-		return this.parent.genBlockStart("modules") + "# md5="+md5+"\n" + content + "# md5="+md5+"\n" + this.parent.genBlockEnd("modules");
+		
+		ArrayList<String> block = new ArrayList<String>();
+		block.add(this.parent.genBlockStart("modules"));
+		block.add("# md5="+md5);
+		block.addAll(content);
+		block.add("# md5="+md5);
+		block.add(this.parent.genBlockEnd("modules"));
+		
+		return block;
 	}
 	
-	private String getContent()
+	private ArrayList<String> getContent()
 	{
-		String content = "";
-		content      += "use warnings;";
-		content      += "use strict;";
-		content      += "use Getopt::Long;";
-		content      += "use File::Spec;";
-		content      += "use Cwd;";
+		ArrayList<String> content = new ArrayList<String>();
+
+		content.add("use warnings;");
+		content.add("use strict;");
+		content.add("use Getopt::Long;");
+		content.add("use File::Spec;");
+		content.add("use Cwd;");
 		
 		return content;
 	}

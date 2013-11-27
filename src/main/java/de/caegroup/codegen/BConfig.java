@@ -27,35 +27,44 @@ implements Serializable, Cloneable
 	/*----------------------------
 	  methods 
 	----------------------------*/
-	public String getBlock()
+	public ArrayList<String> getBlock()
 	{
 		
-		String content = getContent();
+		ArrayList<String> content = getContent();
 		BigInteger md5 = this.parent.genMd5(content);
-		return this.parent.genBlockStart("path") + "# md5="+md5+"\n" + content + "# md5="+md5+"\n" + this.parent.genBlockEnd("path");
+		
+		ArrayList<String> block = new ArrayList<String>();
+		block.add(this.parent.genBlockStart("config"));
+		block.add("# md5="+md5);
+		block.addAll(content);
+		block.add("# md5="+md5);
+		block.add(this.parent.genBlockEnd("config"));
+		
+		return block;
 	}
 	
-	private String getContent()
+	private ArrayList<String> getContent()
 	{
-		String content = "";
-		content      += "my %CONF_ORG = &getvars($conf_path);\n";
-		content      += "my %CONF;\n";
-		content      += "# viele parameter im parameterfile enthalten pfade relativ zum installationsverzeichnis\n";
-		content      += "# diese pfade sollen auf absolute pfade expandiert werden\n";
-		content      += "logit(\"info\", \"expanding config parameter to absolute path\");\n";
-		content      += "foreach my $param (sort keys %CONF_ORG)\n";
-		content      += "{\n";
-		content      += "# gibts da ein file? Ja? Dann soll auf den absoluten Pfad expandiert werden";
-		content      += "	if ((($CONF_ORG{$param} ne \"\") && (stat $bindir.\"/\".$CONF_ORG{$param})))";
-		content      += "	{";
-		content      += "		$CONF{$param} = File::Spec->rel2abs($bindir.\"/\".$CONF_ORG{$param});";
-		content      += "		logit(\"info\", \"parameter $param (value=\" . $CONF_ORG{$param} .\") expanding to (new_value=\".$CONF{$param}.\")\");";
-		content      += "	}";
-		content      += "	else";
-		content      += "	{";
-		content      += "		$CONF{$param} = $CONF_ORG{$param};";
-		content      += "	}";
-		content      += "}";
+		ArrayList<String> content = new ArrayList<String>();
+
+		content.add("my %CONF_ORG = &getvars($conf_path);\n");
+		content.add("my %CONF;\n");
+		content.add("# viele parameter im parameterfile enthalten pfade relativ zum installationsverzeichnis\n");
+		content.add("# diese pfade sollen auf absolute pfade expandiert werden\n");
+		content.add("logit(\"info\", \"expanding config parameter to absolute path\");\n");
+		content.add("foreach my $param (sort keys %CONF_ORG)\n");
+		content.add("{\n");
+		content.add("# gibts da ein file? Ja? Dann soll auf den absoluten Pfad expandiert werden");
+		content.add("	if ((($CONF_ORG{$param} ne \"\") && (stat $bindir.\"/\".$CONF_ORG{$param})))");
+		content.add("	{");
+		content.add("		$CONF{$param} = File::Spec->rel2abs($bindir.\"/\".$CONF_ORG{$param});");
+		content.add("		logit(\"info\", \"parameter $param (value=\" . $CONF_ORG{$param} .\") expanding to (new_value=\".$CONF{$param}.\")\");");
+		content.add("	}");
+		content.add("	else");
+		content.add("	{");
+		content.add("		$CONF{$param} = $CONF_ORG{$param};");
+		content.add("	}");
+		content.add("}");
 		
 		return content;
 	}

@@ -28,93 +28,101 @@ implements Serializable, Cloneable
 	/*----------------------------
 	  methods 
 	----------------------------*/
-	public String getBlock()
+	public ArrayList<String> getBlock()
 	{
 		
-		String content = getContent();
+		ArrayList<String> content = getContent();
 		BigInteger md5 = this.parent.genMd5(content);
-		return this.parent.genBlockStart("subs") + "# md5="+md5+"\n" + content + "# md5="+md5+"\n" + this.parent.genBlockEnd("subs");
+		
+		ArrayList<String> block = new ArrayList<String>();
+		block.add(this.parent.genBlockStart("checks"));
+		block.add("# md5="+md5);
+		block.addAll(content);
+		block.add("# md5="+md5);
+		block.add(this.parent.genBlockEnd("checks"));
+		
+		return block;
 	}
 	
-	private String getContent()
+	private ArrayList<String> getContent()
 	{
-		String content = "";
+		ArrayList<String> content = new ArrayList<String>();
 
-		content      += "# place your business logic here.\n";
-		content      += "sub logit\n";
-		content      += "{\n";
-		content      += "	if (scalar(@_) < 2) {die \"wrong call on subroutine 'logit'\";}\n";
-		content      += "	my $level = shift;\n";
-		content      += "	my $msg = shift;\n";
-		content      += "	my $dest;\n";
-		content      += "	if (@_)\n";
-		content      += "	{\n";
-		content      += "		$dest = shift;\n";
-		content      += "	}\n";
-		content      += "	\n";
-		content      += "	my $timestamp = localtime(time);\n";
-		content      += "	\n";
-		content      += "	my $ausgabestring = '[' . $timestamp . ']:' . $level . ':' . $msg; \n";
-		content      += "	\n";
-		content      += "	if (!($dest))\n";
-		content      += "	{\n";
-		content      += "		if (defined ${$OPT{'log'}})\n";
-		content      += "		{\n";
-		content      += "			system \"echo \\\"$ausgabestring\\\" >> ${$OPT{'log'}}\";\n";
-		content      += "		}\n";
-		content      += "		else\n";
-		content      += "		{\n";
-		content      += "			print STDERR $ausgabestring.'\n';\n";
-		content      += "		}\n";
-		content      += "	}\n";
-		content      += "	elsif ($dest =~ m/^stderr$/i)\n";
-		content      += "	{\n";
-		content      += "		print STDERR $ausgabestring.'\n';\n";
-		content      += "	}\n";
-		content      += "	elsif ($dest =~ m/^stdout$/i)\n";
-		content      += "	{\n";
-		content      += "		print STDOUT $ausgabestring.'\n';\n";
-		content      += "	}\n";
-		content      += "	elsif (($dest) && (stat $dest))\n";
-		content      += "	{\n";
-		content      += "		system 'echo $ausgabestring >> $dest';\n";
-		content      += "	}\n";
-		content      += "	else\n";
-		content      += "	{\n";
-		content      += "		print STDERR 'unknown logging destination $dest (file does not exist)' . '. assuming stderr';\n";
-		content      += "		print STDERR $ausgabestring.'\n';\n";
-		content      += "	}\n";
-		content      += "}\n";
-		content      += "\n";
-		content      += "sub getvars\n";
-		content      += "{\n";
-		content      += "    my $fp_conf = shift;\n";
-		content      += "\n";
-		content      += "    my %CONF;\n";
-		content      += "    if (!open (CONF, '<$fp_conf')) {die 'cannot read $fp_conf $!\\n';}\n";
-		content      += "    \n";
-		content      += "    while(<CONF>)\n";
-		content      += "    {\n";
-		content      += "        if    ( $_ =~ m/^#/) {next}\n";
-		content      += "        elsif ( $_ =~ m/^$/) {next}\n";
-		content      += "		elsif ( $_ =~ m/^\\s*$/) {next}\n";
-		content      += "        else\n";
-		content      += "        {\n";
-		content      += "            my @tmp = split('=', $_);\n";
-		content      += "            \n";
-		content      += "        	# falls unwahr, soll der parameter einen leeren string erhalten\n";
-		content      += "        	unless ($tmp[1]) {$tmp[1] = '';}\n";
-		content      += "        	\n";
-		content      += "        	$tmp[0] =~ s/\\s$//g;\n";
-		content      += "        	$tmp[0] =~ s/^\\s//g;\n";
-		content      += "        	$tmp[1] =~ s/\\s$//g;\n";
-		content      += "        	$tmp[1] =~ s/^\\s//g;\n";
-		content      += "        			\n";
-		content      += "            $CONF{$tmp[0]} = $tmp[1];\n";
-		content      += "        }\n";
-		content      += "    }\n";
-		content      += "    return %CONF;\n";
-		content      += "}\n";
+		content.add("# place your business logic here.\n");
+		content.add("sub logit\n");
+		content.add("{\n");
+		content.add("	if (scalar(@_) < 2) {die \"wrong call on subroutine 'logit'\");}\n");
+		content.add("	my $level = shift;\n");
+		content.add("	my $msg = shift;\n");
+		content.add("	my $dest;\n");
+		content.add("	if (@_)\n");
+		content.add("	{\n");
+		content.add("		$dest = shift;\n");
+		content.add("	}\n");
+		content.add("	\n");
+		content.add("	my $timestamp = localtime(time);\n");
+		content.add("	\n");
+		content.add("	my $ausgabestring = '[' . $timestamp . ']:' . $level . ':' . $msg; \n");
+		content.add("	\n");
+		content.add("	if (!($dest))\n");
+		content.add("	{\n");
+		content.add("		if (defined ${$OPT{'log'}})\n");
+		content.add("		{\n");
+		content.add("			system \"echo \\\"$ausgabestring\\\" >> ${$OPT{'log'}}\");\n");
+		content.add("		}\n");
+		content.add("		else\n");
+		content.add("		{\n");
+		content.add("			print STDERR $ausgabestring.'\n';\n");
+		content.add("		}\n");
+		content.add("	}\n");
+		content.add("	elsif ($dest =~ m/^stderr$/i)\n");
+		content.add("	{\n");
+		content.add("		print STDERR $ausgabestring.'\n';\n");
+		content.add("	}\n");
+		content.add("	elsif ($dest =~ m/^stdout$/i)\n");
+		content.add("	{\n");
+		content.add("		print STDOUT $ausgabestring.'\n';\n");
+		content.add("	}\n");
+		content.add("	elsif (($dest) && (stat $dest))\n");
+		content.add("	{\n");
+		content.add("		system 'echo $ausgabestring >> $dest';\n");
+		content.add("	}\n");
+		content.add("	else\n");
+		content.add("	{\n");
+		content.add("		print STDERR 'unknown logging destination $dest (file does not exist)' . '. assuming stderr';\n");
+		content.add("		print STDERR $ausgabestring.'\n';\n");
+		content.add("	}\n");
+		content.add("}\n");
+		content.add("\n");
+		content.add("sub getvars\n");
+		content.add("{\n");
+		content.add("    my $fp_conf = shift;\n");
+		content.add("\n");
+		content.add("    my %CONF;\n");
+		content.add("    if (!open (CONF, '<$fp_conf')) {die 'cannot read $fp_conf $!\\n';}\n");
+		content.add("    \n");
+		content.add("    while(<CONF>)\n");
+		content.add("    {\n");
+		content.add("        if    ( $_ =~ m/^#/) {next}\n");
+		content.add("        elsif ( $_ =~ m/^$/) {next}\n");
+		content.add("		elsif ( $_ =~ m/^\\s*$/) {next}\n");
+		content.add("        else\n");
+		content.add("        {\n");
+		content.add("            my @tmp = split('=', $_);\n");
+		content.add("            \n");
+		content.add("        	# falls unwahr, soll der parameter einen leeren string erhalten\n");
+		content.add("        	unless ($tmp[1]) {$tmp[1] = '';}\n");
+		content.add("        	\n");
+		content.add("        	$tmp[0] =~ s/\\s$//g;\n");
+		content.add("        	$tmp[0] =~ s/^\\s//g;\n");
+		content.add("        	$tmp[1] =~ s/\\s$//g;\n");
+		content.add("        	$tmp[1] =~ s/^\\s//g;\n");
+		content.add("        			\n");
+		content.add("            $CONF{$tmp[0]} = $tmp[1];\n");
+		content.add("        }\n");
+		content.add("    }\n");
+		content.add("    return %CONF;\n");
+		content.add("}\n");
 
 		return content;
 	}
