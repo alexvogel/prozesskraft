@@ -25,8 +25,10 @@ my $auslieferungsverzeichnis = $cwd . "/fertig_zur_installation";
 # kopieren des fertig zusammengestellten jars vom target ins auslieferungsverzeichnis
 print "mkdir $auslieferungsverzeichnis\n";
 system "mkdir $auslieferungsverzeichnis";
-print "cp -r $cwd/bin $auslieferungsverzeichnis/.\n";
-system "cp -r $cwd/bin $auslieferungsverzeichnis/.";
+print "mkdir $auslieferungsverzeichnis/bin\n";
+system "mkdir $auslieferungsverzeichnis/bin";
+print "cp -r $cwd/bin/* $auslieferungsverzeichnis/bin/.\n";
+system "cp -r $cwd/bin/* $auslieferungsverzeichnis/bin/.";
 print "cp -r $target/*[0123456789].jar $auslieferungsverzeichnis/bin/.\n";
 system "cp -r $target/*[0123456789].jar $auslieferungsverzeichnis/bin/.";
 
