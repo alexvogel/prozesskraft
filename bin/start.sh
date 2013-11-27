@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.caegroup.process.Checkconsistency"
+MAINCLASS="de.caegroup.process.Perlcode"
 BASEDIR=$(dirname $0)
 
 # wenn eine lokale javaversion vorhanden ist, soll diese bevorzugt verwendet werden
