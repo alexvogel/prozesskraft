@@ -113,18 +113,6 @@ public class Perlcode
 			exiter();
 		}
 
-		else if ( !( commandline.hasOption("step")) )
-		{
-			System.err.println("perlcode will be generated for the whole process");
-			exiter();
-		}
-		
-		else if ( ( commandline.hasOption("varname") && !( commandline.hasOption("varvalue")) ) || ( !(commandline.hasOption("varname")) && commandline.hasOption("varvalue")) )
-		{
-			System.err.println("use options -varname and -varvalue only in combination with each other.");
-			exiter();
-		}
-
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
