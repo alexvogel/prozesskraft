@@ -35,11 +35,11 @@ implements Serializable, Cloneable
 		BigInteger md5 = this.parent.genMd5(content);
 		
 		ArrayList<String> block = new ArrayList<String>();
-		block.add(this.parent.genBlockStart("checks"));
+		block.addAll(this.parent.genBlockStart("subs"));
 		block.add("# md5="+md5);
 		block.addAll(content);
 		block.add("# md5="+md5);
-		block.add(this.parent.genBlockEnd("checks"));
+		block.addAll(this.parent.genBlockEnd("subs"));
 		
 		return block;
 	}
@@ -51,7 +51,7 @@ implements Serializable, Cloneable
 		content.add("# place your business logic here.\n");
 		content.add("sub logit\n");
 		content.add("{\n");
-		content.add("	if (scalar(@_) < 2) {die \"wrong call on subroutine 'logit'\");}\n");
+		content.add("	if (scalar(@_) < 2) {die \"wrong call on subroutine 'logit'\";}\n");
 		content.add("	my $level = shift;\n");
 		content.add("	my $msg = shift;\n");
 		content.add("	my $dest;\n");
@@ -68,7 +68,7 @@ implements Serializable, Cloneable
 		content.add("	{\n");
 		content.add("		if (defined ${$OPT{'log'}})\n");
 		content.add("		{\n");
-		content.add("			system \"echo \\\"$ausgabestring\\\" >> ${$OPT{'log'}}\");\n");
+		content.add("			system \"echo \\\"$ausgabestring\\\" >> ${$OPT{'log'}}\";\n");
 		content.add("		}\n");
 		content.add("		else\n");
 		content.add("		{\n");

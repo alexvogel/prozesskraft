@@ -37,11 +37,11 @@ implements Serializable, Cloneable
 		BigInteger md5 = this.parent.genMd5(content);
 		
 		ArrayList<String> block = new ArrayList<String>();
-		block.add(this.parent.genBlockStart("checks"));
+		block.addAll(this.parent.genBlockStart("meta"));
 		block.add("# md5="+md5);
 		block.addAll(content);
 		block.add("# md5="+md5);
-		block.add(this.parent.genBlockEnd("checks"));
+		block.addAll(this.parent.genBlockEnd("meta"));
 		
 		return block;
 	}
@@ -50,8 +50,8 @@ implements Serializable, Cloneable
 	{
 		ArrayList<String> content = new ArrayList<String>();
 
-		content.add("my $version = \"[% version %]\");");
-		content.add("my $date = \"[% date %]\");");
+		content.add("my $version = \"[% version %]\";");
+		content.add("my $date = \"[% date %]\";");
 		
 		return content;
 	}

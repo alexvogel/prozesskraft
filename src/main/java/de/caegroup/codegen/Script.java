@@ -84,24 +84,24 @@ implements Serializable, Cloneable
 		return perl;
 	}
 	
-	public String genBlockStart(String blockname)
+	public ArrayList<String> genBlockStart(String blockname)
 	{
-		String text = "";
+		ArrayList<String> text = new ArrayList<String>();
 		
-		text += "#============================================================================\n";
-		text += "# blockstart=" + blockname + "\n";
+		text.add("#============================================================================");
+		text.add("# blockstart=" + blockname);
 		
 		return text;
 	}
 
-	public String genBlockEnd(String blockname)
+	public ArrayList<String> genBlockEnd(String blockname)
 	{
-		String text = "";
+		ArrayList<String> text = new ArrayList<String>();
 		
-		text   += "# blockend=" + blockname + "\n";
-		text   += "# edit here if necessary\n";
-		text   += "#\n";
-		text   += "#============================================================================\n";
+		text.add("# blockend=" + blockname);
+		text.add("# edit here if necessary");
+		text.add("#");
+		text.add("#============================================================================");
 		
 		return text;
 	}

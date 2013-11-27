@@ -35,11 +35,11 @@ implements Serializable, Cloneable
 		BigInteger md5 = this.parent.genMd5(content);
 		
 		ArrayList<String> block = new ArrayList<String>();
-		block.add(this.parent.genBlockStart("checks"));
+		block.addAll(this.parent.genBlockStart("checks"));
 		block.add("# md5="+md5);
 		block.addAll(content);
 		block.add("# md5="+md5);
-		block.add(this.parent.genBlockEnd("checks"));
+		block.addAll(this.parent.genBlockEnd("checks"));
 		
 		return block;
 	}
@@ -48,27 +48,14 @@ implements Serializable, Cloneable
 	{
 		ArrayList<String> content = new ArrayList<String>();
 
-		content.add("my $helptext;\n");
-		content.add("my $error_param_mandatory;\n");
-		content.add("my $error;\n");
-		content.add("\n");
-		content.add("foreach my $submodel ($FILES->getSubmodels())\n");
-		content.add("{\n");
-		content.add("\tforeach my $submodelitem (@{$OPT{$submodel}})\n");
-		content.add("\t{\n");
-		content.add("\t\tif (!(stat $submodelitem))\n");
-		content.add("\t\t{\n");
-		content.add("\t\t\tlogit('fatal', 'file not readable: ' . $submodelitem);\n");
-		content.add("\t\t\t$error++;\n");
-		content.add("\t\t}\n");
-		content.add("\t}\n");
-		content.add("}\n");
-		content.add("\n");
-		content.add("if ($error)\n");
-		content.add("{\n");
-		content.add("\tlogit('info', 'while checking for existance of files at least one fatal error occured. exit.');\n");
-		content.add("\texit(1);\n");
-		content.add("}\n");
+		content.add("my $error_param_mandatory;");
+		content.add("my $error;");
+		content.add("");
+		content.add("if ($error)");
+		content.add("{");
+		content.add("\tlogit('info', 'while checking for existance of files at least one fatal error occured. exit.');");
+		content.add("\texit(1);");
+		content.add("}");
 
 		return content;
 	}

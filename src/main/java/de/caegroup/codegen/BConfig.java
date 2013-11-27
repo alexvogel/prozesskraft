@@ -34,11 +34,11 @@ implements Serializable, Cloneable
 		BigInteger md5 = this.parent.genMd5(content);
 		
 		ArrayList<String> block = new ArrayList<String>();
-		block.add(this.parent.genBlockStart("config"));
+		block.addAll(this.parent.genBlockStart("config"));
 		block.add("# md5="+md5);
 		block.addAll(content);
 		block.add("# md5="+md5);
-		block.add(this.parent.genBlockEnd("config"));
+		block.addAll(this.parent.genBlockEnd("config"));
 		
 		return block;
 	}

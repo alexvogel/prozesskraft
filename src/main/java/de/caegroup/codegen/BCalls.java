@@ -35,11 +35,11 @@ implements Serializable, Cloneable
 		BigInteger md5 = this.parent.genMd5(content);
 		
 		ArrayList<String> block = new ArrayList<String>();
-		block.add(this.parent.genBlockStart("calls"));
+		block.addAll(this.parent.genBlockStart("calls"));
 		block.add("# md5="+md5);
 		block.addAll(content);
 		block.add("# md5="+md5);
-		block.add(this.parent.genBlockEnd("calls"));
+		block.addAll(this.parent.genBlockEnd("calls"));
 		
 		return block;
 	}
@@ -48,7 +48,6 @@ implements Serializable, Cloneable
 	{
 		ArrayList<String> content = new ArrayList<String>();
 
-		content.add("my $helptext;");
 		content.add("if (${$OPT{'help'}})");
 		content.add("{");
 		content.add("\tprint STDERR $helptext;");
