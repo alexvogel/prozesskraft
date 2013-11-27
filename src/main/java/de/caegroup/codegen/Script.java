@@ -18,6 +18,7 @@ implements Serializable, Cloneable
 //	private ArrayList<Option> option = new ArrayList<Option>();
 	private String description = "";
 	private String interpreter = "/usr/bin/perl";
+	public String trenner = "#----------------------------------------------------------------------------";
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -116,7 +117,8 @@ implements Serializable, Cloneable
 			
 			for(String line : content)
 			{
-				contentString += line+"\n";
+				if( !( (line.matches("^#")) || (line.matches("^$")) ) )
+				contentString += line;
 			}
 			
 			// und dann md5 erzeugen
