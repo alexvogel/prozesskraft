@@ -117,10 +117,7 @@ implements Serializable, Cloneable
 		
 		for(Callitem act_callitem : callitem)
 		{
-			String name = act_callitem.getPar();
-			System.out.println("name bevor: "+name);
-			name.replaceAll("-", "");
-			System.out.println("name nach replace: "+name);
+			String name = act_callitem.getPar().replaceAll("-", "");
 			
 			int maxoccur = 1;
 			if ( (!(act_callitem.getLoop() == null)) && (act_callitem.getLoop().matches(".+")) ) { maxoccur = 9999; }
