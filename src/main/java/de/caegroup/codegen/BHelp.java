@@ -69,9 +69,9 @@ implements Serializable, Cloneable
 		content.add("	$helptext .= \"\\n\";");
 		content.add("}");
 		content.add("");
-		content.add("$helptext .= \"example: $filename --scope model --submodel_vat f34_vat.nas --submodel_rk f34_rk.nas\";");
+		content.add("$helptext .= \"example: $filename --scope model --submodel_vat f34_vat.nas --submodel_rk f34_rk.nas\\n\";");
 		content.add("$helptext .= \"\\n\";");
-		content.add("$helptext .= \"author: alexander.vogel\\@caegroup.de | version: $version | date: $date\";");
+		content.add("$helptext .= \"author: alexander.vogel\\@caegroup.de | version: $version | date: $date\\n\";");
 
 		return content;
 	}
