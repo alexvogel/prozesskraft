@@ -18,6 +18,7 @@ implements Serializable, Cloneable
 //	private ArrayList<Option> option = new ArrayList<Option>();
 	private String description = "";
 	private String interpreter = "/usr/bin/perl";
+	ArrayList<Option> option = new ArrayList<Option>();
 	public String trenner = "#----------------------------------------------------------------------------";
 	/*----------------------------
 	  constructors
@@ -48,6 +49,26 @@ implements Serializable, Cloneable
 //		}
 //		return null;
 //	}
+	
+	public void addOption (Option option)
+	{
+		this.option.add(option);
+	}
+	
+	public void addOption (String name, int minoccur, int maxoccur, String definition, String check, String def, String text1, String text2)
+	{
+		Option option = new Option();
+
+		option.setName(name);
+		option.setMinoccur(minoccur);
+		option.setMaxoccur(maxoccur);
+		option.setDefinition(definition);
+		option.setDef(def);
+		option.setText1(text1);
+		option.setText2(text2);
+		
+		this.option.add(option);
+	}
 	
 	/**
 	 * getPerl()

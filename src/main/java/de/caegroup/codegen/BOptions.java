@@ -14,7 +14,6 @@ implements Serializable, Cloneable
 
 	static final long serialVersionUID = 1;
 	Script parent = null;
-	ArrayList<Option> option = new ArrayList<Option>();
 	
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 	/*----------------------------
@@ -58,11 +57,11 @@ implements Serializable, Cloneable
 		content.add("# hier koenne alle 'festen' optionen definiert werden");
 		content.add("my %options_fest = (");
 		
-		content.add("\t\t\t\t'help' => {'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'help|h', 'check'=>'', 'default' => undef, 'text1' => '', 'text2' => 'gibt diesen hilfetext aus'},");
-		content.add("\t\t\t\t'doc'  => {'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'doc', 'check'=>'', 'default' => undef, 'text1' => '', 'text2' => 'falls eine dokumentation existiert, wird diese angezeigt'},");
-		content.add("\t\t\t\t'log'  => {'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'log=s', 'check'=>'', 'default' => undef, 'text1' => '=PATH', 'text2' => 'statt auf STDERR koennen logging-ausgaben in eine datei umgeleitet werden'},");
+		content.add("				'help' => {'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'help|h', 'check'=>'', 'default' => undef, 'text1' => '', 'text2' => 'gibt diesen hilfetext aus'},");
+		content.add("				'doc'  => {'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'doc', 'check'=>'', 'default' => undef, 'text1' => '', 'text2' => 'falls eine dokumentation existiert, wird diese angezeigt'},");
+		content.add("				'log'  => {'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'log=s', 'check'=>'', 'default' => undef, 'text1' => '=PATH', 'text2' => 'statt auf STDERR koennen logging-ausgaben in eine datei umgeleitet werden'},");
 		
-		for(Option o: option)
+		for(Option o: this.parent.option)
 		{
 			content.addAll(o.getContent());
 		}
@@ -74,24 +73,24 @@ implements Serializable, Cloneable
 		content.add("{");
 
 		
-		content.add("\tif ( ${$options_fest{$optionname}}{'maxoccur'} > 1 )");
-		content.add("\t{");
-		content.add("\t\tmy @tmp;");
-		content.add("\t\t$optionsall{${$options_fest{$optionname}}{'definition'}} = \\@tmp;");
+		content.add("	if ( ${$options_fest{$optionname}}{'maxoccur'} > 1 )");
+		content.add("	{");
+		content.add("		my @tmp;");
+		content.add("		$optionsall{${$options_fest{$optionname}}{'definition'}} = \\@tmp;");
 		content.add("");
 			
-		content.add("\t\t$OPT{$optionname} = \\@tmp;");
-		content.add("\t\t$OPTHELP{$optionname} = {'text1' => ${$options_fest{$optionname}}{'text1'}, 'text2' => ${$options_fest{$optionname}}{'text2'}};");
-		content.add("\t}");
-		content.add("\telse");
-		content.add("\t{");
-		content.add("\t\tmy $tmp;");
-		content.add("\t\t$optionsall{${$options_fest{$optionname}}{'definition'}} = \\$tmp;");
+		content.add("		$OPT{$optionname} = \\@tmp;");
+		content.add("		$OPTHELP{$optionname} = {'text1' => ${$options_fest{$optionname}}{'text1'}, 'text2' => ${$options_fest{$optionname}}{'text2'}};");
+		content.add("	}");
+		content.add("	else");
+		content.add("	{");
+		content.add("		my $tmp;");
+		content.add("		$optionsall{${$options_fest{$optionname}}{'definition'}} = \\$tmp;");
 		content.add("");
 
-		content.add("\t\t$OPT{$optionname} = \\$tmp;");
-		content.add("\t\t$OPTHELP{$optionname} = {'text1' => ${$options_fest{$optionname}}{'text1'}, 'text2' => ${$options_fest{$optionname}}{'text2'}};");
-		content.add("\t}");
+		content.add("		$OPT{$optionname} = \\$tmp;");
+		content.add("		$OPTHELP{$optionname} = {'text1' => ${$options_fest{$optionname}}{'text1'}, 'text2' => ${$options_fest{$optionname}}{'text2'}};");
+		content.add("	}");
 		content.add("}");
 
 		content.add("# das tatsaechliche erzeugen der options mit Getopt::Long");

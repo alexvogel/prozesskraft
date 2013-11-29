@@ -50,7 +50,6 @@ implements Serializable, Cloneable
 	{
 		ArrayList<String> content = new ArrayList<String>();
 
-		content.add("# place your business logic here.");
 		content.add("sub logit");
 		content.add("{");
 		content.add("	if (scalar(@_) < 2) {die \"wrong call on subroutine 'logit'\";}");
