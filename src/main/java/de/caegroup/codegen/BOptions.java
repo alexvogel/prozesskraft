@@ -57,9 +57,9 @@ implements Serializable, Cloneable
 		content.add("# hier koenne alle 'festen' optionen definiert werden");
 		content.add("my %options_fest = (");
 		
-		content.add("				'help' => {'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'help|h', 'check'=>'', 'default' => undef, 'text1' => '', 'text2' => 'gibt diesen hilfetext aus'},");
-		content.add("				'doc'  => {'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'doc', 'check'=>'', 'default' => undef, 'text1' => '', 'text2' => 'falls eine dokumentation existiert, wird diese angezeigt'},");
-		content.add("				'log'  => {'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'log=s', 'check'=>'', 'default' => undef, 'text1' => '=PATH', 'text2' => 'statt auf STDERR koennen logging-ausgaben in eine datei umgeleitet werden'},");
+		content.add("				'help' => {'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'help|h', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'gibt diesen hilfetext aus'},");
+		content.add("				'doc'  => {'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'doc', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'falls eine dokumentation existiert, wird diese angezeigt'},");
+		content.add("				'log'  => {'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'log=s', 'check'=>'', 'default' => '', 'text1' => '=PATH', 'text2' => 'statt auf STDERR koennen logging-ausgaben in eine datei umgeleitet werden'},");
 		
 		for(Option o: this.parent.option)
 		{
