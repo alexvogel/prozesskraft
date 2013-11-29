@@ -121,7 +121,7 @@ implements Serializable, Cloneable
 			name.replaceAll("-", "");
 			
 			int maxoccur = 1;
-			if ( (!(act_callitem.getLoop().equals(null))) && (act_callitem.getLoop().matches(".+")) ) { maxoccur = 9999; }
+			if ( (!(act_callitem.getLoop() == null)) && (act_callitem.getLoop().matches(".+")) ) { maxoccur = 9999; }
 			
 			String definition = "flag";
 			if (act_callitem.getVal().matches(".+")) {definition = "string";}
