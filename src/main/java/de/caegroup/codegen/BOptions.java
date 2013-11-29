@@ -34,13 +34,13 @@ implements Serializable, Cloneable
 		BigInteger md5 = this.parent.genMd5(content);
 		
 		ArrayList<String> block = new ArrayList<String>();
-		block.addAll(this.parent.genBlockStart("checks"));
+		block.addAll(this.parent.genBlockStart("options"));
 		block.add("# md5="+md5);
 		block.add(this.parent.trenner);
 		block.addAll(content);
 		block.add(this.parent.trenner);
 		block.add("# md5="+md5);
-		block.addAll(this.parent.genBlockEnd("checks"));
+		block.addAll(this.parent.genBlockEnd("options"));
 		
 		return block;
 	}
@@ -69,49 +69,106 @@ implements Serializable, Cloneable
 		content.add(");");
 
 		content.add("# parsen und generieren eines hashs (%optionsall) zum erzeugen von optionen (Getopt::Long)");
-		content.add("foreach my $optionname (keys %options_fest)");
+		content.add("foreach my $par (keys %options_fest)");
 		content.add("{");
-
-		
-		content.add("	if ( ${$options_fest{$optionname}}{'maxoccur'} > 1 )");
+		content.add("	if ( ${$options_fest{$par}}{'maxoccur'} > 1 )");
 		content.add("	{");
 		content.add("		my @tmp;");
-		content.add("		$optionsall{${$options_fest{$optionname}}{'definition'}} = \\@tmp;");
-		content.add("");
-			
-		content.add("		$OPT{$optionname} = \\@tmp;");
-		content.add("		$OPTHELP{$optionname} = {'text1' => ${$options_fest{$optionname}}{'text1'}, 'text2' => ${$options_fest{$optionname}}{'text2'}};");
+		content.add("		if (${$options_fest{$par}}{'definition'} eq \"flag\")");
+		content.add("		{");
+		content.add("			$optionsall{$par} = \\@tmp;");
+		content.add("		}");
+		content.add("		elsif (${$options_fest{$par}}{'definition'} eq \"string\")");
+		content.add("		{");
+		content.add("			$optionsall{$par . \"=s\"} = \\@tmp;");
+		content.add("		}");
+		content.add("		");
+		content.add("		$OPT{$par} = \\@tmp;");
+		content.add("		$OPTHELP{$par} = {'text1' => ${$options_fest{$par}}{'text1'}, 'text2' => ${$options_fest{$par}}{'text2'}};");
+		content.add("		if (${$options_fest{$par}}{'minoccur'} > 0)");
+		content.add("		{");
+		content.add("			$OPTHELP{$par}{'mandatory'} = 1;");
+		content.add("		}");
+		content.add("		else");
+		content.add("		{");
+		content.add("			$OPTHELP{$par}{'mandatory'} = 0;");
+		content.add("		}");
+		content.add("		");
+		content.add("		if (${$options_fest{$par}}{'default'} =~ m/.+/)");
+		content.add("		{");
+		content.add("			$OPTHELP{$par}{'default'} = ${$options_fest{$par}}{'default'};");
+		content.add("		}");
+		content.add("		else");
+		content.add("		{");
+		content.add("			$OPTHELP{$par}{'default'} = 0;");
+		content.add("		}");
 		content.add("	}");
 		content.add("	else");
 		content.add("	{");
 		content.add("		my $tmp;");
-		content.add("		$optionsall{${$options_fest{$optionname}}{'definition'}} = \\$tmp;");
-		content.add("");
-
-		content.add("		$OPT{$optionname} = \\$tmp;");
-		content.add("		$OPTHELP{$optionname} = {'text1' => ${$options_fest{$optionname}}{'text1'}, 'text2' => ${$options_fest{$optionname}}{'text2'}};");
+		content.add("		if (${$options_fest{$par}}{'definition'} eq \"flag\")");
+		content.add("		{");
+		content.add("			$optionsall{$par} = \\$tmp;");
+		content.add("		}");
+		content.add("		elsif (${$options_fest{$par}}{'definition'} eq \"string\")");
+		content.add("		{");
+		content.add("			$optionsall{$par . \"=s\"} = \\$tmp;");
+		content.add("		}");
+		content.add("		");
+		content.add("		$OPT{$par} = \\$tmp;");
+		content.add("		$OPTHELP{$par} = {'text1' => ${$options_fest{$par}}{'text1'}, 'text2' => ${$options_fest{$par}}{'text2'}};");
+		content.add("		if (${$options_fest{$par}}{'minoccur'} > 0)");
+		content.add("		{");
+		content.add("			$OPTHELP{$par}{'mandatory'} = 1;");
+		content.add("		}");
+		content.add("		else");
+		content.add("		{");
+		content.add("			$OPTHELP{$par}{'mandatory'} = 0;");
+		content.add("		}");
+		content.add("		");
+		content.add("		if (${$options_fest{$par}}{'default'} =~ m/.+/)");
+		content.add("		{");
+		content.add("			$OPTHELP{$par}{'default'} = ${$options_fest{$par}}{'default'};");
+		content.add("		}");
+		content.add("		else");
+		content.add("		{");
+		content.add("			$OPTHELP{$par}{'default'} = 0;");
+		content.add("		}");
 		content.add("	}");
 		content.add("}");
-
 		content.add("# das tatsaechliche erzeugen der options mit Getopt::Long");
+		content.add("");
 		content.add("my $result = GetOptions(%optionsall);");
-
 		content.add("unless($result)");
 		content.add("{");
 		content.add("	logit('warn', 'problem occured while reading commandline options. information given with unknown options will be ignored. this could be a problem.');");
 		content.add("#	exit(1);");
 		content.add("}");
-
+		content.add("");
 		content.add("# OPTIONEN DEFAULTS ZUWEISEN");
-		content.add("foreach(keys %options_fest)");
+		content.add("foreach my $par (sort keys %options_fest)");
 		content.add("{");
-		content.add("	# wenn eine option nicht vorhanden ist, aber dafuer ein default-wert existiert, soll dieser gesetzt werden");
-		content.add("	if (!(${$OPT{$_}}) && ${$options_fest{$_}}{'default'})");
-		content.add("#	if ( ${$options_fest{$_}}{'default'})");
+		content.add("	# wenn eine option vom user nicht gesetzt wurde, aber dafuer ein default-wert existiert, soll dieser gesetzt werden");
+		content.add("	");
+		content.add("# wenn es ein SCALAR ist");
+		content.add("	if (ref($OPT{$par}) eq \"SCALAR\")");
 		content.add("	{");
-		content.add("		logit('info', 'setting default for --' . $_ . '=' . ${$options_fest{$_}}{'default'} );");
-		content.add("		${$OPT{$_}} = ${$options_fest{$_}}{'default'};");
+		content.add("		if (!(${$OPT{$par}}) && ${$options_fest{$par}}{'default'} && ${$options_fest{$par}}{'default'} ne \"\")");
+		content.add("		{");
+		content.add("			logit('info', 'setting default for --' . $par . '=' . ${$options_fest{$par}}{'default'} );");
+		content.add("			${$OPT{$par}} = ${$options_fest{$par}}{'default'};");
+		content.add("		}");
 		content.add("	}");
+		content.add("	");
+		content.add("	elsif (ref($OPT{$par}) eq \"ARRAY\")");
+		content.add("	{");
+		content.add("		if (!(${$OPT{$par}}[0]) && ${$options_fest{$par}}{'default'} && ${$options_fest{$par}}{'default'} ne \"\")");
+		content.add("		{");
+		content.add("			logit('info', 'setting default for --' . $par . '=' . ${$options_fest{$par}}{'default'} );");
+		content.add("			${$OPT{$par}}[0] = ${$options_fest{$par}}{'default'};");
+		content.add("		}");
+		content.add("	}");
+		content.add("	");
 		content.add("}");
 
 		return content;
