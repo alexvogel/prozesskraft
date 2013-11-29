@@ -110,6 +110,25 @@ implements Serializable, Cloneable
 	public ArrayList<String> getPerlcode()
 	{
 		Script script = new Script();
+		
+		ArrayList<Callitem> callitem = this.work.getCallitem();
+		
+		System.out.println(" options : "+callitem.size());
+		
+		for(Callitem act_callitem : callitem)
+		{
+			String name = act_callitem.getPar();
+			name.replaceAll("-", "");
+			
+			int maxoccur = 1;
+			if (act_callitem.getLoop().matches(".+")) { maxoccur = 9999; }
+			
+			String definition = "flag";
+			if (act_callitem.getVal().matches(".+")) {definition = "string";}
+			
+			script.addOption(name, 1, maxoccur, definition, "", "", "edit here", "edit helptext here");
+		}
+
 		return script.getAll();
 	}
 	
