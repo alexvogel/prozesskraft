@@ -38,7 +38,7 @@ implements Serializable, Cloneable
 	public ArrayList<String> getContent()
 	{
 		ArrayList<String> content = new ArrayList<String>();
-		content.add("				'" + this.name + "' => {'minoccur' => '" + this.minoccur + ", 'maxoccur' => '" + this.maxoccur + ", 'definition' => '" + this.definition + ", 'check' => '" + this.check + ", 'default' => '" + this.def + ", 'text1' => '" + this.text1 + ", 'text2' => '" + this.text2 + "'},");
+		content.add("				'" + this.name + "' => {'minoccur' => '" + this.minoccur + "', 'maxoccur' => '" + this.maxoccur + "', 'definition' => '" + this.definition + "', 'check' => '" + this.check + "', 'default' => '" + this.def + "', 'text1' => '" + this.text1 + "', 'text2' => '" + this.text2 + "'},");
 		return content;
 	}
 
