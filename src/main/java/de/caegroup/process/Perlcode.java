@@ -22,6 +22,9 @@ public class Perlcode
 	  structure
 	----------------------------*/
 	static CommandLine commandline;
+	static String author = "alexander.vogel@caegroup.de";
+	static String version = "[% version %]";
+	static String date = "[% date %]";
 	
 	/*----------------------------
 	  constructors
@@ -103,6 +106,7 @@ public class Perlcode
 		{
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("perlcode", options);
+			System.err.println("author: "+author+" | version: "+version+" | date: "+date);
 			System.exit(0);
 		}
 		
