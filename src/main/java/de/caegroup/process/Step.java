@@ -126,6 +126,11 @@ implements Serializable, Cloneable
 			if ( (!(listname == null)) && (listname.matches(".+")) )
 			{
 				System.out.println("listname: "+listname);
+				ArrayList<Init> inits = this.getInit();
+				for(Init actual_init : inits)
+				{
+					System.out.println("init with (list)name: "+actual_init.getListname());
+				}
 				Init init = this.getInit(listname);
 				// maxoccur soll auf den gleichen wert gesetzt werden, wie die loopliste hat
 				System.out.println("initname(listname): "+init.getListname());
