@@ -1080,7 +1080,7 @@ implements Serializable, Cloneable
 		for(int i=0; i<init.size(); i++)
 		{
 			Init actualInit = init.get(i);
-			if (actualInit.getListname() == initname)
+			if (actualInit.getListname().equals(initname))
 			{
 				return actualInit;
 			}
