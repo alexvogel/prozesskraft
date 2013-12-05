@@ -125,6 +125,7 @@ implements Serializable, Cloneable
 			// wenn das callitem ueber einen loop erzeugt wird, soll geschaut werden wieviel eintraege die loopliste enthalten darf
 			if ( (!(listname == null)) && (listname.matches(".+")) )
 			{
+				System.out.println("listname: "+listname);
 				Init init = this.getInit(listname);
 				// maxoccur soll auf den gleichen wert gesetzt werden, wie die loopliste hat
 				System.out.println("initname(listname): "+init.getListname());
