@@ -4,7 +4,7 @@
 	<groupId>de.caegroup.process</groupId>
 	<artifactId>process-perlcode</artifactId>
 	<packaging>jar</packaging>
-	<version>0.4.0</version>
+	<version>0.0.1</version>
 	<name>process-perlcode</name>
 	<url>http://maven.apache.org</url>
 	<build>
