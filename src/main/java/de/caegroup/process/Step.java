@@ -119,13 +119,24 @@ implements Serializable, Cloneable
 		{
 			String name = act_callitem.getPar().replaceAll("-", "");
 			
+			// maxoccur soll abgeleitet werden von maxoccur des Init, falls das aktuelle callitem ein loop enthaelt
 			int maxoccur = 1;
-			if ( (!(act_callitem.getLoop() == null)) && (act_callitem.getLoop().matches(".+")) ) { maxoccur = 9999; }
+			String listname = act_callitem.getLoop();
+			// wenn das callitem ueber einen loop erzeugt wird, soll geschaut werden wieviel eintraege die loopliste enthalten darf
+			if ( (!(listname == null)) && (listname.matches(".+")) )
+			{
+				Init init = this.getInit(listname);
+				// maxoccur soll auf den gleichen wert gesetzt werden, wie die loopliste hat
+				maxoccur = init.getMaxoccur();
+			}
+			
+			// check soll abgeleitet werden von einem match(field=value) innerhalb des dazugehoerigen inits
+			String check = "";
 			
 			String definition = "flag";
 			if (act_callitem.getVal().matches(".+")) {definition = "string";}
 			
-			script.addOption(name, 1, maxoccur, definition, "", null, "=HULLA", "edit helptext here");
+			script.addOption(name, 1, maxoccur, definition, "", "", "=HULLA", "edit helptext here");
 		}
 
 		return script.getAll();
