@@ -63,6 +63,7 @@ implements Serializable, Cloneable
 		option.setMinoccur(minoccur);
 		option.setMaxoccur(maxoccur);
 		option.setDefinition(definition);
+		option.setCheck(check);
 		option.setDef(def);
 		option.setText1(text1);
 		option.setText2(text2);

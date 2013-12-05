@@ -17,7 +17,7 @@ implements Serializable, Cloneable
 	int maxoccur = 0;
 	String definition = "string";  // string | flag
 	String check = "";
-	String def = null; // default
+	String def = ""; // default
 	String text1 = "";
 	String text2 = "";
 	
