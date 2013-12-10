@@ -128,7 +128,6 @@ implements Serializable, Cloneable
 			{
 				Init init = this.getInit(listname);
 				// maxoccur soll auf den gleichen wert gesetzt werden, wie die loopliste hat
-				System.out.println("initname(listname): "+init.getListname());
 				maxoccur = init.getMaxoccur();
 				minoccur = init.getMinoccur();
 			}
