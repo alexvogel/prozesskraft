@@ -199,7 +199,8 @@ implements Serializable, Cloneable
 		code.add("{");
 		code.add("	unless(scalar(@_) != 10)");
 		code.add("	{");
-		code.add("		&logit(\"fatal\", \"initlist needs exact 8 parameters (1=type 2=returnfield 3=fromstep 4=insertrule 5=minoccur 6=maxoccur 7=refARRAYmatch 8=refARRAYlist 9=refHASHvariable 10=refHASHfile\");");
+		code.add("		&logit(\"fatal\", \"initlist needs exact 10 parameters (1=type 2=returnfield 3=fromstep 4=insertrule 5=minoccur 6=maxoccur 7=refARRAYmatch 8=refARRAYlist 9=refHASHvariable 10=refHASHfile\");");
+		code.add("		&logit(\"fatal\", \"initlist needs exact 10 parameters (1=type 2=returnfield 3=fromstep 4=insertrule 5=minoccur 6=maxoccur 7=refARRAYmatch 8=refARRAYlist 9=refHASHvariable 10=refHASHfile\");");
 		code.add("		exit(1);");
 		code.add("	}");
 		code.add("");
