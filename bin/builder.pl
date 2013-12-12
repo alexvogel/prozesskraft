@@ -340,13 +340,13 @@ while(<STACK>)
 			print "\n";
 			push @CONFIG, \%paramset;
 		}
-		else
-		{
-			print "info: deactivate:";
-			foreach my $key (grep {!/action/} sort keys %paramset) {print " " . $key . "=" . $paramset{$key}}
-			foreach my $key (grep { /action/} sort keys %paramset) {print " " . $key . "=" . "@{$paramset{$key}}"}
-			print "\n";
-		}
+#		else
+#		{
+#			print "info: deactivate:";
+#			foreach my $key (grep {!/action/} sort keys %paramset) {print " " . $key . "=" . $paramset{$key}}
+#			foreach my $key (grep { /action/} sort keys %paramset) {print " " . $key . "=" . "@{$paramset{$key}}"}
+#			print "\n";
+#		}
 	}
 }
 #-------------------
