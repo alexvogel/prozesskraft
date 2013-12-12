@@ -147,7 +147,7 @@ public class Perlcode
 				// step ueber den namen heraussuchen
 				Step step = p2.getStep(stepname);
 				System.err.println("generating perlcode for step "+stepname);
-				perlcode = step.getPerlcode();
+				perlcode = step.getStepAsPerlScript();
 			}
 			else
 			{
@@ -158,7 +158,7 @@ public class Perlcode
 		else
 		{
 			System.err.println("generating perlcode for process "+p2.getName());
-			perlcode = p2.getPerlcode();
+			perlcode = p2.getProcessAsPerlScript();
 		}
 		
 		// Ausgabedatei festlegen
