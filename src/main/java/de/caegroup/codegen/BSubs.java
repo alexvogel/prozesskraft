@@ -128,16 +128,16 @@ implements Serializable, Cloneable
 		code.add("		}");
 		code.add("		else");
 		code.add("		{");
-		code.add("			print STDERR $ausgabestring.'\\n';");
+		code.add("			print STDERR $ausgabestring.\"\\n\";");
 		code.add("		}");
 		code.add("	}");
 		code.add("	elsif ($dest =~ m/^stderr$/i)");
 		code.add("	{");
-		code.add("		print STDERR $ausgabestring.'\\n';");
+		code.add("		print STDERR $ausgabestring.\"\\n\";");
 		code.add("	}");
 		code.add("	elsif ($dest =~ m/^stdout$/i)");
 		code.add("	{");
-		code.add("		print STDOUT $ausgabestring.'\\n';");
+		code.add("		print STDOUT $ausgabestring.\"\\n\";");
 		code.add("	}");
 		code.add("	elsif (($dest) && (stat $dest))");
 		code.add("	{");
@@ -146,7 +146,7 @@ implements Serializable, Cloneable
 		code.add("	else");
 		code.add("	{");
 		code.add("		print STDERR 'unknown logging destination $dest (file does not exist)' . '. assuming stderr';");
-		code.add("		print STDERR $ausgabestring.'\\n';");
+		code.add("		print STDERR $ausgabestring.\"\\n\";");
 		code.add("	}");
 		code.add("}");
 		code.add("");
