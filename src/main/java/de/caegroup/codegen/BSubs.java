@@ -197,10 +197,10 @@ implements Serializable, Cloneable
 		
 		code.add("sub initlist");
 		code.add("{");
-		code.add("	unless(scalar(@_) != 10)");
+		code.add("	if(scalar(@_) != 10)");
 		code.add("	{");
-		code.add("		&logit(\"fatal\", \"initlist needs exact 10 parameters (1=type 2=returnfield 3=fromstep 4=insertrule 5=minoccur 6=maxoccur 7=refARRAYmatch 8=refARRAYlist 9=refHASHvariable 10=refHASHfile\");");
-		code.add("		&logit(\"fatal\", \"initlist needs exact 10 parameters (1=type 2=returnfield 3=fromstep 4=insertrule 5=minoccur 6=maxoccur 7=refARRAYmatch 8=refARRAYlist 9=refHASHvariable 10=refHASHfile\");");
+		code.add("		&logit(\"fatal\", \"initlist needs exact 10 (not \".scalar(@_).\") parameters (1=type 2=returnfield 3=fromstep 4=insertrule 5=minoccur 6=maxoccur 7=refARRAYmatch 8=refARRAYlist 9=refHASHvariable 10=refHASHfile\");");
+		code.add("		&logit(\"debug\", \"fromobjecttype=$_[0] returnfield=$_[1] fromstep=$_[2] insertrule=$_[3] minoccur=$_[4] maxoccur=$_[5] refARRAYmatch=$_[6] refARRAYlist=$_[7] refHASHvariable=$_[8] refHASHfile=$_[9]\");");
 		code.add("		exit(1);");
 		code.add("	}");
 		code.add("");

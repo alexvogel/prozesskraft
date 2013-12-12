@@ -86,6 +86,10 @@ implements Serializable, Cloneable
 			content.add("		$VARIABLE{$option} = $OPT{$option};");
 			content.add("	}");
 			content.add("}");
+			content.add("");
+			content.add("unless(defined $VARIABLE{'root'}) { $VARIABLE{'root'} = [];}");
+			content.add("unless(defined $FILE{'root'}) { $FILE{'root'} = [];}");
+
 		}
 		// default
 		else
