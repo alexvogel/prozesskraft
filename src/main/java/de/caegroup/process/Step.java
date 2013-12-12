@@ -158,8 +158,8 @@ implements Serializable, Cloneable
 			for(int x=0; x < matchesOfInit.size(); x++)
 			{
 				perlSnippet.add("\t\tmy %match_"+actInit.getListname()+"_"+x+";");
-				perlSnippet.add("\t\t$match_"+x+"{'field'} = "+matchesOfInit.get(x).getField()+";");
-				perlSnippet.add("\t\t$match_"+x+"{'pattern'} = "+matchesOfInit.get(x).getPattern()+";");
+				perlSnippet.add("\t\t$match_"+actInit.getListname()+"_"+x+"{'field'} = \""+matchesOfInit.get(x).getField()+"\";");
+				perlSnippet.add("\t\t$match_"+actInit.getListname()+"_"+x+"{'pattern'} = \""+matchesOfInit.get(x).getPattern()+"\";");
 				perlSnippet.add("\t\tpush @matches_"+actInit.getListname()+", \\%match_"+actInit.getListname()+"_"+x+";");
 			}
 			
@@ -168,7 +168,10 @@ implements Serializable, Cloneable
 			perlSnippet.add("# initlist (1=fromobjecttype 2=returnfield 3=fromstep 4=insertrule 5=minoccur 6=maxoccur 7=refARRAYmatch 8=refARRAYlist 9=refHASHvariable 10=refHASHfile)");
 			perlSnippet.add("\t\t&initlist("+actInit.getFromobjecttype()+", "+actInit.getReturnfield()+", "+actInit.getFromstep()+", "+actInit.getInsertrule()+", "+actInit.getMinoccur()+", "+actInit.getMaxoccur()+", \\@matches_"+actInit.getListname()+", \\@"+actInit.getListname()+", $VARIABLE{'"+actInit.getFromstep()+"'}, $FILE{'"+actInit.getFromstep()+");");
 			
+			perlSnippet.add("\t}");
 		}
+		
+		perlSnippet.add("}");
 		return perlSnippet;		
 	}
 				
