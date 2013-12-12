@@ -1345,30 +1345,51 @@ implements Serializable
 	 */
 	public ArrayList<Step> getStepsLinearized()
 	{
-		Map<String,Step> rank_step = new HashMap<String,Step>();
-		Map<Float,String> rankFloat_rankString = new HashMap<Float,String>();
-		
-		// von jedem Step den rank ermitteln
-		for(Step actStep : this.getStep())
-		{
-			rank_step.put(actStep.getRank(), actStep);
-			rankFloat_rankString.put(actStep.getRankAsFloat(), actStep.getRank());
-		}
-		
-		// die ranks sortieren
-		ArrayList<Float> ranks = new ArrayList<Float>();
-		Collections.sort(ranks);
-		
-		// eine arraylist fuer die ausgabe zusammenstellen
 		ArrayList<Step> stepsSorted = new ArrayList<Step>();
-		for(Float actRankAsFloat : ranks)
-		{
-			stepsSorted.add(rank_step.get(rankFloat_rankString.get(actRankAsFloat)));
-		}
 		
+		boolean weitermachen = true;
+		int actLevel = 1;
+		
+		while(weitermachen)
+		{
+			ArrayList<Step> allStepsOfActLevel = new ArrayList<Step>();
+			allStepsOfActLevel.addAll(this.getStepByLevel(actLevel));
+			
+			// wenn es keine mit diesem Level gibt, sind wir fertig
+			if(allStepsOfActLevel.size() == 0)
+			{
+				weitermachen = false;
+			}
+			
+			else
+			{
+				stepsSorted.addAll(allStepsOfActLevel);
+				actLevel++;
+			}
+		}
 		return stepsSorted;
 	}
 
+	/**
+	 * liefert alle steps, die zu einem level gehoeren 
+	 * @param int
+	 * @return ArrayList<Step>
+	 */
+	public ArrayList<Step> getStepByLevel(int level)
+	{
+		ArrayList<Step> stepOfLevel = new ArrayList<Step>();
+		
+		// von jedem Step den level ermitteln
+		for(Step actStep : this.getStep())
+		{
+			if(level == actStep.getLevel())
+			{
+				stepOfLevel.add(actStep);
+			}
+		}
+		return stepOfLevel;
+	}
+	
 	/**
 	 * liefert den step zurueck auf den der namen exakt passt
 	 * @param stepname
