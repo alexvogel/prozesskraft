@@ -1562,6 +1562,7 @@ implements Serializable, Cloneable
 	
 	public float getRankAsFloat()
 	{
+		System.out.println("rank of actual step is: " +this.getName() + " = "+this.getRank());
 		return Float.parseFloat(this.rank);
 	}
 	
