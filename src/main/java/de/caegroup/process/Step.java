@@ -113,11 +113,11 @@ implements Serializable, Cloneable
 		ArrayList<String> perlSnippet = new ArrayList<String>();
 		
 		perlSnippet.add("#-------------------");
-		perlSnippet.add("# Prozessschritt wird gestartet '" + this.getName() + " -- " + this.getDescription() +"'");
+		perlSnippet.add("# Prozessschritt wird gestartet '" + this.getName() + "' -- " + this.getDescription() +"'");
 		
 		perlSnippet.add(this.getName() + ":");
 		perlSnippet.add("{");
-		perlSnippet.add("\tmy $stepname = \""+this.getName()+"\"");
+		perlSnippet.add("\tmy $stepname = \""+this.getName()+"\";");
 		
 		perlSnippet.add("");
 
