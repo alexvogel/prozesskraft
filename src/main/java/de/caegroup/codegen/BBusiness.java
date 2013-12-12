@@ -67,14 +67,29 @@ implements Serializable, Cloneable
 	public void genContent(String type) {
 		ArrayList<String> content = new ArrayList<String>();
 		
-		if(type.matches("bla"))
+		if(type.matches("process"))
 		{
-			
+			content.add("# 1) copy all known options with pattern =~ /--submodel_<key>=<path>/ as key=path to %FILE "+type);
+			content.add("# 2) copy all known options with pattern !~ /--submodel_<key>=<value>/ to optionname=value to %VARIABLE "+type);
+			content.add("");
+			content.add("my %VARIABLE;");
+			content.add("my %FILE;");
+			content.add("");
+			content.add("foreach my $option (keys %OPTIONS)");
+			content.add("{");
+			content.add("	if ($option =~ m/submodel_(.+)/i)");
+			content.add("	{");
+			content.add("		$FILE{$1} = $OPTION{$option};");
+			content.add("	}");
+			content.add("	else");
+			content.add("	{");
+			content.add("		$VARIABLE{$option} = $OPTION{$option};");
+			content.add("	}");
+			content.add("}");
 		}
 		// default
 		else
 		{
-			content.add("# unknown type "+type);
 			content.add("# place your business logic here.");
 		}
 		
