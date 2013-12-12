@@ -171,6 +171,8 @@ implements Serializable
 	{
 		Script script = new Script("process");
 		
+		// script-OPTIONS generieren aus den init-objekten des root-steps
+		
 		for(Step actStep : this.getStepsLinearized())
 		{
 			try {

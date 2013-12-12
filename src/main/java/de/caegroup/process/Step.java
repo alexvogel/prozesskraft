@@ -117,11 +117,8 @@ implements Serializable, Cloneable
 		
 		perlSnippet.add(this.getName() + ":");
 		perlSnippet.add("{");
+		perlSnippet.add("\t\t&logit(\"info\", \"processing step "+this.getName());
 		perlSnippet.add("\tmy $stepname = \""+this.getName()+"\";");
-		perlSnippet.add("");
-		perlSnippet.add("\t# generate empty options-lists for every step, if not exists");
-		perlSnippet.add("\tunless(defined $VARIABLE{'"+this.getName()+"'}) { $VARIABLE{'"+this.getName()+"'} = [];}");
-		perlSnippet.add("\tunless(defined $FILE{'"+this.getName()+"'}) { $FILE{'"+this.getName()+"'} = [];}");
 		perlSnippet.add("");
 
 		perlSnippet.add("\t# generate lists with initial values");
@@ -147,6 +144,8 @@ implements Serializable, Cloneable
 		{
 			perlSnippet.add("\t{");
 				
+			perlSnippet.add("\t\t&logit(\"info\", \"initializing list "+actInit.getListname());
+
 			// falls liste noch nicht existiert, soll eine leere liste erzeugt werden
 			if (this.getList(actInit.getListname()) == null)
 			{
