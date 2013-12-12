@@ -49,6 +49,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import de.caegroup.codegen.Script;
+import de.caegroup.codegen.UnknownCodeBlockException;
 
 
 public class Process extends ModelObject
@@ -166,11 +167,23 @@ implements Serializable
 		return true;
 	}
 
-	public ArrayList<String> getPerlcode()
+	public ArrayList<String> getProcessAsPerlScript()
 	{
-		Script script = new Script();
+		Script script = new Script("default");
+		
+		for(Step actStep : this.getStepsLinearized())
+		{
+			try {
+				script.addContent("business", actStep.getStepAsPerlCodeBlock());
+			} catch (UnknownCodeBlockException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 		return script.getAll();
 	}
+	
 
 //	public void removeStep(String stepname)
 //	{
@@ -1314,7 +1327,7 @@ implements Serializable
 	public Step getStep(int id)
 	{
 		return this.step.get(id);
-	}	
+	}
 	public ArrayList<Step> getSteps()
 	{
 		return this.step;
@@ -1323,6 +1336,37 @@ implements Serializable
 	public ArrayList<Step> getStep()
 	{
 		return this.step;
+	}
+
+	/**
+	 * liefert alle steps, nach dem Rank sortiert (linearisiert), zurueck
+	 * @param 
+	 * @return ArrayList<Step>
+	 */
+	public ArrayList<Step> getStepsLinearized()
+	{
+		Map<String,Step> rank_step = new HashMap<String,Step>();
+		Map<Float,String> rankFloat_rankString = new HashMap<Float,String>();
+		
+		// von jedem Step den rank ermitteln
+		for(Step actStep : this.getStep())
+		{
+			rank_step.put(actStep.getRank(), actStep);
+			rankFloat_rankString.put(actStep.getRankAsFloat(), actStep.getRank());
+		}
+		
+		// die ranks sortieren
+		ArrayList<Float> ranks = new ArrayList<Float>();
+		Collections.sort(ranks);
+		
+		// eine arraylist fuer die ausgabe zusammenstellen
+		ArrayList<Step> stepsSorted = new ArrayList<Step>();
+		for(Float actRankAsFloat : ranks)
+		{
+			stepsSorted.add(rank_step.get(rankFloat_rankString.get(actRankAsFloat)));
+		}
+		
+		return stepsSorted;
 	}
 
 	/**

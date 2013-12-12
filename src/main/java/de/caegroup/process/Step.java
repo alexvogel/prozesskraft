@@ -3,6 +3,7 @@ package de.caegroup.process;
 import java.io.*;
 import java.util.*;
 
+import de.caegroup.codegen.BBusiness;
 import de.caegroup.codegen.Script;
 import de.caegroup.process.Commit;
 
@@ -107,9 +108,252 @@ implements Serializable, Cloneable
 //		return null;
 //	}
 	
-	public ArrayList<String> getPerlcode()
+	public ArrayList<String> getStepAsPerlCodeBlock()
 	{
-		Script script = new Script();
+		ArrayList<String> perlSnippet = new ArrayList<String>();
+		
+		perlSnippet.add("#-------------------");
+		perlSnippet.add("# Prozessschritt wird gestartet '" + this.getName() + " -- " + this.getDescription() +"'");
+		
+		perlSnippet.add(this.getName() + ":");
+		perlSnippet.add("{");
+		perlSnippet.add("	my $stepname = \""+this.getName()+"\"");
+		
+		perlSnippet.add("	");
+
+		perlSnippet.add("	# generate lists with initial values");
+	
+		// generate festverdrahtete listen
+		for(List list : this.getList())
+		{
+			String line = "\tmy @"+list.getName()+" = qw/";
+			
+			for(String item : list.getItem())
+			{
+				line += " "+item;
+			}
+			
+			line += "/;";
+			
+			perlSnippet.add(line);
+			perlSnippet.add("	");
+		}
+	
+		// initialisierung noch nicht bestehender listen bzw. anreichern bestehender listen
+		for(Init actInit : this.getInit())
+		{
+			perlSnippet.add("\t{");
+				
+			// falls liste noch nicht existiert, soll sie erzeugt werden
+			if (this.getList(actInit.getListname()) == null)
+			{
+				perlSnippet.add("\t\tmy %VARIABLE = %{$VARIABLE{"+actInit.getFromstep()+"}};");
+				perlSnippet.add("\t\tmy %FILE = %{$FILE{"+actInit.getFromstep()+"}};");
+				perlSnippet.add("\t\tmy @"+actInit.getListname()+";");
+			}
+				
+			// wenn es eine variable ist
+			if (actInit.getFromobjecttype().matches("variable"))
+			{
+				// jeden match anwenden
+				for(Match actMatch : actInit.getMatch())
+				{
+					// wenn auf key-feld gematcht werden soll
+					if (actMatch.getField().matches("key"))
+					{
+						perlSnippet.add("# matching for key");
+						perlSnippet.add("\t\t{");
+						perlSnippet.add("\t\t\tmy @tmp_keys_matched = grep {$_ =~ m/"+actMatch.getPattern()+"/} keys %VARIABLE;");
+						perlSnippet.add("\t\t\tforeach my $key (@tmp_keys_matched);");
+						perlSnippet.add("\t\t\t{");
+						
+						// wenn insertrule eq append
+						if (actInit.getInsertrule().matches("append"))
+						{
+							perlSnippet.add("# insertrule == append");
+							perlSnippet.add("");
+							
+							// wenn returnfield eq key
+							if (actInit.getReturnfield().matches("key"))
+							{
+								perlSnippet.add("\t\t\tpush @"+actInit.getListname()+", $key;");
+							}
+							// wenn returnfield eq value
+							else if (actInit.getReturnfield().matches("value"))
+							{
+								perlSnippet.add("\t\t\tpush @"+actInit.getListname()+", $VARIABLE{$key};");
+							}
+							perlSnippet.add("\t\t}");
+							perlSnippet.add("\t}");
+						}
+						else if (actInit.getInsertrule().matches("overwrite"))
+						{
+							perlSnippet.add("# insertrule == overwrite");
+							perlSnippet.add("");
+							perlSnippet.add("\t\t\tunless ( grep ($_ eq $tmp) @"+actInit.getListname()+")");
+							perlSnippet.add("\t\t\t{");
+							
+							// wenn returnfield eq key
+							if (actInit.getReturnfield().matches("key"))
+							{
+								perlSnippet.add("\t\t\t\tpush @"+actInit.getListname()+", $key;");
+							}
+							// wenn returnfield eq value
+							else if (actInit.getReturnfield().matches("value"))
+							{
+								perlSnippet.add("\t\t\t\tpush @"+actInit.getListname()+", $VARIABLE{$key};");
+							}
+							perlSnippet.add("\t\t\t}");
+							perlSnippet.add("\t\t}");
+							perlSnippet.add("\t}");
+						}
+					}
+					// wenn auf value-feld gematcht werden soll
+					if (actMatch.getField().matches("value"))
+					{
+						perlSnippet.add("# matching for value");
+						perlSnippet.add("\t\t{");
+						perlSnippet.add("\t\t\tforeach my $key (keys %VARIABLE);");
+						perlSnippet.add("\t\t\t{");
+						perlSnippet.add("");
+						perlSnippet.add("\t\t\t\tif ($VARIABLE{$key} =~ m/"+actMatch.getPattern()+"/)");
+						perlSnippet.add("\t\t\t\t{");
+
+						// wenn insertrule eq append
+						if (actInit.getInsertrule().matches("append"))
+						{
+							perlSnippet.add("# insertrule == append");
+							
+							// wenn returnfield eq key
+							if (actInit.getReturnfield().matches("key"))
+							{
+								perlSnippet.add("\t\t\tpush @"+actInit.getListname()+", $key;");
+							}
+							// wenn returnfield eq value
+							else if (actInit.getReturnfield().matches("value"))
+							{
+								perlSnippet.add("\t\t}");
+								perlSnippet.add("\t}");
+							}
+						}
+						else if (actInit.getInsertrule().matches("overwrite"))
+						{
+							perlSnippet.add("# insertrule == overwrite");
+							perlSnippet.add("\t\t\tunless ( grep ($_ eq $tmp) @"+actInit.getListname()+")");
+							perlSnippet.add("\t\t\t{");
+							
+							// wenn returnfield eq key
+							if (actInit.getReturnfield().matches("key"))
+							{
+								perlSnippet.add("\t\t\tpush @"+actInit.getListname()+", $key;");
+							}
+							// wenn returnfield eq value
+							else if (actInit.getReturnfield().matches("value"))
+							{
+								perlSnippet.add("\t\t\t}");
+								perlSnippet.add("\t\t}");
+								perlSnippet.add("\t}");
+							}
+						}
+						perlSnippet.add("\t\t\t\t}");
+						perlSnippet.add("\t\t\t}");
+						perlSnippet.add("\t\t}");
+					}
+				}
+			}
+			
+			// wenn es eine variable ist
+			else if (actInit.getFromobjecttype().matches("file"))
+			{
+				// jeden match anwenden
+				for(Match actMatch2 : actInit.getMatch())
+				{
+					// wenn auf key-feld gematcht werden soll
+					if (actMatch2.getField().matches("key"))
+					{
+						perlSnippet.add("# matching for key");
+						perlSnippet.add("\t\t{");
+						perlSnippet.add("\t\t\tmy @tmp_keys_matched = grep {$_ =~ m/"+actMatch2.getPattern()+"/} keys %FILE;");
+						perlSnippet.add("\t\t\tforeach my $key (@tmp_keys_matched);");
+						perlSnippet.add("\t\t\t{");
+						
+						// wenn insertrule eq append
+						if (actInit.getInsertrule().matches("append"))
+						{
+							perlSnippet.add("# insertrule == append");
+							perlSnippet.add("\t\t\tpush @"+actInit.getListname()+", $FILE{$key};");
+							perlSnippet.add("\t\t}");
+							perlSnippet.add("\t}");
+						}
+						else if (actInit.getInsertrule().matches("overwrite"))
+						{
+							perlSnippet.add("# insertrule == overwrite");
+							perlSnippet.add("\t\t\tunless ( grep ($_ eq $tmp) @"+actInit.getListname()+")");
+							perlSnippet.add("\t\t\t{");
+							perlSnippet.add("\t\t\t\tpush @"+actInit.getListname()+", $FILE{$key};");
+							perlSnippet.add("\t\t\t}");
+							perlSnippet.add("\t\t}");
+							perlSnippet.add("\t}");
+						}
+					}
+
+				// wenn auf value-feld gematcht werden soll
+					else if (actMatch2.getField().matches("absfilename"))
+					{
+						perlSnippet.add("# matching for absfilename");
+						perlSnippet.add("\t\t{");
+						perlSnippet.add("\t\t\tforeach my $key (keys %FILE);");
+						perlSnippet.add("\t\t\t{");
+						perlSnippet.add("");
+						perlSnippet.add("\t\t\t\tif ($FILE{$key} =~ m/"+actMatch2.getPattern()+"/)");
+						perlSnippet.add("\t\t\t\t{");
+						// wenn insertrule eq append
+						if (actInit.getInsertrule().matches("append"))
+						{
+							perlSnippet.add("# insertrule == append");
+							perlSnippet.add("\t\t\tpush @"+actInit.getListname()+", $FILE{$key};");
+							perlSnippet.add("\t\t}");
+							perlSnippet.add("\t}");
+						}
+						else if (actInit.getInsertrule().matches("overwrite"))
+						{
+							perlSnippet.add("# insertrule == overwrite");
+							perlSnippet.add("\t\t\tunless ( grep ($_ eq $tmp) @"+actInit.getListname()+")");
+							perlSnippet.add("\t\t\t{");
+							perlSnippet.add("\t\t\t\tpush @"+actInit.getListname()+", $FILE{$key};");
+							perlSnippet.add("\t\t\t}");
+							perlSnippet.add("\t\t}");
+							perlSnippet.add("\t}");
+						}
+						perlSnippet.add("\t\t\t\t}");
+						perlSnippet.add("\t\t\t}");
+						perlSnippet.add("\t\t}");
+					}
+				}
+			}
+			
+			// ueberpruefen ob minoccur eingehalten wird
+			perlSnippet.add("\t\tif (scalar(@"+actInit.getListname()+") < "+actInit.getMinoccur()+")");
+			perlSnippet.add("\t\t{");
+			perlSnippet.add("\t\t\tlogit(\"error\", \"list "+actInit.getListname()+" contains (scalar(@"+actInit.getListname()+") items. that is less than the needed "+actInit.getMinoccur()+")");
+			perlSnippet.add("\t\t\texit(1)");
+			perlSnippet.add("\t\t}");
+			
+			// ueberpruefen ob maxoccur eingehalten wird
+			perlSnippet.add("\t\tif (scalar(@"+actInit.getListname()+") > "+actInit.getMaxoccur()+")");
+			perlSnippet.add("\t\t{");
+			perlSnippet.add("\t\t\tlogit(\"error\", \"list "+actInit.getListname()+" contains (scalar(@"+actInit.getListname()+") items. that is more than the allowed "+actInit.getMinoccur()+")");
+			perlSnippet.add("\t\t\texit(1)");
+			perlSnippet.add("\t\t}");
+				
+		}
+		return perlSnippet;		
+	}
+				
+	
+	public ArrayList<String> getStepAsPerlScript()
+	{
+		Script script = new Script("default");
 		
 		ArrayList<Callitem> callitem = this.work.getCallitem();
 		
@@ -140,7 +384,6 @@ implements Serializable, Cloneable
 			
 			script.addOption(name, minoccur, maxoccur, definition, check, "", "=HULLA", "edit helptext here");
 		}
-
 		return script.getAll();
 	}
 	
@@ -1315,6 +1558,11 @@ implements Serializable, Cloneable
 	public String getRank()
 	{
 		return this.rank;
+	}
+	
+	public float getRankAsFloat()
+	{
+		return Float.parseFloat(this.rank);
 	}
 	
 	/*----------------------------
