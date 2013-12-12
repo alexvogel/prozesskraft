@@ -118,7 +118,10 @@ implements Serializable, Cloneable
 		perlSnippet.add(this.getName() + ":");
 		perlSnippet.add("{");
 		perlSnippet.add("\tmy $stepname = \""+this.getName()+"\";");
-		
+		perlSnippet.add("");
+		perlSnippet.add("\t# generate empty options-lists for every step, if not exists");
+		perlSnippet.add("\tunless(defined $VARIABLE{'"+this.getName()+"'}) { $VARIABLE{'"+this.getName()+"'} = [];}");
+		perlSnippet.add("\tunless(defined $FILE{'"+this.getName()+"'}) { $FILE{'"+this.getName()+"'} = [];}");
 		perlSnippet.add("");
 
 		perlSnippet.add("\t# generate lists with initial values");
@@ -147,12 +150,14 @@ implements Serializable, Cloneable
 			// falls liste noch nicht existiert, soll eine leere liste erzeugt werden
 			if (this.getList(actInit.getListname()) == null)
 			{
-				perlSnippet.add("# new list");
+				perlSnippet.add("");
+				perlSnippet.add("\t\t# new list");
 				perlSnippet.add("\t\tmy @"+actInit.getListname()+";");
 			}
 				
 			// ein array of hashes mit allen matches anlegen
-			perlSnippet.add("# create an array of hashes with all matches");
+			perlSnippet.add("");
+			perlSnippet.add("\t\t# create an array of hashes with all matches");
 			perlSnippet.add("\t\tmy @matches_"+actInit.getListname()+";");
 			ArrayList<Match> matchesOfInit = actInit.getMatch();
 			for(int x=0; x < matchesOfInit.size(); x++)
@@ -164,8 +169,9 @@ implements Serializable, Cloneable
 			}
 			
 			// liste initialisieren / anreichern
-			perlSnippet.add("# initialize list");
-			perlSnippet.add("# initlist (1=fromobjecttype 2=returnfield 3=fromstep 4=insertrule 5=minoccur 6=maxoccur 7=refARRAYmatch 8=refARRAYlist 9=refHASHvariable 10=refHASHfile)");
+			perlSnippet.add("");
+			perlSnippet.add("\t\t# initialize list");
+			perlSnippet.add("\t\t# initlist (1=fromobjecttype 2=returnfield 3=fromstep 4=insertrule 5=minoccur 6=maxoccur 7=refARRAYmatch 8=refARRAYlist 9=refHASHvariable 10=refHASHfile)");
 			perlSnippet.add("\t\t&initlist('"+actInit.getFromobjecttype()+"', '"+actInit.getReturnfield()+"', '"+actInit.getFromstep()+"', '"+actInit.getInsertrule()+"', "+actInit.getMinoccur()+", "+actInit.getMaxoccur()+", \\@matches_"+actInit.getListname()+", \\@"+actInit.getListname()+", $VARIABLE{'"+actInit.getFromstep()+"'}, $FILE{'"+actInit.getFromstep()+"'});");
 			
 			perlSnippet.add("\t}");
