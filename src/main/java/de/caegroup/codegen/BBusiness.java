@@ -75,15 +75,15 @@ implements Serializable, Cloneable
 			content.add("my %VARIABLE;");
 			content.add("my %FILE;");
 			content.add("");
-			content.add("foreach my $option (keys %OPTIONS)");
+			content.add("foreach my $option (keys %OPT)");
 			content.add("{");
 			content.add("	if ($option =~ m/submodel_(.+)/i)");
 			content.add("	{");
-			content.add("		$FILE{$1} = $OPTION{$option};");
+			content.add("		$FILE{$1} = $OPT{$option};");
 			content.add("	}");
 			content.add("	else");
 			content.add("	{");
-			content.add("		$VARIABLE{$option} = $OPTION{$option};");
+			content.add("		$VARIABLE{$option} = $OPT{$option};");
 			content.add("	}");
 			content.add("}");
 		}

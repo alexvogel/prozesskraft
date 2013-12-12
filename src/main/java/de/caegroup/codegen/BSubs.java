@@ -404,5 +404,7 @@ implements Serializable, Cloneable
 		code.add("		exit(1);");
 		code.add("	}");
 		code.add("}");
+
+		this.code_initlist = code;
 	}
 }
