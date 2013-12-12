@@ -77,7 +77,7 @@ implements Serializable, Cloneable
 	 * @return String
 	 */
 	
-	public ArrayList<String> getAll()
+	public ArrayList<String> getAll(String type)
 	{
 		ArrayList<String> perl = new ArrayList<String>();
 		perl.add("#!" + this.interpreter);
@@ -92,6 +92,21 @@ implements Serializable, Cloneable
 		BChecks checks = new BChecks(this);
 		BBusiness business = new BBusiness(this);
 		BSubs subs = new BSubs(this);
+		
+		// nur wenn type != default, soll der content neu generiert werden
+		if (!(type.matches("default")))
+		{
+			meta.setType(type);
+			modules.setType(type);
+			path.setType(type);
+			config.setType(type);
+			options.setType(type);
+			help.setType(type);
+			calls.setType(type);
+			checks.setType(type);
+			business.setType(type);
+			subs.setType(type);
+		}
 		
 		perl.addAll(meta.getBlock());
 		perl.addAll(modules.getBlock());

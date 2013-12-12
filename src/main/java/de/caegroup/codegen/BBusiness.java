@@ -14,6 +14,8 @@ implements Serializable, Cloneable
 
 	static final long serialVersionUID = 1;
 	Script parent = null;
+	ArrayList<String> content = new ArrayList<String>();
+	String type = "default";
 	
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 	/*----------------------------
@@ -22,6 +24,7 @@ implements Serializable, Cloneable
 	public BBusiness(Script parent)
 	{
 		this.parent = parent;
+		this.genContent(type);
 	}
 
 	/*----------------------------
@@ -45,11 +48,39 @@ implements Serializable, Cloneable
 		return block;
 	}
 	
-	private ArrayList<String> getContent()
-	{
-		ArrayList<String> content = new ArrayList<String>();
-
-		content.add("# place your business logic here.");
+	public ArrayList<String> getContent() {
 		return content;
 	}
+
+	public void setContent(ArrayList<String> content) {
+		this.content = content;
+	}
+	
+	public void genContent(String type) {
+		ArrayList<String> content = new ArrayList<String>();
+		
+		if(type.matches("bla"))
+		{
+			
+		}
+		// default
+		else
+		{
+			content.add("# unknown type "+type);
+			content.add("# place your business logic here.");
+		}
+		
+		this.content = content;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+		this.genContent(type);
+	}
+	
+	
 }

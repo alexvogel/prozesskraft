@@ -14,7 +14,8 @@ implements Serializable, Cloneable
 
 	static final long serialVersionUID = 1;
 	Script parent = null;
-	ArrayList<Option> option = new ArrayList<Option>();
+	ArrayList<String> content = new ArrayList<String>();
+	String type = "default";
 	
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 	/*----------------------------
@@ -23,6 +24,7 @@ implements Serializable, Cloneable
 	public BCalls(Script parent)
 	{
 		this.parent = parent;
+		this.genContent(type);
 	}
 
 	/*----------------------------
@@ -46,29 +48,54 @@ implements Serializable, Cloneable
 		return block;
 	}
 
-	private ArrayList<String> getContent()
-	{
-		ArrayList<String> content = new ArrayList<String>();
-
-		content.add("if (${$OPT{'help'}})");
-		content.add("{");
-		content.add("\tprint STDERR $helptext;");
-		content.add("\texit(0);");
-		content.add("}");
-		content.add("if (${$OPT{'doc'}})");
-		content.add("{");
-		content.add("\tif (stat $doc_path)");
-		content.add("\t{");
-		content.add("\t\tlogit('info', 'showing documentation');");
-		content.add("\t\texec 'acroread ' . $doc_path;");
-		content.add("\t}");
-		content.add("\telse");
-		content.add("\t{");
-		content.add("\t\tlogit('info', 'no documentation installed ('.$doc_path.')');");
-		content.add("\t}");
-		content.add("\texit(0);");
-		content.add("}");
-
+	public ArrayList<String> getContent() {
 		return content;
 	}
+
+	public void setContent(ArrayList<String> content) {
+		this.content = content;
+	}
+	
+	public void genContent(String type) {
+		ArrayList<String> content = new ArrayList<String>();
+		
+		if(type.matches("bla"))
+		{
+			
+		}
+		// default
+		else
+		{
+			content.add("if (${$OPT{'help'}})");
+			content.add("{");
+			content.add("\tprint STDERR $helptext;");
+			content.add("\texit(0);");
+			content.add("}");
+			content.add("if (${$OPT{'doc'}})");
+			content.add("{");
+			content.add("\tif (stat $doc_path)");
+			content.add("\t{");
+			content.add("\t\tlogit('info', 'showing documentation');");
+			content.add("\t\texec 'acroread ' . $doc_path;");
+			content.add("\t}");
+			content.add("\telse");
+			content.add("\t{");
+			content.add("\t\tlogit('info', 'no documentation installed ('.$doc_path.')');");
+			content.add("\t}");
+			content.add("\texit(0);");
+			content.add("}");
+		}
+		
+		this.content = content;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+		this.genContent(type);
+	}
+
 }

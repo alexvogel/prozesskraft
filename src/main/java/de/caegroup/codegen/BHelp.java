@@ -14,6 +14,8 @@ implements Serializable, Cloneable
 
 	static final long serialVersionUID = 1;
 	Script parent = null;
+	ArrayList<String> content = new ArrayList<String>();
+	String type = "default";
 	
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 	/*----------------------------
@@ -22,6 +24,7 @@ implements Serializable, Cloneable
 	public BHelp(Script parent)
 	{
 		this.parent = parent;
+		this.genContent(type);
 	}
 
 	/*----------------------------
@@ -45,51 +48,77 @@ implements Serializable, Cloneable
 		return block;
 	}
 	
-	private ArrayList<String> getContent()
-	{
-		ArrayList<String> content = new ArrayList<String>();
-
-		content.add("my $helptext;");
-		content.add("");
-		content.add("$helptext .= \"usage: $filename PARAMETER\\n\";");
-		content.add("$helptext .= \"\\n\";");
-		content.add("$helptext .= \"Parameter\\n\";");
-		content.add("");
-		content.add("foreach(sort keys %OPTHELP)");
-		content.add("{");
-		content.add("	$helptext .= sprintf (\" --%s%s\", $_, ${$OPTHELP{$_}}{'text1'});");
-		content.add("	");
-		content.add("	if (${$OPTHELP{$_}}{'mandatory'})");
-		content.add("	{");
-		content.add("		$helptext .= \" (mandatory\";");
-		content.add("	}");
-		content.add("	else");
-		content.add("	{");
-		content.add("		$helptext .= \" (optional\";");
-		content.add("	}");
-		content.add("	");
-		content.add("	if (${$OPTHELP{$_}}{'default'})");
-		content.add("	{");
-		content.add("		$helptext .= \", default: \" . ${$OPTHELP{$_}}{'default'} . \")\";");
-		content.add("	}");
-		content.add("	else");
-		content.add("	{");
-		content.add("		$helptext .= \")\";");
-		content.add("	}");
-		content.add("	$helptext .= \"\\n\";");
-		content.add("	");
-		content.add("	# helptext nach ca. 60 Zeichen umbrechen");
-		content.add("	${$OPTHELP{$_}}{'text2'} =~ s/(.{60}[^\\s]*)\\s+/$1\\n/g;");
-		content.add("	");
-		content.add("	foreach(split (\"\\n\", ${$OPTHELP{$_}}{'text2'}))");
-		content.add("	{");
-		content.add("		$helptext .= sprintf (\"       %s\\n\",  $_);");
-		content.add("	}");
-		content.add("	$helptext .= \"\\n\";");
-		content.add("}");
-
-		content.add("$helptext .= \"author: alexander.vogel\\@caegroup.de | version: $version | date: $date\\n\";");
-
+	public ArrayList<String> getContent() {
 		return content;
 	}
+
+	public void setContent(ArrayList<String> content) {
+		this.content = content;
+	}
+	
+	public void genContent(String type) {
+		ArrayList<String> content = new ArrayList<String>();
+		
+		if(type.matches("bla"))
+		{
+			
+		}
+		// default
+		else
+		{
+			content.add("my $helptext;");
+			content.add("");
+			content.add("$helptext .= \"usage: $filename PARAMETER\\n\";");
+			content.add("$helptext .= \"\\n\";");
+			content.add("$helptext .= \"Parameter\\n\";");
+			content.add("");
+			content.add("foreach(sort keys %OPTHELP)");
+			content.add("{");
+			content.add("	$helptext .= sprintf (\" --%s%s\", $_, ${$OPTHELP{$_}}{'text1'});");
+			content.add("	");
+			content.add("	if (${$OPTHELP{$_}}{'mandatory'})");
+			content.add("	{");
+			content.add("		$helptext .= \" (mandatory\";");
+			content.add("	}");
+			content.add("	else");
+			content.add("	{");
+			content.add("		$helptext .= \" (optional\";");
+			content.add("	}");
+			content.add("	");
+			content.add("	if (${$OPTHELP{$_}}{'default'})");
+			content.add("	{");
+			content.add("		$helptext .= \", default: \" . ${$OPTHELP{$_}}{'default'} . \")\";");
+			content.add("	}");
+			content.add("	else");
+			content.add("	{");
+			content.add("		$helptext .= \")\";");
+			content.add("	}");
+			content.add("	$helptext .= \"\\n\";");
+			content.add("	");
+			content.add("	# helptext nach ca. 60 Zeichen umbrechen");
+			content.add("	${$OPTHELP{$_}}{'text2'} =~ s/(.{60}[^\\s]*)\\s+/$1\\n/g;");
+			content.add("	");
+			content.add("	foreach(split (\"\\n\", ${$OPTHELP{$_}}{'text2'}))");
+			content.add("	{");
+			content.add("		$helptext .= sprintf (\"       %s\\n\",  $_);");
+			content.add("	}");
+			content.add("	$helptext .= \"\\n\";");
+			content.add("}");
+
+			content.add("$helptext .= \"author: alexander.vogel\\@caegroup.de | version: $version | date: $date\\n\";");
+		}
+		
+		this.content = content;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+		this.genContent(type);
+	}
+	
+
 }
