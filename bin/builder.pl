@@ -249,7 +249,7 @@ my $header = 1;
 my @header;
 
 if (!open (STACK, "<$stack")) {die "cannot read $stack: $!\n";}
-    
+
 while(<STACK>)
 {
 	$_ =~ s/\s*//g;						# alle leerzeichen entfernen
@@ -334,6 +334,7 @@ while(<STACK>)
 		# ausgabe, welche zeilen aus config im weiteren verlauf aktiviert/deaktiviert sind.
 		if ($soll_beruecksichtigt_werden)
 		{
+			print "----\n";
 			print "info: activate:";
 			foreach my $key (grep {!/action/} sort keys %paramset) {print " " . $key . "=" . $paramset{$key}}
 			foreach my $key (grep { /action/} sort keys %paramset) {print " " . $key . "=" . "@{$paramset{$key}}"}
