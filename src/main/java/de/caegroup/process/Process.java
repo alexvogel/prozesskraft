@@ -169,7 +169,7 @@ implements Serializable
 
 	public ArrayList<String> getProcessAsPerlScript()
 	{
-		Script script = new Script("default");
+		Script script = new Script("process");
 		
 		for(Step actStep : this.getStepsLinearized())
 		{
