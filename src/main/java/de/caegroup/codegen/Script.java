@@ -18,38 +18,38 @@ implements Serializable, Cloneable
 //	private ArrayList<Option> option = new ArrayList<Option>();
 	private String description = "";
 	private String interpreter = "/usr/bin/perl";
+	private String type = "default";
 	ArrayList<Option> option = new ArrayList<Option>();
 	public String trenner = "#----------------------------------------------------------------------------";
+	public BBusiness business = new BBusiness(this);
+	public BCalls calls = new BCalls(this);
+	public BChecks checks = new BChecks(this);
+	public BConfig config = new BConfig(this);
+	public BHelp help = new BHelp(this);
+	public BMeta meta = new BMeta(this);
+	public BModules modules = new BModules(this);
+	public BOptions options = new BOptions(this);
+	public BPath path = new BPath(this);
+	public BSubs subs = new BSubs(this);
 	/*----------------------------
 	  constructors
 	----------------------------*/
 	/**
-	 * constructs a step with
-	 * a new parent
-	 * a random name
+	 */
+	public Script(String type)
+	{
+		this.setType(type);
+	}
+	/**
 	 */
 	public Script()
 	{
-
+		this.setType("default");
 	}
 
 	/*----------------------------
 	  methods 
 	----------------------------*/
-//	@Override
-//	public Step clone()
-//	{
-//		try
-//		{
-//			return (Step) super.clone();
-//		}
-//		catch ( CloneNotSupportedException e )
-//		{
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
-	
 	public void addOption (Option option)
 	{
 		this.option.add(option);
@@ -77,36 +77,10 @@ implements Serializable, Cloneable
 	 * @return String
 	 */
 	
-	public ArrayList<String> getAll(String type)
+	public ArrayList<String> getAll()
 	{
 		ArrayList<String> perl = new ArrayList<String>();
 		perl.add("#!" + this.interpreter);
-		
-		BMeta meta = new BMeta(this);
-		BModules modules = new BModules(this);
-		BPath path = new BPath(this);
-		BConfig config = new BConfig(this);
-		BOptions options = new BOptions(this);
-		BHelp help = new BHelp(this);
-		BCalls calls = new BCalls(this);
-		BChecks checks = new BChecks(this);
-		BBusiness business = new BBusiness(this);
-		BSubs subs = new BSubs(this);
-		
-		// nur wenn type != default, soll der content neu generiert werden
-		if (!(type.matches("default")))
-		{
-			meta.setType(type);
-			modules.setType(type);
-			path.setType(type);
-			config.setType(type);
-			options.setType(type);
-			help.setType(type);
-			calls.setType(type);
-			checks.setType(type);
-			business.setType(type);
-			subs.setType(type);
-		}
 		
 		perl.addAll(meta.getBlock());
 		perl.addAll(modules.getBlock());
@@ -175,5 +149,55 @@ implements Serializable, Cloneable
 		
 		return bigInt;
 	}
+
+	public void setContent(String block, ArrayList<String> content) throws UnknownCodeBlockException
+	{
+		if (block.matches("meta")) {this.meta.setContent(content);}
+		else if (block.matches("modules")) {this.modules.setContent(content);}
+		else if (block.matches("path")) {this.path.setContent(content);}
+		else if (block.matches("config")) {this.config.setContent(content);}
+		else if (block.matches("options")) {this.options.setContent(content);}
+		else if (block.matches("help")) {this.help.setContent(content);}
+		else if (block.matches("calls")) {this.calls.setContent(content);}
+		else if (block.matches("checks")) {this.checks.setContent(content);}
+		else if (block.matches("business")) {this.business.setContent(content);}
+		else if (block.matches("subs")) {this.subs.setContent(content);}
+		else {throw new UnknownCodeBlockException("unknown code block "+block);}
+	}
+
+	public void addContent(String block, ArrayList<String> content) throws UnknownCodeBlockException
+	{
+		if (block.matches("meta")) {this.meta.addContent(content);}
+		else if (block.matches("modules")) {this.modules.addContent(content);}
+		else if (block.matches("path")) {this.path.addContent(content);}
+		else if (block.matches("config")) {this.config.addContent(content);}
+		else if (block.matches("options")) {this.options.addContent(content);}
+		else if (block.matches("help")) {this.help.addContent(content);}
+		else if (block.matches("calls")) {this.calls.addContent(content);}
+		else if (block.matches("checks")) {this.checks.addContent(content);}
+		else if (block.matches("business")) {this.business.addContent(content);}
+		else if (block.matches("subs")) {this.subs.addContent(content);}
+		else {throw new UnknownCodeBlockException("unknown code block "+block);}
+	}
+
+	private void setType(String type)
+	{
+		this.type = type;
+		// nur wenn type != default, soll der content neu generiert werden
+		if (!(type.matches("default")))
+		{
+			this.meta.setType(type);
+			this.modules.setType(type);
+			this.path.setType(type);
+			this.config.setType(type);
+			this.options.setType(type);
+			this.help.setType(type);
+			this.calls.setType(type);
+			this.checks.setType(type);
+			this.business.setType(type);
+			this.subs.setType(type);
+		}
+	}
+
 
 }

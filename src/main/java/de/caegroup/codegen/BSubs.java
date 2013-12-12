@@ -38,6 +38,7 @@ implements Serializable, Cloneable
 		
 		ArrayList<String> block = new ArrayList<String>();
 		block.addAll(this.parent.genBlockStart("subs"));
+		block.add("# type="+type);
 		block.add("# md5="+md5);
 		block.add(this.parent.trenner);
 		block.addAll(content);
@@ -54,6 +55,13 @@ implements Serializable, Cloneable
 
 	public void setContent(ArrayList<String> content) {
 		this.content = content;
+		this.type = "manual";
+	}
+	
+	public void addContent(ArrayList<String> content)
+	{
+		this.content.addAll(content);
+		this.type = "manual";
 	}
 	
 	public void genContent(String type) {
