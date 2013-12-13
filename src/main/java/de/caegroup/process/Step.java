@@ -189,6 +189,7 @@ implements Serializable, Cloneable
 
 		for(Init actInit : this.getInit())
 		{
+			System.out.println("init verarbeiten: "+actInit.getListname());
 			// daten aus der init-definition
 			String name = actInit.getListname();
 			int minoccur = actInit.getMinoccur();
