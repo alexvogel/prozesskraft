@@ -239,7 +239,7 @@ implements Serializable, Cloneable
 						// wenn ^[^\\+*?{}]+$  Muster ohne quantifier oder metazeichen gefunden wird bsplw. bei "node|element", soll das direkt als text1 verwendet werden
 						else if(actMatch.getPattern().matches("^\\^[^\\\\+*?{}]+\\$$"))
 						{
-							text1 = "=actMatch.getPattern()";
+							text1 = actMatch.getPattern();
 							definition = "string";
 						}
 						
@@ -269,8 +269,19 @@ implements Serializable, Cloneable
 			}
 			
 			// der default wert fuer diese option
-			// evtl. aus die items aus den gleichnamigen list-elementen extrahieren, die hart im xml definiert wurden
+			// aus den items der gleichnamigen listen extrahieren, die hart im xml definiert wurden
 			String def = "";
+			// wenn es eine liste mit dem gleichen namen gibt wie das init-element, sollen alle items (trennzeichen=%%) als default gesetzt werden 
+			if(this.getList(actInit.getListname()) != null)
+			{
+				List list = this.getList(actInit.getListname());
+				ArrayList<String> items = list.getItem();
+				for(String item : items)
+				{
+					if(def.equals("")) {def = item;}
+					else{def += "%%" + item;}
+				}
+			}
 			
 			// der hilfstext fuer diese option
 			String text2 = actInit.getDescription();
