@@ -197,7 +197,8 @@ implements Serializable, Cloneable
 			content.add("		if (!(${$OPT{$par}}) && ${$options_fest{$par}}{'default'} && ${$options_fest{$par}}{'default'} ne \"\")");
 			content.add("		{");
 			content.add("			logit('info', 'setting default for --' . $par . '=' . ${$options_fest{$par}}{'default'} );");
-			content.add("			${$OPT{$par}} = ${$options_fest{$par}}{'default'};");
+			content.add("			my @tmp_defaults = split (\"%%\", ${$options_fest{$par}}{'default'});");
+			content.add("			${$OPT{$par}} = $tmp_defaults[0];");
 			content.add("		}");
 			content.add("	}");
 			content.add("	");
@@ -206,7 +207,7 @@ implements Serializable, Cloneable
 			content.add("		if (!(${$OPT{$par}}[0]) && ${$options_fest{$par}}{'default'} && ${$options_fest{$par}}{'default'} ne \"\")");
 			content.add("		{");
 			content.add("			logit('info', 'setting default for --' . $par . '=' . ${$options_fest{$par}}{'default'} );");
-			content.add("			${$OPT{$par}}[0] = ${$options_fest{$par}}{'default'};");
+			content.add("			@{$OPT{$par}} = split (\"%%\", ${$options_fest{$par}}{'default'});");
 			content.add("		}");
 			content.add("	}");
 			content.add("	");
