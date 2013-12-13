@@ -208,7 +208,7 @@ implements Serializable, Cloneable
 				if(actInit.getFromobjecttype().equals("file"))
 				{
 					text1 = "=FILE";
-					definition = "string";
+					definition = "file";
 				}
 				
 				else if(actInit.getFromobjecttype().equals("variable"))
@@ -241,6 +241,12 @@ implements Serializable, Cloneable
 						{
 							text1 = "=" + actMatch.getPattern().replace("^", "").replace("$", "");
 							definition = "string";
+							
+							// als check aufnehmen
+							if(check.equals(""))
+							{
+								check = actMatch.getPattern();
+							}
 						}
 						
 						// wenn es keiner der bekannten muster ist und es noch keinen check gibt, soll dieser string zum checken verwendet werden
