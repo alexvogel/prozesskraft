@@ -110,7 +110,7 @@ implements Serializable, Cloneable
 			content.add("			# helptext nach ca. 66 Zeichen umbrechen");
 			content.add("			${$OPTHELP{$_}}{'text2'} =~ s/(.{66}[^\\s]*)\\s+/$1\\n/g;");
 			content.add("	");
-			content.add("			foreach(split (\"\n\", ${$OPTHELP{$_}}{'text2'}))");
+			content.add("			foreach(split (\"\\n\", ${$OPTHELP{$_}}{'text2'}))");
 			content.add("			{");
 			content.add("				$helptext .= sprintf (\"       %s\\n\",  $_);");
 			content.add("			}");
