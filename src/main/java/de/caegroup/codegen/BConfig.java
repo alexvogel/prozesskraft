@@ -97,7 +97,7 @@ implements Serializable, Cloneable
 			content.add("}");
 			content.add("else");
 			content.add("{");
-			content.add("	logit(\"warn\", \"cannot read $conf_path. builtin config-read capabiliries cannot be used\");");
+			content.add("	logit(\"warn\", \"cannot read $conf_path. builtin config-read capabilities cannot be used\");");
 			content.add("}");
 		}
 		
