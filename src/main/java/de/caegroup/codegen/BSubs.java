@@ -28,10 +28,10 @@ implements Serializable, Cloneable
 	public BSubs(Script parent)
 	{
 		this.parent = parent;
-		this.genContent(type);
 		this.initCodeLogit();
 		this.initCodeGetvars();
 		this.initCodeInitlist();
+		this.genContent(type);
 	}
 
 	/*----------------------------
