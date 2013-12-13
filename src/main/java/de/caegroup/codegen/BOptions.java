@@ -107,6 +107,14 @@ implements Serializable, Cloneable
 			content.add("		{");
 			content.add("			$optionsall{$par . \"=s\"} = \\@tmp;");
 			content.add("		}");
+			content.add("		elsif (${$options_fest{$par}}{'definition'} eq \"integer\")");
+			content.add("		{");
+			content.add("			$optionsall{$par . \"=i\"} = \\@tmp;");
+			content.add("		}");
+			content.add("		elsif (${$options_fest{$par}}{'definition'} eq \"float\")");
+			content.add("		{");
+			content.add("			$optionsall{$par . \"=f\"} = \\@tmp;");
+			content.add("		}");
 			content.add("		");
 			content.add("		$OPT{$par} = \\@tmp;");
 			content.add("		$OPTHELP{$par} = {'text1' => ${$options_fest{$par}}{'text1'}, 'text2' => ${$options_fest{$par}}{'text2'}};");
@@ -145,7 +153,7 @@ implements Serializable, Cloneable
 			content.add("		}");
 			content.add("		elsif (${$options_fest{$par}}{'definition'} eq \"float\")");
 			content.add("		{");
-			content.add("			$optionsall{$par . \"=float\"} = \\$tmp;");
+			content.add("			$optionsall{$par . \"=f\"} = \\$tmp;");
 			content.add("		}");
 			content.add("		");
 			content.add("		$OPT{$par} = \\$tmp;");
