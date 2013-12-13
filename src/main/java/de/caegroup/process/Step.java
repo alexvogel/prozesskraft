@@ -216,7 +216,7 @@ implements Serializable, Cloneable
 					if(actMatch.getField().equals("value"))
 					{
 						// wenn "^\d+$", dann sollen die werte offensichtlich integer sein
-						if(actMatch.getPattern().matches("^\\^\\d\\+?\\$$"))
+						if(actMatch.getPattern().matches("^\\^\\\\d\\+?\\$$"))
 						{
 							text1 = "=INTEGER";
 							definition = "integer";
@@ -239,7 +239,7 @@ implements Serializable, Cloneable
 						// wenn ^[^\\+*?{}]+$  Muster ohne quantifier oder metazeichen gefunden wird bsplw. bei "node|element", soll das direkt als text1 verwendet werden
 						else if(actMatch.getPattern().matches("^\\^[^\\\\+*?{}]+\\$$"))
 						{
-							text1 = actMatch.getPattern();
+							text1 = "=" + actMatch.getPattern().replace("^", "").replace("$", "");
 							definition = "string";
 						}
 						
