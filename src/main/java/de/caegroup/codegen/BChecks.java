@@ -106,7 +106,7 @@ implements Serializable, Cloneable
 			content.add("	{");
 			content.add("		unless (${$OPT{$key}} =~ m/${$OPTIONS_TABLE{$key}}{'check'}/)");
 			content.add("		{");
-			content.add("			logit('error', 'option --'.$key.'='.${$OPT{$key}}.' does not match the expected pattern ('.${$OPTIONS_TABLE{$key}}{'check'}.').');");
+			content.add("			logit('error', 'option --'.$key.'='.${$OPT{$key}}.' does not match the expected pattern /'.${$OPTIONS_TABLE{$key}}{'check'}.'/.');");
 			content.add("			$error_patternchecks++;");
 			content.add("		}");
 			content.add("	}");
@@ -117,7 +117,7 @@ implements Serializable, Cloneable
 			content.add("		{");
 			content.add("			unless ($value =~ m/${$OPTIONS_TABLE{$key}}{'check'}/)");
 			content.add("			{");
-			content.add("				logit('error', 'option --'.$key.'='.$value.' does not match the expected pattern ('.${$OPTIONS_TABLE{$key}}{'check'}.').');");
+			content.add("				logit('error', 'option --'.$key.'='.$value.' does not match the expected pattern /'.${$OPTIONS_TABLE{$key}}{'check'}.'/.');");
 			content.add("				$error_patternchecks++;");
 			content.add("			}");
 			content.add("		}");
