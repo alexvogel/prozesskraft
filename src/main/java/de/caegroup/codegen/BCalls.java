@@ -39,11 +39,11 @@ implements Serializable, Cloneable
 		ArrayList<String> block = new ArrayList<String>();
 		block.addAll(this.parent.genBlockStart("calls"));
 		block.add("# type="+type);
-		block.add("# md5="+md5);
+		block.add("# checksum="+md5);
 		block.add(this.parent.trenner);
 		block.addAll(content);
 		block.add(this.parent.trenner);
-		block.add("# md5="+md5);
+		block.add("# checksum="+md5);
 		block.addAll(this.parent.genBlockEnd("calls"));
 		
 		return block;
