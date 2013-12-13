@@ -15,9 +15,9 @@ implements Serializable, Cloneable
 	String name = "";
 	int minoccur = 0;
 	int maxoccur = 0;
-	String definition = "string";  // string | flag
+	String definition = "string";  // string | flag | integer | float
 	String check = "";
-	String def = ""; // default
+	String def = ""; // default-value for this option
 	String text1 = "";
 	String text2 = "";
 	
