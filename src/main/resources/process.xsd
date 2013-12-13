@@ -64,17 +64,20 @@
   <xs:element name="init">
     <xs:complexType>
     	<xs:sequence>
-         <xs:element minOccurs="0" maxOccurs="unbounded" ref="match"/>
-   		<xs:element name="value" type="xs:string" maxOccurs="unbounded" minOccurs="0"></xs:element>
+    		<xs:element minOccurs="0" maxOccurs="unbounded" ref="match" />
+    		<xs:element name="value" type="xs:string"
+    			maxOccurs="unbounded" minOccurs="0">
+    		</xs:element>
     	</xs:sequence>
     	<xs:attribute name="fromobjecttype" use="required"
     		type="ResourceType" />
     	<xs:attribute name="fromstep" use="required" />
     	<xs:attribute name="minoccur" type="xs:integer" use="required" />
-    	<xs:attribute name="maxoccur" type="xs:integer" use="required"/>
+    	<xs:attribute name="maxoccur" type="xs:integer" use="required" />
     	<xs:attribute name="listname" use="required" type="xs:string" />
     	<xs:attribute name="returnfield" type="xs:string" />
-    	<xs:attribute name="insertrule" type="xs:string"/>
+    	<xs:attribute name="insertrule" type="xs:string" />
+    	<xs:attribute name="description" type="xs:string" use="optional"></xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="match">

@@ -24,6 +24,7 @@ implements Serializable
 	private ArrayList<String> value = new ArrayList<String>();
 	private int minoccur = 0;
 	private int maxoccur = 999999;
+	private String description = "";
 
 	private String loop = new String();
 	private String loopvar = new String();
@@ -214,6 +215,20 @@ implements Serializable
 		this.maxoccur = maxoccur;
 	}
 
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	/*----------------------------
 	  methods consistent
 	----------------------------*/
@@ -231,6 +246,6 @@ implements Serializable
 		
 		return result;
 	}
-	
+
 
 }

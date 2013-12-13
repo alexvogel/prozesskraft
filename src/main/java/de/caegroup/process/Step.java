@@ -185,35 +185,99 @@ implements Serializable, Cloneable
 	{
 		Script script = new Script("default");
 		
-		ArrayList<Callitem> callitem = this.work.getCallitem();
-		
-		System.out.println(" options : "+callitem.size());
-		
-		for(Callitem act_callitem : callitem)
+//		System.out.println(" options : "+callitem.size());
+
+		for(Init actInit : this.getInit())
 		{
-			String name = act_callitem.getPar().replaceAll("-", "");
+			// daten aus der init-definition
+			String name = actInit.getListname();
+			int minoccur = actInit.getMinoccur();
+			int maxoccur = actInit.getMaxoccur();
 			
-			// maxoccur soll abgeleitet werden von maxoccur des Init, falls das aktuelle callitem ein loop enthaelt
-			int minoccur = 1;
-			int maxoccur = 1;
-			String listname = act_callitem.getLoop();
-			// wenn das callitem ueber einen loop erzeugt wird, soll geschaut werden wieviel eintraege die loopliste enthalten darf
-			if ( (!(listname == null)) && (listname.matches(".+")) )
+			String definition = "string";
+			// check soll aus den match-elementen des init-elementes extrahiert werden
+			// aus der ERSTEN match, dass field=value|absfilename definiert ist, soll das pattern zum checken verwendet werden
+			// falls es mehere matches gibt auf die das kriterium zutrifft werden diese ignoriert (wäre noch zu implementieren)
+			String check = "";
+			// der erste erklaerungstext fuer diese option (z.B. "=FILE")
+			// evtl. 
+			String text1 = "";
+			for(Match actMatch : actInit.getMatch())
 			{
-				Init init = this.getInit(listname);
-				// maxoccur soll auf den gleichen wert gesetzt werden, wie die loopliste hat
-				maxoccur = init.getMaxoccur();
-				minoccur = init.getMinoccur();
+				if(actInit.getFromobjecttype().equals("file"))
+				{
+					text1 = "=FILE";
+					definition = "string";
+				}
+				
+				else if(actInit.getFromobjecttype().equals("variable"))
+				{
+					if(actMatch.getField().equals("value"))
+					{
+						// wenn "^\d+$", dann sollen die werte offensichtlich integer sein
+						if(actMatch.getPattern().matches("^\\^\\d\\+?\\$$"))
+						{
+							text1 = "=INTEGER";
+							definition = "integer";
+						}
+
+						// wenn "^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$", dann sollen die werte offensichtlich float sein
+						else if(actMatch.getPattern().matches("^\\^\\[-\\+\\]\\?\\[0-9\\]\\*\\\\\\.\\?\\[0-9\\]\\+\\(\\[eE\\]\\[-\\+\\]\\?\\[0-9\\]\\+\\)\\?\\$$"))
+						{
+							text1 = "=FLOAT";
+							definition = "float";
+						}
+						
+						// wenn "^.+$", dann sollen die werte offensichtlich string sein
+						else if(actMatch.getPattern().matches("^\\^\\.\\+\\$$"))
+						{
+							text1 = "=STRING";
+							definition = "string";
+						}
+						
+						// wenn ^[^\\+*?{}]+$  Muster ohne quantifier oder metazeichen gefunden wird bsplw. bei "node|element", soll das direkt als text1 verwendet werden
+						else if(actMatch.getPattern().matches("^\\^[^\\\\+*?{}]+\\$$"))
+						{
+							text1 = "=actMatch.getPattern()";
+							definition = "string";
+						}
+						
+						// wenn es keiner der bekannten muster ist und es noch keinen check gibt, soll dieser string zum checken verwendet werden
+						else if(check.equals(""))
+						{
+							check = actMatch.getPattern();
+						}
+
+					}
+				}
 			}
 			
-			// check soll abgeleitet werden von einem match(field=value) innerhalb des dazugehoerigen inits
-			String check = "";
+			// wenn in einem callitem ein Par existiert, dass genauso heisst wie dieses init, wird
+			// falls ein val existiert 'string' gesetzt, falls kein val existiert 'flag' gesetzt
+			for(Callitem act_callitem : this.work.getCallitem())
+			{
+				String par = act_callitem.getPar().replaceAll("-", "");
+				if(par.equals(name))
+				{
+					if(!(act_callitem.getVal().matches(".+")))
+					{
+						definition = "flag";
+					}
+					break;
+				}
+			}
 			
-			String definition = "flag";
-			if (act_callitem.getVal().matches(".+")) {definition = "string";}
+			// der default wert fuer diese option
+			// evtl. aus die items aus den gleichnamigen list-elementen extrahieren, die hart im xml definiert wurden
+			String def = "";
 			
-			script.addOption(name, minoccur, maxoccur, definition, check, "", "=HULLA", "edit helptext here");
+			// der hilfstext fuer diese option
+			String text2 = actInit.getDescription();
+			if (text2.equals("")) {text2 = "no description available";}
+			
+			script.addOption(name, minoccur, maxoccur, definition, check, def, text1, text2);
 		}
+		
 		return script.getAll();
 	}
 	

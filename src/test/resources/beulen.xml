@@ -76,7 +76,7 @@
 		<init fromobjecttype="file" listname="inc" returnfield="absfilename" fromstep="root" insertrule="overlap" minoccur="1" maxoccur="99">
 			<match field="filename" pattern=""/>
 		</init>
-		<init fromobjecttype="variable" listname="basename" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+		<init fromobjecttype="variable" listname="basename" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1" description="das ist eine optionale beschreibung">
 			<match field="key" pattern="basename"/>
 		</init>
 		<init fromobjecttype="variable" listname="matdb" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
