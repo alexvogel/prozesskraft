@@ -189,7 +189,7 @@ implements Serializable, Cloneable
 
 		for(Init actInit : this.getInit())
 		{
-			System.out.println("init verarbeiten: "+actInit.getListname());
+
 			// daten aus der init-definition
 			String name = actInit.getListname();
 			int minoccur = actInit.getMinoccur();
@@ -288,7 +288,7 @@ implements Serializable, Cloneable
 			if (text2.equals("")) {text2 = "no description available";}
 			
 			script.addOption(name, minoccur, maxoccur, definition, check, def, text1, text2);
-			System.out.println("addoption mit diesen parametern: "+name+minoccur+maxoccur+definition+check+def+text1+text2);
+//			System.out.println("addoption mit diesen parametern: "+name+minoccur+maxoccur+definition+check+def+text1+text2);
 		}
 		
 		return script.getAll();
