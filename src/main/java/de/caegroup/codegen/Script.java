@@ -69,6 +69,7 @@ implements Serializable, Cloneable
 		option.setText2(text2);
 		
 		this.option.add(option);
+		this.options.genContent(type);
 	}
 	
 	/**
