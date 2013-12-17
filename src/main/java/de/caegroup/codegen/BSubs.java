@@ -163,7 +163,7 @@ implements Serializable, Cloneable
 		code.add("    my $fp_conf = shift;");
 		code.add("");
 		code.add("    my %CONF;");
-		code.add("    if (!open (CONF, '<$fp_conf')) {die 'cannot read $fp_conf $!\\n';}");
+		code.add("    if (!open (CONF, \"<$fp_conf\")) {die \"cannot read $fp_conf $!\\n\";}");
 		code.add("    ");
 		code.add("    while(<CONF>)");
 		code.add("    {");

@@ -86,8 +86,8 @@ implements Serializable, Cloneable
 		perl.addAll(meta.getBlock());
 		perl.addAll(modules.getBlock());
 		perl.addAll(path.getBlock());
-		perl.addAll(config.getBlock());
 		perl.addAll(options.getBlock());
+		perl.addAll(config.getBlock());
 		perl.addAll(help.getBlock());
 		perl.addAll(calls.getBlock());
 		perl.addAll(checks.getBlock());
