@@ -74,7 +74,7 @@ implements Serializable, Cloneable
 		// default
 		else
 		{
-			content.add("if (${$OPT{'help'}})");
+			content.add("if (${$OPT{'h'}})");
 			content.add("{");
 			content.add("\tprint STDERR $helptext;");
 			content.add("\texit(0);");
