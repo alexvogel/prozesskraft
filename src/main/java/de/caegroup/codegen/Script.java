@@ -20,7 +20,7 @@ implements Serializable, Cloneable
 	private String interpreter = "/usr/bin/perl";
 	private String type = "default";
 	ArrayList<Option> option = new ArrayList<Option>();
-	public String trenner = "#----------------------------------------------------------------------------";
+//	public String trenner = "#----------------------------------------------------------------------------";
 	public BBusiness business = new BBusiness(this);
 	public BCalls calls = new BCalls(this);
 	public BChecks checks = new BChecks(this);
@@ -74,7 +74,7 @@ implements Serializable, Cloneable
 	
 	/**
 	 * getPerl()
-	 * returns the whole step-logic in perlcode
+	 * returns the whole script in perlcode
 	 * @return String
 	 */
 	
@@ -97,12 +97,13 @@ implements Serializable, Cloneable
 		return perl;
 	}
 	
-	public ArrayList<String> genBlockStart(String blockname)
+	public ArrayList<String> genBlockStart(String blockname, String type, String md5)
 	{
 		ArrayList<String> text = new ArrayList<String>();
 		
 		text.add("#============================================================================");
-		text.add("# blockstart=" + blockname);
+		text.add("# processcraft:" + blockname + ":" + "begin" + ":");
+		text.add("#----------------------------------------------------------------------------");
 		
 		return text;
 	}
@@ -111,9 +112,8 @@ implements Serializable, Cloneable
 	{
 		ArrayList<String> text = new ArrayList<String>();
 		
-		text.add("# blockend=" + blockname);
-		text.add("# edit here if necessary");
-		text.add("#");
+		text.add("#----------------------------------------------------------------------------");
+		text.add("# processcraft:" + blockname + ":" + "end");
 		text.add("#============================================================================");
 		
 		return text;

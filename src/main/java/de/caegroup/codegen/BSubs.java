@@ -39,18 +39,12 @@ implements Serializable, Cloneable
 	----------------------------*/
 	public ArrayList<String> getBlock()
 	{
-		
 		ArrayList<String> content = getContent();
 		BigInteger md5 = this.parent.genMd5(content);
 		
 		ArrayList<String> block = new ArrayList<String>();
-		block.addAll(this.parent.genBlockStart("subs"));
-		block.add("# type="+type);
-		block.add("# checksum="+md5);
-		block.add(this.parent.trenner);
+		block.addAll(this.parent.genBlockStart("subs", this.type, md5.toString()));
 		block.addAll(content);
-		block.add(this.parent.trenner);
-		block.add("# checksum="+md5);
 		block.addAll(this.parent.genBlockEnd("subs"));
 		
 		return block;
