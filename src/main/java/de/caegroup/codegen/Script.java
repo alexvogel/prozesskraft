@@ -102,7 +102,7 @@ implements Serializable, Cloneable
 		ArrayList<String> text = new ArrayList<String>();
 		
 		text.add("#============================================================================");
-		text.add("# processcraft:" + blockname + ":" + "begin" + ":");
+		text.add("# processcraft:" + blockname + ":" + "begin" + ":" + type + ":" + md5);
 		text.add("#----------------------------------------------------------------------------");
 		
 		return text;
