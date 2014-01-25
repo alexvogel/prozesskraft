@@ -18,7 +18,7 @@ implements Serializable, Cloneable
 //	private ArrayList<Option> option = new ArrayList<Option>();
 	private String description = "";
 	private String interpreter = "/usr/bin/perl";
-	private String type = "default";
+	private String type = "default";	// process|default|user
 	ArrayList<Option> option = new ArrayList<Option>();
 //	public String trenner = "#----------------------------------------------------------------------------";
 	public BBusiness business = new BBusiness(this);
@@ -36,15 +36,9 @@ implements Serializable, Cloneable
 	----------------------------*/
 	/**
 	 */
-	public Script(String type)
-	{
-		this.setType(type);
-	}
-	/**
-	 */
 	public Script()
 	{
-		this.setType("default");
+
 	}
 
 	/*----------------------------
@@ -69,15 +63,15 @@ implements Serializable, Cloneable
 		option.setText2(text2);
 		
 		this.option.add(option);
-		this.options.genContent(type);
+		this.options.genCode(type);
 	}
-	
+
 	/**
 	 * getPerl()
 	 * returns the whole script in perlcode
 	 * @return String
 	 */
-	
+
 	public ArrayList<String> getAll()
 	{
 		ArrayList<String> perl = new ArrayList<String>();
@@ -97,12 +91,12 @@ implements Serializable, Cloneable
 		return perl;
 	}
 	
-	public ArrayList<String> genBlockStart(String blockname, String type, String md5)
+	public ArrayList<String> genBlockStart(String blockname, String md5)
 	{
 		ArrayList<String> text = new ArrayList<String>();
 		
 		text.add("#============================================================================");
-		text.add("# processcraft:" + blockname + ":" + "begin" + ":" + type + ":" + md5);
+		text.add("# processcraft:" + blockname + ":" + "begin" + ":" + this.type + ":" + md5);
 		text.add("#----------------------------------------------------------------------------");
 		
 		return text;
@@ -119,86 +113,36 @@ implements Serializable, Cloneable
 		return text;
 	}
 	
-	public BigInteger genMd5(ArrayList<String> content)
+	/**
+	 * genContent()
+	 * the content of all blocks will be generated
+	 */
+	public void genContent()
 	{
-		BigInteger bigInt = null;
-		try {
-			
-			// den gesamten content in einen String einfuegen
-			String contentString = "";
-			
-			for(String line : content)
-			{
-				if( !( (line.matches("^#")) || (line.matches("^$")) ) )
-				contentString += line;
-			}
-			
-			// und dann md5 erzeugen
-			byte[] bytesOfContent = contentString.getBytes("UTF-8");
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			byte[] thedigest = md.digest(bytesOfContent);
-			bigInt = new BigInteger(1, thedigest);
-		}
-		catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return bigInt;
+		this.meta.genCode(this.type);
+		this.modules.genCode(this.type);
+		this.path.genCode(this.type);
+		this.config.genCode(this.type);
+		this.options.genCode(this.type);
+		this.help.genCode(this.type);
+		this.calls.genCode(this.type);
+		this.checks.genCode(this.type);
+		this.business.genCode(this.type);
+		this.subs.genCode(this.type);
 	}
-
-	public void setContent(String block, ArrayList<String> content) throws UnknownCodeBlockException
-	{
-		if (block.matches("meta")) {this.meta.setContent(content);}
-		else if (block.matches("modules")) {this.modules.setContent(content);}
-		else if (block.matches("path")) {this.path.setContent(content);}
-		else if (block.matches("config")) {this.config.setContent(content);}
-		else if (block.matches("options")) {this.options.setContent(content);}
-		else if (block.matches("help")) {this.help.setContent(content);}
-		else if (block.matches("calls")) {this.calls.setContent(content);}
-		else if (block.matches("checks")) {this.checks.setContent(content);}
-		else if (block.matches("business")) {this.business.setContent(content);}
-		else if (block.matches("subs")) {this.subs.setContent(content);}
-		else {throw new UnknownCodeBlockException("unknown code block "+block);}
-	}
-
-	public void addContent(String block, ArrayList<String> content) throws UnknownCodeBlockException
-	{
-		if (block.matches("meta")) {this.meta.addContent(content);}
-		else if (block.matches("modules")) {this.modules.addContent(content);}
-		else if (block.matches("path")) {this.path.addContent(content);}
-		else if (block.matches("config")) {this.config.addContent(content);}
-		else if (block.matches("options")) {this.options.addContent(content);}
-		else if (block.matches("help")) {this.help.addContent(content);}
-		else if (block.matches("calls")) {this.calls.addContent(content);}
-		else if (block.matches("checks")) {this.checks.addContent(content);}
-		else if (block.matches("business")) {this.business.addContent(content);}
-		else if (block.matches("subs")) {this.subs.addContent(content);}
-		else {throw new UnknownCodeBlockException("unknown code block "+block);}
-	}
-
-	private void setType(String type)
-	{
-		this.type = type;
-		// nur wenn type != default, soll der content neu generiert werden
-		if (!(type.matches("default")))
-		{
-			this.meta.setType(type);
-			this.modules.setType(type);
-			this.path.setType(type);
-			this.config.setType(type);
-			this.options.setType(type);
-			this.help.setType(type);
-			this.calls.setType(type);
-			this.checks.setType(type);
-			this.business.setType(type);
-			this.subs.setType(type);
-		}
-	}
-
-
+	
+//	public void setContent(String block, ArrayList<String> content) throws UnknownCodeBlockException
+//	{
+//		if (block.matches("meta")) {this.meta.setContent(content);}
+//		else if (block.matches("modules")) {this.modules.setContent(content);}
+//		else if (block.matches("path")) {this.path.setContent(content);}
+//		else if (block.matches("config")) {this.config.setContent(content);}
+//		else if (block.matches("options")) {this.options.setContent(content);}
+//		else if (block.matches("help")) {this.help.setContent(content);}
+//		else if (block.matches("calls")) {this.calls.setContent(content);}
+//		else if (block.matches("checks")) {this.checks.setContent(content);}
+//		else if (block.matches("business")) {this.business.setContent(content);}
+//		else if (block.matches("subs")) {this.subs.setContent(content);}
+//		else {throw new UnknownCodeBlockException("unknown code block "+block);}
+//	}
 }

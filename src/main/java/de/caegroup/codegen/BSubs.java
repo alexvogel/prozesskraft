@@ -14,14 +14,12 @@ implements Serializable, Cloneable
 
 	static final long serialVersionUID = 1;
 	Script parent = null;
+	Block block = new Block();
+
 	ArrayList<String> code_logit = new ArrayList<String>();
 	ArrayList<String> code_getvars = new ArrayList<String>();
 	ArrayList<String> code_initlist = new ArrayList<String>();
 	ArrayList<String> content = new ArrayList<String>();
-	String type = "default";
-	
-	
-//	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -31,7 +29,6 @@ implements Serializable, Cloneable
 		this.initCodeLogit();
 		this.initCodeGetvars();
 		this.initCodeInitlist();
-		this.genContent(type);
 	}
 
 	/*----------------------------
@@ -39,33 +36,10 @@ implements Serializable, Cloneable
 	----------------------------*/
 	public ArrayList<String> getBlock()
 	{
-		ArrayList<String> content = getContent();
-		BigInteger md5 = this.parent.genMd5(content);
-		
-		ArrayList<String> block = new ArrayList<String>();
-		block.addAll(this.parent.genBlockStart("subs", this.type, md5.toString()));
-		block.addAll(content);
-		block.addAll(this.parent.genBlockEnd("subs"));
-		
-		return block;
-	}
-	
-	public ArrayList<String> getContent() {
-		return content;
+		return this.block.getCode();
 	}
 
-	public void setContent(ArrayList<String> content) {
-		this.content = content;
-		this.type = "manual";
-	}
-	
-	public void addContent(ArrayList<String> content)
-	{
-		this.content.addAll(content);
-		this.type = "manual";
-	}
-	
-	public void genContent(String type)
+	public void genCode(String type)
 	{
 		ArrayList<String> content = new ArrayList<String>();
 		
@@ -82,17 +56,7 @@ implements Serializable, Cloneable
 			content.addAll(this.code_logit);
 		}
 		
-		this.content = content;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type)
-	{
-		this.type = type;
-		this.genContent(type);
+		this.block.setCode(content);
 	}
 
 	private void initCodeLogit()

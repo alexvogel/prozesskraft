@@ -14,17 +14,14 @@ implements Serializable, Cloneable
 
 	static final long serialVersionUID = 1;
 	Script parent = null;
-	ArrayList<String> content = new ArrayList<String>();
-	String type = "default";
-	
-//	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
+	Block block = new Block();
+
 	/*----------------------------
 	  constructors
 	----------------------------*/
 	public BOptions(Script parent)
 	{
 		this.parent = parent;
-		this.genContent(type);
 	}
 
 	/*----------------------------
@@ -32,33 +29,11 @@ implements Serializable, Cloneable
 	----------------------------*/
 	public ArrayList<String> getBlock()
 	{
-		ArrayList<String> content = getContent();
-		BigInteger md5 = this.parent.genMd5(content);
-		
-		ArrayList<String> block = new ArrayList<String>();
-		block.addAll(this.parent.genBlockStart("options", this.type, md5.toString()));
-		block.addAll(content);
-		block.addAll(this.parent.genBlockEnd("options"));
-		
-		return block;
-	}
-	
-	public ArrayList<String> getContent() {
-		return content;
+		return this.block.getCode();
 	}
 
-	public void setContent(ArrayList<String> content) {
-		this.content = content;
-		this.type = "manual";
-	}
-	
-	public void addContent(ArrayList<String> content)
+	public void genCode(String type)
 	{
-		this.content.addAll(content);
-		this.type = "manual";
-	}
-	
-	public void genContent(String type) {
 		ArrayList<String> content = new ArrayList<String>();
 		
 		if(type.matches("bla"))
@@ -215,18 +190,7 @@ implements Serializable, Cloneable
 			content.add("	");
 			content.add("}");
 		}
-		
-		this.content = content;
-	}
 
-	public String getType() {
-		return type;
+		this.block.setCode(content);
 	}
-
-	public void setType(String type) {
-		this.type = type;
-		this.genContent(type);
-	}
-	
-
 }
