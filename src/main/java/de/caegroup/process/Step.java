@@ -107,14 +107,18 @@ implements Serializable, Cloneable
 //		}
 //		return null;
 //	}
-	
+	/**
+	 * getStepAsPerlCodeBlock()
+	 * generates perlcode for starting this process-step from a perlscript
+	 * @return ArrayList<String> code
+	 */
 	public ArrayList<String> getStepAsPerlCodeBlock()
 	{
 		ArrayList<String> perlSnippet = new ArrayList<String>();
 		
 		perlSnippet.add("#-------------------");
 		perlSnippet.add("# Prozessschritt wird gestartet '" + this.getName() + "' -- " + this.getDescription() +"'");
-		
+
 		perlSnippet.add(this.getName() + ":");
 		perlSnippet.add("{");
 		perlSnippet.add("\t\t&logit(\"info\", \"processing step "+this.getName());
@@ -122,7 +126,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("");
 
 		perlSnippet.add("\t# generate lists with initial values");
-	
+
 		// generate festverdrahtete listen
 		for(List list : this.getList())
 		{
@@ -179,11 +183,15 @@ implements Serializable, Cloneable
 		perlSnippet.add("}");
 		return perlSnippet;		
 	}
-				
 	
+	/**
+	 * getStepAsPerlScript()
+	 * generates a stub of a standalone perlscript that represents this process-step once it is finished by a programmer
+	 * @return ArrayList<String> code
+	 */
 	public ArrayList<String> getStepAsPerlScript()
 	{
-		Script script = new Script("default");
+		Script script = new Script();
 		
 //		System.out.println(" options : "+callitem.size());
 

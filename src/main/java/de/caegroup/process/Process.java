@@ -169,14 +169,15 @@ implements Serializable
 
 	public ArrayList<String> getProcessAsPerlScript()
 	{
-		Script script = new Script("process");
+		Script script = new Script();
+		script.setType("process");
 		
 		// script-OPTIONS generieren aus den init-objekten des root-steps
 		
 		for(Step actStep : this.getStepsLinearized())
 		{
 			try {
-				script.addContent("business", actStep.getStepAsPerlCodeBlock());
+				script.addCode("business", actStep.getStepAsPerlCodeBlock());
 			} catch (UnknownCodeBlockException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
