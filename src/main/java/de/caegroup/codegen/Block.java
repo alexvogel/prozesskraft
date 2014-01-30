@@ -69,7 +69,7 @@ implements Serializable, Cloneable
 		
 		ArrayList<String> codeOhneHeaderOhneFooter = new  ArrayList<String>();
 		// die letzten 3 zeilen checken ob sie dem muster eines schliessenden blocks entsprechen
-		if((codeOhneHeader.size()>=3) && (codeOhneHeader.get(-3).matches("^#----")) && (codeOhneHeader.get(-2).matches("^# processcraft:(.+):end")) && (codeOhneHeader.get(-1).matches("^#====")))
+		if((codeOhneHeader.size()>=3) && (codeOhneHeader.get(codeOhneHeader.size()-3).matches("^#----")) && (codeOhneHeader.get(codeOhneHeader.size()-2).matches("^# processcraft:(.+):end")) && (codeOhneHeader.get(codeOhneHeader.size()-1).matches("^#====")))
 		{
 
 			for(int x = 0; x < (codeOhneHeader.size() -3); x++)
