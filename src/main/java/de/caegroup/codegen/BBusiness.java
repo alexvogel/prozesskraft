@@ -40,10 +40,13 @@ implements Serializable, Cloneable
 		if(type.matches("process"))
 		{
 			content.add("# 1) copy all known options with pattern =~ /--submodel_<key>=<path>/ as key=path to %FILE ");
-			content.add("# 2) copy all known options with pattern !~ /--submodel_<key>=<value>/ to optionname=value to %VARIABLE ");
+			content.add("# 2) copy all known options with pattern !~ /--<key>=<value>/ as key=value to %VARIABLE ");
 			content.add("");
 			content.add("my %VARIABLE;");
 			content.add("my %FILE;");
+			content.add("");
+			content.add("$VARIABLE{'root'} = {};");
+			content.add("$FILE{'root'} = {};");
 			content.add("");
 			content.add("foreach my $option (keys %OPT)");
 			content.add("{");
@@ -57,8 +60,6 @@ implements Serializable, Cloneable
 			content.add("	}");
 			content.add("}");
 			content.add("");
-			content.add("unless(defined $VARIABLE{'root'}) { $VARIABLE{'root'} = [];}");
-			content.add("unless(defined $FILE{'root'}) { $FILE{'root'} = [];}");
 
 		}
 		// default

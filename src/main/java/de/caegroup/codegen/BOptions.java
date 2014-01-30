@@ -51,10 +51,13 @@ implements Serializable, Cloneable
 			content.add("# hier koenne alle 'festen' optionen definiert werden");
 			content.add("my %OPTIONS_TABLE = (");
 			
+			content.add("# definition der standardoptions");
 			content.add("				'h' => {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'gibt diesen hilfetext aus'},");
 			content.add("				'doc'  => {'reihenfolge' => '8', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'falls eine dokumentation existiert, wird diese angezeigt'},");
 			content.add("				'log'  => {'reihenfolge' => '7', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'string', 'check'=>'', 'default' => '', 'text1' => '=FILE', 'text2' => 'statt auf STDERR koennen logging-ausgaben in eine datei umgeleitet werden'},");
 			
+			content.add("");
+			content.add("# definition der standardoptions");
 			for(Option o: this.parent.option)
 			{
 				content.addAll(o.getContent());
