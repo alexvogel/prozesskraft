@@ -21,6 +21,7 @@ implements Serializable
 	private ArrayList<Test> test = new ArrayList<Test>();
 	private int minoccur = 0;
 	private int maxoccur = 999999;
+	private String type = "string"; // string|float|integer|flag
 	private boolean free = true;
 	
 
@@ -250,6 +251,20 @@ implements Serializable
 	public void setChoice(ArrayList<String> choice)
 	{
 		this.choice = choice;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

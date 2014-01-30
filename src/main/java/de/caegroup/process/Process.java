@@ -172,8 +172,108 @@ implements Serializable
 		Script script = new Script();
 		script.setType("process");
 		
-		// script-OPTIONS generieren aus den init-objekten des root-steps
+		// script-OPTIONS generieren aus den commit-objekten des root-steps
+		Step rootStep = this.getStep("root");
+		for(Commit actCommitOfRootStep : rootStep.getCommit())
+		{
+			// alle Variablen
+			for(Variable actVariable : actCommitOfRootStep.getVariable())
+			{
+				// String name, int minoccur, int maxoccur, String definition, String check, String def, String text1, String text2)
+				String optionname = actVariable.getKey();
+				int minoccur = actVariable.getMinoccur();
+				int maxoccur =  actVariable.getMaxoccur();
+				String definition = actVariable.getType();
+				String check = "";
+				
+				//integrieren des ersten tests 'matchPattern'
+				for(Test actTest : actVariable.getTest())
+				{
+					if(actTest.getName().matches("^matchPattern$"))
+					{
+						check = actTest.getParam().get(0).getContent();
+					}
+				}
+				
+				// default, falls vorhanden
+				String def = actVariable.getValue();
+
+				// text1
+				String text1 = "=";
+				// wenn es free=false, gibt es vorgegebene werte - aus diesen einen pattern fuer den text1 bilden "|"-getrennt
+				if(! actVariable.getFree())
+				{
+					for(String actChoice : actVariable.getChoice())
+					{
+						text1 += actChoice + "|";
+					}
+					text1 = text1.substring(0, text1.length()-1);
+				}
+				else
+				{
+					text1 += actVariable.getType().toUpperCase();
+					
+					if(actVariable.getChoice().size()>0)
+					{
+						text1 += "(";
+					}
+					
+					for(String actChoice : actVariable.getChoice())
+					{
+						text1 += actChoice + "|";
+					}
+					text1 += "..";
+
+					if(actVariable.getChoice().size()>0)
+					{
+						text1 += ")";
+					}
+				}
+				
+				String text2 = actVariable.getDescription();
+				
+				// erzeugen der option im script
+				script.addOption (optionname, minoccur, maxoccur, definition, check, def, text1, text2);
+			}
+			
+			// und fuer alle Files
+			for(File actFile : actCommitOfRootStep.getFile())
+			{
+				// String name, int minoccur, int maxoccur, String definition, String check, String def, String text1, String text2)
+				String optionname = actFile.getKey();
+				int minoccur = actFile.getMinoccur();
+				int maxoccur =  actFile.getMaxoccur();
+				String definition = "string"; // filepfad ist ein string
+				String check = "";
+				
+				//integrieren des ersten tests 'matchPattern'
+				for(Test actTest : actFile.getTest())
+				{
+					if(actTest.getName().matches("^matchPattern$"))
+					{
+						check = actTest.getParam().get(0).getContent();
+					}
+				}
+				
+				// default, falls vorhanden
+				String def = "";
+
+				// text1
+				String text1 = "=FILE";
+				
+				String text2 = actFile.getDescription();
+				
+				// erzeugen der option im script
+				script.addOption (optionname, minoccur, maxoccur, definition, check, def, text1, text2);
+			}
+			
+			
+			
+
+			
+		}
 		
+		// fuer jeden step den perl-codeblock erzeugen
 		for(Step actStep : this.getStepsLinearized())
 		{
 			try {
