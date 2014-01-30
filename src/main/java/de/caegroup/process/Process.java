@@ -216,7 +216,7 @@ implements Serializable
 				
 				String text2 = actVariable.getDescription();
 				System.out.println("text2 vor dem ersetzen: "+text2);
-				text2.replaceAll("'", "\\'");
+				text2 = text2.replaceAll("'", "\\'");
 				System.out.println("text2 nach dem ersetzen: "+text2);
 				if (text2.equals("")) {text2 = "no description available";}
 				
@@ -250,7 +250,7 @@ implements Serializable
 				String text1 = "=FILE";
 				
 				String text2 = actFile.getDescription();
-				text2.replaceAll("'", "\\'");
+				text2 = text2.replaceAll("'", "\\'");
 				if (text2.equals("")) {text2 = "no description available";}
 				
 				// erzeugen der option im script

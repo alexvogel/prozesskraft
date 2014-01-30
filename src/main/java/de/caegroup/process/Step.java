@@ -301,7 +301,7 @@ implements Serializable, Cloneable
 			
 			// der hilfstext fuer diese option
 			String text2 = actInit.getDescription();
-			text2.replaceAll("'", "\\'");
+			text2 = text2.replaceAll("'", "\\'");
 			if (text2.equals("")) {text2 = "no description available";}
 			
 			script.addOption(name, minoccur, maxoccur, definition, check, def, text1, text2);
