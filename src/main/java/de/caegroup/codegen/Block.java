@@ -87,11 +87,22 @@ implements Serializable, Cloneable
 	}
 
 	/**
+	* addCode()
+	* adds code to already existing code
+	*/
+	public void addCode(ArrayList<String> code)
+	{
+		this.code.addAll(code);
+		this.origin = "user";
+		this.md5 = genMd5();
+	}
+	
+	/**
 	* getCode()
 	* returns the code
 	* @return ArrayList<String>
 	*/
-	public ArrayList<String> getCode ()
+	public ArrayList<String> getCode()
 	{
 		ArrayList<String> content = new ArrayList<String>();
 		

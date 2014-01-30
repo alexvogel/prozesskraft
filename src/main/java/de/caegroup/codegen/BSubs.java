@@ -19,6 +19,7 @@ implements Serializable, Cloneable
 	ArrayList<String> code_logit = new ArrayList<String>();
 	ArrayList<String> code_getvars = new ArrayList<String>();
 	ArrayList<String> code_initlist = new ArrayList<String>();
+	ArrayList<String> code_printgirlande = new ArrayList<String>();
 	ArrayList<String> content = new ArrayList<String>();
 	/*----------------------------
 	  constructors
@@ -29,6 +30,7 @@ implements Serializable, Cloneable
 		this.initCodeLogit();
 		this.initCodeGetvars();
 		this.initCodeInitlist();
+		this.initCodePrintgirlande();
 	}
 
 	/*----------------------------
@@ -48,6 +50,7 @@ implements Serializable, Cloneable
 			content.addAll(this.code_getvars);
 			content.addAll(this.code_logit);
 			content.addAll(this.code_initlist);
+			content.addAll(this.code_printgirlande);
 		}
 		// default
 		else
@@ -366,4 +369,23 @@ implements Serializable, Cloneable
 
 		this.code_initlist = code;
 	}
+	
+	private void initCodePrintgirlande()
+	{
+		ArrayList<String> code = new ArrayList<String>();
+		
+		code.add("sub printgirlande");
+		code.add("{");
+		code.add("    my $stepname = shift;");
+		code.add("");
+		code.add("	\"\\n\"");
+		code.add("	print \"###############################################\\n\"");
+		code.add("	print \" NEW PROCESS STEP: $stepname\\n\"");
+		code.add("	print \"###############################################\\n\"");
+		code.add("	\"\\n\"");
+		code.add("}");
+
+		this.code_printgirlande = code;
+	}
+	
 }

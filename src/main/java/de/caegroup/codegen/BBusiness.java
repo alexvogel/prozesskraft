@@ -70,4 +70,8 @@ implements Serializable, Cloneable
 		this.block.setCode(content);
 	}
 	
+	public void addCode(ArrayList<String> code)
+	{
+		this.block.addCode(code);
+	}
 }

@@ -91,28 +91,28 @@ implements Serializable, Cloneable
 		return perl;
 	}
 	
-	public ArrayList<String> genBlockStart(String blockname, String md5)
-	{
-		ArrayList<String> text = new ArrayList<String>();
-		
-		text.add("#============================================================================");
-		text.add("# processcraft:" + blockname + ":" + "begin" + ":" + this.type + ":" + md5);
-		text.add("#----------------------------------------------------------------------------");
-		
-		return text;
-	}
-
-	public ArrayList<String> genBlockEnd(String blockname)
-	{
-		ArrayList<String> text = new ArrayList<String>();
-		
-		text.add("#----------------------------------------------------------------------------");
-		text.add("# processcraft:" + blockname + ":" + "end");
-		text.add("#============================================================================");
-		
-		return text;
-	}
-	
+//	public ArrayList<String> genBlockStart(String blockname, String md5)
+//	{
+//		ArrayList<String> text = new ArrayList<String>();
+//		
+//		text.add("#============================================================================");
+//		text.add("# processcraft:" + blockname + ":" + "begin" + ":" + this.type + ":" + md5);
+//		text.add("#----------------------------------------------------------------------------");
+//		
+//		return text;
+//	}
+//
+//	public ArrayList<String> genBlockEnd(String blockname)
+//	{
+//		ArrayList<String> text = new ArrayList<String>();
+//		
+//		text.add("#----------------------------------------------------------------------------");
+//		text.add("# processcraft:" + blockname + ":" + "end");
+//		text.add("#============================================================================");
+//		
+//		return text;
+//	}
+//	
 	/**
 	 * genContent()
 	 * the content of all blocks will be generated
@@ -129,6 +129,37 @@ implements Serializable, Cloneable
 		this.checks.genCode(this.type);
 		this.business.genCode(this.type);
 		this.subs.genCode(this.type);
+	}
+
+	/**
+	 * addCode()
+	 * add code to a certain block
+	 * @throws UnknownCodeBlockException 
+	 */
+	public void addCode(String blockname, ArrayList<String> code) throws UnknownCodeBlockException
+	{
+		if (blockname.matches("business"))
+		{
+			this.business.addCode(code);
+		}
+		else
+		{
+			throw new UnknownCodeBlockException(blockname);
+		}
+	}
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 //	public void setContent(String block, ArrayList<String> content) throws UnknownCodeBlockException
