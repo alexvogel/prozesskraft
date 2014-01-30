@@ -215,12 +215,12 @@ implements Serializable
 					
 					if(actVariable.getChoice().size()>0)
 					{
-						text1 += "(";
+						text1 += " (e.g.";
 					}
 					
 					for(String actChoice : actVariable.getChoice())
 					{
-						text1 += actChoice + "|";
+						text1 += actChoice + ",";
 					}
 					text1 += "..";
 
@@ -231,6 +231,8 @@ implements Serializable
 				}
 				
 				String text2 = actVariable.getDescription();
+				text2.replace("'", "\'");
+				if (text2.equals("")) {text2 = "no description available";}
 				
 				// erzeugen der option im script
 				script.addOption (optionname, minoccur, maxoccur, definition, check, def, text1, text2);
@@ -262,6 +264,8 @@ implements Serializable
 				String text1 = "=FILE";
 				
 				String text2 = actFile.getDescription();
+				text2.replace("'", "\'");
+				if (text2.equals("")) {text2 = "no description available";}
 				
 				// erzeugen der option im script
 				script.addOption (optionname, minoccur, maxoccur, definition, check, def, text1, text2);
