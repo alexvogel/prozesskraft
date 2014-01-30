@@ -48,7 +48,7 @@ implements Serializable, Cloneable
 		
 		ArrayList<String> codeOhneHeader = new  ArrayList<String>();
 		// die oeffnenden Zeilen entfernen, falls sie existieren zuerst
-		if((code.get(0).matches("^#====")) && (code.get(1).matches("^# processcraft:(.+):begin:(.+):(.+)")) && (code.get(2).matches("^#----")))
+		if((code.size()>=3) && (code.get(0).matches("^#====")) && (code.get(1).matches("^# processcraft:(.+):begin:(.+):(.+)")) && (code.get(2).matches("^#----")))
 		{
 			//processcraft:blockname:begin:origin:md5
 			Pattern p = Pattern.compile("^# processcraft:(.+):begin:(.+):(.+)");
@@ -69,7 +69,7 @@ implements Serializable, Cloneable
 		
 		ArrayList<String> codeOhneHeaderOhneFooter = new  ArrayList<String>();
 		// die letzten 3 zeilen checken ob sie dem muster eines schliessenden blocks entsprechen
-		if((codeOhneHeader.get(-3).matches("^#----")) && (codeOhneHeader.get(-2).matches("^# processcraft:(.+):end")) && (codeOhneHeader.get(-1).matches("^#====")))
+		if((codeOhneHeader.size()>=3) && (codeOhneHeader.get(-3).matches("^#----")) && (codeOhneHeader.get(-2).matches("^# processcraft:(.+):end")) && (codeOhneHeader.get(-1).matches("^#====")))
 		{
 
 			for(int x = 0; x < (codeOhneHeader.size() -3); x++)
