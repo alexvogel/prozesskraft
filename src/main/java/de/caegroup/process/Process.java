@@ -171,6 +171,7 @@ implements Serializable
 	{
 		Script script = new Script();
 		script.setType("process");
+		script.genContent();
 		
 		// script-OPTIONS generieren aus den commit-objekten des root-steps
 		Step rootStep = this.getStep("root");
@@ -215,9 +216,9 @@ implements Serializable
 				}
 				
 				String text2 = actVariable.getDescription();
-				System.out.println("text2 vor dem ersetzen: "+text2);
-				text2 = text2.replaceAll("'", "\\'");
-				System.out.println("text2 nach dem ersetzen: "+text2);
+//				System.out.println("text2 vor dem ersetzen: "+text2);
+				text2 = text2.replaceAll("'", "\\\\'");
+//				System.out.println("text2 nach dem ersetzen: "+text2);
 				if (text2.equals("")) {text2 = "no description available";}
 				
 				// erzeugen der option im script
@@ -250,7 +251,7 @@ implements Serializable
 				String text1 = "=FILE";
 				
 				String text2 = actFile.getDescription();
-				text2 = text2.replaceAll("'", "\\'");
+				text2 = text2.replaceAll("'", "\\\\'");
 				if (text2.equals("")) {text2 = "no description available";}
 				
 				// erzeugen der option im script
