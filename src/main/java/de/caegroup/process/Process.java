@@ -204,21 +204,26 @@ implements Serializable
 				}
 
 				// text1
-				String text1 = "=";
-				// wenn es free=false, gibt es vorgegebene werte - aus diesen einen pattern fuer den text1 bilden "|"-getrennt
-				if(! actVariable.getFree())
-				{
-					for(String actChoice : actVariable.getChoice())
-					{
-						text1 += actChoice + "|";
-					}
-					text1 = text1.substring(0, text1.length()-1);
-				}
-				else
-				{
-					text1 += actVariable.getType().toUpperCase();
-				}
+				String text1 = "";
 				
+				// wenn es kein flag-parameter ist, soll ein hinweis auf die erwarteten werte geliefert werden
+				if (! definition.matches("flag"))
+				{
+					text1 = "=";
+					// wenn es free=false, gibt es vorgegebene werte - aus diesen einen pattern fuer den text1 bilden "|"-getrennt
+					if(! actVariable.getFree())
+					{
+						for(String actChoice : actVariable.getChoice())
+						{
+							text1 += actChoice + "|";
+						}
+						text1 = text1.substring(0, text1.length()-1);
+					}
+					else
+					{
+						text1 += actVariable.getType().toUpperCase();
+					}
+				}
 				String text2 = actVariable.getDescription();
 //				System.out.println("text2 vor dem ersetzen: "+text2);
 				text2 = text2.replaceAll("'", "\\\\'");
