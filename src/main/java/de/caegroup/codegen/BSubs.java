@@ -401,9 +401,9 @@ implements Serializable, Cloneable
 		code.add("\tmy $stepname = shift;");
 		code.add("");
 		code.add("\tprint \"\\n\";");
-		code.add("\tprint \"###############################################\\n\"");
-		code.add("\tprint \" NEW PROCESS STEP: $stepname\\n\"");
-		code.add("\tprint \"###############################################\\n\"");
+		code.add("\tprint \"###############################################\\n\";");
+		code.add("\tprint \" NEW PROCESS STEP: $stepname\\n\";");
+		code.add("\tprint \"###############################################\\n\";");
 		code.add("\tprint \"\\n\";");
 		code.add("}");
 
