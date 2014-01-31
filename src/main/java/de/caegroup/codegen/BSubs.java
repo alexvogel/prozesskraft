@@ -398,13 +398,13 @@ implements Serializable, Cloneable
 		
 		code.add("sub printgirlande");
 		code.add("{");
-		code.add("    my $stepname = shift;");
+		code.add("\tmy $stepname = shift;");
 		code.add("");
-		code.add("	\"\\n\"");
-		code.add("	print \"###############################################\\n\"");
-		code.add("	print \" NEW PROCESS STEP: $stepname\\n\"");
-		code.add("	print \"###############################################\\n\"");
-		code.add("	\"\\n\"");
+		code.add("\tprint \"\\n\";");
+		code.add("\tprint \"###############################################\\n\"");
+		code.add("\tprint \" NEW PROCESS STEP: $stepname\\n\"");
+		code.add("\tprint \"###############################################\\n\"");
+		code.add("\tprint \"\\n\";");
 		code.add("}");
 
 		this.code_printgirlande = code;
