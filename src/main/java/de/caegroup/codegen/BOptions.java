@@ -176,7 +176,14 @@ implements Serializable, Cloneable
 			content.add("	{");
 			content.add("		if (!(${$OPT{$par}}) && ${$OPTIONS_TABLE{$par}}{'default'} && ${$OPTIONS_TABLE{$par}}{'default'} ne \"\")");
 			content.add("		{");
-			content.add("			logit('info', 'setting default for --' . $par . '=' . ${$OPTIONS_TABLE{$par}}{'default'} );");
+			content.add("			if(${$OPTIONS_TABLE{$par}}{'definition'} eq \"flag\")");
+			content.add("			{");
+			content.add("				logit('info', 'setting flag --' . $par);");
+			content.add("			}");
+			content.add("			else");
+			content.add("			{");
+			content.add("				logit('info', 'setting default for --' . $par . '=' . ${$OPTIONS_TABLE{$par}}{'default'} );");
+			content.add("			}");
 			content.add("			my @tmp_defaults = split (\"%%\", ${$OPTIONS_TABLE{$par}}{'default'});");
 			content.add("			${$OPT{$par}} = $tmp_defaults[0];");
 			content.add("		}");
