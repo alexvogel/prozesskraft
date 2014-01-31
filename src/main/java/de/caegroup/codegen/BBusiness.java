@@ -68,6 +68,8 @@ implements Serializable, Cloneable
 			content.add("# place your business logic here.");
 		}
 
+		this.block.setOrigin("auto");
+		this.block.setBlockname("business");
 		this.block.setCode(content);
 	}
 	

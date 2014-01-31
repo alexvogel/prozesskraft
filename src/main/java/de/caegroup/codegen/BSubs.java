@@ -59,6 +59,8 @@ implements Serializable, Cloneable
 			content.addAll(this.code_logit);
 		}
 		
+		this.block.setOrigin("auto");
+		this.block.setBlockname("subs");
 		this.block.setCode(content);
 	}
 

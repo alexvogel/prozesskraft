@@ -100,6 +100,8 @@ implements Serializable, Cloneable
 			content.add("}");
 		}
 
+		this.block.setOrigin("auto");
+		this.block.setBlockname("checks");
 		this.block.setCode(content);
 	}
 }

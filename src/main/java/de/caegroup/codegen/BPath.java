@@ -77,6 +77,8 @@ implements Serializable, Cloneable
 			content.add("my $doc_path = $docdir . \"/\" . $filename.\".pdf\";");
 		}
 		
+		this.block.setOrigin("auto");
+		this.block.setBlockname("path");
 		this.block.setCode(content);
 	}
 }

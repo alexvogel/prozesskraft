@@ -54,6 +54,8 @@ implements Serializable, Cloneable
 			content.add("my $date = \"[% date %]\";");
 		}
 		
+		this.block.setOrigin("auto");
+		this.block.setBlockname("meta");
 		this.block.setCode(content);
 	}
 }

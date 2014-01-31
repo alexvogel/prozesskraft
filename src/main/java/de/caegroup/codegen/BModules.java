@@ -50,6 +50,8 @@ implements Serializable, Cloneable
 			content.add("use Cwd;");
 		}
 		
+		this.block.setOrigin("auto");
+		this.block.setBlockname("modules");
 		this.block.setCode(content);
 	}
 }

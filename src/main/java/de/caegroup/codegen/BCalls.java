@@ -63,6 +63,8 @@ implements Serializable, Cloneable
 			content.add("}");
 		}
 		
+		this.block.setOrigin("auto");
+		this.block.setBlockname("calls");
 		this.block.setCode(content);
 	}
 }

@@ -90,6 +90,8 @@ implements Serializable, Cloneable
 			content.add("$helptext .= \"author: alexander.vogel\\@caegroup.de | version: $version | date: $date\\n\";");
 		}
 		
+		this.block.setOrigin("auto");
+		this.block.setBlockname("help");
 		this.block.setCode(content);
 	}
 }

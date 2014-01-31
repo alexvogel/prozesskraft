@@ -194,6 +194,8 @@ implements Serializable, Cloneable
 			content.add("}");
 		}
 
+		this.block.setOrigin("auto");
+		this.block.setBlockname("options");
 		this.block.setCode(content);
 	}
 }
