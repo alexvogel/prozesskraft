@@ -121,7 +121,7 @@ implements Serializable, Cloneable
 
 		perlSnippet.add(this.getName() + ":");
 		perlSnippet.add("{");
-		perlSnippet.add("\t\t&logit(\"info\", \"processing step "+this.getName());
+		perlSnippet.add("\t\t&logit(\"info\", \"processing step '"+this.getName()+"'\");");
 		perlSnippet.add("\tmy $stepname = \""+this.getName()+"\";");
 		perlSnippet.add("\t&girlande($stepname);");
 		perlSnippet.add("");
@@ -149,7 +149,7 @@ implements Serializable, Cloneable
 		{
 			perlSnippet.add("\t{");
 				
-			perlSnippet.add("\t\t&logit(\"info\", \"initializing list "+actInit.getListname());
+			perlSnippet.add("\t\t&logit(\"info\", \"initializing list "+actInit.getListname()+"'\");");
 
 			// falls liste noch nicht existiert, soll eine leere liste erzeugt werden
 			if (this.getList(actInit.getListname()) == null)
@@ -176,7 +176,7 @@ implements Serializable, Cloneable
 			perlSnippet.add("");
 			perlSnippet.add("\t\t# initialize list");
 			perlSnippet.add("\t\t# initlist (1=fromobjecttype 2=returnfield 3=fromstep 4=insertrule 5=minoccur 6=maxoccur 7=refARRAYmatch 8=refARRAYlist 9=refHASHvariable 10=refHASHfile)");
-			perlSnippet.add("\t\t&logit(\"info\", \"step '$stepname' initializes list '"+actInit.getListname()+"' with data from step '"+actInit.getFromstep()+"'\"");
+			perlSnippet.add("\t\t&logit(\"info\", \"step '$stepname' initializes list '"+actInit.getListname()+"' with data from step '"+actInit.getFromstep()+"'\");");
 			perlSnippet.add("\t\t&initlist('"+actInit.getFromobjecttype()+"', '"+actInit.getReturnfield()+"', '"+actInit.getFromstep()+"', '"+actInit.getInsertrule()+"', "+actInit.getMinoccur()+", "+actInit.getMaxoccur()+", \\@matches_"+actInit.getListname()+", \\@"+actInit.getListname()+", $VARIABLE{'"+actInit.getFromstep()+"'}, $FILE{'"+actInit.getFromstep()+"'});");
 			
 			perlSnippet.add("\t}");
