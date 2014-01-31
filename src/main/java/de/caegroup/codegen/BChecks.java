@@ -55,7 +55,14 @@ implements Serializable, Cloneable
 			content.add("	# minoccur checken");
 			content.add("	if ( ${$OPTIONS_TABLE{$key}}{'minoccur'} > $anzahl )");
 			content.add("	{");
-			content.add("		logit('error', 'option --'.$key.' needed at least '.${$OPTIONS_TABLE{$key}}{'minoccur'}.' times.');");
+			content.add("		if ( ${$OPTIONS_TABLE{$key}}{'minoccur'} == 1 && ${$OPTIONS_TABLE{$key}}{'maxoccur'} == 1)");
+			content.add("		{");
+			content.add("			logit('error', 'option --'.$key.' needed.');");
+			content.add("		}");
+			content.add("		elsif ( ${$OPTIONS_TABLE{$key}}{'minoccur'} < ${$OPTIONS_TABLE{$key}}{'maxoccur'})");
+			content.add("		{");
+			content.add("			logit('error', 'option --'.$key.' needed at least '.${$OPTIONS_TABLE{$key}}{'minoccur'}.' times.');");
+			content.add("		}");
 			content.add("		$error_anzahl++;");
 			content.add("	}");
 			content.add("	# maxoccur checken");
