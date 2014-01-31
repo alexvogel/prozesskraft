@@ -196,8 +196,12 @@ implements Serializable
 					}
 				}
 				
-				// default, falls vorhanden
-				String def = actVariable.getValue();
+				// default, falls vorhanden und nicht null
+				String def = "";
+				if (actVariable.getValue() != null)
+				{
+					def = actVariable.getValue();
+				}
 
 				// text1
 				String text1 = "=";
