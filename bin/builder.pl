@@ -66,6 +66,7 @@ my $help;
 my $batch;
 my $app;
 my $repodir;
+my $target;
 my $targetdir;
 my $targetmachine;
 my $targetuser;
@@ -80,6 +81,7 @@ my $result = GetOptions(
                         "batch"        => \$batch,
                         "app=s"        => \$app,
                         "repodir=s"    => \$repodir,
+                        "target=s"  => \$target,
                         "targetdir=s"  => \$targetdir,
                         "targetmachine=s"  => \$targetmachine,
                         "targetuser=s" => \$targetuser,
@@ -127,6 +129,7 @@ $helptext .= " --app                [optional, filters stack] processes only the
 $helptext .= " --repodir=DIR        [optional, filters stack] processes only the lines from the stack-file where this repodir is mentioned.\n";
 $helptext .= " --targetdir=DIR      [optional, filters stack] processes only the lines from the stack-file where this targetdir is mentioned\n";
 $helptext .= " --targetmachine=STRING  [optional, filters stack] processes only the lines from the stack-file where this targetmachine is mentioned\n";
+$helptext .= " --target=STRING      [optional, filters stack] processes only the lines from the stack-file where this target is mentioned\n";
 $helptext .= " --targetuser=STRING  [optional, filters stack] processes only the lines from the stack-file where this targetuser is mentioned\n";
 $helptext .= " --ybranches=INT      [optional, overrides stack] installs the youngest <INT> branches (plus 'master' and all '*beta' younger than the <INT> youngest branches).\n";
 $helptext .= " --branch=PATTERN     [optional, overrides --ybranches] installs the matching branch.\n";
@@ -316,6 +319,15 @@ while(<STACK>)
 			}
 		}
 		
+		# wenn parameter --target angegeben wurde, sollen nur zeilen im configfile mit diesem target beruecksichtigt werden
+		if ($target)
+		{
+			if ($paramset{'target'} ne $target)
+			{
+				$soll_beruecksichtigt_werden = 0;
+			}
+		}
+		
 		# wenn parameter --targetuser angegeben wurde, sollen nur zeilen im configfile mit diesem targetuser beruecksichtigt werden
 		if ($targetuser)
 		{
@@ -384,6 +396,7 @@ foreach my $refh_stackline (@CONFIG)
 	my $now_targetbulk = $now_targetdir . "/install";
 	my $now_targetbulkapp = $now_targetbulk . "/" . $$refh_stackline{'app'};
 	my $now_targetbin = $now_targetdir . "/bin";
+	my $now_target = $$refh_stackline{'target'};
 	my $now_targetuser = $$refh_stackline{'targetuser'};
 	my $now_targetmachine = $$refh_stackline{'targetmachine'};
 	my $now_ybranches = $$refh_stackline{'ybranches'};
@@ -401,6 +414,7 @@ foreach my $refh_stackline (@CONFIG)
 	print "info: targetbulk = $now_targetbulk\n";
 	print "info: targetbulkapp = $now_targetbulkapp\n";
 	print "info: targetbin = $now_targetbin\n";
+	print "info: target = $now_target\n";
 	print "info: targetuser = $now_targetuser\n";
 	print "info: targetmachine = $now_targetmachine\n";
 	print "info: ybranches = $now_ybranches\n";
