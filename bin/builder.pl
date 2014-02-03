@@ -403,6 +403,15 @@ foreach my $refh_stackline (@CONFIG)
 	my $now_deployscript = $$refh_stackline{'deployscript'};
 	my @now_action = @{$$refh_stackline{'action'}};
 
+# bestimmte actionangaben veraendern die directorydefinition
+	if ( grep { $_ eq "targetbulk_is_targetdir_no_commondriver" } @now_action )
+	{
+		print "targetbulk is set to targetdir\n";
+		print "commondriver is suppressed\n";
+		$now_targetbulk = $now_targetdir;
+		$now_targetbin = "/dev/null";
+	}
+
 	print "info: ----- start processing next stackline -----\n";
 	
 	#-------------------
