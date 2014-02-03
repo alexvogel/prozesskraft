@@ -409,6 +409,7 @@ foreach my $refh_stackline (@CONFIG)
 		print "targetbulk is set to targetdir\n";
 		print "commondriver is suppressed\n";
 		$now_targetbulk = $now_targetdir;
+		$now_targetbulkapp = $now_targetdir . "/" . $$refh_stackline{'app'};
 		$now_targetbin = "/dev/null";
 	}
 
