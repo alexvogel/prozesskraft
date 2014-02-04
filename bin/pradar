@@ -73,7 +73,7 @@ my %OPTIONS_TABLE = (
 				'log'  => {'reihenfolge' => '7', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'string', 'check'=>'', 'default' => '', 'text1' => '=FILE', 'text2' => 'statt auf STDERR koennen logging-ausgaben in eine datei umgeleitet werden'},
 
 # definition der standardoptions
-				'hh' => {'reihenfolge' =>'5', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check' => '', 'default' => '', 'text1' => '', 'text2' => 'gibt den hilfetext des subcommands aus'},
+				'hh' => {'reihenfolge' =>'10', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check' => '', 'default' => '', 'text1' => '', 'text2' => 'gibt den hilfetext des subcommands aus'},
 );
 # parsen und generieren eines hashs (%optionsall) zum erzeugen von optionen (Getopt::Long)
 foreach my $par (keys %OPTIONS_TABLE)
