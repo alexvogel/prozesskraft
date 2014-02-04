@@ -46,6 +46,7 @@ implements Serializable, Cloneable
 			content.add("use warnings;");
 			content.add("use strict;");
 			content.add("use Getopt::Long;");
+			content.add("Getopt::Long::Configure(\"pass_through\");");
 			content.add("use File::Spec;");
 			content.add("use Cwd;");
 		}
