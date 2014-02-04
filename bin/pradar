@@ -423,12 +423,12 @@ my $return = 0;
 if (getOption("subhelp"))
 {
 	logit("info", "launching $subcommand: " . getConfig($subcommand) . " @ARGV --help");
-	$return = system(getConfig($subcommand), @ARGV, "--help");
+	$return = system(getConfig($subcommand), "@ARGV --help");
 }
 else
 {
 	logit("info", "launching $subcommand: " . getConfig($subcommand) . " @ARGV");
-	$return = system(getConfig($subcommand), @ARGV);
+	$return = system(getConfig($subcommand), "@ARGV");
 }
 
 if ($return)
