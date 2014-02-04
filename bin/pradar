@@ -422,7 +422,7 @@ if(@ARGV)
 }
 
 my $return = 0;
-if (getOption("subhelp"))
+if (getOption("hh"))
 {
 	my $call = getConfig($subcommand) . " @ARGV --help";
 	logit("info", "launching $subcommand: $call");
