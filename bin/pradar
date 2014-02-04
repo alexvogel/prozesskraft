@@ -250,7 +250,8 @@ my $helptext;
 
 $helptext .= "usage: $filename <subcommand> PARAMETER\n";
 $helptext .= "\n";
-$helptext .= "       possible subcommands: list, gui, checkin, checkout, progress, init, cleandb\n";
+$helptext .= "possible subcommands: list, gui, checkin, checkout, progress, init, cleandb\n";
+$helptext .= "\n";
 $helptext .= "Parameter\n";
 
 for(my $x=0; $x<11; $x++)
