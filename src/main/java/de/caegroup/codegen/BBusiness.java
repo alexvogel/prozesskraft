@@ -65,6 +65,10 @@ implements Serializable, Cloneable
 		// default
 		else
 		{
+			content.add("#");
+			content.add("# you may use getConfig(<string>), setConfig(<string>) to deal with data from the configfile if one exists.");
+			content.add("# you may use getOption(<string>), setOption(<string>) and addOption(<string>) to deal with data from the call-options.");
+			content.add("#");
 			content.add("# place your business logic here.");
 		}
 

@@ -20,6 +20,7 @@ implements Serializable, Cloneable
 	ArrayList<String> code_getvars = new ArrayList<String>();
 	ArrayList<String> code_initlist = new ArrayList<String>();
 	ArrayList<String> code_printgirlande = new ArrayList<String>();
+	ArrayList<String> code_getsetoptionsconfigs = new ArrayList<String>();
 	ArrayList<String> content = new ArrayList<String>();
 	/*----------------------------
 	  constructors
@@ -31,6 +32,7 @@ implements Serializable, Cloneable
 		this.initCodeGetvars();
 		this.initCodeInitlist();
 		this.initCodePrintgirlande();
+		this.initCodeGetsetoptionsconfigs();
 	}
 
 	/*----------------------------
@@ -57,6 +59,7 @@ implements Serializable, Cloneable
 		{
 			content.addAll(this.code_getvars);
 			content.addAll(this.code_logit);
+			content.addAll(this.code_getsetoptionsconfigs);
 		}
 		
 		this.block.setOrigin("auto");
@@ -408,6 +411,106 @@ implements Serializable, Cloneable
 		code.add("}");
 
 		this.code_printgirlande = code;
+	}
+	
+	private void initCodeGetsetoptionsconfigs()
+	{
+		ArrayList<String> code = new ArrayList<String>();
+		
+		code.add("sub getOption");
+		code.add("{");
+		code.add("	my $key = shift;");
+		code.add("	");
+		code.add("	# wenn option nicht existiert oder die anzahl der values innerhalb der option = 0 ist");
+		code.add("	if (!(defined $OPT{$key}))");
+		code.add("	{");
+		code.add("		return undef;");
+		code.add("	}");
+		code.add("	");
+		code.add("	elsif (ref($OPT{$key}) eq \"SCALAR\")");
+		code.add("	{");
+		code.add("		if (!defined ${$OPT{$key}})");
+		code.add("		{");
+		code.add("			return undef;");
+		code.add("		}");
+		code.add("		else");
+		code.add("		{");
+		code.add("			return ${$OPT{$key}}");
+		code.add("		}");
+		code.add("	}");
+		code.add("	");
+		code.add("	elsif (ref($OPT{$key}) eq \"ARRAY\")");
+		code.add("	{");
+		code.add("		if ( (!defined @{$OPT{$key}}) || (scalar @{$OPT{$key}} == 0) )");
+		code.add("		{");
+		code.add("			return undef;");
+		code.add("		}");
+		code.add("		# wenn es genau eine value fuer die option gibt ");
+		code.add("		elsif (scalar(@{$OPT{$key}}) == 1)");
+		code.add("		{");
+		code.add("			return ${$OPT{$key}}[0]");
+		code.add("		}");
+		code.add("		# wenn es mehrere values fuer die option gibt");
+		code.add("		else");
+		code.add("		{");
+		code.add("			return @{$OPT{$key}}");
+		code.add("		}");
+		code.add("	}");
+		code.add("}");
+		code.add("");
+		code.add("sub setOption");
+		code.add("{");
+		code.add("	my $key = shift;");
+		code.add("	");
+		code.add("	if (ref($OPT{$key}) eq \"SCALAR\")");
+		code.add("	{");
+		code.add("		if (@_ > 1)");
+		code.add("		{");
+		code.add("			&logit(\"error\", \"cannot apply a list (@_) to a scalar option ($key).\");");
+		code.add("		}");
+		code.add("		");
+		code.add("		else");
+		code.add("		{");
+		code.add("			${$OPT{$key}} = $_[0];");
+		code.add("		}");
+		code.add("	}");
+		code.add("	");
+		code.add("	elsif (ref($OPT{$key}) eq \"ARRAY\")");
+		code.add("	{");
+		code.add("		@{$OPT{$key}} = @_;");
+		code.add("	}");
+		code.add("}");
+		code.add("");
+		code.add("sub addOption");
+		code.add("{");
+		code.add("	my $key = shift;");
+		code.add("	");
+		code.add("	if (ref($OPT{$key}) eq \"ARRAY\")");
+		code.add("	{");
+		code.add("		push @{$OPT{$key}}, @_;");
+		code.add("	}");
+		code.add("}");
+		code.add("");
+		code.add("sub getConfig");
+		code.add("{");
+		code.add("	my $key = shift;");
+		code.add("	if (defined $CONF{$key})");
+		code.add("	{");
+		code.add("		return $CONF{$key};");
+		code.add("	}");
+		code.add("}");
+		code.add("");
+		code.add("sub setConfig");
+		code.add("{");
+		code.add("	my $key = shift;");
+		code.add("	my $value = shift;");
+		code.add("	");
+		code.add("	$CONF{$key} = $value;");
+		code.add("}");
+		code.add("");
+		
+		
+		this.code_getsetoptionsconfigs = code;
 	}
 	
 }
