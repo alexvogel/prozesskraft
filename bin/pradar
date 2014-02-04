@@ -418,11 +418,11 @@ if(@ARGV)
 		}
 	}
 }
-my $return = system($subcommand, @ARGV);
+my $return = system(getConfig($subcommand), @ARGV);
 
 if ($return)
 {
-	logit("fatal", "subcommand " . getOption("subcommand") . " unknown. you only may use sth. like 'list', 'checkin', 'gui', etc. check your call or config file.");
+	logit("fatal", "subcommand " . $subcommand . " unknown. you only may use sth. like 'list', 'checkin', 'gui', etc. check your call or config file.");
 	exit(1);
 }
 #----------------------------------------------------------------------------
