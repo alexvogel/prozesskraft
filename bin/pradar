@@ -409,14 +409,7 @@ if ($error_anzahl + $error_patternchecks)
 #
 if(getConfig(getOption("subcommand")))
 {
-	if (stat getConfig(getOption("subcommand")))
-	{
-		system((getConfig(getOption("subcommand"))), @ARGV);
-	}
-	else
-	{
-		logit("fatal", "target of --subcommand=" . getOption("subcommand") . " not found (" . getConfig(getOption("subcommand")) . "). check config file.");
-	}
+	system((getConfig(getOption("subcommand"))), @ARGV);
 }
 else
 {
