@@ -73,7 +73,7 @@ my %OPTIONS_TABLE = (
 				'log'  => {'reihenfolge' => '7', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'string', 'check'=>'', 'default' => '', 'text1' => '=FILE', 'text2' => 'statt auf STDERR koennen logging-ausgaben in eine datei umgeleitet werden'},
 
 # definition der standardoptions
-				'subcommand' => {'reihenfolge' =>'5', 'minoccur' => '1', 'maxoccur' => '1', 'definition' => 'string', 'check' => '', 'default' => 'gui', 'text1' => '=STRING', 'text2' => 'Subcommand of tool pradar'},
+#				'subcommand' => {'reihenfolge' =>'5', 'minoccur' => '1', 'maxoccur' => '1', 'definition' => 'string', 'check' => '', 'default' => 'gui', 'text1' => '=STRING', 'text2' => 'Subcommand of tool pradar'},
 );
 # parsen und generieren eines hashs (%optionsall) zum erzeugen von optionen (Getopt::Long)
 foreach my $par (keys %OPTIONS_TABLE)
@@ -407,13 +407,22 @@ if ($error_anzahl + $error_patternchecks)
 #
 # place your business logic here.
 #
-if(getConfig(getOption("subcommand")))
+my $subcommand = "gui";
+if(@ARGV)
 {
-	system((getConfig(getOption("subcommand"))), @ARGV);
+	if($ARGV[0] !~ m/^-/)
+	{
+		if(getConfig($ARGV[0]))
+		{
+			$subcommand = shift @ARGV;
+		}
+	}
 }
-else
+my $return = system($subcommand, @ARGV);
+
+if ($return)
 {
-	logit("fatal", "--subcommand " . getOption("subcommand") . " unknown. check your call or config file.");
+	logit("fatal", "subcommand " . getOption("subcommand") . " unknown. you only may use sth. like 'list', 'checkin', 'gui', etc. check your call or config file.");
 	exit(1);
 }
 #----------------------------------------------------------------------------
