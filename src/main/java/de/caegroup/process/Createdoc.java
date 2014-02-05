@@ -416,7 +416,7 @@ public class Createdoc
 		
 		report.setParameter("processName", process.getName());
 		report.setParameter("processVersion", process.getModelVersion());
-		report.setParameter("processDatum", process.getDate());
+		report.setParameter("processDatum", timestamp.toString());
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
 		report.setParameter("processArchitectMail", process.getArchitectMail());
