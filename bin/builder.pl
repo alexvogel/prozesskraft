@@ -677,8 +677,8 @@ foreach my $refh_stackline (@CONFIG)
 													return $date_lastcommit;
 												},
 								installdir => sub	{
-													print "replacing placeholder for 'installdir' with '$now_targetbulkapp'\n";
-													return $now_targetbulkapp;
+													print "replacing placeholder for 'installdir' with '$now_targetbulkappbranch'\n";
+													return $now_targetbulkappbranch;
 												},
 								home	=> sub	{
 													print "replacing placeholder for 'home' with '".$ENV{'HOME'}."'\n";
