@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import javax.xml.bind.JAXBException;
 
 import net.sf.jasperreports.engine.JRException;
 //import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
+
 
 
 
@@ -419,8 +421,11 @@ public class Createdoc
 			System.exit(1);
 		}
 		
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		
 		report.setParameter("processName", process.getName());
 		report.setParameter("processVersion", process.getModelVersion());
+		report.setParameter("processDatum", timestamp.toString());
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
 		report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -859,7 +864,14 @@ public class Createdoc
 				report.setParameter("stepDescription", actualStep.getDescription());
 				
 				// zusammensetzen des scriptaufrufs
-				String aufruf = actualStep.getWork().getInterpreter()+" "+actualStep.getWork().getCommand();
+				String interpreter = "";
+				
+				if (actualStep.getWork().getInterpreter() != null)
+				{
+					interpreter = actualStep.getWork().getInterpreter();
+				}
+				
+				String aufruf = interpreter+" "+actualStep.getWork().getCommand();
 				for(Callitem actualCallitem : actualStep.getWork().getCallitem())
 				{
 					aufruf += " "+actualCallitem.getPar();
