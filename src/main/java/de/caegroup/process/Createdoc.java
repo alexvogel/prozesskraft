@@ -11,8 +11,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption.*;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -21,6 +24,10 @@ import javax.xml.bind.JAXBException;
 
 import net.sf.jasperreports.engine.JRException;
 //import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
+
+
+
+
 
 
 
@@ -412,11 +419,12 @@ public class Createdoc
 			System.exit(1);
 		}
 		
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		DateFormat dateFormat = new SimpleDateFormat("dd. MM. yyyy");
+		Date date = new Date();
 		
 		report.setParameter("processName", process.getName());
 		report.setParameter("processVersion", process.getModelVersion());
-		report.setParameter("processDatum", timestamp.toString());
+		report.setParameter("processDatum", dateFormat.format(date));
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
 		report.setParameter("processArchitectMail", process.getArchitectMail());
