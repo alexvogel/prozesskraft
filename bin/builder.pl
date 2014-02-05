@@ -676,6 +676,10 @@ foreach my $refh_stackline (@CONFIG)
 													print "replacing placeholder for 'date' with '$date_lastcommit'\n";
 													return $date_lastcommit;
 												},
+								installdir => sub	{
+													print "replacing placeholder for 'installdir' with '$now_targetdir'\n";
+													return $now_targetdir;
+												},
 								home	=> sub	{
 													print "replacing placeholder for 'home' with '".$ENV{'HOME'}."'\n";
 													return $ENV{'HOME'};
