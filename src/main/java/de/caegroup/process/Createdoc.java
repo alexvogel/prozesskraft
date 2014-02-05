@@ -74,7 +74,7 @@ public class Createdoc
 	  constructors
 	----------------------------*/
 //	public static void main(String[] args) throws SAXException, IOException, ParserConfigurationException
-	public static void main(String[] args) throws org.apache.commons.cli.ParseException
+	public static void main(String[] args) throws org.apache.commons.cli.ParseException, IOException
 	{
 
 		Createdoc tmp = new Createdoc();
