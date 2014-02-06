@@ -55,7 +55,7 @@ implements Serializable, Cloneable
 			content.add("				'h' => {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'gibt diesen hilfetext aus'},");
 			content.add("				'doc'  => {'reihenfolge' => '8', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'falls eine dokumentation existiert, wird diese angezeigt'},");
 			content.add("				'log'  => {'reihenfolge' => '7', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'string', 'check'=>'', 'default' => '', 'text1' => '=FILE', 'text2' => 'statt auf STDERR koennen logging-ausgaben in eine datei umgeleitet werden'},");
-			content.add("				'conf'  => {'reihenfolge' => '10', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'\\w+=\\w+', 'default' => '', 'text1' => '=KEY=VALUE', 'text2' => 'damit koennen Konfigurationsparameter (nur die im config-file existierenden) umdefiniert werden'},");
+			content.add("				'conf'  => {'reihenfolge' => '10', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'^[^=]+=[^=]+$', 'default' => '', 'text1' => '=KEY=VALUE', 'text2' => 'damit koennen Konfigurationsparameter (nur die im config-file existierenden) umdefiniert werden'},");
 			
 			content.add("");
 			content.add("# definition der standardoptions");
