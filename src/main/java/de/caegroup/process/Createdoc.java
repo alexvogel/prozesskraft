@@ -423,7 +423,7 @@ public class Createdoc
 		Date date = new Date();
 		
 		report.setParameter("processName", process.getName());
-		report.setParameter("processVersion", process.getModelVersion());
+		report.setParameter("processVersion", process.getVersion());
 		report.setParameter("processDatum", dateFormat.format(date));
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
@@ -477,7 +477,7 @@ public class Createdoc
 		}
 		
 			report.setParameter("processName", process.getName());
-			report.setParameter("processVersion", process.getModelVersion());
+			report.setParameter("processVersion", process.getVersion());
 			report.setParameter("processArchitectCompany", process.getArchitectCompany());
 			report.setParameter("processArchitectName", process.getArchitectName());
 			report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -530,7 +530,7 @@ public class Createdoc
 		}
 		
 		report.setParameter("processName", process.getName());
-		report.setParameter("processVersion", process.getModelVersion());
+		report.setParameter("processVersion", process.getVersion());
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
 		report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -586,7 +586,7 @@ public class Createdoc
 		}
 		
 		report.setParameter("processName", process.getName());
-		report.setParameter("processVersion", process.getModelVersion());
+		report.setParameter("processVersion", process.getVersion());
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
 		report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -675,7 +675,7 @@ public class Createdoc
 		}
 		
 		report.setParameter("processName", process.getName());
-		report.setParameter("processVersion", process.getModelVersion());
+		report.setParameter("processVersion", process.getVersion());
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
 		report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -793,7 +793,7 @@ public class Createdoc
 		}
 		
 		report.setParameter("processName", process.getName());
-		report.setParameter("processVersion", process.getModelVersion());
+		report.setParameter("processVersion", process.getVersion());
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
 		report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -946,7 +946,7 @@ public class Createdoc
 				}
 	
 				report.setParameter("processName", process.getName());
-				report.setParameter("processVersion", process.getModelVersion());
+				report.setParameter("processVersion", process.getVersion());
 				report.setParameter("processArchitectCompany", process.getArchitectCompany());
 				report.setParameter("processArchitectName", process.getArchitectName());
 				report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -1115,7 +1115,7 @@ public class Createdoc
 				}
 				
 				report.setParameter("processName", process.getName());
-				report.setParameter("processVersion", process.getModelVersion());
+				report.setParameter("processVersion", process.getVersion());
 				report.setParameter("processArchitectCompany", process.getArchitectCompany());
 				report.setParameter("processArchitectName", process.getArchitectName());
 				report.setParameter("processArchitectMail", process.getArchitectMail());
