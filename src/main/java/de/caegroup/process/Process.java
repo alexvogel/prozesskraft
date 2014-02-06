@@ -72,6 +72,7 @@ implements Serializable
 	private String customerCompany = new String();
 	private String customerMail = new String();
 	private String modelVersion = new String();
+	private String version = new String();
 	private boolean pradar = false;
 //	private NamedList<Step> steps = new NamedList<Step>();
 	private ArrayList<Step> step = new ArrayList<Step>();
@@ -1113,6 +1114,16 @@ implements Serializable
 	public void setModelVersion(String modelVersion)
 	{
 		this.modelVersion = modelVersion;
+	}
+
+	public String getVersion()
+	{
+		return this.version;
+	}
+
+	public void setVersion(String version)
+	{
+		this.version = version;
 	}
 
 	public String getDescription()

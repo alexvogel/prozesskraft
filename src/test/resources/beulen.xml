@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- <root> -->
-<process name="beulen" modelVersion="0.2" description="Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert." architectMail="alexander.vogel@caegroup.de" architectName="Alexander Vogel" architectCompany="caegroup Ingenieure" customerMail="jaohn.doe@bmw.de" customerName="John Doe" customerCompany="BMW AG" path="irgendeinpath" pradar="false">
+<process name="beulen" modelVersion="0.2" version="0.1.0" description="Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert." architectMail="alexander.vogel@caegroup.de" architectName="Alexander Vogel" architectCompany="caegroup Ingenieure" customerMail="jaohn.doe@bmw.de" customerName="John Doe" customerCompany="BMW AG" path="irgendeinpath" pradar="false">
 	<step name="root" type="automatic">
 		<commit name="parameter" toroot="true">
 			<variable key="matdb" value="no" minoccur="1" maxoccur="1" free="false" description="choose a centrally maintained material database or 'no' if material definitions are provided with abaqus includes" >
