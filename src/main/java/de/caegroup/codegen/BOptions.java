@@ -53,8 +53,8 @@ implements Serializable, Cloneable
 			
 			content.add("# 1 < reihenfolge <= 15");
 			content.add("# definition der standardoptions");
-			content.add("				'h' => {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'gibt diesen hilfetext aus'},");
-			content.add("				'log'  => {'reihenfolge' => '7', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'string', 'check'=>'', 'default' => '', 'text1' => '=FILE', 'text2' => 'statt auf STDERR koennen logging-ausgaben in eine datei umgeleitet werden'},");
+			content.add("				'h' => {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'prints this helptext'},");
+			content.add("				'log'  => {'reihenfolge' => '7', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'string', 'check'=>'', 'default' => '', 'text1' => '=FILE', 'text2' => 'logs in a file instead of STDERR'},");
 			content.add("				'debug'  => {'reihenfolge' => '11', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
 			
 			content.add("");
