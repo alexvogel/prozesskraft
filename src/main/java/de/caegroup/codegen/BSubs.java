@@ -53,6 +53,7 @@ implements Serializable, Cloneable
 			content.addAll(this.code_logit);
 			content.addAll(this.code_initlist);
 			content.addAll(this.code_printgirlande);
+			content.addAll(this.code_getsetoptionsconfigs);
 		}
 		// default
 		else
