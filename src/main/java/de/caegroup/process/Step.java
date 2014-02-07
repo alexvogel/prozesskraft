@@ -121,7 +121,7 @@ implements Serializable, Cloneable
 
 		perlSnippet.add(this.getName() + ":");
 		perlSnippet.add("{");
-		perlSnippet.add("\t\t&logit(\"info\", \"processing step '"+this.getName()+"'\");");
+		perlSnippet.add("\t&logit(\"info\", \"processing step '"+this.getName()+"'\");");
 		perlSnippet.add("\tmy $stepname = \""+this.getName()+"\";");
 		perlSnippet.add("\t&girlande($stepname);");
 		perlSnippet.add("");
@@ -149,7 +149,7 @@ implements Serializable, Cloneable
 		{
 			perlSnippet.add("\t{");
 				
-			perlSnippet.add("\t\t&logit(\"info\", \"initializing list "+actInit.getListname()+"'\");");
+			perlSnippet.add("\t\t&logit(\"debug\", \"initializing list "+actInit.getListname()+"'\");");
 
 			// falls liste noch nicht existiert, soll eine leere liste erzeugt werden
 			if (this.getList(actInit.getListname()) == null)
