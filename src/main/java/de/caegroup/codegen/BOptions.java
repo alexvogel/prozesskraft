@@ -51,11 +51,11 @@ implements Serializable, Cloneable
 			content.add("# hier koenne alle 'festen' optionen definiert werden");
 			content.add("my %OPTIONS_TABLE = (");
 			
+			content.add("# 1 < reihenfolge <= 15");
 			content.add("# definition der standardoptions");
 			content.add("				'h' => {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'gibt diesen hilfetext aus'},");
-			content.add("				'doc'  => {'reihenfolge' => '8', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'falls eine dokumentation existiert, wird diese angezeigt'},");
 			content.add("				'log'  => {'reihenfolge' => '7', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'string', 'check'=>'', 'default' => '', 'text1' => '=FILE', 'text2' => 'statt auf STDERR koennen logging-ausgaben in eine datei umgeleitet werden'},");
-			content.add("				'conf'  => {'reihenfolge' => '10', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'^[^=]+=[^=]+$', 'default' => '', 'text1' => '=KEY=VALUE', 'text2' => 'damit koennen Konfigurationsparameter (nur die im config-file existierenden) umdefiniert werden'},");
+			content.add("				'debug'  => {'reihenfolge' => '11', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
 			
 			content.add("");
 			content.add("# definition der standardoptions");
@@ -65,6 +65,25 @@ implements Serializable, Cloneable
 			}
 			
 			content.add(");");
+
+
+			content.add("# dynamische standardoptions definieren");
+			content.add("# wenn kein dokufile vorhanden ist, wird auch diese option nicht angelegt");
+			content.add("if (stat $doc_path)");
+			content.add("{");
+			content.add("	$OPTIONS_TABLE{'doc'} = {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'shows documentation'};");
+			content.add("}");
+			content.add("# wenn kein config-file vorhanden ist, wird auch diese option nicht angelegt");
+			content.add("if (stat $conf_path1)");
+			content.add("{");
+			content.add("	my %CONF_TMP = &getvars($conf_path1);");
+			content.add("	$OPTIONS_TABLE{'conf'} = {'reihenfolge' => '10', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'^[^=]+=[^=]+$', 'default' => '', 'text1' => '=KEY=VALUE', 'text2' => 'for redefinition of configuration variables. (possible KEYs are: ' . join(\", \", sort keys %CONF_TMP) . ')'};");
+			content.add("}");
+			content.add("elsif (stat $conf_path2)");
+			content.add("{");
+			content.add("	my %CONF_TMP = &getvars($conf_path2);");
+			content.add("	$OPTIONS_TABLE{'conf'} = {'reihenfolge' => '10', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'^[^=]+=[^=]+$', 'default' => '', 'text1' => '=KEY=VALUE', 'text2' => 'for redefinition of configuration variables. (possible KEYs are: ' . join(\", \", sort keys %CONF_TMP) . ')'};");
+			content.add("}");
 
 			content.add("# parsen und generieren eines hashs (%optionsall) zum erzeugen von optionen (Getopt::Long)");
 			content.add("foreach my $par (keys %OPTIONS_TABLE)");

@@ -72,7 +72,8 @@ implements Serializable, Cloneable
 			content.add("use lib $directories . \"../../../../cb2common/lib/1.0\";");
 			content.add("");
 			content.add("# path to configurationfile");
-			content.add("my $conf_path = $etcdir . \"/\" . $filename.\".conf\";");
+			content.add("my $conf_path1 = $directories . \"/\" . $filename.\".conf\";");
+			content.add("my $conf_path2 = $etcdir . \"/\" . $filename.\".conf\";");
 			content.add("# path to documentation");
 			content.add("my $doc_path = $docdir . \"/\" . $filename.\".pdf\";");
 		}

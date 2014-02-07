@@ -48,7 +48,7 @@ implements Serializable, Cloneable
 			content.add("$helptext .= \"\\n\";");
 			content.add("$helptext .= \"Parameter\\n\";");
 			content.add("");
-			content.add("for(my $x=0; $x<11; $x++)");
+			content.add("for(my $x=0; $x<15; $x++)");
 			content.add("{");
 			content.add("	foreach(sort keys %OPTHELP)");
 			content.add("	{	");
