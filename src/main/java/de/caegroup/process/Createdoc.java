@@ -510,167 +510,23 @@ public class Createdoc
 		//System.exit(0);
 				
 //////////////////////////////////////////
-		report = new Report();
-		
-		// P1) erstellen des p1
-		System.out.println("info: generating p1.");
-		
-		// P1) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
-		if (ini.get("process-createdoc", "p1") != null )
-		{
-			report.setJasper(ini.get("process-createdoc", "p1"));
-			report.setJasperFilled(randomPathJasperFilled+"/p1.jasperFilled");
-			report.setPdf(randomPathPdf+"/p1.pdf");
-			pdfRankFiles.put("0.0.1", randomPathPdf+"/p1.pdf");
-		}
-		else
-		{
-			System.err.println("no entry 'p1' found in ini file");
-			System.exit(1);
-		}
-		
-		report.setParameter("processName", process.getName());
-		report.setParameter("processVersion", process.getVersion());
-		report.setParameter("processArchitectCompany", process.getArchitectCompany());
-		report.setParameter("processArchitectName", process.getArchitectName());
-		report.setParameter("processArchitectMail", process.getArchitectMail());
-		report.setParameter("processCustomerCompany", process.getCustomerCompany());
-		report.setParameter("processCustomerName", process.getCustomerName());
-		report.setParameter("processCustomerMail", process.getCustomerMail());
-		
-		// P1) bild an report melden
-		report.setParameter("processTopologyImagePath", processTopologyImagePath);
-
-		try {
-			report.fillPReport();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-			report.exportToPdf();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		report = null;
-		
-//		System.exit(0);
-//////////////////////////////////////////
-		
-		report = new Report();
-			
-		// P2) erstellen des p2
-		System.out.println("info: generating p2.");
-		
-		// P2) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
-		if (ini.get("process-createdoc", "p2") != null )
-		{
-			report.setJasper(ini.get("process-createdoc", "p2"));
-			report.setJasperFilled(randomPathJasperFilled+"/p2.jasperFilled");
-			report.setPdf(randomPathPdf+"/p2.pdf");
-			pdfRankFiles.put("0.0.2", randomPathPdf+"/p2.pdf");
-		}
-		else
-		{
-			System.err.println("no entry 'p2' found in ini file");
-			System.exit(1);
-		}
-		
-		report.setParameter("processName", process.getName());
-		report.setParameter("processVersion", process.getVersion());
-		report.setParameter("processArchitectCompany", process.getArchitectCompany());
-		report.setParameter("processArchitectName", process.getArchitectName());
-		report.setParameter("processArchitectMail", process.getArchitectMail());
-		report.setParameter("processCustomerCompany", process.getCustomerCompany());
-		report.setParameter("processCustomerName", process.getCustomerName());
-		report.setParameter("processCustomerMail", process.getCustomerMail());
-		
-		// P2) bild an report melden
-		report.setParameter("processTopologyImagePath", processTopologyImagePath);
-
-		// Tabelle erzeugen
-
-		ArrayList<Step> steps = process.getStep();
-		for(int x = 0; x < steps.size(); x++)
-		{
-			HashMap<String,Object> row = new HashMap<String,Object>();
-			Step actualStep = steps.get(x);
-
-			// erste Spalte ist 'rank'
-			// um die korrekte sortierung zu erhalten soll der rank-string auf jeweils 2 Stellen erweitert werden
-			String[] rankArray = actualStep.getRank().split("\\.");
-			Integer[] rankArrayInt = new Integer[rankArray.length];
-			for(int y=0; y < rankArray.length; y++)
-			{
-				rankArrayInt[y] = Integer.parseInt(rankArray[y]);
-			}
-			String rankFormated = String.format("%02d.%02d", rankArrayInt);
-			row.put("stepRank", rankFormated);
-			
-			// zweite Spalte ist 'stepname'
-			row.put("stepName", actualStep.getName());
-//				System.out.println("stepName: "+actualStep.getName());
-
-			// dritte Spalte ist 'Beschreibung'
-			row.put("stepDescription", actualStep.getDescription());
-//				System.out.println("stepRank: "+actualStep.getDescription());
-
-			// wenn nicht der root-step, dann row eintragen
-			if (!(actualStep.getName().equals(process.getRootstepname())))
-			{
-				report.addField(row);
-			}
-		}
-		
-		try {
-			report.fillPReport();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		try {
-			report.exportToPdf();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JRException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		report = null;
-		
-//////////////////////////////////////////
 		
 		report = new Report();
 		
-		// P3) erstellen des p3
-		System.out.println("info: generating p3.");
+		// P10) erstellen des p10
+		System.out.println("info: generating p10.");
 		
-		// P3) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
-		if (ini.get("process-createdoc", "p3") != null )
+		// P10) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
+		if (ini.get("process-createdoc", "p10") != null )
 		{
-			report.setJasper(ini.get("process-createdoc", "p3"));
-			report.setJasperFilled(randomPathJasperFilled+"/p3.jasperFilled");
-			report.setPdf(randomPathPdf+"/p3.pdf");
-			pdfRankFiles.put("0.0.3", randomPathPdf+"/p3.pdf");
+			report.setJasper(ini.get("process-createdoc", "p10"));
+			report.setJasperFilled(randomPathJasperFilled+"/p10.jasperFilled");
+			report.setPdf(randomPathPdf+"/p10.pdf");
+			pdfRankFiles.put("0.1.0", randomPathPdf+"/p10.pdf");
 		}
 		else
 		{
-			System.err.println("no entry 'p3' found in ini file");
+			System.err.println("no entry 'p10' found in ini file");
 			System.exit(1);
 		}
 		
@@ -683,7 +539,7 @@ public class Createdoc
 		report.setParameter("processCustomerName", process.getCustomerName());
 		report.setParameter("processCustomerMail", process.getCustomerMail());
 
-		// P3) bild an report melden
+		// P10) bild an report melden
 		report.setParameter("processTopologyImagePath", processTopologyImagePath);
 		
 		// rootstep holen
@@ -775,20 +631,20 @@ public class Createdoc
 
 		report = new Report();
 		
-		// P4) erstellen des p4
-		System.out.println("info: generating p4.");
+		// P20) erstellen des p20
+		System.out.println("info: generating p20.");
 		
-		// P4) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
-		if (ini.get("process-createdoc", "p4") != null )
+		// P20) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
+		if (ini.get("process-createdoc", "p20") != null )
 		{
-			report.setJasper(ini.get("process-createdoc", "p4"));
-			report.setJasperFilled(randomPathJasperFilled+"/p4.jasperFilled");
-			report.setPdf(randomPathPdf+"/p4.pdf");
-			pdfRankFiles.put("0.0.4", randomPathPdf+"/p4.pdf");
+			report.setJasper(ini.get("process-createdoc", "p20"));
+			report.setJasperFilled(randomPathJasperFilled+"/p20.jasperFilled");
+			report.setPdf(randomPathPdf+"/p20.pdf");
+			pdfRankFiles.put("0.2.0", randomPathPdf+"/p20.pdf");
 		}
 		else
 		{
-			System.err.println("no entry 'p4' found in ini file");
+			System.err.println("no entry 'p20' found in ini file");
 			System.exit(1);
 		}
 		
@@ -801,7 +657,7 @@ public class Createdoc
 		report.setParameter("processCustomerName", process.getCustomerName());
 		report.setParameter("processCustomerMail", process.getCustomerMail());
 
-		// P4) bild an report melden
+		// P20) bild an report melden
 		report.setParameter("processTopologyImagePath", processTopologyImagePath);
 		
 		// ueber alle steps iterieren (ausser root)
@@ -900,6 +756,151 @@ public class Createdoc
 		
 		report = null;
 	
+//////////////////////////////////////////
+
+		report = new Report();
+		
+		// P30) erstellen des p30
+		System.out.println("info: generating p30.");
+		
+		// P30) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
+		if (ini.get("process-createdoc", "p30") != null )
+		{
+			report.setJasper(ini.get("process-createdoc", "p30"));
+			report.setJasperFilled(randomPathJasperFilled+"/p30.jasperFilled");
+			report.setPdf(randomPathPdf+"/p30.pdf");
+			pdfRankFiles.put("0.3.0", randomPathPdf+"/p30.pdf");
+		}
+		else
+		{
+			System.err.println("no entry 'p30' found in ini file");
+			System.exit(1);
+		}
+		
+		report.setParameter("processName", process.getName());
+		report.setParameter("processVersion", process.getVersion());
+		report.setParameter("processArchitectCompany", process.getArchitectCompany());
+		report.setParameter("processArchitectName", process.getArchitectName());
+		report.setParameter("processArchitectMail", process.getArchitectMail());
+		report.setParameter("processCustomerCompany", process.getCustomerCompany());
+		report.setParameter("processCustomerName", process.getCustomerName());
+		report.setParameter("processCustomerMail", process.getCustomerMail());
+		
+		// P1) bild an report melden
+		report.setParameter("processTopologyImagePath", processTopologyImagePath);
+
+		try {
+			report.fillPReport();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			report.exportToPdf();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		report = null;
+		
+//		System.exit(0);
+//////////////////////////////////////////
+		
+		report = new Report();
+			
+		// P40) erstellen des p40
+		System.out.println("info: generating p40.");
+		
+		// P40) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
+		if (ini.get("process-createdoc", "p40") != null )
+		{
+			report.setJasper(ini.get("process-createdoc", "p40"));
+			report.setJasperFilled(randomPathJasperFilled+"/p40.jasperFilled");
+			report.setPdf(randomPathPdf+"/p40.pdf");
+			pdfRankFiles.put("0.4.0", randomPathPdf+"/p40.pdf");
+		}
+		else
+		{
+			System.err.println("no entry 'p40' found in ini file");
+			System.exit(1);
+		}
+		
+		report.setParameter("processName", process.getName());
+		report.setParameter("processVersion", process.getVersion());
+		report.setParameter("processArchitectCompany", process.getArchitectCompany());
+		report.setParameter("processArchitectName", process.getArchitectName());
+		report.setParameter("processArchitectMail", process.getArchitectMail());
+		report.setParameter("processCustomerCompany", process.getCustomerCompany());
+		report.setParameter("processCustomerName", process.getCustomerName());
+		report.setParameter("processCustomerMail", process.getCustomerMail());
+		
+		// P40) bild an report melden
+		report.setParameter("processTopologyImagePath", processTopologyImagePath);
+
+		// Tabelle erzeugen
+
+		ArrayList<Step> steps = process.getStep();
+		for(int x = 0; x < steps.size(); x++)
+		{
+			HashMap<String,Object> row = new HashMap<String,Object>();
+			Step actualStep = steps.get(x);
+
+			// erste Spalte ist 'rank'
+			// um die korrekte sortierung zu erhalten soll der rank-string auf jeweils 2 Stellen erweitert werden
+			String[] rankArray = actualStep.getRank().split("\\.");
+			Integer[] rankArrayInt = new Integer[rankArray.length];
+			for(int y=0; y < rankArray.length; y++)
+			{
+				rankArrayInt[y] = Integer.parseInt(rankArray[y]);
+			}
+			String rankFormated = String.format("%02d.%02d", rankArrayInt);
+			row.put("stepRank", rankFormated);
+			
+			// zweite Spalte ist 'stepname'
+			row.put("stepName", actualStep.getName());
+//				System.out.println("stepName: "+actualStep.getName());
+
+			// dritte Spalte ist 'Beschreibung'
+			row.put("stepDescription", actualStep.getDescription());
+//				System.out.println("stepRank: "+actualStep.getDescription());
+
+			// wenn nicht der root-step, dann row eintragen
+			if (!(actualStep.getName().equals(process.getRootstepname())))
+			{
+				report.addField(row);
+			}
+		}
+		
+		try {
+			report.fillPReport();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			report.exportToPdf();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		report = null;
+		
 //////////////////////////////////////////
 
 		// fuer jeden Step einen eigenen Input Report erzeugen

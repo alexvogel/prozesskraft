@@ -142,7 +142,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="16"/>
 				</textElement>
-				<text><![CDATA[Topologie]]></text>
+				<text><![CDATA[Input]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="30429e11-c08b-4f2d-bb62-2371c0236c69" x="300" y="140" width="200" height="25">
@@ -154,7 +154,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
 					<font size="16"/>
 				</textElement>
-				<text><![CDATA[Prozess Schritte]]></text>
+				<text><![CDATA[Output]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="a3d759e3-494c-4fbb-832d-6a3ca96b222a" x="300" y="165" width="200" height="25">
@@ -166,7 +166,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
 					<font size="16"/>
 				</textElement>
-				<text><![CDATA[Prozess Input]]></text>
+				<text><![CDATA[Topologie]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="3e057b23-cdf3-4cab-b016-b3ac2855b5e6" x="300" y="190" width="220" height="25">
@@ -178,7 +178,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
 					<font size="16"/>
 				</textElement>
-				<text><![CDATA[Prozess Output]]></text>
+				<text><![CDATA[Prozessschritte]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="bd29a8f2-1f4c-4ab4-97d4-40e535c3e0f0" x="300" y="215" width="340" height="25">
@@ -190,7 +190,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
 					<font size="16"/>
 				</textElement>
-				<text><![CDATA[Prozess Schritte Input/Output]]></text>
+				<text><![CDATA[Prozessschritte Input/Output]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="019568b1-8616-4fc8-bde5-21615b85993c" x="265" y="115" width="30" height="25">
