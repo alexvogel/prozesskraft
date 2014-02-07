@@ -172,6 +172,7 @@ implements Serializable
 	{
 		Script script = new Script();
 		script.setType("process");
+		script.meta.setVersion(this.getVersion());
 		script.genContent();
 		
 		// script-OPTIONS generieren aus den commit-objekten des root-steps
