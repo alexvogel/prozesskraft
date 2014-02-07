@@ -10,7 +10,6 @@
 	<parameter name="processCustomerName" class="java.lang.String"/>
 	<parameter name="processCustomerCompany" class="java.lang.String"/>
 	<parameter name="processCustomerMail" class="java.lang.String"/>
-	<parameter name="processTopologyImagePath" class="java.lang.String"/>
 	<field name="origin" class="java.lang.String"/>
 	<field name="objectType" class="java.lang.String"/>
 	<field name="minOccur" class="java.lang.String"/>

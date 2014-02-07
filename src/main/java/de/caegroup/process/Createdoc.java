@@ -539,9 +539,6 @@ public class Createdoc
 		report.setParameter("processCustomerName", process.getCustomerName());
 		report.setParameter("processCustomerMail", process.getCustomerMail());
 
-		// P10) bild an report melden
-		report.setParameter("processTopologyImagePath", processTopologyImagePath);
-		
 		// rootstep holen
 		Step rootStep = process.getStep(process.getRootstepname());
 		
@@ -657,9 +654,6 @@ public class Createdoc
 		report.setParameter("processCustomerName", process.getCustomerName());
 		report.setParameter("processCustomerMail", process.getCustomerMail());
 
-		// P20) bild an report melden
-		report.setParameter("processTopologyImagePath", processTopologyImagePath);
-		
 		// ueber alle steps iterieren (ausser root)
 		for(Step actualStep : (ArrayList<Step>)process.getStep())
 		{
