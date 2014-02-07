@@ -43,12 +43,12 @@ implements Serializable, Cloneable
 		// default
 		else
 		{
-			content.add("if (${$OPT{'h'}})");
+			content.add("if (getOption(\"h\"))");
 			content.add("{");
 			content.add("\tprint STDERR $helptext;");
 			content.add("\texit(0);");
 			content.add("}");
-			content.add("if (${$OPT{'doc'}})");
+			content.add("if (getOption(\"doc\"))");
 			content.add("{");
 			content.add("\tif (stat $doc_path)");
 			content.add("\t{");

@@ -98,7 +98,7 @@ implements Serializable, Cloneable
 		code.add("		my $logfile = &getOption(\"log\");");
 		code.add("		if ($logfile)");
 		code.add("		{");
-		code.add("			system \"echo \"$ausgabestring\" >> $logfile\";");
+		code.add("			system \"echo \\\"$ausgabestring\\\" >> $logfile\";");
 		code.add("		}");
 		code.add("		else");
 		code.add("		{");
