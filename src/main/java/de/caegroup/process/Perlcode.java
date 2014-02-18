@@ -121,12 +121,23 @@ public class Perlcode
 			System.err.println("option -definition is mandatory.");
 			exiter();
 		}
-
+		
+		String output = "";
+		if ( !( commandline.hasOption("output")) )
+		{
+			System.err.println("setting -output=.");
+			output = ".";
+		}
+		else
+		{
+			output = commandline.getOptionValue("output");
+		}
+		
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
 		Process p1 = new Process();
-		java.io.File outputDir = new java.io.File(commandline.getOptionValue("output"));
+		java.io.File outputDir = new java.io.File(output);
 
 		if (outputDir.exists())
 		{
@@ -165,13 +176,6 @@ public class Perlcode
 		else
 		{
 			writeProcessAsPerlcode(p2, outputDir);
-		}
-		
-		// Ausgabedatei festlegen
-		String output = "out.pl";
-		if (commandline.hasOption("output"))
-		{
-			output = commandline.getOptionValue("output");
 		}
 		
 	}
