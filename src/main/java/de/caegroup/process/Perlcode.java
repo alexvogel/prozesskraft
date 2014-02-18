@@ -64,7 +64,7 @@ public class Perlcode
 		
 		Option ooutput = OptionBuilder.withArgName("DIR")
 				.hasArg()
-				.withDescription("[optional; default: .] directory for generated files.")
+				.withDescription("[mandatory; default: .] directory for generated files.")
 //				.isRequired()
 				.create("output");
 		
