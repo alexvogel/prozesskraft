@@ -124,7 +124,7 @@ public class Perlcode
 		
 		if ( !( commandline.hasOption("output")) )
 		{
-			System.err.println("option -definition is mandatory.");
+			System.err.println("option -output is mandatory.");
 			exiter();
 		}
 		
