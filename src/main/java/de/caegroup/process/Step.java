@@ -302,9 +302,12 @@ implements Serializable, Cloneable
 			}
 			
 			// der hilfstext fuer diese option
-			String text2 = actInit.getDescription();
-			text2 = text2.replaceAll("'", "\\\\'");
-			if (text2.equals("")) {text2 = "no description available";}
+			String text2 = "no description available";
+			if(! actInit.getDescription().matches(""))
+			{
+				text2 = actInit.getDescription();
+				text2 = text2.replaceAll("'", "\\\\'");
+			}
 			
 			script.addOption(name, minoccur, maxoccur, definition, check, def, text1, text2);
 //			System.out.println("addoption mit diesen parametern: "+name+minoccur+maxoccur+definition+check+def+text1+text2);
