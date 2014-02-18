@@ -122,22 +122,17 @@ public class Perlcode
 			exiter();
 		}
 		
-		String output = "";
 		if ( !( commandline.hasOption("output")) )
 		{
-			System.err.println("setting -output=.");
-			output = ".";
-		}
-		else
-		{
-			output = commandline.getOptionValue("output");
+			System.err.println("option -definition is mandatory.");
+			exiter();
 		}
 		
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
 		Process p1 = new Process();
-		java.io.File outputDir = new java.io.File(output);
+		java.io.File outputDir = new java.io.File(commandline.getOptionValue("output"));
 
 		if (outputDir.exists())
 		{
@@ -193,7 +188,10 @@ public class Perlcode
 		
 		for(Step actualStep : process.getStep())
 		{
-			writeStepAsPerlcode(process, actualStep.getName(), outputDir);
+			if(! actualStep.getName().matches("^root$"))
+			{
+				writeStepAsPerlcode(process, actualStep.getName(), outputDir);
+			}
 		}
 	}
 	
