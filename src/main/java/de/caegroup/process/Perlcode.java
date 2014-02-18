@@ -1,7 +1,9 @@
 package de.caegroup.process;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
@@ -60,9 +62,9 @@ public class Perlcode
 //				.isRequired()
 				.create("step");
 		
-		Option ooutput = OptionBuilder.withArgName("FILE")
+		Option ooutput = OptionBuilder.withArgName("DIR")
 				.hasArg()
-				.withDescription("[optional; default: out.pl] this file will be generated and contains perlcode.")
+				.withDescription("[optional; default: .] directory for generated files.")
 //				.isRequired()
 				.create("output");
 		
@@ -123,8 +125,22 @@ public class Perlcode
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
-		ArrayList<String> perlcode = new ArrayList<String>();
 		Process p1 = new Process();
+		java.io.File outputDir = new java.io.File(commandline.getOptionValue("output"));
+
+		if (outputDir.exists())
+		{
+			System.err.println("warn: already exists: " + outputDir.getCanonicalPath());
+			if (! outputDir.isDirectory())
+			{
+				System.err.println("fatal: not a directory: " + outputDir.getCanonicalPath());
+				exiter();
+			}
+		}
+		else
+		{
+			outputDir.mkdir();
+		}
 		
 		p1.setInfilexml( commandline.getOptionValue("definition") );
 		System.err.println("info: reading process definition "+commandline.getOptionValue("definition"));
@@ -138,27 +154,17 @@ public class Perlcode
 			exiter();
 		}
 		
-		// perlcode generieren
+		// perlcode generieren fuer einen bestimmten step
 		if (commandline.hasOption("step"))
 		{
 			String stepname = commandline.getOptionValue("step");
-			if (p2.isStep(stepname))
-			{
-				// step ueber den namen heraussuchen
-				Step step = p2.getStep(stepname);
-				System.err.println("generating perlcode for step "+stepname);
-				perlcode = step.getStepAsPerlScript();
-			}
-			else
-			{
-				System.err.println("stepname "+stepname+" is unknown in process "+p2.getName());
-				exiter();
-			}
+			writeStepAsPerlcode(p2, stepname, outputDir);
 		}
+		
+		// perlcode generieren fuer den gesamten process
 		else
 		{
-			System.err.println("generating perlcode for process "+p2.getName());
-			perlcode = p2.getProcessAsPerlScript();
+			writeProcessAsPerlcode(p2, outputDir);
 		}
 		
 		// Ausgabedatei festlegen
@@ -167,15 +173,84 @@ public class Perlcode
 		{
 			output = commandline.getOptionValue("output");
 		}
-		System.out.println("info: generating perlcode and exporting in file: "+output);
 		
-		// perlcode in Datei schreiben
-		PrintWriter writer = new PrintWriter(output, "UTF-8");
-		for (String line : perlcode)
+	}
+	
+	/**
+	 * writes a Process as Perlcode
+	 * @param process
+	 * @param outputDir
+	 * @throws IOException
+	 */
+	private static void writeProcessAsPerlcode(Process process, java.io.File outputDir) throws IOException
+	{
+		System.err.println("generating perlcode for process "+process.getName());
+		writeFile(new java.io.File(outputDir.getCanonicalPath()+"/"+process.getName()), process.getProcessAsPerlScript());
+		
+		for(Step actualStep : process.getStep())
 		{
-			writer.println(line);
+			writeStepAsPerlcode(process, actualStep.getName(), outputDir);
 		}
-		writer.close();
+	}
+	
+	/**
+	 * writes a Process-Step as Perlcode
+	 * @param process
+	 * @param stepname
+	 * @param outputDir
+	 * @throws IOException
+	 */
+	private static void writeStepAsPerlcode(Process process, String stepname, java.io.File outputDir) throws IOException
+	{
+		if (process.isStep(stepname))
+		{
+			// step ueber den namen heraussuchen
+			Step step = process.getStep(stepname);
+			System.err.println("generating perlcode for step "+stepname);
+			writeFile(new java.io.File(outputDir.getCanonicalPath()+"/"+step.getWork().getCommand()), step.getStepAsPerlScript());
+		}
+		else
+		{
+			System.err.println("stepname "+stepname+" is unknown in process "+process.getName());
+			exiter();
+		}
+	}
+	
+	/**
+	 * writes a file
+	 * @param targetFile
+	 * @param fileContent
+	 * @throws IOException
+	 */
+	private static void writeFile(java.io.File targetFile, ArrayList<String> fileContent) throws IOException
+	{
+		if(targetFile.exists())
+		{
+			System.err.println("error: skipping creating file, because a file does already exist: " + targetFile.getCanonicalPath());
+		}
+		else
+		{
+			System.out.println("info: writing file: " + targetFile.getCanonicalPath());
+			try
+			{
+				PrintWriter writer = new PrintWriter(targetFile.getCanonicalPath(), "UTF-8");
+				for (String line : fileContent)
+				{
+					writer.println(line);
+				}
+				writer.close();
+			}
+			catch (FileNotFoundException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private static void exiter()
