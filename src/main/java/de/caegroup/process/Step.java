@@ -301,6 +301,8 @@ implements Serializable, Cloneable
 				}
 			}
 			
+
+			
 			// der hilfstext fuer diese option
 			String text2 = "no description available";
 			if( (! (actInit.getDescription() == null)) || (! actInit.getDescription().matches("")))
