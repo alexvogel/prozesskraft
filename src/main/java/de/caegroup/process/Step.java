@@ -303,7 +303,7 @@ implements Serializable, Cloneable
 			
 			// der hilfstext fuer diese option
 			String text2 = "no description available";
-			if(! actInit.getDescription().matches(""))
+			if( (! actInit.getDescription().matches("")) || (! (actInit.getDescription() == null)) )
 			{
 				text2 = actInit.getDescription();
 				text2 = text2.replaceAll("'", "\\\\'");
