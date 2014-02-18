@@ -71,6 +71,8 @@ implements Serializable, Cloneable
 			content.add("# you may use @ARG for all unknown/unparsed options given. this makes writing wrapperscripts easier.");
 			content.add("#");
 			content.add("# place your business logic here.");
+			content.add("#");
+			content.add("print \"you are now in program $0\n\";");
 		}
 
 		this.block.setOrigin("auto");
