@@ -305,6 +305,7 @@ implements Serializable, Cloneable
 			String text2 = "no description available";
 			System.err.println("info: stepname is: " + this.getName());
 			if( (! (actInit.getDescription() == null)) ||
+
 					(! actInit.getDescription().matches("")))
 			{
 				text2 = actInit.getDescription();
