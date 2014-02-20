@@ -456,6 +456,11 @@ implements Serializable, Cloneable
 	{
 		ArrayList<String> code = new ArrayList<String>();
 		
+		code.add("sub getOptionKeys");
+		code.add("{");
+		code.add("	return keys %OPT;");
+		code.add("}");
+		code.add("");
 		code.add("sub getOption");
 		code.add("{");
 		code.add("	my $key = shift;");
