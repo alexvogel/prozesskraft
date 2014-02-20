@@ -19,7 +19,7 @@ implements Serializable, Cloneable
 	ArrayList<String> code_logit = new ArrayList<String>();
 	ArrayList<String> code_getvars = new ArrayList<String>();
 	ArrayList<String> code_initlist = new ArrayList<String>();
-	ArrayList<String> code_printgirlande = new ArrayList<String>();
+	ArrayList<String> code_girlande = new ArrayList<String>();
 	ArrayList<String> code_getsetoptionsconfigs = new ArrayList<String>();
 	ArrayList<String> content = new ArrayList<String>();
 	/*----------------------------
@@ -31,7 +31,7 @@ implements Serializable, Cloneable
 		this.initCodeLogit();
 		this.initCodeGetvars();
 		this.initCodeInitlist();
-		this.initCodePrintgirlande();
+		this.initCodeGirlande();
 		this.initCodeGetsetoptionsconfigs();
 	}
 
@@ -52,7 +52,7 @@ implements Serializable, Cloneable
 			content.addAll(this.code_getvars);
 			content.addAll(this.code_logit);
 			content.addAll(this.code_initlist);
-			content.addAll(this.code_printgirlande);
+			content.addAll(this.code_girlande);
 			content.addAll(this.code_getsetoptionsconfigs);
 		}
 		// default
@@ -189,31 +189,38 @@ implements Serializable, Cloneable
 		code.add("	my $refh_variable = shift;");
 		code.add("	my $refh_file = shift;");
 		code.add("	");
+		code.add("	logit(\"debug\", \"initialisierung startet\");");
 		code.add("	# wenns eine variable ist");
 		code.add("	if ($fromobjecttype =~ m/^variable$/i)");
 		code.add("	{");
 		code.add("		");
+		code.add("		logit(\"debug\", \"= es sollen nur variablen beruecksichtigt werden.\");");
 		code.add("		# jeden match anwenden");
 		code.add("		foreach my $refh_match (@$refa_match)");
 		code.add("		{");
 		code.add("			my %match = %$refh_match;");
 		code.add("			");
+		code.add("			logit(\"debug\", \"-- matcht der match?\");");
 		code.add("			# soll nach key gematched werden?");
 		code.add("			if ($match{'field'} eq \"key\")");
 		code.add("			{");
+		code.add("				logit(\"debug\", \"--- wenn das feld 'key' der variable diesem muster /\" . $match{'pattern'} . \"/ entspricht\");");
 		code.add("				my @tmp_keys_matched = grep {$_ =~ m/$match{'pattern'}/} keys %$refh_variable;");
 		code.add("				foreach my $key (@tmp_keys_matched)");
 		code.add("				{");
+		code.add("					logit(\"debug\", \"---- das muster passt auf diesen key: $key\");");
 		code.add("					# wenn insertrule eq 'append'");
 		code.add("					if ($insertrule eq \"append\")");
 		code.add("					{");
 		code.add("						# und returnfield eq 'key'");
 		code.add("						if ($returnfield eq \"key\")");
 		code.add("						{");
+		code.add("							logit(\"debug\", \"----- dieser string wird an die liste angehaengt: \" . $key);");
 		code.add("							push (@$refa_list, $key);");
 		code.add("						}");
 		code.add("						elsif ($returnfield eq \"value\")");
 		code.add("						{");
+		code.add("							logit(\"debug\", \"----- dieser string wird an die liste angehaengt: \" . $$refh_variable{$key});");
 		code.add("							push (@$refa_list, $$refh_variable{$key});");
 		code.add("						}");
 		code.add("					}");
@@ -221,26 +228,34 @@ implements Serializable, Cloneable
 		code.add("					elsif ($insertrule eq \"overwrite\")");
 		code.add("					{");
 		code.add("						# nur anfuegen, wenn noch nicht vorhanden");
-		code.add("						unless (grep {$_ eq $key} @$refa_list)");
+		code.add("						if (!(grep {$_ eq $key} @$refa_list))");
 		code.add("						{");
 		code.add("							# und returnfield eq 'key'");
 		code.add("							if ($returnfield eq \"key\")");
 		code.add("							{");
+		code.add("								logit(\"debug\", \"----- dieser string wird an die liste angehaengt, weil er noch nicht vorhanden ist: \" . $key);");
 		code.add("								push (@$refa_list, $key);");
 		code.add("							}");
 		code.add("							elsif ($returnfield eq \"value\")");
 		code.add("							{");
+		code.add("								logit(\"debug\", \"----- dieser string wird an die liste angehaengt, weil er noch nicht vorhanden ist: \" . $$refh_variable{$key});");
 		code.add("								push (@$refa_list, $$refh_variable{$key});");
 		code.add("							}");
 		code.add("						}");
+		code.add("					}");
+		code.add("					else");
+		code.add("					{");
+		code.add("						logit(\"debug\", \"----- dieser string wird nicht die liste angehaengt, weil er schon vorhanden ist: \" . $key);");
 		code.add("					}");
 		code.add("				}");
 		code.add("			}");
 		code.add("			# soll nach value gematched werden?");
 		code.add("			elsif ($match{'field'} eq \"value\")");
 		code.add("			{");
+		code.add("				logit(\"debug\", \"--- wenn das feld 'value' der variable einem bestimmten muster entspricht\");");
 		code.add("				foreach my $key (keys %$refh_variable)");
 		code.add("				{");
+		code.add("					logit(\"debug\", \"---- das muster passt auf dieses 'value': $key\");");
 		code.add("					if ($$refh_variable{$key} =~ m/$match{'pattern'}/)");
 		code.add("					{");
 		code.add("						# wenn insertrule eq 'append'");
@@ -249,10 +264,12 @@ implements Serializable, Cloneable
 		code.add("							# und returnfield eq 'key'");
 		code.add("							if ($returnfield eq \"key\")");
 		code.add("							{");
+		code.add("								logit(\"debug\", \"----- dieser string wird an die liste angehaengt: \" . $key);");
 		code.add("								push (@$refa_list, $key);");
 		code.add("							}");
 		code.add("							elsif ($returnfield eq \"value\")");
 		code.add("							{");
+		code.add("								logit(\"debug\", \"----- dieser string wird an die liste angehaengt: \" . $$refh_variable{$key});");
 		code.add("								push (@$refa_list, $$refh_variable{$key});");
 		code.add("							}");
 		code.add("						}");
@@ -265,10 +282,12 @@ implements Serializable, Cloneable
 		code.add("								# und returnfield eq 'key'");
 		code.add("								if ($returnfield eq \"key\")");
 		code.add("								{");
+		code.add("									logit(\"debug\", \"----- dieser string wird an die liste angehaengt, weil er noch nicht vorhanden ist: \" . $key);");
 		code.add("									push (@$refa_list, $key);");
 		code.add("								}");
 		code.add("								elsif ($returnfield eq \"value\")");
 		code.add("								{");
+		code.add("									logit(\"debug\", \"----- dieser string wird an die liste angehaengt, weil er noch nicht vorhanden ist: \" . $$refh_variable{$key});");
 		code.add("									push (@$refa_list, $$refh_variable{$key});");
 		code.add("								}");
 		code.add("							}");
@@ -281,27 +300,33 @@ implements Serializable, Cloneable
 		code.add("	# wenns ein file ist");
 		code.add("	elsif ($fromobjecttype =~ m/^file$/i)");
 		code.add("	{");
+		code.add("		logit(\"debug\", \"= es sollen nur files beruecksichtigt werden.\");");
 		code.add("		# jeden match anwenden");
 		code.add("		foreach my $refh_match (@$refa_match)");
 		code.add("		{");
 		code.add("			my %match = %$refh_match;");
 		code.add("			");
+		code.add("			logit(\"debug\", \"-- es soll ueber ein pattern matching die relevanz herausgefunden werden\");");
 		code.add("			# soll nach key gematched werden?");
 		code.add("			if ($match{'field'} eq \"key\")");
 		code.add("			{");
+		code.add("				logit(\"debug\", \"--- wenn das feld 'key' des files diesem muster /\" . $match{'pattern'} . \"/ entspricht\");");
 		code.add("				my @tmp_keys_matched = grep {$_ =~ m/$match{'pattern'}/} keys %$refh_file;");
 		code.add("				foreach my $key (@tmp_keys_matched)");
 		code.add("				{");
+		code.add("					logit(\"debug\", \"---- das muster passt auf diesen 'key': $key\");");
 		code.add("					# wenn insertrule eq 'append'");
 		code.add("					if ($insertrule eq \"append\")");
 		code.add("					{");
 		code.add("						# und returnfield eq 'key'");
 		code.add("						if ($returnfield eq \"key\")");
 		code.add("						{");
+		code.add("							logit(\"debug\", \"----- dieser string wird an die liste angehaengt: \" . $key);");
 		code.add("							push (@$refa_list, $key);");
 		code.add("						}");
 		code.add("						elsif ($returnfield eq \"value\")");
 		code.add("						{");
+		code.add("							logit(\"debug\", \"----- dieser string wird an die liste angehaengt: \" . $$refh_file{$key});");
 		code.add("							push (@$refa_list, $$refh_file{$key});");
 		code.add("						}");
 		code.add("					}");
@@ -314,10 +339,12 @@ implements Serializable, Cloneable
 		code.add("							# und returnfield eq 'key'");
 		code.add("							if ($returnfield eq \"key\")");
 		code.add("							{");
+		code.add("								logit(\"debug\", \"----- dieser string wird an die liste angehaengt, weil er noch nicht vorhanden ist: \" . $key);");
 		code.add("								push (@$refa_list, $key);");
 		code.add("							}");
 		code.add("							elsif ($returnfield eq \"value\")");
 		code.add("							{");
+		code.add("								logit(\"debug\", \"----- dieser string wird an die liste angehaengt, weil er noch nicht vorhanden ist: \" . $$refh_file{$key});");
 		code.add("								push (@$refa_list, $$refh_file{$key});");
 		code.add("							}");
 		code.add("						}");
@@ -327,8 +354,10 @@ implements Serializable, Cloneable
 		code.add("			# soll nach absfilename gematched werden?");
 		code.add("			elsif ($match{'field'} eq \"absfilename\")");
 		code.add("			{");
+		code.add("				logit(\"debug\", \"--- wenn das feld 'absfilename' des files diesem muster /\" . $match{'pattern'} . \"/ entspricht\");");
 		code.add("				foreach my $key (keys %$refh_file)");
 		code.add("				{");
+		code.add("					logit(\"debug\", \"---- das muster passt auf dieses 'absfilename': $key\");");
 		code.add("					if ($$refh_variable{$key} =~ m/$match{'pattern'}/)");
 		code.add("					{");
 		code.add("						# wenn insertrule eq 'append'");
@@ -337,10 +366,12 @@ implements Serializable, Cloneable
 		code.add("							# und returnfield eq 'key'");
 		code.add("							if ($returnfield eq \"key\")");
 		code.add("							{");
+		code.add("								logit(\"debug\", \"----- dieser string wird an die liste angehaengt: \" . $key);");
 		code.add("								push (@$refa_list, $key);");
 		code.add("							}");
 		code.add("							elsif ($returnfield eq \"value\")");
 		code.add("							{");
+		code.add("								logit(\"debug\", \"----- dieser string wird an die liste angehaengt: \" . $$refh_file{$key});");
 		code.add("								push (@$refa_list, $$refh_file{$key});");
 		code.add("							}");
 		code.add("						}");
@@ -353,10 +384,12 @@ implements Serializable, Cloneable
 		code.add("								# und returnfield eq 'key'");
 		code.add("								if ($returnfield eq \"key\")");
 		code.add("								{");
+		code.add("									logit(\"debug\", \"----- dieser string wird an die liste angehaengt, weil er noch nicht vorhanden ist: \" . $key);");
 		code.add("									push (@$refa_list, $key);");
 		code.add("								}");
 		code.add("								elsif ($returnfield eq \"value\")");
 		code.add("								{");
+		code.add("									logit(\"debug\", \"----- dieser string wird an die liste angehaengt, weil er noch nicht vorhanden ist: \" . $$refh_file{$key});");
 		code.add("									push (@$refa_list, $$refh_file{$key});");
 		code.add("								}");
 		code.add("							}");
@@ -371,31 +404,31 @@ implements Serializable, Cloneable
 		code.add("	if ($anzahl_items < $minoccur)");
 		code.add("	{");
 		code.add("		logit(\"fatal\", \"list initializes \" . $anzahl_items . \" items. that is less than the needed $minoccur\");");
-		code.add("		logit(\"debug\", \"fromobjecttype=$fromobjecttype\");");
-		code.add("		logit(\"debug\", \"returnfield=$returnfield\");");
-		code.add("		logit(\"debug\", \"fromstep=$fromstep\");");
-		code.add("		logit(\"debug\", \"insertrule=$insertrule\");");
-		code.add("		logit(\"debug\", \"minoccur=$minoccur\");");
-		code.add("		logit(\"debug\", \"maxoccur=$maxoccur\");");
-		code.add("		logit(\"debug\", \"refa_match=$refa_match\");");
-		code.add("		logit(\"debug\", \"refa_list=$refa_list\");");
-		code.add("		logit(\"debug\", \"refh_variable=$refh_variable\");");
-		code.add("		logit(\"debug\", \"refh_file=$refh_file\");");
+		code.add("		logit(\"debug\", \"after: fromobjecttype=$fromobjecttype\");");
+		code.add("		logit(\"debug\", \"after: returnfield=$returnfield\");");
+		code.add("		logit(\"debug\", \"after: fromstep=$fromstep\");");
+		code.add("		logit(\"debug\", \"after: insertrule=$insertrule\");");
+		code.add("		logit(\"debug\", \"after: minoccur=$minoccur\");");
+		code.add("		logit(\"debug\", \"after: maxoccur=$maxoccur\");");
+		code.add("		logit(\"debug\", \"after: refa_match=$refa_match (\" . join(\", \", @$refa_match) . \")\");");
+		code.add("		logit(\"debug\", \"after: refa_list=$refa_list (\" . join(\", \", @$refa_list) . \")\");");
+		code.add("		logit(\"debug\", \"after: refh_variable=$refh_variable (\" . join(\", \", %$refh_variable) . \")\");");
+		code.add("		logit(\"debug\", \"after: refh_file=$refh_file (\" . join(\", \", %$refh_file) . \")\");");
 		code.add("		exit(1);");
 		code.add("	}");
 		code.add("	if ($anzahl_items > $maxoccur)");
 		code.add("	{");
 		code.add("		logit(\"fatal\", \"list initializes \" . $anzahl_items . \" items. that is more than the allowed $maxoccur\");");
-		code.add("		logit(\"debug\", \"fromobjecttype=$fromobjecttype\");");
-		code.add("		logit(\"debug\", \"returnfield=$returnfield\");");
-		code.add("		logit(\"debug\", \"fromstep=$fromstep\");");
-		code.add("		logit(\"debug\", \"insertrule=$insertrule\");");
-		code.add("		logit(\"debug\", \"minoccur=$minoccur\");");
-		code.add("		logit(\"debug\", \"maxoccur=$maxoccur\");");
-		code.add("		logit(\"debug\", \"refa_match=$refa_match\");");
-		code.add("		logit(\"debug\", \"refa_list=$refa_list\");");
-		code.add("		logit(\"debug\", \"refh_variable=$refh_variable\");");
-		code.add("		logit(\"debug\", \"refh_file=$refh_file\");");
+		code.add("		logit(\"debug\", \"after: fromobjecttype=$fromobjecttype\");");
+		code.add("		logit(\"debug\", \"after: returnfield=$returnfield\");");
+		code.add("		logit(\"debug\", \"after: fromstep=$fromstep\");");
+		code.add("		logit(\"debug\", \"after: insertrule=$insertrule\");");
+		code.add("		logit(\"debug\", \"after: minoccur=$minoccur\");");
+		code.add("		logit(\"debug\", \"after: maxoccur=$maxoccur\");");
+		code.add("		logit(\"debug\", \"after: refa_match=$refa_match\");");
+		code.add("		logit(\"debug\", \"after: refa_list=$refa_list\");");
+		code.add("		logit(\"debug\", \"after: refh_variable=$refh_variable\");");
+		code.add("		logit(\"debug\", \"after: refh_file=$refh_file\");");
 		code.add("		exit(1);");
 		code.add("	}");
 		code.add("}");
@@ -403,22 +436,20 @@ implements Serializable, Cloneable
 		this.code_initlist = code;
 	}
 	
-	private void initCodePrintgirlande()
+	private void initCodeGirlande()
 	{
 		ArrayList<String> code = new ArrayList<String>();
 		
-		code.add("sub printgirlande");
+		code.add("sub girlande");
 		code.add("{");
 		code.add("\tmy $stepname = shift;");
 		code.add("");
-		code.add("\tprint \"\\n\";");
-		code.add("\tprint \"###############################################\\n\";");
-		code.add("\tprint \" NEW PROCESS STEP: $stepname\\n\";");
-		code.add("\tprint \"###############################################\\n\";");
-		code.add("\tprint \"\\n\";");
+		code.add("logit(\"info\", \"###############################################\");");
+		code.add("logit(\"info\", \" NEW PROCESS STEP: $stepname\");");
+		code.add("logit(\"info\", \"###############################################\");");
 		code.add("}");
 
-		this.code_printgirlande = code;
+		this.code_girlande = code;
 	}
 	
 	private void initCodeGetsetoptionsconfigs()

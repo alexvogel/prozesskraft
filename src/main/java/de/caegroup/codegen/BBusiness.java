@@ -72,7 +72,8 @@ implements Serializable, Cloneable
 			content.add("#");
 			content.add("# place your business logic here.");
 			content.add("#");
-			content.add("print \"you are now in program $0\n\";");
+			content.add("print \"you are now in program $0\";");
+			content.add("#");
 		}
 
 		this.block.setOrigin("auto");
