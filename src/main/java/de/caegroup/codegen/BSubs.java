@@ -374,8 +374,8 @@ implements Serializable, Cloneable
 		code.add("		logit(\"debug\", \"after: maxoccur=$maxoccur\");");
 		code.add("		logit(\"debug\", \"after: refa_match=$refa_match (\" . join(\", \", @$refa_match) . \")\");");
 		code.add("		logit(\"debug\", \"after: refa_list=$refa_list (\" . join(\", \", @$refa_list) . \")\");");
-		code.add("		logit(\"debug\", \"after: refa_variable=$refa_variable (\" . join(\", \", %$refa_variable) . \")\");");
-		code.add("		logit(\"debug\", \"after: refh_file=$refa_file (\" . join(\", \", %$refa_file) . \")\");");
+		code.add("		logit(\"debug\", \"after: refa_variable=$refa_variable (\" . join(\", \", @$refa_variable) . \")\");");
+		code.add("		logit(\"debug\", \"after: refa_file=$refa_file (\" . join(\", \", @$refa_file) . \")\");");
 		code.add("		exit(1);");
 		code.add("	}");
 		code.add("	if ($anzahl_items > $maxoccur)");
@@ -387,10 +387,10 @@ implements Serializable, Cloneable
 		code.add("		logit(\"debug\", \"after: insertrule=$insertrule\");");
 		code.add("		logit(\"debug\", \"after: minoccur=$minoccur\");");
 		code.add("		logit(\"debug\", \"after: maxoccur=$maxoccur\");");
-		code.add("		logit(\"debug\", \"after: refa_match=$refa_match\");");
-		code.add("		logit(\"debug\", \"after: refa_list=$refa_list\");");
-		code.add("		logit(\"debug\", \"after: refa_variable=$refa_variable\");");
-		code.add("		logit(\"debug\", \"after: refa_file=$refa_file\");");
+		code.add("		logit(\"debug\", \"after: refa_match=$refa_match (\" . join(\", \", @$refa_match) . \")\");");
+		code.add("		logit(\"debug\", \"after: refa_list=$refa_list (\" . join(\", \", @$refa_list) . \")\");");
+		code.add("		logit(\"debug\", \"after: refa_variable=$refa_variable (\" . join(\", \", @$refa_variable) . \")\");");
+		code.add("		logit(\"debug\", \"after: refa_file=$refa_file (\" . join(\", \", @$refa_file) . \")\");");
 		code.add("		exit(1);");
 		code.add("	}");
 		code.add("}");
@@ -547,7 +547,7 @@ implements Serializable, Cloneable
 		code.add("	");
 		code.add("		if(scalar(@allValuesOfACertainOption))");
 		code.add("		{");
-		code.add("			logit(\"debug\", \"option --\" . $option . \" exists\");");
+		code.add("#			logit(\"debug\", \"option --\" . $option . \" exists\");");
 		code.add("");
 		code.add("			if($isFile && $type =~ m/file/i)");
 		code.add("			{");
@@ -570,7 +570,7 @@ implements Serializable, Cloneable
 		code.add("					}");
 		code.add("				}");
 		code.add("			}");
-		code.add("			else");
+		code.add("			elsif($type =~ m/variable/i)");
 		code.add("			{");
 		code.add("				logit(\"debug\", \"option --\" . $option.\" is identified as a VARIABLE-option\");");
 		code.add("				if ($option =~ m/variable_(.+)/i)");
@@ -593,6 +593,11 @@ implements Serializable, Cloneable
 		code.add("		}");
 		code.add("	}");
 		code.add("	");
+		code.add("# falls keine eintraege in root existieren, soll eine leere annonyme liste angelegt werden");
+		code.add("unless($FILE{'root'}) {$FILE{'root'} = [];}");
+		code.add("unless($VARIABLE{'root'}) {$VARIABLE{'root'} = [];}");
+		code.add("unless($ALL{'root'}) {$VARIABLE{'root'} = [];}");
+		code.add("");
 		code.add("	if ($type =~ /file/i) {return %FILE;}");
 		code.add("	elsif ($type =~ /variable/i) {return %VARIABLE;}");
 		code.add("	logit(\"debug\", \"##### END identifing whether given options are a FILE or a VARIABLE #####\");");
