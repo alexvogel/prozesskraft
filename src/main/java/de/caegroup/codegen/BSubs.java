@@ -522,7 +522,7 @@ implements Serializable, Cloneable
 		code.add("	my %VARIABLE;");
 		code.add("	my %FILE;");
 		code.add("");
-		code.add("	logit(\"debug\", \"##### START identifing whether given options are a FILE or a VARIABLE #####\");");
+		code.add("	logit(\"debug\", \"##### START identifing whether given options are a \" . uc($type) . \" #####\");");
 		code.add("	");
 		code.add("	unless( $type =~ m/variable|file/ )");
 		code.add("	{");
@@ -598,9 +598,9 @@ implements Serializable, Cloneable
 		code.add("unless($VARIABLE{'root'}) {$VARIABLE{'root'} = [];}");
 		code.add("unless($ALL{'root'}) {$VARIABLE{'root'} = [];}");
 		code.add("");
+		code.add("	logit(\"debug\", \"##### END   identifing whether given options are a \" . uc($type) . \" #####\");");
 		code.add("	if ($type =~ /file/i) {return %FILE;}");
 		code.add("	elsif ($type =~ /variable/i) {return %VARIABLE;}");
-		code.add("	logit(\"debug\", \"##### END identifing whether given options are a FILE or a VARIABLE #####\");");
 		code.add("");
 		code.add("}");
 		
