@@ -21,6 +21,7 @@ implements Serializable, Cloneable
 	ArrayList<String> code_initlist = new ArrayList<String>();
 	ArrayList<String> code_girlande = new ArrayList<String>();
 	ArrayList<String> code_getsetoptionsconfigs = new ArrayList<String>();
+	ArrayList<String> code_resolve = new ArrayList<String>();
 	ArrayList<String> content = new ArrayList<String>();
 	/*----------------------------
 	  constructors
@@ -33,6 +34,7 @@ implements Serializable, Cloneable
 		this.initCodeInitlist();
 		this.initCodeGirlande();
 		this.initCodeGetsetoptionsconfigs();
+		this.initCodeResolve();
 	}
 
 	/*----------------------------
@@ -54,6 +56,7 @@ implements Serializable, Cloneable
 			content.addAll(this.code_initlist);
 			content.addAll(this.code_girlande);
 			content.addAll(this.code_getsetoptionsconfigs);
+			content.addAll(this.code_resolve);
 		}
 		// default
 		else
@@ -635,5 +638,42 @@ implements Serializable, Cloneable
 		
 		this.code_getsetoptionsconfigs = code;
 	}
+	private void initCodeResolve()
+	{
+		ArrayList<String> code = new ArrayList<String>();
+		
+		code.add("sub resolve");
+		code.add("{");
+		code.add("	my $string = shift;");
+		code.add("	my $refh_lists = shift;");
+		code.add("	");
+		code.add("	if($string =~ m/\\{\\$.+\\}/)");
+		code.add("	{");
+		code.add("		&logit(\"debug\", \"string has to be resolved because it contains list items (string=$string)\");");
+		code.add("		my @mentionedLists = $string =~ /{\\$(.+?)}/g;");
+		code.add("");
+		code.add("		foreach my $list (@mentionedLists)");
+		code.add("		{");
+		code.add("			&logit(\"debug\", \"placeholder for list '$list' will be replaced\");");
+		code.add("			my $firstItemOfList = (${$$refh_lists{$list}}[0]);");
+		code.add("");
+		code.add("			if($string =~ s/\\{\\$$list\\}/$firstItemOfList/g)");
+		code.add("			{");
+		code.add("				&logit(\"debug\", \"---- substitution in call successfull: (/{\\$$list}/ => /$firstItemOfList/)\");");
+		code.add("			}");
+		code.add("			else");
+		code.add("			{");
+		code.add("				&logit(\"debug\", \"---- substitution in call NOT successfull - somethings wrong: (/{\\$$list}/ => /$firstItemOfList/)\");");
+		code.add("			}");
+		code.add("		}");
+		code.add("	}");
+		code.add("	&logit(\"debug\", \"string has been resolved to (string=$string)\");");
+		code.add("");
+		code.add("	return $string;");
+		code.add("}");
+
+		this.code_resolve = code;
+	}
+	
 	
 }

@@ -39,9 +39,8 @@ implements Serializable, Cloneable
 		
 		if(type.matches("process"))
 		{
-			content.add("# 1) copy all known options with pattern =~ /--submodel_<key>=<path>/ as key=path to %FILE ");
 			content.add("# 1) copy all options which value stat as a path to a file or a directory --<key>=<path> as key=path to %FILE . Except for option like --submodel_<key>=<path> go as key=path to %FILE");
-			content.add("		# 2) copy all options which value does not stat as a path to a file or directory --<key>=<value> as key=value to %VARIABLE . Except for options like --variable_<key>=<value> go as key=value to %VARIABLE");
+			content.add("# 2) copy all options which value does not stat as a path to a file or directory --<key>=<value> as key=value to %VARIABLE . Except for options like --variable_<key>=<value> go as key=value to %VARIABLE");
 			content.add("				");
 			content.add("my %FILE = getTypedOptions(\"file\");");
 			content.add("my %VARIABLE = getTypedOptions(\"variable\");");
@@ -53,8 +52,8 @@ implements Serializable, Cloneable
 		else
 		{
 			content.add("#");
-			content.add("# you may use getConfig(<string>), setConfig(<string>) to deal with data from the configfile if one exists.");
-			content.add("# you may use getOption(<string>), setOption(<string>) and addOption(<string>) to deal with data from the call-options.");
+			content.add("# you may use getConfig(<key>), setConfig(<key>, <value>) to deal with data from the configfile if one exists.");
+			content.add("# you may use getOption(<key>), setOption(<string>, <value>) and addOption(<string>, <key>) to deal with data from the call-options.");
 			content.add("# you may use @ARG for all unknown/unparsed options given. this makes writing wrapperscripts easier.");
 			content.add("#");
 			content.add("# place your business logic here.");
