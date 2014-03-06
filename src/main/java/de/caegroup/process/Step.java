@@ -318,9 +318,47 @@ implements Serializable, Cloneable
 				else
 				{
 					perlSnippet.add("\t\t&logit(\"fatal\", \"------ step '"+this.getName()+"', commit '"+actCommit.getName()+"', variable '"+actVariable.getKey()+"' needs either a value or a glob definition.\");");
+					perlSnippet.add("\t\t\texit(1);");
 				}
 				perlSnippet.add("\t}");
 			}
+			for(File actFile : actCommit.getFile())
+			{
+				perlSnippet.add("\t{");
+				if(!(actFile.getGlob() == null))
+				{
+					perlSnippet.add("\t\tmy $glob = \""+actFile.getGlob()+"\";");
+					perlSnippet.add("\t\t$glob = &resolve($value, \\%allLists);");
+					perlSnippet.add("\t\t&logit(\"debug\", \"--- modified glob is: $glob\");");
+					perlSnippet.add("\t\t&logit(\"debug\", \"---- globbing for files with glob '$glob'\");");
+					perlSnippet.add("\t\tmy @globbedFiles = glob($glob);");
+					perlSnippet.add("\t\t&logit(\"debug\", \"----- \" . scalar(@globbedFiles) . \" file(s) globbed\");");
+					perlSnippet.add("");
+					perlSnippet.add("\t\tif((@globbedFiles < "+actFile.getMinoccur()+") || (@globbedFiles > "+actFile.getMaxoccur()+"))");
+					perlSnippet.add("\t\t{");
+					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of variables with pattern (glob=$glob).\");");
+					perlSnippet.add("\t\t\t&logit(\"debug\", \"------- "+actFile.getMinoccur()+" < rightAmountOfFiles < "+actFile.getMaxoccur()+"\");");
+					perlSnippet.add("\t\t\texit(1);");
+					perlSnippet.add("\t\t}");
+					perlSnippet.add("\t\tmy @fileList;");
+					
+					perlSnippet.add("\t\tforeach my $globbedFile (@globbedFiles)");
+					perlSnippet.add("\t\t{");
+					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ globbed File: \" . $globbedFile);");
+					perlSnippet.add("\t\t\t&logit(\"debug\", \"------- adding file to file repository (step="+this.getName()+", key="+actFile.getKey()+", absfilename=$globbedFile)\");");
+					perlSnippet.add("\t\t\tpush (@fileList, $globbedFile);");
+					perlSnippet.add("\t\t}");
+					perlSnippet.add("");
+					perlSnippet.add("\tpush (@{$VARIABLE{'"+actFile.getKey()+"'}}, @fileList);");
+				}
+				else
+				{
+					perlSnippet.add("\t\t&logit(\"fatal\", \"------ step '"+this.getName()+"', commit '"+actCommit.getName()+"', file '"+actFile.getKey()+"' needs a glob definition.\");");
+					perlSnippet.add("\t\t\texit(1);");
+				}
+				perlSnippet.add("\t}");
+			}
+
 		}
 		
 		// zurueckwechseln in das root verzeichnis
