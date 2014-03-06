@@ -142,7 +142,7 @@ implements Serializable, Cloneable
 			line += ");";
 			
 			perlSnippet.add(line);
-			perlSnippet.add("\t$allLists{'"+list.getName()+"'};");
+			perlSnippet.add("\t$allLists{'"+list.getName()+"'} = \\@"+list.getName()+";");
 			perlSnippet.add("");
 		}
 	
@@ -185,12 +185,13 @@ implements Serializable, Cloneable
 			perlSnippet.add("\t}");
 		}
 		
+		// call erzeugen
 		perlSnippet.add("");
-		perlSnippet.add("\t\t# create call for command");
-		perlSnippet.add("\t\tmy $call;");
+		perlSnippet.add("\t# create call for command");
+		perlSnippet.add("\tmy $call;");
 		perlSnippet.add("");
 		
-		perlSnippet.add("\tif(stat $bindir . \"/\" . " + this.getWork().getCommand() + ";");
+		perlSnippet.add("\tif(stat $bindir . \"/\" . \"" + this.getWork().getCommand() + "\";");
 		perlSnippet.add("\t{");
 		perlSnippet.add("\t\t$call = $bindir . \"/" + this.getWork().getCommand() + "\";");
 		perlSnippet.add("\t\t&logit(\"debug\", \"--- found the program in installation directory of process: $call\");");
@@ -204,7 +205,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("\t}");
 		perlSnippet.add("");
 		
-		perlSnippet.add("else");
+		perlSnippet.add("\telse");
 		perlSnippet.add("\t{");
 		perlSnippet.add("\t\t&logit(\"fatal\", \"could not find a program called comp_nodes_admsl.pl neither in installation directory $bindir nor under \\$PATH\");");
 		perlSnippet.add("\t\texit(1);");
@@ -218,7 +219,7 @@ implements Serializable, Cloneable
 			{
 				perlSnippet.add("\tforeach my $loopvar (@$allLists{'"+actCallitem.getLoop()+"'})");
 				perlSnippet.add("\t{");
-				perlSnippet.add("\t\tmy $tmpString = "+actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal()+";");
+				perlSnippet.add("\t\tmy $tmpString = "+actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal()+";".replace("$", "\\$"));
 				perlSnippet.add("\t\t$tmpString =~ s/\\{\\$loopvarcallitem\\}/$loopvar/g;");
 				perlSnippet.add("\t\t$call .= \" \" . $tmpString;");
 				perlSnippet.add("\t}");
@@ -226,7 +227,8 @@ implements Serializable, Cloneable
 			// wenn callitem nicht geloopt werden soll
 			else
 			{
-				perlSnippet.add("\t$call .= "+actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal()+";");
+				
+				perlSnippet.add("\t$call .= \""+actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal()+"\";".replace("$", "\\$"));
 			}
 		}
 		
@@ -254,18 +256,17 @@ implements Serializable, Cloneable
 		perlSnippet.add("\t&logit(\"info\", \"executing program for step '"+this.getName()+"' : $call\");");
 		perlSnippet.add("\t&logit(\"info\", \"vvvvvvv--- subsequent logging comes from step '"+this.getName()+"' ---vvvvvvv\");");
 		perlSnippet.add("\tmy $return = system($call);");
+		perlSnippet.add("\t&logit(\"info\", \"^^^^^^^--- previous logging came from step '"+this.getName()+"' ---^^^^^^^\");");
 		perlSnippet.add("\tif($return)");
 		perlSnippet.add("\t{");
-		perlSnippet.add("\t\t&logit(\"info\", \"^^^^^^^--- previous logging came from step '"+this.getName()+"' ---^^^^^^^\");");
 		perlSnippet.add("\t\t&logit(\"fatal\", \"step '"+this.getName()+"' exited with an error (exitcode=$return)\");");
 		perlSnippet.add("\t\texit(1);");
 		perlSnippet.add("\t}");
-		perlSnippet.add("\t&logit(\"info\", \"^^^^^^^--- previous logging came from step '"+this.getName()+"' ---^^^^^^^\");");
 		perlSnippet.add("\t&logit(\"info\", \"step '"+this.getName()+"' exited properly\");");
 		perlSnippet.add("");
 		
 		// committen
-		perlSnippet.add("\t#commits\");");
+		perlSnippet.add("\t#commits;");
 		for(Commit actCommit : this.getCommit())
 		{
 			perlSnippet.add("\t&logit(\"debug\", \"- preparing commit '"+actCommit.getName()+"'\");");
@@ -278,7 +279,7 @@ implements Serializable, Cloneable
 				{
 					perlSnippet.add("\t\tmy $value = \""+actVariable.getValue()+"\";");
 					perlSnippet.add("\t\t$value = &resolve($value, \\%allLists);");
-					perlSnippet.add("push (@{$VARIABLE{'"+actVariable.getKey()+"'}}, $value);");
+					perlSnippet.add("\t\tpush (@{$VARIABLE{'"+actVariable.getKey()+"'}}, $value);");
 				}
 				else if(!(actVariable.getGlob() == null))
 				{
@@ -312,23 +313,21 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\t}");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("");
-					perlSnippet.add("push (@{$VARIABLE{'"+actVariable.getKey()+"'}}, @variableList);");
+					perlSnippet.add("\tpush (@{$VARIABLE{'"+actVariable.getKey()+"'}}, @variableList);");
 				}
 				else
 				{
 					perlSnippet.add("\t\t&logit(\"fatal\", \"------ step '"+this.getName()+"', commit '"+actCommit.getName()+"', variable '"+actVariable.getKey()+"' needs either a value or a glob definition.\");");
 				}
+				perlSnippet.add("\t}");
 			}
 		}
 		
 		// zurueckwechseln in das root verzeichnis
 		perlSnippet.add("");
-		perlSnippet.add("&logit(\"debug\", \"changing back to root directory: $pwd\");");
-		perlSnippet.add("chdir($pwd);");
+		perlSnippet.add("\t&logit(\"debug\", \"changing back to root directory: $pwd\");");
+		perlSnippet.add("\tchdir($pwd);");
 		
-		
-		perlSnippet.add("\t$call .= \"" + this.getWork().getCommand() + "\";");
-
 		
 		perlSnippet.add("}");
 		return perlSnippet;		
