@@ -650,11 +650,11 @@ implements Serializable, Cloneable
 		code.add("	if($string =~ m/\\{\\$.+\\}/)");
 		code.add("	{");
 		code.add("		&logit(\"debug\", \"string has to be resolved because it contains list items (string=$string)\");");
-		code.add("		my @mentionedLists = $string =~ /{\\$(.+?)}/g;");
+		code.add("		my @mentionedLists = $string =~ /\\{\\$(.+?)\\}/g;");
 		code.add("");
 		code.add("		foreach my $list (@mentionedLists)");
 		code.add("		{");
-		code.add("			&logit(\"debug\", \"placeholder for list '$list' will be replaced\");");
+		code.add("#			&logit(\"debug\", \"placeholder for list '$list' will be replaced\");");
 		code.add("			my $firstItemOfList = (${$$refh_lists{$list}}[0]);");
 		code.add("");
 		code.add("			if($string =~ s/\\{\\$$list\\}/$firstItemOfList/g)");
