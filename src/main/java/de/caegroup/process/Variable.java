@@ -14,9 +14,9 @@ implements Serializable
 
 	static final long serialVersionUID = 1;
 	private String key = "";
-	private String value = "";
+	private String value = null;
 	private String description = "";
-	private String glob = "";
+	private String glob = null;
 	private ArrayList<String> choice = new ArrayList<String>();
 	private ArrayList<Test> test = new ArrayList<Test>();
 	private int minoccur = 0;

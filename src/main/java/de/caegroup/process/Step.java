@@ -125,6 +125,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("\tmy $stepname = \""+this.getName()+"\";");
 		perlSnippet.add("\t&girlande($stepname);");
 		perlSnippet.add("");
+		perlSnippet.add("\tmy %allLists;");
 
 		perlSnippet.add("\t# generate lists with initial values");
 
@@ -141,6 +142,7 @@ implements Serializable, Cloneable
 			line += ");";
 			
 			perlSnippet.add(line);
+			perlSnippet.add("\t$allLists{'"+list.getName()+"'};");
 			perlSnippet.add("");
 		}
 	
@@ -149,7 +151,7 @@ implements Serializable, Cloneable
 		{
 			perlSnippet.add("\t{");
 				
-			perlSnippet.add("\t\t&logit(\"debug\", \"initializing list "+actInit.getListname()+"\");");
+			perlSnippet.add("\t\t&logit(\"debug\", \"populating list "+actInit.getListname()+"\");");
 
 			// falls liste noch nicht existiert, soll eine leere liste erzeugt werden
 			if (this.getList(actInit.getListname()) == null)
@@ -157,6 +159,7 @@ implements Serializable, Cloneable
 				perlSnippet.add("");
 				perlSnippet.add("\t\t# new list");
 				perlSnippet.add("\t\tmy @"+actInit.getListname()+";");
+				perlSnippet.add("\t\t$allLists{'"+actInit.getListname()+"'};");
 			}
 				
 			// ein array of hashes mit allen matches anlegen
@@ -181,6 +184,151 @@ implements Serializable, Cloneable
 			
 			perlSnippet.add("\t}");
 		}
+		
+		perlSnippet.add("");
+		perlSnippet.add("\t\t# create call for command");
+		perlSnippet.add("\t\tmy $call;");
+		perlSnippet.add("");
+		
+		perlSnippet.add("\tif(stat $bindir . \"/\" . " + this.getWork().getCommand() + ";");
+		perlSnippet.add("\t{");
+		perlSnippet.add("\t\t$call = $bindir . \"/" + this.getWork().getCommand() + "\";");
+		perlSnippet.add("\t\t&logit(\"debug\", \"--- found the program in installation directory of process: $call\");");
+		perlSnippet.add("\t}");
+		perlSnippet.add("");
+		
+		perlSnippet.add("\telsif(system(\"which "+ this.getWork().getCommand() +"\")");
+		perlSnippet.add("\t{");
+		perlSnippet.add("\t\t$call = \"" + this.getWork().getCommand() + "\";");
+		perlSnippet.add("\t\t&logit(\"debug\", \"--- found the program in \\$PATH: $call\");");
+		perlSnippet.add("\t}");
+		perlSnippet.add("");
+		
+		perlSnippet.add("else");
+		perlSnippet.add("\t{");
+		perlSnippet.add("\t\t&logit(\"fatal\", \"could not find a program called comp_nodes_admsl.pl neither in installation directory $bindir nor under \\$PATH\");");
+		perlSnippet.add("\t\texit(1);");
+		perlSnippet.add("\t}");
+		perlSnippet.add("");
+		
+		for(Callitem actCallitem : this.getWork().getCallitem())
+		{
+			// wenn callitem geloopt werden soll?
+			if(!(actCallitem.getLoop() == null))
+			{
+				perlSnippet.add("\tforeach my $loopvar (@$allLists{'"+actCallitem.getLoop()+"'})");
+				perlSnippet.add("\t{");
+				perlSnippet.add("\t\tmy $tmpString = "+actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal()+";");
+				perlSnippet.add("\t\t$tmpString =~ s/\\{\\$loopvarcallitem\\}/$loopvar/g;");
+				perlSnippet.add("\t\t$call .= \" \" . $tmpString;");
+				perlSnippet.add("\t}");
+			}
+			// wenn callitem nicht geloopt werden soll
+			else
+			{
+				perlSnippet.add("\t$call .= "+actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal()+";");
+			}
+		}
+		
+		// aufloesen der platzhalter inerhalb des calls
+		perlSnippet.add("\t$call .= &resolve($call, \\%allLists);");
+		perlSnippet.add("\t&logit(\"debug\", \"--- call will be: $call\");");
+		perlSnippet.add("");
+		
+		// directory fuer den step anlegen
+		perlSnippet.add("\t# create step-owned directory");
+		perlSnippet.add("\tmy $pwd = cwd();");
+		perlSnippet.add("\t&logit(\"debug\", \"create directory for actual step '"+this.getName()+"': 'dir4step_"+this.getName()+"'\");");
+		perlSnippet.add("\tmkdir($pwd . \"/\" . \"dir4step_"+this.getName()+"\");");
+		perlSnippet.add("");
+
+		// in das step-verzeichnis wechseln
+		perlSnippet.add("\t# change into step-owned directory");
+		perlSnippet.add("\tmy $pwd = cwd();");
+		perlSnippet.add("\t&logit(\"debug\", \"changing into step-directory: 'dir4step_"+this.getName()+"'\");");
+		perlSnippet.add("\tchdir($pwd . \"/\" . \"dir4step_"+this.getName()+"\");");
+		perlSnippet.add("");
+		
+		// executieren des calls
+		perlSnippet.add("\t# execute the call");
+		perlSnippet.add("\t&logit(\"info\", \"executing program for step '"+this.getName()+"' : $call\");");
+		perlSnippet.add("\t&logit(\"info\", \"vvvvvvv--- subsequent logging comes from step '"+this.getName()+"' ---vvvvvvv\");");
+		perlSnippet.add("\tmy $return = system($call);");
+		perlSnippet.add("\tif($return)");
+		perlSnippet.add("\t{");
+		perlSnippet.add("\t\t&logit(\"info\", \"^^^^^^^--- previous logging came from step '"+this.getName()+"' ---^^^^^^^\");");
+		perlSnippet.add("\t\t&logit(\"fatal\", \"step '"+this.getName()+"' exited with an error (exitcode=$return)\");");
+		perlSnippet.add("\t\texit(1);");
+		perlSnippet.add("\t}");
+		perlSnippet.add("\t&logit(\"info\", \"^^^^^^^--- previous logging came from step '"+this.getName()+"' ---^^^^^^^\");");
+		perlSnippet.add("\t&logit(\"info\", \"step '"+this.getName()+"' exited properly\");");
+		perlSnippet.add("");
+		
+		// committen
+		perlSnippet.add("\t#commits\");");
+		for(Commit actCommit : this.getCommit())
+		{
+			perlSnippet.add("\t&logit(\"debug\", \"- preparing commit '"+actCommit.getName()+"'\");");
+			
+			for(Variable actVariable : actCommit.getVariable())
+			{
+				perlSnippet.add("\t{");
+				// wenn ein value angegeben wird
+				if(!(actVariable.getValue() == null))
+				{
+					perlSnippet.add("\t\tmy $value = \""+actVariable.getValue()+"\";");
+					perlSnippet.add("\t\t$value = &resolve($value, \\%allLists);");
+					perlSnippet.add("push (@{$VARIABLE{'"+actVariable.getKey()+"'}}, $value);");
+				}
+				else if(!(actVariable.getGlob() == null))
+				{
+					perlSnippet.add("\t\tmy $glob = \""+actVariable.getGlob()+"\";");
+					perlSnippet.add("\t\t$glob = &resolve($value, \\%allLists);");
+					perlSnippet.add("\t\t&logit(\"debug\", \"--- modified glob is: $glob\");");
+					perlSnippet.add("\t\t&logit(\"debug\", \"---- globbing for files with glob '$glob'\");");
+					perlSnippet.add("\t\tmy @globbedFiles = glob($glob);");
+					perlSnippet.add("\t\t&logit(\"debug\", \"----- \" . scalar(@globbedFiles) . \" file(s) globbed\");");
+					perlSnippet.add("");
+					perlSnippet.add("\t\tif((@globbedFiles < "+actVariable.getMinoccur()+") || (@globbedFiles > "+actVariable.getMaxoccur()+"))");
+					perlSnippet.add("\t\t{");
+					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of variables with pattern (glob=$glob).\");");
+					perlSnippet.add("\t\t\t&logit(\"debug\", \"------- "+actVariable.getMinoccur()+" < rightAmountOfFiles < "+actVariable.getMaxoccur()+"\");");
+					perlSnippet.add("\t\t\texit(1);");
+					perlSnippet.add("\t\t}");
+					perlSnippet.add("\t\tmy @variableList;");
+					perlSnippet.add("\t\tforeach my $globbedFile (@globbedFiles)");
+					perlSnippet.add("\t\t{");
+					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ globbed File: \" . $globbedFile);");
+					perlSnippet.add("\t\t\tif(open(VARFILE, '<'.$globbedFile))");
+					perlSnippet.add("\t\t\t{");
+					perlSnippet.add("\t\t\t\twhile(<VARFILE>)");
+					perlSnippet.add("\t\t\t\t{");
+					perlSnippet.add("\t\t\t\t\tmy $zeile = $_;");
+					perlSnippet.add("\t\t\t\t\tchomp $zeile;");
+					perlSnippet.add("\t\t\t\t\t&logit(\"debug\", \"------- adding first line of file to the variable repository (step="+this.getName()+", key="+actVariable.getKey()+", value=$zeile)\");");
+					perlSnippet.add("\t\t\t\t\tpush (@variableList, $zeile);");
+					perlSnippet.add("\t\t\t\t\tlast;");
+					perlSnippet.add("\t\t\t\t}");
+					perlSnippet.add("\t\t\t}");
+					perlSnippet.add("\t\t}");
+					perlSnippet.add("");
+					perlSnippet.add("push (@{$VARIABLE{'"+actVariable.getKey()+"'}}, @variableList);");
+				}
+				else
+				{
+					perlSnippet.add("\t\t&logit(\"fatal\", \"------ step '"+this.getName()+"', commit '"+actCommit.getName()+"', variable '"+actVariable.getKey()+"' needs either a value or a glob definition.\");");
+				}
+			}
+		}
+		
+		// zurueckwechseln in das root verzeichnis
+		perlSnippet.add("");
+		perlSnippet.add("&logit(\"debug\", \"changing back to root directory: $pwd\");");
+		perlSnippet.add("chdir($pwd);");
+		
+		
+		perlSnippet.add("\t$call .= \"" + this.getWork().getCommand() + "\";");
+
 		
 		perlSnippet.add("}");
 		return perlSnippet;		
