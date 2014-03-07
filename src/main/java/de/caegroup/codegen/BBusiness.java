@@ -44,7 +44,6 @@ implements Serializable, Cloneable
 			content.add("				");
 			content.add("my %FILE = getTypedOptions(\"file\");");
 			content.add("my %VARIABLE = getTypedOptions(\"variable\");");
-			content.add("my %ALL = (%FILE, %VARIABLE);");
 			content.add("");
 		}
 		
@@ -58,7 +57,7 @@ implements Serializable, Cloneable
 			content.add("#");
 			content.add("# place your business logic here.");
 			content.add("#");
-			content.add("print \"you are now in program $0\";");
+			content.add("\t&logit(\"info\", \"you are now in program $0\");");
 			content.add("#");
 		}
 

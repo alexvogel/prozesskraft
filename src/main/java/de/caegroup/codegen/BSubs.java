@@ -627,7 +627,6 @@ implements Serializable, Cloneable
 		code.add("# falls keine eintraege in root existieren, soll eine leere annonyme liste angelegt werden");
 		code.add("unless($FILE{'root'}) {$FILE{'root'} = [];}");
 		code.add("unless($VARIABLE{'root'}) {$VARIABLE{'root'} = [];}");
-		code.add("unless($ALL{'root'}) {$VARIABLE{'root'} = [];}");
 		code.add("");
 		code.add("	logit(\"debug\", \"##### END   identifing whether given options are a \" . uc($type) . \" #####\");");
 		code.add("	if ($type =~ /file/i) {return %FILE;}");
@@ -649,7 +648,7 @@ implements Serializable, Cloneable
 		code.add("	");
 		code.add("	if($string =~ m/\\{\\$.+\\}/)");
 		code.add("	{");
-		code.add("		&logit(\"debug\", \"string has to be resolved because it contains list items (string=$string)\");");
+		code.add("		&logit(\"debug\", \"string has to be resolved because it contains list items ($string)\");");
 		code.add("		my @mentionedLists = $string =~ /\\{\\$(.+?)\\}/g;");
 		code.add("");
 		code.add("		foreach my $list (@mentionedLists)");
