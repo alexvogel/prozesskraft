@@ -433,12 +433,26 @@ implements Serializable, Cloneable
 	{
 		ArrayList<String> code = new ArrayList<String>();
 		
-		code.add("sub girlande");
+		code.add("sub girlande_stepstart");
 		code.add("{");
 		code.add("\tmy $stepname = shift;");
 		code.add("");
 		code.add("\tlogit(\"info\", \"###############################################\");");
-		code.add("\tlogit(\"info\", \" NEW PROCESS STEP: $stepname\");");
+		code.add("\tlogit(\"info\", \" START PROCESS STEP: $stepname\");");
+		code.add("\tlogit(\"info\", \"###############################################\");");
+		code.add("}");
+		code.add("sub girlande_stepend");
+		code.add("{");
+		code.add("\tmy $stepname = shift;");
+		code.add("");
+		code.add("\tlogit(\"info\", \"###############################################\");");
+		code.add("\tlogit(\"info\", \"   END PROCESS STEP: $stepname\");");
+		code.add("\tlogit(\"info\", \"###############################################\");");
+		code.add("}");
+		code.add("sub girlande_processend");
+		code.add("{");
+		code.add("\tlogit(\"info\", \"###############################################\");");
+		code.add("\tlogit(\"info\", \"   END PROCESS\");");
 		code.add("\tlogit(\"info\", \"###############################################\");");
 		code.add("}");
 
