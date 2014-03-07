@@ -219,7 +219,7 @@ implements Serializable, Cloneable
 			// wenn callitem geloopt werden soll?
 			if(!(actCallitem.getLoop() == null))
 			{
-				perlSnippet.add("\tforeach my $loopvar (@$allLists{'"+actCallitem.getLoop()+"'})");
+				perlSnippet.add("\tforeach my $loopvar (@{$allLists{'"+actCallitem.getLoop()+"'}})");
 				perlSnippet.add("\t{");
 				String tmpString = actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal();
 				String tmpReplace = tmpString.replaceAll("\\$", "\\\\\\$");
@@ -294,13 +294,16 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t$glob = &resolve($glob, \\%allLists);");
 					perlSnippet.add("\t\t&logit(\"debug\", \"--- modified glob is: $glob\");");
 					perlSnippet.add("\t\t&logit(\"debug\", \"---- globbing for files with glob '$glob'\");");
-					perlSnippet.add("\t\tmy @globbedFiles = glob($glob);");
+					perlSnippet.add("");
+					perlSnippet.add("\t\t# feststellen ob files vorhanden sind");
+					perlSnippet.add("\t\topendir(DIRSTEP, cwd());");
+					perlSnippet.add("\t\tmy @globbedFiles = grep{ $_ =~ m/$glob/ } readdir(DIRSTEP);");
 					perlSnippet.add("\t\t&logit(\"debug\", \"----- \" . scalar(@globbedFiles) . \" file(s) globbed\");");
 					perlSnippet.add("");
 					perlSnippet.add("\t\tif((@globbedFiles < "+actVariable.getMinoccur()+") || (@globbedFiles > "+actVariable.getMaxoccur()+"))");
 					perlSnippet.add("\t\t{");
 					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of variables with pattern (glob=$glob).\");");
-					perlSnippet.add("\t\t\t&logit(\"debug\", \"------- "+actVariable.getMinoccur()+" < rightAmountOfFiles < "+actVariable.getMaxoccur()+"\");");
+					perlSnippet.add("\t\t\t&logit(\"debug\", \"------- "+actVariable.getMinoccur()+" <= rightAmountOfFiles <= "+actVariable.getMaxoccur()+"\");");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("\t\tmy @variableList;");
@@ -334,8 +337,10 @@ implements Serializable, Cloneable
 				perlSnippet.add("\t{");
 				if(!(actFile.getGlob() == null))
 				{
-					perlSnippet.add("\t\tmy $glob = \""+actFile.getGlob()+"\";");
-					perlSnippet.add("\t\t$glob = &resolve($value, \\%allLists);");
+					String tmpString = actFile.getGlob();
+					String tmpReplace = tmpString.replaceAll("\\$", "\\\\\\$");
+					perlSnippet.add("\t\tmy $glob = \""+tmpReplace+"\";");
+					perlSnippet.add("\t\t$glob = &resolve($glob, \\%allLists);");
 					perlSnippet.add("\t\t&logit(\"debug\", \"--- modified glob is: $glob\");");
 					perlSnippet.add("\t\t&logit(\"debug\", \"---- globbing for files with glob '$glob'\");");
 					perlSnippet.add("");
@@ -347,7 +352,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\tif((@globbedFiles < "+actFile.getMinoccur()+") || (@globbedFiles > "+actFile.getMaxoccur()+"))");
 					perlSnippet.add("\t\t{");
 					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of variables with pattern (glob=$glob).\");");
-					perlSnippet.add("\t\t\t&logit(\"debug\", \"------- "+actFile.getMinoccur()+" < rightAmountOfFiles < "+actFile.getMaxoccur()+"\");");
+					perlSnippet.add("\t\t\t&logit(\"debug\", \"------- "+actFile.getMinoccur()+" <= rightAmountOfFiles <= "+actFile.getMaxoccur()+"\");");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("\t\tmy @fileList;");
