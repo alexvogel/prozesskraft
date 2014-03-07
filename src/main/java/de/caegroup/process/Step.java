@@ -2,6 +2,7 @@ package de.caegroup.process;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import de.caegroup.codegen.BBusiness;
 import de.caegroup.codegen.Script;
@@ -127,6 +128,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("");
 		perlSnippet.add("\tmy %allLists;");
 
+		perlSnippet.add("");
 		perlSnippet.add("\t# generate lists with initial values");
 
 		// generate festverdrahtete listen
@@ -151,7 +153,7 @@ implements Serializable, Cloneable
 		{
 			perlSnippet.add("\t{");
 				
-			perlSnippet.add("\t\t&logit(\"debug\", \"populating list "+actInit.getListname()+"\");");
+			perlSnippet.add("\t\t&logit(\"debug\", \"populating list '"+actInit.getListname()+"'\");");
 
 			// falls liste noch nicht existiert, soll eine leere liste erzeugt werden
 			if (this.getList(actInit.getListname()) == null)
@@ -159,7 +161,7 @@ implements Serializable, Cloneable
 				perlSnippet.add("");
 				perlSnippet.add("\t\t# new list");
 				perlSnippet.add("\t\tmy @"+actInit.getListname()+";");
-				perlSnippet.add("\t\t$allLists{'"+actInit.getListname()+"'};");
+				perlSnippet.add("\t\t$allLists{'"+actInit.getListname()+"'} = \\@"+actInit.getListname()+";");
 			}
 				
 			// ein array of hashes mit allen matches anlegen
@@ -191,14 +193,14 @@ implements Serializable, Cloneable
 		perlSnippet.add("\tmy $call;");
 		perlSnippet.add("");
 		
-		perlSnippet.add("\tif(stat $bindir . \"/\" . \"" + this.getWork().getCommand() + "\";");
+		perlSnippet.add("\tif(stat $bindir . \"/\" . \"" + this.getWork().getCommand() + "\")");
 		perlSnippet.add("\t{");
 		perlSnippet.add("\t\t$call = $bindir . \"/" + this.getWork().getCommand() + "\";");
 		perlSnippet.add("\t\t&logit(\"debug\", \"--- found the program in installation directory of process: $call\");");
 		perlSnippet.add("\t}");
 		perlSnippet.add("");
 		
-		perlSnippet.add("\telsif(system(\"which "+ this.getWork().getCommand() +"\")");
+		perlSnippet.add("\telsif(system(\"which "+ this.getWork().getCommand() +"\"))");
 		perlSnippet.add("\t{");
 		perlSnippet.add("\t\t$call = \"" + this.getWork().getCommand() + "\";");
 		perlSnippet.add("\t\t&logit(\"debug\", \"--- found the program in \\$PATH: $call\");");
@@ -207,7 +209,7 @@ implements Serializable, Cloneable
 		
 		perlSnippet.add("\telse");
 		perlSnippet.add("\t{");
-		perlSnippet.add("\t\t&logit(\"fatal\", \"could not find a program called comp_nodes_admsl.pl neither in installation directory $bindir nor under \\$PATH\");");
+		perlSnippet.add("\t\t&logit(\"fatal\", \"could not find a program called '"+this.getWork().getCommand()+"' neither in installation directory $bindir nor under \\$PATH\");");
 		perlSnippet.add("\t\texit(1);");
 		perlSnippet.add("\t}");
 		perlSnippet.add("");
@@ -219,21 +221,25 @@ implements Serializable, Cloneable
 			{
 				perlSnippet.add("\tforeach my $loopvar (@$allLists{'"+actCallitem.getLoop()+"'})");
 				perlSnippet.add("\t{");
-				perlSnippet.add("\t\tmy $tmpString = "+actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal()+";".replace("$", "\\$"));
+				String tmpString = actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal();
+				String tmpReplace = tmpString.replaceAll("\\$", "\\\\\\$");
+				perlSnippet.add("\t\tmy $tmpString = "+tmpReplace+";");
 				perlSnippet.add("\t\t$tmpString =~ s/\\{\\$loopvarcallitem\\}/$loopvar/g;");
+				
 				perlSnippet.add("\t\t$call .= \" \" . $tmpString;");
 				perlSnippet.add("\t}");
 			}
 			// wenn callitem nicht geloopt werden soll
 			else
 			{
-				
-				perlSnippet.add("\t$call .= \""+actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal()+"\";".replace("$", "\\$"));
+				String tmpString = actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal();
+				String tmpReplace = tmpString.replaceAll("\\$", "\\\\\\$");
+				perlSnippet.add("\t$call .= \" \" . \""+tmpReplace+"\";");
 			}
 		}
 		
 		// aufloesen der platzhalter inerhalb des calls
-		perlSnippet.add("\t$call .= &resolve($call, \\%allLists);");
+		perlSnippet.add("\t$call = &resolve($call, \\%allLists);");
 		perlSnippet.add("\t&logit(\"debug\", \"--- call will be: $call\");");
 		perlSnippet.add("");
 		
@@ -246,14 +252,13 @@ implements Serializable, Cloneable
 
 		// in das step-verzeichnis wechseln
 		perlSnippet.add("\t# change into step-owned directory");
-		perlSnippet.add("\tmy $pwd = cwd();");
 		perlSnippet.add("\t&logit(\"debug\", \"changing into step-directory: 'dir4step_"+this.getName()+"'\");");
 		perlSnippet.add("\tchdir($pwd . \"/\" . \"dir4step_"+this.getName()+"\");");
 		perlSnippet.add("");
 		
 		// executieren des calls
 		perlSnippet.add("\t# execute the call");
-		perlSnippet.add("\t&logit(\"info\", \"executing program for step '"+this.getName()+"' : $call\");");
+		perlSnippet.add("\t&logit(\"info\", \"executing program for step '"+this.getName()+"': $call\");");
 		perlSnippet.add("\t&logit(\"info\", \"vvvvvvv--- subsequent logging comes from step '"+this.getName()+"' ---vvvvvvv\");");
 		perlSnippet.add("\tmy $return = system($call);");
 		perlSnippet.add("\t&logit(\"info\", \"^^^^^^^--- previous logging came from step '"+this.getName()+"' ---^^^^^^^\");");
@@ -283,8 +288,10 @@ implements Serializable, Cloneable
 				}
 				else if(!(actVariable.getGlob() == null))
 				{
-					perlSnippet.add("\t\tmy $glob = \""+actVariable.getGlob()+"\";");
-					perlSnippet.add("\t\t$glob = &resolve($value, \\%allLists);");
+					String tmpString = actVariable.getGlob();
+					String tmpReplace = tmpString.replaceAll("\\$", "\\\\\\$");
+					perlSnippet.add("\t\tmy $glob = \""+tmpReplace+"\";");
+					perlSnippet.add("\t\t$glob = &resolve($glob, \\%allLists);");
 					perlSnippet.add("\t\t&logit(\"debug\", \"--- modified glob is: $glob\");");
 					perlSnippet.add("\t\t&logit(\"debug\", \"---- globbing for files with glob '$glob'\");");
 					perlSnippet.add("\t\tmy @globbedFiles = glob($glob);");
@@ -313,7 +320,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\t}");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("");
-					perlSnippet.add("\tpush (@{$VARIABLE{'"+actVariable.getKey()+"'}}, @variableList);");
+					perlSnippet.add("\t\tpush (@{$VARIABLE{'"+actVariable.getKey()+"'}}, @variableList);");
 				}
 				else
 				{
@@ -331,7 +338,10 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t$glob = &resolve($value, \\%allLists);");
 					perlSnippet.add("\t\t&logit(\"debug\", \"--- modified glob is: $glob\");");
 					perlSnippet.add("\t\t&logit(\"debug\", \"---- globbing for files with glob '$glob'\");");
-					perlSnippet.add("\t\tmy @globbedFiles = glob($glob);");
+					perlSnippet.add("");
+					perlSnippet.add("\t\t# feststellen ob files vorhanden sind");
+					perlSnippet.add("\t\topendir(DIRSTEP, cwd());");
+					perlSnippet.add("\t\tmy @globbedFiles = grep{ $_ =~ m/$glob/ } readdir(DIRSTEP);");
 					perlSnippet.add("\t\t&logit(\"debug\", \"----- \" . scalar(@globbedFiles) . \" file(s) globbed\");");
 					perlSnippet.add("");
 					perlSnippet.add("\t\tif((@globbedFiles < "+actFile.getMinoccur()+") || (@globbedFiles > "+actFile.getMaxoccur()+"))");
@@ -349,7 +359,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\tpush (@fileList, $globbedFile);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("");
-					perlSnippet.add("\tpush (@{$VARIABLE{'"+actFile.getKey()+"'}}, @fileList);");
+					perlSnippet.add("\t\tpush (@{$FILE{'"+actFile.getKey()+"'}}, @fileList);");
 				}
 				else
 				{
