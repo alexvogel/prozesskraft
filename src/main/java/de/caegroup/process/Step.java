@@ -258,9 +258,9 @@ implements Serializable, Cloneable
 		// executieren des calls
 		perlSnippet.add("\t# execute the call");
 		perlSnippet.add("\t&logit(\"info\", \"executing program for step '"+this.getName()+"': $call\");");
-		perlSnippet.add("\t&logit(\"info\", \"vvvvvvv--- subsequent logging comes from step '"+this.getName()+"' ---vvvvvvv\");");
+		perlSnippet.add("\t&logit(\"info\", \">>>>>>>>>> subsequent logging comes from step '"+this.getName()+"' >>>>>>>>>>\");");
 		perlSnippet.add("\tmy $return = system($call);");
-		perlSnippet.add("\t&logit(\"info\", \"^^^^^^^--- previous logging came from step '"+this.getName()+"' ---^^^^^^^\");");
+		perlSnippet.add("\t&logit(\"info\", \"<<<<<<<<<< previous logging came from step '"+this.getName()+"' <<<<<<<<<<\");");
 		perlSnippet.add("\tif($return)");
 		perlSnippet.add("\t{");
 		perlSnippet.add("\t\t&logit(\"fatal\", \"step '"+this.getName()+"' exited with an error (exitcode=$return)\");");
@@ -311,9 +311,17 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\tmy @variableList;");
 					perlSnippet.add("\t\tforeach my $globbedFile (@globbedFiles)");
 					perlSnippet.add("\t\t{");
+					perlSnippet.add("\t\t\t$globbedFile = File::Spec->rel2abs($globbedFile);");
 					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ globbed File: \" . $globbedFile);");
 					perlSnippet.add("\t\t\tif(open(VARFILE, '<'.$globbedFile))");
 					perlSnippet.add("\t\t\t{");
+					// wenn variable toroot=true ist, dann soll auch in das root-verzeichnis kopiert werden (und auch in %FILE{'root}
+					if(actCommit.getToroot())
+					{
+						perlSnippet.add("");
+						perlSnippet.add("\t\t\t\t# toroot = true");
+						perlSnippet.add("\t\t\t\tFile::Copy->copy($globbedFile, $pwd);");
+					}
 					perlSnippet.add("\t\t\t\twhile(<VARFILE>)");
 					perlSnippet.add("\t\t\t\t{");
 					perlSnippet.add("\t\t\t\t\tmy $zeile = $_;");
@@ -329,6 +337,13 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t{");
 					perlSnippet.add("\t\t\tpush (@{$VARIABLE{'"+this.getName()+"'}}, [\""+actVariable.getKey()+"\", $tmp]);");
 					perlSnippet.add("\t\t\t&logit(\"info\", \""+actVariable.getKey()+"=$tmp\");");
+					// wenn variable toroot=true ist, dann soll auch in das root-verzeichnis kopiert werden (und auch in %FILE{'root}
+					if(actCommit.getToroot())
+					{
+						perlSnippet.add("");
+						perlSnippet.add("\t\t# toroot = true");
+						perlSnippet.add("\t\tpush (@{$VARIABLE{'root'}}, [\""+actVariable.getKey()+"\", $tmp]);");
+					}
 					perlSnippet.add("\t\t}");
 				}
 				else
@@ -368,6 +383,7 @@ implements Serializable, Cloneable
 					
 					perlSnippet.add("\t\tforeach my $globbedFile (@globbedFiles)");
 					perlSnippet.add("\t\t{");
+					perlSnippet.add("\t\t\t$globbedFile = File::Spec->rel2abs($globbedFile);");
 					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ globbed File: \" . $globbedFile);");
 					perlSnippet.add("\t\t\t&logit(\"debug\", \"------- adding file to file repository (step="+this.getName()+", key="+actFile.getKey()+", absfilename=$globbedFile)\");");
 					perlSnippet.add("\t\t\tpush (@fileList, $globbedFile);");
@@ -377,7 +393,16 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t{");
 					perlSnippet.add("\t\tpush (@{$FILE{'"+this.getName()+"'}}, [\""+actFile.getKey()+"\", $tmp]);");
 					perlSnippet.add("\t\t&logit(\"info\", \""+actFile.getKey()+"=$tmp\");");
+					// wenn file toroot=true ist, dann soll auch in das root-verzeichnis kopiert werden (und auch in %FILE{'root}
+					if(actCommit.getToroot())
+					{
+						perlSnippet.add("");
+						perlSnippet.add("\t\t# toroot = true");
+						perlSnippet.add("\t\tpush (@{$FILE{'root'}}, [\""+actFile.getKey()+"\", $tmp]);");
+						perlSnippet.add("\t\tFile::Copy->copy($tmp, $pwd);");
+					}
 					perlSnippet.add("\t}");
+					
 				}
 				else
 				{
