@@ -122,9 +122,8 @@ implements Serializable, Cloneable
 
 		perlSnippet.add(this.getName() + ":");
 		perlSnippet.add("{");
-		perlSnippet.add("\t&logit(\"info\", \"processing step '"+this.getName()+"'\");");
 		perlSnippet.add("\tmy $stepname = \""+this.getName()+"\";");
-		perlSnippet.add("\t&girlande($stepname);");
+		perlSnippet.add("\t&girlande_stepstart($stepname);");
 		perlSnippet.add("");
 		perlSnippet.add("\tmy %allLists;");
 
@@ -223,7 +222,7 @@ implements Serializable, Cloneable
 				perlSnippet.add("\t{");
 				String tmpString = actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal();
 				String tmpReplace = tmpString.replaceAll("\\$", "\\\\\\$");
-				perlSnippet.add("\t\tmy $tmpString = "+tmpReplace+";");
+				perlSnippet.add("\t\tmy $tmpString = \""+tmpReplace+"\";");
 				perlSnippet.add("\t\t$tmpString =~ s/\\{\\$loopvarcallitem\\}/$loopvar/g;");
 				
 				perlSnippet.add("\t\t$call .= \" \" . $tmpString;");
@@ -274,17 +273,19 @@ implements Serializable, Cloneable
 		perlSnippet.add("\t#commits;");
 		for(Commit actCommit : this.getCommit())
 		{
-			perlSnippet.add("\t&logit(\"debug\", \"- preparing commit '"+actCommit.getName()+"'\");");
+			perlSnippet.add("\t&logit(\"info\", \"preparing to commit '"+actCommit.getName()+"'\");");
 			
 			for(Variable actVariable : actCommit.getVariable())
 			{
+				perlSnippet.add("\t&logit(\"info\", \"committing variable '"+actVariable.getKey()+"'\");");
 				perlSnippet.add("\t{");
 				// wenn ein value angegeben wird
 				if(!(actVariable.getValue() == null))
 				{
 					perlSnippet.add("\t\tmy $value = \""+actVariable.getValue()+"\";");
 					perlSnippet.add("\t\t$value = &resolve($value, \\%allLists);");
-					perlSnippet.add("\t\tpush (@{$VARIABLE{'"+actVariable.getKey()+"'}}, $value);");
+					perlSnippet.add("\t\tpush (@{$VARIABLE{'"+this.getName()+"'}}, [\""+actVariable.getKey()+"\", $value]);");
+					perlSnippet.add("\t\t&logit(\"info\", \""+actVariable.getKey()+"=$value\");");
 				}
 				else if(!(actVariable.getGlob() == null))
 				{
@@ -303,7 +304,8 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\tif((@globbedFiles < "+actVariable.getMinoccur()+") || (@globbedFiles > "+actVariable.getMaxoccur()+"))");
 					perlSnippet.add("\t\t{");
 					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of variables with pattern (glob=$glob).\");");
-					perlSnippet.add("\t\t\t&logit(\"debug\", \"------- "+actVariable.getMinoccur()+" <= rightAmountOfFiles <= "+actVariable.getMaxoccur()+"\");");
+					perlSnippet.add("\t\t\t&logit(\"error\", \""+actVariable.getMinoccur()+" <= rightAmountOfFiles <= "+actVariable.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \")\");");
+					perlSnippet.add("\t\t\t&logit(\"fatal\", \"committing variable '"+actVariable.getKey()+"' failed\");");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("\t\tmy @variableList;");
@@ -323,17 +325,23 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\t}");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("");
-					perlSnippet.add("\t\tpush (@{$VARIABLE{'"+actVariable.getKey()+"'}}, @variableList);");
+					perlSnippet.add("\t\tforeach my $tmp (@variableList)");
+					perlSnippet.add("\t\t{");
+					perlSnippet.add("\t\t\tpush (@{$VARIABLE{'"+this.getName()+"'}}, [\""+actVariable.getKey()+"\", $tmp]);");
+					perlSnippet.add("\t\t\t&logit(\"info\", \""+actVariable.getKey()+"=$tmp\");");
+					perlSnippet.add("\t\t}");
 				}
 				else
 				{
-					perlSnippet.add("\t\t&logit(\"fatal\", \"------ step '"+this.getName()+"', commit '"+actCommit.getName()+"', variable '"+actVariable.getKey()+"' needs either a value or a glob definition.\");");
+					perlSnippet.add("\t\t&logit(\"error\", \"step '"+this.getName()+"', commit '"+actCommit.getName()+"', variable '"+actVariable.getKey()+"' needs either a value or a glob definition.\");");
+					perlSnippet.add("\t\t&logit(\"fatal\", \"committing variable '"+actVariable.getKey()+"' failed\");");
 					perlSnippet.add("\t\t\texit(1);");
 				}
 				perlSnippet.add("\t}");
 			}
 			for(File actFile : actCommit.getFile())
 			{
+				perlSnippet.add("\t&logit(\"info\", \"committing file '"+actFile.getKey()+"'\");");
 				perlSnippet.add("\t{");
 				if(!(actFile.getGlob() == null))
 				{
@@ -352,7 +360,8 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\tif((@globbedFiles < "+actFile.getMinoccur()+") || (@globbedFiles > "+actFile.getMaxoccur()+"))");
 					perlSnippet.add("\t\t{");
 					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of variables with pattern (glob=$glob).\");");
-					perlSnippet.add("\t\t\t&logit(\"debug\", \"------- "+actFile.getMinoccur()+" <= rightAmountOfFiles <= "+actFile.getMaxoccur()+"\");");
+					perlSnippet.add("\t\t\t&logit(\"error\", \""+actFile.getMinoccur()+" <= rightAmountOfFiles <= "+actFile.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \")\");");
+					perlSnippet.add("\t\t\t&logit(\"fatal\", \"committing file '"+actFile.getKey()+"' failed\");");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("\t\tmy @fileList;");
@@ -364,11 +373,16 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\tpush (@fileList, $globbedFile);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("");
-					perlSnippet.add("\t\tpush (@{$FILE{'"+actFile.getKey()+"'}}, @fileList);");
+					perlSnippet.add("\tforeach my $tmp (@fileList)");
+					perlSnippet.add("\t{");
+					perlSnippet.add("\t\tpush (@{$FILE{'"+this.getName()+"'}}, [\""+actFile.getKey()+"\", $tmp]);");
+					perlSnippet.add("\t\t&logit(\"info\", \""+actFile.getKey()+"=$tmp\");");
+					perlSnippet.add("\t}");
 				}
 				else
 				{
-					perlSnippet.add("\t\t&logit(\"fatal\", \"------ step '"+this.getName()+"', commit '"+actCommit.getName()+"', file '"+actFile.getKey()+"' needs a glob definition.\");");
+					perlSnippet.add("\t\t&logit(\"error\", \"------ step '"+this.getName()+"', commit '"+actCommit.getName()+"', file '"+actFile.getKey()+"' needs a glob definition.\");");
+					perlSnippet.add("\t\t&logit(\"fatal\", \"committing variable '"+actFile.getKey()+"' failed\");");
 					perlSnippet.add("\t\t\texit(1);");
 				}
 				perlSnippet.add("\t}");
@@ -381,6 +395,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("\t&logit(\"debug\", \"changing back to root directory: $pwd\");");
 		perlSnippet.add("\tchdir($pwd);");
 		
+		perlSnippet.add("\t&girlande_stepend($stepname);");
 		
 		perlSnippet.add("}");
 		return perlSnippet;		
