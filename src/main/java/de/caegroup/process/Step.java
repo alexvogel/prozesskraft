@@ -320,7 +320,8 @@ implements Serializable, Cloneable
 					{
 						perlSnippet.add("");
 						perlSnippet.add("\t\t\t\t# toroot = true");
-						perlSnippet.add("\t\t\t\tFile::Copy->copy($globbedFile, $pwd);");
+						perlSnippet.add("\t\t\t&logit(\"info\", \"toroot: cp $globbedFile $pwd\");");
+						perlSnippet.add("\t\t\t\tcopy($globbedFile, $pwd);");
 					}
 					perlSnippet.add("\t\t\t\twhile(<VARFILE>)");
 					perlSnippet.add("\t\t\t\t{");
@@ -399,7 +400,8 @@ implements Serializable, Cloneable
 						perlSnippet.add("");
 						perlSnippet.add("\t\t# toroot = true");
 						perlSnippet.add("\t\tpush (@{$FILE{'root'}}, [\""+actFile.getKey()+"\", $tmp]);");
-						perlSnippet.add("\t\tFile::Copy->copy($tmp, $pwd);");
+						perlSnippet.add("\t\t\t&logit(\"info\", \"toroot: cp $globbedFile $pwd\");");
+						perlSnippet.add("\t\tcopy($tmp, $pwd);");
 					}
 					perlSnippet.add("\t}");
 					
