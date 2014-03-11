@@ -51,8 +51,8 @@ implements Serializable, Cloneable
 		else
 		{
 			content.add("#");
-			content.add("# you may use getConfig(<key>), setConfig(<key>, <value>) to deal with data from the configfile if one exists.");
-			content.add("# you may use getOption(<key>), setOption(<string>, <value>) and addOption(<string>, <key>) to deal with data from the call-options.");
+			content.add("# you may use getConfig(<key>), setConfig(<key>, <value>), getConfigKeys() to deal with data from the configfile if one exists.");
+			content.add("# you may use getOption(<key>), setOption(<string>, <value>), getOptionKeys(), and addOption(<string>, <key>) to deal with data from the call-options.");
 			content.add("# you may use @ARG for all unknown/unparsed options given. this makes writing wrapperscripts easier.");
 			content.add("#");
 			content.add("# place your business logic here.");

@@ -465,7 +465,7 @@ implements Serializable, Cloneable
 		
 		code.add("sub getOptionKeys");
 		code.add("{");
-		code.add("	return keys %OPT;");
+		code.add("	return sort keys %OPT;");
 		code.add("}");
 		code.add("");
 		code.add("sub getOption");
@@ -540,6 +540,11 @@ implements Serializable, Cloneable
 		code.add("	{");
 		code.add("		push @{$OPT{$key}}, @_;");
 		code.add("	}");
+		code.add("}");
+		code.add("");
+		code.add("sub getConfigKeys");
+		code.add("{");
+		code.add("	return sort keys %CONF;");
 		code.add("}");
 		code.add("");
 		code.add("sub getConfig");
