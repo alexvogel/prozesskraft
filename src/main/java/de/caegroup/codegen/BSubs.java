@@ -162,6 +162,7 @@ implements Serializable, Cloneable
 		code.add("            $CONF{$tmp[0]} = $tmp[1];");
 		code.add("        }");
 		code.add("    }");
+		code.add("    close CONF;");
 		code.add("    return %CONF;");
 		code.add("}");
 
