@@ -454,119 +454,128 @@ implements Serializable, Cloneable
 			boolean beruecksichtigen = false;
 			for(Callitem actCallitem : this.getWork().getCallitem())
 			{
-				if(actCallitem.getLoop().matches("\\{\\$" + actInit.getListname())) {beruecksichtigen = true;}
-				if(actCallitem.getPar().matches("\\{\\$" + actInit.getListname())) {beruecksichtigen = true;}
-				if(actCallitem.getDel().matches("\\{\\$" + actInit.getListname())) {beruecksichtigen = true;}
-				if(actCallitem.getVal().matches("\\{\\$" + actInit.getListname())) {beruecksichtigen = true;}
+				if((actCallitem.getLoop() != null) && (actCallitem.getLoop().matches(actInit.getListname())))
+				{
+					beruecksichtigen = true;
+				}
+				if((actCallitem.getPar() != null) && (actCallitem.getPar().matches("^.*\\{\\$" + actInit.getListname() + ".*$"))) {beruecksichtigen = true;}
+				if(actCallitem.getDel().matches("^.*\\{\\$" + actInit.getListname() + ".*$")) {beruecksichtigen = true;}
+				if(actCallitem.getVal().matches("^.*\\{\\$" + actInit.getListname() + ".*$")) {beruecksichtigen = true;}
 			}
+			// actInit soll im Script NICHT als Aufrufparameter vorhanden sein
 			if(!(beruecksichtigen))
 			{
-				break;
+//				System.out.println("DIE AKTUELLE LISTE "+ actInit.getListname()  +"SOLL NICHT ALS PARAMETER VERARBEITET WERDEN");
 			}
-			
-			String definition = "string";
-			// check soll aus den match-elementen des init-elementes extrahiert werden
-			// aus der ERSTEN match, dass field=value|absfilename definiert ist, soll das pattern zum checken verwendet werden
-			// falls es mehere matches gibt auf die das kriterium zutrifft werden diese ignoriert (wäre noch zu implementieren)
-			String check = "";
-			// der erste erklaerungstext fuer diese option (z.B. "=FILE")
-			// evtl. 
-			String text1 = "";
-			for(Match actMatch : actInit.getMatch())
-			{
-				if(actInit.getFromobjecttype().equals("file"))
-				{
-					text1 = "=FILE";
-					definition = "file";
-				}
-				
-				else if(actInit.getFromobjecttype().equals("variable"))
-				{
-					if(actMatch.getField().equals("value"))
-					{
-						// wenn "^\d+$", dann sollen die werte offensichtlich integer sein
-						if(actMatch.getPattern().matches("^\\^\\\\d\\+?\\$$"))
-						{
-							text1 = "=INTEGER";
-							definition = "integer";
-						}
 
-						// wenn "^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$", dann sollen die werte offensichtlich float sein
-						else if(actMatch.getPattern().matches("^\\^\\[-\\+\\]\\?\\[0-9\\]\\*\\\\\\.\\?\\[0-9\\]\\+\\(\\[eE\\]\\[-\\+\\]\\?\\[0-9\\]\\+\\)\\?\\$$"))
+			// actInit soll im Script als Aufrufparameter vorhanden sein
+			if (beruecksichtigen)
+			{
+//				System.out.println("DIE AKTUELLE LISTE "+ actInit.getListname()  +"SOLL ALS PARAMETER VERARBEITET WERDEN");
+				String definition = "string";
+				// check soll aus den match-elementen des init-elementes extrahiert werden
+				// aus der ERSTEN match, dass field=value|absfilename definiert ist, soll das pattern zum checken verwendet werden
+				// falls es mehere matches gibt auf die das kriterium zutrifft werden diese ignoriert (wäre noch zu implementieren)
+				String check = "";
+				// der erste erklaerungstext fuer diese option (z.B. "=FILE")
+				// evtl. 
+				String text1 = "";
+				for(Match actMatch : actInit.getMatch())
+				{
+					if(actInit.getFromobjecttype().equals("file"))
+					{
+						text1 = "=FILE";
+						definition = "file";
+					}
+					
+					else if(actInit.getFromobjecttype().equals("variable"))
+					{
+						if(actMatch.getField().equals("value"))
 						{
-							text1 = "=FLOAT";
-							definition = "float";
-						}
-						
-						// wenn "^.+$", dann sollen die werte offensichtlich string sein
-						else if(actMatch.getPattern().matches("^\\^\\.\\+\\$$"))
-						{
-							text1 = "=STRING";
-							definition = "string";
-						}
-						
-						// wenn ^[^\\+*?{}]+$  Muster ohne quantifier oder metazeichen gefunden wird bsplw. bei "node|element", soll das direkt als text1 verwendet werden
-						else if(actMatch.getPattern().matches("^\\^[^\\\\+*?{}]+\\$$"))
-						{
-							text1 = "=" + actMatch.getPattern().replace("^", "").replace("$", "");
-							definition = "string";
+							// wenn "^\d+$", dann sollen die werte offensichtlich integer sein
+							if(actMatch.getPattern().matches("^\\^\\\\d\\+?\\$$"))
+							{
+								text1 = "=INTEGER";
+								definition = "integer";
+							}
+	
+							// wenn "^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$", dann sollen die werte offensichtlich float sein
+							else if(actMatch.getPattern().matches("^\\^\\[-\\+\\]\\?\\[0-9\\]\\*\\\\\\.\\?\\[0-9\\]\\+\\(\\[eE\\]\\[-\\+\\]\\?\\[0-9\\]\\+\\)\\?\\$$"))
+							{
+								text1 = "=FLOAT";
+								definition = "float";
+							}
 							
-							// als check aufnehmen
-							if(check.equals(""))
+							// wenn "^.+$", dann sollen die werte offensichtlich string sein
+							else if(actMatch.getPattern().matches("^\\^\\.\\+\\$$"))
+							{
+								text1 = "=STRING";
+								definition = "string";
+							}
+							
+							// wenn ^[^\\+*?{}]+$  Muster ohne quantifier oder metazeichen gefunden wird bsplw. bei "node|element", soll das direkt als text1 verwendet werden
+							else if(actMatch.getPattern().matches("^\\^[^\\\\+*?{}]+\\$$"))
+							{
+								text1 = "=" + actMatch.getPattern().replace("^", "").replace("$", "");
+								definition = "string";
+								
+								// als check aufnehmen
+								if(check.equals(""))
+								{
+									check = actMatch.getPattern();
+								}
+							}
+							
+							// wenn es keiner der bekannten muster ist und es noch keinen check gibt, soll dieser string zum checken verwendet werden
+							else if(check.equals(""))
 							{
 								check = actMatch.getPattern();
 							}
+	
 						}
-						
-						// wenn es keiner der bekannten muster ist und es noch keinen check gibt, soll dieser string zum checken verwendet werden
-						else if(check.equals(""))
-						{
-							check = actMatch.getPattern();
-						}
-
 					}
 				}
-			}
-			
-			// wenn in einem callitem ein Par existiert, dass genauso heisst wie dieses init, wird
-			// falls ein val existiert 'string' gesetzt, falls kein val existiert 'flag' gesetzt
-			for(Callitem act_callitem : this.work.getCallitem())
-			{
-				String par = act_callitem.getPar().replaceAll("-", "");
-				if(par.equals(name))
+				
+				// wenn in einem callitem ein Par existiert, dass genauso heisst wie dieses init, wird
+				// falls ein val existiert 'string' gesetzt, falls kein val existiert 'flag' gesetzt
+				for(Callitem act_callitem : this.work.getCallitem())
 				{
-					if(!(act_callitem.getVal().matches(".+")))
+					String par = act_callitem.getPar().replaceAll("-", "");
+					if(par.equals(name))
 					{
-						definition = "flag";
+						if(!(act_callitem.getVal().matches(".+")))
+						{
+							definition = "flag";
+						}
+						break;
 					}
-					break;
 				}
-			}
-			
-			// der default wert fuer diese option
-			// aus den items der gleichnamigen listen extrahieren, die hart im xml definiert wurden
-			String def = "";
-			// wenn es eine liste mit dem gleichen namen gibt wie das init-element, sollen alle items (trennzeichen=%%) als default gesetzt werden 
-			if(this.getList(actInit.getListname()) != null)
-			{
-				List list = this.getList(actInit.getListname());
-				ArrayList<String> items = list.getItem();
-				for(String item : items)
+				
+				// der default wert fuer diese option
+				// aus den items der gleichnamigen listen extrahieren, die hart im xml definiert wurden
+				String def = "";
+				// wenn es eine liste mit dem gleichen namen gibt wie das init-element, sollen alle items (trennzeichen=%%) als default gesetzt werden 
+				if(this.getList(actInit.getListname()) != null)
 				{
-					if(def.equals("")) {def = item;}
-					else{def += "%%" + item;}
+					List list = this.getList(actInit.getListname());
+					ArrayList<String> items = list.getItem();
+					for(String item : items)
+					{
+						if(def.equals("")) {def = item;}
+						else{def += "%%" + item;}
+					}
 				}
+				
+				// der hilfstext fuer diese option
+				String text2 = "no description available";
+				if(!(actInit.getDescription().matches("")))
+				{
+					text2 = actInit.getDescription();
+					text2 = text2.replaceAll("'", "\\\\'");
+				}
+				
+				script.addOption(name, minoccur, maxoccur, definition, check, def, text1, text2);
 			}
-			
-			// der hilfstext fuer diese option
-			String text2 = "no description available";
-			if(!(actInit.getDescription().matches("")))
-			{
-				text2 = actInit.getDescription();
-				text2 = text2.replaceAll("'", "\\\\'");
-			}
-			
-			script.addOption(name, minoccur, maxoccur, definition, check, def, text1, text2);
 //			System.out.println("addoption mit diesen parametern: "+name+minoccur+maxoccur+definition+check+def+text1+text2);
 		}
 		
