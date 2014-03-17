@@ -400,7 +400,7 @@ implements Serializable, Cloneable
 						perlSnippet.add("");
 						perlSnippet.add("\t\t# toroot = true");
 						perlSnippet.add("\t\tpush (@{$FILE{'root'}}, [\""+actFile.getKey()+"\", $tmp]);");
-						perlSnippet.add("\t\t\t&logit(\"info\", \"toroot: cp $globbedFile $pwd\");");
+						perlSnippet.add("\t\t&logit(\"info\", \"toroot: cp $tmp $pwd\");");
 						perlSnippet.add("\t\tcopy($tmp, $pwd);");
 					}
 					perlSnippet.add("\t}");
