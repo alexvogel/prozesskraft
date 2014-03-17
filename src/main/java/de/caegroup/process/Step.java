@@ -390,17 +390,17 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\tpush (@fileList, $globbedFile);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("");
-					perlSnippet.add("\tforeach my $tmp (@fileList)");
-					perlSnippet.add("\t{");
-					perlSnippet.add("\t\tpush (@{$FILE{'"+this.getName()+"'}}, [\""+actFile.getKey()+"\", $tmp]);");
-					perlSnippet.add("\t\t&logit(\"info\", \""+actFile.getKey()+"=$tmp\");");
+					perlSnippet.add("\t\tforeach my $tmp (@fileList)");
+					perlSnippet.add("\t\t{");
+					perlSnippet.add("\t\t\tpush (@{$FILE{'"+this.getName()+"'}}, [\""+actFile.getKey()+"\", $tmp]);");
+					perlSnippet.add("\t\t\t&logit(\"info\", \""+actFile.getKey()+"=$tmp\");");
 					// wenn file toroot=true ist, dann soll auch in das root-verzeichnis kopiert werden (und auch in %FILE{'root}
 					if(actCommit.getToroot())
 					{
 						perlSnippet.add("");
-						perlSnippet.add("\t\t# toroot = true");
-						perlSnippet.add("\t\tpush (@{$FILE{'root'}}, [\""+actFile.getKey()+"\", $tmp]);");
-						perlSnippet.add("\t\t&logit(\"info\", \"toroot: cp $tmp $pwd\");");
+						perlSnippet.add("\t\t\t# toroot = true");
+						perlSnippet.add("\t\t\tpush (@{$FILE{'root'}}, [\""+actFile.getKey()+"\", $tmp]);");
+						perlSnippet.add("\t\t\t&logit(\"info\", \"toroot: cp $tmp $pwd\");");
 						perlSnippet.add("\t\tcopy($tmp, $pwd);");
 					}
 					perlSnippet.add("\t}");
