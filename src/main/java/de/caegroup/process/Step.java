@@ -449,6 +449,21 @@ implements Serializable, Cloneable
 			int minoccur = actInit.getMinoccur();
 			int maxoccur = actInit.getMaxoccur();
 			
+			// wenn der listname innerhalb der callitems keine erwaehnung finden sollen sie bei der erzeugung
+			// von aufrufparametern fuer das perlscript ignoriert werden
+			boolean beruecksichtigen = false;
+			for(Callitem actCallitem : this.getWork().getCallitem())
+			{
+				if(actCallitem.getLoop().matches("\\{\\$" + actInit.getListname())) {beruecksichtigen = true;}
+				if(actCallitem.getPar().matches("\\{\\$" + actInit.getListname())) {beruecksichtigen = true;}
+				if(actCallitem.getDel().matches("\\{\\$" + actInit.getListname())) {beruecksichtigen = true;}
+				if(actCallitem.getVal().matches("\\{\\$" + actInit.getListname())) {beruecksichtigen = true;}
+			}
+			if(!(beruecksichtigen))
+			{
+				break;
+			}
+			
 			String definition = "string";
 			// check soll aus den match-elementen des init-elementes extrahiert werden
 			// aus der ERSTEN match, dass field=value|absfilename definiert ist, soll das pattern zum checken verwendet werden
