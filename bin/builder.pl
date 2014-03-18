@@ -706,7 +706,7 @@ foreach my $refh_stackline (@CONFIG)
 			
 			sub wanted2
 			{
-				my $cb2_perl_shebang = "#!/opt/cb2/perl/bin/perl";
+				my $cb2_perl_shebang = "#!/share/sdmmisc/cb2/cb2perl/bin/perl";
 				# wenn es ein directory ist, dann verwerfen
 				print "filename in wanted: ".$File::Find::name."\n";
 				if ( -d $File::Find::name )
