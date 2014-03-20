@@ -1251,6 +1251,7 @@ public class Createdoc
 			Thread.currentThread().interrupt();
 		}
 		
+		// pdfs mergen
 		mergePdf(pdfRankFiles, output);
 
 		
