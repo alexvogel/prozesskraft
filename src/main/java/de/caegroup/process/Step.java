@@ -199,7 +199,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("\t}");
 		perlSnippet.add("");
 		
-		perlSnippet.add("\telsif(system(\"which "+ this.getWork().getCommand() +"\"))");
+		perlSnippet.add("\telsif(system(\"which "+ this.getWork().getCommand() +"\") !~ m/command not found/i)");
 		perlSnippet.add("\t{");
 		perlSnippet.add("\t\t$call = \"" + this.getWork().getCommand() + "\";");
 		perlSnippet.add("\t\t&logit(\"debug\", \"--- found the program in \\$PATH: $call\");");
