@@ -666,8 +666,8 @@ implements Serializable, Cloneable
 		code.add("	");
 		code.add("	foreach my $fileOfEtc (@fileOfEtc)");
 		code.add("	{");
-		code.add("		push(@{$$refh_FILE{'root'}}, [\"subdiretc\", File::Spec->rel2abs($fileOfEtc)]);");
-		code.add("		&logit(\"debug\", \"adding to 'root': subdiretc=\" . File::Spec->rel2abs($fileOfEtc));");
+		code.add("		push(@{$$refh_FILE{'root'}}, [\"subdiretc\", File::Spec->rel2abs(etcdir . \"/\" . $fileOfEtc)]);");
+		code.add("		&logit(\"debug\", \"adding to 'root': subdiretc=\" . File::Spec->rel2abs(etcdir . \"/\" . $fileOfEtc));");
 		code.add("	}");
 		code.add("}");
 		code.add("");
