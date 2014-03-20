@@ -47,6 +47,8 @@ implements Serializable, Cloneable
 			content.add("my %FILE = getTypedOptions(\"file\");");
 			content.add("my %VARIABLE = getTypedOptions(\"variable\");");
 			content.add("");
+			content.add("addFilesEtc(\\%FILE);");
+			content.add("");
 			content.add("#-------------------");
 			content.add("# zeitpunkt des aufrufs feststellen");
 			content.add("my ($sec, $min, $hour, $day, $month, $year) = (localtime)[0,1,2,3,4,5];");
