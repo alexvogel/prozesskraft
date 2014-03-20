@@ -1242,6 +1242,15 @@ public class Createdoc
 			}
 		}
 
+		// warten bis alles auf platte geschrieben ist
+		try{
+			Thread.sleep(1000);
+		}
+		catch (InterruptedException ex)
+		{
+			Thread.currentThread().interrupt();
+		}
+		
 		mergePdf(pdfRankFiles, output);
 
 		
