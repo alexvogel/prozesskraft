@@ -653,7 +653,37 @@ implements Serializable, Cloneable
 		code.add("	elsif ($type =~ /variable/i) {return %VARIABLE;}");
 		code.add("");
 		code.add("}");
-		
+		code.add("");
+		code.add("sub expandPathInOptions");
+		code.add("{");
+		code.add("	foreach my $key (getOptionKeys())");
+		code.add("	{");
+		code.add("		if (ref($OPT{$key}) eq \"SCALAR\")");
+		code.add("		{");
+		code.add("			if ((${$OPT{$key}}) && (stat ${$OPT{$key}}))");
+		code.add("			{");
+		code.add("				&logit(\"info\", \"expanding path of the value of option $key\");");
+		code.add("				&logit(\"info\", ${$OPT{$key}} . \" -> \" . File::Spec->rel2abs(${$OPT{$key}}));");
+		code.add("				${$OPT{$key}} = File::Spec->rel2abs(${$OPT{$key}});");
+		code.add("			}");
+		code.add("		}");
+		code.add("		");
+		code.add("		elsif (ref($OPT{$key}) eq \"ARRAY\")");
+		code.add("		{");
+		code.add("			for(my $x=0; $x<scalar(@{$OPT{$key}}); $x++)");
+		code.add("			{");
+		code.add("				if ((${$OPT{$key}}[$x]) && (stat ${$OPT{$key}}[$x]) )");
+		code.add("				{");
+		code.add("					&logit(\"info\", \"expanding path of value of option $key\");");
+		code.add("					&logit(\"info\", ${$OPT{$key}}[$x] . \" -> \" . File::Spec->rel2abs(${$OPT{$key}}[$x]));");
+		code.add("					${$OPT{$key}}[$x] = File::Spec->rel2abs(${$OPT{$key}}[$x]);");
+		code.add("				}");
+		code.add("			}");
+		code.add("		}");
+		code.add("	}");
+		code.add("}");
+
+
 		
 		this.code_getsetoptionsconfigs = code;
 	}
