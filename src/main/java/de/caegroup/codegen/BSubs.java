@@ -387,11 +387,11 @@ implements Serializable, Cloneable
 		code.add("		logit(\"debug\", \"after: refa_list=$refa_list (\" . $tmp . \")\");");
 		code.add("");
 		code.add("		$tmp = \"\";");
-		code.add("		if(defined @$refa_variable) {$tmp = join(\", \", @$refa_variable)};");
+		code.add("		if(@$refa_variable) {$tmp = join(\", \", @$refa_variable)};");
 		code.add("		logit(\"debug\", \"after: refa_variable=$refa_variable (\" . $tmp . \")\");");
 		code.add("");
 		code.add("		$tmp = \"\";");
-		code.add("		if(defined @$refa_file) {$tmp = join(\", \", @$refa_file)};");
+		code.add("		if(@$refa_file) {$tmp = join(\", \", @$refa_file)};");
 		code.add("		logit(\"debug\", \"after: refa_file=$refa_file (\" . $tmp . \")\");");
 		code.add("");
 		code.add("		exit(1);");
@@ -493,7 +493,7 @@ implements Serializable, Cloneable
 		code.add("	");
 		code.add("	elsif (ref($OPT{$key}) eq \"ARRAY\")");
 		code.add("	{");
-		code.add("		if ( (!defined @{$OPT{$key}}) || (scalar @{$OPT{$key}} == 0) )");
+		code.add("		if ( (! @{$OPT{$key}}) || (scalar @{$OPT{$key}} == 0) )");
 		code.add("		{");
 		code.add("			return undef;");
 		code.add("		}");
