@@ -76,7 +76,6 @@ implements Serializable, Cloneable
 			content.add("");
 			content.add("# anlegen eines command-hashes");
 			content.add("my %COMMAND;");
-			content.add("my $command_error;");
 			content.add("");
 
 
