@@ -109,6 +109,31 @@ implements Serializable, Cloneable
 //		return null;
 //	}
 	/**
+	 * getCommandResolveAsPerlCode()
+	 * generates perlcode for resolving a command
+	 * @return ArrayList<String> code
+	 */
+	public ArrayList<String> getCommandResolveAsPerlCode()
+	{
+		ArrayList<String> perlSnippet = new ArrayList<String>();
+		
+		perlSnippet.add("#-------------------");
+		perlSnippet.add("# Welches Kommando soll fuer Step '" + this.getName() + "' aufgerufen werden?");
+
+		perlSnippet.add("");
+		perlSnippet.add("if (!($COMMAND{'" + this.getName() + "'} = &commandResolve(\"" + this.getWork().getCommand() + "\")))");
+		perlSnippet.add("{");
+		perlSnippet.add("	&logit(\"error\", \"cannot determine what program to call for step '" + this.getName() + "'. neither in <installdir>/bin nor globally by 'which'.\");");
+		perlSnippet.add("	$command_error++;");
+		perlSnippet.add("{");
+		perlSnippet.add("");
+		perlSnippet.add("&logit(\"debug\", \"command for step '" + this.getName() + "' is: $COMMAND{'" + this.getName() + "'}\");");
+		perlSnippet.add("");
+		
+		return perlSnippet;
+	}
+	
+	/**
 	 * getStepAsPerlCodeBlock()
 	 * generates perlcode for starting this process-step from a perlscript
 	 * @return ArrayList<String> code

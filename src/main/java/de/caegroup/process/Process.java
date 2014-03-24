@@ -175,6 +175,11 @@ implements Serializable
 		script.meta.setVersion(this.getVersion());
 		script.genContent();
 		
+		// abpruefen ob die aufzurufenden programme aller steps verfuegbar sind
+		// falls nein - abbrechen
+		
+		
+		
 		// script-OPTIONS generieren aus den commit-objekten des root-steps
 		Step rootStep = this.getStep("root");
 		for(Commit actCommitOfRootStep : rootStep.getCommit())
@@ -275,6 +280,17 @@ implements Serializable
 			
 		}
 		
+		// fuer jeden step einen perl-codeblock erzeugen, der jeweils den kommandoaufruf des work-Elementes aufloest
+		for(Step actStep : this.getStepsLinearized())
+		{
+			try {
+				script.addCode("business", actStep.getCommandResolveAsPerlCode());
+			} catch (UnknownCodeBlockException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 		// fuer jeden step den perl-codeblock erzeugen
 		for(Step actStep : this.getStepsLinearized())
 		{
