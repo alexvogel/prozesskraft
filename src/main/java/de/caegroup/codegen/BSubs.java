@@ -22,6 +22,7 @@ implements Serializable, Cloneable
 	ArrayList<String> code_girlande = new ArrayList<String>();
 	ArrayList<String> code_getsetoptionsconfigs = new ArrayList<String>();
 	ArrayList<String> code_resolve = new ArrayList<String>();
+	ArrayList<String> code_commandresolve = new ArrayList<String>();
 	ArrayList<String> content = new ArrayList<String>();
 	/*----------------------------
 	  constructors
@@ -35,6 +36,7 @@ implements Serializable, Cloneable
 		this.initCodeGirlande();
 		this.initCodeGetsetoptionsconfigs();
 		this.initCodeResolve();
+		this.initCodeCommandresolve();
 	}
 
 	/*----------------------------
@@ -57,6 +59,7 @@ implements Serializable, Cloneable
 			content.addAll(this.code_girlande);
 			content.addAll(this.code_getsetoptionsconfigs);
 			content.addAll(this.code_resolve);
+			content.addAll(this.code_commandresolve);
 		}
 		// default
 		else
@@ -740,6 +743,31 @@ implements Serializable, Cloneable
 		code.add("}");
 
 		this.code_resolve = code;
+	}
+	private void initCodeCommandresolve()
+	{
+		ArrayList<String> code = new ArrayList<String>();
+		
+		code.add("sub commandResolve");
+		code.add("{");
+		code.add("	my $command = shift;");
+		code.add("	");
+		code.add("	if(stat $bindir . \"/\" . $command)");
+		code.add("	{");
+		code.add("		&logit(\"debug\", \"command '\" . $command . \"' found command in installation directory\");");
+		code.add("		return $bindir . \"/\" . $command");
+		code.add("	}");
+		code.add("");
+		code.add("	elsif(system(\"which $command\") !~ m/command not found/i)");
+		code.add("	{");
+		code.add("		&logit(\"debug\", \"command $command found with 'which' in \\$PATH\");");
+		code.add("		return $command");
+		code.add("	}");
+		code.add("");
+		code.add("	return undef;");
+		code.add("}");
+
+		this.code_commandresolve = code;
 	}
 	
 	

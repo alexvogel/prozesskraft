@@ -39,8 +39,10 @@ implements Serializable, Cloneable
 		
 		if(type.matches("process"))
 		{
-			content.add("# 1) copy all options which value stat as a path to a file or a directory --<key>=<path> as key=path to %FILE . Except for option like --submodel_<key>=<path> go as key=path to %FILE");
-			content.add("# 2) copy all options which value does not stat as a path to a file or directory --<key>=<value> as key=value to %VARIABLE . Except for options like --variable_<key>=<value> go as key=value to %VARIABLE");
+			content.add("# 1) find out if a command exists in <installdir>/bin or globally installed \"which\" for every step and put the call in %COMMAND{$stepname}");
+			content.add("# 2) copy all options which value stat as a path to a file or a directory --<key>=<path> as key=path to %FILE . Except for option like --submodel_<key>=<path> go as key=path to %FILE");
+			content.add("# 3) copy all options which value does not stat as a path to a file or directory --<key>=<value> as key=value to %VARIABLE . Except for options like --variable_<key>=<value> go as key=value to %VARIABLE");
+			content.add("");
 			content.add("");
 			content.add("&expandPathInOptions();");
 			content.add("");
@@ -71,6 +73,12 @@ implements Serializable, Cloneable
 			content.add("");
 			content.add("# und hinein wechseln");
 			content.add("chdir $instancedir;");
+			content.add("");
+			content.add("# anlegen eines command-hashes");
+			content.add("my %COMMAND;");
+			content.add("my $command_error;");
+			content.add("");
+
 
 		}
 		
