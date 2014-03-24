@@ -123,9 +123,9 @@ implements Serializable, Cloneable
 		perlSnippet.add("");
 		perlSnippet.add("if (!($COMMAND{'" + this.getName() + "'} = &commandResolve(\"" + this.getWork().getCommand() + "\")))");
 		perlSnippet.add("{");
-		perlSnippet.add("	&logit(\"error\", \"cannot determine what program to call for step '" + this.getName() + "'. neither in <installdir>/bin nor globally by 'which'.\");");
-		perlSnippet.add("	$command_error++;");
-		perlSnippet.add("{");
+		perlSnippet.add("	&logit(\"fatal\", \"cannot determine what program to call for step '" + this.getName() + "'. neither found in <installdir>/bin nor by calling 'which'.\");");
+		perlSnippet.add("	exit(1);");
+		perlSnippet.add("}");
 		perlSnippet.add("");
 		perlSnippet.add("&logit(\"debug\", \"command for step '" + this.getName() + "' is: $COMMAND{'" + this.getName() + "'}\");");
 		perlSnippet.add("");
@@ -214,28 +214,7 @@ implements Serializable, Cloneable
 		// call erzeugen
 		perlSnippet.add("");
 		perlSnippet.add("\t# create call for command");
-		perlSnippet.add("\tmy $call;");
-		perlSnippet.add("");
-		
-		perlSnippet.add("\tif(stat $bindir . \"/\" . \"" + this.getWork().getCommand() + "\")");
-		perlSnippet.add("\t{");
-		perlSnippet.add("\t\t$call = $bindir . \"/" + this.getWork().getCommand() + "\";");
-		perlSnippet.add("\t\t&logit(\"debug\", \"--- found the program in installation directory of process: $call\");");
-		perlSnippet.add("\t}");
-		perlSnippet.add("");
-		
-		perlSnippet.add("\telsif(system(\"which "+ this.getWork().getCommand() +"\") !~ m/command not found/i)");
-		perlSnippet.add("\t{");
-		perlSnippet.add("\t\t$call = \"" + this.getWork().getCommand() + "\";");
-		perlSnippet.add("\t\t&logit(\"debug\", \"--- found the program in \\$PATH: $call\");");
-		perlSnippet.add("\t}");
-		perlSnippet.add("");
-		
-		perlSnippet.add("\telse");
-		perlSnippet.add("\t{");
-		perlSnippet.add("\t\t&logit(\"fatal\", \"could not find a program called '"+this.getWork().getCommand()+"' neither in installation directory $bindir nor under \\$PATH\");");
-		perlSnippet.add("\t\texit(1);");
-		perlSnippet.add("\t}");
+		perlSnippet.add("\tmy $call = $COMMAND{'" + this.getName() + "'};");
 		perlSnippet.add("");
 		
 		for(Callitem actCallitem : this.getWork().getCallitem())
