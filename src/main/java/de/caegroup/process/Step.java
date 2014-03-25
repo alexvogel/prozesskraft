@@ -123,7 +123,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("");
 		perlSnippet.add("if (!($COMMAND{'" + this.getName() + "'} = &commandResolve(\"" + this.getWork().getCommand() + "\")))");
 		perlSnippet.add("{");
-		perlSnippet.add("	&logit(\"fatal\", \"cannot determine what program to call for step '" + this.getName() + "'. neither found in <installdir>/bin nor by calling 'which'.\");");
+		perlSnippet.add("	&logit(\"fatal\", \"cannot determine what program to call for step '" + this.getName() + "'. \"" + this.getWork().getCommand() + "\" neither found in <installdir>/bin nor by calling 'which'.\");");
 		perlSnippet.add("	exit(1);");
 		perlSnippet.add("}");
 		perlSnippet.add("");
