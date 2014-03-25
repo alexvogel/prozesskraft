@@ -55,7 +55,7 @@ implements Serializable, Cloneable
 			content.add("# definition der standardoptions");
 			content.add("				'h' => {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'prints this helptext'},");
 			content.add("				'log'  => {'reihenfolge' => '7', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'string', 'check'=>'', 'default' => '', 'text1' => '=FILE', 'text2' => 'logs in a file instead of STDERR'},");
-			content.add("				'debug'  => {'reihenfolge' => '11', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
+			content.add("				'd'  => {'reihenfolge' => '11', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
 			
 			content.add("");
 			content.add("# definition der standardoptions");
