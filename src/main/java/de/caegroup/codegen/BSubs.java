@@ -814,7 +814,7 @@ implements Serializable, Cloneable
 		code.add("");
 		code.add("else");
 		code.add("{");
-		code.add("	my $which = `which $command`;");
+		code.add("	my $which = `which $command 2> /dev/null`;");
 		code.add("	my @which = split(\" \", $which);");
 		code.add("	");
 		code.add("	if((($which[0]) && (stat $which[0])) || (stat $which))");
