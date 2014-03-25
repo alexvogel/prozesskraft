@@ -100,7 +100,7 @@ implements Serializable, Cloneable
 
 			content.add("$helptext .= \"author: alexander.vogel\\@caegroup.de | version: $version | date: $date\\n\\n\";");
 			content.add("");
-			content.add("$helptext .= \"installdir: \" . Cwd->realpath(File::Spec->rel2abs($0)) . \"\\n\";");
+			content.add("$helptext .= \"installdir: \" . Cwd::realpath(File::Spec->rel2abs($0)) . \"\\n\";");
 		}
 		
 		this.block.setOrigin("auto");
