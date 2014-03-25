@@ -71,18 +71,18 @@ implements Serializable, Cloneable
 			content.add("# wenn kein dokufile vorhanden ist, wird auch diese option nicht angelegt");
 			content.add("if (stat $doc_path)");
 			content.add("{");
-			content.add("	$OPTIONS_TABLE{'doc'} = {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => \"shows documentation ($doc_path)\"};");
+			content.add("	$OPTIONS_TABLE{'doc'} = {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => \"shows documentation (\".File::Spec->rel2abs($doc_path).\")\"};");
 			content.add("}");
 			content.add("# wenn kein config-file vorhanden ist, wird auch diese option nicht angelegt");
 			content.add("if (stat $conf_path1)");
 			content.add("{");
 			content.add("	my %CONF_TMP = &getvars($conf_path1);");
-			content.add("	$OPTIONS_TABLE{'conf'} = {'reihenfolge' => '10', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'^[^=]+=[^=]+$', 'default' => '', 'text1' => '=KEY=VALUE', 'text2' => 'for redefinition of configuration variables (instead of using the ones in $conf_path1). (possible KEYs are: ' . join(\", \", sort keys %CONF_TMP) . ')'};");
+			content.add("	$OPTIONS_TABLE{'conf'} = {'reihenfolge' => '10', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'^[^=]+=[^=]+$', 'default' => '', 'text1' => '=KEY=VALUE', 'text2' => 'for redefinition of configuration variables (instead of using the ones in \".File::Spec->rel2abs($conf_path1).\"). (possible KEYs are: ' . join(\", \", sort keys %CONF_TMP) . ')'};");
 			content.add("}");
 			content.add("elsif (stat $conf_path2)");
 			content.add("{");
 			content.add("	my %CONF_TMP = &getvars($conf_path2);");
-			content.add("	$OPTIONS_TABLE{'conf'} = {'reihenfolge' => '10', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'^[^=]+=[^=]+$', 'default' => '', 'text1' => '=KEY=VALUE', 'text2' => 'for redefinition of configuration variables (instead of using the ones in $conf_path1). (possible KEYs are: ' . join(\", \", sort keys %CONF_TMP) . ')'};");
+			content.add("	$OPTIONS_TABLE{'conf'} = {'reihenfolge' => '10', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'^[^=]+=[^=]+$', 'default' => '', 'text1' => '=KEY=VALUE', 'text2' => 'for redefinition of configuration variables (instead of using the ones in \".File::Spec->rel2abs($conf_path2).\"). (possible KEYs are: ' . join(\", \", sort keys %CONF_TMP) . ')'};");
 			content.add("}");
 
 			content.add("# parsen und generieren eines hashs (%optionsall) zum erzeugen von optionen (Getopt::Long)");
