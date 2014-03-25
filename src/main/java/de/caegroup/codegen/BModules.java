@@ -50,6 +50,7 @@ implements Serializable, Cloneable
 			content.add("use File::Spec;");
 			content.add("use File::Copy;");
 			content.add("use Cwd;");
+			content.add("use Time::HiRes qw(gettimeofday);");
 		}
 		
 		this.block.setOrigin("auto");
