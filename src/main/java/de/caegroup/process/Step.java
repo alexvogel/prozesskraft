@@ -263,7 +263,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("\t# execute the call");
 		perlSnippet.add("\t&logit(\"info\", \"executing program for step '"+this.getName()+"': $call\");");
 		perlSnippet.add("\t&logit(\"info\", \">>>>>>>>>> subsequent logging comes from step '"+this.getName()+"' >>>>>>>>>>\");");
-		perlSnippet.add("\tmy $return = system($call);");
+		perlSnippet.add("\tmy $return = system(\"($call | tee stdout.log) 3>&1 1>&2 2>&3 | tee stderr.log\");");
 		perlSnippet.add("\t&logit(\"info\", \"<<<<<<<<<< previous logging came from step '"+this.getName()+"' <<<<<<<<<<\");");
 		perlSnippet.add("\tif($return)");
 		perlSnippet.add("\t{");
