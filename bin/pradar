@@ -423,9 +423,10 @@ if(@ARGV)
 
 #-------------------
 # wenn das programm nicht verfuegbar ist - entsprechende loggingausgabe
-unless(stat getConfig($subcommand))
+my @subcommand = split(" ", getConfig($subcommand));
+unless(stat $subcommand[0])
 {
-	&logit("error", "target for call pradar is not available: " . getConfig($subcommand));
+	&logit("error", "target for call pradar is not available: $subcommand[0] (part of " . getConfig($subcommand) . ")");
 	exit(1);
 }
 
