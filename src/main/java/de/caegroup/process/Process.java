@@ -559,7 +559,10 @@ implements Serializable
 				// Fuer den einen(!) Knoten 'work'
 				Work work = this.step.get(i).getWork();
 				atts.clear();
-				atts.addAttribute("", "", "name", "CDATA", work.getName());
+				if(work.getName() != null)
+				{
+					atts.addAttribute("", "", "name", "CDATA", work.getName());
+				}
 				atts.addAttribute("", "", "loop", "CDATA", work.getLoop());
 				atts.addAttribute("", "", "loopvar", "CDATA", work.getLoopvar());
 				atts.addAttribute("", "", "description", "CDATA", work.getDescription());
@@ -569,14 +572,17 @@ implements Serializable
 			
 				// Fuer jeden Knoten 'callitem'
 				Callitem[] callitems = work.getCallitems2();
-				for (int k=0; k<callitems.length; k++)
+				for (Callitem actCallitem : work.getCallitem())
 				{
 					atts.clear();
-					atts.addAttribute("", "", "sequence", "CDATA", "" + callitems[k].getSequence());
-					atts.addAttribute("", "", "loop", "CDATA", callitems[k].getLoop());
-					atts.addAttribute("", "", "par", "CDATA", callitems[k].getPar());
-					atts.addAttribute("", "", "del", "CDATA", callitems[k].getDel());
-					atts.addAttribute("", "", "val", "CDATA", callitems[k].getVal());
+					if(actCallitem.getSequence() != null)
+					{
+						atts.addAttribute("", "", "sequence", "CDATA", "" + actCallitem.getSequence());
+					}
+					atts.addAttribute("", "", "loop", "CDATA", actCallitem.getLoop());
+					atts.addAttribute("", "", "par", "CDATA", actCallitem.getPar());
+					atts.addAttribute("", "", "del", "CDATA", actCallitem.getDel());
+					atts.addAttribute("", "", "val", "CDATA", actCallitem.getVal());
 					
 					hd.startElement("", "", "callitem", atts);
 					hd.endElement("", "", "callitem");

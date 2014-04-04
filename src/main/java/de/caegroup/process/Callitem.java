@@ -92,7 +92,7 @@ implements Serializable
 	/*----------------------------
 	  methods get
 	----------------------------*/
-	public int getSequence()
+	public Integer getSequence()
 	{
 		return this.sequence;
 	}
@@ -145,7 +145,7 @@ implements Serializable
 	/*----------------------------
 	methods set
 	----------------------------*/
-	public void setSequence(int sequence)
+	public void setSequence(Integer sequence)
 	{
 		this.sequence = sequence;
 	}

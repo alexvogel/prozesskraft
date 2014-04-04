@@ -189,7 +189,7 @@ public class TestProcess {
 
 		// testen der callitem0-attribute
 		Callitem callitem1 = work.getCallitem(1);
-		assertEquals(2, callitem1.getSequence());
+		assertEquals("2", callitem1.getSequence());
 		assertEquals("--matdb", callitem1.getPar());
 		assertEquals("=", callitem1.getDel());
 		assertEquals("$matdb", callitem1.getVal());
