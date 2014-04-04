@@ -132,11 +132,7 @@ public class Wrap
 			System.err.println("warn: already exists: " + output.getCanonicalPath());
 			exiter();
 		}
-		else
-		{
-			output.mkdir();
-		}
-		
+
 		p1.setInfilexml( commandline.getOptionValue("definition") );
 		System.err.println("info: reading process definition "+commandline.getOptionValue("definition"));
 		
