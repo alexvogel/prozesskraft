@@ -73,7 +73,7 @@ implements Serializable
 	private String customerMail = new String();
 	private String modelVersion = new String();
 	private String version = new String();
-	private boolean pradar = false;
+	private boolean wrapper = false;
 //	private NamedList<Step> steps = new NamedList<Step>();
 	private ArrayList<Step> step = new ArrayList<Step>();
 //	private ArrayList<Init> inits = new ArrayList<Init>();
@@ -1358,9 +1358,9 @@ implements Serializable
 		return versionplain;
 	}
 
-	public boolean getPradar()
+	public boolean isWrapper()
 	{
-		return this.pradar;
+		return this.wrapper;
 	}
 	
 	public String getStatus()
@@ -1677,9 +1677,9 @@ implements Serializable
 		this.customerMail = customerMail;
 	}
 
-	public void setPradar(boolean pradar)
+	public void setWrapper(boolean wrapper)
 	{
-		this.pradar = pradar;
+		this.wrapper = wrapper;
 	}
 
 	public void setStatus(String status)
