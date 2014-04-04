@@ -596,8 +596,10 @@ implements Serializable
 				{
 					atts.clear();
 					
-					atts.addAttribute("", "", "id", "CDATA", actCommit.getName());
-					atts.addAttribute("", "", "toroot", "CDATA", String.valueOf(actCommit.getToroot()));
+//					atts.addAttribute("", "", "name", "CDATA", actCommit.getName());
+					atts.addAttribute("", "", "toroot", "CDATA", ""+actCommit.getToroot());
+					
+					System.out.println(atts.toString());
 					
 					hd.startElement("", "", "commit", atts);
 					hd.endElement("", "", "commit");
