@@ -558,37 +558,39 @@ implements Serializable
 
 				}
 
-				// Fuer den einen(!) Knoten 'work'
-				System.out.println("aktueller step ist "+actStep.getName());
-				Work work = actStep.getWork();
-				atts.clear();
-				atts.addAttribute("", "", "name", "CDATA", work.getName());
-				atts.addAttribute("", "", "loop", "CDATA", work.getLoop());
-				atts.addAttribute("", "", "loopvar", "CDATA", work.getLoopvar());
-				atts.addAttribute("", "", "description", "CDATA", work.getDescription());
-				atts.addAttribute("", "", "command", "CDATA", work.getCommand());
-				
-				hd.startElement("", "", "work", atts);
-			
-				// Fuer jeden Knoten 'callitem'
-				for (Callitem actCallitem : work.getCallitem())
+				// Fuer den einen(!) Knoten 'work' wenn nicht der rootstep
+				if(actStep.getName() != this.getRootstepname())
 				{
+					Work work = actStep.getWork();
 					atts.clear();
-					if(actCallitem.getSequence() != null)
-					{
-						atts.addAttribute("", "", "sequence", "CDATA", "" + actCallitem.getSequence());
-					}
-					atts.addAttribute("", "", "loop", "CDATA", actCallitem.getLoop());
-					atts.addAttribute("", "", "par", "CDATA", actCallitem.getPar());
-					atts.addAttribute("", "", "del", "CDATA", actCallitem.getDel());
-					atts.addAttribute("", "", "val", "CDATA", actCallitem.getVal());
+					atts.addAttribute("", "", "name", "CDATA", work.getName());
+					atts.addAttribute("", "", "loop", "CDATA", work.getLoop());
+					atts.addAttribute("", "", "loopvar", "CDATA", work.getLoopvar());
+					atts.addAttribute("", "", "description", "CDATA", work.getDescription());
+					atts.addAttribute("", "", "command", "CDATA", work.getCommand());
 					
-					hd.startElement("", "", "callitem", atts);
-					hd.endElement("", "", "callitem");
+					hd.startElement("", "", "work", atts);
+
+					// Fuer jeden Knoten 'callitem'
+					for (Callitem actCallitem : work.getCallitem())
+					{
+						atts.clear();
+						if(actCallitem.getSequence() != null)
+						{
+							atts.addAttribute("", "", "sequence", "CDATA", "" + actCallitem.getSequence());
+						}
+						atts.addAttribute("", "", "loop", "CDATA", actCallitem.getLoop());
+						atts.addAttribute("", "", "par", "CDATA", actCallitem.getPar());
+						atts.addAttribute("", "", "del", "CDATA", actCallitem.getDel());
+						atts.addAttribute("", "", "val", "CDATA", actCallitem.getVal());
+						
+						hd.startElement("", "", "callitem", atts);
+						hd.endElement("", "", "callitem");
+					}
+					
+					hd.endElement("", "", "work");
 				}
 				
-				hd.endElement("", "", "work");
-			
 				// Fuer jeden Knoten 'commit'
 				for (Commit actCommit : actStep.getCommit())
 				{
