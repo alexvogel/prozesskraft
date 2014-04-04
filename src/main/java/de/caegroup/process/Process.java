@@ -204,14 +204,14 @@ implements Serializable
 		wrapperProcess.setWrapper(true);
 		
 		// kopieren des root-steps und dem wrapperProcess hinzufuegen
-		wrapperProcess.addStep(this.getStep("root").clone());
+		wrapperProcess.addStep(this.getStep(this.getRootstepname()).clone());
 		
 		// erstellen eines steps mit dem namen vom prozess und dem wrapperProcess hinzufuegen
 //		Step wrapStep = new Step(this.getName());
 		wrapperProcess.addStep(new Step(this.getName()));
 		
 		// jeden commit aus 'root' durchgehen und daraus alle inits erzeugen
-		for(Commit actCommit : wrapperProcess.getStep("root").getCommit())
+		for(Commit actCommit : wrapperProcess.getStep(this.getRootstepname()).getCommit())
 		{
 			// und aus jeder variable commit einen init fuer den wrapperStep erstellen
 			for(Variable actVariable : actCommit.getVariable())
@@ -230,7 +230,7 @@ implements Serializable
 				init.setListname(actVariable.getKey());
 				init.setDescription(actVariable.getDescription());
 				init.setFromobjecttype("variable");
-				init.setFromstep("root");
+				init.setFromstep(this.getRootstepname());
 				init.setInsertrule("overwrite");
 				init.setMinoccur(actVariable.getMinoccur());
 				init.setMaxoccur(actVariable.getMaxoccur());
@@ -254,7 +254,7 @@ implements Serializable
 				init.setListname(actFile.getKey());
 				init.setDescription(actFile.getDescription());
 				init.setFromobjecttype("file");
-				init.setFromstep("root");
+				init.setFromstep(this.getRootstepname());
 				init.setInsertrule("overwrite");
 				init.setMinoccur(actFile.getMinoccur());
 				init.setMaxoccur(actFile.getMaxoccur());
@@ -321,7 +321,7 @@ implements Serializable
 		
 		
 		// script-OPTIONS generieren aus den commit-objekten des root-steps
-		Step rootStep = this.getStep("root");
+		Step rootStep = this.getStep(this.getRootstepname());
 		for(Commit actCommitOfRootStep : rootStep.getCommit())
 		{
 			// alle Variablen
@@ -516,40 +516,39 @@ implements Serializable
 			atts.addAttribute("", "", "initcommitdir", "CDATA", this.path);
 			atts.addAttribute("", "", "initcommitvarfile", "CDATA", this.path);
 			atts.addAttribute("", "", "architectMail", "CDATA", this.architectMail);
+			atts.addAttribute("", "", "wrapper", "CDATA", ""+this.wrapper);
 			
 			hd.startElement("", "", "process", atts);
 
 			// Fuer jeden Knoten 'step'
-			for (int i=0; i<this.step.size();i++)
+			for (Step actStep : this.getStep())
 			{
 				atts.clear();
-				atts.addAttribute("", "", "name", "CDATA", this.step.get(i).getName());
-				atts.addAttribute("", "", "type", "CDATA", this.step.get(i).getType());
-				atts.addAttribute("", "", "description", "CDATA", this.step.get(i).getDescription());
-				atts.addAttribute("", "", "loop", "CDATA", this.step.get(i).getLoop());
-				atts.addAttribute("", "", "loopvar", "CDATA", this.step.get(i).getLoopvar());
+				atts.addAttribute("", "", "name", "CDATA", actStep.getName());
+				atts.addAttribute("", "", "type", "CDATA", actStep.getType());
+				atts.addAttribute("", "", "description", "CDATA", actStep.getDescription());
+				atts.addAttribute("", "", "loop", "CDATA", actStep.getLoop());
+				atts.addAttribute("", "", "loopvar", "CDATA", actStep.getLoopvar());
 				
 				hd.startElement("", "", "step", atts);
 				
 				// Fuer jeden Knoten 'init'
-				Init[] inits = this.step.get(i).getInits2();
-				for (int j=0; j<inits.length; j++)
+				for (Init actInit : actStep.getInit())
 				{
 					atts.clear();
-					atts.addAttribute("", "", "name", "CDATA", inits[j].getListname());
-					atts.addAttribute("", "", "fromobjecttype", "CDATA", inits[j].getFromobjecttype());
-					atts.addAttribute("", "", "returnfield", "CDATA", inits[j].getReturnfield());
-					atts.addAttribute("", "", "fromstep", "CDATA", inits[j].getFromstep());
+					atts.addAttribute("", "", "name", "CDATA", actInit.getListname());
+					atts.addAttribute("", "", "fromobjecttype", "CDATA", actInit.getFromobjecttype());
+					atts.addAttribute("", "", "returnfield", "CDATA", actInit.getReturnfield());
+					atts.addAttribute("", "", "fromstep", "CDATA", actInit.getFromstep());
 					
 					hd.startElement("", "", "init", atts);
 				
 					// Fuer jeden Knoten 'match'
-					Match[] matchs = inits[j].getMatch2();
-					for (int k=0; k<matchs.length; k++)
+					for (Match actMatch : actInit.getMatch())
 					{
 						atts.clear();
-						atts.addAttribute("", "", "field", "CDATA", matchs[k].getField());
-						atts.addAttribute("", "", "pattern", "CDATA", matchs[k].getPattern());
+						atts.addAttribute("", "", "field", "CDATA", actMatch.getField());
+						atts.addAttribute("", "", "pattern", "CDATA", actMatch.getPattern());
 						
 						hd.startElement("", "", "match", atts);
 						hd.endElement("", "", "match");
@@ -560,12 +559,10 @@ implements Serializable
 				}
 
 				// Fuer den einen(!) Knoten 'work'
-				Work work = this.step.get(i).getWork();
+				System.out.println("aktueller step ist "+actStep.getName());
+				Work work = actStep.getWork();
 				atts.clear();
-				if(work.getName() != null)
-				{
-					atts.addAttribute("", "", "name", "CDATA", work.getName());
-				}
+				atts.addAttribute("", "", "name", "CDATA", work.getName());
 				atts.addAttribute("", "", "loop", "CDATA", work.getLoop());
 				atts.addAttribute("", "", "loopvar", "CDATA", work.getLoopvar());
 				atts.addAttribute("", "", "description", "CDATA", work.getDescription());
@@ -574,7 +571,6 @@ implements Serializable
 				hd.startElement("", "", "work", atts);
 			
 				// Fuer jeden Knoten 'callitem'
-				Callitem[] callitems = work.getCallitems2();
 				for (Callitem actCallitem : work.getCallitem())
 				{
 					atts.clear();
@@ -594,13 +590,12 @@ implements Serializable
 				hd.endElement("", "", "work");
 			
 				// Fuer jeden Knoten 'commit'
-				Commit[] commits = this.step.get(i).getCommits2();
-				for (int j=0; j<commits.length; j++)
+				for (Commit actCommit : actStep.getCommit())
 				{
 					atts.clear();
 					
-						atts.addAttribute("", "", "id", "CDATA", commits[j].getName());
-						atts.addAttribute("", "", "toroot", "CDATA", String.valueOf(commits[j].getToroot()));
+						atts.addAttribute("", "", "id", "CDATA", actCommit.getName());
+						atts.addAttribute("", "", "toroot", "CDATA", String.valueOf(actCommit.getToroot()));
 					
 					hd.startElement("", "", "commit", atts);
 					hd.endElement("", "", "commit");
