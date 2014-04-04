@@ -39,6 +39,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.dozer.DozerBeanMapper;
 //import org.dozer.Mapper;
 //import org.dozer.loader.api.BeanMappingBuilder;
@@ -129,21 +130,12 @@ implements Serializable
 	/**
 	 * clone
 	 * returns a clone of this
-	 * does in certain situations not what you expect!
 	 * @return Process
 	 */
 	@Override
 	public Process clone()
 	{
-		try
-		{
-			return (Process) super.clone();
-		}
-		catch ( CloneNotSupportedException e )
-		{
-			e.printStackTrace();
-		}
-		return null;
+		return SerializationUtils.clone(this);
 	}
 	
 	/**

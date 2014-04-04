@@ -9,6 +9,7 @@ import de.caegroup.codegen.Script;
 import de.caegroup.process.Commit;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.SerializationUtils;
 
 import com.rits.cloning.Cloner;
 
@@ -98,21 +99,12 @@ implements Serializable, Cloneable
 	/**
 	 * clone
 	 * returns a clone of this
-	 * does in certain situations not what you expect!
 	 * @return Step
 	 */
 	@Override
 	public Step clone()
 	{
-		try
-		{
-			return (Step) super.clone();
-		}
-		catch ( CloneNotSupportedException e )
-		{
-			e.printStackTrace();
-		}
-		return null;
+		return SerializationUtils.clone(this);
 	}
 	
 	/**

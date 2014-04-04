@@ -6,6 +6,8 @@ import java.io.*;
 //import java.util.Map;
 import java.util.ArrayList;
 
+import org.apache.commons.lang3.SerializationUtils;
+
 //import org.apache.solr.common.util.NamedList;
 
 public class Commit
@@ -41,6 +43,21 @@ implements Serializable
 		parent = s;
 	}
 
+	
+	/*----------------------------
+	  methods
+	----------------------------*/
+
+	/**
+	 * clone
+	 * returns a clone of this
+	 * @return Commit
+	 */
+	@Override
+	public Commit clone()
+	{
+		return SerializationUtils.clone(this);
+	}
 	
 	/*----------------------------
 	  methods get
