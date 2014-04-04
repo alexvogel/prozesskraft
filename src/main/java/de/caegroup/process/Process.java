@@ -558,8 +558,8 @@ implements Serializable
 
 				}
 
-				// Fuer den einen(!) Knoten 'work' wenn nicht der rootstep
-				if(actStep.getName() != this.getRootstepname())
+				// Fuer den einen(!) Knoten 'work' wenn er existiert
+				if(actStep.getWork() != null)
 				{
 					Work work = actStep.getWork();
 					atts.clear();
@@ -596,12 +596,11 @@ implements Serializable
 				{
 					atts.clear();
 					
-						atts.addAttribute("", "", "id", "CDATA", actCommit.getName());
-						atts.addAttribute("", "", "toroot", "CDATA", String.valueOf(actCommit.getToroot()));
+					atts.addAttribute("", "", "id", "CDATA", actCommit.getName());
+					atts.addAttribute("", "", "toroot", "CDATA", String.valueOf(actCommit.getToroot()));
 					
 					hd.startElement("", "", "commit", atts);
 					hd.endElement("", "", "commit");
-	
 				}
 
 				hd.endElement("", "", "step");
