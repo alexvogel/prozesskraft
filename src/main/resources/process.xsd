@@ -108,7 +108,7 @@
     	<xs:attribute name="loopvar" type="xs:string"/>
     	<xs:attribute name="del" type="xs:string" use="optional"/>
     	<xs:attribute name="par" type="xs:string" use="required"/>
-    	<xs:attribute name="sequence" use="required" type="xs:integer" />
+    	<xs:attribute name="sequence" use="optional" type="xs:integer" />
     	<xs:attribute name="val" use="optional" type="xs:string" />
     </xs:complexType>
   </xs:element>

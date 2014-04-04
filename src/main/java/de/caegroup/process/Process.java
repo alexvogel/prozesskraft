@@ -127,6 +127,26 @@ implements Serializable
 	----------------------------*/
 
 	/**
+	 * clone
+	 * returns a clone of this
+	 * does in certain situations not what you expect!
+	 * @return Process
+	 */
+	@Override
+	public Process clone()
+	{
+		try
+		{
+			return (Process) super.clone();
+		}
+		catch ( CloneNotSupportedException e )
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
 	 * generates a new step with a random name and adds it to this.
 	 */
 	public void addStepp()
@@ -168,6 +188,131 @@ implements Serializable
 		return true;
 	}
 
+	/**
+	 * generates a new process as a wrapper-process to this
+	 * this means:
+	 * root stays root
+	 * all other steps will be deleted
+	 * will contain only 1 step that
+	 * a) triggers a command "processname"
+	 * b) all root/commits are translated to step/inits in step 'processname'
+	 * c) all callitems are the same as meant in root
+	 * d) all commits are the same as in all old steps 'toroot'
+	 * @return Process
+	 */
+	public Process getProcessAsWrapper()
+	{
+		// process clonen
+		Process wrapperProcess = this.clone();
+		
+		// und gleich alle steps wegschmeissen
+		wrapperProcess.removeStepAll();
+		
+		// setzen des wrapper-flags
+		wrapperProcess.setWrapper(true);
+		
+		// kopieren des root-steps und dem wrapperProcess hinzufuegen
+		wrapperProcess.addStep(this.getStep("root").clone());
+		
+		// erstellen eines steps mit dem namen vom prozess und dem wrapperProcess hinzufuegen
+//		Step wrapStep = new Step(this.getName());
+		wrapperProcess.addStep(new Step(this.getName()));
+		
+		// jeden commit aus 'root' durchgehen und daraus alle inits erzeugen
+		for(Commit actCommit : wrapperProcess.getStep("root").getCommit())
+		{
+			// und aus jeder variable commit einen init fuer den wrapperStep erstellen
+			for(Variable actVariable : actCommit.getVariable())
+			{
+				// wenn ein (default-)value eintrag in aktueller variable angegeben ist, soll eine liste mit diesem item initial erzeugt werden
+				if(actVariable.getValue() != null)
+				{
+					List list = new List();
+					list.setName(actVariable.getKey());
+					list.addItem(actVariable.getValue());
+					// und dem wrapperStep hinzufuegen
+					wrapperProcess.getStep(this.getName()).addList(list);
+				}
+				
+				Init init = new Init();
+				init.setListname(actVariable.getKey());
+				init.setDescription(actVariable.getDescription());
+				init.setFromobjecttype("variable");
+				init.setFromstep("root");
+				init.setInsertrule("overwrite");
+				init.setMinoccur(actVariable.getMinoccur());
+				init.setMaxoccur(actVariable.getMaxoccur());
+				
+				Match match = new Match();
+				match.setField("key");
+				match.setPattern(actVariable.getKey());
+				
+				// den match zum neuen init hinzufuegen
+				init.addMatch(match);
+				
+				// den init dem wrapStep hinzufuegen
+				wrapperProcess.getStep(this.getName()).addInit(init);
+			}
+			
+			// und aus jedem file commit einen (evtl. list und) init fuer den wrapperStep erstellen
+			for(File actFile : actCommit.getFile())
+			{
+				
+				Init init = new Init();
+				init.setListname(actFile.getKey());
+				init.setDescription(actFile.getDescription());
+				init.setFromobjecttype("file");
+				init.setFromstep("root");
+				init.setInsertrule("overwrite");
+				init.setMinoccur(actFile.getMinoccur());
+				init.setMaxoccur(actFile.getMaxoccur());
+				
+				Match match = new Match();
+				match.setField("key");
+				match.setPattern(actFile.getKey());
+				
+				// den match zum neuen init hinzufuegen
+				init.addMatch(match);
+				
+				// den init dem wrapStep hinzufuegen
+				wrapperProcess.getStep(this.getName()).addInit(init);
+			}
+		}
+		
+		// ein work element erstellen und fuer jedes init ein callitem generieren
+		Work work = new Work();
+		work.setCommand(this.getName());
+
+		// fuer jedes init ein callitem
+		for(Init actInit : wrapperProcess.getStep(this.getName()).getInit())
+		{
+			Callitem callitem = new Callitem();
+			callitem.setLoop(actInit.getListname());
+			callitem.setPar("--"+actInit.getListname());
+			callitem.setDel("=");
+			callitem.setVal("{$loopvarcallitem}");
+			work.addCallitem(callitem);
+		}
+		
+		// aus allen steps (auser root) aus this die commits in den wrap-step clonen
+		for(Step actStep : this.getStep())
+		{
+			if(!(actStep.getName().matches("^root$")))
+			{
+				for(Commit actCommit : actStep.getCommit())
+				{
+					wrapperProcess.getStep(this.getName()).addCommit(actCommit);
+				}
+			}
+		}
+		
+		// zurueckgeben des wrapperProzesses
+		return wrapperProcess;
+	}
+	
+	/**
+	 * generates a perl script that resembles the process in scriptform
+	 */
 	public ArrayList<String> getProcessAsPerlScript()
 	{
 		Script script = new Script();
@@ -1005,6 +1150,11 @@ implements Serializable
 	public void removeStep (Step step)
 	{
 		this.step.remove(step);
+	}
+	
+	public void removeStepAll ()
+	{
+		this.step = new ArrayList<Step>();
 	}
 	
 	/**

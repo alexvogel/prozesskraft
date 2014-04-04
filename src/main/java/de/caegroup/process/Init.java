@@ -19,7 +19,7 @@ implements Serializable
 	private String fromobjecttype = new String();
 	private String returnfield = new String();
 	private String fromstep = new String();
-	private String insertrule = "overwrite";  // append(initialisierte Eintraege werden zu bestehenden angefuegt) | overwrite (gleichlautende neue eintraege ueberschreiben bestehende = keine duplikate)
+	private String insertrule = "overwrite";  // append(initialisierte Eintraege werden zu bestehenden angefuegt) | unique (gleichlautende neue eintraege ueberschreiben bestehende = keine duplikate) | overwrite (evtl. vorher bestehende eintraege werden entfernt) 
 	private ArrayList<Match> match = new ArrayList<Match>();
 	private ArrayList<String> value = new ArrayList<String>();
 	private int minoccur = 0;

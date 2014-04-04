@@ -16,14 +16,14 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private int sequence;
+	private Integer sequence = null;
 	private String par = "";
 	private String del = "";
 	private String val = "";
-	private String loop = new String();
-	private String loopvar = new String();
+	private String loop = "";
+	private String loopvar = "";
 	
-	private String status = new String();	// waiting/initializing/working/committing/ finished/broken/cancelled
+	private String status = "";	// waiting/initializing/working/committing/ finished/broken/cancelled
 
 	private Work parent = null;
 	private ArrayList<Log> log = new ArrayList<Log>();

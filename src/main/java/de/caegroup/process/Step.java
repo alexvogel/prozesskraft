@@ -95,19 +95,26 @@ implements Serializable, Cloneable
 	/*----------------------------
 	  methods 
 	----------------------------*/
-//	@Override
-//	public Step clone()
-//	{
-//		try
-//		{
-//			return (Step) super.clone();
-//		}
-//		catch ( CloneNotSupportedException e )
-//		{
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
+	/**
+	 * clone
+	 * returns a clone of this
+	 * does in certain situations not what you expect!
+	 * @return Step
+	 */
+	@Override
+	public Step clone()
+	{
+		try
+		{
+			return (Step) super.clone();
+		}
+		catch ( CloneNotSupportedException e )
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	/**
 	 * getCommandResolveAsPerlCode()
 	 * generates perlcode for resolving a command
