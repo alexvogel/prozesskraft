@@ -286,6 +286,9 @@ implements Serializable
 			work.addCallitem(callitem);
 		}
 		
+		// work zum wrapperProcess hinzufuegen
+		wrapperProcess.getStep(this.getName()).setWork(work);
+		
 		// aus allen steps (auser root) aus this die commits in den wrap-step clonen
 		for(Step actStep : this.getStep())
 		{
