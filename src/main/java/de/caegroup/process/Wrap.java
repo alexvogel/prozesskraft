@@ -153,7 +153,7 @@ public class Wrap
 		p3.setOutfilexml(output.getAbsolutePath());
 
 		// den neuen wrap-process rausschreiben
-		p3.writeXml2();
+		p3.writeXml();
 	}
 	
 	private static void exiter()
