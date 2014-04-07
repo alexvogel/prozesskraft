@@ -1509,11 +1509,6 @@ implements Serializable
 		return versionplain;
 	}
 
-	public boolean isWrapper()
-	{
-		return this.wrapper;
-	}
-	
 	public String getStatus()
 	{
 		return this.status;
@@ -1828,7 +1823,7 @@ implements Serializable
 		this.customerMail = customerMail;
 	}
 
-	public Boolean getWrapper()
+	public boolean isWrapper()
 	{
 		return this.wrapper;
 	}
