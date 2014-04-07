@@ -30,6 +30,42 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<version>0.8.3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<forceRegenerate>true</forceRegenerate>
+			      			<schemaDirectory>src/main/resources</schemaDirectory>
+			      			<schemaIncludes>
+			        			<include>process.xsd</include>
+			      			</schemaIncludes>
+			      			<generatePackage>de.caegroup.jaxb.process</generatePackage>
+			      			<generateDirectory>src/main/java</generateDirectory>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<extension>true</extension>
+					<args>
+						<arg>-Xsetters</arg>
+						<arg>-Xsetters-mode=direct</arg>
+					</args>
+					<plugins>
+						<plugin>
+							<groupId>org.jvnet.jaxb2_commons</groupId>
+							<artifactId>jaxb2-basics</artifactId>
+							<version>0.6.4</version>
+						</plugin>
+					</plugins>
+				</configuration>
+			</plugin>
+
 <!-- Obfuskieren des jars. das output ueberschreibt das default-jar, welches durch 'maven-jar-plugin' id=default produziert wurde -->
 <!-- 			<plugin> -->
 <!-- 				<groupId>com.pyx4me</groupId> -->

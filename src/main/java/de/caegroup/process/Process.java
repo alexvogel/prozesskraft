@@ -26,6 +26,7 @@ import java.util.Random;
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -141,7 +142,7 @@ implements Serializable
 	/**
 	 * generates a new step with a random name and adds it to this.
 	 */
-	public void addStepp()
+	public void addStep()
 	{
 		int zaehler = 1;
 		String basename = "default_";
@@ -445,44 +446,45 @@ implements Serializable
 		return script.getAll();
 	}
 	
+	/**
+	 * schreiben des aktuellen prozesses in ein xml file
+	 * @throws JAXBException 
+	 * 
+	 **/
 
-//	public void removeStep(String stepname)
-//	{
-//		this.steps.remove(stepname);
-//	}
-
-//	/**
-//	 * schreibt die aktuelle Prozess-Definition als menschenlesbare Dokumentation im pdf-Format raus (basierend auf einem jasper-report)
-//	 * @throws JRException 
-//	 * @throws FileNotFoundException 
-//	**/
-//	public void writeDoc() throws FileNotFoundException
-//	{
-//		Report document = new Report();
-//		
-//		document.setJrxml(this.getFileDocJrxml());
-//		
-//		document.setParameter("processName", this.getName());
-//		document.setParameter("processVersion", this.getVersion());
-//		document.setParameter("processArchitect", this.getArchitect());
-////		content.put("processAutomatic", this.isAutomatic());
-//		document.setParameter("processStepCount", ""+this.getStep().size());
-////		content.put("processParamCount", this.getParamCount());
-//		document.setParameter("processDescription", this.getDescription());
-////		document.setParameter("processTopologyImagePath", new FileInputStream("/austausch/avo/ampelmann_lauf.png"));
-//		
-//		document.compile();
-//		document.fillPReport();
-//		document.setPdf(this.getOutFileDoc());
-//		document.exportToPdf();
-//		
-//	}
+	public void writeXml()
+	{
+		java.io.File file = new java.io.File(this.outfilexml);
+		JAXBContext jaxbContext;
+		try
+		{
+			jaxbContext = JAXBContext.newInstance(de.caegroup.jaxb.process.Process.class);
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		
+			// die daten aus this in das jaxb objekt mappen
+			de.caegroup.jaxb.process.Process xprocess = new de.caegroup.jaxb.process.Process();
+			DozerBeanMapper mapper = new DozerBeanMapper();
+//			mapper.map(xprocess, this);
+			mapper.map(this, xprocess);
+			
+			// output pretty printed
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+			
+			jaxbMarshaller.marshal(xprocess, file);
+		}
+		catch (JAXBException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
 	/*----------------------------
 	  method: 	liest eine Prozessdefinition aus einer xml-Datei in dieses Prozessobjekt ein.
 	  			Alle bestehenden Definitionen gehen verloren. (Ausser infilebinary, infilexml, outfilebinary, outfilexml) 
 	----------------------------*/
-	public void writeXml()
+	public void writeXmlOld()
 	{
 		try
 		{
@@ -1824,6 +1826,11 @@ implements Serializable
 	public void setCustomerMail(String customerMail)
 	{
 		this.customerMail = customerMail;
+	}
+
+	public Boolean getWrapper()
+	{
+		return this.wrapper;
 	}
 
 	public void setWrapper(boolean wrapper)

@@ -23,7 +23,7 @@ implements Serializable, Cloneable
 	static final long serialVersionUID = 1;
 	private String name = new String();
 	private String clip = null;
-	private String type = new String();
+	private String type = "automatic";
 	private String description = new String();
 	private ArrayList<List> list = new ArrayList<List>();
 	private ArrayList<Init> init = new ArrayList<Init>();
