@@ -11,7 +11,7 @@ public class PrampViewModel extends ModelObject
 	public String process = null;
 	public String version = null;
 	public String host = null;
-	public String rootDirectory = null;
+	public String baseDirectory = null;
 	
 	public PrampViewModel()
 	{
@@ -77,14 +77,14 @@ public class PrampViewModel extends ModelObject
 		firePropertyChange("host", this.host, this.host = host);
 	}
 
-	public String getRootDirectory()
+	public String getBaseDirectory()
 	{
-		return rootDirectory;
+		return baseDirectory;
 	}
 
-	public void setRootDirectory(String rootDirectory)
+	public void setBaseDirectory(String baseDirectory)
 	{
-		firePropertyChange("rootDirectory", this.rootDirectory, this.rootDirectory = rootDirectory);
+		firePropertyChange("baseDirectory", this.baseDirectory, this.baseDirectory = baseDirectory);
 	}
 
 }

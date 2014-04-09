@@ -94,6 +94,7 @@ public class PrampPartUi1 extends ModelObject
 	static CommandLine line;
 	private DataBindingContext bindingContextProcesses;
 	private Button button_start = null;
+	private Button button_doc = null;
 //	private Text text_logging = null;
 	private StyledText text_logging = null;
 	private Combo combo_processes = null;
@@ -109,7 +110,7 @@ public class PrampPartUi1 extends ModelObject
 	
 	private boolean erster_license_check = true;
 //	private Ini userIni = null;
-	private Text text_rootdirectory = null;
+	private Text text_basedirectory = null;
 	
 	Composite composite_12;
 	Shell shell_dummy_hinweis;
@@ -253,15 +254,15 @@ public class PrampPartUi1 extends ModelObject
 		combo_hosts.setLayoutData(gd_combo_hosts);
 		new Label(grpVisual, SWT.NONE);
 		
-		Label lblRootdirectory = new Label(grpVisual, SWT.NONE);
-		lblRootdirectory.setToolTipText("directory for instance data");
-		lblRootdirectory.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
-		lblRootdirectory.setText("base directory");
+		Label lblBasedirectory = new Label(grpVisual, SWT.NONE);
+		lblBasedirectory.setToolTipText("directory for instance data");
+		lblBasedirectory.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
+		lblBasedirectory.setText("base directory");
 		new Label(grpVisual, SWT.NONE);
 		
-		text_rootdirectory = new Text(grpVisual, SWT.BORDER);
-		text_rootdirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		einstellungen.setRootDirectory(System.getProperty("user.dir"));
+		text_basedirectory = new Text(grpVisual, SWT.BORDER);
+		text_basedirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		einstellungen.setBaseDirectory(System.getProperty("user.dir"));
 		//		text_instancedirectory.addModifyListener(listener_text_instancedirectory);
 		
 //		Button btnA = new Button(grpVisual, SWT.NONE);
@@ -277,11 +278,18 @@ public class PrampPartUi1 extends ModelObject
 		Group grpFunction = new Group(composite_11, SWT.NONE);
 		grpFunction.setLayout(new GridLayout(1, false));
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		grpFunction.setText("function");
+		grpFunction.setText("functions");
+		
+		button_doc = new Button(grpFunction, SWT.NONE);
+		button_doc.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		button_doc.setText("doc");
+		button_doc.setToolTipText("show documentation");;
+		button_doc.addSelectionListener(listener_showdoc_button);
 		
 		button_start = new Button(grpFunction, SWT.NONE);
 		button_start.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		button_start.setText("start");
+		button_start.setToolTipText("start an instance of selected process");;
 		button_start.addSelectionListener(listener_startinstance_button);
 		
 		composite_12 = new Composite(composite_1, SWT.BORDER);
@@ -436,7 +444,7 @@ public class PrampPartUi1 extends ModelObject
 
 	        // Set the initial filter path according
 	        // to anything they've selected or typed in
-	        dlg.setFilterPath(text_rootdirectory.getText());
+	        dlg.setFilterPath(text_basedirectory.getText());
 
 	        // Change the title bar text
 	        dlg.setText("Instance Directory Dialog");
@@ -450,7 +458,7 @@ public class PrampPartUi1 extends ModelObject
 	        String dir = dlg.open();
 	        if (dir != null) {
 	          // Set the text box to the new selection
-	        	einstellungen.setRootDirectory(dir);
+	        	einstellungen.setBaseDirectory(dir);
 	        	log("info", "setting instancedirectory: "+dir);
 //	        	text_instancedirectory.setText(dir);
 	        }
@@ -458,13 +466,25 @@ public class PrampPartUi1 extends ModelObject
 	};
 	
 	/**
-	 * listener for Selections in of button 'refresh'
+	 * listener for Selections in of button 'doc'
+	 */
+	SelectionAdapter listener_showdoc_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+//			System.out.println("button doc wurde gedrueckt");
+			showDoc();
+		}
+	};
+	
+	/**
+	 * listener for Selections in of button 'start'
 	 */
 	SelectionAdapter listener_startinstance_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
-//			System.out.println("button wurde gedrueckt");
+//			System.out.println("button start wurde gedrueckt");
 			startInstance();
 		}
 	};
@@ -568,12 +588,12 @@ public class PrampPartUi1 extends ModelObject
 	{
 		DataBindingContext bindingContextInstancedirectory = new DataBindingContext();
 		//
-		IObservableValue targetObservableInstancedirectory = WidgetProperties.text(SWT.Modify).observe(text_rootdirectory);
-		IObservableValue modelObservableInstancedirectory = BeanProperties.value("rootDirectory").observe(einstellungen);
+		IObservableValue targetObservableInstancedirectory = WidgetProperties.text(SWT.Modify).observe(text_basedirectory);
+		IObservableValue modelObservableInstancedirectory = BeanProperties.value("baseDirectory").observe(einstellungen);
 		bindingContextInstancedirectory.bindValue(targetObservableInstancedirectory, modelObservableInstancedirectory, null, null);
 		//
-		IObservableValue targetObservableInstancedirectoryTooltip = WidgetProperties.tooltipText().observe(text_rootdirectory);
-		IObservableValue modelObservableInstancedirectoryTooltip = BeanProperties.value("rootDirectory").observe(einstellungen);
+		IObservableValue targetObservableInstancedirectoryTooltip = WidgetProperties.tooltipText().observe(text_basedirectory);
+		IObservableValue modelObservableInstancedirectoryTooltip = BeanProperties.value("baseDirectory").observe(einstellungen);
 		bindingContextInstancedirectory.bindValue(targetObservableInstancedirectoryTooltip, modelObservableInstancedirectoryTooltip, null, null);
 		//
 		return bindingContextInstancedirectory;
@@ -774,13 +794,13 @@ public class PrampPartUi1 extends ModelObject
 	}
 	
 	/**
-	 * determines the path to the process-definition-file
-	 * @return String path to process-definition
-	 * @return null if parts of path are not available or path does not point to a file
+	 * determines the path to the process-definition-directory
+	 * @return String path to process-definition-directory
+	 * @return null if parts of path are not available or path does not point to a directory
 	 */
-	public String getProcessDefinition()
+	public String getProcessDirectory()
 	{
-		String processDefinition = null;
+		String processDefinitionDirectory = null;
 		
 		String process = this.combo_processes.getText();
 		String version = this.combo_versions.getText();
@@ -788,20 +808,50 @@ public class PrampPartUi1 extends ModelObject
 		
 		if ((process != null) && (version != null) && (installationPath != null))
 		{
-			processDefinition = installationPath+"/"+process+"/"+version+"/process.xml";
+			processDefinitionDirectory = installationPath+"/"+process+"/"+version;
 		}
 		
-		if ( (processDefinition == null) || (!(new java.io.File(processDefinition).exists())) )
+		if ( (processDefinitionDirectory == null) || (!(new java.io.File(processDefinitionDirectory).exists()))  || (!(new java.io.File(processDefinitionDirectory).isDirectory())))
 		{
-	    	log("error", "process definition does not exist: "+processDefinition);
-			processDefinition = null;
-			this.process = null;
+	    	log("error", "process definition directory does not exist: "+processDefinitionDirectory);
+	    	processDefinitionDirectory = null;
 		}
+		
+		return processDefinitionDirectory;
+	}
+	
+	/**
+	 * determines the path to the process-definition-file
+	 * @return String path to process-definition
+	 * @return null if parts of path are not available or path does not point to a file
+	 */
+	public String getProcessDefinition()
+	{
+		String processDefinitionDirectory = this.getProcessDirectory();
+		String processDefinition = null;
+		
+		if(processDefinitionDirectory == null)
+		{
+	    	log("error", "directory does not exist: "+processDefinitionDirectory);
+		}
+		
 		else
 		{
+			processDefinition = processDefinitionDirectory + "/process.xml";
 	    	log("info", "setting process definition: "+processDefinition);
-			Process tmp = new Process();
-			tmp.setInfilexml(processDefinition);
+	    	
+	    	java.io.File fileProcess = new java.io.File(processDefinition);
+	    	if(!(fileProcess.exists()))
+	    	{
+		    	log("error", "process definition file does not exist: "+processDefinition);
+		    	this.process = null;
+		    	return null;
+	    	}
+	    	
+	    	else
+	    	{
+				Process tmp = new Process();
+				tmp.setInfilexml(processDefinition);
 				try
 				{
 				this.process = tmp.readXml();
@@ -813,9 +863,11 @@ public class PrampPartUi1 extends ModelObject
 				}
 				this.process.setInfilexml(processDefinition);
 			
+				this.processDefinitionPath = processDefinition;
+				return processDefinition;
+	    	}
 		}
-		this.processDefinitionPath = processDefinition;
-		return processDefinition;
+		return null;
 	}
 
 	/**
@@ -960,7 +1012,7 @@ public class PrampPartUi1 extends ModelObject
 	 */
 	private boolean createInstanceDir()
 	{
-		java.io.File instanceDir = new java.io.File(this.einstellungen.getRootDirectory());
+		java.io.File instanceDir = new java.io.File(this.einstellungen.getBaseDirectory());
 		
 		boolean result = false;
 		
@@ -1041,12 +1093,50 @@ public class PrampPartUi1 extends ModelObject
 		return result;
 	}
 	
+	
+	/**
+	 * show documentation in acroread if any exists
+	 */
+	private boolean showDoc()
+	{
+		String pathToDoc = this.getProcessDirectory() + "/process.pdf";
+		
+		java.io.File fileDoc = new java.io.File(pathToDoc);
+		
+		if(!(fileDoc.exists()))
+		{
+			log ("error", "no documentation found: " + fileDoc.getAbsolutePath());
+			return false;
+		}
+		
+		else
+		{
+			log ("info", "showing documentation with call: acroread " + fileDoc.getAbsolutePath());
+			String[] args_for_command = {"acroread", fileDoc.getAbsolutePath()};
+			ProcessBuilder pb = new ProcessBuilder(args_for_command);
+			
+			try
+			{
+				java.lang.Process p = pb.start();
+				log ("info", "showing documentation with call: acroread " + fileDoc.getAbsolutePath());
+				log ("debug", "hashCode="+p.hashCode());
+			} catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				log ("error", "IOException: problems with executing via ssh");
+				e.printStackTrace();
+			}
+		
+		return true;
+		}
+	}
+	
 	/**
 	 * commit all the defined data to the process
 	 */
 	private boolean startInstance()
 	{
-//		System.out.println("button commit");
+//		System.out.println("button start");
 
 		if (this.commitCreatorOld.containsKey((getActualCommitRootName())))
 		{
@@ -1128,9 +1218,9 @@ public class PrampPartUi1 extends ModelObject
 //					System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
 //					System.out.println("Id des Prozesses: "+process.getRandomId());
 					
-					process.setOutfilebinary(this.einstellungen.getRootDirectory()+"/"+this.einstellungen.getProcess()+".pmb");
-					process.setInfilebinary(this.einstellungen.getRootDirectory()+"/"+this.einstellungen.getProcess()+".pmb");
-					process.setRootdir(this.einstellungen.getRootDirectory());
+					process.setOutfilebinary(this.einstellungen.getBaseDirectory()+"/"+this.einstellungen.getProcess()+".pmb");
+					process.setInfilebinary(this.einstellungen.getBaseDirectory()+"/"+this.einstellungen.getProcess()+".pmb");
+					process.setRootdir(this.einstellungen.getBaseDirectory());
 					
 					process.writeBinary();
 					log ("info", "writing binary instance file to disk "+process.getOutfilebinary());
