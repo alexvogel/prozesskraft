@@ -256,20 +256,20 @@ public class PrampPartUi1 extends ModelObject
 		Label lblRootdirectory = new Label(grpVisual, SWT.NONE);
 		lblRootdirectory.setToolTipText("directory for instance data");
 		lblRootdirectory.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
-		lblRootdirectory.setText("root directory");
+		lblRootdirectory.setText("base directory");
 		new Label(grpVisual, SWT.NONE);
 		
 		text_rootdirectory = new Text(grpVisual, SWT.BORDER);
 		text_rootdirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 //		text_instancedirectory.addModifyListener(listener_text_instancedirectory);
 		
-		Button btnA = new Button(grpVisual, SWT.NONE);
-		btnA.setToolTipText("generates random path in current working directory");
-		btnA.setText("A");
-		btnA.addSelectionListener(listener_randomdirectory_button);
+//		Button btnA = new Button(grpVisual, SWT.NONE);
+//		btnA.setToolTipText("generates random path in current working directory");
+//		btnA.setText("A");
+//		btnA.addSelectionListener(listener_randomdirectory_button);
 		
 		Button button = new Button(grpVisual, SWT.NONE);
-		button.setToolTipText("select an empty directory");
+		button.setToolTipText("select a directory");
 		button.setText("...");
 		button.addSelectionListener(listener_directory_button);
 
