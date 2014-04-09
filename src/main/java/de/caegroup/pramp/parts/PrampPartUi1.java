@@ -261,7 +261,8 @@ public class PrampPartUi1 extends ModelObject
 		
 		text_rootdirectory = new Text(grpVisual, SWT.BORDER);
 		text_rootdirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-//		text_instancedirectory.addModifyListener(listener_text_instancedirectory);
+		text_rootdirectory.setText(System.getProperty("user.dir"));
+		//		text_instancedirectory.addModifyListener(listener_text_instancedirectory);
 		
 //		Button btnA = new Button(grpVisual, SWT.NONE);
 //		btnA.setToolTipText("generates random path in current working directory");
@@ -342,7 +343,7 @@ public class PrampPartUi1 extends ModelObject
 		combo_hosts.select(0);
 
 		// setzen der random instancedirectory
-		setRandomInstancedirectory();
+//		setRandomInstancedirectory();
 
 		new Label(grpVisual, SWT.NONE);
 
@@ -382,7 +383,7 @@ public class PrampPartUi1 extends ModelObject
 		{
         	log("info", "setting process: "+combo_processes.getText());
 			updateUiComboVersions();
-			setRandomInstancedirectory();
+//			setRandomInstancedirectory();
 		}
 	};
 
@@ -394,7 +395,7 @@ public class PrampPartUi1 extends ModelObject
 		public void modifyText(ModifyEvent arg0)
 		{
         	log("info", "setting version: "+combo_versions.getText());
-			setRandomInstancedirectory();
+//			setRandomInstancedirectory();
 			getProcessDefinition();
 			createControlsRootCommit(composite_12);
 		}
@@ -411,16 +412,16 @@ public class PrampPartUi1 extends ModelObject
 //		}
 //	};
 //	
-	/**
-	 * listener for selection of 'A'-button
-	 */
-	SelectionAdapter listener_randomdirectory_button = new SelectionAdapter()
-	{
-		public void widgetSelected(SelectionEvent event)
-		{
-			setRandomInstancedirectory();
-		}
-	};
+//	/**
+//	 * listener for selection of 'A'-button
+//	 */
+//	SelectionAdapter listener_randomdirectory_button = new SelectionAdapter()
+//	{
+//		public void widgetSelected(SelectionEvent event)
+//		{
+//			setRandomInstancedirectory();
+//		}
+//	};
 	
 	/**
 	 * listener for selection of "..."-button
@@ -594,7 +595,7 @@ public class PrampPartUi1 extends ModelObject
 				this.processMainDir = (ini.get("process", "process-installation-directory"));
 				
 				// wenn es sich um einen relativen path handelt, soll dieser mit dem installationsverzeichnis ergaenzt werden
-				if(!(this.processMainDir.equals("^/")))
+				if(!(this.processMainDir.matches("^/.+")))
 				{
 					
 					this.processMainDir = WhereAmI.getInstallDirectoryAbsolutePath(this.getClass())+"/"+this.processMainDir;
@@ -907,49 +908,49 @@ public class PrampPartUi1 extends ModelObject
 		}
 	}
 	
-	/**
-	 * determines a random path in cwd
-	 */
-	public void setRandomInstancedirectory()
-	{
-		String cwd = System.getProperty("user.dir");
-		Calendar now = Calendar.getInstance();
-		
-		int intYear  = now.get(Calendar.YEAR);
-		int intMonth = now.get(Calendar.MONTH) + 1;
-		int intDay   = now.get(Calendar.DAY_OF_MONTH);
-		int intHour  = now.get(Calendar.HOUR_OF_DAY);
-		int intMinute= now.get(Calendar.MINUTE);
-		int intSecond= now.get(Calendar.SECOND);
-		int intMilli = now.get(Calendar.MILLISECOND);
-		
-		String stringYear  = String.format("%04d", intYear);
-		String stringMonth = String.format("%02d", intMonth);
-		String stringDay   = String.format("%02d", intDay);
-		String stringHour  = String.format("%02d", intHour);
-		String stringMinute= String.format("%02d", intMinute);
-		String stringSecond= String.format("%02d", intSecond);
-		String stringMilli = String.format("%03d", intMilli);
-		
-		String stringProcess = null;
-		if (combo_processes.getText() != null)
-		{
-			stringProcess = combo_processes.getText();
-		}
-		String stringVersion = null;
-		if (combo_versions.getText() != null)
-		{
-			stringVersion = combo_versions.getText();
-			stringVersion = stringVersion.replaceAll("\\.", "");
-		}
-		
-		String path = cwd + "/" + stringProcess + "_v" + stringVersion + "_" + stringYear + stringMonth + stringDay + "_" + stringHour + stringMinute + stringSecond + "_" + stringMilli; 
-
-		einstellungen.setRootDirectory(path);
-    	log("info", "setting instancedirectory: "+path);
-//		System.out.println("pfad sollte sein: "+path);
-//		System.out.println("aktualisiere textfeld - einstellungen get.Instancedirectory: "+einstellungen.getInstancedirectory());
-	}
+//	/**
+//	 * determines a random path in cwd
+//	 */
+//	public void setRandomInstancedirectory()
+//	{
+//		String cwd = System.getProperty("user.dir");
+//		Calendar now = Calendar.getInstance();
+//		
+//		int intYear  = now.get(Calendar.YEAR);
+//		int intMonth = now.get(Calendar.MONTH) + 1;
+//		int intDay   = now.get(Calendar.DAY_OF_MONTH);
+//		int intHour  = now.get(Calendar.HOUR_OF_DAY);
+//		int intMinute= now.get(Calendar.MINUTE);
+//		int intSecond= now.get(Calendar.SECOND);
+//		int intMilli = now.get(Calendar.MILLISECOND);
+//		
+//		String stringYear  = String.format("%04d", intYear);
+//		String stringMonth = String.format("%02d", intMonth);
+//		String stringDay   = String.format("%02d", intDay);
+//		String stringHour  = String.format("%02d", intHour);
+//		String stringMinute= String.format("%02d", intMinute);
+//		String stringSecond= String.format("%02d", intSecond);
+//		String stringMilli = String.format("%03d", intMilli);
+//		
+//		String stringProcess = null;
+//		if (combo_processes.getText() != null)
+//		{
+//			stringProcess = combo_processes.getText();
+//		}
+//		String stringVersion = null;
+//		if (combo_versions.getText() != null)
+//		{
+//			stringVersion = combo_versions.getText();
+//			stringVersion = stringVersion.replaceAll("\\.", "");
+//		}
+//		
+//		String path = cwd + "/" + stringProcess + "_v" + stringVersion + "_" + stringYear + stringMonth + stringDay + "_" + stringHour + stringMinute + stringSecond + "_" + stringMilli; 
+//
+//		einstellungen.setRootDirectory(path);
+//    	log("info", "setting instancedirectory: "+path);
+////		System.out.println("pfad sollte sein: "+path);
+////		System.out.println("aktualisiere textfeld - einstellungen get.Instancedirectory: "+einstellungen.getInstancedirectory());
+//	}
 	
 	/**
 	 * creates an instance directory if it does not exist
