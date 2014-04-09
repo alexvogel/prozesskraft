@@ -28,8 +28,7 @@
     	<xs:attribute name="modelVersion" use="required"
     		type="xs:string" />
     	<xs:attribute name="version" use="required" type="xs:string" />
-    	<xs:attribute name="wrapper" use="optional" type="xs:boolean"
-    		default="false" />
+    	<xs:attribute name="wrapper" use="required" type="xs:boolean" />
     </xs:complexType>
   </xs:element>
   <xs:element name="step">

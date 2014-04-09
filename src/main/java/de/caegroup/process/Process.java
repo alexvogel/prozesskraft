@@ -1666,7 +1666,7 @@ implements Serializable
 		}
 		return stepOfLevel;
 	}
-	
+
 	/**
 	 * liefert den step zurueck auf den der namen exakt passt
 	 * @param stepname
@@ -1674,14 +1674,12 @@ implements Serializable
 	 */
 	public Step getStep(String stepname)
 	{
-		Iterator<Step> iterstep = this.getSteps().iterator();
-		while(iterstep.hasNext())
+		for(Step actStep : this.getStep())
 		{
 			// den namen abgleichen und merken wenn uebereinstimmung
-			Step step = iterstep.next();
-			if ( (step.getName().equals(stepname)) )
+			if ( (actStep.getName().equals(stepname)) )
 			{
-				return step;
+				return actStep;
 			}
 		}
 		return null;
@@ -1696,7 +1694,7 @@ implements Serializable
 	{
 		boolean vorhanden = false;
 		Step step = this.getStep(stepname);
-		
+
 		if (step != null)
 		{
 			vorhanden = true;
