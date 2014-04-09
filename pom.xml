@@ -4,7 +4,7 @@
 	<groupId>de.caegroup.process</groupId>
 	<artifactId>process-wrap</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.1</version>
+	<version>0.5.0</version>
 	<name>process-wrap</name>
 	<url>http://maven.apache.org</url>
 	<build>
@@ -126,7 +126,7 @@
 		<dependency>
 			<groupId>de.caegroup.process</groupId>
 			<artifactId>process-core</artifactId>
-			<version>0.2.0</version>
+			<version>0.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
