@@ -95,7 +95,7 @@ public class VariableOccurGui
 		// erstellen eines Label fuer den 'key' der Variable
 		Label variableKey = new Label(composite, SWT.NONE);
 		variableKey.setText(this.key);
-		variableKey.setToolTipText(this.variable.getDescription());
+		variableKey.setToolTipText(this.key + ": " + this.variable.getDescription());
 
 		FormData fd_variableKey = new FormData();
 		fd_variableKey.top = new FormAttachment(0, 4);

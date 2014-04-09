@@ -97,7 +97,7 @@ public class FileOccurGui
 		// erstellen eines Label fuer den 'key' der Variable
 		Label fileKey = new Label(composite, SWT.NONE);
 		fileKey.setText(this.key);
-		fileKey.setToolTipText(this.file.getDescription());
+		fileKey.setToolTipText(this.key + ": " + this.file.getDescription());
 
 		FormData fd_fileKey = new FormData();
 		fd_fileKey.top = new FormAttachment(0, 4);
