@@ -216,7 +216,7 @@ public class Manager
 			// jeden step durchgehen
 //			for(Step actualStep : p3.getSteps())
 			Iterator<Step> iterstep = p3.getSteps().iterator();
-			boolean pradar =  p3.getPradar();
+			boolean pradar =  (!(p3.isWrapper()));
 //			System.out.println("Anzahl Steps: "+p3.getSteps().size());
 			while(iterstep.hasNext())
 			{
