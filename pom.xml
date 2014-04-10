@@ -8,17 +8,42 @@
 	<name>pradar-server</name>
 	<url>http://maven.apache.org</url>
 	<build>
-<!-- 		<resources> -->
-<!-- 			<resource> -->
-<!-- 				<directory>etc</directory> -->
-<!-- 				<includes> -->
-<!-- 					<include>**/default.ini</include> -->
-<!-- 				</includes> -->
-<!-- 			</resource> -->
-<!-- 		</resources> -->
+	
+<!-- der block mit dem pluginManagement laesst die m2e-fehlermeldung im plugin maven-dependency-plugin verschwinden -->
+		<pluginManagement>
+			<plugins>
+	    	<!-- Ignore/Execute plugin execution -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<!-- copy-dependency plugin -->
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[1.0.0,)</versionRange>
+										<goals>
+											<goal>copy-dependencies</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
 		<plugins>
 
-<!-- packt alle class-Files in ein jar legt es im target ab-->
+<!-- packt alle class-Files in ein jar legt es im classDirectory ab -->
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.3.2</version>
@@ -33,17 +58,16 @@
 							<archive>
 								<manifest>
 									<mainClass>de.caegroup.pradar.Server</mainClass>
-<!-- 									<addClasspath>true</addClasspath> -->
 								</manifest>
-								<manifestEntries>
-									<Class-Path>pradar-core-0.1-jar-with-dependencies.jar</Class-Path>
-								</manifestEntries>
 							</archive>
-<!-- 							<outputDirectory>/tmp/pradar/bin-klar</outputDirectory> -->
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<finalName>${project.name}-${project.version}</finalName>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+
+<!-- Obfuskieren des jars. das output ueberschreibt das default-jar, welches durch 'maven-jar-plugin' id=default produziert wurde -->
 			<plugin>
 				<groupId>com.pyx4me</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
@@ -58,9 +82,9 @@
 				</executions>
 				<configuration>
 					<obfuscate>true</obfuscate>
-<!-- 					<outputDirectory>/tmp/pradar</outputDirectory> -->
-<!-- 					<injar>bin-klar/${project.build.finalName}.jar</injar> -->
-<!-- 					<outjar>bin/${project.build.finalName}.jar</outjar> -->
+					<outputDirectory>${project.build.directory}</outputDirectory>
+					<injar>${project.name}-${project.version}.jar</injar>
+					<outjar>${project.name}-${project.version}.jar</outjar>
 					<options>
 						<option>-keep public class de.caegroup.pradar.Server { *; }</option>
 					</options>
@@ -70,33 +94,26 @@
 					<proguardVersion>4.8</proguardVersion>
 				</configuration>
 			</plugin>
+			
+<!-- Alle unter dependency definierten Abhaengigkeiten werden aus dem maven-repo in ein eigenes lib-verzeichnis kopiert -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2.1</version>
-				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-<!-- 					<outputDirectory>/tmp/pradar/bin</outputDirectory> -->
-					<finalName>${project.name}-${project.version}</finalName>
-					<archive>
-						<manifest>
-							<mainClass>de.caegroup.pradar.Server</mainClass>
-							<addClasspath>true</addClasspath>
-						</manifest>
-					</archive>
-				</configuration>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.8</version>
 				<executions>
 					<execution>
-						<id>make-assembly</id>
+						<id>copy-dependencies</id>
 						<phase>package</phase>
 						<goals>
-							<goal>single</goal>
+							<goal>copy-dependencies</goal>
 						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 	<dependencies>

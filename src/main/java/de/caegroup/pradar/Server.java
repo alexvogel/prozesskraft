@@ -22,6 +22,7 @@ import org.apache.commons.cli.Options;
 
 import de.caegroup.commons.WhereAmI;
 import de.caegroup.network.ConcurrentServer;
+
 import org.ini4j.*;
 
 public class Server
@@ -49,14 +50,13 @@ public class Server
 	public static void main(String[] args) throws org.apache.commons.cli.ParseException
 	{
 		
-		Server tmp = new Server();
-		dbFile = WhereAmI.getDefaultDbfile(tmp.getClass());
+		dbFile = WhereAmI.getDefaultDbfile(Server.class);
 		sshIdRelPath = WhereAmI.getDefaultSshIdRsa();
 		portNumber = WhereAmI.getDefaultPortNumber();
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Server.class) + "/" + "../etc/pradar-server.ini");
 		
 
 		if (inifile.exists())
