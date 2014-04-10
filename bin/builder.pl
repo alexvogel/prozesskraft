@@ -756,7 +756,7 @@ foreach my $refh_stackline (@CONFIG)
 				push(@param, "--batch");
 				
 				print "info: installing app $appToMerge (because of merge)\n";
-				my $call = "builder --version=$version " . join(",", @param);
+				my $call = "builder --version=$version " . join(" ", @param);
 				print "info: calling: " . $call . "\n";
 				my $return = system($call);
 				
