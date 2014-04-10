@@ -140,7 +140,7 @@ public class PrampPartUi1 extends ModelObject
 		shell.setSize(633, 688);
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLocation(0, 0);
-		setIni("etc/pramp-gui.ini");
+		setIni("../etc/pramp-gui.ini");
 		setUserIni();
 		loadIni();
 		checkLicense();
@@ -156,7 +156,7 @@ public class PrampPartUi1 extends ModelObject
 	@Inject
 	public PrampPartUi1(Composite composite)
 	{
-		setIni("etc/pramp-gui.ini");
+		setIni("../etc/pramp-gui.ini");
 		loadIni();
 		checkLicense();
 		setUserIni();
