@@ -85,7 +85,7 @@ my $result = GetOptions(
                         "repodir=s"    => \$repodir,
                         "target=s"  => \$target,
                         "targetdir=s"  => \$targetdir,
-                        "redirecttargetdir"  => \$redirecttargetdir,
+                        "redirecttargetdir=s"  => \$redirecttargetdir,
                         "targetmachine=s"  => \$targetmachine,
                         "targetuser=s" => \$targetuser,
                         "ybranches=s"  => \$ybranches,
@@ -410,8 +410,11 @@ foreach my $refh_stackline (@CONFIG)
 	if($redirecttargetdir)
 	{
 		$now_targetdir = $redirecttargetdir;
+		$now_targetbulk = $now_targetdir . "/install";
+		$now_targetbulkapp = $now_targetbulk . "/" . $$refh_stackline{'app'};
 		$now_targetuser = "avo";
-		$now_targetuser = "sv02";
+		$now_targetmachine = "sv02";
+		$now_targetbin = "/dev/null";
 	}
 	
 	my $now_ybranches = $$refh_stackline{'ybranches'};
@@ -710,7 +713,7 @@ foreach my $refh_stackline (@CONFIG)
 		# --- END ACTION 'searchreplace' --- #
 
 		#-------------------
-		# --- START ACTION 'merge(app:app:app:...)' --- #
+		# --- START ACTION 'merge(app,app,app,...)' --- #
 		# diese apps sollen in die installation integriert werden
 		# die angegebenen apps sollen jeweils in ein temporaeres verzeichnis installiert werden
 		# aus den einzelinstallationen soll eine gesamte installtion (gemergte) gebaut werden
