@@ -42,8 +42,7 @@ public class Init
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		Init tmp = new Init();
-		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Init.class) + "/" + "../etc/pradar-init.ini");
 		
 		ArrayList<String> pradar_server_list = new ArrayList<String>();
 		
