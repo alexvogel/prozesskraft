@@ -775,13 +775,13 @@ foreach my $refh_stackline (@CONFIG)
 				print "rsync -avz $TMPDIR/install/$appToMerge/$actBranch/ $TMPDIR\n";
 				system "rsync -avz $TMPDIR/install/$appToMerge/$actBranch/ $TMPDIR";
 				
-				# evtl. vorhandenes script "bin/start.sh" soll umbenannt werden in bin/<appname>
-				print "mv $TMPDIR/bin/start.sh $TMPDIR/bin/$appToMerge\n";
-				system "mv $TMPDIR/bin/start.sh $TMPDIR/bin/$appToMerge";
-
-				# evtl. vorhandenes file "etc/default.ini" soll umbenannt werden in etc/<appname>.ini
-				print "mv $TMPDIR/etc/default.ini $TMPDIR/etc/$appToMerge.ini\n";
-				system "mv $TMPDIR/etc/default.ini $TMPDIR/etc/$appToMerge.ini";
+#				# evtl. vorhandenes script "bin/start.sh" soll umbenannt werden in bin/<appname>
+#				print "mv $TMPDIR/bin/start.sh $TMPDIR/bin/$appToMerge\n";
+#				system "mv $TMPDIR/bin/start.sh $TMPDIR/bin/$appToMerge";
+#
+#				# evtl. vorhandenes file "etc/default.ini" soll umbenannt werden in etc/<appname>.ini
+#				print "mv $TMPDIR/etc/default.ini $TMPDIR/etc/$appToMerge.ini\n";
+#				system "mv $TMPDIR/etc/default.ini $TMPDIR/etc/$appToMerge.ini";
 			}
 			
 			# das bin, in das alle 'gemergten' bin(s) eingeflossen sind soll umbenannt werden in bin2
