@@ -68,6 +68,7 @@ my $app;
 my $repodir;
 my $target;
 my $targetdir;
+my $redirecttargetdir;
 my $targetmachine;
 my $targetuser;
 my $ybranches = "lamei";
@@ -75,6 +76,7 @@ my @branch;
 my $cleanapp;
 my $cleanbranch;
 my $genstack;
+my $log = $ENV{'HOME'}."/.builder/builder.log";
 my $result = GetOptions(
 #                        "scenesdir=s"=> \$scenesdir,
                         "help|h"        => \$help,
@@ -83,6 +85,7 @@ my $result = GetOptions(
                         "repodir=s"    => \$repodir,
                         "target=s"  => \$target,
                         "targetdir=s"  => \$targetdir,
+                        "redirecttargetdir"  => \$redirecttargetdir,
                         "targetmachine=s"  => \$targetmachine,
                         "targetuser=s" => \$targetuser,
                         "ybranches=s"  => \$ybranches,
@@ -91,6 +94,7 @@ my $result = GetOptions(
                         "cleanapp"   => \$cleanapp,
                         "cleanbranch"=> \$cleanbranch,
                         "genstack"=> \$genstack,
+                        "log"=> \$log,
                         );
 
 #-------------------
@@ -128,6 +132,7 @@ $helptext .= " --genstack          [exclusiv] generates an example stack file in
 $helptext .= " --app                [optional, filters stack] processes only the lines from the stack-file where this app is mentioned.\n";
 $helptext .= " --repodir=DIR        [optional, filters stack] processes only the lines from the stack-file where this repodir is mentioned.\n";
 $helptext .= " --targetdir=DIR      [optional, filters stack] processes only the lines from the stack-file where this targetdir is mentioned\n";
+$helptext .= " --redirecttargetdir=DIR [optional] sets the targetdir to this path despite of definition in stack-file\n";
 $helptext .= " --targetmachine=STRING  [optional, filters stack] processes only the lines from the stack-file where this targetmachine is mentioned\n";
 $helptext .= " --target=STRING      [optional, filters stack] processes only the lines from the stack-file where this target is mentioned\n";
 $helptext .= " --targetuser=STRING  [optional, filters stack] processes only the lines from the stack-file where this targetuser is mentioned\n";
@@ -136,6 +141,7 @@ $helptext .= " --branch=PATTERN     [optional, overrides --ybranches] installs t
 $helptext .= " --cleanbranch		[optional] prior to install all content in target directory of the processed branch of the processed app will be deleted. this value overrides the value in configfile\n";
 $helptext .= " --cleanapp			[optional] prior to build all branches of the processed app will be deleted.\n";
 $helptext .= " --batch              [optional] direct execution of all relevant buildinstances without possibility to abort.\n";
+$helptext .= " --log                [optional, default: ~/.builder/builder.log] this logfile will be used.\n";
 $helptext .= "\n";
 $helptext .= "Example 1:\n";
 $helptext .= " builder\n";
@@ -376,11 +382,10 @@ unless ($batch)
 #-------------------
 
 #-------------------
-# erstellen des logfiles
-my $logfile = $ENV{'HOME'}."/.builder/builder.log";
-print "all logging goes to $logfile\n";
+# umleiten der ausgaben in das logfile
+print "all logging goes to $log\n";
 
-open (LOG, '>', $logfile) or die "Can't write $logfile: $!";
+open (LOG, '>', $log) or die "Can't write $log: $!";
 STDOUT->fdopen( \*LOG, 'w' ) or die $!;
 STDERR->fdopen( \*LOG, 'w' ) or die $!;
 #-------------------
@@ -399,6 +404,16 @@ foreach my $refh_stackline (@CONFIG)
 	my $now_target = $$refh_stackline{'target'};
 	my $now_targetuser = $$refh_stackline{'targetuser'};
 	my $now_targetmachine = $$refh_stackline{'targetmachine'};
+
+# wenn der parameter --redirecttargetdir angegeben wurde, soll dieser wert anstatt der angabe im stack-file verwendung finden
+# und die werte fuer user und machine auf lokale werte umgebogen werden (es soll ja nur eine temporaere installation erfolgen)
+	if($redirecttargetdir)
+	{
+		$now_targetdir = $redirecttargetdir;
+		$now_targetuser = "avo";
+		$now_targetuser = "sv02";
+	}
+	
 	my $now_ybranches = $$refh_stackline{'ybranches'};
 	my $now_deployscript = $$refh_stackline{'deployscript'};
 	my @now_action = @{$$refh_stackline{'action'}};
@@ -586,6 +601,7 @@ foreach my $refh_stackline (@CONFIG)
 	for (my $x=0; $x<($now_ybranches); $x++)
 	{
 		print "info: will process branch '$allbranches[$x]'\n";
+		my $actBranch = $allbranches[$x];
 
 		# festlegen der zielverzeichnisse fuer programmdaten und den aufruftreiber
 		my $now_targetbulkappbranch = $now_targetbulkapp . "/" . $allbranches[$x];
@@ -692,6 +708,93 @@ foreach my $refh_stackline (@CONFIG)
 		}
 		#-------------------
 		# --- END ACTION 'searchreplace' --- #
+
+		#-------------------
+		# --- START ACTION 'merge(app:app:app:...)' --- #
+		# diese apps sollen in die installation integriert werden
+		# die angegebenen apps sollen jeweils in ein temporaeres verzeichnis installiert werden
+		# aus den einzelinstallationen soll eine gesamte installtion (gemergte) gebaut werden
+		if ( grep { /merge/ } @now_action )
+		{
+			print "info: action 'merge(...)' found in array (@now_action)\n";
+			
+			print "info: temporaeres umbenennen von bin\n";
+			print "info: mv $TMPDIR/bin $TMPDIR/bin_temporaer_umbenannt\n";
+			system("mv $TMPDIR/bin $TMPDIR/bin_temporaer_umbenannt");
+			
+			my %appsToMerge;
+			
+			#-------------------
+			# alle action-strings durchgehen und bei merge alle app-names feststellen
+			foreach my $now_action (@now_action)
+			{
+				if ($now_action =~ m/^merge\((.+)\)/)
+				{
+					my @tmp = split(",", $1);
+					foreach (@tmp)
+					{
+						$appsToMerge{$_} = 1;
+					}
+				}
+			}
+			print "info: this apps will be merged with this installation: " . join(",", sort keys %appsToMerge) . "\n";
+			
+			#-------------------
+			# jede der apps in ein temporaeres verzeichnis installieren und dabei diese parameter verwenden
+			# --app=<appname> --branch=<gleichWieThis> --target=<gleichWieThis> --targetmachine=<gleichWieThis> --targetuser=<gleichWieThis> --redirecttargetdir --batch --log=targetdirectory<appname.log>
+			foreach my $appToMerge (sort keys %appsToMerge)
+			{
+				
+				my @param;
+				push(@param, "--app=".$appToMerge);
+				push(@param, "--branch=".$actBranch);
+				push(@param, "--target=".$now_target);
+				push(@param, "--targetmachine=".$now_targetmachine);	# wird nur fuer das richtige filtern des stacks benoetigt
+				push(@param, "--targetuser=".$now_targetuser);			# wird nur fuer das richtige filtern des stacks benoetigt
+				push(@param, "--log=".$TMPDIR."/builder_".$appToMerge.".log");
+				push(@param, "--redirecttargetdir=".$TMPDIR);
+				push(@param, "--batch");
+				
+				print "info: installing app $appToMerge (because of merge)\n";
+				my $call = "builder --version=$version " . join(",", @param);
+				print "info: calling: " . $call . "\n";
+				my $return = system($call);
+				
+				# falls ein fehler auftaucht soll abgebrochen werden
+				if($return)
+				{
+					print "fatal: tried to install a dependent app (merge), but last call failed: $return";
+					print STDERR "fatal: tried to install a dependent app (merge), but last call failed: $return";
+					exit(10);
+				}
+				
+				# die temporaere installation der dependent app in THIS integrieren
+				print "rsync -avz $TMPDIR/install/$appToMerge/$actBranch/ $TMPDIR\n";
+				system "rsync -avz $TMPDIR/install/$appToMerge/$actBranch/ $TMPDIR";
+				
+				# evtl. vorhandenes script "bin/start.sh" soll umbenannt werden in bin/<appname>
+				print "mv $TMPDIR/bin/start.sh $TMPDIR/bin/$appToMerge\n";
+				system "mv $TMPDIR/bin/start.sh $TMPDIR/bin/$appToMerge";
+
+				# evtl. vorhandenes file "etc/default.ini" soll umbenannt werden in etc/<appname>.ini
+				print "mv $TMPDIR/etc/default.ini $TMPDIR/etc/$appToMerge.ini\n";
+				system "mv $TMPDIR/etc/default.ini $TMPDIR/etc/$appToMerge.ini";
+			}
+			
+			# das bin, in das alle 'gemergten' bin(s) eingeflossen sind soll umbenannt werden in bin2
+			print "mv $TMPDIR/bin $TMPDIR/bin2\n";
+			system "mv $TMPDIR/bin $TMPDIR/bin2";
+			
+			# und das urspruengliche bin wieder hergestellt werden
+			sleep(1);
+			print "info: temporaeres umbenennen von bin wieder aufheben\n";
+			print "info: mv $TMPDIR/bin_temporaer_umbenannt $TMPDIR/bin\n";
+			system("mv $TMPDIR/bin_temporaer_umbenannt $TMPDIR/bin");
+		}
+		#-------------------
+		# --- END ACTION 'merge(app:app:app:...)' --- #
+
+
 
 		#-------------------
 		# --- START ACTION 'perl_cb2' --- #
