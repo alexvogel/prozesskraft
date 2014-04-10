@@ -42,8 +42,7 @@ public class Cleandb
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		Cleandb tmp = new Cleandb();
-		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Cleandb.class) + "/" + "../etc/pradar-cleandb.ini");
 		
 		ArrayList<String> pradar_server_list = new ArrayList<String>();
 		
