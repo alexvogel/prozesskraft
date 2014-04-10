@@ -413,7 +413,7 @@ foreach my $refh_stackline (@CONFIG)
 		$now_targetbulk = $now_targetdir . "/install";
 		$now_targetbulkapp = $now_targetbulk . "/" . $$refh_stackline{'app'};
 		$now_targetuser = "avo";
-		$now_targetmachine = "sv02";
+		$now_targetmachine = $ENV{'HOSTNAME'};
 		$now_targetbin = "/dev/null";
 	}
 	
