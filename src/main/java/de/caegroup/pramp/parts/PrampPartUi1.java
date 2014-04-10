@@ -140,7 +140,7 @@ public class PrampPartUi1 extends ModelObject
 		shell.setSize(633, 688);
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLocation(0, 0);
-		setIni();
+		setIni("etc/pramp-gui.ini");
 		setUserIni();
 		loadIni();
 		checkLicense();
@@ -156,7 +156,7 @@ public class PrampPartUi1 extends ModelObject
 	@Inject
 	public PrampPartUi1(Composite composite)
 	{
-		setIni();
+		setIni("etc/pramp-gui.ini");
 		loadIni();
 		checkLicense();
 		setUserIni();
@@ -172,7 +172,8 @@ public class PrampPartUi1 extends ModelObject
 	@Inject
 	public PrampPartUi1(String tmp)
 	{
-		setIni("target/test-classes/etc/pramp-gui.ini");
+//		setIni("target/test-classes/etc/pramp-gui.ini");
+		setIni("../etc/pramp-gui.ini");
 		loadIni();
 		checkLicense();
 		setUserIni();
@@ -1318,9 +1319,9 @@ public class PrampPartUi1 extends ModelObject
 		return this.processMainDir;
 	}
 	
-	void setIni (String pathIniFile)
+	void setIni (String relPath)
 	{
-		this.iniFile = pathIniFile;
+		this.iniFile = WhereAmI.getInstallDirectoryAbsolutePath(this.getClass()) + "/" + relPath;
 	}
 	
 	void setIni ()
