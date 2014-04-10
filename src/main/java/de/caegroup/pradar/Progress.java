@@ -26,6 +26,7 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 
+
 import de.caegroup.pradar.Entity;
 import de.caegroup.commons.WhereAmI;
 
@@ -49,8 +50,7 @@ public class Progress
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		Progress tmp = new Progress();
-		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Progress.class) + "/" + "../etc/pradar-progress.ini");
 		
 		ArrayList<String> pradar_server_list = new ArrayList<String>();
 		
