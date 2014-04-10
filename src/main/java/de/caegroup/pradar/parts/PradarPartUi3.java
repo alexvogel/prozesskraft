@@ -1097,7 +1097,7 @@ public class PradarPartUi3 extends ModelObject
 	void loadIni()
 	{
 //		PradarViewProcessingPage tmp = new PradarViewProcessingPage(this);
-		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(this.getClass()) + "/" + "../etc/pramp-gui.ini");
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(this.getClass()) + "/" + "../etc/pradar-gui.ini");
 			
 		Ini ini;
 			
