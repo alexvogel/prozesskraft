@@ -49,8 +49,7 @@ public class Checkin
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		Checkin tmp = new Checkin();
-		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Checkin.class) + "/" + "../etc/pramp-gui.ini");
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Checkin.class) + "/" + "../etc/pradar-checkin.ini");
 		
 		ArrayList<String> pradar_server_list = new ArrayList<String>();
 		
