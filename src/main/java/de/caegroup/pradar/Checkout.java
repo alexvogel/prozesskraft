@@ -48,8 +48,7 @@ public class Checkout
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		Checkout tmp = new Checkout();
-		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Checkout.class) + "/" + "../etc/pradar-checkout.ini");
 		
 		ArrayList<String> pradar_server_list = new ArrayList<String>();
 		
