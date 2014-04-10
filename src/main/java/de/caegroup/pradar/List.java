@@ -26,6 +26,7 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 
+
 import de.caegroup.commons.*;
 import de.caegroup.pradar.*;
 
@@ -47,8 +48,7 @@ public class List
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		List tmp = new List();
-		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(List.class) + "/" + "../etc/pradar-list.ini");
 		
 		ArrayList<String> pradar_server_list = new ArrayList<String>();
 		
