@@ -1064,9 +1064,12 @@ foreach my $refh_stackline (@CONFIG)
 		# wenn das flag --pack gesetzt wurde, soll das installationsverzeichnis in ein *.tar.gz archiv gepackt werden
 		if($pack)
 		{
+			print "info: renaming destination directory to create a fine tarball\n";
+			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkappbranch $now_targetbulkapp/" . $app . "-" . $actBranch . "\"\n"; 
+			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkappbranch $now_targetbulkapp/" . $app . "-" . $actBranch . "\"";
 			print "info: packing the destination in a tar.gz-archiv\n";
-			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz $now_targetbulkappbranch\"\n"; 
-			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz $now_targetbulkappbranch\"";
+			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz -C $now_targetbulkapp " . $app . "-" . $actBranch . "\"\n"; 
+			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz -C $now_targetbulkapp " . $app . "-" . $actBranch . "\"";
 		}
 	}
 }
