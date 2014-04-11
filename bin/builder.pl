@@ -1064,9 +1064,9 @@ foreach my $refh_stackline (@CONFIG)
 		# wenn das flag --pack gesetzt wurde, soll das installationsverzeichnis in ein *.tar.gz archiv gepackt werden
 		if($pack)
 		{
-			print "info: packing the destination in a tar-archiv\n";
-			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf " . $app . "-" . $actBranch . ".tar.gz $now_targetbulkappbranch --remove-files\n"; 
-			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf " . $app . "-" . $actBranch . ".tar.gz $now_targetbulkappbranch --remove-files";
+			print "info: packing the destination in a tar.gz-archiv\n";
+			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz $now_targetbulkappbranch --remove-files\"\n"; 
+			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz $now_targetbulkappbranch --remove-files\"";
 		}
 	}
 }
