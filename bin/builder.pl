@@ -1070,6 +1070,9 @@ foreach my $refh_stackline (@CONFIG)
 			print "info: packing the destination in a tar.gz-archiv\n";
 			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz -C $now_targetbulkapp " . $app . "-" . $actBranch . "\"\n"; 
 			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz -C $now_targetbulkapp " . $app . "-" . $actBranch . "\"";
+			print "info: renaming tarball-destination to its previous name \n";
+			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkappbranch $now_targetbulkapp/" . $app . "-" . $actBranch . " $now_targetbulkappbranch\"\n"; 
+			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkappbranch $now_targetbulkapp/" . $app . "-" . $actBranch . " $now_targetbulkappbranch\"";
 		}
 	}
 }
