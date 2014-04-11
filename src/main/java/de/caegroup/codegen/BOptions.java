@@ -77,12 +77,12 @@ implements Serializable, Cloneable
 			content.add("if (stat $conf_path1)");
 			content.add("{");
 			content.add("	my %CONF_TMP = &getvars($conf_path1);");
-			content.add("	$OPTIONS_TABLE{'conf'} = {'reihenfolge' => '10', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'^[^=]+=[^=]+$', 'default' => '', 'text1' => '=KEY=VALUE', 'text2' => 'for redefinition of configuration variables\n(instead of using the ones in \".Cwd::realpath(File::Spec->rel2abs($conf_path1)).\").\n(possible KEYs are: ' . join(\", \", sort keys %CONF_TMP) . ')'};");
+			content.add("	$OPTIONS_TABLE{'conf'} = {'reihenfolge' => '10', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'^[^=]+=[^=]+$', 'default' => '', 'text1' => '=KEY=VALUE', 'text2' => 'for redefinition of configuration variables (instead of using the ones in '.Cwd::realpath(File::Spec->rel2abs($conf_path1)).'). (possible KEYs are: ' . join(\", \", sort keys %CONF_TMP) . ')'};");
 			content.add("}");
 			content.add("elsif (stat $conf_path2)");
 			content.add("{");
 			content.add("	my %CONF_TMP = &getvars($conf_path2);");
-			content.add("	$OPTIONS_TABLE{'conf'} = {'reihenfolge' => '10', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'^[^=]+=[^=]+$', 'default' => '', 'text1' => '=KEY=VALUE', 'text2' => 'for redefinition of configuration variables\n(instead of using the ones in \".Cwd::realpath(File::Spec->rel2abs($conf_path2)).\").\n(possible KEYs are: ' . join(\", \", sort keys %CONF_TMP) . ')'};");
+			content.add("	$OPTIONS_TABLE{'conf'} = {'reihenfolge' => '10', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'^[^=]+=[^=]+$', 'default' => '', 'text1' => '=KEY=VALUE', 'text2' => 'for redefinition of configuration variables (instead of using the ones in '.Cwd::realpath(File::Spec->rel2abs($conf_path2)).').\n(possible KEYs are: ' . join(\", \", sort keys %CONF_TMP) . ')'};");
 			content.add("}");
 
 			content.add("# parsen und generieren eines hashs (%optionsall) zum erzeugen von optionen (Getopt::Long)");
