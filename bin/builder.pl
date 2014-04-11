@@ -76,6 +76,7 @@ my @branch;
 my $cleanapp;
 my $cleanbranch;
 my $genstack;
+my $pack;
 my $log = $ENV{'HOME'}."/.builder/builder.log";
 my $result = GetOptions(
 #                        "scenesdir=s"=> \$scenesdir,
@@ -93,6 +94,7 @@ my $result = GetOptions(
                         "stack=s"     => \$stack,
                         "cleanapp"   => \$cleanapp,
                         "cleanbranch"=> \$cleanbranch,
+                        "pack"=> \$pack,
                         "genstack"=> \$genstack,
                         "log=s"=> \$log,
                         );
@@ -140,6 +142,7 @@ $helptext .= " --ybranches=INT      [optional, overrides stack] installs the you
 $helptext .= " --branch=PATTERN     [optional, overrides --ybranches] installs the matching branch.\n";
 $helptext .= " --cleanbranch		[optional] prior to install all content in target directory of the processed branch of the processed app will be deleted. this value overrides the value in configfile\n";
 $helptext .= " --cleanapp			[optional] prior to build all branches of the processed app will be deleted.\n";
+$helptext .= " --pack				[optional] delivers the installation directory as a *.tar.gz file\n";
 $helptext .= " --batch              [optional] direct execution of all relevant buildinstances without possibility to abort.\n";
 $helptext .= " --log                [optional, default: ~/.builder/builder.log] this logfile will be used.\n";
 $helptext .= "\n";
@@ -1058,6 +1061,13 @@ foreach my $refh_stackline (@CONFIG)
 		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulk -depth -regex '.*source\\..*' -exec chmod -R 750 {} \\;\"\n"; 
 		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulk -depth -regex '.*source\\..*' -exec chmod -R 750 {} \\;\""; 
 
+		# wenn das flag --pack gesetzt wurde, soll das installationsverzeichnis in ein *.tar.gz archiv gepackt werden
+		if($pack)
+		{
+			print "info: packing the destination in a tar-archiv\n";
+			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf " . $app . "-" . $actBranch . ".tar.gz $now_targetbulkappbranch --remove-files\n"; 
+			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf " . $app . "-" . $actBranch . ".tar.gz $now_targetbulkappbranch --remove-files";
+		}
 	}
 }
 #-------------------
