@@ -1065,8 +1065,8 @@ foreach my $refh_stackline (@CONFIG)
 		if($pack)
 		{
 			print "info: packing the destination in a tar.gz-archiv\n";
-			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz $now_targetbulkappbranch --remove-files\"\n"; 
-			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz $now_targetbulkappbranch --remove-files\"";
+			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz $now_targetbulkappbranch\"\n"; 
+			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz $now_targetbulkappbranch\"";
 		}
 	}
 }
