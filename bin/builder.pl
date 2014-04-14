@@ -1073,6 +1073,9 @@ foreach my $refh_stackline (@CONFIG)
 			print "info: renaming tarball-destination to its previous name \n";
 			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkapp/" . $app . "-" . $actBranch . " $now_targetbulkappbranch\"\n"; 
 			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkapp/" . $app . "-" . $actBranch . " $now_targetbulkappbranch\"";
+			print "info: delete directory \n";
+			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch\"\n"; 
+			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch\"";
 		}
 	}
 }
