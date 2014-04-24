@@ -1053,8 +1053,8 @@ foreach my $refh_stackline (@CONFIG)
 		
 		# rechte aller files, die mit "Makefile.PL" enden, sollen auf 444 (nur lesen) gesetzt werden
 		print "info: setting rights in targetbulk to 444 for all files/dirs matching /*Makefile.PL/\n";
-		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulk -depth -regex '.*Makefile.PL\\..*' -exec chmod -R 444 {} \\;\"\n"; 
-		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulk -depth -regex '.*Makefile.PL\\..*' -exec chmod -R 444 {} \\;\""; 
+		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*Makefile.PL' -exec chmod -R 444 {} \\;\"\n"; 
+		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*Makefile.PL' -exec chmod -R 444 {} \\;\""; 
 
 		# rechte aller files und verzeichnisse, die mit ".source" enden, sollen auf 750 gesetzt werden
 		print "info: setting rights in targetbulk to 750 for all files/dirs matching /.source*/\n";
