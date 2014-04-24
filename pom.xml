@@ -101,34 +101,34 @@
 <!-- 			</plugin> -->
 
 <!-- Obfuskieren des jars. das output ueberschreibt das default-jar, welches durch 'maven-jar-plugin' id=default produziert wurde -->
-<!-- 			<plugin> -->
-<!-- 				<groupId>com.pyx4me</groupId> -->
-<!-- 				<artifactId>proguard-maven-plugin</artifactId> -->
-<!-- 				<version>2.0.4</version> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<phase>package</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>proguard</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 				<configuration> -->
-<!-- aukommentieren					<includeDependency>true</includeDependency> -->
-<!-- 					<obfuscate>true</obfuscate> -->
-<!-- 					<outputDirectory>${project.build.directory}</outputDirectory> -->
-<!-- 					<injar>${project.name}-${project.version}-nonObf.jar</injar> -->
-<!-- 					<outjar>${project.name}-${project.version}.jar</outjar> -->
-<!-- 					<options> -->
-<!-- 						<option>-keep public class de.caegroup.pramp.parts.PrampPartUi1 { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.pramp.parts.PrampViewModel { *; }</option> -->
-<!-- 					</options> -->
-<!-- 					<libs> -->
-<!-- 						<lib>${java.home}/lib/rt.jar</lib> -->
-<!-- 					</libs> -->
-<!-- 					<proguardVersion>4.8</proguardVersion> -->
-<!-- 				</configuration> -->
-<!-- 			</plugin> -->
+			<plugin>
+				<groupId>com.pyx4me</groupId>
+				<artifactId>proguard-maven-plugin</artifactId>
+				<version>2.0.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>proguard</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+<!-- 					<includeDependency>true</includeDependency> -->
+					<obfuscate>true</obfuscate>
+					<outputDirectory>${project.build.directory}</outputDirectory>
+					<injar>${project.name}-${project.version}-nonObf.jar</injar>
+					<outjar>${project.name}-${project.version}.jar</outjar>
+					<options>
+						<option>-keep public class de.caegroup.pramp.parts.PrampPartUi1 { *; }</option>
+						<option>-keep public class de.caegroup.pramp.parts.PrampViewModel { *; }</option>
+					</options>
+					<libs>
+						<lib>${java.home}/lib/rt.jar</lib>
+					</libs>
+					<proguardVersion>4.8</proguardVersion>
+				</configuration>
+			</plugin>
 			
 <!-- Alle unter dependency definierten Abhaengigkeiten werden aus dem maven-repo in ein eigenes lib-verzeichnis kopiert -->
 			<plugin>
