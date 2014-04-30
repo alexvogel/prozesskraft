@@ -230,8 +230,8 @@ public class Manager
 					break;
 				}
 
-				// if step is waiting
-				if (step.getStatus().equals("waiting"))
+				// if step is waiting or init failed
+				if (step.getStatus().equals("waiting") || step.getStatus().equals("initialization failed"))
 				{
 					if (!(step.getName().equals("root")))
 					{
