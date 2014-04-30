@@ -731,6 +731,7 @@ implements Serializable, Cloneable
 		}
 		else
 		{
+			this.setStatus("initialization failed");
 			log("debug", "initialization failed.");
 			return false;
 		}
