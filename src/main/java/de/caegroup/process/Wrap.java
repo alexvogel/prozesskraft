@@ -100,7 +100,7 @@ public class Wrap
 		if ( commandline.hasOption("help"))
 		{
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("perlcode", options);
+			formatter.printHelp("wrap", options);
 			System.out.println("");
 			System.out.println("author: "+author+" | version: "+version+" | date: "+date);
 			System.exit(0);
