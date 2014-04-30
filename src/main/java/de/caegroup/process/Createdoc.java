@@ -35,6 +35,7 @@ import net.sf.jasperreports.engine.JRException;
 
 
 
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -88,7 +89,7 @@ public class Createdoc
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		File inifile = WhereAmI.getDefaultInifile(tmp.getClass());
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Createdoc.class) + "/" + "../etc/process-createdoc.ini");
 
 		if (inifile.exists())
 		{
