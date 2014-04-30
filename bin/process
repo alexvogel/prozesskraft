@@ -250,7 +250,7 @@ my $helptext;
 
 $helptext .= "usage: $filename <subcommand> PARAMETER\n";
 $helptext .= "\n";
-$helptext .= "possible subcommands: startinstance, perlcode, commitit, checkconsistency, createdoc, syscall, wrap\n";
+$helptext .= "possible subcommands: startinstance, perlcode, commitit, checkconsistency, createdoc, syscall, wrap, manager\n";
 $helptext .= "\n";
 $helptext .= "Parameter\n";
 
@@ -409,7 +409,7 @@ if ($error_anzahl + $error_patternchecks)
 #
 # place your business logic here.
 #
-my $subcommand = "gui";
+my $subcommand;
 if(@ARGV)
 {
 	if($ARGV[0] !~ m/^-/)
@@ -420,6 +420,13 @@ if(@ARGV)
 		}
 	}
 }
+
+unless($subcommand)
+{
+	logit("fatal", "no subcommand. try -help for help.");
+	exit(1);
+}
+
 
 my $return = 0;
 if (getOption("hh"))
