@@ -444,7 +444,7 @@ else
 
 if ($return)
 {
-	logit("fatal", "subcommand " . $subcommand . " unknown. you only may use 'gui'.");
+	logit("fatal", "subcommand exited with error.");
 	exit(1);
 }
 #----------------------------------------------------------------------------
