@@ -86,6 +86,7 @@ import com.license4j.LicenseValidator;
 import de.caegroup.commons.WhereAmI;
 import de.caegroup.gui.process.insight.PIInsightCreator;
 import de.caegroup.gui.step.insight.SIInsightCreator;
+//import de.caegroup.pradar.Init;
 import de.caegroup.process.Process;
 
 public class PmodelPartUi1 extends ModelObject
@@ -131,6 +132,7 @@ public class PmodelPartUi1 extends ModelObject
 
 	int logLineCount = 0;
 
+	String processManagerCall = "undefined";
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
 	 * @wbp.parser.entryPoint
@@ -650,7 +652,7 @@ public class PmodelPartUi1 extends ModelObject
 	
 	public void managerActivate()
 	{
-		String aufruf = "process-manager -instance "+this.einstellungen.process.getInfilebinary();
+		String aufruf = this.processManagerCall+" -instance "+this.einstellungen.process.getInfilebinary();
 		try
 		{
 			log("info", aufruf);
@@ -848,7 +850,8 @@ public class PmodelPartUi1 extends ModelObject
 	
 	void setIni ()
 	{
-		File file = WhereAmI.getDefaultInifile(this.getClass());
+		java.io.File file = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(this.getClass()) + "/" + "../etc/pmodel-gui.ini");
+//		File file = WhereAmI.getDefaultInifile(this.getClass());
 		this.iniFile = file.getAbsolutePath();
 	}
 
@@ -884,6 +887,8 @@ public class PmodelPartUi1 extends ModelObject
 			}
 			this.license_server_port_at_hostname = license_server_list;
 
+			this.processManagerCall = ini.get("process", "manager");
+			
 		}
 		catch (FileNotFoundException e)
 		{
