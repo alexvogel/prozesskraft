@@ -66,29 +66,23 @@ public class Commitit
 		
 		Option ofile = OptionBuilder.withArgName("FILE")
 				.hasArg()
-				.withDescription("[optional] this file will be committed as file.")
+				.withDescription("[optional] this file will be committed as file. key will be set to 'default'")
 //				.isRequired()
 				.create("file");
 		
 		Option ovarfile = OptionBuilder.withArgName("FILE")
 				.hasArg()
-				.withDescription("[optional] every line of this file that contains something like name=value will be committed as a variable.")
+				.withDescription("[optional] every line of this file that contains s.th. like KEY=VALUE will be committed as a variable.")
 //				.isRequired()
 				.create("varfile");
 		
-		Option ovarname = OptionBuilder.withArgName("NAME")
+		Option okey = OptionBuilder.withArgName("KEY")
 				.hasArg()
-				.withDescription("[optional] this string will be committed as a variable name. use only in combination with -varvalue.")
+				.withDescription("[optional, default: default] this string will be considered as the key for the commit.")
 //				.isRequired()
-				.create("varname");
-		
-		Option ovarvalue = OptionBuilder.withArgName("VALUE")
-				.hasArg()
-				.withDescription("[optional] this string will be committed as a variable value. use only in combination with -varname.")
-//				.isRequired()
-				.create("varvalue");
+				.create("key");
 
-		Option ovariable = OptionBuilder.withArgName("NAME=VALUE")
+		Option ovariable = OptionBuilder.withArgName("VALUE")
 				.hasArg()
 				.withDescription("[optional] this string will be committed as a variable.")
 //				.isRequired()
@@ -105,8 +99,7 @@ public class Commitit
 		options.addOption( odir );
 		options.addOption( ofile );
 		options.addOption( ovarfile );
-		options.addOption( ovarname );
-		options.addOption( ovarvalue );
+		options.addOption( okey );
 		options.addOption( ovariable );
 		
 		/*----------------------------
@@ -165,6 +158,10 @@ public class Commitit
 		String stepname = "root";
 		if (commandline.hasOption("step")) {stepname = commandline.getOptionValue("step");}
 
+		// setzen des key
+		String key = "default";
+		if (commandline.hasOption("key")) {key = commandline.getOptionValue("key");}
+
 		
 		Process p1 = new Process();
 			
@@ -179,7 +176,7 @@ public class Commitit
 		// committen
 		if (commandline.hasOption("file"))
 		{
-			step.commitFile("default", commandline.getOptionValue("file"));
+			step.commitFile(key, commandline.getOptionValue("file"));
 		}
 		
 		if (commandline.hasOption("varfile"))
@@ -192,14 +189,9 @@ public class Commitit
 			step.commitdir(commandline.getOptionValue("dir"));
 		}
 		
-		if ( (commandline.hasOption("varname")) && (commandline.hasOption("varvalue")) )
-		{
-			step.commitVariable(commandline.getOptionValue("varname"), commandline.getOptionValue("varvalue"));
-		}
-		
 		if (commandline.hasOption("variable"))
 		{
-			step.commitVariable("default", commandline.getOptionValue("variable"));
+			step.commitVariable(key, commandline.getOptionValue("variable"));
 		}
 		
 		p2.writeBinary();
