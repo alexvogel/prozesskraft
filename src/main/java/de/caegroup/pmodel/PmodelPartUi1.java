@@ -686,7 +686,7 @@ public class PmodelPartUi1 extends ModelObject
 	
 	public void managerDeactivate()
 	{
-		String aufruf = "process-manager -stop -instance "+this.einstellungen.process.getInfilebinary();
+		String aufruf = this.processManagerCall+" -stop -instance "+this.einstellungen.process.getInfilebinary();
 		try
 		{
 			log("info", aufruf);
