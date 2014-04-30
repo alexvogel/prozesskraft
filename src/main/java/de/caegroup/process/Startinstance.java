@@ -210,10 +210,10 @@ public class Startinstance
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			Runtime.getRuntime().exec("processmanager -help");
+//			Runtime.getRuntime().exec("process-manager -help");
 	
-			System.out.println("AUFRUF: processmanager -instance "+p2.getOutfilebinary());
-			String[] args_for_syscall = {"processmanager", "-instance", p2.getOutfilebinary()};
+			System.out.println("AUFRUF: process-manager -instance "+p2.getOutfilebinary());
+			String[] args_for_syscall = {"process-manager", "-instance", p2.getOutfilebinary()};
 			ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
 	
 			//		ProcessBuilder pb = new ProcessBuilder("processmanager -instance "+p2.getOutfilebinary());
