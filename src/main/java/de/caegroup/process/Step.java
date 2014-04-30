@@ -1023,7 +1023,7 @@ implements Serializable, Cloneable
 	public boolean commitVariable(String key, String value)
 	{
 		Variable variable = new Variable();
-		variable.setKey(value);
+		variable.setKey(key);
 		variable.setValue(value);
 		return this.commitVariable(variable);
 	}
