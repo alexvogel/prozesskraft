@@ -1,7 +1,7 @@
 to install pmodel follow these instructions
 
 1) go to the directory where you want to install the toolbox and unpack
-	tar -xvf pradar-0.5.0.tar.gz
+	tar -xvf pModel-0.5.0.tar.gz
 
 2) this generates a new <installdirectory>
 
