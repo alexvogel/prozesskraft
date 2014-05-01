@@ -10,6 +10,7 @@ import de.caegroup.process.Commit;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.rits.cloning.Cloner;
 
@@ -833,7 +834,7 @@ implements Serializable, Cloneable
 //					System.out.println("AUFRUF: /bin/bash /home/avo/bin/procsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
 //					String[] args_for_syscall = {"/bin/bash", "/home/avo/bin/procsyscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
 //				System.out.println("AUFRUF: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
-				String[] args_for_syscall = {"process-syscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
+				String[] args_for_syscall = {"process", "syscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
 				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
 //				log("info", "constructing the systemcall to: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
 
@@ -850,7 +851,7 @@ implements Serializable, Cloneable
 				pb.directory(directory);
 				java.io.File checkdirectory = pb.directory().getAbsoluteFile();
 //				System.out.println("ALS AKTUELLES VERZEICHNIS WIRD GESETZT+GECHECKT: "+checkdirectory);
-				log("info", "calling: process-syscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
+				log ("info", "calling: " + StringUtils.join(args_for_syscall, " "));
 				java.lang.Process p = pb.start();
 //					Map<String,String> env = pb.environment();
 //					String cwd = env.get("PWD");
