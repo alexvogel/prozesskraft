@@ -380,6 +380,10 @@ public class PrampPartUi1 extends ModelObject
 	void updateUiComboVersions()
 	{
 		getInstalledVersionNames(combo_processes.getText());
+
+		// deselect first
+		combo_versions.deselect(combo_versions.getSelectionIndex());
+		// then select the last item
 		combo_versions.select(combo_versions.getItemCount()-1);
 	}
 	
