@@ -35,6 +35,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateListStrategy;
@@ -77,6 +78,7 @@ import org.eclipse.swt.widgets.Combo;
 
 
 
+
 //import com.jcraft.jsch.ChannelExec;
 //import com.jcraft.jsch.JSch;
 //import com.jcraft.jsch.Session;
@@ -104,6 +106,7 @@ public class PrampPartUi1 extends ModelObject
 	private String processDefinitionPath = null;
 	private Process process = null;
 	private String iniFile = null;
+	private Ini ini = null;
 	private String userIniFile = null;
 	
 	private ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
@@ -609,7 +612,6 @@ public class PrampPartUi1 extends ModelObject
 	 */
 	void loadIni()
 	{
-		Ini ini;
 		ArrayList<String> license_server_list = new ArrayList<String>();
 
 		try
@@ -1244,15 +1246,13 @@ public class PrampPartUi1 extends ModelObject
 					// ....
 					log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
 
-
-					String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\\\"process-manager -instance "+process.getOutfilebinary()+"\\\""};
-
+					String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\""+ "process", "manager" +" -instance "+process.getOutfilebinary()+"\""};
 					ProcessBuilder pb = new ProcessBuilder(args_for_command);
-					
+
+					log ("info", "calling: " + StringUtils.join(args_for_command, " "));
 					try
 					{
 						java.lang.Process p = pb.start();
-						log ("info", "calling: "+"ssh"+" "+System.getProperty("user.name")+"@"+combo_hosts.getText()+" "+"\"process-manager -instance "+process.getOutfilebinary()+"\"");
 						log ("debug", "hashCode="+p.hashCode());
 					} catch (IOException e)
 					{
@@ -1260,6 +1260,26 @@ public class PrampPartUi1 extends ModelObject
 						log ("error", "IOException: problems with executing via ssh");
 						e.printStackTrace();
 					}
+
+					// starten des pmodel gui lokal
+					// ....
+					log ("info", "launching pmodel viewer");
+
+					String[] args_for_command2 = {"pmodel", "gui", "-instance", process.getOutfilebinary()};
+
+					ProcessBuilder pb2 = new ProcessBuilder(args_for_command2);
+					log ("info", "calling: " + StringUtils.join(args_for_command2, " "));
+					try
+					{
+						java.lang.Process p2 = pb2.start();
+						log ("debug", "hashCode="+p2.hashCode());
+					} catch (IOException e)
+					{
+						// TODO Auto-generated catch block
+						log ("error", "IOException: problems with execution");
+						e.printStackTrace();
+					}
+
 					return true;
 
 				}
