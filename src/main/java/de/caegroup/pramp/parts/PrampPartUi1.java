@@ -1433,7 +1433,7 @@ public class PrampPartUi1 extends ModelObject
 		}
 		else
 		{
-			System.out.println(logstring);
+			System.err.println(logstring);
 		}
 	}
 	
