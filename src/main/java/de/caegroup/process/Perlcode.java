@@ -16,6 +16,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 
+import de.caegroup.commons.*;
 
 public class Perlcode
 {
@@ -184,7 +185,7 @@ public class Perlcode
 	private static void writeProcessAsPerlcode(Process process, java.io.File outputDir) throws IOException
 	{
 		System.err.println("generating perlcode for process "+process.getName());
-		writeFile(new java.io.File(outputDir.getCanonicalPath()+"/"+process.getName()), process.getProcessAsPerlScript());
+		writeFile.writeFile(new java.io.File(outputDir.getCanonicalPath()+"/"+process.getName()), process.getProcessAsPerlScript());
 		
 		for(Step actualStep : process.getStep())
 		{
@@ -209,7 +210,7 @@ public class Perlcode
 			// step ueber den namen heraussuchen
 			Step step = process.getStep(stepname);
 			System.err.println("generating perlcode for step "+stepname);
-			writeFile(new java.io.File(outputDir.getCanonicalPath()+"/"+step.getWork().getCommand()), step.getStepAsPerlScript());
+			writeFile.writeFile(new java.io.File(outputDir.getCanonicalPath()+"/"+step.getWork().getCommand()), step.getStepAsPerlScript());
 		}
 		else
 		{
@@ -218,42 +219,42 @@ public class Perlcode
 		}
 	}
 	
-	/**
-	 * writes a file
-	 * @param targetFile
-	 * @param fileContent
-	 * @throws IOException
-	 */
-	private static void writeFile(java.io.File targetFile, ArrayList<String> fileContent) throws IOException
-	{
-		if(targetFile.exists())
-		{
-			System.err.println("error: skipping creating file, because a file does already exist: " + targetFile.getCanonicalPath());
-		}
-		else
-		{
-			System.out.println("info: writing file: " + targetFile.getCanonicalPath());
-			try
-			{
-				PrintWriter writer = new PrintWriter(targetFile.getCanonicalPath(), "UTF-8");
-				for (String line : fileContent)
-				{
-					writer.println(line);
-				}
-				writer.close();
-			}
-			catch (FileNotFoundException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			catch (UnsupportedEncodingException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
+//	/**
+//	 * writes a file
+//	 * @param targetFile
+//	 * @param fileContent
+//	 * @throws IOException
+//	 */
+//	private static void writeFile(java.io.File targetFile, ArrayList<String> fileContent) throws IOException
+//	{
+//		if(targetFile.exists())
+//		{
+//			System.err.println("error: skipping creating file, because a file does already exist: " + targetFile.getCanonicalPath());
+//		}
+//		else
+//		{
+//			System.out.println("info: writing file: " + targetFile.getCanonicalPath());
+//			try
+//			{
+//				PrintWriter writer = new PrintWriter(targetFile.getCanonicalPath(), "UTF-8");
+//				for (String line : fileContent)
+//				{
+//					writer.println(line);
+//				}
+//				writer.close();
+//			}
+//			catch (FileNotFoundException e)
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			catch (UnsupportedEncodingException e)
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 	
 	private static void exiter()
 	{
