@@ -54,6 +54,7 @@
 <!-- 					abhaengigkeiten in anderen packages (durch import) koennen nur aufgeloest werden, wenn diese klassen public bleiben -->
 						<option>-keep public class de.caegroup.commons.WhereAmI { *; }</option>
 						<option>-keep public class de.caegroup.commons.AutoCropBorder { *; }</option>
+						<option>-keep public class de.caegroup.commons.writeFile { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
