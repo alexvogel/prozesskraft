@@ -350,7 +350,7 @@ implements Serializable, Cloneable
 						perlSnippet.add("\t\t\tpush (@{$VARIABLE{'root'}}, [\""+actVariable.getKey()+"\", $tmp]);");
 						perlSnippet.add("");
 						perlSnippet.add("\t\t\t# toroot = true, deshalb auch in die tabelle des htmls mit aufnehemen");
-						perlSnippet.add("my @outputRowForHtml = ($stepname, 'wert', '"+actVariable.getKey()+"', '"+actVariable.getDescription()+"', '"+actVariable.getValue()+"');");
+						perlSnippet.add("\t\t\tmy @outputRowForHtml = ($stepname, 'wert', '"+actVariable.getKey()+"', \""+actVariable.getDescription()+"\", '"+actVariable.getValue()+"');");
 						perlSnippet.add("\t\t\tpush(@OUTPUT_TABELLE, \\@outputRowForHtml);");
 						perlSnippet.add("\t\t\t&printHtmlOverview();");
 					}
@@ -410,15 +410,15 @@ implements Serializable, Cloneable
 						perlSnippet.add("\t\t\t# toroot = true");
 						perlSnippet.add("\t\t\tpush (@{$FILE{'root'}}, [\""+actFile.getKey()+"\", $tmp]);");
 						perlSnippet.add("\t\t\t&logit(\"info\", \"toroot: cp $tmp $pwd\");");
-						perlSnippet.add("\t\tcopy($tmp, $pwd);");
+						perlSnippet.add("\t\t\tcopy($tmp, $pwd);");
 						perlSnippet.add("");
 						perlSnippet.add("\t\t\t# toroot = true, deshalb auch in die tabelle des htmls mit aufnehemen");
-						perlSnippet.add("(my $filename, my $dirs, my $suf) = fileparse($tmp);");
-						perlSnippet.add("my @outputRowForHtml = ($stepname, 'datei', '"+actFile.getKey()+"', '"+actFile.getDescription()+"', \"<a href=\\\"\" . File::Spec->abs2rel($tmp) . \"\\\">$filename</a>\");");
-						perlSnippet.add("push(@OUTPUT_TABELLE, \\@outputRowForHtml);");
-						perlSnippet.add("&printHtmlOverview();");
+						perlSnippet.add("\t\t\t(my $filename, my $dirs, my $suf) = fileparse($tmp);");
+						perlSnippet.add("\t\t\tmy @outputRowForHtml = ($stepname, 'datei', '"+actFile.getKey()+"', \""+actFile.getDescription()+"\", \"<a href=\\\"\" . File::Spec->abs2rel($tmp) . \"\\\">$filename</a>\");");
+						perlSnippet.add("\t\t\tpush(@OUTPUT_TABELLE, \\@outputRowForHtml);");
+						perlSnippet.add("\t\t\t&printHtmlOverview();");
 					}
-					perlSnippet.add("\t}");
+					perlSnippet.add("\t\t}");
 					
 				}
 				else
