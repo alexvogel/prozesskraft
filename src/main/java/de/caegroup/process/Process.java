@@ -181,6 +181,44 @@ implements Serializable
 		return true;
 	}
 
+	
+	/**
+	 * generates a ArrayList that represents a graph in the format 'dot'
+	 * @return ArrayList<String>
+	 */
+	public ArrayList<String> getProcessAsDotGraph()
+	{
+		ArrayList<String> dot = new ArrayList<String>();
+	
+		dot.add("digraph \""+this.getName()+"\" {");
+		
+		// alle bestehenden steps deklarieren
+		for(Step actStep : this.getStep())
+		{
+			dot.add(actStep.getName() + ";");
+		}
+		
+		// fuer jeden step die beziehung der fromsteps auffuehren
+		for(Step actStep : this.getStep())
+		{
+			ArrayList<String> fromstep = new ArrayList<String>();
+			for(Init actInit : actStep.getInit())
+			{
+				fromstep.add(actInit.getFromstep());
+			}
+			
+			for(String actFromstep : fromstep)
+			{
+				dot.add(actFromstep + " -> " + actStep.getName());
+			}
+		}
+		
+		dot.add("}");
+
+		return dot;
+	}
+	
+	
 	/**
 	 * generates a new process as a wrapper-process to this
 	 * this means:
