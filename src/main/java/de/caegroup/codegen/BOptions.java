@@ -58,13 +58,21 @@ implements Serializable, Cloneable
 			content.add("				'd'  => {'reihenfolge' => '11', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
 			
 			content.add("");
-			content.add("# definition der standardoptions");
+			content.add("# definition der speziellen options");
 			for(Option o: this.parent.option)
 			{
 				content.addAll(o.getContent());
 			}
 			
 			content.add(");");
+
+			content.add("");
+			content.add("# die speziellen options in einem array sammeln");
+			content.add("my @INPUT_OPTIONS;");
+			for(Option o: this.parent.option)
+			{
+				content.add("push(@INPUT_OPTIONS, " + o.getName() + ");");
+			}
 
 
 			content.add("# dynamische standardoptions definieren");

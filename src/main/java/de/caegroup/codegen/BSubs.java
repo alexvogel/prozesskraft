@@ -16,6 +16,7 @@ implements Serializable, Cloneable
 	Script parent = null;
 	Block block = new Block();
 
+	ArrayList<String> code_printHtmlOverview = new ArrayList<String>();
 	ArrayList<String> code_logit = new ArrayList<String>();
 	ArrayList<String> code_getvars = new ArrayList<String>();
 	ArrayList<String> code_initlist = new ArrayList<String>();
@@ -30,6 +31,7 @@ implements Serializable, Cloneable
 	public BSubs(Script parent)
 	{
 		this.parent = parent;
+		this.initPrintHtmlOverview();
 		this.initCodeLogit();
 		this.initCodeGetvars();
 		this.initCodeInitlist();
@@ -53,6 +55,7 @@ implements Serializable, Cloneable
 		
 		if(type.matches("process"))
 		{
+			content.addAll(this.code_printHtmlOverview);
 			content.addAll(this.code_getvars);
 			content.addAll(this.code_logit);
 			content.addAll(this.code_initlist);
@@ -74,6 +77,75 @@ implements Serializable, Cloneable
 		this.block.setCode(content);
 	}
 
+	private void initPrintHtmlOverview()
+	{
+		ArrayList<String> code = new ArrayList<String>();
+		
+		code.add("sub printHtmlOverview");
+		code.add("{");
+		code.add("	# erstellen der html tabelle zur uebersicht von INPUT");
+		code.add("	my $HTML_TABLE_INPUT = HTML::Table->new(");
+		code.add("											-rows    => 0,");
+		code.add("											-cols    => 5,");
+		code.add("											-align   => 'justify',");
+		code.add("											-rules   => 'all',");
+		code.add("											-border  => 3,				# rahmen");
+		code.add("											-bgcolor => 'white',");
+		code.add("											-width   => '100%',");
+		code.add("											-spacing => 5,");
+		code.add("											-padding => 8,");
+		code.add("											-style   => 'color: grey',");
+		code.add("											-head => ['woher', 'typ', 'label', 'beschreibung', 'inhalt/link'],");
+		code.add("											);");
+		code.add("	");
+		code.add("	foreach my $refa_row (@INPUT_TABELLE)");
+		code.add("	{");
+		code.add("		$HTML_TABLE_INPUT->addRow(@$refa_row);");
+		code.add("	}");
+		code.add("	");
+		code.add("	#-------------------");
+		code.add("	# erstellen der html tabelle zur uebersicht von OUTPUT");
+		code.add("	my $HTML_TABLE_OUTPUT = HTML::Table->new(");
+		code.add("											-rows    => 0,");
+		code.add("											-cols    => 5,");
+		code.add("											-align   => 'justify',");
+		code.add("											-rules   => 'all',");
+		code.add("											-border  => 3,				# rahmen");
+		code.add("											-bgcolor => 'white',");
+		code.add("											-width   => '100%',");
+		code.add("											-spacing => 5,");
+		code.add("											-padding => 8,");
+		code.add("											-style   => 'color: grey',");
+		code.add("											-head => ['woher', 'typ', 'label', 'beschreibung', 'inhalt/link'],");
+		code.add("											);");
+		code.add("	");
+		code.add("	foreach my $refa_row (@OUTPUT_TABELLE)");
+		code.add("	{");
+		code.add("		$HTML_TABLE_OUTPUT->addRow(@$refa_row);");
+		code.add("	}");
+		code.add("	");
+		code.add("	# das stdout handle sichern und ein neues auf das ausgabefile zeigen lassen");
+		code.add("	my $outfile = $INSTANCEDIR . \"/overview.html\";");
+		code.add("	unlink($outfile);");
+		code.add("	");
+		code.add("	open (SAVE, \">&STDOUT\") or die \"Can't save STDOUT $!\n\";");
+		code.add("	open (STDOUT, '>', $outfile) or die \"Can't redirect STDOUT to \" . $outfile . \": $!\";");
+		code.add("	");
+		code.add("	print \"<h1>Prozess Input</h1>\n\";");
+		code.add("	$HTML_TABLE_INPUT->print();");
+		code.add("	");
+		code.add("	print \"<h1>Prozess Output</h1>\n\";");
+		code.add("	$HTML_TABLE_OUTPUT->print();");
+		code.add("	");
+		code.add("	# STDOUT wiederherstellen");
+		code.add("	open (STDOUT, \">&SAVE\") or die \"Can't restore STDOUT $!\n\";");
+		code.add("	close SAVE;");
+		code.add("}");
+		code.add("");
+	
+		this.code_printHtmlOverview = code;
+	}
+	
 	private void initCodeLogit()
 	{
 		ArrayList<String> code = new ArrayList<String>();
