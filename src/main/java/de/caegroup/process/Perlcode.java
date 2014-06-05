@@ -184,7 +184,7 @@ public class Perlcode
 			outputDirLib.mkdir();
 			
 			// copy all perllibs from the lib directory
-			final Path source = Paths.get(WhereAmI.getInstallDirectoryAbsolutePath(Perlcode.class) + "/lib");
+			final Path source = Paths.get(WhereAmI.getInstallDirectoryAbsolutePath(Perlcode.class) + "/../perllib");
 			final Path target = Paths.get(outputDirLib.toURI());
 			
 			copyDirectoryTree.copyDirectoryTree(source, target);
