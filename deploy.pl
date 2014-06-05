@@ -32,5 +32,9 @@ system "cp -r $cwd/etc $auslieferungsverzeichnis/.";
 print "cp -r $target/lib $auslieferungsverzeichnis/.\n";
 system "cp -r $target/lib $auslieferungsverzeichnis/.";
 
+# kopieren der perllib ins auslieferungsverzeichnis
+print "cp -r $target/perllib $auslieferungsverzeichnis/.\n";
+system "cp -r $target/perllib $auslieferungsverzeichnis/.";
+
 # nachfolgern bescheid geben wie das auslieferungsverzeichnis heisst
 print "<newdir>$auslieferungsverzeichnis<newdir>\n";
