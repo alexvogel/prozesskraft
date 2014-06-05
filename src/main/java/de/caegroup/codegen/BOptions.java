@@ -71,9 +71,9 @@ implements Serializable, Cloneable
 			content.add("my @INPUT_OPTIONS;");
 			for(Option o: this.parent.option)
 			{
-				content.add("push(@INPUT_OPTIONS, " + o.getName() + ");");
+				content.add("push(@INPUT_OPTIONS, \"" + o.getName() + "\");");
 			}
-
+			content.add("");
 
 			content.add("# dynamische standardoptions definieren");
 			content.add("# wenn kein dokufile vorhanden ist, wird auch diese option nicht angelegt");
