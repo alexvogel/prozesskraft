@@ -43,6 +43,9 @@ implements Serializable, Cloneable
 			content.add("# 2) copy all options which value stat as a path to a file or a directory --<key>=<path> as key=path to %FILE . Except for option like --submodel_<key>=<path> go as key=path to %FILE");
 			content.add("# 3) copy all options which value does not stat as a path to a file or directory --<key>=<value> as key=value to %VARIABLE . Except for options like --variable_<key>=<value> go as key=value to %VARIABLE");
 			content.add("");
+			content.add("# Module aus lokalen (mitgelieferten) libs einbinden");
+			content.add("# dabei handelt es sich um module, die nicht zur core-distro gehoeren");
+			content.add("use HTML::Table;");
 			content.add("");
 			content.add("&expandPathInOptions();");
 			content.add("");
