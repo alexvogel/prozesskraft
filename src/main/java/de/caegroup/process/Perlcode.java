@@ -4,7 +4,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.FileVisitOption;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.util.ArrayList;
+import java.util.EnumSet;
 
 import javax.xml.bind.JAXBException;
 
@@ -17,6 +25,8 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 
 import de.caegroup.commons.*;
+
+import java.nio.file.attribute.*;
 
 public class Perlcode
 {
@@ -134,19 +144,18 @@ public class Perlcode
 		----------------------------*/
 		Process p1 = new Process();
 		java.io.File outputDir = new java.io.File(commandline.getOptionValue("output"));
-
+		java.io.File outputDirBin = new java.io.File(commandline.getOptionValue("output") + "/bin");
+		java.io.File outputDirLib = new java.io.File(commandline.getOptionValue("output") + "/lib");
+		
 		if (outputDir.exists())
 		{
-			System.err.println("warn: already exists: " + outputDir.getCanonicalPath());
-			if (! outputDir.isDirectory())
-			{
-				System.err.println("fatal: not a directory: " + outputDir.getCanonicalPath());
-				exiter();
-			}
+			System.err.println("fatal: directory already exists: " + outputDir.getCanonicalPath());
+			exiter();
 		}
 		else
 		{
 			outputDir.mkdir();
+			outputDirBin.mkdir();
 		}
 		
 		p1.setInfilexml( commandline.getOptionValue("definition") );
@@ -165,15 +174,21 @@ public class Perlcode
 		if (commandline.hasOption("step"))
 		{
 			String stepname = commandline.getOptionValue("step");
-			writeStepAsPerlcode(p2, stepname, outputDir);
+			writeStepAsPerlcode(p2, stepname, outputDirBin);
 		}
 		
 		// perlcode generieren fuer den gesamten process
 		else
 		{
-			writeProcessAsPerlcode(p2, outputDir);
+			writeProcessAsPerlcode(p2, outputDirBin);
+			outputDirLib.mkdir();
+			
+			// copy all perllibs from the lib directory
+			final Path source = Paths.get("lib");
+			final Path target = Paths.get(commandline.getOptionValue("output") + "/lib");
+			
+			copyDirectoryTree.copyDirectoryTree(source, target);
 		}
-		
 	}
 	
 	/**
