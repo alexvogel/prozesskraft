@@ -371,9 +371,12 @@ implements Serializable
 		script.business.addCode("# anlegen der step-tabelle");
 		script.business.addCode("my %STEPS_TABELLE = (");
 
+		// setzen der Ranks aller vorhandenen Steps
+		this.setStepRanks();
+		
 		for(Step actStep : this.getStep())
 		{
-			script.business.addCode("			'rang' => '"+actStep.getRank()+"', 'stepnamen' => '"+actStep.getName()+"', 'beschreibung' => \""+actStep.getDescription()+"\", 'aufruf' => '', 'dir' => '', 'status' => 'waiting', 'log' => ''},");
+			script.business.addCode("			'"+actStep.getRank()+"' => {'rang' => '"+actStep.getRank()+"', 'stepnamen' => '"+actStep.getName()+"', 'beschreibung' => \""+actStep.getDescription()+"\", 'aufruf' => '', 'dir' => '', 'status' => 'waiting', 'log' => ''},");
 		}
 		
 		script.business.addCode(");");
