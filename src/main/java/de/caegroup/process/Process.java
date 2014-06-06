@@ -354,10 +354,20 @@ implements Serializable
 		script.meta.setVersion(this.getVersion());
 		script.genContent();
 		
+		// hinzufuegen des prozess meta infos
+		script.business.addCode("# metadata from the processmodel");
+		script.business.addCode("my $PROCESS_NAME " + this.getName());
+		script.business.addCode("my $PROCESS_DESCRIPTION " + this.getDescription());
+		script.business.addCode("my $PROCESS_ARCHITECTNAME " + this.getArchitectName());
+		script.business.addCode("my $PROCESS_ARCHITECTMAIL " + this.getArchitectMail());
+		script.business.addCode("my $PROCESS_CUSTOMERNAME " + this.getCustomerName());
+		script.business.addCode("my $PROCESS_CUSTOMERMAIL " + this.getCustomerMail());
+		script.business.addCode("my $PROCESS_CUSTOMERCOMPANY " + this.getCustomerCompany());
+		script.business.addCode("my $PROCESS_PATH " + this.getPath());
+		script.business.addCode("");
+
 		// abpruefen ob die aufzurufenden programme aller steps verfuegbar sind
 		// falls nein - abbrechen
-		
-		
 		
 		// script-OPTIONS generieren aus den commit-objekten des root-steps
 		Step rootStep = this.getStep(this.getRootstepname());
