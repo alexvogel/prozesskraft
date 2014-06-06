@@ -150,7 +150,6 @@ implements Serializable, Cloneable
 		perlSnippet.add("\tmy $stepname = \""+this.getName()+"\";");
 		perlSnippet.add("\tmy $stepdescription = \""+this.getDescription()+"\";");
 		perlSnippet.add("\tmy $steprank = \""+this.getRank()+"\";");
-		perlSnippet.add("\tmy $steprank = \""+this.getRank()+"\";");
 		perlSnippet.add("\t&girlande_stepstart($stepname);");
 		perlSnippet.add("");
 		perlSnippet.add("\tmy %allLists;");
@@ -252,8 +251,8 @@ implements Serializable, Cloneable
 		// directory fuer den step anlegen
 		perlSnippet.add("\t# create step-owned directory");
 		perlSnippet.add("\tmy $stepdir = \"dir4step_"+this.getName()+"\";");
-		perlSnippet.add("\tmy $steppathdir = $pwd . \"/\" . \"dir4step_"+this.getName()+"\";");
 		perlSnippet.add("\tmy $pwd = cwd();");
+		perlSnippet.add("\tmy $steppathdir = $pwd . \"/\" . \"dir4step_"+this.getName()+"\";");
 		perlSnippet.add("\t&logit(\"debug\", \"create directory for actual step '"+this.getName()+"': 'dir4step_"+this.getName()+"'\");");
 		perlSnippet.add("\tmkdir($steppathdir);");
 		perlSnippet.add("");
@@ -269,19 +268,19 @@ implements Serializable, Cloneable
 		perlSnippet.add("\t&logit(\"info\", \"executing program for step '"+this.getName()+"': $call\");");
 		perlSnippet.add("\t&logit(\"info\", \">>>>>>>>>> subsequent logging comes from step '"+this.getName()+"' >>>>>>>>>>\");");
 		perlSnippet.add("");
-		perlSnippet.add("# aktualisieren der steptabelle im html");
-		perlSnippet.add("$STEPS_TABELLE{$rang}{'aufruf'} = \"$call\";");
-		perlSnippet.add("$STEPS_TABELLE{$rang}{'dir'} = \"<a href=\\\"./$stepdir\\\">$stepdir</a>\";");
-		perlSnippet.add("$STEPS_TABELLE{$rang}{'status'} = 'running';");
-		perlSnippet.add("$STEPS_TABELLE{$rang}{'log'} = \"<a href=\\\"./$stepdir/stdout.log\\\">stdout.log</a> <a href=\\\"./$stepdir/stderr.log\\\">stderr.log</a>\";");
-		perlSnippet.add("&printHtmlOverview();");
+		perlSnippet.add("\t# aktualisieren der steptabelle im html");
+		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'aufruf'} = \"$call\";");
+		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'dir'} = \"<a href=\\\"./$stepdir\\\">$stepdir</a>\";");
+		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'status'} = 'running';");
+		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'log'} = \"<a href=\\\"./$stepdir/stdout.log\\\">stdout.log</a> <a href=\\\"./$stepdir/stderr.log\\\">stderr.log</a>\";");
+		perlSnippet.add("\t&printHtmlOverview();");
 		perlSnippet.add("");
 
 		perlSnippet.add("\tmy $return = system(\"set -o pipefail; ($call | tee stdout.log) 3>&1 1>&2 2>&3 | tee stderr.log\");");
 		perlSnippet.add("");
-		perlSnippet.add("# aktualisieren der steptabelle im html");
-		perlSnippet.add("$STEPS_TABELLE{$rang}{'status'} = \"exit=$return\";");
-		perlSnippet.add("&printHtmlOverview();");
+		perlSnippet.add("\t# aktualisieren der steptabelle im html");
+		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'status'} = \"exit=$return\";");
+		perlSnippet.add("\t&printHtmlOverview();");
 		perlSnippet.add("");
 
 		perlSnippet.add("\t&logit(\"info\", \"<<<<<<<<<< previous logging came from step '"+this.getName()+"' <<<<<<<<<<\");");
