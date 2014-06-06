@@ -129,10 +129,6 @@ implements Serializable, Cloneable
 			content.add("");
 			content.add("my @OUTPUT_TABELLE;");
 			content.add("");
-			content.add("#-------------------");
-			content.add("# regelmaessige ausgabe des html");
-			content.add("&printHtmlOverview();");
-			content.add("#-------------------");
 			content.add("");
 			content.add("# anlegen eines command-hashes");
 			content.add("my %COMMAND;");
