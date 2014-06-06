@@ -179,6 +179,7 @@ implements Serializable, Cloneable
 		code.add("");
 		code.add("	$html_table_meta->addRow('installations directory', \"<a href=\\\"\" . Cwd::realpath($installdir) . \"\\\" target=\\\"_blank\\\">\" . Cwd::realpath($installdir) . \"</a>\");");
 		code.add("	$html_table_meta->addRow('instanz directory', \"<a href=\\\"$INSTANCEDIR\\\" target=\\\"_blank\\\">$INSTANCEDIR</a>\");");
+		code.add("	$html_table_meta->addRow('instanz aufruf', $FULLCALL);");
 		code.add("	$html_table_meta->addRow('zeit', scalar(localtime()));");
 		code.add("	$html_table_meta->addRow('user', $ENV{'USER'});");
 		code.add("");

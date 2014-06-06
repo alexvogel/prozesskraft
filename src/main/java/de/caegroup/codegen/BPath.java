@@ -43,6 +43,7 @@ implements Serializable, Cloneable
 		// default
 		else
 		{
+			content.add("my $FULLCALL = join(' ', $0, @ARGV);");
 			content.add("# feststellen des installationsortes des scripts");
 			content.add("my ($filename, $directories, $suffix);");
 			content.add("BEGIN");
