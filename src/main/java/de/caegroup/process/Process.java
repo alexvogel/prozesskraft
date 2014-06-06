@@ -366,8 +366,18 @@ implements Serializable
 		script.business.addCode("my $PROCESS_PATH = '" + this.getPath() + "';");
 		script.business.addCode("");
 
-		// abpruefen ob die aufzurufenden programme aller steps verfuegbar sind
-		// falls nein - abbrechen
+		// anlegen der step-tabelle
+		script.business.addCode("#-------------------");
+		script.business.addCode("# anlegen der step-tabelle");
+		script.business.addCode("my %STEPS_TABELLE = (");
+
+		for(Step actStep : this.getStep())
+		{
+			script.business.addCode("			'rang' => '"+actStep.getRank()+"', 'stepnamen' => '"+actStep.getName()+"', 'beschreibung' => \""+actStep.getDescription()+"\", 'aufruf' => '', 'dir' => '', 'status' => 'waiting', 'log' => ''},");
+		}
+		
+		script.business.addCode(");");
+		script.business.addCode("");
 		
 		// script-OPTIONS generieren aus den commit-objekten des root-steps
 		Step rootStep = this.getStep(this.getRootstepname());
