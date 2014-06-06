@@ -147,7 +147,7 @@ implements Serializable, Cloneable
 		code.add("	$html_table_meta->addRow('dokumentation', \"<a href=\\\"$doc_path\\\">$filenam</a>\");");
 		code.add("");
 		code.add("	$html_table_meta->addRow('installation', \"<a href=\\\"\" . Cwd::realpath($installdir) . \"\\\">\" . Cwd::realpath($installdir) . \"</a>\");");
-		code.add("	$html_table_meta->addRow('directory der instanzdaten', \"<a href=\\\"$INSTANCEDIR\">$INSTANCEDIR</a>\");");
+		code.add("	$html_table_meta->addRow('directory der instanzdaten', \"<a href=\\\"$INSTANCEDIR\\\">$INSTANCEDIR</a>\");");
 		code.add("	$html_table_meta->addRow('zeit', scalar(localtime()));");
 		code.add("	$html_table_meta->addRow('user', $ENV{'USER'});");
 		code.add("");
@@ -160,7 +160,7 @@ implements Serializable, Cloneable
 		code.add("	open (SAVE, \">&STDOUT\") or die \"Can't save STDOUT $!\\n\";");
 		code.add("	open (STDOUT, '>', $outfile) or die \"Can't redirect STDOUT to \" . $outfile . \": $!\\n\";");
 		code.add("	");
-		code.add("	print \"<h1>Instanz des Prozesses '$PROCESS_NAME'</h1>\n\";");
+		code.add("	print \"<h1>Instanz des Prozesses '$PROCESS_NAME'</h1>\\n\";");
 		code.add("");
 		code.add("	print \"<h2>Input</h2>\\n\";");
 		code.add("	$html_table_input->print();");
@@ -171,7 +171,7 @@ implements Serializable, Cloneable
 		code.add("	print \"<h2>Meta</h2>\\n\";");
 		code.add("	$html_table_meta->print();");
 		code.add("	");
-		code.add("	<p>Dieser automatische CAE-Prozess wurde entwickelt von <a href=\"mailto:$PROCESS_ARCHITECTMAIL\">$PROCESS_ARCHITECTNAME</a> im Auftrag von $PROCESS_CUSTOMERCOMPANY</p>");
+		code.add("	print \"<p>Dieser automatische CAE-Prozess wurde entwickelt von <a href=\\\"mailto:$PROCESS_ARCHITECTMAIL\\\">$PROCESS_ARCHITECTNAME</a> im Auftrag von $PROCESS_CUSTOMERCOMPANY</p>\\n\\\"");
 		code.add("	# STDOUT wiederherstellen");
 		code.add("	open (STDOUT, \">&SAVE\") or die \"Can't restore STDOUT $!\\n\";");
 		code.add("	close SAVE;");
