@@ -142,7 +142,7 @@ implements Serializable, Cloneable
 		code.add("");
 		code.add("	$html_table_meta->addRow('prozess', $PROCESS_NAME);");
 		code.add("	$html_table_meta->addRow('version', $version);");
-		code.add("	$html_table_meta->addRow('prozessverantwortlicher bei $PROCESS_CUSTOMERCOMPANY', \"<a href=\\\"mailto:$PROCESS_CUSTOMERMAIL\\\">$PROCESS_CUSTOMERNAME</a>\");");
+		code.add("	$html_table_meta->addRow(\"prozessverantwortlicher bei $PROCESS_CUSTOMERCOMPANY\", \"<a href=\\\"mailto:$PROCESS_CUSTOMERMAIL\\\">$PROCESS_CUSTOMERNAME</a>\");");
 		code.add("	(my $filenam, my $dirs, my $suf) = fileparse ($doc_path);");
 		code.add("	$html_table_meta->addRow('dokumentation', \"<a href=\\\"$doc_path\\\">$filenam</a>\");");
 		code.add("");
