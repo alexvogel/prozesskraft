@@ -164,4 +164,8 @@ implements Serializable, Cloneable
 	{
 		this.block.addCode(code);
 	}
+	public void addCode(String codeLine)
+	{
+		this.block.addCode(codeLine);
+	}
 }
