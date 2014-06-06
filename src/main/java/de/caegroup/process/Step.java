@@ -270,7 +270,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("");
 		perlSnippet.add("\t# aktualisieren der steptabelle im html");
 		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'aufruf'} = \"$call\";");
-		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'dir'} = \"<a href=\\\"./$stepdir\\\">$stepdir</a>\";");
+		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'dir'} = \"<a href=\\\"./$stepdir\\\" target=\\\"_blank\\\">$stepdir</a>\";");
 		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'status'} = 'running';");
 		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'log'} = \"<a href=\\\"./$stepdir/stdout.log\\\">stdout.log</a> <a href=\\\"./$stepdir/stderr.log\\\">stderr.log</a>\";");
 		perlSnippet.add("\t&printHtmlOverview();");
