@@ -376,10 +376,19 @@ implements Serializable
 		
 		for(Step actStep : this.getStep())
 		{
-			script.business.addCode("			'"+actStep.getRank()+"' => {'rang' => '"+actStep.getRank()+"', 'stepnamen' => '"+actStep.getName()+"', 'beschreibung' => \""+actStep.getDescription()+"\", 'aufruf' => '', 'dir' => '', 'status' => 'waiting', 'log' => ''},");
+			if(!(actStep.getName().matches("^root$")))
+			{
+				script.business.addCode("			'"+actStep.getRank()+"' => {'rang' => '"+actStep.getRank()+"', 'stepnamen' => '"+actStep.getName()+"', 'beschreibung' => \""+actStep.getDescription()+"\", 'aufruf' => '', 'dir' => '', 'status' => 'waiting', 'log' => ''},");
+			}
 		}
 		
 		script.business.addCode(");");
+		script.business.addCode("");
+		
+		script.business.addCode("#-------------------");
+		script.business.addCode("# initiale ausgabe des html");
+		script.business.addCode("&printHtmlOverview();");
+		script.business.addCode("#-------------------");
 		script.business.addCode("");
 		
 		// script-OPTIONS generieren aus den commit-objekten des root-steps
