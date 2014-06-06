@@ -175,10 +175,10 @@ implements Serializable, Cloneable
 		code.add("	$html_table_meta->addRow('version', $version);");
 		code.add("	$html_table_meta->addRow(\"prozessverantwortlicher bei $PROCESS_CUSTOMERCOMPANY\", \"<a href=\\\"mailto:$PROCESS_CUSTOMERMAIL\\\">$PROCESS_CUSTOMERNAME</a>\");");
 		code.add("	(my $filenam, my $dirs, my $suf) = fileparse ($doc_path);");
-		code.add("	$html_table_meta->addRow('dokumentation', \"<a href=\\\"$doc_path\\\" target=\"_blank\">$filenam</a>\");");
+		code.add("	$html_table_meta->addRow('dokumentation', \"<a href=\\\"$doc_path\\\" target=\\\"_blank\\\">$filenam</a>\");");
 		code.add("");
-		code.add("	$html_table_meta->addRow('installations directory', \"<a href=\\\"\" . Cwd::realpath($installdir) . \"\\\" target=\"_blank\">\" . Cwd::realpath($installdir) . \"</a>\");");
-		code.add("	$html_table_meta->addRow('instanz directory', \"<a href=\\\"$INSTANCEDIR\\\" target=\"_blank\">$INSTANCEDIR</a>\");");
+		code.add("	$html_table_meta->addRow('installations directory', \"<a href=\\\"\" . Cwd::realpath($installdir) . \"\\\" target=\\\"_blank\\\">\" . Cwd::realpath($installdir) . \"</a>\");");
+		code.add("	$html_table_meta->addRow('instanz directory', \"<a href=\\\"$INSTANCEDIR\\\" target=\\\"_blank\\\">$INSTANCEDIR</a>\");");
 		code.add("	$html_table_meta->addRow('zeit', scalar(localtime()));");
 		code.add("	$html_table_meta->addRow('user', $ENV{'USER'});");
 		code.add("");
@@ -191,7 +191,7 @@ implements Serializable, Cloneable
 		code.add("	open (SAVE, \">&STDOUT\") or die \"Can't save STDOUT $!\\n\";");
 		code.add("	open (STDOUT, '>', $outfile) or die \"Can't redirect STDOUT to \" . $outfile . \": $!\\n\";");
 		code.add("	");
-		code.add("	print \"<h1 align=\"center\">Instanz des Prozesses '$PROCESS_NAME'</h1>\\n\";");
+		code.add("	print \"<h1 align=\\\"center\\\">Instanz des Prozesses '$PROCESS_NAME'</h1>\\n\";");
 		code.add("");
 		code.add("	print \"<h2>Prozess Input</h2>\\n\";");
 		code.add("	$html_table_input->print();");
