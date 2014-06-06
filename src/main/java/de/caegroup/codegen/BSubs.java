@@ -144,10 +144,10 @@ implements Serializable, Cloneable
 		code.add("	$html_table_meta->addRow('version', $version);");
 		code.add("	$html_table_meta->addRow(\"prozessverantwortlicher bei $PROCESS_CUSTOMERCOMPANY\", \"<a href=\\\"mailto:$PROCESS_CUSTOMERMAIL\\\">$PROCESS_CUSTOMERNAME</a>\");");
 		code.add("	(my $filenam, my $dirs, my $suf) = fileparse ($doc_path);");
-		code.add("	$html_table_meta->addRow('dokumentation', \"<a href=\\\"$doc_path\\\">$filenam</a>\");");
+		code.add("	$html_table_meta->addRow('dokumentation', \"<a href=\\\"$doc_path\\\" target=\"_blank\">$filenam</a>\");");
 		code.add("");
-		code.add("	$html_table_meta->addRow('installation', \"<a href=\\\"\" . Cwd::realpath($installdir) . \"\\\">\" . Cwd::realpath($installdir) . \"</a>\");");
-		code.add("	$html_table_meta->addRow('directory der instanzdaten', \"<a href=\\\"$INSTANCEDIR\\\">$INSTANCEDIR</a>\");");
+		code.add("	$html_table_meta->addRow('installation', \"<a href=\\\"\" . Cwd::realpath($installdir) . \"\\\" target=\"_blank\">\" . Cwd::realpath($installdir) . \"</a>\");");
+		code.add("	$html_table_meta->addRow('directory der instanzdaten', \"<a href=\\\"$INSTANCEDIR\\\" target=\"_blank\">$INSTANCEDIR</a>\");");
 		code.add("	$html_table_meta->addRow('zeit', scalar(localtime()));");
 		code.add("	$html_table_meta->addRow('user', $ENV{'USER'});");
 		code.add("");
