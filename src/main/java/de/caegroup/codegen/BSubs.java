@@ -171,7 +171,7 @@ implements Serializable, Cloneable
 		code.add("	print \"<h2>Meta</h2>\\n\";");
 		code.add("	$html_table_meta->print();");
 		code.add("	");
-		code.add("	print \"<p>Dieser automatische CAE-Prozess wurde entwickelt von <a href=\\\"mailto:$PROCESS_ARCHITECTMAIL\\\">$PROCESS_ARCHITECTNAME</a> im Auftrag von $PROCESS_CUSTOMERCOMPANY</p>\\n\\\"");
+		code.add("	print \"<p>Dieser automatische CAE-Prozess wurde entwickelt von <a href=\\\"mailto:$PROCESS_ARCHITECTMAIL\\\">$PROCESS_ARCHITECTNAME</a> im Auftrag von $PROCESS_CUSTOMERCOMPANY</p>\\n\";");
 		code.add("	# STDOUT wiederherstellen");
 		code.add("	open (STDOUT, \">&SAVE\") or die \"Can't restore STDOUT $!\\n\";");
 		code.add("	close SAVE;");
