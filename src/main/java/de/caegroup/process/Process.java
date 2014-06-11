@@ -365,6 +365,12 @@ implements Serializable
 		script.business.addCode("my $PROCESS_CUSTOMERCOMPANY = '" + this.getCustomerCompany() + "';");
 		script.business.addCode("my $PROCESS_PATH = '" + this.getPath() + "';");
 		script.business.addCode("");
+		script.business.addCode("# temporaere prozessdaten");
+		script.business.addCode("my $PROCESS_STATUS = 'running';");
+		script.business.addCode("my $PROCESS_START = scalar(localtime());");
+		script.business.addCode("my $PROCESS_STOP = '';");
+		script.business.addCode("my @PROCESS_LOGGING;");
+		script.business.addCode("");
 
 		// anlegen der step-tabelle
 		script.business.addCode("#-------------------");
@@ -513,6 +519,13 @@ implements Serializable
 			}
 		}
 
+		// ist der prozess bis hier gelaufen, dann ist wohl alles i.o.
+		script.business.addCode("");
+		script.business.addCode("$PROCESS_STATUS = 'exit=0';");
+		script.business.addCode("$PROCESS_STOP = scalar(localtime());");
+		script.business.addCode("&printHtmlOverview();");
+		script.business.addCode("");
+		
 		return script.getAll();
 	}
 	

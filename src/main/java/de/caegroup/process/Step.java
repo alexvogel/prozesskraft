@@ -124,6 +124,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("if (!($COMMAND{'" + this.getName() + "'} = &commandResolve(\"" + this.getWork().getCommand() + "\")))");
 		perlSnippet.add("{");
 		perlSnippet.add("	&logit(\"fatal\", \"cannot determine what program to call for step '" + this.getName() + "'. " + this.getWork().getCommand() + " neither found in <installdir>/bin nor by calling 'which'.\");");
+		perlSnippet.add("	my $PROCESS_STOP = scalar(localtime());");
 		perlSnippet.add("	exit(1);");
 		perlSnippet.add("}");
 		perlSnippet.add("");
@@ -287,6 +288,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("\tif($return)");
 		perlSnippet.add("\t{");
 		perlSnippet.add("\t\t&logit(\"fatal\", \"step '"+this.getName()+"' exited with an error (exitcode=$return)\");");
+		perlSnippet.add("\t\tmy $PROCESS_STOP = scalar(localtime());");
 		perlSnippet.add("\t\texit(1);");
 		perlSnippet.add("\t}");
 		perlSnippet.add("\t&logit(\"info\", \"step '"+this.getName()+"' exited properly\");");
@@ -329,6 +331,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of variables with pattern (glob=$glob).\");");
 					perlSnippet.add("\t\t\t&logit(\"error\", \""+actVariable.getMinoccur()+" <= rightAmountOfFiles <= "+actVariable.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \")\");");
 					perlSnippet.add("\t\t\t&logit(\"fatal\", \"committing variable '"+actVariable.getKey()+"' failed\");");
+					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("\t\tmy @variableList;");
@@ -379,6 +382,7 @@ implements Serializable, Cloneable
 				{
 					perlSnippet.add("\t\t&logit(\"error\", \"step '"+this.getName()+"', commit '"+actCommit.getName()+"', variable '"+actVariable.getKey()+"' needs either a value or a glob definition.\");");
 					perlSnippet.add("\t\t&logit(\"fatal\", \"committing variable '"+actVariable.getKey()+"' failed\");");
+					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
 					perlSnippet.add("\t\t\texit(1);");
 				}
 				perlSnippet.add("\t}");
@@ -406,6 +410,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of variables with pattern (glob=$glob).\");");
 					perlSnippet.add("\t\t\t&logit(\"error\", \""+actFile.getMinoccur()+" <= rightAmountOfFiles <= "+actFile.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \")\");");
 					perlSnippet.add("\t\t\t&logit(\"fatal\", \"committing file '"+actFile.getKey()+"' failed\");");
+					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("\t\tmy @fileList;");
@@ -444,6 +449,7 @@ implements Serializable, Cloneable
 				{
 					perlSnippet.add("\t\t&logit(\"error\", \"------ step '"+this.getName()+"', commit '"+actCommit.getName()+"', file '"+actFile.getKey()+"' needs a glob definition.\");");
 					perlSnippet.add("\t\t&logit(\"fatal\", \"committing variable '"+actFile.getKey()+"' failed\");");
+					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
 					perlSnippet.add("\t\t\texit(1);");
 				}
 				perlSnippet.add("\t}");
