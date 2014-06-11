@@ -109,11 +109,11 @@ implements Serializable, Cloneable
 		code.add("	$html_table_meta->addRow('status', $PROCESS_STATUS);");
 		code.add("	if($PROCESS_STATUS =~ m/exit=[0]/)");
 		code.add("	{");
-		code.add("		$html_table_meta->setCellBGColor(5, 2, 'yellowgreen');");
+		code.add("		$html_table_meta->setCellBGColor(6, 2, 'yellowgreen');");
 		code.add("	}");
 		code.add("	elsif ($PROCESS_STATUS =~ m/exit=[^0]/)");
 		code.add("	{");
-		code.add("		$html_table_meta->setCellBGColor(5, 2, 'tomato');");
+		code.add("		$html_table_meta->setCellBGColor(6, 2, 'tomato');");
 		code.add("	}");
 		code.add("	");
 		code.add("");
@@ -255,7 +255,7 @@ implements Serializable, Cloneable
 		code.add("#-------------------");
 		code.add("# ausgabe in file");
 		code.add("	# das stdout handle sichern und ein neues auf das ausgabefile zeigen lassen");
-		code.add("	my $outfile = $INSTANCEDIR . \"/overview.html\";");
+		code.add("	my $outfile = $INSTANCEDIR . \"/README.html\";");
 		code.add("	unlink($outfile);");
 		code.add("	");
 		code.add("	open (SAVE, \">&STDOUT\") or die \"Can't save STDOUT $!\\n\";");
@@ -274,6 +274,9 @@ implements Serializable, Cloneable
 		code.add("	");
 		code.add("	print \"<h2>Prozess Schritte</h2>\\n\";");
 		code.add("	$html_table_steps->print();");
+		code.add("	");
+		code.add("	print \"<h2>Prozess Logging</h2>\\n\";");
+		code.add("	$html_table_logging->print();");
 		code.add("	");
 		code.add("	print \"<h2>Backup</h2>\\n\";");
 		code.add("	$html_table_backup->print();");
@@ -402,6 +405,9 @@ implements Serializable, Cloneable
 		code.add("		print STDERR 'unknown logging destination $dest (file does not exist)' . '. assuming stderr';");
 		code.add("		print STDERR $ausgabestring.\"\\n\";");
 		code.add("	}");
+		code.add("");
+		code.add("	push(@PROCESS_LOGGING, [$timestamp, $level, $msg]);");
+		code.add("");
 		code.add("}");
 		code.add("");
 
