@@ -261,8 +261,7 @@ implements Serializable, Cloneable
 		code.add("	open (SAVE, \">&STDOUT\") or die \"Can't save STDOUT $!\\n\";");
 		code.add("	open (STDOUT, '>', $outfile) or die \"Can't redirect STDOUT to \" . $outfile . \": $!\\n\";");
 		code.add("	");
-		code.add("	print \"<h1 align=\\\"center\\\">$PROCESS_NAME</h1>\\n\";");
-		code.add("	print \"<h1 align=\\\"center\\\">$version</h1>\\n\";");
+		code.add("	print \"<h1 align=\\\"center\\\">$PROCESS_NAME --version $version</h1>\\n\";");
 		code.add("");
 		code.add("	print \"<h2>Meta</h2>\\n\";");
 		code.add("	$html_table_meta->print();");
