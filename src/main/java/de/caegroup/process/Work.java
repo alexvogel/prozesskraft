@@ -120,11 +120,14 @@ implements Serializable
 		ArrayList<Integer> sequences = new ArrayList<Integer>();
 		
 		// aus den vorhandenen callitems die sequences in ein eigenes array extrahieren
-		Iterator<Callitem> itercallitem = this.callitem.iterator();
-		while (itercallitem.hasNext())
+		for(Callitem actCallitem : this.callitem)
 		{
-			Callitem callitem = itercallitem.next();
-			sequences.add(callitem.getSequence());
+			int seq = 0;
+			if (actCallitem.getSequence() != null)
+			{
+				seq = actCallitem.getSequence();
+			}
+			sequences.add(seq);
 		}
 
 		// das sequences-array sortieren
