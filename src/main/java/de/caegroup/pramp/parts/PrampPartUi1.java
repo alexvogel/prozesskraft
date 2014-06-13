@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -75,6 +76,7 @@ import org.eclipse.swt.widgets.Text;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.eclipse.swt.widgets.Combo;
+
 
 
 
@@ -1019,7 +1021,12 @@ public class PrampPartUi1 extends ModelObject
 	 */
 	private boolean createInstanceDir()
 	{
-		java.io.File instanceDir = new java.io.File(this.einstellungen.getBaseDirectory());
+		// assemble a random name for instanceDir
+//		Calendar now = Calendar.getInstance();
+		Random random = new Random();
+		String randomName = this.einstellungen.getProcess() + "_v" + this.einstellungen.getVersion() + "_" + Calendar.YEAR + Calendar.MONTH + Calendar.DAY_OF_MONTH + "_" + random.nextInt(100000000);
+
+		java.io.File instanceDir = new java.io.File(this.einstellungen.getBaseDirectory() + "/" + randomName);
 		
 		boolean result = false;
 		
@@ -1037,6 +1044,7 @@ public class PrampPartUi1 extends ModelObject
 				log("info", "instance directory is empty - thats good..");
 			}
 		}
+		
 		else
 		{
 			result = instanceDir.mkdirs();
@@ -1044,6 +1052,10 @@ public class PrampPartUi1 extends ModelObject
 		return result;
 	}
 	
+	/**
+	 * prueft ob die parameter bereits verwendet wurden
+	 * @return true if parameter are used the first time
+	 */
 	private boolean parameterAlreadyUsed(Map<String,String> content)
 	{
 		boolean result = false;
