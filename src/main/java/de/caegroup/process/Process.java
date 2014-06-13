@@ -314,6 +314,13 @@ implements Serializable
 		Work work = new Work();
 		work.setCommand(this.getName());
 
+		// als erstes callitem den bmw-spezifischen aufruf --version erstellen
+		Callitem callitemVersion = new Callitem();
+		callitemVersion.setPar("--version");
+		callitemVersion.setDel("=");
+		callitemVersion.setVal(this.getVersion());
+		work.addCallitem(callitemVersion);
+		
 		// fuer jedes init ein callitem
 		for(Init actInit : wrapperProcess.getStep(this.getName()).getInit())
 		{
