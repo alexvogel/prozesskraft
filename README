@@ -1,0 +1,12 @@
+1) go to the directory where you want to install <installdirectory> the toolbox 'pramp' and unpack
+	tar -xzvf pramp-<version>.tar.gz
+
+2) link the launch script "bin/pramp" from a PATH-directory. for example <yourhome>/bin
+	cd <yourhome>/bin
+	ln -s <installdirectory>/bin/pradar
+
+3) edit the configuration file of the server etc/pramp-gui.ini
+	define a process/process-installation-directory (a directory where you store your process definitions)
+	define at least one license-server/license-server-1 "pradar-server-1=<port>@<server>"
+
+checkout www.prozesskraft.de for further informations or even more tools.
