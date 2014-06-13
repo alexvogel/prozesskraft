@@ -122,12 +122,7 @@ implements Serializable
 		// aus den vorhandenen callitems die sequences in ein eigenes array extrahieren
 		for(Callitem actCallitem : this.callitem)
 		{
-			int seq = 0;
-			if (actCallitem.getSequence() != null)
-			{
-				seq = actCallitem.getSequence();
-			}
-			sequences.add(seq);
+			sequences.add(actCallitem.getSequence());
 		}
 
 		// das sequences-array sortieren
@@ -139,6 +134,7 @@ implements Serializable
 		while (itersequences.hasNext())
 		{
 			int sequence = itersequences.next();
+
 			// und das zugehoerige callitem rausfischen
 			Iterator<Callitem> itercallitem2 = this.callitem.iterator();
 			while (itercallitem2.hasNext())

@@ -16,7 +16,7 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private Integer sequence = null;
+	private Integer sequence = 0;
 	private String par = "";
 	private String del = "";
 	private String val = "";
