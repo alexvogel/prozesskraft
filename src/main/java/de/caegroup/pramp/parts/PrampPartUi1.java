@@ -1017,9 +1017,9 @@ public class PrampPartUi1 extends ModelObject
 	 * creates an instance directory if it does not exist
 	 * if directory already exists and is empty, returns true
 	 * if directory already exists and contains files or directories, returns false
-	 * @return true if after this method an empty directory exists
+	 * @return directory for the instance (null if something happended)
 	 */
-	private boolean createInstanceDir()
+	private String getInstanceDir()
 	{
 		// assemble a random name for instanceDir
 //		Calendar now = Calendar.getInstance();
@@ -1028,7 +1028,7 @@ public class PrampPartUi1 extends ModelObject
 
 		java.io.File instanceDir = new java.io.File(this.einstellungen.getBaseDirectory() + "/" + randomName);
 		
-		boolean result = false;
+		String instanceDirectoryPath = null;
 		
 		if (instanceDir.exists())
 		{
@@ -1037,19 +1037,28 @@ public class PrampPartUi1 extends ModelObject
 			{
 				log("error", "instance directory not empty: "+instanceDir.getAbsoluteFile());
 				log("info", "choose an empty or nonexistent instance directory.");
-				result = false;
+				instanceDirectoryPath = null;
 			}
 			else
 			{
 				log("info", "instance directory is empty - thats good..");
+				instanceDirectoryPath = instanceDir.getAbsolutePath();
 			}
 		}
 		
 		else
 		{
-			result = instanceDir.mkdirs();
+			if(instanceDir.mkdirs())
+			{
+				instanceDirectoryPath = instanceDir.getAbsolutePath();
+			}
+			else
+			{
+				instanceDirectoryPath = null;
+			}
 		}
-		return result;
+		
+		return instanceDirectoryPath;
 	}
 	
 	/**
@@ -1197,7 +1206,9 @@ public class PrampPartUi1 extends ModelObject
 					}
 				}
 				
-				if (createInstanceDir())
+				String instanceDir = getInstanceDir();
+				
+				if (instanceDir != null)
 				{
 					log ("info", "all tests passed. performing commit.");
 	//				System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
