@@ -1146,7 +1146,7 @@ implements Serializable, Cloneable
 
 		this.log("info", "will try to commit...");
 		this.setStatus("committing");
-		this.log("info", "status is set to "+this.getStatus());
+		this.log("info", "status is jet to "+this.getStatus());
 
 		// wenn es sich um root handelt, wird vor dem eigentlichen commit noch etwas anderes committed
 		if (this.getName().equals(this.parent.getRootstepname()))
