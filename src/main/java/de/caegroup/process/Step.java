@@ -1154,6 +1154,8 @@ implements Serializable, Cloneable
 			success = this.rootcommit();
 		}
 		
+		this.log("info", "howdi?");
+
 		// ueber alle commits iterieren
 		for( Commit actualCommit : this.commit)
 		{
