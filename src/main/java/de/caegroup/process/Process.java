@@ -245,9 +245,12 @@ implements Serializable
 		// kopieren des root-steps und dem wrapperProcess hinzufuegen
 		wrapperProcess.addStep(this.getStep(this.getRootstepname()).clone());
 		
-		// erstellen eines steps mit dem namen vom prozess und dem wrapperProcess hinzufuegen
+		// erstellen eines steps mit dem namen des prozesses und dem wrapperProcess hinzufuegen
 //		Step wrapStep = new Step(this.getName());
-		wrapperProcess.addStep(new Step(this.getName()));
+//		wrapperProcess.addStep(new Step(this.getName()));
+		Step step = new Step(this.getName());
+		step.setDescription(this.getDescription());
+		wrapperProcess.addStep(step);
 		
 		// jeden commit aus 'root' durchgehen und daraus alle inits erzeugen
 		for(Commit actCommit : wrapperProcess.getStep(this.getRootstepname()).getCommit())
