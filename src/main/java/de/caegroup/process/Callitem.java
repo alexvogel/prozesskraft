@@ -21,7 +21,6 @@ implements Serializable
 	private String del = "";
 	private String val = "";
 	private String loop = "";
-	private String loopvar = "";
 	
 	private String status = "";	// waiting/initializing/working/committing/ finished/broken/cancelled
 
@@ -137,11 +136,6 @@ implements Serializable
 		return this.loop;
 	}
 	
-	public String getLoopvar()
-	{
-		return this.loopvar;
-	}
-	
 	/*----------------------------
 	methods set
 	----------------------------*/
@@ -168,11 +162,6 @@ implements Serializable
 	public void setLoop(String loop)
 	{
 		this.loop = loop;
-	}
-
-	public void setLoopvar(String loopvar)
-	{
-		this.loopvar = loopvar;
 	}
 
 	public void setStatus(String status)

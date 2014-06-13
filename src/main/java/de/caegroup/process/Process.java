@@ -660,7 +660,6 @@ implements Serializable
 					atts.clear();
 					atts.addAttribute("", "", "name", "CDATA", work.getName());
 					atts.addAttribute("", "", "loop", "CDATA", work.getLoop());
-					atts.addAttribute("", "", "loopvar", "CDATA", work.getLoopvar());
 					atts.addAttribute("", "", "description", "CDATA", work.getDescription());
 					atts.addAttribute("", "", "command", "CDATA", work.getCommand());
 					
@@ -959,7 +958,6 @@ implements Serializable
 									// Eintragen der gelesenen Daten in die Objektinstanz
 									work.setName(workname);
 									work.setLoop(workloop);
-									work.setLoopvar(workloopvar);
 									work.setDescription(workdescription);
 									work.setCommand(workcommand);
 	

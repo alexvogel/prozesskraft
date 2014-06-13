@@ -22,7 +22,6 @@ implements Serializable
 	private ArrayList<Callitem> callitem = new ArrayList<Callitem>();
 	private ArrayList<Exit> exit = new ArrayList<Exit>();
 	private String loop = new String();
-	private String loopvar = new String();
 	
 	private String status = new String();	// waiting/initializing/working/committing/ finished/broken/cancelled
 	private int exitvalue;
@@ -170,11 +169,6 @@ implements Serializable
 		return this.loop;
 	}
 	
-	public String getLoopvar()
-	{
-		return this.loopvar;
-	}
-
 	public String getStatus()
 	{
 		return this.status;
@@ -228,11 +222,6 @@ implements Serializable
 		this.loop = loop;
 	}
 	
-	public void setLoopvar(String loopvar)
-	{
-		this.loopvar = loopvar;
-	}
-
 	public void setStatus(String status)
 	{
 		this.status = status;
