@@ -337,7 +337,12 @@ public class Manager
 				if (step.getStatus().equals("committing"))
 				{
 					// ueberpruefen ob work noch laeuft
-//					step.commit();
+					try {
+						step.commit();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 
 				if (step.getStatus().equals("committed"))
