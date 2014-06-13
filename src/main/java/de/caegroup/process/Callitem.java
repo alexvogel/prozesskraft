@@ -6,6 +6,7 @@ import java.util.*;
 //import java.util.Map;
 import java.util.regex.*;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.solr.common.util.NamedList;
 
 public class Callitem
@@ -20,7 +21,8 @@ implements Serializable
 	private String par = "";
 	private String del = "";
 	private String val = "";
-	private String loop = "";
+	private String loop = null;
+// loopvar = {$loopvarcallitem}
 	
 	private String status = "";	// waiting/initializing/working/committing/ finished/broken/cancelled
 
@@ -41,8 +43,59 @@ implements Serializable
 	}
 
 	/*----------------------------
-	  methods resolve
+	  methods
 	----------------------------*/
+	/**
+	 * clone
+	 * returns a clone of this
+	 * @return Callitem
+	 */
+	@Override
+	public Callitem clone()
+	{
+		return SerializationUtils.clone(this);
+	}
+
+	/**
+	 * loopMe
+	 * returns an ArrayList of Callitems
+	 * @return ArrayList<Callitem>
+	 */
+	public ArrayList<Callitem> loopMe()
+	{
+		ArrayList<Callitem> loopedThisToCallitems = new ArrayList<Callitem>();
+		
+		if(this.getLoop() == null)
+		{
+			loopedThisToCallitems.add(this);
+		}
+		
+		else
+		{
+			List loopList = this.parent.parent.getList(this.getLoop());
+			
+			if(loopList == null)
+			{
+				System.err.println("list " + this.getLoop() + "does not exist");
+			}
+			
+			else
+			{
+				for(String actItem : loopList.getItem())
+				{
+					Callitem clonedCallitem = this.clone();
+					clonedCallitem.setLoop(null);
+					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
+					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
+					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
+	
+					loopedThisToCallitems.add(clonedCallitem);
+				}
+			}
+		}
+		
+		return loopedThisToCallitems;
+	}
 
 	public String resolve(String stringToResolve)
 	{

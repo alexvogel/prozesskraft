@@ -21,8 +21,8 @@ implements Serializable
 	private String logfile = "";
 	private ArrayList<Callitem> callitem = new ArrayList<Callitem>();
 	private ArrayList<Exit> exit = new ArrayList<Exit>();
-	private String loop = new String();
-	
+	private String loop = null;
+
 	private String status = new String();	// waiting/initializing/working/committing/ finished/broken/cancelled
 	private int exitvalue;
 	public Step parent;
@@ -55,19 +55,21 @@ implements Serializable
 	----------------------------*/
 	public String getCall()
 	{
-		ArrayList<Callitem> callitems = this.getCallitemssorted();
-		
 		StringBuffer callbuffer = new StringBuffer(this.command);
-	
-		Iterator<Callitem> itercallitem = callitems.iterator();
-		while (itercallitem.hasNext())
+
+		for(Callitem actCallitem : this.getCallitemssorted())
 		{
-			Callitem callitem = itercallitem.next();
-			callbuffer.append(" ");
-			callbuffer.append(callitem.getRespar());
-			callbuffer.append(callitem.getResdel());
-			callbuffer.append(callitem.getResval());
+			// callitems enthalten moeglicherweise eine loop definition
+			// diese soll on-the-fly aufgeloest werden
+			for(Callitem actCallitemLooped : actCallitem.loopMe())
+			{
+				callbuffer.append(" ");
+				callbuffer.append(actCallitemLooped.getRespar());
+				callbuffer.append(actCallitemLooped.getResdel());
+				callbuffer.append(actCallitemLooped.getResval());
+			}
 		}
+
 		return callbuffer.toString();
 	}
 	
@@ -129,19 +131,14 @@ implements Serializable
 		
 		// ueber das sortierte sequences-array iterieren
 		ArrayList<Callitem> callitems_sorted = new ArrayList<Callitem>();
-		Iterator<Integer> itersequences = sequences.iterator();
-		while (itersequences.hasNext())
+		for(Integer actSequence : sequences)
 		{
-			int sequence = itersequences.next();
-
 			// und das zugehoerige callitem rausfischen
-			Iterator<Callitem> itercallitem2 = this.callitem.iterator();
-			while (itercallitem2.hasNext())
+			for(Callitem actCallitem : this.callitem)
 			{
-				Callitem callitem = itercallitem2.next();
-				if (callitem.getSequence() == sequence)
+				if (actCallitem.getSequence() == actSequence)
 				{
-					callitems_sorted.add(callitem);
+					callitems_sorted.add(actCallitem);
 				}
 			}
 		}
