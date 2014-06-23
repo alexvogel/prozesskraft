@@ -426,6 +426,7 @@ public class Createdoc
 		report.setParameter("processName", process.getName());
 		report.setParameter("processVersion", process.getVersion());
 		report.setParameter("processDatum", dateFormat.format(date));
+		report.setParameter("processArchitectLogoImagePath", ini.get("process-createdoc", "logo"));
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
 		report.setParameter("processArchitectMail", process.getArchitectMail());

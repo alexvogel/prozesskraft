@@ -5,6 +5,7 @@
 	<parameter name="processName" class="java.lang.String"/>
 	<parameter name="processVersion" class="java.lang.String"/>
 	<parameter name="processDatum" class="java.lang.String"/>
+	<parameter name="processArchitectLogoImagePath" class="java.lang.String"/>
 	<parameter name="processArchitectName" class="java.lang.String"/>
 	<parameter name="processArchitectCompany" class="java.lang.String"/>
 	<parameter name="processArchitectMail" class="java.lang.String"/>
@@ -24,7 +25,7 @@
 			<image hAlign="Center" vAlign="Middle">
 				<reportElement uuid="1031623a-262c-4e54-9628-554281472b0c" x="90" y="142" width="180" height="160"/>
 				<box padding="0"/>
-				<imageExpression><![CDATA["logo-trans.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{processArchitectLogoImagePath}]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement uuid="9e5b689f-bdb1-42ad-b79f-3d4b5d1f768f" x="370" y="60" width="390" height="40">
