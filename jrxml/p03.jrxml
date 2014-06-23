@@ -261,10 +261,12 @@
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement verticalAlignment="Middle"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
 				<text><![CDATA[powered by ]]></text>
 			</staticText>
-			<image hAlign="Right" vAlign="Middle">
+			<image hAlign="Left" vAlign="Middle">
 				<reportElement uuid="184b18ac-8501-4506-9d91-5a97547e7ca9" x="730" y="400" width="62" height="20">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unity" value="pixel"/>
