@@ -228,7 +228,7 @@ if (stat $conf_path)
 		if ((($CONF_ORG{$param} ne "") && (stat $bindir."/".$CONF_ORG{$param})))
 		{
 			$CONF{$param} = File::Spec->rel2abs($bindir."/".$CONF_ORG{$param});
-			logit("info", "parameter $param (value=" . $CONF_ORG{$param} .") expanding to (new_value=".$CONF{$param}.")");
+			logit("debug", "parameter $param (value=" . $CONF_ORG{$param} .") expanding to (new_value=".$CONF{$param}.")");
 		}
 		else
 		{
@@ -303,7 +303,7 @@ for(my $x=0; $x<11; $x++)
 		}
 	}
 }
-$helptext .= "author: alexander.vogel\@caegroup.de | version: $version | date: $date\n";
+$helptext .= "author: info\@prozesskraft.de | version: $version | date: $date\n";
 #----------------------------------------------------------------------------
 # processcraft:help:end
 #============================================================================
@@ -486,15 +486,22 @@ sub logit
 		$dest = shift;
 	}
 	
+# wenn loglevel == debug, ABER --debug nicht gesetzt wurde, soll nicht geloggt werden
+		if ( ($level eq "debug") &! getOption("debug") )
+		{
+			return;
+		}
+
 	my $timestamp = localtime(time);
 	
 	my $ausgabestring = '[' . $timestamp . ']:' . $level . ':' . $msg; 
 	
 	if (!($dest))
 	{
-		if (defined ${$OPT{'log'}})
+		my $logfile = &getOption("log");
+		if ($logfile)
 		{
-			system "echo \"$ausgabestring\" >> ${$OPT{'log'}}";
+			system "echo \"$ausgabestring\" >> $logfile";
 		}
 		else
 		{
@@ -518,6 +525,8 @@ sub logit
 		print STDERR 'unknown logging destination $dest (file does not exist)' . '. assuming stderr';
 		print STDERR $ausgabestring."\n";
 	}
+
+
 }
 
 sub getOption
