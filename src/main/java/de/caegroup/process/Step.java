@@ -1232,6 +1232,7 @@ implements Serializable, Cloneable
 					success = false;
 				}
 
+				this.log("debug", "rootstepname of this process is: " + this.getParent().getRootstepname() + " || this stepname is: " + this.getName());
 				// falls nicht rootstep und wenn das File auch dem prozess committed werden soll...
 				if (actualCommit.getToroot() && (!(this.getName().equals(this.getParent().getRootstepname()))))
 				{
