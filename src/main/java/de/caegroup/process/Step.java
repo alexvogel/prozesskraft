@@ -1672,12 +1672,14 @@ implements Serializable, Cloneable
 		if (this.getName().matches("^" + this.parent.getRootdir() + "$"))
 		{
 			absDir = this.parent.getRootdir();
+			System.err.println("root!");
 		}
 		else
 		{
 			absDir = this.parent.getRootdir()+"/STEP_"+this.getName();
+			System.err.println("not root!");
 		}
-		System.err.println("absdir of step '" + this.getName() + "' is: " + absDir); 
+		System.err.println("absdir of step '" + this.getName() + "' is: " + absDir +"because it matches '" + this.parent.getRootdir() + "'"); 
 		return absDir;
 	}
 
