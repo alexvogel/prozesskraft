@@ -361,7 +361,7 @@ public class FileOccurGui
 		if ( data.getContent() != null )
 		{
 			step.commitFile(file);
-//			System.out.println("Id des Prozesses: "+step.getParent().getRandomId());
+			System.out.println("committingly "+file.getAbsfilename());
 		}
 	}
 
