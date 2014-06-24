@@ -108,6 +108,7 @@ public class PmodelPartUi1 extends ModelObject
 	private Scale scale_gravy;
 //	private Process process = new Process();
 	private String iniFile = null;
+	private Ini ini = null;
 	private ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
 	private boolean erster_license_check = true;
 	
@@ -870,7 +871,6 @@ public class PmodelPartUi1 extends ModelObject
 	 */
 	void loadIni()
 	{
-		Ini ini;
 		ArrayList<String> license_server_list = new ArrayList<String>();
 
 		try
@@ -1079,7 +1079,7 @@ public class PmodelPartUi1 extends ModelObject
 		
 		if ( line.hasOption("v"))
 		{
-			System.out.println("author:  alexander.vogel@caegroup.de");
+			System.out.println("author:  [% email %]");
 			System.out.println("version: [% version %]");
 			System.out.println("date:    [% date %]");
 			System.exit(0);
