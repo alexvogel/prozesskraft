@@ -1669,7 +1669,7 @@ implements Serializable, Cloneable
 	public String getAbsdir()
 	{
 		String absDir = "";
-		if (this.getName().matches("^" + this.parent.getRootdir() + "$"))
+		if (this.getName().matches("^" + this.parent.getRootstepname() + "$"))
 		{
 			absDir = this.parent.getRootdir();
 			System.err.println("root!");
@@ -1679,7 +1679,7 @@ implements Serializable, Cloneable
 			absDir = this.parent.getRootdir()+"/STEP_"+this.getName();
 			System.err.println("not root!");
 		}
-		System.err.println("absdir of step '" + this.getName() + "' is: " + absDir +"because it matches '" + this.parent.getRootdir() + "'"); 
+		System.err.println("absdir of step '" + this.getName() + "' is: " + absDir +" (Rootstepname is '" + this.parent.getRootdir() + "')"); 
 		return absDir;
 	}
 
