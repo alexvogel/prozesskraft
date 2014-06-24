@@ -181,9 +181,9 @@ public class VariableGui
 		Map<String,String> content = new HashMap<String,String>();
 		for(VariableOccurGui actualVariableoccurGui : variableoccurGui)
 		{
-			// die map aus FileOccur holen
+			// die map aus VariableOccur holen
 			Map<String,String> map_actualVariableoccurGui = actualVariableoccurGui.getContent();
-			// iterieren ueber die map und schon vorhandene schluessel mit -1 hochzaehlern
+			// iterieren ueber die liste und schon vorhandene schluessel mit -1 hochzaehlern
 			int zaehler = 1;
 			for(String key : map_actualVariableoccurGui.keySet())
 			{
