@@ -229,6 +229,8 @@ implements Serializable
 	 * b) all root/commits are translated to step/inits in step 'processname'
 	 * c) all callitems are the same as meant in root
 	 * d) all commits are the same as in all old steps 'toroot'
+	 * e) the new inits with fromobjecttype=file of the generated step 'processname' will have definition returnfield="absfilename"
+	 * f) the new inits with fromobjecttype=variable of the generated step 'processname' will have definition returnfield="value"
 	 * @return Process
 	 */
 	public Process getProcessAsWrapper()
@@ -272,6 +274,7 @@ implements Serializable
 				init.setListname(actVariable.getKey());
 				init.setDescription(actVariable.getDescription());
 				init.setFromobjecttype("variable");
+				init.setReturnfield("value");
 				init.setFromstep(this.getRootstepname());
 				init.setInsertrule("overwrite");
 				init.setMinoccur(actVariable.getMinoccur());
@@ -296,6 +299,7 @@ implements Serializable
 				init.setListname(actFile.getKey());
 				init.setDescription(actFile.getDescription());
 				init.setFromobjecttype("file");
+				init.setReturnfield("absfilename");
 				init.setFromstep(this.getRootstepname());
 				init.setInsertrule("overwrite");
 				init.setMinoccur(actFile.getMinoccur());

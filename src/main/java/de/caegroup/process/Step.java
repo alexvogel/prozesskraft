@@ -1233,7 +1233,7 @@ implements Serializable, Cloneable
 				}
 
 				// falls nicht rootstep und wenn das File auch dem prozess committed werden soll...
-				if (actualCommit.getToroot() && this.getName().equals(this.getParent().getRootstepname()))
+				if (actualCommit.getToroot() && (!(this.getName().equals(this.getParent().getRootstepname()))))
 				{
 					this.log("info", "commit to root: file "+actualFile.getKey()+":"+actualFile.getAbsfilename());
 					// dem root-step committen
@@ -1254,7 +1254,7 @@ implements Serializable, Cloneable
 				}
 
 				// wenn die Variable auch dem prozess committed werden soll...
-				if (actualCommit.getToroot() && this.getName().equals(this.getParent().getRootstepname()))
+				if (actualCommit.getToroot() && (!(this.getName().equals(this.getParent().getRootstepname()))))
 				{
 					this.log("info", "commit to root: variable "+actualVariable.getKey()+":"+actualVariable.getValue());
 					// dem root-step committen
