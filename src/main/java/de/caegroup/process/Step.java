@@ -1232,8 +1232,8 @@ implements Serializable, Cloneable
 					success = false;
 				}
 
-				// wenn das File auch dem prozess committed werden soll...
-				if (actualCommit.getToroot())
+				// falls nicht rootstep und wenn das File auch dem prozess committed werden soll...
+				if (actualCommit.getToroot() && this.getName().equals(this.getParent().getRootstepname()))
 				{
 					this.log("info", "commit to root: file "+actualFile.getKey()+":"+actualFile.getAbsfilename());
 					// dem root-step committen
@@ -1254,7 +1254,7 @@ implements Serializable, Cloneable
 				}
 
 				// wenn die Variable auch dem prozess committed werden soll...
-				if (actualCommit.getToroot())
+				if (actualCommit.getToroot() && this.getName().equals(this.getParent().getRootstepname()))
 				{
 					this.log("info", "commit to root: variable "+actualVariable.getKey()+":"+actualVariable.getValue());
 					// dem root-step committen
@@ -1672,14 +1672,11 @@ implements Serializable, Cloneable
 		if (this.getName().matches("^" + this.parent.getRootstepname() + "$"))
 		{
 			absDir = this.parent.getRootdir();
-			System.err.println("root!");
 		}
 		else
 		{
 			absDir = this.parent.getRootdir()+"/STEP_"+this.getName();
-			System.err.println("not root!");
 		}
-		System.err.println("absdir of step '" + this.getName() + "' is: " + absDir +" (Rootstepname is '" + this.parent.getRootdir() + "')"); 
 		return absDir;
 	}
 
