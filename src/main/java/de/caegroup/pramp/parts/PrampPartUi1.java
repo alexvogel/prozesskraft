@@ -1024,7 +1024,8 @@ public class PrampPartUi1 extends ModelObject
 		// assemble a random name for instanceDir
 		Calendar now = Calendar.getInstance();
 		Random random = new Random();
-		String randomName = this.einstellungen.getProcess() + "_v" + this.einstellungen.getVersion() + "_" + now.get(Calendar.YEAR) + "_" + now.get(Calendar.MONTH) + "_" + now.get(Calendar.DAY_OF_MONTH) + "_" + random.nextInt(100000000);
+		DecimalFormat df2 = new DecimalFormat("00");
+		String randomName = this.einstellungen.getProcess() + "_v" + this.einstellungen.getVersion() + "_" + now.get(Calendar.YEAR) + df2.format(now.get(Calendar.MONTH)) + df2.format(now.get(Calendar.DAY_OF_MONTH)) + "_" + random.nextInt(100000000);
 
 		java.io.File instanceDir = new java.io.File(this.einstellungen.getBaseDirectory() + "/" + randomName);
 		
