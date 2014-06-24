@@ -1669,7 +1669,7 @@ implements Serializable, Cloneable
 	public String getAbsdir()
 	{
 		String absDir = "";
-		if (this.getName().equals(this.parent.getRootdir()))
+		if (this.getName().matches("^" + this.parent.getRootdir() + "$"))
 		{
 			absDir = this.parent.getRootdir();
 		}
