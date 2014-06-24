@@ -1677,6 +1677,7 @@ implements Serializable, Cloneable
 		{
 			absDir = this.parent.getRootdir()+"/STEP_"+this.getName();
 		}
+		System.err.println("absdir of step '" + this.getName() + "' is: " + absDir); 
 		return absDir;
 	}
 
