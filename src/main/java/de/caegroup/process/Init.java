@@ -257,7 +257,7 @@ implements Serializable
 		if( !(this.getReturnfield().matches(".+") ))
 		{
 			result = false;
-			this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': returnfield '"+this.getFromobjecttype()+"' does not match /.+/");
+			this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': returnfield '"+this.getReturnfield()+"' does not match /.+/");
 		}
 		
 		return result;
