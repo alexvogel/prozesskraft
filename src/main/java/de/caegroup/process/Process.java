@@ -803,14 +803,14 @@ implements Serializable
 //			System.out.println("processName3: "+this.getName());
 			
 			// ueberpruefen ob der process consistent ist
-			if(this.isProcessConsistent())
-			{
-				this.log("info", "check process consistency successfull.");
-			}
-			else
-			{
-				this.log("info", "check process consistency NOT successfull.");
-			}
+//			if(this.isProcessConsistent())
+//			{
+//				this.log("info", "check process consistency successfull.");
+//			}
+//			else
+//			{
+//				this.log("info", "check process consistency NOT successfull.");
+//			}
 		}
 		catch (javax.xml.bind.UnmarshalException e)
 		{
