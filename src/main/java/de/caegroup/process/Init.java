@@ -15,10 +15,10 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private String listname = new String();
-	private String fromobjecttype = new String();
-	private String returnfield = new String();
-	private String fromstep = new String();
+	private String listname = null;
+	private String fromobjecttype = null;
+	private String returnfield = null;
+	private String fromstep = null;
 	private String insertrule = "overwrite";  // append(initialisierte Eintraege werden zu bestehenden angefuegt) | unique (gleichlautende neue eintraege ueberschreiben bestehende = keine duplikate) | overwrite (evtl. vorher bestehende eintraege werden entfernt) 
 	private ArrayList<Match> match = new ArrayList<Match>();
 	private ArrayList<String> value = new ArrayList<String>();
