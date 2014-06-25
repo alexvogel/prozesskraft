@@ -241,8 +241,24 @@ implements Serializable
 	{
 		boolean result = true;
 
-		// check fromstep
-		if( !(this.getParent().getParent().isStep(this.getFromstep())) ) {result = false; this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': fromstep '"+this.getFromstep()+"' does not exist in processModel");}
+		// check ob die angabe in fromstep auf einen existierenden step zeigt
+		if( !(this.getParent().getParent().isStep(this.getFromstep())) )
+		{
+			result = false;
+			this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': fromstep '"+this.getFromstep()+"' does not exist in processModel");
+		}
+		
+		if( !(this.getFromobjecttype().matches("file|variable") ))
+		{
+			result = false;
+			this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': fromobjecttype '"+this.getFromobjecttype()+"' does not match /file|variable/");
+		}
+		
+		if( !(this.getReturnfield().matches(".+") ))
+		{
+			result = false;
+			this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': returnfield '"+this.getFromobjecttype()+"' does not match /.+/");
+		}
 		
 		return result;
 	}
