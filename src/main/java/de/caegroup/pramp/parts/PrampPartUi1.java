@@ -81,6 +81,7 @@ import org.eclipse.swt.widgets.Combo;
 
 
 
+
 //import com.jcraft.jsch.ChannelExec;
 //import com.jcraft.jsch.JSch;
 //import com.jcraft.jsch.Session;
@@ -89,6 +90,7 @@ import com.license4j.LicenseValidator;
 
 import de.caegroup.commons.*;
 import de.caegroup.process.Commit;
+import de.caegroup.process.Log;
 import de.caegroup.process.Process;
 import de.caegroup.process.Variable;
 
@@ -1177,6 +1179,11 @@ public class PrampPartUi1 extends ModelObject
 			else if(!(process.isProcessConsistent()))
 			{
 				log ("error", "process data appears to be inconsistent. check process definition.");
+				ArrayList<Log> logOfProcess = this.process.getLog();
+				for(Log actualLog : logOfProcess)
+				{
+					log (actualLog.getLevel(), actualLog.getMsg());
+				}
 				return false;
 			}
 			else
