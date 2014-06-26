@@ -833,7 +833,7 @@ implements Serializable, Cloneable
 		String call = work.getCall();
 
 		// holen der zugehoerigen Systemprozess-ID - feststellen ob fuer diesen work schon ein aufruf getaetigt wurde
-		
+		log("info", "generated call for the work-phase is: "+call);
 		
 		// wenn schritt schon gestartet wurde
 		if (this.isPidfileexistent())
