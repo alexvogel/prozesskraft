@@ -46,16 +46,16 @@ implements Serializable
 	{
 		callitem.setParent(this);
 		this.callitem.add(callitem);
-		
+
 	}
-	
+
 
 	/*----------------------------
 	  methods virtual get
 	----------------------------*/
 	public String getCall()
 	{
-		StringBuffer callbuffer = new StringBuffer(this.command);
+		String call = this.command;
 
 		for(Callitem actCallitem : this.getCallitemssorted())
 		{
@@ -63,14 +63,13 @@ implements Serializable
 			// diese soll on-the-fly aufgeloest werden
 			for(Callitem actCallitemLooped : actCallitem.loopMe())
 			{
-				callbuffer.append(" ");
-				callbuffer.append(actCallitemLooped.getRespar());
-				callbuffer.append(actCallitemLooped.getResdel());
-				callbuffer.append(actCallitemLooped.getResval());
+				call = call + " ";
+				call = call + actCallitemLooped.getRespar();
+				call = call + actCallitemLooped.getResdel();
+				call = call + actCallitemLooped.getResval();
 			}
 		}
-
-		return callbuffer.toString();
+		return call;
 	}
 	
 	/*----------------------------
