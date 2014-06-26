@@ -45,20 +45,19 @@ public class Syscall {
 		
 		try {
 
-			String aufruf = new String();
-			
-			Iterator<String> iterstring = argumente.iterator();
-			while(iterstring.hasNext())
+			String aufruf = "";
+
+			for(String actArgument : argumente)
 			{
-				aufruf = iterstring.next()+" ";
+				aufruf = aufruf + " " + actArgument;
 			}
-			
+
 			// Aufruf taetigen
 			java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
 
 			// feststellen der Process-ID des laufenden JavaVM und in die PID-Datei schreiben
 			String pid = ManagementFactory.getRuntimeMXBean().getName();
-			
+
 			// da die pid von der ManagementFactory normalerweise die Form "267353@ws11.caegroup" hat
 			// soll nur die fuehrende Zahl erfasst werden
 			String patt = "(\\d+)";
