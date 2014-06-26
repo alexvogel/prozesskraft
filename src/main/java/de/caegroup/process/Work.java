@@ -55,7 +55,9 @@ implements Serializable
 	----------------------------*/
 	public String getCall()
 	{
+		this.parent.log("debug", "constructing call");
 		String call = this.command;
+		this.parent.log("debug", "constructing call a): "+call);
 
 		for(Callitem actCallitem : this.getCallitemssorted())
 		{
@@ -67,6 +69,7 @@ implements Serializable
 				call = call + actCallitemLooped.getRespar();
 				call = call + actCallitemLooped.getResdel();
 				call = call + actCallitemLooped.getResval();
+				this.parent.log("debug", "constructing call b): "+call);
 			}
 		}
 		return call;
