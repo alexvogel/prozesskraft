@@ -24,6 +24,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import de.caegroup.process.File;
 import de.caegroup.process.Commit;
 import de.caegroup.process.Step;
@@ -88,9 +91,9 @@ public class CommitGui
 	 * einsammeln der maps aus variables und files und zusammenfuehren in einem map
 	 * @return
 	 */
-	public Map<String,String> getContent()
+	public Multimap<String,String> getContent()
 	{
-		Map<String,String> content = new HashMap<String,String>();
+		Multimap<String,String> content = HashMultimap.create();
 		
 		// getContent aller variables
 		for(VariableGui actualVariableGui : variableGui)

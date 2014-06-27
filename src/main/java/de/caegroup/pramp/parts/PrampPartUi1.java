@@ -82,6 +82,8 @@ import org.eclipse.swt.widgets.Combo;
 
 
 
+
+import com.google.common.collect.Multimap;
 //import com.jcraft.jsch.ChannelExec;
 //import com.jcraft.jsch.JSch;
 //import com.jcraft.jsch.Session;
@@ -1066,9 +1068,10 @@ public class PrampPartUi1 extends ModelObject
 	
 	/**
 	 * prueft ob die parameter bereits verwendet wurden
+	 * TODO: erneuern auf Multimap
 	 * @return true if parameter are used the first time
 	 */
-	private boolean parameterAlreadyUsed(Map<String,String> content)
+	private boolean parameterAlreadyUsed(Multimap<String,String> content)
 	{
 		boolean result = false;
 
@@ -1189,9 +1192,10 @@ public class PrampPartUi1 extends ModelObject
 			else
 			{
 				// holen aller user-angaben aus dem formular
-				Map<String,String> content = this.commitCreatorOld.get(getActualCommitRootName()).getContent();
+				Multimap<String,String> content = this.commitCreatorOld.get(getActualCommitRootName()).getContent();
 
-				if(parameterAlreadyUsed(content))
+//				if(parameterAlreadyUsed(content))
+				if(false)
 				{
 					log ("warn", "recently started an instance with same input.");
 					

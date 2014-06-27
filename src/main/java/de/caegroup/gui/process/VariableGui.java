@@ -25,6 +25,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import de.caegroup.process.Commit;
 import de.caegroup.process.Step;
 import de.caegroup.process.Variable;
@@ -176,26 +179,20 @@ public class VariableGui
 	/**
 	 * get the content of the combo / textfield
 	 */
-	public Map<String,String> getContent ()
+	public Multimap<String,String> getContent ()
 	{
-		Map<String,String> content = new HashMap<String,String>();
+		Multimap<String,String> content = HashMultimap.create();
 		for(VariableOccurGui actualVariableoccurGui : variableoccurGui)
 		{
 			// die map aus VariableOccur holen
-			Map<String,String> map_actualVariableoccurGui = actualVariableoccurGui.getContent();
+			Map<String,String> mapActualVariableoccurGui = actualVariableoccurGui.getContent();
 			// iterieren ueber die liste und schon vorhandene schluessel mit -1 hochzaehlern
-			int zaehler = 1;
-			for(String key : map_actualVariableoccurGui.keySet())
+			for(String key : mapActualVariableoccurGui.keySet())
 			{
-				while(content.containsKey(key+"-"+zaehler))
-				{
-					zaehler++;
-				}
-				
 				// die schluessel-werte paare ablegen
-				content.put(key+"-"+zaehler, map_actualVariableoccurGui.get(key));
+				content.put(key, mapActualVariableoccurGui.get(key));
 			}
-			//content.add(actualFileoccurGui.getContent());
+
 		}
 		return content;
 	}

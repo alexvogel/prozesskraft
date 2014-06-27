@@ -25,6 +25,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import de.caegroup.process.Commit;
 import de.caegroup.process.File;
 import de.caegroup.process.Step;
@@ -160,26 +163,20 @@ public class FileGui
 	/**
 	 * get the content of the combo / textfield
 	 */
-	public Map<String,String> getContent ()
+	public Multimap<String,String> getContent ()
 	{
-		Map<String,String> content = new HashMap<String,String>();
+		Multimap<String,String> content = HashMultimap.create();
 		for(FileOccurGui actualFileoccurGui : fileoccurGui)
 		{
 			// die map aus FileOccur holen
-			Map<String,String> map_actualFileoccurGui = actualFileoccurGui.getContent();
+			Map<String,String> mapActualFileoccurGui = actualFileoccurGui.getContent();
 			// iterieren ueber die map und schon vorhandene schluessel mit -1 hochzaehlern
-			int zaehler = 1;
-			for(String key : map_actualFileoccurGui.keySet())
+			for(String key : mapActualFileoccurGui.keySet())
 			{
-				while(content.containsKey(key+"-"+zaehler))
-				{
-					zaehler++;
-				}
-				
 				// die schluessel-werte paare ablegen
-				content.put(key+"-"+zaehler, map_actualFileoccurGui.get(key));
+				content.put(key, mapActualFileoccurGui.get(key));
 			}
-			//content.add(actualFileoccurGui.getContent());
+
 		}
 		return content;
 	}

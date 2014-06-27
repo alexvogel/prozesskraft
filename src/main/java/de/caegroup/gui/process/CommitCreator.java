@@ -25,11 +25,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import de.caegroup.process.Commit;
 import de.caegroup.process.Step;
 import de.caegroup.process.Variable;
 import de.caegroup.process.Process;
-
 import de.caegroup.pramp.parts.*;
 
 public class CommitCreator
@@ -84,9 +86,9 @@ public class CommitCreator
 		return parent;
 	}
 	
-	public Map<String,String> getContent()
+	public Multimap<String,String> getContent()
 	{
-		Map<String,String> content = new HashMap<String,String>();
+		Multimap<String,String> content = HashMultimap.create();
 		for (CommitGui actualCommitGui : commitGui)
 		{
 			content.putAll(actualCommitGui.getContent());
