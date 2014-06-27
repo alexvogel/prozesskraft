@@ -828,12 +828,11 @@ implements Serializable, Cloneable
 		this.setStatus("working");
 		log("info", "setting status to 'working'");
 
-		Work work = this.work;
 //			String call = work.generateCall(this.getListall());
-		String call = work.getCall();
+		String call = this.getWork().getCall();
 
 		// holen der zugehoerigen Systemprozess-ID - feststellen ob fuer diesen work schon ein aufruf getaetigt wurde
-		log("info", "generated call for the work-phase is: "+call);
+		log("info", "generated call for the work-phase (name='"+ this.getWork().getName() +"') is: "+call);
 		
 		// wenn schritt schon gestartet wurde
 		if (this.isPidfileexistent())
