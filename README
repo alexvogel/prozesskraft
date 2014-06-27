@@ -3,10 +3,11 @@
 
 2) link the launch script "bin/pramp" from a PATH-directory. for example <yourhome>/bin
 	cd <yourhome>/bin
-	ln -s <installdirectory>/bin/pradar
+	ln -s <installdirectory>/bin/pramp
 
 3) edit the configuration file of the server etc/pramp-gui.ini
 	define a process/process-installation-directory (a directory where you store your process definitions)
-	define at least one license-server/license-server-1 "pradar-server-1=<port>@<server>"
+	define at least one license-server/license-server-1 "license-server-1=<port>@<host>"
+	for example "license-server-1=16090@lpcagw13.muc"
 
 checkout www.prozesskraft.de for further informations or even more tools.
