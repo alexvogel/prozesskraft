@@ -270,5 +270,10 @@
 			<artifactId>license4j-runtime-library</artifactId>
 			<version>4.2.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>17.0</version>
+		</dependency>
 	</dependencies>
 </project>
