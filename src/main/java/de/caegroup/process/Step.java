@@ -888,6 +888,10 @@ implements Serializable, Cloneable
 //				System.out.println("ALS AKTUELLES VERZEICHNIS WIRD GESETZT+GECHECKT: "+checkdirectory);
 				log ("info", "calling: " + StringUtils.join(args_for_syscall, " "));
 				java.lang.Process p = pb.start();
+				
+				// wait 2 seconds for becoming the pid-file visible
+				Thread.sleep(2000);
+				
 //					Map<String,String> env = pb.environment();
 //					String cwd = env.get("PWD");
 //					String cwd = "/data/prog/workspace/prozesse/dummy/inst";
@@ -897,7 +901,7 @@ implements Serializable, Cloneable
 //					java.lang.Process p = pb.start();
 //					java.lang.Process p = Runtime.getRuntime().exec(args_for_syscall);
 //				System.out.println("PROCESS: "+p.hashCode());
-				log("info", "process work (script,program,..) lauched. pid="+p.hashCode());
+				log("info", "process work (script,program,..) launched. pid="+p.hashCode());
 				success = true;
 			}			
 			catch (Exception e2)

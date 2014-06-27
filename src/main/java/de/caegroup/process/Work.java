@@ -73,11 +73,11 @@ implements Serializable
 	----------------------------*/
 	public String getCall()
 	{
-		this.parent.log("debug", "constructing call");
+//		this.parent.log("debug", "constructing call");
 		String call = this.command;
-		this.parent.log("debug", "constructing call a): "+call);
+//		this.parent.log("debug", "constructing call a): "+call);
 
-		this.parent.log("debug", "there are "+this.getCallitem().size()+" unresolved callitems in this 'work'");
+//		this.parent.log("debug", "there are "+this.getCallitem().size()+" unresolved callitems in this 'work'");
 
 		// resolven aller callitems
 		for(Callitem actCallitem : this.getCallitemssorted())
@@ -88,10 +88,11 @@ implements Serializable
 				call = call + actResolvedCallitem.getPar();
 				call = call + actResolvedCallitem.getDel();
 				call = call + actResolvedCallitem.getVal();
-				this.parent.log("debug", "constructing call b): "+call);
+//				this.parent.log("debug", "constructing call b): "+call);
 			}
 		}
 		
+		this.parent.log("debug", "constructing call");
 		return call;
 	}
 	
