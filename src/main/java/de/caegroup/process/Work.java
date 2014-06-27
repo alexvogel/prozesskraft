@@ -2,6 +2,7 @@ package de.caegroup.process;
 
 import java.io.*;
 import java.util.*;
+
 import org.apache.solr.common.util.NamedList;
 
 import de.caegroup.process.Callitem;
@@ -49,6 +50,23 @@ implements Serializable
 
 	}
 
+	/**
+	 * removeCallitem
+	 * remove a certain callitem from this
+	 */
+	public void removeCallitem(Callitem callitem)
+	{
+		ArrayList<Callitem> cleanedCallitem = new ArrayList<Callitem>();
+		for(Callitem actCallitem : this.getCallitem())
+		{
+			if(!(actCallitem.equals(callitem)))
+			{
+				cleanedCallitem.add(actCallitem);
+			}
+		}
+
+		this.callitem = cleanedCallitem;
+	}
 
 	/*----------------------------
 	  methods virtual get
@@ -59,22 +77,33 @@ implements Serializable
 		String call = this.command;
 		this.parent.log("debug", "constructing call a): "+call);
 
+		// resolven aller callitems
 		for(Callitem actCallitem : this.getCallitemssorted())
 		{
-			// callitems enthalten moeglicherweise eine loop definition
-			// diese soll on-the-fly aufgeloest werden
-			for(Callitem actCallitemLooped : actCallitem.loopMe())
+			for(Callitem actResolvedCallitem : actCallitem.resolveCallitem())
 			{
 				call = call + " ";
-				call = call + actCallitemLooped.getRespar();
-				call = call + actCallitemLooped.getResdel();
-				call = call + actCallitemLooped.getResval();
+				call = call + actResolvedCallitem.getPar();
+				call = call + actResolvedCallitem.getDel();
+				call = call + actResolvedCallitem.getVal();
 				this.parent.log("debug", "constructing call b): "+call);
 			}
 		}
+		
 		return call;
 	}
 	
+	/**
+	 * sets the parent of all dependents to this instance
+	 */
+	public void affiliate()
+	{
+		for(Callitem actualCallitem : this.getCallitem())
+		{
+			actualCallitem.setParent(this);
+		}
+	}
+
 	/*----------------------------
 	  methods get
 	----------------------------*/

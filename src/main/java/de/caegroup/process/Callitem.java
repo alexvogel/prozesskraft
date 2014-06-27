@@ -57,16 +57,21 @@ implements Serializable
 	}
 
 	/**
-	 * loopMe
-	 * returns an ArrayList of Callitems
+	 * resolveCallitem
+	 * returns an ArrayList of Callitems with
+	 * 1) looped by loop and resolved placeholder 'loopvarcallitem'
+	 * 2) resolved par, del, val for all other placeholder
 	 * @return ArrayList<Callitem>
 	 */
-	public ArrayList<Callitem> loopMe()
+	public ArrayList<Callitem> resolveCallitem()
 	{
 		ArrayList<Callitem> loopedThisToCallitems = new ArrayList<Callitem>();
 		
 		if(this.getLoop() == null)
 		{
+			this.setPar(this.getRespar());
+			this.setDel(this.getResdel());
+			this.setVal(this.getResval());
 			loopedThisToCallitems.add(this);
 		}
 		
@@ -83,20 +88,30 @@ implements Serializable
 			{
 				for(String actItem : loopList.getItem())
 				{
+					// loopen
 					Callitem clonedCallitem = this.clone();
 					clonedCallitem.setLoop(null);
 					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
 					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
 					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
-	
+
+					// placeholder, die auf listen referenzieren ersetzen
+					clonedCallitem.setPar(clonedCallitem.getRespar());
+					clonedCallitem.setDel(clonedCallitem.getResdel());
+					clonedCallitem.setVal(clonedCallitem.getResval());
+					
 					loopedThisToCallitems.add(clonedCallitem);
 				}
 			}
 		}
-		
 		return loopedThisToCallitems;
 	}
 
+	/**
+	 * resolve
+	 * returns the string with resolved placeholders (only the ones for lists (not for loopvarcallitem))
+	 * @return String
+	 */
 	public String resolve(String stringToResolve)
 	{
 		String resolvedString = null;
@@ -104,17 +119,18 @@ implements Serializable
 		String patt = "\\{\\$(.+)\\}";
 		Pattern r = Pattern.compile(patt);
 		Matcher m = r.matcher(stringToResolve);
-		
+
 		if (m.find())
 		{
 			String listname = m.group(1);
-			System.out.println("listname needed: "+listname);
+//			System.out.println("placeholder: "+listname);
 			// die liste ermitteln, die den Namen traegt wie das gematchte substring
 			List list = this.parent.parent.getList(listname);
-			
+
 			if (list == null)
 			{
 				log("error", "list '"+listname+"' not found in step '"+this.parent.parent.getName()+"' but needed for resolving.");
+				System.out.println("list '"+listname+"' not found in step '"+this.parent.parent.getName()+"' but needed for resolving.");
 			}
 			
 			// das muster soll durch den ersten eintrag in der list ersetzt werden
@@ -123,7 +139,7 @@ implements Serializable
 		}
 		else
 		{
-			log("error", "pattern '"+patt+"' not found in String '"+stringToResolve+"'");
+			resolvedString = stringToResolve;
 		}
 		return resolvedString;
 	}

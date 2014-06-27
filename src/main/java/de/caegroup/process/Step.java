@@ -1327,17 +1327,22 @@ implements Serializable, Cloneable
 	 */
 	public void affiliate()
 	{
-		for(Init actualInit : this.init)
+		for(Init actualInit : this.getInit())
 		{
 			actualInit.setParent(this);
 		}
-		for(Commit actualCommit : this.commit)
+		for(Commit actualCommit : this.getCommit())
 		{
 			actualCommit.setParent(this);
 		}
-		if(this.work != null)
+		for(List actualList : this.getList())
 		{
-			this.work.setParent(this);
+			actualList.setParent(this);
+		}
+		if(this.getWork() != null)
+		{
+			this.getWork().setParent(this);
+			this.getWork().affiliate();
 		}
 	}
 
