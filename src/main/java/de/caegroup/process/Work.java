@@ -77,6 +77,8 @@ implements Serializable
 		String call = this.command;
 		this.parent.log("debug", "constructing call a): "+call);
 
+		this.parent.log("debug", "there are "+this.getCallitem().size()+" unresolved callitems in this 'work'");
+
 		// resolven aller callitems
 		for(Callitem actCallitem : this.getCallitemssorted())
 		{
@@ -147,6 +149,11 @@ implements Serializable
 		return this.callitem.get(index);
 	}
 	
+	/**
+	 * getCallitemssorted
+	 * returns all callitems of this sorted by the field 'sequence'
+	 * @return ArrayList<Callitem>
+	 */
 	public ArrayList<Callitem> getCallitemssorted()
 	{
 		ArrayList<Integer> sequences = new ArrayList<Integer>();
@@ -159,13 +166,13 @@ implements Serializable
 
 		// das sequences-array sortieren
 		Collections.sort(sequences);
-		
+
 		// ueber das sortierte sequences-array iterieren
 		ArrayList<Callitem> callitems_sorted = new ArrayList<Callitem>();
 		for(Integer actSequence : sequences)
 		{
 			// und das zugehoerige callitem rausfischen
-			for(Callitem actCallitem : this.callitem)
+			for(Callitem actCallitem : this.getCallitem())
 			{
 				if (actCallitem.getSequence() == actSequence)
 				{
@@ -173,7 +180,6 @@ implements Serializable
 				}
 			}
 		}
-		
 		return callitems_sorted;
 	}
 	
