@@ -52,7 +52,7 @@ public class FileOccurGui
 //	Font font_5;
 
 	Composite parent;
-	FileGui parent_filegui;
+	public FileGui parent_filegui;
 	File file;
 	
 	String key;
@@ -237,7 +237,25 @@ public class FileOccurGui
 
 	        // Set the initial filter path according
 	        // to anything they've selected or typed in
-	        dlg.setFilterPath(text.getText());
+	        String initialPathInDialog = "";
+	        java.io.File dummyFile = new java.io.File(text.getText());
+	        if(dummyFile.isDirectory())
+	        {
+	        	initialPathInDialog = dummyFile.getAbsolutePath();
+	        }
+	        else if(dummyFile.isFile())
+	        {
+	        	// setzen des pfades in dem sich das file befindet
+	        	initialPathInDialog = dummyFile.getParent();
+	        	// setzen der bereits getroffenen auswahl
+		        dlg.setFileName(dummyFile.getAbsolutePath().substring(dummyFile.getAbsolutePath().lastIndexOf("/")));
+	        }
+	        else
+	        {
+	        	// was auch immer da schon drinsteht soll als filter versucht werden
+	        	initialPathInDialog = parent_filegui.parent_commitgui.parent_commitcreator.filterPath;
+	        }
+	        dlg.setFilterPath(initialPathInDialog);
 
 	        // Change the title bar text
 	        dlg.setText("File Dialog");
@@ -360,6 +378,8 @@ public class FileOccurGui
 	{
 		if ( data.getContent() != null )
 		{
+			// setzen des pfades
+			file.setAbsfilename(text.getText());
 			step.commitFile(file);
 //			System.out.println("committingly "+file.getAbsfilename());
 		}

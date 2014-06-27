@@ -72,18 +72,14 @@ public class CommitGui
 		group.setLayoutData(gd_group);
 		group.setLayout(new GridLayout(1, false));
 		
-		Iterator<Variable> iterVariable = commit.getVariable().iterator();
-		while(iterVariable.hasNext())
+		for(Variable actVariable : commit.getVariable())
 		{
-			Variable actualVariable = iterVariable.next();
-			variableGui.add(new VariableGui(this, group, actualVariable));
+			variableGui.add(new VariableGui(this, group, actVariable));
 		}
 		
-		Iterator<File> iterFile = commit.getFile().iterator();
-		while(iterFile.hasNext())
+		for(File actFile : commit.getFile())
 		{
-			File actualFile = iterFile.next();
-			fileGui.add(new FileGui(this, group, actualFile));
+			fileGui.add(new FileGui(this, group, actFile));
 		}
 	}
 	

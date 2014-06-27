@@ -41,6 +41,8 @@ public class CommitCreator
 	
 	Step step;
 	
+	String filterPath = "";
+	
 	Composite parent;
 	Composite composite;
 	ScrolledComposite sc;
@@ -120,5 +122,19 @@ public class CommitCreator
 	public Step getStep()
 	{
 		return this.step;
+	}
+
+	/**
+	 * @return the filterPath
+	 */
+	public String getFilterPath() {
+		return filterPath;
+	}
+
+	/**
+	 * @param filterPath the filterPath to set
+	 */
+	public void setFilterPath(String filterPath) {
+		this.filterPath = filterPath;
 	}
 }

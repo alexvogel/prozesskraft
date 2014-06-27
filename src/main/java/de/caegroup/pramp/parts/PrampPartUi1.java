@@ -474,6 +474,13 @@ public class PrampPartUi1 extends ModelObject
 	          // Set the text box to the new selection
 	        	einstellungen.setBaseDirectory(dir);
 	        	log("info", "setting instancedirectory: "+dir);
+	        	
+	        	// dieses Directory als filterPath in allen bereits bestehenden commitCreatorn setzen
+	        	for(String key : commitCreatorOld.keySet())
+	        	{
+	        		commitCreatorOld.get(key).setFilterPath(dir);
+	        	}
+	        	
 //	        	text_instancedirectory.setText(dir);
 	        }
 		}
