@@ -1022,7 +1022,7 @@ implements Serializable, Cloneable
 		this.log("info", "commit: planning for file: "+file.getAbsfilename());
 
 		// wenn der pfad des files NICHT identisch ist mit dem pfad des step-directories
-		if (!(new java.io.File(file.getAbsfilename()).getParent().equals(this.getAbsdir())))
+		if (!(new java.io.File(file.getAbsfilename()).getParent().matches("^"+this.getAbsdir()+"$")))
 		{
 			// wenn sich das file nicht im step-verzeichnis gefunden wird, soll es dorthin kopiert werden
 			java.io.File zielFile = new java.io.File(this.getAbsdir()+"/"+file.getFilename());
