@@ -686,31 +686,35 @@ implements Serializable, Cloneable
 							}
 						}
 					}
-					// wenn die fileliste leer ist, dann ist initialisierung fehlgeschlagen
-					if (files_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
-
-					// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
-					// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
-					List list;
-					if (this.getList(actualInit.getListname()) != null)
+					// wenn keine files passen, dann ist initialisierung fehlgeschlagen
+					if (files_from_fromstep_which_matched.size() == 0)
 					{
-						list = this.getList(actualInit.getListname());
+						initializing_success = false;
 					}
-					// ansonsten eine anlegen und this hinzufuegen
+
 					else
 					{
-						list = new List();
-						list.setName(actualInit.getListname());
-						this.addList(list);
-					}
-
-					// hinzufuegen der listitems
-					for (File actualFile : files_from_fromstep_which_matched)
-					{
-						list.addItem(actualFile.getField(actualInit.getReturnfield()));
+						// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
+						// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
+						List list;
+						if (this.getList(actualInit.getListname()) != null)
+						{
+							list = this.getList(actualInit.getListname());
+						}
+						// ansonsten eine anlegen und this hinzufuegen
+						else
+						{
+							list = new List();
+							list.setName(actualInit.getListname());
+							this.addList(list);
+						}
+						for (File actualFile : files_from_fromstep_which_matched)
+						{
+							list.addItem(actualFile.getField(actualInit.getReturnfield()));
+						}
+						log("debug", "init '"+name+"': new list '"+list.getName()+"' with "+list.getItem().size()+" item(s).");
 					}
 						
-					log("debug", "init '"+name+"': new list '"+list.getName()+"' with "+list.getItem().size()+" item(s).");
 					
 				}
 				// wenn es ein variable ist
