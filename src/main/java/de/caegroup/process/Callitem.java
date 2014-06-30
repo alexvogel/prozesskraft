@@ -91,10 +91,13 @@ implements Serializable
 					// loopen
 					Callitem clonedCallitem = this.clone();
 					clonedCallitem.setLoop(null);
+					this.parent.parent.log("debug", "par="+this.getPar()+"val="+this.getVal());
 					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
 					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
 					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
-
+					
+					this.parent.parent.log("debug", "val="+this.getVal());
+					
 					// placeholder, die auf listen referenzieren ersetzen
 					clonedCallitem.setPar(clonedCallitem.getRespar());
 					clonedCallitem.setDel(clonedCallitem.getResdel());
