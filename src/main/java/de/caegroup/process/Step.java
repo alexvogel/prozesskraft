@@ -1171,7 +1171,7 @@ implements Serializable, Cloneable
 								// ausfuehren von evtl. vorhandenen globs in den files
 				if(actualFile.getAbsfilename().equals(""))
 				{
-					if(!(actualFile.getGlob().equals("")))
+					if( ( actualFile.getGlob() != null)&& !(actualFile.getGlob().equals("")))
 					{
 						log("info", "globbing for files with'"+actualFile.getGlob()+"'");
 						java.io.File dir = new java.io.File(this.getAbsdir());
