@@ -86,6 +86,8 @@ implements Serializable
 			
 			else
 			{
+				
+				System.out.println("debug: loopliste '"+loopList.getName()+"' hat "+loopList.getItem().size()+" items.");
 				for(String actItem : loopList.getItem())
 				{
 					// loopen
