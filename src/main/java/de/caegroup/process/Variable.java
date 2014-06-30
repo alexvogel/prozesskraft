@@ -47,6 +47,20 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
+	@Override
+	public Variable clone()
+	{
+		try
+		{
+			return (Variable) super.clone();
+		}
+		catch ( CloneNotSupportedException e )
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public boolean match(Match match)
 	{
 		String fieldname = match.getField();

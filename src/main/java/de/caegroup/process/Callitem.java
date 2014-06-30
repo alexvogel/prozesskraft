@@ -92,8 +92,8 @@ implements Serializable
 					Callitem clonedCallitem = this.clone();
 					clonedCallitem.setLoop(null);
 					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
-					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
 					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
+					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
 
 					// placeholder, die auf listen referenzieren ersetzen
 					clonedCallitem.setPar(clonedCallitem.getRespar());
