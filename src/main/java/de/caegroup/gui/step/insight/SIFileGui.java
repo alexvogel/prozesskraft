@@ -58,21 +58,21 @@ public class SIFileGui
 		fD[0].setHeight(8);
 		table.setFont(new Font(table.getDisplay(), fD[0]));
 
-		TableColumn colTime = new TableColumn(table, SWT.LEFT);
-		colTime.setText("key");
-		colTime.setWidth(80);
+		TableColumn colKey = new TableColumn(table, SWT.LEFT);
+		colKey.setText("key");
+		colKey.setWidth(80);
 		
 		TableColumn colSize = new TableColumn(table, SWT.LEFT);
 		colSize.setText("size(Bytes)");
 		colSize.setWidth(50);
 		
-		TableColumn colLevel = new TableColumn(table, SWT.LEFT);
-		colLevel.setText("filename");
-		colLevel.setWidth(150);
+		TableColumn colFilename = new TableColumn(table, SWT.LEFT);
+		colFilename.setText("filename");
+		colFilename.setWidth(150);
 
-		TableColumn colMessage = new TableColumn(table, SWT.LEFT);
-		colMessage.setText("path");
-		colMessage.setWidth(200);
+		TableColumn colPath = new TableColumn(table, SWT.LEFT);
+		colPath.setText("path");
+		colPath.setWidth(200);
 
 		viewer.setContentProvider(new MyContentProvider());
 		viewer.setLabelProvider(new MyLabelProvider());
@@ -151,7 +151,7 @@ public class SIFileGui
 					return f.getFilename();
 					
 				case 3:
-					return f.getAbsfilename();
+					return f.toString() + ":"+ f.getAbsfilename();
 			}
 			// should never get here
 			return "";
