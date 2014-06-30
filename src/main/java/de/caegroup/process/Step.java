@@ -1024,8 +1024,8 @@ implements Serializable, Cloneable
 		// wenn der pfad des files NICHT identisch ist mit dem pfad des step-directories
 		this.log("debug", "step.commitFile(File): file.getAbsfilename():"+file.getAbsfilename());
 		this.log("debug", "step.commitFile(File): step.getAbsfilename():"+this.getAbsdir());
-		if (!(new java.io.File(file.getAbsfilename()).getParent().matches("^"+this.getAbsdir()+"$")))
-		{
+//		if (!(new java.io.File(file.getAbsfilename()).getParent().matches("^"+this.getAbsdir()+"$")))
+//		{
 			// wenn sich das file nicht im step-verzeichnis gefunden wird, soll es dorthin kopiert werden
 			java.io.File zielFile = new java.io.File(this.getAbsdir()+"/"+file.getFilename());
 			if(!(zielFile.exists()))
@@ -1048,11 +1048,11 @@ implements Serializable, Cloneable
 					return false;
 				}
 			}
-		}
-		else
-		{
-			log("info", "commit: file already found in step-directory. skipping copy.");
-		}
+//		}
+//		else
+//		{
+//			log("info", "commit: file already found in step-directory. skipping copy.");
+//		}
 		
 		log("info", "commit: adding file to step object: "+file.getAbsfilename());
 		this.addFile(file);
