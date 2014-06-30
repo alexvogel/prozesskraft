@@ -5,6 +5,8 @@ import java.io.*;
 //import org.apache.solr.common.util.NamedList;
 import java.util.ArrayList;
 
+import org.apache.commons.lang3.SerializationUtils;
+
 public class Variable
 implements Serializable
 {
@@ -47,18 +49,15 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
+	/**
+	 * clone
+	 * returns a clone of this
+	 * @return Variable
+	 */
 	@Override
 	public Variable clone()
 	{
-		try
-		{
-			return (Variable) super.clone();
-		}
-		catch ( CloneNotSupportedException e )
-		{
-			e.printStackTrace();
-		}
-		return null;
+		return SerializationUtils.clone(this);
 	}
 	
 	public boolean match(Match match)

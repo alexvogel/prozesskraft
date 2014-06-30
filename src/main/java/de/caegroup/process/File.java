@@ -5,6 +5,8 @@ import java.io.*;
 //import org.apache.solr.common.util.NamedList;
 import java.util.ArrayList;
 
+import org.apache.commons.lang3.SerializationUtils;
+
 public class File
 implements Serializable, Cloneable
 {
@@ -35,18 +37,15 @@ implements Serializable, Cloneable
 	/*----------------------------
 	  methods
 	----------------------------*/
+	/**
+	 * clone
+	 * returns a clone of this
+	 * @return File
+	 */
 	@Override
 	public File clone()
 	{
-		try
-		{
-			return (File) super.clone();
-		}
-		catch ( CloneNotSupportedException e )
-		{
-			e.printStackTrace();
-		}
-		return null;
+		return SerializationUtils.clone(this);
 	}
 	
 	public boolean match(Match match)
