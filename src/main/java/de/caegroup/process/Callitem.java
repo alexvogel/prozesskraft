@@ -91,7 +91,7 @@ implements Serializable
 					// loopen
 					Callitem clonedCallitem = this.clone();
 					clonedCallitem.setLoop(null);
-					this.parent.parent.log("debug", "par="+this.getPar()+"val="+this.getVal());
+					System.out.println("debug: par="+this.getPar()+" | del="+this.getDel()+" | val="+this.getVal() + " | actItem="+actItem);
 					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
 					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
 					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
