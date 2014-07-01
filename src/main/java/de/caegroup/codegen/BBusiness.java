@@ -70,9 +70,9 @@ implements Serializable, Cloneable
 			content.add("}");
 			content.add("");
 			content.add("elsif(getOption('instancedir') !~ m/^\\//)");
-			content.add("		{");
-			content.add("			setOption('instancedir', getcwd . getOption('instancedir'));");
-			content.add("		}");
+			content.add("{");
+			content.add("	setOption('instancedir', getcwd . getOption('instancedir'));");
+			content.add("}");
 			content.add("");
 			content.add("# ein instanzverzeichnis anlegen");
 			content.add("mkdir getOption('instancedir');");
