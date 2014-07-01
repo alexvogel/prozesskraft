@@ -71,12 +71,12 @@ public class CommitGui
 		// Layout ist ab hier --> FormLayout!
 		group.setLayoutData(gd_group);
 		group.setLayout(new GridLayout(1, false));
-		
+
 		for(Variable actVariable : commit.getVariable())
 		{
 			variableGui.add(new VariableGui(this, group, actVariable));
 		}
-		
+
 		for(File actFile : commit.getFile())
 		{
 			fileGui.add(new FileGui(this, group, actFile));

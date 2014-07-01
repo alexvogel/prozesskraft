@@ -44,13 +44,15 @@ public class CommitCreator
 	String filterPath = "";
 	
 	Composite parent;
+	PrampPartUi1 parent_prampgui;
 	Composite composite;
 	ScrolledComposite sc;
 	
 	ArrayList<CommitGui> commitGui = new ArrayList<CommitGui>();
 	
-	public CommitCreator(Composite parent, Step step)
+	public CommitCreator(PrampPartUi1 parentPrampGui, Composite parent, Step step)
 	{
+		this.parent_prampgui = parentPrampGui;
 		this.parent = parent;
 		this.step = step;
 

@@ -70,26 +70,26 @@ public class FileOccurGui
 	{
 		this.parent_filegui = parent_filegui;
 		this.parent = parent;
-		this.file = file;
+		this.file = file.clone();
 		this.file.setKey(key);
 		this.key = key;
 		this.textexist = textexist;
 		this.buttonexist = buttonexist;
-		
+
 		composite = new Composite(this.parent, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
 		composite.setLayoutData(gd_composite);
 		composite.setLayout(new FormLayout());
-		
+
 		createControls();
 	}
-	
+
 	/**
 	 * creates the controls
 	 */
 	public void createControls()
 	{
-		
+
 //		FontData[] fD = new Label(parent, 0).getFont().getFontData();
 //		fD[0].setHeight(5);
 //		font_5 = new Font(parent.getDisplay(), fD[0]);
@@ -108,7 +108,7 @@ public class FileOccurGui
 		{
 			createButton();
 		}
-		
+
 		// erstellen der combobox falls noetig
 		if (textexist)
 		{
@@ -282,7 +282,7 @@ public class FileOccurGui
 	 */
 	private void remove()
 	{
-		parent_filegui.remove(this);
+//		parent_filegui.remove(this);
 		disposeAllWidgets();
 	}
 	
@@ -376,10 +376,11 @@ public class FileOccurGui
 	 */
 	public void commit(Step step)
 	{
-		if ( data.getContent() != null )
+		if ( this.data.getContent() != null && (!(this.data.getContent().matches("^$"))))
 		{
 			// setzen des pfades
 			file.setAbsfilename(text.getText());
+			step.log("debug", "FileOccurGui.commitit: committing " + file.toString() + file.getAbsfilename());
 			step.commitFile(file);
 //			System.out.println("committingly "+file.getAbsfilename());
 		}
@@ -388,8 +389,12 @@ public class FileOccurGui
 	
 	public boolean doAllTestsPass()
 	{
+		if(this.textexist)
+		{
 //		System.out.println("testResult file '"+this.key+"' "+this.file.doAllTestsPass());
-		return this.file.doAllTestsPass();
+			return this.file.doAllTestsPass();
+		}
+		return true;
 	}
 
 }

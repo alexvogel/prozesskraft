@@ -953,7 +953,7 @@ public class PrampPartUi1 extends ModelObject
 //				GridLayout gl_actualComposite = new GridLayout(1, false);
 				actualComposite.setLayout(new FillLayout());
 
-				CommitCreator commitCreator = new CommitCreator(actualComposite, this.process.getStep("root"));
+				CommitCreator commitCreator = new CommitCreator(this, actualComposite, this.process.getStep("root"));
 
 				actualComposite = commitCreator.createControls();
 //				actualComposite.pack();
@@ -1226,6 +1226,7 @@ public class PrampPartUi1 extends ModelObject
 				}
 				
 				String instanceDir = getInstanceDir();
+				this.process.setRootdir(instanceDir);
 				
 				if (instanceDir != null)
 				{
@@ -1460,7 +1461,7 @@ public class PrampPartUi1 extends ModelObject
 		return this.einstellungen.getVersion();
 	}
 	
-	void log(String level, String logstring)
+	public void log(String level, String logstring)
 	{
 //		text_logging.setText(text_logging.getText()+logstring+"\n");
 		logstring = "["+new Timestamp(System.currentTimeMillis()) + "]:"+level+":"+logstring;

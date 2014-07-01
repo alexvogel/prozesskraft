@@ -67,7 +67,7 @@ public class VariableOccurGui
 	{
 		this.parent_variablegui = parent_variablegui;
 		this.parent = parent;
-		this.variable = variable;
+		this.variable = variable.clone();
 		this.variable.setKey(key);
 		this.key = key;
 		this.free = free;
@@ -322,8 +322,9 @@ public class VariableOccurGui
 	 */
 	public void commit(Step step)
 	{
-		if ( data.getContent() != null )
+		if ( data.getContent() != null && (!(this.data.getContent().matches("^$"))))
 		{
+			step.log("debug", "VariableOccurGui.commitit: committing " + variable.toString() + variable.getValue());
 			step.commitVariable(this.key, data.getContent());
 		}
 	}
@@ -331,6 +332,10 @@ public class VariableOccurGui
 	public boolean doAllTestsPass()
 	{
 //		System.out.println("testResult variable '"+this.key+"' "+this.variable.doAllTestsPass());
-		return this.variable.doAllTestsPass();
+		if(this.comboexist)
+		{
+			return this.variable.doAllTestsPass();
+		}
+		return true;
 	}
 }

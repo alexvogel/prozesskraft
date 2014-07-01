@@ -36,7 +36,7 @@ import de.caegroup.process.Process;
 
 public class FileGui
 {
-	File file;
+	File file = null;
 	
 	Composite parent;
 	CommitGui parent_commitgui;
@@ -99,8 +99,8 @@ public class FileGui
 		// ist die mindestanzahl der eintraege erreicht UND maximalanzahl der eintraege noch nicht erreicht, und existiert noch kein einzelnes button, soll ein einzelnes button erzeugt werden
 		if ( (this.fileoccurGui.size() >= file.getMinoccur()) && (this.fileoccurGui.size() < file.getMaxoccur()) && (!(isFileOccurWithOnlyAButtonPresent())))
 		{
-			FileOccurGui variableoccur = new FileOccurGui(this, composite, file, file.getKey(), false, true);
-			fileoccurGui.add(variableoccur);
+			FileOccurGui fileoccur = new FileOccurGui(this, composite, file, file.getKey(), false, true);
+			fileoccurGui.add(fileoccur);
 		}
 	}
 	
@@ -137,11 +137,11 @@ public class FileGui
 	 */
 	public void remove(FileOccurGui fileoccurgui)
 	{
-//		System.out.println("Anzahl vor remove: "+this.variableoccurGui.size());
+		this.parent_commitgui.parent_commitcreator.parent_prampgui.log("debug", "Anzahl vor remove: "+this.fileoccurGui.size());
 		
 		this.fileoccurGui.remove(fileoccurgui);
 		
-//		System.out.println("Anzahl nach remove: "+this.variableoccurGui.size());
+		this.parent_commitgui.parent_commitcreator.parent_prampgui.log("debug", "Anzahl nach remove: "+this.fileoccurGui.size());
 		
 		if (this.fileoccurGui.size() == 0)
 		{
