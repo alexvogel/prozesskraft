@@ -54,7 +54,7 @@ implements Serializable, Cloneable
 			content.add("");
 			content.add("addFilesEtc(\\%FILE);");
 			content.add("");
-			content.add("unless(getOption('instancedir'))");
+			content.add("if(!(getOption('instancedir')))");
 			content.add("{");
 			content.add("	#-------------------");
 			content.add("	# zeitpunkt des aufrufs feststellen");
@@ -68,6 +68,11 @@ implements Serializable, Cloneable
 			content.add("	setOption('instancedir', getcwd . '/"+this.parent.getName()+"_' . $version . '_' . $datum . '_' . $$);");
 			content.add("	#-------------------");
 			content.add("}");
+			content.add("");
+			content.add("elsif(getOption('instancedir') !~ m/^\\//)");
+			content.add("		{");
+			content.add("			setOption('instancedir', getcwd . getOption('instancedir'));");
+			content.add("		}");
 			content.add("");
 			content.add("# ein instanzverzeichnis anlegen");
 			content.add("mkdir getOption('instancedir');");
