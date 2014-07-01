@@ -648,6 +648,7 @@ implements Serializable, Cloneable
 			return false;
 		}
 		
+		this.getList().clear();
 		this.setStatus("initializing");
 		log("info", "setting status to 'initializing'");
 		boolean initializing_success = true;
@@ -686,37 +687,35 @@ implements Serializable, Cloneable
 							}
 						}
 					}
-					// wenn keine files passen, dann ist initialisierung fehlgeschlagen
-					if (files_from_fromstep_which_matched.size() == 0)
+
+					// feststellen ob die gewuenschte anzahl der variablen gematched hat
+					if( (files_from_fromstep_which_matched.size() < actualInit.getMinoccur()) || (files_from_fromstep_which_matched.size() > actualInit.getMaxoccur()) )
 					{
+						log("debug", "init '"+name+"': found "+files_from_fromstep_which_matched.size()+" items to add to the list, but minoccur="+actualInit.getMinoccur()+", maxoccur="+actualInit.getMaxoccur());
 						initializing_success = false;
 					}
 
+					// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
+					// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
+					List list;
+					if (this.getList(actualInit.getListname()) != null)
+					{
+						list = this.getList(actualInit.getListname());
+					}
+					// ansonsten eine anlegen und this hinzufuegen
 					else
 					{
-						// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
-						// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
-						List list;
-						if (this.getList(actualInit.getListname()) != null)
-						{
-							list = this.getList(actualInit.getListname());
-						}
-						// ansonsten eine anlegen und this hinzufuegen
-						else
-						{
-							list = new List();
-							list.setName(actualInit.getListname());
-							this.addList(list);
-						}
-						for (File actualFile : files_from_fromstep_which_matched)
-						{
-							list.addItem(actualFile.getField(actualInit.getReturnfield()));
-						}
-						log("debug", "init '"+name+"': new list '"+list.getName()+"' with "+list.getItem().size()+" item(s).");
+						list = new List();
+						list.setName(actualInit.getListname());
+						this.addList(list);
 					}
-						
-					
+					for (File actualFile : files_from_fromstep_which_matched)
+					{
+						list.addItem(actualFile.getField(actualInit.getReturnfield()));
+					}
+					log("debug", "init '"+name+"': new list '"+list.getName()+"' with "+list.getItem().size()+" item(s).");
 				}
+				
 				// wenn es ein variable ist
 				else if (actualInit.getFromobjecttype().equals("variable"))
 				{
@@ -735,7 +734,14 @@ implements Serializable, Cloneable
 							}
 						}
 					}
-					if (variables_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
+
+					// feststellen ob die gewuenschte anzahl der variablen gematched hat
+					if( (variables_from_fromstep_which_matched.size() < actualInit.getMinoccur()) || (variables_from_fromstep_which_matched.size() > actualInit.getMaxoccur()) )
+					{
+						log("debug", "init '"+name+"': found "+variables_from_fromstep_which_matched.size()+" items to add to the list, but minoccur="+actualInit.getMinoccur()+", maxoccur="+actualInit.getMaxoccur());
+						initializing_success = false;
+					}
+
 					// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
 					// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
 					List list;
@@ -761,8 +767,8 @@ implements Serializable, Cloneable
 				}
 			}
 		}
+		
 		// wenn alle initialisierung funktioniert habenn den status aendern
-		// wenn eine loop gefordert ist, soll der step aufgefaechert werden.
 		if (initializing_success)
 		{
 			this.setStatus("initialized");
