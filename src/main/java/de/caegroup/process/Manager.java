@@ -30,7 +30,6 @@ public class Manager
 	  structure
 	----------------------------*/
 	static CommandLine line;
-	static private Process p3;
 
 	
 	/*----------------------------
@@ -189,7 +188,7 @@ public class Manager
 		while(incharge)
 		{
 			// processinstanz frisch einlesen
-			p3 = p2.readBinary();
+			Process p3 = p2.readBinary();
 
 			p3.log("debug", "manager "+managerid+": actual infilexml is: "+p3.getInfilexml());
 			p3.log("debug", "manager "+managerid+": reading binary file: "+p2.getInfilebinary());
@@ -267,7 +266,7 @@ public class Manager
 							e.printStackTrace();
 						}
 					}
-					updateFile();
+					updateFile(p3);
 				}
 
 				if (step.getStatus().equals("initialized"))
@@ -282,7 +281,7 @@ public class Manager
 					{
 						p3.log("debug", "manager "+managerid+": fan-out of step '"+step.getName()+"' failed");
 					}
-					updateFile();
+					updateFile(p3);
 				}
 
 				if (step.getStatus().equals("fanned"))
@@ -297,7 +296,7 @@ public class Manager
 					{
 						p3.log("debug", "manager "+managerid+": launching work-program of step '"+step.getName()+"' failed");
 					}
-					updateFile();
+					updateFile(p3);
 				}
 
 				if (step.getStatus().equals("working"))
@@ -312,7 +311,7 @@ public class Manager
 					{
 						p3.log("debug", "manager "+managerid+": work-program of step '"+step.getName()+"' is still running");
 					}
-					updateFile();
+					updateFile(p3);
 				}
 
 				if (step.getStatus().equals("worked"))
@@ -336,7 +335,7 @@ public class Manager
 						p3.log("debug", "manager "+managerid+": caught an IOException.");
 						e.printStackTrace();
 					}
-					updateFile();
+					updateFile(p3);
 				}
 
 				if (step.getStatus().equals("committing"))
@@ -348,7 +347,6 @@ public class Manager
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					updateFile();
 				}
 
 				if (step.getStatus().equals("committed"))
@@ -366,13 +364,13 @@ public class Manager
 						}
 					}
 //					step.setStatus("finished");
+					updateFile(p3);
 				}
 				
 			}
 			
 //			p3.printToc();
-
-			updateFile();
+			updateFile(p3);
 			
 			Calendar time_exit = Calendar.getInstance();
 			long seconds_for_loop = (time_exit.getTimeInMillis() - time_entry.getTimeInMillis()) / 1000;
@@ -393,12 +391,12 @@ public class Manager
 		}
 	}
 
-	private static void updateFile()
+	private static void updateFile(Process process)
 	{
-		p3.setDatetonow();
-		p3.touch();
-		p3.detStatus(); 
-		p3.writeBinary();
+		process.setDatetonow();
+		process.touch();
+		process.detStatus(); 
+		process.writeBinary();
 	}
 
 	private static void exiter()
