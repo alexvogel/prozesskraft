@@ -76,6 +76,10 @@ implements Serializable, Cloneable
 			content.add("				$helptext .= \", default: off)\";");
 			content.add("			}");
 			content.add("			# wenn es einen default gibt");
+			content.add("			elsif ((exists ${$OPTHELP{$_}}{'textfordefault'}) && (${$OPTHELP{$_}}{'textfordefault'}))");
+			content.add("			{");
+			content.add("				$helptext .= \", default: \" . ${$OPTHELP{$_}}{'textfordefault'} . \")\";");
+			content.add("			}");
 			content.add("			elsif (${$OPTHELP{$_}}{'default'})");
 			content.add("			{");
 			content.add("				$helptext .= \", default: \" . ${$OPTHELP{$_}}{'default'} . \")\";");
