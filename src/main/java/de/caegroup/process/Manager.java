@@ -267,6 +267,7 @@ public class Manager
 						}
 					}
 					updateFile(p3);
+					System.exit(1);
 				}
 
 				if (step.getStatus().equals("initialized"))
