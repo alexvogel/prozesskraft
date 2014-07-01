@@ -1237,7 +1237,7 @@ implements Serializable
 			{
 				newstatus = "waiting";
 			}
-			else if ((step.getStatus().matches("initializing|initialized|fanning|fanned|committing|comitted|working|worked")) && (!(newstatus.equals("error"))))
+			else if ((step.getStatus().matches("initializing|initialized|initialization failed|fanning|fanned|committing|comitted|working|worked")) && (!(newstatus.equals("error"))))
 			{
 				newstatus = "working";
 			}
