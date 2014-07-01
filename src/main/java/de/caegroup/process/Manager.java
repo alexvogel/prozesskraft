@@ -267,7 +267,6 @@ public class Manager
 						}
 					}
 					updateFile(p3);
-					System.exit(1);
 				}
 
 				if (step.getStatus().equals("initialized"))
@@ -298,6 +297,7 @@ public class Manager
 						p3.log("debug", "manager "+managerid+": launching work-program of step '"+step.getName()+"' failed");
 					}
 					updateFile(p3);
+					System.exit(1);
 				}
 
 				if (step.getStatus().equals("working"))
