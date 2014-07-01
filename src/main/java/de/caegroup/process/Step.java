@@ -1163,123 +1163,125 @@ implements Serializable, Cloneable
 			success = this.rootcommit();
 		}
 		
-		this.log("info", "howdi?");
-
-		// ueber alle commits iterieren
-		for( Commit actualCommit : this.commit)
+		// nur wenn es nicht der root-step ist, soll auf konventionelle art committed werden
+		else
 		{
-			this.log("info", "commit name "+actualCommit.getName());
-			
-			// wenn das zu committende objekt ein File ist...
-			for(File actualFile : actualCommit.getFile())
+			// ueber alle commits iterieren
+			for( Commit actualCommit : this.commit)
 			{
-				this.log("info", "actual file is key "+actualFile.getKey());
-								// ausfuehren von evtl. vorhandenen globs in den files
-				if(actualFile.getAbsfilename().equals(""))
+				this.log("info", "commit name "+actualCommit.getName());
+				
+				// wenn das zu committende objekt ein File ist...
+				for(File actualFile : actualCommit.getFile())
 				{
-					if( ( actualFile.getGlob() != null)&& !(actualFile.getGlob().equals("")))
+					this.log("info", "actual file is key "+actualFile.getKey());
+									// ausfuehren von evtl. vorhandenen globs in den files
+					if(actualFile.getAbsfilename().equals(""))
 					{
-						log("info", "globbing for files with'"+actualFile.getGlob()+"'");
-						java.io.File dir = new java.io.File(this.getAbsdir());
-						FileFilter fileFilter = new WildcardFileFilter(actualFile.getGlob());
-						java.io.File[] files = dir.listFiles(fileFilter);
-						if(files.length == 0)
+						if( ( actualFile.getGlob() != null)&& !(actualFile.getGlob().equals("")))
 						{
-							log("info", "no file matched glob '"+actualFile.getGlob()+"'");
-						}
-						
-						else
-						{
-							log("info", files.length+" file(s) matched glob '"+actualFile.getGlob()+"'");
-						}
-						
-						// globeintrag im File loeschen, damit es nicht erneut geglobbt wird
-						actualFile.setGlob("");
-						
-						// passt es bzgl. minoccur und maxoccur?
-						log("info", "checking amount of occurances.");
-						if (files.length < actualFile.getMinoccur())
-						{
-							log("error", "minoccur is "+actualFile.getMinoccur()+" but only "+files.length+" file(s) globbed.");
-						}
-						else if (files.length > actualFile.getMaxoccur())
-						{
-							log("error", "maxoccur is "+actualFile.getMaxoccur()+" but "+files.length+" file(s) globbed.");
-						}
-						
-						else
-						{
-							for(int x = 0; x < files.length; x++)
+							log("info", "globbing for files with'"+actualFile.getGlob()+"'");
+							java.io.File dir = new java.io.File(this.getAbsdir());
+							FileFilter fileFilter = new WildcardFileFilter(actualFile.getGlob());
+							java.io.File[] files = dir.listFiles(fileFilter);
+							if(files.length == 0)
 							{
-								// ist es der letzte glob? Dann soll das urspruengliche file object verwendet werden
-								if((x+1) == files.length)
+								log("info", "no file matched glob '"+actualFile.getGlob()+"'");
+							}
+							
+							else
+							{
+								log("info", files.length+" file(s) matched glob '"+actualFile.getGlob()+"'");
+							}
+							
+							// globeintrag im File loeschen, damit es nicht erneut geglobbt wird
+							actualFile.setGlob("");
+							
+							// passt es bzgl. minoccur und maxoccur?
+							log("info", "checking amount of occurances.");
+							if (files.length < actualFile.getMinoccur())
+							{
+								log("error", "minoccur is "+actualFile.getMinoccur()+" but only "+files.length+" file(s) globbed.");
+							}
+							else if (files.length > actualFile.getMaxoccur())
+							{
+								log("error", "maxoccur is "+actualFile.getMaxoccur()+" but "+files.length+" file(s) globbed.");
+							}
+							
+							else
+							{
+								for(int x = 0; x < files.length; x++)
 								{
-									actualFile.setAbsfilename(files[x].getAbsolutePath());
-									log("info", "setting absolute filename to: "+actualFile.getAbsfilename());
-								}
-								// alle anderen werden aus einem clon erstellt
-								else
-								{
-									log("info", "cloning file-object and setting filename: "+actualFile.getAbsfilename());
-									File pFile = actualFile.clone();
-									pFile.setAbsfilename(files[x].getAbsolutePath());
-									// das zusaetzliche file dem commit hinzufuegen
-									actualCommit.addFile(pFile);
+									// ist es der letzte glob? Dann soll das urspruengliche file object verwendet werden
+									if((x+1) == files.length)
+									{
+										actualFile.setAbsfilename(files[x].getAbsolutePath());
+										log("info", "setting absolute filename to: "+actualFile.getAbsfilename());
+									}
+									// alle anderen werden aus einem clon erstellt
+									else
+									{
+										log("info", "cloning file-object and setting filename: "+actualFile.getAbsfilename());
+										File pFile = actualFile.clone();
+										pFile.setAbsfilename(files[x].getAbsolutePath());
+										// das zusaetzliche file dem commit hinzufuegen
+										actualCommit.addFile(pFile);
+									}
 								}
 							}
 						}
 					}
 				}
-			}
-			
-			// ueber alle files des commits iterieren und dem step hinzufuegen
-			for(File actualFile : actualCommit.getFile())
-			{
-				this.log("info", "commit: file "+actualFile.getKey()+":"+actualFile.getAbsfilename());
-				if(!(this.commitFile(actualFile)))
-				{
-					success = false;
-				}
 
-				this.log("debug", "rootstepname of this process is: " + this.getParent().getRootstepname() + " || this stepname is: " + this.getName());
-				// falls nicht rootstep und wenn das File auch dem prozess committed werden soll...
-				if (actualCommit.getToroot() && (!(this.getName().equals(this.getParent().getRootstepname()))))
+				// ueber alle files des commits iterieren und dem step hinzufuegen
+				for(File actualFile : actualCommit.getFile())
 				{
-					this.log("info", "commit to root: file "+actualFile.getKey()+":"+actualFile.getAbsfilename());
-					// dem root-step committen
-					if (!(this.parent.getStep(this.parent.getRootstepname()).commitFile(actualFile)))
+					this.log("info", "commit: file "+actualFile.getKey()+":"+actualFile.getAbsfilename());
+					if(!(this.commitFile(actualFile)))
 					{
 						success = false;
 					}
+	
+					this.log("debug", "rootstepname of this process is: " + this.getParent().getRootstepname() + " || this stepname is: " + this.getName());
+					// falls nicht rootstep und wenn das File auch dem prozess committed werden soll...
+					if (actualCommit.getToroot() && (!(this.getName().equals(this.getParent().getRootstepname()))))
+					{
+						this.log("info", "commit to root: file "+actualFile.getKey()+":"+actualFile.getAbsfilename());
+						// dem root-step committen
+						if (!(this.parent.getStep(this.parent.getRootstepname()).commitFile(actualFile)))
+						{
+							success = false;
+						}
+					}
 				}
-			}
-			
-			// wenn das zu committende objekt eine Variable ist...
-			for(Variable actualVariable : actualCommit.getVariable())
-			{
-				this.log("info", "commit: variable "+actualVariable.getKey()+":"+actualVariable.getValue());
-				if (!(this.commitVariable(actualVariable)))
+				
+				// wenn das zu committende objekt eine Variable ist...
+				for(Variable actualVariable : actualCommit.getVariable())
 				{
-					success = false;
-				}
-
-				// wenn die Variable auch dem prozess committed werden soll...
-				if (actualCommit.getToroot() && (!(this.getName().equals(this.getParent().getRootstepname()))))
-				{
-					this.log("info", "commit to root: variable "+actualVariable.getKey()+":"+actualVariable.getValue());
-					// dem root-step committen
-					if (!(this.parent.getStep(this.parent.getRootstepname()).commitVariable(actualVariable)))
+					this.log("info", "commit: variable "+actualVariable.getKey()+":"+actualVariable.getValue());
+					if (!(this.commitVariable(actualVariable)))
 					{
 						success = false;
 					}
+	
+					// wenn die Variable auch dem prozess committed werden soll...
+					if (actualCommit.getToroot() && (!(this.getName().equals(this.getParent().getRootstepname()))))
+					{
+						this.log("info", "commit to root: variable "+actualVariable.getKey()+":"+actualVariable.getValue());
+						// dem root-step committen
+						if (!(this.parent.getStep(this.parent.getRootstepname()).commitVariable(actualVariable)))
+						{
+							success = false;
+						}
+					}
 				}
-			}
 			
-			actualCommit.setSuccess(success);
-		}
-		if (this.areAllcommitssuccessfull())
-		{
-			this.setStatus("finished");
+				actualCommit.setSuccess(success);
+			}
+			if (this.areAllcommitssuccessfull())
+			{
+				this.setStatus("finished");
+			}
 		}
 		return success;
 	}
