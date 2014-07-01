@@ -104,7 +104,7 @@ implements Serializable, Cloneable
 		code.add("	$html_table_meta->addRow('user', $ENV{'USER'});");
 		code.add("	$html_table_meta->addRow('start', $PROCESS_START);");
 		code.add("	$html_table_meta->addRow('stop', $PROCESS_STOP);");
-		code.add("	$html_table_meta->addRow('directory', \"<a href=\\\"$INSTANCEDIR\\\" target=\\\"_blank\\\">$INSTANCEDIR</a>\");");
+		code.add("	$html_table_meta->addRow('directory', \"<a href=\\\"\".getOption('instancedir').\"\\\" target=\\\"_blank\\\">\".getOption('instancedir').\"</a>\");");
 		code.add("	$html_table_meta->addRow('aufruf', $FULLCALL);");
 		code.add("	$html_table_meta->addRow('status', $PROCESS_STATUS);");
 		code.add("	if($PROCESS_STATUS =~ m/exit=[0]/)");
@@ -255,7 +255,7 @@ implements Serializable, Cloneable
 		code.add("#-------------------");
 		code.add("# ausgabe in file");
 		code.add("	# das stdout handle sichern und ein neues auf das ausgabefile zeigen lassen");
-		code.add("	my $outfile = $INSTANCEDIR . \"/README.html\";");
+		code.add("	my $outfile = getOption('instancedir') . \"/README.html\";");
 		code.add("	unlink($outfile);");
 		code.add("	");
 		code.add("	open (SAVE, \">&STDOUT\") or die \"Can't save STDOUT $!\\n\";");

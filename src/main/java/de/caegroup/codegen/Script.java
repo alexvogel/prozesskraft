@@ -162,6 +162,20 @@ implements Serializable, Cloneable
 		this.type = type;
 	}
 	
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 //	public void setContent(String block, ArrayList<String> content) throws UnknownCodeBlockException
 //	{
 //		if (block.matches("meta")) {this.meta.setContent(content);}
