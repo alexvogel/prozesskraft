@@ -30,7 +30,7 @@ public class Manager
 	  structure
 	----------------------------*/
 	static CommandLine line;
-	
+	static private Process p3;
 
 	
 	/*----------------------------
@@ -189,7 +189,7 @@ public class Manager
 		while(incharge)
 		{
 			// processinstanz frisch einlesen
-			Process p3 = p2.readBinary();
+			p3 = p2.readBinary();
 
 			p3.log("debug", "manager "+managerid+": actual infilexml is: "+p3.getInfilexml());
 			p3.log("debug", "manager "+managerid+": reading binary file: "+p2.getInfilebinary());
@@ -267,6 +267,7 @@ public class Manager
 							e.printStackTrace();
 						}
 					}
+					updateFile();
 				}
 
 				if (step.getStatus().equals("initialized"))
@@ -281,6 +282,7 @@ public class Manager
 					{
 						p3.log("debug", "manager "+managerid+": fan-out of step '"+step.getName()+"' failed");
 					}
+					updateFile();
 				}
 
 				if (step.getStatus().equals("fanned"))
@@ -295,6 +297,7 @@ public class Manager
 					{
 						p3.log("debug", "manager "+managerid+": launching work-program of step '"+step.getName()+"' failed");
 					}
+					updateFile();
 				}
 
 				if (step.getStatus().equals("working"))
@@ -309,6 +312,7 @@ public class Manager
 					{
 						p3.log("debug", "manager "+managerid+": work-program of step '"+step.getName()+"' is still running");
 					}
+					updateFile();
 				}
 
 				if (step.getStatus().equals("worked"))
@@ -332,6 +336,7 @@ public class Manager
 						p3.log("debug", "manager "+managerid+": caught an IOException.");
 						e.printStackTrace();
 					}
+					updateFile();
 				}
 
 				if (step.getStatus().equals("committing"))
@@ -343,6 +348,7 @@ public class Manager
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					updateFile();
 				}
 
 				if (step.getStatus().equals("committed"))
@@ -365,11 +371,9 @@ public class Manager
 			}
 			
 //			p3.printToc();
-			p3.setDatetonow();
-			p3.touch();
-			p3.detStatus(); 
-			p3.writeBinary();
 
+			updateFile();
+			
 			Calendar time_exit = Calendar.getInstance();
 			long seconds_for_loop = (time_exit.getTimeInMillis() - time_entry.getTimeInMillis()) / 1000;
 			
@@ -389,7 +393,13 @@ public class Manager
 		}
 	}
 
-
+	private static void updateFile()
+	{
+		p3.setDatetonow();
+		p3.touch();
+		p3.detStatus(); 
+		p3.writeBinary();
+	}
 
 	private static void exiter()
 	{
