@@ -312,7 +312,6 @@ public class Manager
 						p3.log("debug", "manager "+managerid+": work-program of step '"+step.getName()+"' is still running");
 					}
 					updateFile(p3);
-					System.exit(1);
 				}
 
 				if (step.getStatus().equals("worked"))
