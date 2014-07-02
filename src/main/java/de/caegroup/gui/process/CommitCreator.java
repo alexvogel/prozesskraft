@@ -102,6 +102,9 @@ public class CommitCreator
 	
 	public void commitAll()
 	{
+		// alles bestehende aus letztem start loeschen
+		step.getVariable().clear();
+		step.getFile().clear();
 		for (CommitGui actualCommitGui : commitGui)
 		{
 			actualCommitGui.commit(step);
