@@ -63,6 +63,7 @@ public class Perlcode
 		  create boolean options
 		----------------------------*/
 		Option ohelp = new Option("help", "print this message");
+		Option ov = new Option("v", "prints version and build-date");
 		
 		/*----------------------------
 		  create argument options
@@ -91,6 +92,7 @@ public class Perlcode
 		Options options = new Options();
 		
 		options.addOption( ohelp );
+		options.addOption( ov );
 		options.addOption( ostep );
 		options.addOption( ooutput );
 		options.addOption( odefinition );
@@ -121,6 +123,14 @@ public class Perlcode
 			formatter.printHelp("perlcode", options);
 			System.out.println("");
 			System.out.println("author: "+author+" | version: "+version+" | date: "+date);
+			System.exit(0);
+		}
+		
+		else if ( commandline.hasOption("v"))
+		{
+			System.out.println("author:  info@prozesskraft.de");
+			System.out.println("version: [% version %]");
+			System.out.println("date:    [% date %]");
 			System.exit(0);
 		}
 		
