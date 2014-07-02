@@ -927,33 +927,36 @@ implements Serializable, Cloneable
 	
 
 	// eine extra methode fuer den step 'root'. es werden alle files/variablen aus 'path' committet
+	// es werden standardvariablen committet
 	public boolean rootcommit() throws IOException
 	{
 
 		this.log("info", "special commit, because this step is root");
 
 		//ueber alle initCommitDirs verzeichnisse iterieren
+		this.log("info", "commit all initCommitDirs");
 		for(java.io.File actualCommitDir : this.parent.getInitCommitDirs2())
 		{
 			this.commitdir(actualCommitDir);
+			this.log("info", "committed dir "+actualCommitDir.getAbsolutePath());
 		}
 
-		// alle varfiles, die committed werden sollen zusammensuchen
-		ArrayList<java.io.File> allcommitvarfiles = this.parent.getInitCommitVarfiles2();
-
-		//ueber alle varfiles iterieren
-		Iterator<java.io.File> itercommitvarfile = allcommitvarfiles.iterator();
-		while (itercommitvarfile.hasNext())
+		//ueber alle commitvarfiles iterieren
+		this.log("info", "commit all initCommitVarfiles");
+		for(java.io.File actCommitVarfile : this.parent.getInitCommitVarfiles2())
 		{
-			java.io.File commitvarfile = itercommitvarfile.next();
-			this.commitvarfile(commitvarfile);
+			this.commitvarfile(actCommitVarfile);
+			this.log("info", "committed dir "+actCommitVarfile.getAbsolutePath());
 		}
 		
+		this.log("info", "commit all standard entries");
 		// das stepdir als variable ablegen
 		commitVariable("dir", this.getAbsdir());
+		this.log("info", "committed variable dir="+this.getAbsdir());
 		
 		this.setStatus("finished");
 		
+		this.log("info", "special commit of step 'root' ended");
 		return true;
 	}
 	
@@ -1038,8 +1041,8 @@ implements Serializable, Cloneable
 		// wenn der pfad des files NICHT identisch ist mit dem pfad des step-directories
 		this.log("debug", "step.commitFile(File): file.getAbsfilename():"+file.getAbsfilename());
 		this.log("debug", "step.commitFile(File): step.getAbsfilename():"+this.getAbsdir());
-//		if (!(new java.io.File(file.getAbsfilename()).getParent().matches("^"+this.getAbsdir()+"$")))
-//		{
+		if (!(new java.io.File(file.getAbsfilename()).getParent().matches("^"+this.getAbsdir()+"$")))
+		{
 			// wenn sich das file nicht im step-verzeichnis gefunden wird, soll es dorthin kopiert werden
 			java.io.File zielFile = new java.io.File(this.getAbsdir()+"/"+file.getFilename());
 			if(!(zielFile.exists()))
@@ -1062,11 +1065,11 @@ implements Serializable, Cloneable
 					return false;
 				}
 			}
-//		}
-//		else
-//		{
-//			log("info", "commit: file already found in step-directory. skipping copy.");
-//		}
+		}
+		else
+		{
+			log("info", "commit: file already found in step-directory. skipping copy.");
+		}
 		
 		log("info", "commit: adding file to step object: "+file.getAbsfilename());
 		this.addFile(file);
