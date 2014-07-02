@@ -948,6 +948,10 @@ implements Serializable, Cloneable
 			java.io.File commitvarfile = itercommitvarfile.next();
 			this.commitvarfile(commitvarfile);
 		}
+		
+		// das stepdir als variable ablegen
+		commitVariable("dir", this.getAbsdir());
+		
 		this.setStatus("finished");
 		
 		return true;

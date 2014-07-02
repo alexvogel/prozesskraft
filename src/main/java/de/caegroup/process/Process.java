@@ -253,7 +253,7 @@ implements Serializable
 		Step step = new Step(this.getName());
 		step.setDescription(this.getDescription());
 		wrapperProcess.addStep(step);
-		
+
 		// jeden commit aus 'root' durchgehen und daraus alle inits erzeugen
 		for(Commit actCommit : wrapperProcess.getStep(this.getRootstepname()).getCommit())
 		{
@@ -315,6 +315,28 @@ implements Serializable
 				// den init dem wrapStep hinzufuegen
 				wrapperProcess.getStep(this.getName()).addInit(init);
 			}
+			
+			// und einen zusaetzlichen init fuer das directory des steps root
+			// das wird fuer den parameter --instancedir benoetigt (ein standard parameter fuer prozesse, die zu perl konvertiert wurden)
+			Init init = new Init();
+			init.setListname("rootdir");
+			init.setDescription("Verzeichnis des steps root");
+			init.setFromobjecttype("variable");
+			init.setReturnfield("value");
+			init.setFromstep(this.getRootstepname());
+			init.setInsertrule("overwrite");
+			init.setMinoccur(1);
+			init.setMaxoccur(1);
+			
+			Match match = new Match();
+			match.setField("key");
+			match.setPattern("dir");
+			
+			// den match zum neuen init hinzufuegen
+			init.addMatch(match);
+			
+			// den init dem wrapStep hinzufuegen
+			wrapperProcess.getStep(this.getName()).addInit(init);
 		}
 		
 		// ein work element erstellen und fuer jedes init ein callitem generieren
