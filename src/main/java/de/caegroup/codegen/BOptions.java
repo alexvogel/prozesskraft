@@ -185,6 +185,11 @@ implements Serializable, Cloneable
 			content.add("		{");
 			content.add("			$OPTHELP{$par}{'default'} = 0;");
 			content.add("		}");
+			content.add("		if ( (exists ${$OPTIONS_TABLE{$par}}{'textfordefault'}) && (${$OPTIONS_TABLE{$par}}{'textfordefault'} =~ m/.+/) )");
+			content.add("		{");
+			content.add("			$OPTHELP{$par}{'textfordefault'} = ${$OPTIONS_TABLE{$par}}{'textfordefault'};");
+			content.add("		}");
+			content.add("		");
 			content.add("	}");
 			content.add("}");
 			content.add("# das tatsaechliche erzeugen der options mit Getopt::Long");
