@@ -49,7 +49,7 @@ implements Serializable, Cloneable
 			content.add("# 1 < reihenfolge <= 15");
 			content.add("# definition der standardoptions");
 			content.add("				'log'  => {'reihenfolge' => '11', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'string', 'check'=>'', 'default' => '', 'textfordefault' => '', 'text1' => '=FILE', 'text2' => 'logs in a file instead of STDERR'},");
-			content.add("				'instancedir'  => {'reihenfolge' => '12', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'string', 'check'=>'', 'default' => '', 'textfordefault' => \"./"+this.parent.getName()+"_$version_<random>\", 'text1' => '=DIR', 'text2' => 'directory for instancedata. use an empty or a nonexistent one'},");
+			content.add("				'instancedir'  => {'reihenfolge' => '12', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'string', 'check'=>'', 'default' => '', 'textfordefault' => './"+this.parent.getName()+"_' . $version . '_<random>\", 'text1' => '=DIR', 'text2' => 'directory for instancedata. use an empty or a nonexistent one'},");
 			content.add("				'h' => {'reihenfolge' => '13', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'textfordefault' => '', 'text1' => '', 'text2' => 'prints this helptext'},");
 			content.add("				'd'  => {'reihenfolge' => '14', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'textfordefault' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
 			
