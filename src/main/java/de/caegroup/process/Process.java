@@ -365,6 +365,7 @@ implements Serializable
 	{
 		Script script = new Script();
 		script.setType("process");
+		script.setName(this.getName());
 		script.meta.setVersion(this.getVersion());
 		script.genContent();
 		
