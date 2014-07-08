@@ -166,9 +166,9 @@ public class Server
 		
 		if ( line.hasOption("v"))
 		{
-			System.out.println("author:  alexander.vogel@caegroup.de");
 			System.out.println("version: [% version %]");
 			System.out.println("date:    [% date %]");
+			System.out.println("web:     www.prozesskraft.de");
 			System.exit(0);
 		}
 		
