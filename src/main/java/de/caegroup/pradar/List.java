@@ -90,6 +90,12 @@ public class List
 //				.isRequired()
 				.create("process");
 		
+		Option version = OptionBuilder.withArgName("version")
+				.hasArg()
+				.withDescription("[optional] filter for field 'version'")
+//				.isRequired()
+				.create("version");
+		
 		Option host = OptionBuilder.withArgName("host")
 				.hasArg()
 				.withDescription("[optional] filter for field 'host'")
@@ -137,6 +143,7 @@ public class List
 		options.addOption( help );
 		options.addOption( v );
 		options.addOption( process );
+		options.addOption( version );
 		options.addOption( id );
 		options.addOption( id2 );
 		options.addOption( parentid );
@@ -219,6 +226,16 @@ public class List
 		if (line.hasOption("process"))
 		{
 			entity.setProcess(line.getOptionValue("process"));
+		}
+		else
+		{
+			entity.setProcess("");
+		}
+
+		// definition des filters fuer version
+		if (line.hasOption("version"))
+		{
+			entity.setProcess(line.getOptionValue("version"));
 		}
 		else
 		{
