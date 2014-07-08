@@ -439,6 +439,7 @@ public class Db
 	 * cleans Db: checks out all active instances where
 	 * 1) host is reachable, but pid is no longer active
 	 * 2) host is unreachable and instance is older than 1 week
+	 * 3) instance is older than 1 year
 	 * 
 	 */
 	public void cleanDb(String sshIdRelPath, String user)
@@ -472,6 +473,16 @@ public class Db
 				System.out.println("result is empty!");
 			}
 			
+			// alle entities (und deren kinder) loeschen, die aelter sind als 1 jahr
+			for (Entity actualEntity : all_entities_to_check)
+			{
+				Long yearAgo = System.currentTimeMillis() - (8760 * 60 * 60 * 1000);
+				if (actualEntity.getCheckinInMillis() < yearAgo)
+				{
+					this.deleteEntity(actualEntity);
+				}
+			}
+
 			for (Entity actualEntity : all_entities_to_check)
 			{
 				if (actualEntity.isActive())
