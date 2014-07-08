@@ -27,6 +27,7 @@ import org.ini4j.InvalidFileFormatException;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 
 
+
 import de.caegroup.pradar.Entity;
 import de.caegroup.commons.WhereAmI;
 
@@ -145,9 +146,9 @@ public class Progress
 		
 		if ( line.hasOption("v"))
 		{
-			System.out.println("author:  alexander.vogel@caegroup.de");
 			System.out.println("version: [% version %]");
 			System.out.println("date:    [% date %]");
+			System.out.println("web:     www.prozesskraft.de");
 			System.exit(0);
 		}
 		
