@@ -107,16 +107,16 @@ public class PradarViewTreePage
 		fD[0].setHeight(8);
 		entityTree.setFont(new Font(entityTree.getDisplay(), fD[0]));
 
-//		TreeColumn columnId = new TreeColumn(entityTree, SWT.LEFT);
-//		columnId.setAlignment(SWT.LEFT);
-//		columnId.setText("id");
-//		columnId.setWidth(20);
-//
 		TreeColumn columnId2 = new TreeColumn(entityTree, SWT.LEFT);
 		columnId2.setAlignment(SWT.LEFT);
-		columnId2.setText("name");
+		columnId2.setText("id2");
 		columnId2.setWidth(220);
 		
+		TreeColumn columnId = new TreeColumn(entityTree, SWT.LEFT);
+		columnId.setAlignment(SWT.LEFT);
+		columnId.setText("id");
+		columnId.setWidth(0);
+
 		TreeColumn columnProcess = new TreeColumn(entityTree, SWT.RIGHT);
 		columnProcess.setAlignment(SWT.LEFT);
 		columnProcess.setText("process");
@@ -441,17 +441,17 @@ public class PradarViewTreePage
 			Entity entity = ((Entity) element);
 			switch (columnIndex)
 			{
-//				case 0: return entity.getId();
 				case 0: return entity.getId2();
-				case 1: return entity.getProcess();
-				case 2: return entity.getVersion();
-//				case 3: return entity.getActive();
-				case 4: return entity.getProgressAsString();
-				case 5: return entity.getUser();
-				case 6: return entity.getHost();
-				case 7: return entity.getCheckinAsString();
-				case 8: return entity.getCheckoutAsString();
-				case 9: return entity.getExitcode();
+				case 1: return entity.getId();
+				case 2: return entity.getProcess();
+				case 3: return entity.getVersion();
+//				case 4: return entity.getActive();
+				case 5: return entity.getProgressAsString();
+				case 6: return entity.getUser();
+				case 7: return entity.getHost();
+				case 8: return entity.getCheckinAsString();
+				case 9: return entity.getCheckoutAsString();
+				case 10: return entity.getExitcode();
 			}
 			
 			return null;
