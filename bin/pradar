@@ -358,7 +358,7 @@ for(my $x=0; $x<15; $x++)
 		}
 	}
 }
-$helptext .= "author: info\@prozesskraft.de | version: $version | date: $date\n\n";
+$helptext .= "info\@prozesskraft.de | version: $version | date: $date\n\n";
 
 $helptext .= "installdir: " . Cwd::realpath(File::Spec->rel2abs($0)) . "\n";
 #----------------------------------------------------------------------------
