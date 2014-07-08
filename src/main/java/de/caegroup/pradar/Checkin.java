@@ -91,11 +91,11 @@ public class Checkin
 //				.isRequired()
 				.create("process");
 		
-		Option version = OptionBuilder.withArgName("version")
+		Option pversion = OptionBuilder.withArgName("pversion")
 				.hasArg()
-				.withDescription("[optional] version")
+				.withDescription("[optional] version of the -process")
 //				.isRequired()
-				.create("version");
+				.create("pversion");
 		
 		Option host = OptionBuilder.withArgName("host")
 				.hasArg()
@@ -138,7 +138,7 @@ public class Checkin
 		options.addOption( help );
 		options.addOption( v );
 		options.addOption( process );
-		options.addOption( version );
+		options.addOption( pversion );
 		options.addOption( id );
 		options.addOption( id2 );
 		options.addOption( parentid );
@@ -196,9 +196,9 @@ public class Checkin
 			System.exit(1);
 		}
 
-		if (line.hasOption("version"))
+		if (line.hasOption("pversion"))
 		{
-			entity.setVersion(line.getOptionValue("version"));
+			entity.setVersion(line.getOptionValue("pversion"));
 		}
 		else
 		{
