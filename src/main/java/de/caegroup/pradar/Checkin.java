@@ -202,7 +202,7 @@ public class Checkin
 		}
 		else
 		{
-			entity.setId2("unknown");
+			entity.setVersion("unknown");
 		}
 
 		if (line.hasOption("id"))
