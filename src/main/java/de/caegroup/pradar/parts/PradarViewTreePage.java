@@ -107,20 +107,25 @@ public class PradarViewTreePage
 		fD[0].setHeight(8);
 		entityTree.setFont(new Font(entityTree.getDisplay(), fD[0]));
 
-		TreeColumn columnId = new TreeColumn(entityTree, SWT.LEFT);
-		columnId.setAlignment(SWT.LEFT);
-		columnId.setText("id");
-		columnId.setWidth(20);
-
+//		TreeColumn columnId = new TreeColumn(entityTree, SWT.LEFT);
+//		columnId.setAlignment(SWT.LEFT);
+//		columnId.setText("id");
+//		columnId.setWidth(20);
+//
 		TreeColumn columnId2 = new TreeColumn(entityTree, SWT.LEFT);
 		columnId2.setAlignment(SWT.LEFT);
-		columnId2.setText("id2");
+		columnId2.setText("name");
 		columnId2.setWidth(220);
 		
 		TreeColumn columnProcess = new TreeColumn(entityTree, SWT.RIGHT);
 		columnProcess.setAlignment(SWT.LEFT);
 		columnProcess.setText("process");
-		columnProcess.setWidth(120);
+		columnProcess.setWidth(100);
+		
+		TreeColumn columnVersion = new TreeColumn(entityTree, SWT.RIGHT);
+		columnVersion.setAlignment(SWT.LEFT);
+		columnVersion.setText("version");
+		columnVersion.setWidth(50);
 		
 		TreeColumn columnActive = new TreeColumn(entityTree, SWT.RIGHT);
 		columnActive.setAlignment(SWT.LEFT);
@@ -436,9 +441,10 @@ public class PradarViewTreePage
 			Entity entity = ((Entity) element);
 			switch (columnIndex)
 			{
-				case 0: return entity.getId();
-				case 1: return entity.getId2();
-				case 2: return entity.getProcess();
+//				case 0: return entity.getId();
+				case 0: return entity.getId2();
+				case 1: return entity.getProcess();
+				case 2: return entity.getVersion();
 //				case 3: return entity.getActive();
 				case 4: return entity.getProgressAsString();
 				case 5: return entity.getUser();
