@@ -52,6 +52,7 @@ public class Wrap
 		  create boolean options
 		----------------------------*/
 		Option ohelp = new Option("help", "print this message");
+		Option ov = new Option("v", "prints version and build-date");
 		
 		/*----------------------------
 		  create argument options
@@ -74,6 +75,7 @@ public class Wrap
 		Options options = new Options();
 		
 		options.addOption( ohelp );
+		options.addOption( ov );
 		options.addOption( ooutput );
 		options.addOption( odefinition );
 		
@@ -101,8 +103,14 @@ public class Wrap
 		{
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("wrap", options);
-			System.out.println("");
-			System.out.println("author: "+author+" | version: "+version+" | date: "+date);
+			System.exit(0);
+		}
+		
+		else if ( commandline.hasOption("v"))
+		{
+			System.out.println("web:     www.prozesskraft.de");
+			System.out.println("version: [% version %]");
+			System.out.println("date:    [% date %]");
 			System.exit(0);
 		}
 		
