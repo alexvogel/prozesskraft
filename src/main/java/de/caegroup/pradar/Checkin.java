@@ -91,6 +91,12 @@ public class Checkin
 //				.isRequired()
 				.create("process");
 		
+		Option version = OptionBuilder.withArgName("version")
+				.hasArg()
+				.withDescription("[optional] version")
+//				.isRequired()
+				.create("version");
+		
 		Option host = OptionBuilder.withArgName("host")
 				.hasArg()
 				.withDescription("[optional] hostname the processinstance is running")
@@ -132,6 +138,7 @@ public class Checkin
 		options.addOption( help );
 		options.addOption( v );
 		options.addOption( process );
+		options.addOption( version );
 		options.addOption( id );
 		options.addOption( id2 );
 		options.addOption( parentid );
@@ -187,6 +194,15 @@ public class Checkin
 			System.out.println("-process is mandatory.");
 			System.out.println("try -help for help.");
 			System.exit(1);
+		}
+
+		if (line.hasOption("version"))
+		{
+			entity.setVersion(line.getOptionValue("version"));
+		}
+		else
+		{
+			entity.setId2("unknown");
 		}
 
 		if (line.hasOption("id"))
