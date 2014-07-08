@@ -62,7 +62,7 @@ public class Client
 			else if (type.equals("checkin"))
 			{
 				Entity entity = (Entity) objectIn.readObject();
-				
+
 				log("info", "checking in entity id "+entity.getId());
 				this.parent.db.checkinEntity(entity);
 			}
