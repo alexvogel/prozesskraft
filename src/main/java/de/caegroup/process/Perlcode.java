@@ -121,14 +121,12 @@ public class Perlcode
 		{
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("perlcode", options);
-			System.out.println("");
-			System.out.println("author: "+author+" | version: "+version+" | date: "+date);
 			System.exit(0);
 		}
 		
 		else if ( commandline.hasOption("v"))
 		{
-			System.out.println("author:  info@prozesskraft.de");
+			System.out.println("web:     www.prozesskraft.de");
 			System.out.println("version: [% version %]");
 			System.out.println("date:    [% date %]");
 			System.exit(0);
