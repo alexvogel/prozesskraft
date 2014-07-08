@@ -321,7 +321,7 @@ implements Serializable
 		// und einen zusaetzlichen init fuer das directory des steps root
 		// das wird fuer den parameter --instancedir benoetigt (ein standard parameter fuer prozesse, die zu perl konvertiert wurden)
 		Init init = new Init();
-		init.setListname("rootdir");
+		init.setListname("instancedir");
 		init.setDescription("Verzeichnis des steps root");
 		init.setFromobjecttype("variable");
 		init.setReturnfield("value");
