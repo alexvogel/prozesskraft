@@ -857,6 +857,13 @@ implements Serializable, Cloneable
 				success = false;
 //				System.out.println("PROCESS-STEP LAEUFT NOCH: "+pid);
 			}
+			else if (this.getParent().isWrapper())
+			{
+				log("info", "process work (script,program,..) already finished. pid="+pid);
+				this.setStatus("finished");
+				log("info", "setting status to 'finished' (no commit, because this is a wrapper-process)");
+				success = true;
+			}
 			else
 			{
 				log("info", "process work (script,program,..) already finished. pid="+pid);
