@@ -26,6 +26,7 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 
+
 import de.caegroup.pradar.Entity;
 import de.caegroup.commons.WhereAmI;
 
@@ -98,12 +99,12 @@ public class Checkin
 		
 		Option id = OptionBuilder.withArgName("id")
 				.hasArg()
-				.withDescription("[optional] unique id over all instances of all possible processes")
+				.withDescription("[optional, default: <random>] unique id over all instances of all possible processes")
 				.create("id");
 		
 		Option id2 = OptionBuilder.withArgName("id2")
 				.hasArg()
-				.withDescription("[optional] identification tag for users")
+				.withDescription("[optional, default: noname] identification tag for users")
 				.create("id2");
 		
 		Option parentid = OptionBuilder.withArgName("parentid")
@@ -113,13 +114,13 @@ public class Checkin
 		
 		Option user = OptionBuilder.withArgName("user")
 				.hasArg()
-				.withDescription("[optional] owner of processinstance")
+				.withDescription("[optional, default: <you>] owner of processinstance")
 //				.isRequired()
 				.create("user");
 				
 		Option resource = OptionBuilder.withArgName("resource")
 				.hasArg()
-				.withDescription("[optional] full path to a resource. e.g. logfile")
+				.withDescription("[optional] full path to a resource. e.g. logfile, readme.html, process.pmb")
 //				.isRequired()
 				.create("resource");
 				
@@ -165,9 +166,9 @@ public class Checkin
 		
 		if ( line.hasOption("v"))
 		{
-			System.out.println("author:  alexander.vogel@caegroup.de");
 			System.out.println("version: [% version %]");
 			System.out.println("date:    [% date %]");
+			System.out.println("web:     www.prozesskraft.de");
 			System.exit(0);
 		}
 		
