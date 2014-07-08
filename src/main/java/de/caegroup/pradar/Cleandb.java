@@ -121,9 +121,9 @@ public class Cleandb
 			
 			if ( line.hasOption("v"))
 			{
-				System.out.println("author:  alexander.vogel@caegroup.de");
 				System.out.println("version: [% version %]");
 				System.out.println("date:    [% date %]");
+				System.out.println("web:     www.prozesskraft.de");
 				System.exit(0);
 			}
 		} catch (Exception e)
@@ -151,6 +151,7 @@ public class Cleandb
 			int portNumber = Integer.parseInt(port_and_machine[0]);
 			String machineName = port_and_machine[1];
 			System.err.println("trying pradar-server "+portNumber+"@"+machineName);
+
 			try
 			{
 				// socket einrichten und Out/Input-Streams setzen
