@@ -75,8 +75,8 @@ implements Serializable, Cloneable
 			content.add("elsif(getOption('instancedir') !~ m/^\\//)");
 			content.add("{");
 			content.add("	setOption('instancedir', getcwd . getOption('instancedir'));");
-			content.add("$id = getOption('instancedir');");
-			content.add("$id =~ s/^.(\\d+_\\d+)$/$1/;");
+			content.add("	$id = getOption('instancedir');");
+			content.add("	$id =~ s/^.(\\d+_\\d+)$/$1/;");
 			content.add("}");
 			content.add("");
 			content.add("# ein instanzverzeichnis anlegen");
