@@ -472,7 +472,7 @@ implements Serializable, Cloneable
 
 		perlSnippet.add("#-------------------");
 		perlSnippet.add("# pradar progress");
-		perlSnippet.add("system(\"pradar progress -process "+this.getParent().getName()+" -id $id -completed $stepsCompleted++\");");
+		perlSnippet.add("system(\"pradar progress -process "+this.getParent().getName()+" -id $id -completed \" . $stepsCompleted++);");
 		perlSnippet.add("#-------------------");
 
 		
