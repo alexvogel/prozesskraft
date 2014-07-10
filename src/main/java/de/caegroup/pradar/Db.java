@@ -146,7 +146,7 @@ public class Db
 
 			statement.setQueryTimeout(10);
 			String sql = "INSERT INTO radar (id, id2, parentid, process, version, host, user, checkin, checkout, active, stepcount, stepcountcompleted, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getId2()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getVersion()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getStepcount()+"', '"+entity.getStepcountcompleted()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
-//			System.out.println(sql);
+			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
 			this.connection.close();
@@ -176,7 +176,7 @@ public class Db
 			if (!(entity.getStepcount().equals("")))
 			{
 				String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', stepcount='"+entity.getStepcount()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
-//				System.out.println(sql);
+				System.out.println(sql);
 				statement.executeUpdate(sql);
 			}
 			else
@@ -212,7 +212,7 @@ public class Db
 			
 //			String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='"+ entity.getExitcode() +"' WHERE id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"' AND version IS '"+entity.getVersion()+"' AND active IS 'true'";
 			String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='"+ entity.getExitcode() +"' WHERE id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
-//			System.out.println(sql);
+			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
 			this.connection.close();
