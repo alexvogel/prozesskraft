@@ -78,7 +78,7 @@ implements Serializable, Cloneable
 			content.add("");
 			content.add("# aus dem instanzverzeichnis eine eindeutige id erstellen");
 			content.add("$id = getOption('instancedir');");
-			content.add("$id =~ s/^.(\\d+_\\d+)$/$1/;");
+			content.add("$id =~ s/^.+(\\d+_\\d+)$/$1/;");
 			content.add("");
 			content.add("# ein instanzverzeichnis anlegen");
 			content.add("mkdir getOption('instancedir');");
