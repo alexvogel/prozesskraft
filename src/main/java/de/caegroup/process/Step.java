@@ -329,9 +329,10 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\tif((@globbedFiles < "+actVariable.getMinoccur()+") || (@globbedFiles > "+actVariable.getMaxoccur()+"))");
 					perlSnippet.add("\t\t{");
 					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of variables with pattern (glob=$glob).\");");
-					perlSnippet.add("\t\t\t&logit(\"error\", \""+actVariable.getMinoccur()+" <= rightAmountOfFiles <= "+actVariable.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \")\");");
+					perlSnippet.add("\t\t\t&logit(\"error\", \""+actVariable.getMinoccur()+" <= rightAmountOfVariables <= "+actVariable.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \")\");");
 					perlSnippet.add("\t\t\t&logit(\"fatal\", \"committing variable '"+actVariable.getKey()+"' failed\");");
 					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("system(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (variable="+actVariable.getKey()+") not right amount of variables: \""+actVariable.getMinoccur()+" <= rightAmountOfVariables <= "+actVariable.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \"\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("\t\tmy @variableList;");
@@ -383,6 +384,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t&logit(\"error\", \"step '"+this.getName()+"', commit '"+actCommit.getName()+"', variable '"+actVariable.getKey()+"' needs either a value or a glob definition.\");");
 					perlSnippet.add("\t\t&logit(\"fatal\", \"committing variable '"+actVariable.getKey()+"' failed\");");
 					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("system(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (variable="+actVariable.getKey()+") variable needs either a value or a glob definition\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 				}
 				perlSnippet.add("\t}");
@@ -407,10 +409,11 @@ implements Serializable, Cloneable
 					perlSnippet.add("");
 					perlSnippet.add("\t\tif((@globbedFiles < "+actFile.getMinoccur()+") || (@globbedFiles > "+actFile.getMaxoccur()+"))");
 					perlSnippet.add("\t\t{");
-					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of variables with pattern (glob=$glob).\");");
+					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of files with pattern (glob=$glob).\");");
 					perlSnippet.add("\t\t\t&logit(\"error\", \""+actFile.getMinoccur()+" <= rightAmountOfFiles <= "+actFile.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \")\");");
 					perlSnippet.add("\t\t\t&logit(\"fatal\", \"committing file '"+actFile.getKey()+"' failed\");");
 					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("system(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (file="+actFile.getKey()+") not right amount of files: \""+actFile.getMinoccur()+" <= rightAmountOfFiles <= "+actFile.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \"\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("\t\tmy @fileList;");
@@ -448,8 +451,9 @@ implements Serializable, Cloneable
 				else
 				{
 					perlSnippet.add("\t\t&logit(\"error\", \"------ step '"+this.getName()+"', commit '"+actCommit.getName()+"', file '"+actFile.getKey()+"' needs a glob definition.\");");
-					perlSnippet.add("\t\t&logit(\"fatal\", \"committing variable '"+actFile.getKey()+"' failed\");");
+					perlSnippet.add("\t\t&logit(\"fatal\", \"committing file '"+actFile.getKey()+"' failed\");");
 					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("system(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (file="+actFile.getKey()+") file needs a glob definition\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 				}
 				perlSnippet.add("\t}");
@@ -465,6 +469,13 @@ implements Serializable, Cloneable
 		perlSnippet.add("\t&girlande_stepend($stepname);");
 		
 		perlSnippet.add("}");
+
+		perlSnippet.add("#-------------------");
+		perlSnippet.add("# pradar progress");
+		perlSnippet.add("system(\"pradar progress -process "+this.getName()+" -id $id -completed $stepsCompleted++\");");
+		perlSnippet.add("#-------------------");
+
+		
 		return perlSnippet;		
 	}
 	
