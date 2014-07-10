@@ -37,6 +37,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
@@ -71,6 +72,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -155,6 +157,7 @@ public class PradarPartUi3 extends ModelObject
 //	Composite composite_12;
 	CTabFolder tabFolder_12;
 	ArrayList<PradarViewLogPage> logPages = new ArrayList<PradarViewLogPage>();
+	ArrayList<PradarViewHtmlPage> htmlPages = new ArrayList<PradarViewHtmlPage>();
 	CTabItem tabItem_radar;
 	CTabItem tabItem_tree;
 	Composite composite_tabItem_radar;
@@ -532,22 +535,27 @@ public class PradarPartUi3 extends ModelObject
 		public void widgetSelected(SelectionEvent event)
 		{
 //			System.out.println("button wurde gedrueckt");
-			if (einstellungen.entitySelected != null && (!(einstellungen.entitySelected.getResource().equals(""))))
-			{
-				log("info", "showing logfile "+einstellungen.entitySelected.getResource());
-				showLogFile(einstellungen.entitySelected);
-			}
-			else if (einstellungen.entitySelected != null && einstellungen.entitySelected.getResource().equals(""))
+			if (einstellungen.entitySelected != null && einstellungen.entitySelected.getResource().equals(""))
 			{
 				log("warn", "no logfile for entity "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
 			}
-			else if (einstellungen.entitySelected != null && (new File(einstellungen.entitySelected.getResource()).canRead() ) )
+			else if (einstellungen.entitySelected != null && (!(new File(einstellungen.entitySelected.getResource()).canRead())) )
 			{
 				log("warn", "cannot read logfile of entity "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
 			}
 			else if (einstellungen.entitySelected != null && (!(new File(einstellungen.entitySelected.getResource()).exists()) ) )
 			{
 				log("warn", "logfile of entity does not exist "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
+			}
+			else if (einstellungen.entitySelected != null && ((einstellungen.entitySelected.getResource().matches("\\.log|\\.txt$"))))
+			{
+				log("info", "showing logfile "+einstellungen.entitySelected.getResource());
+				showLogFile(einstellungen.entitySelected);
+			}
+			else if (einstellungen.entitySelected != null && ((einstellungen.entitySelected.getResource().matches(".+html"))))
+			{
+				log("info", "showing logfile "+einstellungen.entitySelected.getResource());
+				showHtmlFile(einstellungen.entitySelected);
 			}
 			else
 			{
@@ -1402,8 +1410,55 @@ public class PradarPartUi3 extends ModelObject
 	}
 
 	/**
+	 * opens a seperate Tab and shows the content of a html file
+	 * @param Entity entity
+	 */
+	void showHtmlFile(Entity entity)
+	{
+		File file = new File(entity.getResource());
+		if (!(file.exists()))
+		{
+			log("warn", "cannot read file: "+entity.getResource());
+			return;
+		}
+
+		log("info", "opening in external browser: "+entity.getResource());
+
+		String[] args_for_syscall = {"firefox", entity.getResource()};
+		ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
+		try {
+			java.lang.Process p = pb.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		log ("info", "calling: " + StringUtils.join(args_for_syscall, " "));
+
+		// alternative: embedded browser
+//		else
+//		{
+//			String tabName = entity.getProcess()+"<"+entity.getId()+">";
+//			
+//			// ueberpruefen ob es von diesem file schon ein tab gibt
+//			if (isTabPresentByName(tabFolder_12, tabName))
+//			{
+//				tabFolder_12.setSelection(getTabIdByName(tabFolder_12, tabName));
+//			}
+//			
+//			// tab mit logfile ansicht erzeugen
+//			else
+//			{
+//				this.htmlPages.add(new PradarViewHtmlPage(this.tabFolder_12, this, entity, tabName));
+//				// focus auf den neuen Tab
+//				tabFolder_12.setSelection(tabFolder_12.getItemCount()-1);
+//			}
+//		}
+	}	
+
+	/**
 	 * opens a seperate Tab and shows the content of a file
-	 * @param String pathToFile
+	 * @param Entity entity
 	 */
 	void showLogFile(Entity entity)
 	{
@@ -1433,6 +1488,8 @@ public class PradarPartUi3 extends ModelObject
 			}
 		}
 		
+	}
+
 		// tab mit logfile ansicht erzeugen
 //		else
 //		{
@@ -1480,8 +1537,6 @@ public class PradarPartUi3 extends ModelObject
 //			tabFolder_12.setSelection(tabFolder_12.getItemCount()-1);
 //		}
 		
-	}
-
 	/**
 	 * determines whether a Tab is present by Name
 	 * @param CTabFolder folder, String TabItemName
@@ -1638,6 +1693,8 @@ public class PradarPartUi3 extends ModelObject
 				{
 					Shell shell = new Shell(display);
 					shell.setText("pradar-gui "+"v[% version %]");
+
+					shell.setImage(new Image(display, "logoSymbolWhite16.png"));
 					shell.setLayout(new FillLayout());
 					shell.setSize(1300, 800);
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
