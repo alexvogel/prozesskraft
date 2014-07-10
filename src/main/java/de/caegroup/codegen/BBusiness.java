@@ -51,6 +51,7 @@ implements Serializable, Cloneable
 			content.add("");
 			content.add("my %FILE = getTypedOptions(\"file\");");
 			content.add("my %VARIABLE = getTypedOptions(\"variable\");");
+			content.add("my $stepsCompleted = 0;");
 			content.add("");
 			content.add("addFilesEtc(\\%FILE);");
 			content.add("");
@@ -65,7 +66,8 @@ implements Serializable, Cloneable
 			content.add("	$year = $year+1900;");
 			content.add("	my $datum = $year.$month.$day;");
 			content.add("	my $moment = $hour.$min.$sec;");
-			content.add("	setOption('instancedir', getcwd . '/"+this.parent.getName()+"_' . $version . '_' . $datum . '_' . $$);");
+			content.add("	my $id = $datum . '_' . $$;");
+			content.add("	setOption('instancedir', getcwd . '/"+this.parent.getName()+"_' . $version . '_' . $id);");
 			content.add("	#-------------------");
 			content.add("}");
 			content.add("");
