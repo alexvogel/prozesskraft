@@ -15,10 +15,14 @@
 5) start the pradar server
 	pradar server
 
-5) edit all other etc/pradar-*.ini
+6) edit all other etc/pradar-*.ini
 	define at least one pradar-server. "pradar-server-1=<port>@<server>"
 
-5) initialize database-file
+7) edit all etc/pradar-gui.ini
+	define the call for pmodel (usually it's 'pmodel gui')
+	define the call for pramp  (usually it's 'pramp gui')
+
+8) initialize database-file
 	pradar init
 
 now the pradar server listens to calls from running processes.
