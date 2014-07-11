@@ -83,6 +83,7 @@ import org.eclipse.swt.widgets.Combo;
 
 
 
+
 import com.google.common.collect.Multimap;
 //import com.jcraft.jsch.ChannelExec;
 //import com.jcraft.jsch.JSch;
@@ -302,6 +303,21 @@ public class PrampPartUi1 extends ModelObject
 		button_start.setToolTipText("start an instance of selected process");;
 		button_start.addSelectionListener(listener_startinstance_button);
 		
+		// Group apps
+		Group grpApps = new Group(composite_11, SWT.NONE);
+		grpApps.setText("apps");
+		GridData gd_grpApps = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_grpApps.widthHint = 152;
+		grpApps.setLayoutData(gd_grpApps);
+		grpApps.setLayout(new GridLayout(2, false));
+		
+		Button btnNewButton3 = new Button(grpApps, SWT.NONE);
+		GridData gd_btnNewButton3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd_btnNewButton3.widthHint = 141;
+		btnNewButton3.setLayoutData(gd_btnNewButton3);
+		btnNewButton3.setText("pRadar");
+		btnNewButton3.addSelectionListener(listener_pradar_button);
+
 		composite_12 = new Composite(composite_1, SWT.BORDER);
 //		composite_12.setLayout(new GridLayout(1, false));
 		composite_12.setLayout(new FillLayout());
@@ -510,14 +526,29 @@ public class PrampPartUi1 extends ModelObject
 		}
 	};
 	
-//	ModifyListener listener_versionselection = new ModifyListener()
-//	{
-//		public void modifyText(ModifyEvent arg0)
-//		{
-//			updateUiParameterAbfrage();
-//		}
-//	};	
-//	
+	/**
+	 * pramp-button oeffnet die anwendung pradar-gui
+	 **/
+	SelectionAdapter listener_pradar_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			log("info", "starten von pradar");
+			String aufruf = ini.get("apps", "pradar");
+			
+			try
+			{
+				log("info", "calling: " + aufruf);
+				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	};
+	
 	/**
 	 * binds array of processnames to combo-box 'processes'
 	 */
