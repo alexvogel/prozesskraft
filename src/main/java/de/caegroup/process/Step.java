@@ -298,7 +298,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("\t\t\t}");
 		perlSnippet.add("\t\t}");
 		perlSnippet.add("\t\t&printHtmlOverview();");
-		perlSnippet.add("\t\tsystem(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (work) (exitcode=$return)\\\"\");");
+		perlSnippet.add("\t\tsystem(\"pradar checkout -process "+this.getParent().getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (work) (exitcode=$return)\\\"\");");
 		perlSnippet.add("\t\texit(1);");
 		perlSnippet.add("\t}");
 		perlSnippet.add("\t&logit(\"info\", \"step '"+this.getName()+"' exited properly\");");
@@ -342,7 +342,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\t&logit(\"error\", \""+actVariable.getMinoccur()+" <= rightAmountOfVariables <= "+actVariable.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \")\");");
 					perlSnippet.add("\t\t\t&logit(\"fatal\", \"committing variable '"+actVariable.getKey()+"' failed\");");
 					perlSnippet.add("\t\t\t$PROCESS_STOP = scalar(localtime());");
-					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (variable="+actVariable.getKey()+") not right amount of variables: "+actVariable.getMinoccur()+" <= rightAmountOfVariables <= "+actVariable.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \"\\\"\");");
+					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getParent().getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (variable="+actVariable.getKey()+") not right amount of variables: "+actVariable.getMinoccur()+" <= rightAmountOfVariables <= "+actVariable.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \"\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("\t\tmy @variableList;");
@@ -395,7 +395,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t&logit(\"fatal\", \"committing variable '"+actVariable.getKey()+"' failed\");");
 					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
 					perlSnippet.add("\t\t\tmy $PROCESS_STATUS = 'error';");
-					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (variable="+actVariable.getKey()+") variable needs either a value or a glob definition\\\"\");");
+					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getParent().getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (variable="+actVariable.getKey()+") variable needs either a value or a glob definition\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 				}
 				perlSnippet.add("\t}");
@@ -433,7 +433,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\t\t}");
 					perlSnippet.add("\t\t\t}");
 					perlSnippet.add("\t\t&printHtmlOverview();");
-					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (file="+actFile.getKey()+") not right amount of files: "+actFile.getMinoccur()+" <= rightAmountOfFiles <= "+actFile.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \"\\\"\");");
+					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getParent().getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (file="+actFile.getKey()+") not right amount of files: "+actFile.getMinoccur()+" <= rightAmountOfFiles <= "+actFile.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \"\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("\t\tmy @fileList;");
@@ -482,7 +482,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\t\t}");
 					perlSnippet.add("\t\t\t}");
 					perlSnippet.add("\t\t&printHtmlOverview();");
-					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (file="+actFile.getKey()+") file needs a glob definition\\\"\");");
+					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getParent().getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (file="+actFile.getKey()+") file needs a glob definition\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 				}
 				perlSnippet.add("\t}");
