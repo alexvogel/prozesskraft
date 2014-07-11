@@ -111,7 +111,7 @@ implements Serializable, Cloneable
 		code.add("	{");
 		code.add("		$html_table_meta->setCellBGColor(6, 2, 'yellowgreen');");
 		code.add("	}");
-		code.add("	elsif ($PROCESS_STATUS =~ m/exit=[^0]/)");
+		code.add("	elsif (($PROCESS_STATUS =~ m/exit=[^0]/) || ($PROCESS_STATUS =~ m/error/))");
 		code.add("	{");
 		code.add("		$html_table_meta->setCellBGColor(6, 2, 'tomato');");
 		code.add("	}");
