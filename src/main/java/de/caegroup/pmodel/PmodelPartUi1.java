@@ -1104,7 +1104,16 @@ public class PmodelPartUi1 extends ModelObject
 					Shell shell = new Shell(display);
 					shell.setText("pmodel-gui "+"v[% version %]");
 
-					shell.setImage(new Image(display, this.getClass().getResourceAsStream("/logoSymbol50Transp.png")));
+					// set an icon
+					if(this.getClass().getResourceAsStream("/logoSymbol50Transp.png") != null)
+					{
+						shell.setImage(new Image(display, this.getClass().getResourceAsStream("/logoSymbol50Transp.png")));
+					}
+					else if((new java.io.File("logoSymbol50Transp.png")).exists())
+					{
+						shell.setImage(new Image(display, "logoSymbol50Transp.png"));
+					}
+					
 					shell.setLayout(new FillLayout());
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
 					GridLayout gl_composite = new GridLayout(2, false);
