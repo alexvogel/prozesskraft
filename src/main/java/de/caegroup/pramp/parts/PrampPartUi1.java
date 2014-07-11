@@ -58,6 +58,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.graphics.TextStyle;
@@ -76,6 +77,7 @@ import org.eclipse.swt.widgets.Text;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.eclipse.swt.widgets.Combo;
+
 
 
 
@@ -1665,6 +1667,8 @@ public class PrampPartUi1 extends ModelObject
 				{
 					Shell shell = new Shell(display);
 					shell.setText("pramp-gui "+"v[% version %]");
+
+					shell.setImage(new Image(display, "logoSymbol50Transp.png"));
 					shell.setLayout(new FillLayout());
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
 					GridLayout gl_composite = new GridLayout(2, false);
