@@ -80,6 +80,11 @@ implements Serializable, Cloneable
 			content.add("$id = getOption('instancedir');");
 			content.add("$id =~ s/^.+(\\d+_\\d+)$/$1/;");
 			content.add("");
+			content.add("unless($id =~ m/.{8,}/)");
+			content.add("{");
+			content.add("	$id = sprintf(\"%11-0o\", int(rand(99999999999)));");
+			content.add("}");
+			content.add("");
 			content.add("# ein instanzverzeichnis anlegen");
 			content.add("mkdir getOption('instancedir');");
 			content.add("");
