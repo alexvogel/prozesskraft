@@ -1,5 +1,6 @@
 package de.caegroup.pradar.parts;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.databinding.DataBindingContext;
@@ -7,6 +8,7 @@ import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -30,6 +32,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 import de.caegroup.pradar.Entity;
+
 import org.eclipse.jface.viewers.ViewerSorter;
 
 
@@ -224,22 +227,34 @@ public class PradarViewTreePage
 	{
 		public void doubleClick(DoubleClickEvent event)
 		{
-//			TreeViewer viewer = (TreeViewer) event.getSource();
-//			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
-//			
-//			Entity entity = (Entity) thisselection.getFirstElement();
-//
-//			String aufruf = "nedit "+entity.getResource();
-//			try
-//			{
-//				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-//			}
-//			catch (IOException e)
-//			{
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			TreeViewer viewer = (TreeViewer) event.getSource();
+			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
+			
+			Entity entity = (Entity) thisselection.getFirstElement();
 
+			java.io.File pmbFile = new java.io.File((new java.io.File(entity.getResource()).getParent()+"/"+entity.getProcess()+".pmb"));
+			
+			if(!(pmbFile.exists()))
+			{
+				parentData.log("error", "process-model-file does not exist");
+			}
+			
+			else
+			{
+				parentData.log("info", "opening process-model-file for inspection");
+				String aufruf = parentData.ini.get("apps",  "pmodel") + " -instance "+pmbFile.getAbsolutePath();
+				parentData.log("info", "calling " + aufruf);
+				
+				try
+				{
+					java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 	};
 	

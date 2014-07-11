@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Display;
 //import org.eclipse.swt.events.MouseWheelListener;
 
 
+
 import processing.core.PApplet;
 import processing.core.PFont;
 import de.caegroup.pradar.Entity;
@@ -547,7 +548,7 @@ public class PradarViewProcessingPage extends PApplet
 		Timestamp timestamp = new Timestamp(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY)).getTimeInMillis());
 		String beschnittener_string_timestamp = timestamp.toString().substring(0, 16);
 		text(beschnittener_string_timestamp, 5, height-5);
-		text("automation@caegroup.de", width-180, height-5);
+		text("www.prozesskraft.de", width-180, height-5);
 //		if (this.parent.einstellungen.entitySelected != null)
 //		{
 //			text(this.parent.einstellungen.entitySelected.getId(), width/3, height-5);
@@ -582,20 +583,25 @@ public class PradarViewProcessingPage extends PApplet
 		if (this.entity_nahe_maus != null)
 			// Aufruf taetigen
 		{
-			String aufruf = "nedit "+this.entity_nahe_maus.getResource();
-			
-//			if (this.distanceToMouse < this.maus_toleranz_pentity)
-//			{
-//				try
-//				{
-//					java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-//				}
-//				catch (IOException e)
-//				{
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
+			if (this.distanceToMouse < this.maus_toleranz_pentity)
+			{
+				java.io.File pmbFile = new java.io.File((new java.io.File(this.entity_nahe_maus.getResource()).getParent()+"/"+this.entity_nahe_maus.getProcess()+".pmb"));
+				
+				if(pmbFile.exists())
+				{
+					String aufruf = this.parent.ini.get("apps",  "pmodel") + " -instance "+pmbFile.getAbsolutePath();
+					
+					try
+					{
+						java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+					}
+					catch (IOException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 	}
 	

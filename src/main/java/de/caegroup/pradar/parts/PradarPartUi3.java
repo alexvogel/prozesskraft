@@ -135,6 +135,8 @@ public class PradarPartUi3 extends ModelObject
 	private Frame frame_radar = null;
 	PradarViewModel einstellungen = new PradarViewModel();
 
+	public Ini ini = null;
+	
 	Entity entity_filter = new Entity();
 	
 	public ArrayList<Entity> entities_all = new ArrayList<Entity>();
@@ -376,6 +378,21 @@ public class PradarPartUi3 extends ModelObject
 		btnNewButton2.setText("autoscale");
 		new Label(composite_1, SWT.NONE);
 		btnNewButton2.addSelectionListener(listener_autoscale_button);
+
+		// Group apps
+		Group grpApps = new Group(composite_11, SWT.NONE);
+		grpApps.setText("apps");
+		GridData gd_grpApps = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_grpApps.widthHint = 152;
+		grpApps.setLayoutData(gd_grpApps);
+		grpApps.setLayout(new GridLayout(2, false));
+		
+		Button btnNewButton3 = new Button(grpApps, SWT.NONE);
+		GridData gd_btnNewButton3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd_btnNewButton3.widthHint = 141;
+		btnNewButton3.setLayoutData(gd_btnNewButton3);
+		btnNewButton3.setText("pRamp");
+		btnNewButton3.addSelectionListener(listener_pramp_button);
 
 		// tabFolder erzeugen
 		tabFolder_12 = new CTabFolder(composite_1, SWT.BORDER);
@@ -770,6 +787,29 @@ public class PradarPartUi3 extends ModelObject
 			applet_autoscale();
 		}
 	};
+
+	/**
+	 * pramp-button oeffnet die anwendung pramp-gui
+	 **/
+	SelectionAdapter listener_pramp_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			log("info", "starten von pramp");
+			String aufruf = ini.get("apps", "pramp");
+			
+			try
+			{
+				log("info", "calling: " + aufruf);
+				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	};
 	
 	SelectionAdapter listener_tabFolder_selection = new SelectionAdapter()
 	{
@@ -1106,8 +1146,6 @@ public class PradarPartUi3 extends ModelObject
 	{
 //		PradarViewProcessingPage tmp = new PradarViewProcessingPage(this);
 		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(this.getClass()) + "/" + "../etc/pradar-gui.ini");
-			
-		Ini ini;
 			
 		ArrayList<String> pradar_server_list = new ArrayList<String>();
 		ArrayList<String> license_server_list = new ArrayList<String>();
@@ -1694,9 +1732,9 @@ public class PradarPartUi3 extends ModelObject
 					Shell shell = new Shell(display);
 					shell.setText("pradar-gui "+"v[% version %]");
 
-					shell.setImage(new Image(display, "logoSymbolWhite16.png"));
+					shell.setImage(new Image(display, "logoSymbol50Transp.png"));
 					shell.setLayout(new FillLayout());
-					shell.setSize(1300, 800);
+					shell.setSize(1300, 845);
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
 					GridLayout gl_composite = new GridLayout(2, false);
 					gl_composite.marginWidth = 0;
