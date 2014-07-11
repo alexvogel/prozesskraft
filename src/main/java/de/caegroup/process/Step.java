@@ -288,7 +288,17 @@ implements Serializable, Cloneable
 		perlSnippet.add("\tif($return)");
 		perlSnippet.add("\t{");
 		perlSnippet.add("\t\t&logit(\"fatal\", \"step '"+this.getName()+"' exited with an error (exitcode=$return)\");");
-		perlSnippet.add("\t\tmy $PROCESS_STOP = scalar(localtime());");
+		perlSnippet.add("\t\t$PROCESS_STOP = scalar(localtime());");
+		perlSnippet.add("\t\t$PROCESS_STATUS = 'error';");
+		perlSnippet.add("\t\tforeach(sort keys %STEPS_TABELLE)");
+		perlSnippet.add("\t\t{");
+		perlSnippet.add("\t\t\tif($steprank < $_)");
+		perlSnippet.add("\t\t\t{");
+		perlSnippet.add("\t\t\t\t$STEPS_TABELLE{$_}{'status'} = 'cancelled';");
+		perlSnippet.add("\t\t\t}");
+		perlSnippet.add("\t\t}");
+		perlSnippet.add("\t\t&printHtmlOverview();");
+		perlSnippet.add("\t\tsystem(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (work) (exitcode=$return)\\\"\");");
 		perlSnippet.add("\t\texit(1);");
 		perlSnippet.add("\t}");
 		perlSnippet.add("\t&logit(\"info\", \"step '"+this.getName()+"' exited properly\");");
@@ -331,7 +341,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of variables with pattern (glob=$glob).\");");
 					perlSnippet.add("\t\t\t&logit(\"error\", \""+actVariable.getMinoccur()+" <= rightAmountOfVariables <= "+actVariable.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \")\");");
 					perlSnippet.add("\t\t\t&logit(\"fatal\", \"committing variable '"+actVariable.getKey()+"' failed\");");
-					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("\t\t\t$PROCESS_STOP = scalar(localtime());");
 					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (variable="+actVariable.getKey()+") not right amount of variables: "+actVariable.getMinoccur()+" <= rightAmountOfVariables <= "+actVariable.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \"\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
@@ -384,6 +394,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t&logit(\"error\", \"step '"+this.getName()+"', commit '"+actCommit.getName()+"', variable '"+actVariable.getKey()+"' needs either a value or a glob definition.\");");
 					perlSnippet.add("\t\t&logit(\"fatal\", \"committing variable '"+actVariable.getKey()+"' failed\");");
 					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("\t\t\tmy $PROCESS_STATUS = 'error';");
 					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (variable="+actVariable.getKey()+") variable needs either a value or a glob definition\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 				}
@@ -412,7 +423,16 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of files with pattern (glob=$glob).\");");
 					perlSnippet.add("\t\t\t&logit(\"error\", \""+actFile.getMinoccur()+" <= rightAmountOfFiles <= "+actFile.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \")\");");
 					perlSnippet.add("\t\t\t&logit(\"fatal\", \"committing file '"+actFile.getKey()+"' failed\");");
-					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("\t\t\t$PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("\t\t\t$PROCESS_STATUS = 'error';");
+					perlSnippet.add("\t\t\tforeach(sort keys %STEPS_TABELLE)");
+					perlSnippet.add("\t\t\t{");
+					perlSnippet.add("\t\t\t\tif($steprank < $_)");
+					perlSnippet.add("\t\t\t\t{");
+					perlSnippet.add("\t\t\t\t\t$STEPS_TABELLE{$_}{'status'} = 'cancelled';");
+					perlSnippet.add("\t\t\t\t}");
+					perlSnippet.add("\t\t\t}");
+					perlSnippet.add("\t\t&printHtmlOverview();");
 					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (file="+actFile.getKey()+") not right amount of files: "+actFile.getMinoccur()+" <= rightAmountOfFiles <= "+actFile.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \"\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
@@ -452,7 +472,16 @@ implements Serializable, Cloneable
 				{
 					perlSnippet.add("\t\t&logit(\"error\", \"------ step '"+this.getName()+"', commit '"+actCommit.getName()+"', file '"+actFile.getKey()+"' needs a glob definition.\");");
 					perlSnippet.add("\t\t&logit(\"fatal\", \"committing file '"+actFile.getKey()+"' failed\");");
-					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("\t\t\t$PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("\t\t\t$PROCESS_STATUS = 'error';");
+					perlSnippet.add("\t\t\tforeach(sort keys %STEPS_TABELLE)");
+					perlSnippet.add("\t\t\t{");
+					perlSnippet.add("\t\t\t\tif($steprank < $_)");
+					perlSnippet.add("\t\t\t\t{");
+					perlSnippet.add("\t\t\t\t\t$STEPS_TABELLE{$_}{'status'} = 'cancelled';");
+					perlSnippet.add("\t\t\t\t}");
+					perlSnippet.add("\t\t\t}");
+					perlSnippet.add("\t\t&printHtmlOverview();");
 					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (file="+actFile.getKey()+") file needs a glob definition\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 				}
