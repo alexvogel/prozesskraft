@@ -1732,7 +1732,7 @@ public class PradarPartUi3 extends ModelObject
 					Shell shell = new Shell(display);
 					shell.setText("pradar-gui "+"v[% version %]");
 
-					shell.setImage(new Image(display, "logoSymbol50Transp.png"));
+					shell.setImage(new Image(display, this.getClass().getResourceAsStream("/logoSymbol50Transp.png")));
 					shell.setLayout(new FillLayout());
 					shell.setSize(1300, 845);
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
