@@ -57,6 +57,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -1102,6 +1103,8 @@ public class PmodelPartUi1 extends ModelObject
 				{
 					Shell shell = new Shell(display);
 					shell.setText("pmodel-gui "+"v[% version %]");
+
+					shell.setImage(new Image(display, "logoSymbol50Transp.png"));
 					shell.setLayout(new FillLayout());
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
 					GridLayout gl_composite = new GridLayout(2, false);
