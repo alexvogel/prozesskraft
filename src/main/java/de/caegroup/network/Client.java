@@ -77,7 +77,7 @@ public class Client
 			{
 				Entity entity = (Entity) objectIn.readObject();
 				
-				log("info", "checking in entity id "+entity.getId());
+				log("info", "obtaining a list of entities - filtered if needed.");
 				ArrayList<String> list = this.parent.db.list(entity);
 				objectOut.writeObject(list);
 			}
