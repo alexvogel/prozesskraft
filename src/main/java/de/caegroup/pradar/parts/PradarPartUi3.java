@@ -631,6 +631,7 @@ public class PradarPartUi3 extends ModelObject
 		
 				int portNumber = Integer.parseInt(port_and_machine[0]);
 				String machineName = port_and_machine[1];
+				log("info", "want to clean database");
 				log("info", "trying pradar-server "+portNumber+"@"+machineName);
 				try
 				{
@@ -724,6 +725,7 @@ public class PradarPartUi3 extends ModelObject
 				
 						int portNumber = Integer.parseInt(port_and_machine[0]);
 						String machineName = port_and_machine[1];
+						log("info", "want to delete data from database");
 						log("info", "trying pradar-server "+portNumber+"@"+machineName);
 						try
 						{
@@ -1084,6 +1086,7 @@ public class PradarPartUi3 extends ModelObject
 	
 			int portNumber = Integer.parseInt(port_and_machine[0]);
 			String machineName = port_and_machine[1];
+			log("info", "want to load data from pradar-server");
 			log("info", "trying pradar-server "+portNumber+"@"+machineName);
 			try
 			{
@@ -1205,6 +1208,7 @@ public class PradarPartUi3 extends ModelObject
 
 			int portNumber = Integer.parseInt(port_and_machine[0]);
 			String machineName = port_and_machine[1];
+			log("info", "determining pradar-server");
 			log("info", "trying pradar-server "+portNumber+"@"+machineName);
 			try
 			{
