@@ -1100,8 +1100,8 @@ public class PradarPartUi3 extends ModelObject
 				log("info", "inputStream erstellt");
 				ObjectOutputStream objectOut = new ObjectOutputStream(out);
 				log("info", "objectOutputStream  erstellt");
-				ObjectInputStream  objectIn  = new ObjectInputStream(in);
-				log("info", "objectInputStream  erstellt");
+//				ObjectInputStream  objectIn  = new ObjectInputStream(in);
+//				log("info", "objectInputStream  erstellt");
 				
 				// Objekte zum server uebertragen
 				log("info", "write: getall");
@@ -1111,6 +1111,9 @@ public class PradarPartUi3 extends ModelObject
 				try
 				{
 					log("info", "read");
+					ObjectInputStream  objectIn  = new ObjectInputStream(in);
+					log("info", "objectInputStream  erstellt");
+
 					this.entities_all = (ArrayList<Entity>) objectIn.readObject();
 					log("info", "read finished");
 				}
