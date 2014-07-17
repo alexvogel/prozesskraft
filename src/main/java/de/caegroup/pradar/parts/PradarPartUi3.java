@@ -1091,6 +1091,7 @@ public class PradarPartUi3 extends ModelObject
 			try
 			{
 				// socket einrichten und Out/Input-Streams setzen
+				log("info", "machineName="+machineName+" | portNumber="+portNumber);
 				Socket server = new Socket(machineName, portNumber);
 				OutputStream out = server.getOutputStream();
 				InputStream in = server.getInputStream();
@@ -1098,12 +1099,15 @@ public class PradarPartUi3 extends ModelObject
 				ObjectInputStream  objectIn  = new ObjectInputStream(in);
 				
 				// Objekte zum server uebertragen
+				log("info", "write: getall");
 				objectOut.writeObject("getall");
 	
 				// Antwort vom Server lesen. (Liste bereits Druckfertig aufbereitet)
 				try
 				{
+					log("info", "read");
 					this.entities_all = (ArrayList<Entity>) objectIn.readObject();
+					log("info", "read finished");
 				}
 				catch (ClassNotFoundException e)
 				{
