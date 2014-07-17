@@ -308,14 +308,16 @@ public class List
 				ObjectInputStream  objectIn  = new ObjectInputStream(in);
 				
 				// Objekte zum server uebertragen
+				System.err.println("talking to pradar-server: give me the list of all entities.");
 				objectOut.writeObject("list");
+				System.err.println("talking to pradar-server: and optionally filter it like the entity you get from me.");
 				objectOut.writeObject(entity);
 
 				// Antwort vom Server lesen. (Liste bereits Druckfertig aufbereitet)
 				try
 				{
 					ArrayList<String> list = (ArrayList<String>) objectIn.readObject();
-					System.out.println("Anzahl der Zeilen: "+list.size());
+					System.err.println("amount of lines received from pradar-server: "+list.size());
 					Iterator<String> iterstring = list.iterator();
 					while (iterstring.hasNext())
 					{
