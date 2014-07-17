@@ -80,12 +80,14 @@ public class Client
 				log("info", "obtaining a list of entities - filtered if needed.");
 				ArrayList<String> list = this.parent.db.list(entity);
 				objectOut.writeObject(list);
+				objectOut.flush();
 			}
 			else if (type.equals("getall"))
 			{
 				log("info", "obtaining information about all entities");
 				ArrayList<Entity> allEntities = this.parent.db.getAllEntities();
 				objectOut.writeObject(allEntities);
+				objectOut.flush();
 			}
 			else if (type.equals("stop"))
 			{
