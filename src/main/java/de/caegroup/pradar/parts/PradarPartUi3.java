@@ -1106,6 +1106,7 @@ public class PradarPartUi3 extends ModelObject
 				// Objekte zum server uebertragen
 				log("info", "write: getall");
 				objectOut.writeObject("getall");
+				objectOut.flush();
 	
 				// Antwort vom Server lesen. (Liste bereits Druckfertig aufbereitet)
 				try
