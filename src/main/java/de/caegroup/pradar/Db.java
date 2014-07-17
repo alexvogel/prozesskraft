@@ -418,10 +418,10 @@ public class Db
 				System.out.println("result is empty!");
 			}
 			
-			String formatstring = "|%-14s|%-30s|%-14s|%-11s|%-6s|%-7s|%-13s|%-6s|%-13s|%-19s|%-19s|%-8s|";
+			String formatstring = "|%-14s|%-30s|%-14s|%-11s|%-7s|%-7s|%-13s|%-6s|%-13s|%-19s|%-19s|%-8s|";
 
 			ausgabe.add(String.format(formatstring, "id",             "id2",                            "parentid",       "process",     "version","user",    "host",          "active", "progress",     "checkin",             "checkout",            "exitcode"));
-			ausgabe.add(String.format(formatstring, "--------------", "------------------------------", "--------------", "-----------", "------", "-------", "-------------", "------", "------------", "-------------------", "-------------------", "--------"));
+			ausgabe.add(String.format(formatstring, "--------------", "------------------------------", "--------------", "-----------", "-------","-------", "-------------", "------", "------------", "-------------------", "-------------------", "--------"));
 
 			for(Entity actEntity : matched_entities)
 			{
