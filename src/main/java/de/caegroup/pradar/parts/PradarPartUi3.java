@@ -1093,10 +1093,15 @@ public class PradarPartUi3 extends ModelObject
 				// socket einrichten und Out/Input-Streams setzen
 				log("info", "machineName="+machineName+" | portNumber="+portNumber);
 				Socket server = new Socket(machineName, portNumber);
+				log("info", "server objekt erstellt");
 				OutputStream out = server.getOutputStream();
+				log("info", "outputStream erstellt");
 				InputStream in = server.getInputStream();
+				log("info", "inputStream erstellt");
 				ObjectOutputStream objectOut = new ObjectOutputStream(out);
+				log("info", "objectOutputStream  erstellt");
 				ObjectInputStream  objectIn  = new ObjectInputStream(in);
+				log("info", "objectInputStream  erstellt");
 				
 				// Objekte zum server uebertragen
 				log("info", "write: getall");
