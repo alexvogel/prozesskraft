@@ -17,8 +17,8 @@ public class ConcurrentServer implements Runnable
 	int port;
 	Db db = new Db();
 	String sshIdRelPath = null; 
-	ServerSocket server;
-	Thread thread;
+	ServerSocket server = null;
+	Thread thread = null;
 	
 	/*----------------------------
 	  constructors
