@@ -37,8 +37,8 @@ public class Client
 		this.parent = p;
 		out = s.getOutputStream();
 		in = s.getInputStream();
-		objectOut = new ObjectOutputStream(out);
 		objectIn  = new ObjectInputStream(in);
+		objectOut = new ObjectOutputStream(out);
 	}
 	
 	/*----------------------------
