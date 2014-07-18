@@ -1337,24 +1337,24 @@ public class PrampPartUi1 extends ModelObject
 						e.printStackTrace();
 					}
 
-					// starten des pmodel gui lokal
-					// ....
-					log ("info", "launching pmodel viewer");
-
-					String[] args_for_command2 = {"pmodel", "gui", "-instance", process.getOutfilebinary()};
-
-					ProcessBuilder pb2 = new ProcessBuilder(args_for_command2);
-					log ("info", "calling: " + StringUtils.join(args_for_command2, " "));
-					try
-					{
-						java.lang.Process p2 = pb2.start();
-						log ("debug", "hashCode="+p2.hashCode());
-					} catch (IOException e)
-					{
-						// TODO Auto-generated catch block
-						log ("error", "IOException: problems with execution");
-						e.printStackTrace();
-					}
+//					// starten des pmodel gui lokal
+//					// ....
+//					log ("info", "launching pmodel viewer");
+//
+//					String[] args_for_command2 = {"pmodel", "gui", "-instance", process.getOutfilebinary()};
+//
+//					ProcessBuilder pb2 = new ProcessBuilder(args_for_command2);
+//					log ("info", "calling: " + StringUtils.join(args_for_command2, " "));
+//					try
+//					{
+//						java.lang.Process p2 = pb2.start();
+//						log ("debug", "hashCode="+p2.hashCode());
+//					} catch (IOException e)
+//					{
+//						// TODO Auto-generated catch block
+//						log ("error", "IOException: problems with execution");
+//						e.printStackTrace();
+//					}
 
 					return true;
 
