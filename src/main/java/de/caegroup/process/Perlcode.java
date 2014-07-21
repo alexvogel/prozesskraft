@@ -194,7 +194,7 @@ public class Perlcode
 			{
 				System.err.println(actLine);
 			}
-			exiter();
+			System.exit(1);
 		}
 		else
 		{
