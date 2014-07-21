@@ -48,7 +48,7 @@ public class MyLicense {
 			e.printStackTrace();
 		}
 
-		this.license = LicenseValidator.validate(publicKey, productId, productEdition, "0.1", null, null, inetAddressHost, port, null, null, null);
+		this.license = LicenseValidator.validate(publicKey, "1", productEdition, "0.1", null, null, inetAddressHost, port, null, null, null);
 
 	}
 
