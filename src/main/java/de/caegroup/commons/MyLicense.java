@@ -37,6 +37,7 @@ public class MyLicense {
 	public MyLicense(int port, String host, String productEdition)
 	{
 		this.port = port;
+		this.host = host;
 		this.productEdition = productEdition;
 		try {
 			inetAddressHost = InetAddress.getByName(host);
