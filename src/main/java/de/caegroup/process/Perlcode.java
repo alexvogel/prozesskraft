@@ -1,5 +1,6 @@
 package de.caegroup.process;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,6 +24,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.ini4j.Ini;
+import org.ini4j.InvalidFileFormatException;
 
 import de.caegroup.commons.*;
 
@@ -38,6 +41,7 @@ public class Perlcode
 	static String author = "alexander.vogel@caegroup.de";
 	static String version = "[% version %]";
 	static String date = "[% date %]";
+	static Ini ini;
 	
 	/*----------------------------
 	  constructors
@@ -58,6 +62,34 @@ public class Perlcode
 //		{
 //			System.out.println("***ArrayIndexOutOfBoundsException: Please specify processdefinition.xml, openoffice_template.od*, newfile_for_processdefinitions.odt\n" + e.toString());
 //		}
+		
+		/*----------------------------
+		  get options from ini-file
+		----------------------------*/
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Perlcode.class) + "/" + "../etc/process-perlcode.ini");
+
+		if (inifile.exists())
+		{
+			try
+			{
+				ini = new Ini(inifile);
+			}
+			catch (InvalidFileFormatException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			catch (IOException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		else
+		{
+			System.err.println("ini file does not exist: "+inifile.getAbsolutePath());
+			System.exit(1);
+		}
 		
 		/*----------------------------
 		  create boolean options
@@ -145,6 +177,31 @@ public class Perlcode
 		{
 			System.err.println("option -output is mandatory.");
 			exiter();
+		}
+		
+		/*----------------------------
+		  die lizenz ueberpruefen und ggf abbrechen
+		----------------------------*/
+
+		// check for valid license
+		String portAtHost = ini.get("license-server", "license-server-1");
+		String[] port_and_host = portAtHost.split("@");
+		
+		MyLicense lic = new MyLicense(Integer.parseInt(port_and_host[0]), port_and_host[1], "basic-edition");
+		if (!lic.isValid())
+		{
+			for(String actLine : lic.getLog())
+			{
+				System.err.println(actLine);
+			}
+			exiter();
+		}
+		else
+		{
+			for(String actLine : lic.getLog())
+			{
+				System.err.println(actLine);
+			}
 		}
 		
 		/*----------------------------
