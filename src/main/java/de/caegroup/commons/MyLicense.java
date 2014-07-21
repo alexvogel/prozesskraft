@@ -62,6 +62,7 @@ public class MyLicense {
 		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"port@host      : "+port+"@"+host);
 		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-id     : "+productId);
 		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-edition: "+productEdition);
+		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-version: "+productVersion);
 	}
 
 	/*----------------------------
