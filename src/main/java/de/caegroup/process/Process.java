@@ -181,6 +181,44 @@ implements Serializable
 		return true;
 	}
 
+	
+	/**
+	 * generates a ArrayList that represents a graph in the format 'dot'
+	 * @return ArrayList<String>
+	 */
+	public ArrayList<String> getProcessAsDotGraph()
+	{
+		ArrayList<String> dot = new ArrayList<String>();
+	
+		dot.add("digraph \""+this.getName()+"\" {");
+		
+		// alle bestehenden steps deklarieren
+		for(Step actStep : this.getStep())
+		{
+			dot.add(actStep.getName() + ";");
+		}
+		
+		// fuer jeden step die beziehung der fromsteps auffuehren
+		for(Step actStep : this.getStep())
+		{
+			ArrayList<String> fromstep = new ArrayList<String>();
+			for(Init actInit : actStep.getInit())
+			{
+				fromstep.add(actInit.getFromstep());
+			}
+			
+			for(String actFromstep : fromstep)
+			{
+				dot.add(actFromstep + " -> " + actStep.getName());
+			}
+		}
+		
+		dot.add("}");
+
+		return dot;
+	}
+	
+	
 	/**
 	 * generates a new process as a wrapper-process to this
 	 * this means:
@@ -191,6 +229,8 @@ implements Serializable
 	 * b) all root/commits are translated to step/inits in step 'processname'
 	 * c) all callitems are the same as meant in root
 	 * d) all commits are the same as in all old steps 'toroot'
+	 * e) the new inits with fromobjecttype=file of the generated step 'processname' will have definition returnfield="absfilename"
+	 * f) the new inits with fromobjecttype=variable of the generated step 'processname' will have definition returnfield="value"
 	 * @return Process
 	 */
 	public Process getProcessAsWrapper()
@@ -207,10 +247,13 @@ implements Serializable
 		// kopieren des root-steps und dem wrapperProcess hinzufuegen
 		wrapperProcess.addStep(this.getStep(this.getRootstepname()).clone());
 		
-		// erstellen eines steps mit dem namen vom prozess und dem wrapperProcess hinzufuegen
+		// erstellen eines steps mit dem namen des prozesses und dem wrapperProcess hinzufuegen
 //		Step wrapStep = new Step(this.getName());
-		wrapperProcess.addStep(new Step(this.getName()));
-		
+//		wrapperProcess.addStep(new Step(this.getName()));
+		Step step = new Step(this.getName());
+		step.setDescription(this.getDescription());
+		wrapperProcess.addStep(step);
+
 		// jeden commit aus 'root' durchgehen und daraus alle inits erzeugen
 		for(Commit actCommit : wrapperProcess.getStep(this.getRootstepname()).getCommit())
 		{
@@ -231,6 +274,7 @@ implements Serializable
 				init.setListname(actVariable.getKey());
 				init.setDescription(actVariable.getDescription());
 				init.setFromobjecttype("variable");
+				init.setReturnfield("value");
 				init.setFromstep(this.getRootstepname());
 				init.setInsertrule("overwrite");
 				init.setMinoccur(actVariable.getMinoccur());
@@ -255,6 +299,7 @@ implements Serializable
 				init.setListname(actFile.getKey());
 				init.setDescription(actFile.getDescription());
 				init.setFromobjecttype("file");
+				init.setReturnfield("absfilename");
 				init.setFromstep(this.getRootstepname());
 				init.setInsertrule("overwrite");
 				init.setMinoccur(actFile.getMinoccur());
@@ -270,12 +315,42 @@ implements Serializable
 				// den init dem wrapStep hinzufuegen
 				wrapperProcess.getStep(this.getName()).addInit(init);
 			}
+			
 		}
 		
+		// und einen zusaetzlichen init fuer das directory des steps root
+		// das wird fuer den parameter --instancedir benoetigt (ein standard parameter fuer prozesse, die zu perl konvertiert wurden)
+		Init init = new Init();
+		init.setListname("instancedir");
+		init.setDescription("Verzeichnis des steps root");
+		init.setFromobjecttype("variable");
+		init.setReturnfield("value");
+		init.setFromstep(this.getRootstepname());
+		init.setInsertrule("overwrite");
+		init.setMinoccur(1);
+		init.setMaxoccur(1);
+		
+		Match match = new Match();
+		match.setField("key");
+		match.setPattern("dir");
+		
+		// den match zum neuen init hinzufuegen
+		init.addMatch(match);
+		
+		// den init dem wrapStep hinzufuegen
+		wrapperProcess.getStep(this.getName()).addInit(init);
+
 		// ein work element erstellen und fuer jedes init ein callitem generieren
 		Work work = new Work();
 		work.setCommand(this.getName());
 
+		// als erstes callitem den bmw-spezifischen aufruf --version erstellen
+		Callitem callitemVersion = new Callitem();
+		callitemVersion.setPar("--version");
+		callitemVersion.setDel("=");
+		callitemVersion.setVal(this.getVersion());
+		work.addCallitem(callitemVersion);
+		
 		// fuer jedes init ein callitem
 		for(Init actInit : wrapperProcess.getStep(this.getName()).getInit())
 		{
@@ -313,13 +388,59 @@ implements Serializable
 	{
 		Script script = new Script();
 		script.setType("process");
+		script.setName(this.getName());
 		script.meta.setVersion(this.getVersion());
 		script.genContent();
 		
-		// abpruefen ob die aufzurufenden programme aller steps verfuegbar sind
-		// falls nein - abbrechen
+		// hinzufuegen des prozess meta infos
+		script.business.addCode("# metadata from the processmodel");
+		script.business.addCode("my $PROCESS_NAME = '" + this.getName() + "';");
+		script.business.addCode("my $PROCESS_DESCRIPTION = \"" + this.getDescription() + "\";");
+		script.business.addCode("my $PROCESS_ARCHITECTNAME = '" + this.getArchitectName() + "';");
+		script.business.addCode("my $PROCESS_ARCHITECTMAIL = '" + this.getArchitectMail() + "';");
+		script.business.addCode("my $PROCESS_CUSTOMERNAME = '" + this.getCustomerName() + "';");
+		script.business.addCode("my $PROCESS_CUSTOMERMAIL = '" + this.getCustomerMail() + "';");
+		script.business.addCode("my $PROCESS_CUSTOMERCOMPANY = '" + this.getCustomerCompany() + "';");
+		script.business.addCode("my $PROCESS_PATH = '" + this.getPath() + "';");
+		script.business.addCode("");
+		script.business.addCode("# temporaere prozessdaten");
+		script.business.addCode("my $PROCESS_STATUS = 'running';");
+		script.business.addCode("my $PROCESS_START = scalar(localtime());");
+		script.business.addCode("my $PROCESS_STOP = '';");
+		script.business.addCode("my @PROCESS_LOGGING;");
+		script.business.addCode("");
+
+		script.business.addCode("#-------------------");
+		script.business.addCode("# checkin pradar");
+		script.business.addCode("system(\"pradar checkin -process "+this.getName()+" -id $id -id2 "+this.getName()+" -resource \" . getOption('instancedir') . '/README.html' . \" -pversion $version\");");
+		script.business.addCode("system(\"pradar progress -process "+this.getName()+" -id $id -completed 0 -stepcount "+(this.getStep().size() - 1)+"\");");
+		script.business.addCode("#-------------------");
 		
 		
+		// anlegen der step-tabelle
+		script.business.addCode("#-------------------");
+		script.business.addCode("# anlegen der step-tabelle");
+		script.business.addCode("my %STEPS_TABELLE = (");
+
+		// setzen der Ranks aller vorhandenen Steps
+		this.setStepRanks();
+		
+		for(Step actStep : this.getStep())
+		{
+			if(!(actStep.getName().matches("^root$")))
+			{
+				script.business.addCode("			'"+actStep.getRank()+"' => {'rang' => '"+actStep.getRank()+"', 'stepnamen' => '"+actStep.getName()+"', 'beschreibung' => \""+actStep.getDescription()+"\", 'aufruf' => '', 'dir' => '', 'status' => 'waiting', 'log' => ''},");
+			}
+		}
+		
+		script.business.addCode(");");
+		script.business.addCode("");
+		
+		script.business.addCode("#-------------------");
+		script.business.addCode("# initiale ausgabe des html");
+		script.business.addCode("&printHtmlOverview();");
+		script.business.addCode("#-------------------");
+		script.business.addCode("");
 		
 		// script-OPTIONS generieren aus den commit-objekten des root-steps
 		Step rootStep = this.getStep(this.getRootstepname());
@@ -443,6 +564,18 @@ implements Serializable
 			}
 		}
 
+		script.business.addCode("#-------------------");
+		script.business.addCode("# checkout pradar");
+		script.business.addCode("system(\"pradar checkout -process "+this.getName()+" -id $id -exitcode 0\");");
+		script.business.addCode("#-------------------");
+		
+		// ist der prozess bis hier gelaufen, dann ist wohl alles i.o.
+		script.business.addCode("");
+		script.business.addCode("$PROCESS_STATUS = 'exit=0';");
+		script.business.addCode("$PROCESS_STOP = scalar(localtime());");
+		script.business.addCode("&printHtmlOverview();");
+		script.business.addCode("");
+		
 		return script.getAll();
 	}
 	
@@ -567,7 +700,6 @@ implements Serializable
 					atts.clear();
 					atts.addAttribute("", "", "name", "CDATA", work.getName());
 					atts.addAttribute("", "", "loop", "CDATA", work.getLoop());
-					atts.addAttribute("", "", "loopvar", "CDATA", work.getLoopvar());
 					atts.addAttribute("", "", "description", "CDATA", work.getDescription());
 					atts.addAttribute("", "", "command", "CDATA", work.getCommand());
 					
@@ -706,6 +838,15 @@ implements Serializable
 			// die jaxb-klassen mit den domain-klassen mappen
 //			System.out.println("processName3: "+this.getName());
 			
+			// ueberpruefen ob der process consistent ist
+//			if(this.isProcessConsistent())
+//			{
+//				this.log("info", "check process consistency successfull.");
+//			}
+//			else
+//			{
+//				this.log("info", "check process consistency NOT successfull.");
+//			}
 		}
 		catch (javax.xml.bind.UnmarshalException e)
 		{
@@ -866,7 +1007,6 @@ implements Serializable
 									// Eintragen der gelesenen Daten in die Objektinstanz
 									work.setName(workname);
 									work.setLoop(workloop);
-									work.setLoopvar(workloopvar);
 									work.setDescription(workdescription);
 									work.setCommand(workcommand);
 	
@@ -1133,7 +1273,7 @@ implements Serializable
 			{
 				newstatus = "waiting";
 			}
-			else if ((step.getStatus().matches("initializing|initialized|fanning|fanned|committing|comitted|working|worked")) && (!(newstatus.equals("error"))))
+			else if ((step.getStatus().matches("initializing|initialized|initialization failed|fanning|fanned|committing|comitted|working|worked")) && (!(newstatus.equals("error"))))
 			{
 				newstatus = "working";
 			}

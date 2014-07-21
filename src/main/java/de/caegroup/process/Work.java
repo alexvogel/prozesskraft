@@ -2,6 +2,7 @@ package de.caegroup.process;
 
 import java.io.*;
 import java.util.*;
+
 import org.apache.solr.common.util.NamedList;
 
 import de.caegroup.process.Callitem;
@@ -21,9 +22,8 @@ implements Serializable
 	private String logfile = "";
 	private ArrayList<Callitem> callitem = new ArrayList<Callitem>();
 	private ArrayList<Exit> exit = new ArrayList<Exit>();
-	private String loop = new String();
-	private String loopvar = new String();
-	
+	private String loop = null;
+
 	private String status = new String();	// waiting/initializing/working/committing/ finished/broken/cancelled
 	private int exitvalue;
 	public Step parent;
@@ -47,31 +47,66 @@ implements Serializable
 	{
 		callitem.setParent(this);
 		this.callitem.add(callitem);
-		
+
 	}
-	
+
+	/**
+	 * removeCallitem
+	 * remove a certain callitem from this
+	 */
+	public void removeCallitem(Callitem callitem)
+	{
+		ArrayList<Callitem> cleanedCallitem = new ArrayList<Callitem>();
+		for(Callitem actCallitem : this.getCallitem())
+		{
+			if(!(actCallitem.equals(callitem)))
+			{
+				cleanedCallitem.add(actCallitem);
+			}
+		}
+
+		this.callitem = cleanedCallitem;
+	}
 
 	/*----------------------------
 	  methods virtual get
 	----------------------------*/
 	public String getCall()
 	{
-		ArrayList<Callitem> callitems = this.getCallitemssorted();
-		
-		StringBuffer callbuffer = new StringBuffer(this.command);
-	
-		Iterator<Callitem> itercallitem = callitems.iterator();
-		while (itercallitem.hasNext())
+//		this.parent.log("debug", "constructing call");
+		String call = this.command;
+		this.parent.log("debug", "constructing call a): "+call);
+
+		this.parent.log("debug", "there are "+this.getCallitem().size()+" unresolved callitems in this 'work'");
+
+		// resolven aller callitems
+		for(Callitem actCallitem : this.getCallitemssorted())
 		{
-			Callitem callitem = itercallitem.next();
-			callbuffer.append(" ");
-			callbuffer.append(callitem.getRespar());
-			callbuffer.append(callitem.getResdel());
-			callbuffer.append(callitem.getResval());
+			for(Callitem actResolvedCallitem : actCallitem.resolveCallitem())
+			{
+				call = call + " ";
+				call = call + actResolvedCallitem.getPar();
+				call = call + actResolvedCallitem.getDel();
+				call = call + actResolvedCallitem.getVal();
+				this.parent.log("debug", "constructing call b): "+call);
+			}
 		}
-		return callbuffer.toString();
+		
+		this.parent.log("debug", "constructing call");
+		return call;
 	}
 	
+	/**
+	 * sets the parent of all dependents to this instance
+	 */
+	public void affiliate()
+	{
+		for(Callitem actualCallitem : this.getCallitem())
+		{
+			actualCallitem.setParent(this);
+		}
+	}
+
 	/*----------------------------
 	  methods get
 	----------------------------*/
@@ -115,39 +150,37 @@ implements Serializable
 		return this.callitem.get(index);
 	}
 	
+	/**
+	 * getCallitemssorted
+	 * returns all callitems of this sorted by the field 'sequence'
+	 * @return ArrayList<Callitem>
+	 */
 	public ArrayList<Callitem> getCallitemssorted()
 	{
 		ArrayList<Integer> sequences = new ArrayList<Integer>();
 		
 		// aus den vorhandenen callitems die sequences in ein eigenes array extrahieren
-		Iterator<Callitem> itercallitem = this.callitem.iterator();
-		while (itercallitem.hasNext())
+		for(Callitem actCallitem : this.callitem)
 		{
-			Callitem callitem = itercallitem.next();
-			sequences.add(callitem.getSequence());
+			sequences.add(actCallitem.getSequence());
 		}
 
 		// das sequences-array sortieren
 		Collections.sort(sequences);
-		
+
 		// ueber das sortierte sequences-array iterieren
 		ArrayList<Callitem> callitems_sorted = new ArrayList<Callitem>();
-		Iterator<Integer> itersequences = sequences.iterator();
-		while (itersequences.hasNext())
+		for(Integer actSequence : sequences)
 		{
-			int sequence = itersequences.next();
 			// und das zugehoerige callitem rausfischen
-			Iterator<Callitem> itercallitem2 = this.callitem.iterator();
-			while (itercallitem2.hasNext())
+			for(Callitem actCallitem : this.getCallitem())
 			{
-				Callitem callitem = itercallitem2.next();
-				if (callitem.getSequence() == sequence)
+				if (actCallitem.getSequence() == actSequence)
 				{
-					callitems_sorted.add(callitem);
+					callitems_sorted.add(actCallitem);
 				}
 			}
 		}
-		
 		return callitems_sorted;
 	}
 	
@@ -171,11 +204,6 @@ implements Serializable
 		return this.loop;
 	}
 	
-	public String getLoopvar()
-	{
-		return this.loopvar;
-	}
-
 	public String getStatus()
 	{
 		return this.status;
@@ -229,11 +257,6 @@ implements Serializable
 		this.loop = loop;
 	}
 	
-	public void setLoopvar(String loopvar)
-	{
-		this.loopvar = loopvar;
-	}
-
 	public void setStatus(String status)
 	{
 		this.status = status;

@@ -192,8 +192,89 @@ public class TestProcess {
 		assertEquals("2", callitem1.getSequence().toString());
 		assertEquals("--matdb", callitem1.getPar());
 		assertEquals("=", callitem1.getDel());
-		assertEquals("$matdb", callitem1.getVal());
+		assertEquals("{$matdb}", callitem1.getVal());
+		
 	}
 
+	@Test
+	public void resolveCall()
+	{
+		String pathToXml = "src/test/resources/beulen.xml";
+		process.setInfilexml(pathToXml);
+		java.io.File file = new java.io.File(pathToXml);
 
+		try
+		{
+			process.readXml();
+		} catch (JAXBException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		assertEquals("starte_prozesskette", process.getStep("beulen").getWork().getName());
+		assertEquals(7, process.getStep("beulen").getWork().getCallitem().size());
+
+		// erstellen der listen mit testdaten
+		List listArea = new List();
+		listArea.setName("area");
+		listArea.addItem("area_3");
+		process.getStep("beulen").addList(listArea);
+
+		List listBasename = new List();
+		listBasename.setName("basename");
+		listBasename.addItem("F30_SuperWagon");
+		process.getStep("beulen").addList(listBasename);
+
+		List listMatdb = new List();
+		listMatdb.setName("matdb");
+		listMatdb.addItem("/irgendein/pfad/ins/nirgendwo.db");
+		process.getStep("beulen").addList(listMatdb);
+
+		List listNid = new List();
+		listNid.setName("nid");
+		listNid.addItem("777263");
+		process.getStep("beulen").addList(listNid);
+
+		List listForce = new List();
+		listForce.setName("force");
+		listForce.addItem("150");
+		process.getStep("beulen").addList(listForce);
+
+		List listParttype = new List();
+		listParttype.setName("parttype");
+		listParttype.addItem("fkl");
+		process.getStep("beulen").addList(listParttype);
+
+		List listInc = new List();
+		listInc.setName("inc");
+		listInc.addItem("/my/pyth/toInclude.inc");
+		listInc.addItem("/my/pyth/toInclude2.inc");
+		process.getStep("beulen").addList(listInc);
+
+		assertEquals("area", process.getStep("beulen").getList("area").getName());
+		assertEquals(1, process.getStep("beulen").getList("area").getItem().size());
+		assertEquals("area_3", process.getStep("beulen").getList("area").getItem().get(0));
+
+		System.out.println("Step beulen - the name of the work-phase is: "+process.getStep("beulen").getWork().getName());
+		
+		for(Callitem actCallitem : process.getStep("beulen").getWork().getCallitem())
+		{
+			System.out.println("unresolved callitem with sequence="+actCallitem.getSequence() + " | par=" + actCallitem.getPar()+ " | del=" + actCallitem.getDel()+ " | val=" + actCallitem.getVal());
+		}
+		
+
+		for(Callitem actCallitem : process.getStep("beulen").getWork().getCallitem())
+		{
+			for(Callitem actResolvedCallitem : actCallitem.resolveCallitem())
+			{
+				System.out.println("resolved callitem with sequence="+actResolvedCallitem.getSequence() + " | par=" + actResolvedCallitem.getPar()+ " | del=" + actResolvedCallitem.getDel()+ " | val=" + actResolvedCallitem.getVal());
+			}
+		}
+
+		// testen des erzeugen des aufrufstrings
+		String call = process.getStep("beulen").getWork().getCall();
+		System.out.println(call);
+
+	}
 }

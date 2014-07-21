@@ -10,6 +10,7 @@ import de.caegroup.process.Commit;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.rits.cloning.Cloner;
 
@@ -123,6 +124,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("if (!($COMMAND{'" + this.getName() + "'} = &commandResolve(\"" + this.getWork().getCommand() + "\")))");
 		perlSnippet.add("{");
 		perlSnippet.add("	&logit(\"fatal\", \"cannot determine what program to call for step '" + this.getName() + "'. " + this.getWork().getCommand() + " neither found in <installdir>/bin nor by calling 'which'.\");");
+		perlSnippet.add("	my $PROCESS_STOP = scalar(localtime());");
 		perlSnippet.add("	exit(1);");
 		perlSnippet.add("}");
 		perlSnippet.add("");
@@ -147,6 +149,8 @@ implements Serializable, Cloneable
 		perlSnippet.add(this.getName() + ":");
 		perlSnippet.add("{");
 		perlSnippet.add("\tmy $stepname = \""+this.getName()+"\";");
+		perlSnippet.add("\tmy $stepdescription = \""+this.getDescription()+"\";");
+		perlSnippet.add("\tmy $steprank = \""+this.getRank()+"\";");
 		perlSnippet.add("\t&girlande_stepstart($stepname);");
 		perlSnippet.add("");
 		perlSnippet.add("\tmy %allLists;");
@@ -247,26 +251,54 @@ implements Serializable, Cloneable
 		
 		// directory fuer den step anlegen
 		perlSnippet.add("\t# create step-owned directory");
+		perlSnippet.add("\tmy $stepdir = \"dir4step_"+this.getName()+"\";");
 		perlSnippet.add("\tmy $pwd = cwd();");
+		perlSnippet.add("\tmy $steppathdir = $pwd . \"/\" . \"dir4step_"+this.getName()+"\";");
 		perlSnippet.add("\t&logit(\"debug\", \"create directory for actual step '"+this.getName()+"': 'dir4step_"+this.getName()+"'\");");
-		perlSnippet.add("\tmkdir($pwd . \"/\" . \"dir4step_"+this.getName()+"\");");
+		perlSnippet.add("\tmkdir($steppathdir);");
 		perlSnippet.add("");
 
 		// in das step-verzeichnis wechseln
 		perlSnippet.add("\t# change into step-owned directory");
 		perlSnippet.add("\t&logit(\"debug\", \"changing into step-directory: 'dir4step_"+this.getName()+"'\");");
-		perlSnippet.add("\tchdir($pwd . \"/\" . \"dir4step_"+this.getName()+"\");");
+		perlSnippet.add("\tchdir($steppathdir);");
 		perlSnippet.add("");
 		
 		// executieren des calls
 		perlSnippet.add("\t# execute the call");
 		perlSnippet.add("\t&logit(\"info\", \"executing program for step '"+this.getName()+"': $call\");");
 		perlSnippet.add("\t&logit(\"info\", \">>>>>>>>>> subsequent logging comes from step '"+this.getName()+"' >>>>>>>>>>\");");
-		perlSnippet.add("\tmy $return = system(\"($call | tee stdout.log) 3>&1 1>&2 2>&3 | tee stderr.log\");");
+		perlSnippet.add("");
+		perlSnippet.add("\t# aktualisieren der steptabelle im html");
+		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'aufruf'} = \"$call\";");
+		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'dir'} = \"<a href=\\\"./$stepdir\\\" target=\\\"_blank\\\">$stepdir</a>\";");
+		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'status'} = 'running';");
+		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'log'} = \"<a href=\\\"./$stepdir/stdout.log\\\">stdout.log</a> <a href=\\\"./$stepdir/stderr.log\\\">stderr.log</a>\";");
+		perlSnippet.add("\t&printHtmlOverview();");
+		perlSnippet.add("");
+
+		perlSnippet.add("\tmy $return = system(\"set -o pipefail; ($call | tee stdout.log) 3>&1 1>&2 2>&3 | tee stderr.log\");");
+		perlSnippet.add("");
+		perlSnippet.add("\t# aktualisieren der steptabelle im html");
+		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'status'} = \"exit=$return\";");
+		perlSnippet.add("\t&printHtmlOverview();");
+		perlSnippet.add("");
+
 		perlSnippet.add("\t&logit(\"info\", \"<<<<<<<<<< previous logging came from step '"+this.getName()+"' <<<<<<<<<<\");");
 		perlSnippet.add("\tif($return)");
 		perlSnippet.add("\t{");
 		perlSnippet.add("\t\t&logit(\"fatal\", \"step '"+this.getName()+"' exited with an error (exitcode=$return)\");");
+		perlSnippet.add("\t\t$PROCESS_STOP = scalar(localtime());");
+		perlSnippet.add("\t\t$PROCESS_STATUS = 'error';");
+		perlSnippet.add("\t\tforeach(sort keys %STEPS_TABELLE)");
+		perlSnippet.add("\t\t{");
+		perlSnippet.add("\t\t\tif($steprank < $_)");
+		perlSnippet.add("\t\t\t{");
+		perlSnippet.add("\t\t\t\t$STEPS_TABELLE{$_}{'status'} = 'cancelled';");
+		perlSnippet.add("\t\t\t}");
+		perlSnippet.add("\t\t}");
+		perlSnippet.add("\t\t&printHtmlOverview();");
+		perlSnippet.add("\t\tsystem(\"pradar checkout -process "+this.getParent().getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (work) (exitcode=$return)\\\"\");");
 		perlSnippet.add("\t\texit(1);");
 		perlSnippet.add("\t}");
 		perlSnippet.add("\t&logit(\"info\", \"step '"+this.getName()+"' exited properly\");");
@@ -307,8 +339,10 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\tif((@globbedFiles < "+actVariable.getMinoccur()+") || (@globbedFiles > "+actVariable.getMaxoccur()+"))");
 					perlSnippet.add("\t\t{");
 					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of variables with pattern (glob=$glob).\");");
-					perlSnippet.add("\t\t\t&logit(\"error\", \""+actVariable.getMinoccur()+" <= rightAmountOfFiles <= "+actVariable.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \")\");");
+					perlSnippet.add("\t\t\t&logit(\"error\", \""+actVariable.getMinoccur()+" <= rightAmountOfVariables <= "+actVariable.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \")\");");
 					perlSnippet.add("\t\t\t&logit(\"fatal\", \"committing variable '"+actVariable.getKey()+"' failed\");");
+					perlSnippet.add("\t\t\t$PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getParent().getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (variable="+actVariable.getKey()+") not right amount of variables: "+actVariable.getMinoccur()+" <= rightAmountOfVariables <= "+actVariable.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \"\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("\t\tmy @variableList;");
@@ -345,8 +379,13 @@ implements Serializable, Cloneable
 					if(actCommit.getToroot())
 					{
 						perlSnippet.add("");
-						perlSnippet.add("\t\t# toroot = true");
-						perlSnippet.add("\t\tpush (@{$VARIABLE{'root'}}, [\""+actVariable.getKey()+"\", $tmp]);");
+						perlSnippet.add("\t\t\t# toroot = true");
+						perlSnippet.add("\t\t\tpush (@{$VARIABLE{'root'}}, [\""+actVariable.getKey()+"\", $tmp]);");
+						perlSnippet.add("");
+						perlSnippet.add("\t\t\t# toroot = true, deshalb auch in die tabelle des htmls mit aufnehemen");
+						perlSnippet.add("\t\t\tmy @outputRowForHtml = ($stepname, 'wert', '"+actVariable.getKey()+"', \""+actVariable.getDescription()+"\", \"$tmp\");");
+						perlSnippet.add("\t\t\tpush(@OUTPUT_TABELLE, \\@outputRowForHtml);");
+						perlSnippet.add("\t\t\t&printHtmlOverview();");
 					}
 					perlSnippet.add("\t\t}");
 				}
@@ -354,6 +393,9 @@ implements Serializable, Cloneable
 				{
 					perlSnippet.add("\t\t&logit(\"error\", \"step '"+this.getName()+"', commit '"+actCommit.getName()+"', variable '"+actVariable.getKey()+"' needs either a value or a glob definition.\");");
 					perlSnippet.add("\t\t&logit(\"fatal\", \"committing variable '"+actVariable.getKey()+"' failed\");");
+					perlSnippet.add("\t\t\tmy $PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("\t\t\tmy $PROCESS_STATUS = 'error';");
+					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getParent().getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (variable="+actVariable.getKey()+") variable needs either a value or a glob definition\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 				}
 				perlSnippet.add("\t}");
@@ -378,9 +420,20 @@ implements Serializable, Cloneable
 					perlSnippet.add("");
 					perlSnippet.add("\t\tif((@globbedFiles < "+actFile.getMinoccur()+") || (@globbedFiles > "+actFile.getMaxoccur()+"))");
 					perlSnippet.add("\t\t{");
-					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of variables with pattern (glob=$glob).\");");
+					perlSnippet.add("\t\t\t&logit(\"debug\", \"------ step '"+this.getName()+"' did not produce the right amount of files with pattern (glob=$glob).\");");
 					perlSnippet.add("\t\t\t&logit(\"error\", \""+actFile.getMinoccur()+" <= rightAmountOfFiles <= "+actFile.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \")\");");
 					perlSnippet.add("\t\t\t&logit(\"fatal\", \"committing file '"+actFile.getKey()+"' failed\");");
+					perlSnippet.add("\t\t\t$PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("\t\t\t$PROCESS_STATUS = 'error';");
+					perlSnippet.add("\t\t\tforeach(sort keys %STEPS_TABELLE)");
+					perlSnippet.add("\t\t\t{");
+					perlSnippet.add("\t\t\t\tif($steprank < $_)");
+					perlSnippet.add("\t\t\t\t{");
+					perlSnippet.add("\t\t\t\t\t$STEPS_TABELLE{$_}{'status'} = 'cancelled';");
+					perlSnippet.add("\t\t\t\t}");
+					perlSnippet.add("\t\t\t}");
+					perlSnippet.add("\t\t&printHtmlOverview();");
+					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getParent().getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (file="+actFile.getKey()+") not right amount of files: "+actFile.getMinoccur()+" <= rightAmountOfFiles <= "+actFile.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \"\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
 					perlSnippet.add("\t\tmy @fileList;");
@@ -404,15 +457,32 @@ implements Serializable, Cloneable
 						perlSnippet.add("\t\t\t# toroot = true");
 						perlSnippet.add("\t\t\tpush (@{$FILE{'root'}}, [\""+actFile.getKey()+"\", $tmp]);");
 						perlSnippet.add("\t\t\t&logit(\"info\", \"toroot: cp $tmp $pwd\");");
-						perlSnippet.add("\t\tcopy($tmp, $pwd);");
+						perlSnippet.add("\t\t\tcopy($tmp, $pwd);");
+						perlSnippet.add("");
+						perlSnippet.add("\t\t\t# toroot = true, deshalb auch in die tabelle des htmls mit aufnehemen");
+						perlSnippet.add("\t\t\t(my $filename, my $dirs, my $suf) = fileparse($tmp);");
+						perlSnippet.add("\t\t\tmy @outputRowForHtml = ($stepname, 'datei', '"+actFile.getKey()+"', \""+actFile.getDescription()+"\", \"<a href=\\\"\" . File::Spec->abs2rel($tmp) . \"\\\">$filename</a>\");");
+						perlSnippet.add("\t\t\tpush(@OUTPUT_TABELLE, \\@outputRowForHtml);");
+						perlSnippet.add("\t\t\t&printHtmlOverview();");
 					}
-					perlSnippet.add("\t}");
+					perlSnippet.add("\t\t}");
 					
 				}
 				else
 				{
 					perlSnippet.add("\t\t&logit(\"error\", \"------ step '"+this.getName()+"', commit '"+actCommit.getName()+"', file '"+actFile.getKey()+"' needs a glob definition.\");");
-					perlSnippet.add("\t\t&logit(\"fatal\", \"committing variable '"+actFile.getKey()+"' failed\");");
+					perlSnippet.add("\t\t&logit(\"fatal\", \"committing file '"+actFile.getKey()+"' failed\");");
+					perlSnippet.add("\t\t\t$PROCESS_STOP = scalar(localtime());");
+					perlSnippet.add("\t\t\t$PROCESS_STATUS = 'error';");
+					perlSnippet.add("\t\t\tforeach(sort keys %STEPS_TABELLE)");
+					perlSnippet.add("\t\t\t{");
+					perlSnippet.add("\t\t\t\tif($steprank < $_)");
+					perlSnippet.add("\t\t\t\t{");
+					perlSnippet.add("\t\t\t\t\t$STEPS_TABELLE{$_}{'status'} = 'cancelled';");
+					perlSnippet.add("\t\t\t\t}");
+					perlSnippet.add("\t\t\t}");
+					perlSnippet.add("\t\t&printHtmlOverview();");
+					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getParent().getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (file="+actFile.getKey()+") file needs a glob definition\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 				}
 				perlSnippet.add("\t}");
@@ -428,6 +498,13 @@ implements Serializable, Cloneable
 		perlSnippet.add("\t&girlande_stepend($stepname);");
 		
 		perlSnippet.add("}");
+
+		perlSnippet.add("#-------------------");
+		perlSnippet.add("# pradar progress");
+		perlSnippet.add("system(\"pradar progress -process "+this.getParent().getName()+" -id $id -completed \" . ++$stepsCompleted);");
+		perlSnippet.add("#-------------------");
+
+		
 		return perlSnippet;		
 	}
 	
@@ -611,6 +688,7 @@ implements Serializable, Cloneable
 			return false;
 		}
 		
+		this.getList().clear();
 		this.setStatus("initializing");
 		log("info", "setting status to 'initializing'");
 		boolean initializing_success = true;
@@ -649,8 +727,13 @@ implements Serializable, Cloneable
 							}
 						}
 					}
-					// wenn die fileliste leer ist, dann ist initialisierung fehlgeschlagen
-					if (files_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
+
+					// feststellen ob die gewuenschte anzahl der variablen gematched hat
+					if( (files_from_fromstep_which_matched.size() < actualInit.getMinoccur()) || (files_from_fromstep_which_matched.size() > actualInit.getMaxoccur()) )
+					{
+						log("debug", "init '"+name+"': found "+files_from_fromstep_which_matched.size()+" items to add to the list, but minoccur="+actualInit.getMinoccur()+", maxoccur="+actualInit.getMaxoccur());
+						initializing_success = false;
+					}
 
 					// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
 					// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
@@ -666,16 +749,13 @@ implements Serializable, Cloneable
 						list.setName(actualInit.getListname());
 						this.addList(list);
 					}
-
-					// hinzufuegen der listitems
 					for (File actualFile : files_from_fromstep_which_matched)
 					{
 						list.addItem(actualFile.getField(actualInit.getReturnfield()));
 					}
-						
 					log("debug", "init '"+name+"': new list '"+list.getName()+"' with "+list.getItem().size()+" item(s).");
-					
 				}
+				
 				// wenn es ein variable ist
 				else if (actualInit.getFromobjecttype().equals("variable"))
 				{
@@ -694,7 +774,14 @@ implements Serializable, Cloneable
 							}
 						}
 					}
-					if (variables_from_fromstep_which_matched.size() == 0) {initializing_success = false;}
+
+					// feststellen ob die gewuenschte anzahl der variablen gematched hat
+					if( (variables_from_fromstep_which_matched.size() < actualInit.getMinoccur()) || (variables_from_fromstep_which_matched.size() > actualInit.getMaxoccur()) )
+					{
+						log("debug", "init '"+name+"': found "+variables_from_fromstep_which_matched.size()+" items to add to the list, but minoccur="+actualInit.getMinoccur()+", maxoccur="+actualInit.getMaxoccur());
+						initializing_success = false;
+					}
+
 					// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
 					// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
 					List list;
@@ -720,8 +807,8 @@ implements Serializable, Cloneable
 				}
 			}
 		}
+		
 		// wenn alle initialisierung funktioniert habenn den status aendern
-		// wenn eine loop gefordert ist, soll der step aufgefaechert werden.
 		if (initializing_success)
 		{
 			this.setStatus("initialized");
@@ -731,6 +818,7 @@ implements Serializable, Cloneable
 		}
 		else
 		{
+			this.setStatus("initialization failed");
 			log("debug", "initialization failed.");
 			return false;
 		}
@@ -790,12 +878,11 @@ implements Serializable, Cloneable
 		this.setStatus("working");
 		log("info", "setting status to 'working'");
 
-		Work work = this.work;
 //			String call = work.generateCall(this.getListall());
-		String call = work.getCall();
+		String call = this.getWork().getCall();
 
 		// holen der zugehoerigen Systemprozess-ID - feststellen ob fuer diesen work schon ein aufruf getaetigt wurde
-		
+		log("info", "generated call for the work-phase (name='"+ this.getWork().getName() +"') is: "+call);
 		
 		// wenn schritt schon gestartet wurde
 		if (this.isPidfileexistent())
@@ -809,6 +896,13 @@ implements Serializable, Cloneable
 				log("info", "process work (script,program,..) still running. pid="+pid);
 				success = false;
 //				System.out.println("PROCESS-STEP LAEUFT NOCH: "+pid);
+			}
+			else if (this.getParent().isWrapper())
+			{
+				log("info", "process work (script,program,..) already finished. pid="+pid);
+				this.setStatus("finished");
+				log("info", "setting status to 'finished' (no commit, because this is a wrapper-process)");
+				success = true;
 			}
 			else
 			{
@@ -832,7 +926,7 @@ implements Serializable, Cloneable
 //					System.out.println("AUFRUF: /bin/bash /home/avo/bin/procsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
 //					String[] args_for_syscall = {"/bin/bash", "/home/avo/bin/procsyscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
 //				System.out.println("AUFRUF: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
-				String[] args_for_syscall = {"process-syscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
+				String[] args_for_syscall = {"process", "syscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
 				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
 //				log("info", "constructing the systemcall to: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
 
@@ -849,8 +943,12 @@ implements Serializable, Cloneable
 				pb.directory(directory);
 				java.io.File checkdirectory = pb.directory().getAbsoluteFile();
 //				System.out.println("ALS AKTUELLES VERZEICHNIS WIRD GESETZT+GECHECKT: "+checkdirectory);
-				log("info", "calling: process-syscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
+				log ("info", "calling: " + StringUtils.join(args_for_syscall, " "));
 				java.lang.Process p = pb.start();
+				
+				// wait 2 seconds for becoming the pid-file visible
+				Thread.sleep(2000);
+				
 //					Map<String,String> env = pb.environment();
 //					String cwd = env.get("PWD");
 //					String cwd = "/data/prog/workspace/prozesse/dummy/inst";
@@ -860,7 +958,7 @@ implements Serializable, Cloneable
 //					java.lang.Process p = pb.start();
 //					java.lang.Process p = Runtime.getRuntime().exec(args_for_syscall);
 //				System.out.println("PROCESS: "+p.hashCode());
-				log("info", "process work (script,program,..) lauched. pid="+p.hashCode());
+				log("info", "process work (script,program,..) launched. pid="+p.hashCode());
 				success = true;
 			}			
 			catch (Exception e2)
@@ -876,27 +974,36 @@ implements Serializable, Cloneable
 	
 
 	// eine extra methode fuer den step 'root'. es werden alle files/variablen aus 'path' committet
+	// es werden standardvariablen committet
 	public boolean rootcommit() throws IOException
 	{
 
+		this.log("info", "special commit, because this step is root");
+
 		//ueber alle initCommitDirs verzeichnisse iterieren
+		this.log("info", "commit all initCommitDirs");
 		for(java.io.File actualCommitDir : this.parent.getInitCommitDirs2())
 		{
 			this.commitdir(actualCommitDir);
+			this.log("info", "committed dir "+actualCommitDir.getAbsolutePath());
 		}
 
-		// alle varfiles, die committed werden sollen zusammensuchen
-		ArrayList<java.io.File> allcommitvarfiles = this.parent.getInitCommitVarfiles2();
-
-		//ueber alle varfiles iterieren
-		Iterator<java.io.File> itercommitvarfile = allcommitvarfiles.iterator();
-		while (itercommitvarfile.hasNext())
+		//ueber alle commitvarfiles iterieren
+		this.log("info", "commit all initCommitVarfiles");
+		for(java.io.File actCommitVarfile : this.parent.getInitCommitVarfiles2())
 		{
-			java.io.File commitvarfile = itercommitvarfile.next();
-			this.commitvarfile(commitvarfile);
+			this.commitvarfile(actCommitVarfile);
+			this.log("info", "committed dir "+actCommitVarfile.getAbsolutePath());
 		}
+		
+		this.log("info", "commit all standard entries");
+		// das stepdir als variable ablegen
+		commitVariable("dir", this.getAbsdir());
+		this.log("info", "committed variable dir="+this.getAbsdir());
+		
 		this.setStatus("finished");
 		
+		this.log("info", "special commit of step 'root' ended");
 		return true;
 	}
 	
@@ -979,7 +1086,9 @@ implements Serializable, Cloneable
 		this.log("info", "commit: planning for file: "+file.getAbsfilename());
 
 		// wenn der pfad des files NICHT identisch ist mit dem pfad des step-directories
-		if (!(new java.io.File(file.getAbsfilename()).getParent().equals(this.getAbsdir())))
+		this.log("debug", "step.commitFile(File): file.getAbsfilename():"+file.getAbsfilename());
+		this.log("debug", "step.commitFile(File): step.getAbsfilename():"+this.getAbsdir());
+		if (!(new java.io.File(file.getAbsfilename()).getParent().matches("^"+this.getAbsdir()+"$")))
 		{
 			// wenn sich das file nicht im step-verzeichnis gefunden wird, soll es dorthin kopiert werden
 			java.io.File zielFile = new java.io.File(this.getAbsdir()+"/"+file.getFilename());
@@ -1023,7 +1132,7 @@ implements Serializable, Cloneable
 	public boolean commitVariable(String key, String value)
 	{
 		Variable variable = new Variable();
-		variable.setKey(value);
+		variable.setKey(key);
 		variable.setValue(value);
 		return this.commitVariable(variable);
 	}
@@ -1106,15 +1215,15 @@ implements Serializable, Cloneable
 
 		this.log("info", "will try to commit...");
 		this.setStatus("committing");
-		this.log("info", "status is set to "+this.getStatus());
+		this.log("info", "status is jet to "+this.getStatus());
 
-		// wenn es sich um root handelt, wird besonders committed
+		// wenn es sich um root handelt, wird vor dem eigentlichen commit noch etwas anderes committed
 		if (this.getName().equals(this.parent.getRootstepname()))
 		{
 			success = this.rootcommit();
 		}
 		
-		// wenn es sich nicht um root handelt
+		// nur wenn es nicht der root-step ist, soll auf konventionelle art committed werden
 		else
 		{
 			// ueber alle commits iterieren
@@ -1129,7 +1238,7 @@ implements Serializable, Cloneable
 									// ausfuehren von evtl. vorhandenen globs in den files
 					if(actualFile.getAbsfilename().equals(""))
 					{
-						if(!(actualFile.getGlob().equals("")))
+						if( ( actualFile.getGlob() != null)&& !(actualFile.getGlob().equals("")))
 						{
 							log("info", "globbing for files with'"+actualFile.getGlob()+"'");
 							java.io.File dir = new java.io.File(this.getAbsdir());
@@ -1183,7 +1292,7 @@ implements Serializable, Cloneable
 						}
 					}
 				}
-				
+
 				// ueber alle files des commits iterieren und dem step hinzufuegen
 				for(File actualFile : actualCommit.getFile())
 				{
@@ -1192,9 +1301,10 @@ implements Serializable, Cloneable
 					{
 						success = false;
 					}
-
-					// wenn das File auch dem prozess committed werden soll...
-					if (actualCommit.getToroot())
+	
+					this.log("debug", "rootstepname of this process is: " + this.getParent().getRootstepname() + " || this stepname is: " + this.getName());
+					// falls nicht rootstep und wenn das File auch dem prozess committed werden soll...
+					if (actualCommit.getToroot() && (!(this.getName().equals(this.getParent().getRootstepname()))))
 					{
 						this.log("info", "commit to root: file "+actualFile.getKey()+":"+actualFile.getAbsfilename());
 						// dem root-step committen
@@ -1213,9 +1323,9 @@ implements Serializable, Cloneable
 					{
 						success = false;
 					}
-
+	
 					// wenn die Variable auch dem prozess committed werden soll...
-					if (actualCommit.getToroot())
+					if (actualCommit.getToroot() && (!(this.getName().equals(this.getParent().getRootstepname()))))
 					{
 						this.log("info", "commit to root: variable "+actualVariable.getKey()+":"+actualVariable.getValue());
 						// dem root-step committen
@@ -1225,7 +1335,7 @@ implements Serializable, Cloneable
 						}
 					}
 				}
-				
+			
 				actualCommit.setSuccess(success);
 			}
 			if (this.areAllcommitssuccessfull())
@@ -1288,17 +1398,22 @@ implements Serializable, Cloneable
 	 */
 	public void affiliate()
 	{
-		for(Init actualInit : this.init)
+		for(Init actualInit : this.getInit())
 		{
 			actualInit.setParent(this);
 		}
-		for(Commit actualCommit : this.commit)
+		for(Commit actualCommit : this.getCommit())
 		{
 			actualCommit.setParent(this);
 		}
-		if(this.work != null)
+		for(List actualList : this.getList())
 		{
-			this.work.setParent(this);
+			actualList.setParent(this);
+		}
+		if(this.getWork() != null)
+		{
+			this.getWork().setParent(this);
+			this.getWork().affiliate();
 		}
 	}
 
@@ -1631,13 +1746,13 @@ implements Serializable, Cloneable
 	public String getAbsdir()
 	{
 		String absDir = "";
-		if (this.getName().equals(this.parent.getRootdir()))
+		if (this.getName().matches("^" + this.parent.getRootstepname() + "$"))
 		{
 			absDir = this.parent.getRootdir();
 		}
 		else
 		{
-			absDir = this.parent.getRootdir()+"/STEP_"+this.getName();
+			absDir = this.parent.getRootdir()+"/dir4step_"+this.getName();
 		}
 		return absDir;
 	}

@@ -15,10 +15,10 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private String listname = new String();
-	private String fromobjecttype = new String();
-	private String returnfield = new String();
-	private String fromstep = new String();
+	private String listname = null;
+	private String fromobjecttype = null;
+	private String returnfield = null;
+	private String fromstep = null;
 	private String insertrule = "overwrite";  // append(initialisierte Eintraege werden zu bestehenden angefuegt) | unique (gleichlautende neue eintraege ueberschreiben bestehende = keine duplikate) | overwrite (evtl. vorher bestehende eintraege werden entfernt) 
 	private ArrayList<Match> match = new ArrayList<Match>();
 	private ArrayList<String> value = new ArrayList<String>();
@@ -241,8 +241,24 @@ implements Serializable
 	{
 		boolean result = true;
 
-		// check fromstep
-		if( !(this.getParent().getParent().isStep(this.getFromstep())) ) {result = false; this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': fromstep '"+this.getFromstep()+"' does not exist in processModel");}
+		// check ob die angabe in fromstep auf einen existierenden step zeigt
+		if( !(this.getParent().getParent().isStep(this.getFromstep())) )
+		{
+			result = false;
+			this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': fromstep '"+this.getFromstep()+"' does not exist in processModel");
+		}
+		
+		if( !(this.getFromobjecttype().matches("file|variable") ))
+		{
+			result = false;
+			this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': fromobjecttype '"+this.getFromobjecttype()+"' does not match /file|variable/");
+		}
+		
+		if( !(this.getReturnfield().matches(".+") ))
+		{
+			result = false;
+			this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': returnfield '"+this.getReturnfield()+"' does not match /.+/");
+		}
 		
 		return result;
 	}

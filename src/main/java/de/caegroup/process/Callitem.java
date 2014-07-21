@@ -6,6 +6,7 @@ import java.util.*;
 //import java.util.Map;
 import java.util.regex.*;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.solr.common.util.NamedList;
 
 public class Callitem
@@ -16,12 +17,12 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private Integer sequence = null;
+	private Integer sequence = 0;
 	private String par = "";
 	private String del = "";
 	private String val = "";
-	private String loop = "";
-	private String loopvar = "";
+	private String loop = null;
+// loopvar = {$loopvarcallitem}
 	
 	private String status = "";	// waiting/initializing/working/committing/ finished/broken/cancelled
 
@@ -42,9 +43,80 @@ implements Serializable
 	}
 
 	/*----------------------------
-	  methods resolve
+	  methods
 	----------------------------*/
+	/**
+	 * clone
+	 * returns a clone of this
+	 * @return Callitem
+	 */
+	@Override
+	public Callitem clone()
+	{
+		return SerializationUtils.clone(this);
+	}
 
+	/**
+	 * resolveCallitem
+	 * returns an ArrayList of Callitems with
+	 * 1) looped by loop and resolved placeholder 'loopvarcallitem'
+	 * 2) resolved par, del, val for all other placeholder
+	 * @return ArrayList<Callitem>
+	 */
+	public ArrayList<Callitem> resolveCallitem()
+	{
+		ArrayList<Callitem> loopedThisToCallitems = new ArrayList<Callitem>();
+		
+		if(this.getLoop() == null)
+		{
+			this.setPar(this.getRespar());
+			this.setDel(this.getResdel());
+			this.setVal(this.getResval());
+			loopedThisToCallitems.add(this);
+		}
+		
+		else
+		{
+			List loopList = this.parent.parent.getList(this.getLoop());
+			
+			if(loopList == null)
+			{
+				System.err.println("list " + this.getLoop() + "does not exist");
+			}
+			
+			else
+			{
+				
+				System.out.println("debug: loopliste '"+loopList.getName()+"' hat "+loopList.getItem().size()+" items.");
+				for(String actItem : loopList.getItem())
+				{
+					// loopen
+					Callitem clonedCallitem = this.clone();
+					clonedCallitem.setLoop(null);
+					System.out.println("debug: par="+this.getPar()+" | del="+this.getDel()+" | val="+this.getVal() + " | actItem="+actItem);
+					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
+					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
+					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
+					
+					this.parent.parent.log("debug", "val="+this.getVal());
+					
+					// placeholder, die auf listen referenzieren ersetzen
+					clonedCallitem.setPar(clonedCallitem.getRespar());
+					clonedCallitem.setDel(clonedCallitem.getResdel());
+					clonedCallitem.setVal(clonedCallitem.getResval());
+					
+					loopedThisToCallitems.add(clonedCallitem);
+				}
+			}
+		}
+		return loopedThisToCallitems;
+	}
+
+	/**
+	 * resolve
+	 * returns the string with resolved placeholders (only the ones for lists (not for loopvarcallitem))
+	 * @return String
+	 */
 	public String resolve(String stringToResolve)
 	{
 		String resolvedString = null;
@@ -52,17 +124,18 @@ implements Serializable
 		String patt = "\\{\\$(.+)\\}";
 		Pattern r = Pattern.compile(patt);
 		Matcher m = r.matcher(stringToResolve);
-		
+
 		if (m.find())
 		{
 			String listname = m.group(1);
-			System.out.println("listname needed: "+listname);
+//			System.out.println("placeholder: "+listname);
 			// die liste ermitteln, die den Namen traegt wie das gematchte substring
 			List list = this.parent.parent.getList(listname);
-			
+
 			if (list == null)
 			{
 				log("error", "list '"+listname+"' not found in step '"+this.parent.parent.getName()+"' but needed for resolving.");
+				System.out.println("list '"+listname+"' not found in step '"+this.parent.parent.getName()+"' but needed for resolving.");
 			}
 			
 			// das muster soll durch den ersten eintrag in der list ersetzt werden
@@ -71,7 +144,7 @@ implements Serializable
 		}
 		else
 		{
-			log("error", "pattern '"+patt+"' not found in String '"+stringToResolve+"'");
+			resolvedString = stringToResolve;
 		}
 		return resolvedString;
 	}
@@ -137,11 +210,6 @@ implements Serializable
 		return this.loop;
 	}
 	
-	public String getLoopvar()
-	{
-		return this.loopvar;
-	}
-	
 	/*----------------------------
 	methods set
 	----------------------------*/
@@ -168,11 +236,6 @@ implements Serializable
 	public void setLoop(String loop)
 	{
 		this.loop = loop;
-	}
-
-	public void setLoopvar(String loopvar)
-	{
-		this.loopvar = loopvar;
 	}
 
 	public void setStatus(String status)

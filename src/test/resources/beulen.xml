@@ -95,13 +95,13 @@
 			<match field="value" pattern="fkl|hkl|seite|dach"/>
 		</init>
 		<work name="starte_prozesskette" description="irgendeine beschreibung" command="beulen">
-			<callitem sequence="1" par="--basename" del="=" val="$basename"/>
-			<callitem sequence="2" par="--matdb" del="=" val="$matdb"/>
-			<callitem sequence="3" par="--nid" del="=" val="$nid"/>
-			<callitem par="--area" del="=" val="$area"/>
-			<callitem sequence="5" par="--force" del="=" val="$force"/>
-			<callitem sequence="6" par="--parttype" del="=" val="$parttype"/>
-			<callitem sequence="7" loop="inc" par="--inc" del="=" val="$_"/>
+			<callitem sequence="1" par="--basename" del="=" val="{$basename}"/>
+			<callitem sequence="2" par="--matdb" del="=" val="{$matdb}"/>
+			<callitem sequence="3" par="--nid" del="=" val="{$nid}"/>
+			<callitem par="--area" del="=" val="{$area}"/>
+			<callitem sequence="5" par="--force" del="=" val="{$force}"/>
+			<callitem sequence="6" par="--parttype" del="=" val="{$parttype}"/>
+			<callitem sequence="7" loop="inc" par="--inc" del="=" val="{$loopvarcallitem}"/>
 		</work>
 		<commit name="name9" toroot="true">
 			<variable key="plstrain" value="" minoccur="0" maxoccur="1" free="false">
