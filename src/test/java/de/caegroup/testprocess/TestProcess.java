@@ -256,6 +256,8 @@ public class TestProcess {
 		assertEquals(1, process.getStep("beulen").getList("area").getItem().size());
 		assertEquals("area_3", process.getStep("beulen").getList("area").getItem().get(0));
 
+		System.out.println("Step beulen - the name of the work-phase is: "+process.getStep("beulen").getWork().getName());
+		
 		for(Callitem actCallitem : process.getStep("beulen").getWork().getCallitem())
 		{
 			System.out.println("unresolved callitem with sequence="+actCallitem.getSequence() + " | par=" + actCallitem.getPar()+ " | del=" + actCallitem.getDel()+ " | val=" + actCallitem.getVal());
