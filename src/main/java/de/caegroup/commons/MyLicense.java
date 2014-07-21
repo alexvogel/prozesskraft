@@ -39,16 +39,17 @@ public class MyLicense {
 	{
 		this.port = port;
 		this.host = host;
-		this.productEdition = productEdition;
 		this.productId = productId;
+		this.productEdition = productEdition;
 		try {
 			inetAddressHost = InetAddress.getByName(host);
 		} catch (UnknownHostException e) {
 			log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"warn:"+"unknown host "+host);
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 
 		this.license = LicenseValidator.validate(publicKey, productId, productEdition, "0.1", null, null, inetAddressHost, port, null, null, null);
+
 	}
 
 	/*----------------------------
