@@ -19,8 +19,9 @@ public class MyLicense {
 	private ArrayList<String> log = new ArrayList<String>();
 	private int port;
 	private String host;
-	private String productEdition = null;
 	private String productId = null;
+	private String productEdition = null;
+	private String productVersion = null;
 	private InetAddress inetAddressHost;
 	
 	private String publicKey =	"30819f300d06092a864886f70d010101050003818d003081893032301006"
@@ -35,12 +36,13 @@ public class MyLicense {
 	/*----------------------------
 	  constructors
 	----------------------------*/
-	public MyLicense(int port, String host, String productId, String productEdition)
+	public MyLicense(int port, String host, String productId, String productEdition, String productVersion)
 	{
 		this.port = port;
 		this.host = host;
 		this.productId = productId;
 		this.productEdition = productEdition;
+		this.productVersion = productVersion;
 		try {
 			inetAddressHost = InetAddress.getByName(host);
 		} catch (UnknownHostException e) {
@@ -50,7 +52,7 @@ public class MyLicense {
 		
 		try
 		{
-			this.license = LicenseValidator.validate(publicKey, productId, productEdition, "", null, null, inetAddressHost, port, null, null, null);
+			this.license = LicenseValidator.validate(publicKey, productId, productEdition, productVersion, null, null, inetAddressHost, port, null, null, null);
 		}
 		catch (Exception e)
 		{
