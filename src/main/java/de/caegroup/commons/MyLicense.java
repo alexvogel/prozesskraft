@@ -47,8 +47,15 @@ public class MyLicense {
 			log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"warn:"+"unknown host "+host);
 			e.printStackTrace();
 		}
-
-		this.license = LicenseValidator.validate(publicKey, productId, productEdition, "0.1", null, null, inetAddressHost, port, null, null, null);
+		
+		try
+		{
+			this.license = LicenseValidator.validate(publicKey, productId, productEdition, "0.1", null, null, inetAddressHost, port, null, null, null);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"port@host      : "+port+"@"+host);
 		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-id     : "+productId);
