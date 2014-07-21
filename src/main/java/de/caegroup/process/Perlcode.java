@@ -190,7 +190,7 @@ public class Perlcode
 		MyLicense lic = new MyLicense(Integer.parseInt(port_and_host[0]), port_and_host[1], "basic-edition");
 		if (!lic.isValid())
 		{
-			for(String actLine : lic.getLog())
+			for(String actLine : (ArrayList<String>) lic.getLog())
 			{
 				System.err.println(actLine);
 			}
@@ -198,7 +198,7 @@ public class Perlcode
 		}
 		else
 		{
-			for(String actLine : lic.getLog())
+			for(String actLine : (ArrayList<String>) lic.getLog())
 			{
 				System.err.println(actLine);
 			}
