@@ -187,7 +187,7 @@ public class Perlcode
 		String portAtHost = ini.get("license-server", "license-server-1");
 		String[] port_and_host = portAtHost.split("@");
 		
-		MyLicense lic = new MyLicense(Integer.parseInt(port_and_host[0]), port_and_host[1], "2", "basic-edition");
+		MyLicense lic = new MyLicense(Integer.parseInt(port_and_host[0]), port_and_host[1], null, "basic");
 		
 		if (!lic.isValid())
 		{
