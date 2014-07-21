@@ -57,14 +57,14 @@ public class MyLicense {
 	----------------------------*/
 	public boolean isValid()
 	{
-		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"trying license-server "+port+"@"+host);
-		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license validation returns "+license.getValidationStatus().toString());
-		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
-
 		boolean valid = false;
 		
 		try
 		{
+			log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"trying license-server "+port+"@"+host);
+			log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license validation returns "+license.getValidationStatus().toString());
+			log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
+	
 			switch(license.getValidationStatus())
 			{
 				case LICENSE_VALID:
