@@ -3,15 +3,19 @@ END-USER LICENSE AGREEMENT FOR LICENSE4J. IMPORTANT PLEASE READ THE TERMS AND
 CONDITIONS OF THIS LICENSE AGREEMENT CAREFULLY BEFORE CONTINUING WITH THIS
 PROGRAM INSTALL AND USE.
 
-By installing or using the LICENSE4J (the "Company") product LICENSE4J License
-Manager (the "Software") you indicate your agreement to the terms of this End
-User License Agreement (the "Agreement"). If you do not agree to the terms
-herein, you are not authorized to copy or use the Software. The Software in
-owned by the Company or its suppliers and is protected by United States
-copyright laws and international treaty provisions. Except to the extent
-expressly licensed herein, all rights are reserved to Company and its suppliers.
-You may not reverse engineer, decompile or disassemble the Software except as
-set forth herein.
+By installing or using the LICENSE4J (the "Company") having its registered 
+office at Cayyolu Yasam 3207 Str. No:1/17 06810 Ankara, Republic of Turkey
+product License Manager, License4J Runtime Library, License4J Development,
+Library, HardwareID Viewer, Floating License Server, Auto License Generation
+and Activation Server and License Activation and Validation Proxy Server
+(the "Software") you indicate your agreement to the terms of this End User
+License Agreement (the "Agreement"). If you do not agree to the terms herein,
+you are not authorized to copy or use the Software. The Software in owned by
+the Company or its suppliers and is protected by United States copyright laws,
+Republic of Turkey copyright laws, and international treaty provisions. Except
+to the extent expressly licensed herein, all rights are reserved to Company
+and its suppliers. You may not reverse engineer, decompile or disassemble the
+Software except as set forth herein.
 
 ATTENTION: USE OF THE SOFTWARE IS SUBJECT TO THE TERMS SET FORTH BELOW. USING
 THE SOFTWARE INDICATES YOUR ACCEPTANCE OF THESE TERMS. IF YOU DO NOT ACCEPT
@@ -19,19 +23,22 @@ THESE TERMS YOU ARE NOT AUTHORIZED TO USE THIS SOFTWARE.
 
 1. LICENSE GRANT
 The Company grants you a non-exclusive, royalty-free, worldwide right and 
-license to use the Software where "use" in this Aggreement means executing the
-executable files (GUI Tools and Floating License Server software); distributing
-the Runtime class library and Floating License Server software bundled within
-your own software or standalone; and loading class libraries (Runtime and
-Development libraries). You may not modify the Software or disable any licensing
-or control features of the Software. You may copy the software for archival
-purposes so long as the copy is unmodified from the original distribution and
-the copy retains all of the original Software's proprietary notices. You may
-distribute Runtime class library and/or Floating License Server so long as the
-copy is unmodified from the original distribution, the copy retains all of the
-original Software's proprietary notices. You may not sell or charge a fee for
-Runtime class library and Floating License Server. You may not rent or lease
-your rights to the Software or documentation.
+license to use the Software where "use" in this Agreement means executing the
+executable files, deploying web application files; distributing the License4J
+Runtime Library, Floating License Server, License Activation and Validation
+Proxy Server and HardwareID Viewer software bundled within your own software
+or standalone; and loading class libraries (Runtime and Development libraries).
+You may not modify the Software (except for Floating License Server and License
+Activation and Validation Proxy Server) or disable any licensing or control
+features of the Software. You may modify/customize Floating License Server and
+License Activation and Validation Proxy Server to white-label and distribute.
+You may copy the software for archival purposes so long as the copy is
+unmodified from the original distribution and the copy retains all of the
+original Software's proprietary notices. You may distribute License4J Runtime
+Library, HardwareID Viewer, Floating License Server and/or License Activation
+and Validation Proxy Server. You may not sell or charge a fee for Runtime class
+library, Floating License Server and License Activation and Validation Proxy
+Server. You may not rent or lease your rights to the Software or documentation.
 
 2. OWNERSHIP
 All right, title and interest in and to the Software is owned and copyrighted
@@ -124,23 +131,14 @@ either accept or reject the assignment of rights.
 You may not export or re-export the Software or any copy or adaptation in
 violation of any applicable laws or regulations.
 
-12. U.S. GOVERNMENT RESTRICTED RIGHTS
-The Software and any accompanying documentation have been developed entirely at
-private expense. They are delivered and licensed as "commercial computer
-software." If this Software is acquired under the terms of a DOD or civilian
-agency contract, use, reproduction or disclosure of the Software by the
-Government is subject to the restrictions set forth in this License Agreement
-in accordance with 48 C.F.R. 227.7202 or 48 C.F.R. 12.212, respectively.
-
-13. NEGATION OF PARTNERSHIP
+12. NEGATION OF PARTNERSHIP
 Company shall not become or be deemed a partner or a joint venturer with you by
 reason of the provisions of this license.
 
-14. GOVERNING LAW AND FORUM
+13. GOVERNING LAW AND FORUM
 Irrespective of the place of execution or performance, this License Agreement
 shall be governed and construed in accordance with the laws of a jurisdiction of
-Company's choosing, likely the United Kingdom or the United States of America,
-applicable to agreements. Any litigation to enforce or interpret the provisions
+Republic of Turkey. Any litigation to enforce or interpret the provisions
 of this License Agreement or the parties' rights or obligations arising out of
 this License Agreement or the performance hereunder shall be maintained only in
 the courts in a City of Company's choosing, and the parties expressly consent to
@@ -151,7 +149,7 @@ continuing or irreparable harm to the Company, the Company may seek injunctive
 relief in any court of competent jurisdiction. The United Nations Convention on
 Contracts for the International Sale of Goods is specifically disclaimed.
 
-15. ENTIRE AGREEMENT
+14. ENTIRE AGREEMENT
 Unless otherwise expressly agreed in writing, this License Agreement constitutes
 the sole and exclusive agreement between you and Company with regard to the
 Software, and supersedes all prior agreements, whether oral or written, and
@@ -159,9 +157,10 @@ other communications between the parties relating to the subject matter set
 forth herein.
 
 
-Copyright © 2011-2012 LICENSE4J
+Copyright © 2011-2014 LICENSE4J
 
 http://www.license4j.com/
+
 
 
 
@@ -169,13 +168,4 @@ THIRD PARTY SOFTWARE
 This product includes software developed by
 The Apache Software Foundation (http://www.apache.org/).
 Apache license is provided in APACHE-LICENSE.txt file.
-
-Apache Commons IO
-Copyright 2002-2011 The Apache Software Foundation
-
-Apache log4j
-Copyright 2007 The Apache Software Foundation
-
-Apache Commons Daemon
-Copyright 1999-2012 The Apache Software Foundation
 
