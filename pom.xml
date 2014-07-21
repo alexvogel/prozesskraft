@@ -56,6 +56,7 @@
 						<option>-keep public class de.caegroup.commons.AutoCropBorder { *; }</option>
 						<option>-keep public class de.caegroup.commons.writeFile { *; }</option>
 						<option>-keep public class de.caegroup.commons.copyDirectoryTree { *; }</option>
+						<option>-keep public class de.caegroup.commons.MyLicense { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
