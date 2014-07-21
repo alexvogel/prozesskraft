@@ -189,20 +189,16 @@ public class Perlcode
 		
 		MyLicense lic = new MyLicense(Integer.parseInt(port_and_host[0]), port_and_host[1], "1", "user-edition", "0.1");
 		
+		// lizenz-logging ausgeben
+		for(String actLine : (ArrayList<String>) lic.getLog())
+		{
+			System.err.println(actLine);
+		}
+
+		// abbruch, wenn lizenz nicht valide
 		if (!lic.isValid())
 		{
-			for(String actLine : (ArrayList<String>) lic.getLog())
-			{
-				System.err.println(actLine);
-			}
 			System.exit(1);
-		}
-		else
-		{
-			for(String actLine : (ArrayList<String>) lic.getLog())
-			{
-				System.err.println(actLine);
-			}
 		}
 		
 		/*----------------------------
