@@ -61,14 +61,24 @@ public class MyLicense {
 		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license validation returns "+license.getValidationStatus().toString());
 		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
 
-		switch(license.getValidationStatus())
+		boolean valid = false;
+		
+		try
 		{
-			case LICENSE_VALID:
-				return true;
-			default:
-				log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"fatal:"+"no valid license found. forcing exit.");
-				return false;
+			switch(license.getValidationStatus())
+			{
+				case LICENSE_VALID:
+					valid = true;
+				default:
+					valid = false;
+					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"fatal:"+"no valid license found. forcing exit.");
+			}
 		}
+		catch (NullPointerException e)
+		{
+			log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"fatal:"+"license not initialized. NullPointerException.");
+		}
+		return valid;
 	}
 	
 	/*----------------------------
