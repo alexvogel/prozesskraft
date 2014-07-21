@@ -51,7 +51,7 @@ public class MyLicense {
 	/*----------------------------
 	  methods
 	----------------------------*/
-	boolean isValid()
+	public boolean isValid()
 	{
 		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"trying license-server "+port+"@"+host);
 		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license validation returns "+license.getValidationStatus().toString());
