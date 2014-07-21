@@ -20,6 +20,7 @@ public class MyLicense {
 	private int port;
 	private String host;
 	private String productEdition = null;
+	private String productId = null;
 	private InetAddress inetAddressHost;
 	
 	private String publicKey =	"30819f300d06092a864886f70d010101050003818d003081893032301006"
@@ -34,11 +35,12 @@ public class MyLicense {
 	/*----------------------------
 	  constructors
 	----------------------------*/
-	public MyLicense(int port, String host, String productEdition)
+	public MyLicense(int port, String host, String productId, String productEdition)
 	{
 		this.port = port;
 		this.host = host;
 		this.productEdition = productEdition;
+		this.productId = productId;
 		try {
 			inetAddressHost = InetAddress.getByName(host);
 		} catch (UnknownHostException e) {
@@ -46,7 +48,7 @@ public class MyLicense {
 //			e.printStackTrace();
 		}
 
-		this.license = LicenseValidator.validate(publicKey, "1", productEdition, "0.1", null, null, inetAddressHost, port, null, null, null);
+		this.license = LicenseValidator.validate(publicKey, productId, productEdition, "0.1", null, null, inetAddressHost, port, null, null, null);
 	}
 
 	/*----------------------------
