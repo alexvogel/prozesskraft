@@ -1,8 +1,5 @@
 target
-<<<<<<< HEAD
 src/main/java/de/caegroup/jaxb/process
 src/main/java/META-INF/sun-jaxb.episode
-=======
 doc/process.xsd.pdf
 doc/process.xsd.xhtml
->>>>>>> master
