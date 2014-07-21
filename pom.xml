@@ -104,5 +104,10 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+				<dependency>
+			<groupId>com.license4j</groupId>
+			<artifactId>license4j-runtime-library</artifactId>
+			<version>4.2.1</version>
+		</dependency>
 	</dependencies>
 </project>
