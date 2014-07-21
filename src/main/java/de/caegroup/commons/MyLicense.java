@@ -50,7 +50,7 @@ public class MyLicense {
 		
 		try
 		{
-			this.license = LicenseValidator.validate(publicKey, productId, productEdition, null, null, null, inetAddressHost, port, null, null, null);
+			this.license = LicenseValidator.validate(publicKey, productId, productEdition, "0.1", null, null, inetAddressHost, port, null, null, null);
 		}
 		catch (Exception e)
 		{
