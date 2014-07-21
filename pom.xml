@@ -46,7 +46,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<obfuscate>true</obfuscate>
+					<obfuscate>false</obfuscate>
 <!-- 					<outputDirectory>/tmp/pradar</outputDirectory> -->
 <!-- 					<injar>bin-klar/${project.build.finalName}.jar</injar> -->
 <!-- 					<outjar>bin/${project.build.finalName}.jar</outjar> -->
