@@ -50,6 +50,8 @@ public class MyLicense {
 			e.printStackTrace();
 		}
 		
+		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"trying license-server "+port+"@"+host);
+
 		try
 		{
 			this.license = LicenseValidator.validate(publicKey, productId, productEdition, productVersion, null, null, inetAddressHost, port, null, null, null);
@@ -58,11 +60,22 @@ public class MyLicense {
 		{
 			e.printStackTrace();
 		}
+		
+//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"port@host      : "+port+"@"+host);
+//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-id     : "+productId);
+//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-edition: "+productEdition);
+//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-version: "+productVersion);
+		
+		switch(license.getValidationStatus())
+		{
+			case LICENSE_VALID:
+				log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license validation returns "+license.getValidationStatus().toString());
+				log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
+				break;
+			default:
+				log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"fatal:"+"no valid license found. forcing exit.");
+		}
 
-		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"port@host      : "+port+"@"+host);
-		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-id     : "+productId);
-		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-edition: "+productEdition);
-		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-version: "+productVersion);
 	}
 
 	/*----------------------------
@@ -74,23 +87,18 @@ public class MyLicense {
 		
 		try
 		{
-			log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"trying license-server "+port+"@"+host);
-	
 			switch(license.getValidationStatus())
 			{
 				case LICENSE_VALID:
 					valid = true;
-					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license validation returns "+license.getValidationStatus().toString());
-					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
 					break;
 				default:
 					valid = false;
-					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"fatal:"+"no valid license found. forcing exit.");
 			}
 		}
 		catch (NullPointerException e)
 		{
-			log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"fatal:"+"license not initialized. NullPointerException.");
+			e.printStackTrace();;
 		}
 		return valid;
 	}
