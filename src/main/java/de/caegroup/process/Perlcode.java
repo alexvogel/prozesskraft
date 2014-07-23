@@ -185,11 +185,8 @@ public class Perlcode
 
 		// check for valid license
 		ArrayList<String> allPortAtHost = new ArrayList<String>();
-		System.out.println("lic1: "+ini.get("license-server", "license-server-1"));
 		allPortAtHost.add(ini.get("license-server", "license-server-1"));
-		System.out.println("lic2: "+ini.get("license-server", "license-server-2"));
 		allPortAtHost.add(ini.get("license-server", "license-server-2"));
-		System.out.println("lic3: "+ini.get("license-server", "license-server-3"));
 		allPortAtHost.add(ini.get("license-server", "license-server-3"));
 		
 		MyLicense lic = new MyLicense(allPortAtHost, "1", "user-edition", "0.1");
