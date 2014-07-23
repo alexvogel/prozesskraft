@@ -36,6 +36,7 @@ import net.sf.jasperreports.engine.JRException;
 
 
 
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -58,6 +59,7 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
 import de.caegroup.commons.AutoCropBorder;
+import de.caegroup.commons.MyLicense;
 import de.caegroup.commons.WhereAmI;
 import de.caegroup.pmodel.PmodelViewPage;
 import de.caegroup.process.Process;
@@ -256,6 +258,30 @@ public class Createdoc
 		if (error > 0)
 		{
 			System.err.println("error(s) occured. try -help for help.");
+			System.exit(1);
+		}
+		
+		/*----------------------------
+		  die lizenz ueberpruefen und ggf abbrechen
+		----------------------------*/
+
+		// check for valid license
+		ArrayList<String> allPortAtHost = new ArrayList<String>();
+		allPortAtHost.add(ini.get("license-server", "license-server-1"));
+		allPortAtHost.add(ini.get("license-server", "license-server-2"));
+		allPortAtHost.add(ini.get("license-server", "license-server-3"));
+		
+		MyLicense lic = new MyLicense(allPortAtHost, "1", "user-edition", "0.1");
+		
+		// lizenz-logging ausgeben
+		for(String actLine : (ArrayList<String>) lic.getLog())
+		{
+			System.err.println(actLine);
+		}
+
+		// abbruch, wenn lizenz nicht valide
+		if (!lic.isValid())
+		{
 			System.exit(1);
 		}
 		
