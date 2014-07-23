@@ -1322,7 +1322,7 @@ public class PrampPartUi1 extends ModelObject
 					// ....
 					log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
 
-					String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\""+ "process", "manager" +" -instance "+process.getOutfilebinary()+"\""};
+					String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"" + ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary()+"\""};
 					ProcessBuilder pb = new ProcessBuilder(args_for_command);
 
 					log ("info", "calling: " + StringUtils.join(args_for_command, " "));
@@ -1644,7 +1644,7 @@ public class PrampPartUi1 extends ModelObject
 		{
 			HelpFormatter formatter = new HelpFormatter();
 //			formatter.printHelp("checkin --version [% version %]", options);
-			formatter.printHelp("pradar-gui", options);
+			formatter.printHelp("pramp-gui", options);
 			System.exit(0);
 		}
 		
