@@ -46,6 +46,11 @@ public class MyLicense {
 		
 		for(String actPortAtHost : allPortAtHost)
 		{
+			if(actPortAtHost == null)
+			{
+				break;
+			}
+			
 			if(validLicenseFound == true)
 			{
 				break;
