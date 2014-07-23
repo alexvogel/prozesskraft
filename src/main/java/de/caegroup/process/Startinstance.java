@@ -1,6 +1,7 @@
 package de.caegroup.process;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
@@ -13,6 +14,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 
+import de.caegroup.commons.MyLicense;
 import de.caegroup.process.Process;
 import de.caegroup.process.Step;
 
