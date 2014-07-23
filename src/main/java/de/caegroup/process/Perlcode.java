@@ -184,10 +184,12 @@ public class Perlcode
 		----------------------------*/
 
 		// check for valid license
-		String portAtHost = ini.get("license-server", "license-server-1");
-		String[] port_and_host = portAtHost.split("@");
+		ArrayList<String> allPortAtHost = new ArrayList<String>();
+		allPortAtHost.add(ini.get("license-server", "license-server-1"));
+		allPortAtHost.add(ini.get("license-server", "license-server-2"));
+		allPortAtHost.add(ini.get("license-server", "license-server-3"));
 		
-		MyLicense lic = new MyLicense(Integer.parseInt(port_and_host[0]), port_and_host[1], "1", "user-edition", "0.1");
+		MyLicense lic = new MyLicense(allPortAtHost, "1", "user-edition", "0.1");
 		
 		// lizenz-logging ausgeben
 		for(String actLine : (ArrayList<String>) lic.getLog())
