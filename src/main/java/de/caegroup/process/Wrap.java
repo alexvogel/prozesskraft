@@ -1,5 +1,6 @@
 package de.caegroup.process;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,6 +16,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.ini4j.Ini;
+import org.ini4j.InvalidFileFormatException;
+
+import de.caegroup.commons.MyLicense;
+import de.caegroup.commons.WhereAmI;
 
 
 public class Wrap
@@ -27,6 +33,7 @@ public class Wrap
 	static String author = "alexander.vogel@caegroup.de";
 	static String version = "[% version %]";
 	static String date = "[% date %]";
+	static Ini ini;
 	
 	/*----------------------------
 	  constructors
@@ -47,6 +54,34 @@ public class Wrap
 //		{
 //			System.out.println("***ArrayIndexOutOfBoundsException: Please specify processdefinition.xml, openoffice_template.od*, newfile_for_processdefinitions.odt\n" + e.toString());
 //		}
+		
+		/*----------------------------
+		  get options from ini-file
+		----------------------------*/
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Wrap.class) + "/" + "../etc/process-wrap.ini");
+
+		if (inifile.exists())
+		{
+			try
+			{
+				ini = new Ini(inifile);
+			}
+			catch (InvalidFileFormatException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			catch (IOException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		else
+		{
+			System.err.println("ini file does not exist: "+inifile.getAbsolutePath());
+			System.exit(1);
+		}
 		
 		/*----------------------------
 		  create boolean options
@@ -127,6 +162,30 @@ public class Wrap
 		{
 			System.err.println("option -output is mandatory.");
 			exiter();
+		}
+		
+		/*----------------------------
+		  die lizenz ueberpruefen und ggf abbrechen
+		----------------------------*/
+
+		// check for valid license
+		ArrayList<String> allPortAtHost = new ArrayList<String>();
+		allPortAtHost.add(ini.get("license-server", "license-server-1"));
+		allPortAtHost.add(ini.get("license-server", "license-server-2"));
+		allPortAtHost.add(ini.get("license-server", "license-server-3"));
+		
+		MyLicense lic = new MyLicense(allPortAtHost, "1", "user-edition", "0.1");
+		
+		// lizenz-logging ausgeben
+		for(String actLine : (ArrayList<String>) lic.getLog())
+		{
+			System.err.println(actLine);
+		}
+
+		// abbruch, wenn lizenz nicht valide
+		if (!lic.isValid())
+		{
+			System.exit(1);
 		}
 		
 		/*----------------------------
