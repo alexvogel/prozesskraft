@@ -1,0 +1,15 @@
+1) go to the directory where you want to install the toolbox and unpack
+	tar -xvf pradar-0.5.0.tar.gz
+
+2) link the launch script "bin/process" from a PATH-directory. for example
+	cd ~/bin
+	ln -s <installdirectory>/bin/pocess
+
+6) edit all etc/pradar-*.ini
+	define at least one license-server. "license-server-1=<port>@<server>"
+
+now you can use the process-tools.
+
+there are eventually other tools who need to know how to call bin/process. for example 'pramp'.
+
+checkout www.prozesskraft.de for further informations or even more tools.
