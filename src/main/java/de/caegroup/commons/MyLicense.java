@@ -46,10 +46,6 @@ public class MyLicense {
 		
 		for(String actPortAtHost : allPortAtHost)
 		{
-			if(actPortAtHost == null)
-			{
-				break;
-			}
 			
 			if(validLicenseFound == true)
 			{
@@ -58,43 +54,47 @@ public class MyLicense {
 			
 			else
 			{
-				String[] port_and_host = actPortAtHost.split("@");
-	
-				this.port = Integer.parseInt(port_and_host[0]);
-				this.host = port_and_host[1];
-
-				try {
-					this.inetAddressHost = InetAddress.getByName(host);
-				} catch (UnknownHostException e) {
-					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"warn:"+"unknown host "+host);
-					e.printStackTrace();
-				}
-	
-				log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"trying license-server "+port+"@"+host);
-	
-				try
+				// falls null, dann ueberspringen
+				if(!(actPortAtHost == null))
 				{
-					this.license = LicenseValidator.validate(publicKey, productId, productEdition, productVersion, null, null, inetAddressHost, port, null, null, null);
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
+					String[] port_and_host = actPortAtHost.split("@");
+		
+					this.port = Integer.parseInt(port_and_host[0]);
+					this.host = port_and_host[1];
 	
-		//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"port@host      : "+port+"@"+host);
-		//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-id     : "+productId);
-		//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-edition: "+productEdition);
-		//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-version: "+productVersion);
-	
-				switch(license.getValidationStatus())
-				{
-					case LICENSE_VALID:
-						log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license validation returns "+license.getValidationStatus().toString());
-						log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
-						validLicenseFound = true;
-						break;
-					default:
-						log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"fatal:"+"no valid license found at this license-server.");
+					try {
+						this.inetAddressHost = InetAddress.getByName(host);
+					} catch (UnknownHostException e) {
+						log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"warn:"+"unknown host "+host);
+						e.printStackTrace();
+					}
+		
+					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"trying license-server "+port+"@"+host);
+		
+					try
+					{
+						this.license = LicenseValidator.validate(publicKey, productId, productEdition, productVersion, null, null, inetAddressHost, port, null, null, null);
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+		
+			//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"port@host      : "+port+"@"+host);
+			//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-id     : "+productId);
+			//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-edition: "+productEdition);
+			//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-version: "+productVersion);
+		
+					switch(license.getValidationStatus())
+					{
+						case LICENSE_VALID:
+							log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license validation returns "+license.getValidationStatus().toString());
+							log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
+							validLicenseFound = true;
+							break;
+						default:
+							log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"fatal:"+"no valid license found at this license-server.");
+					}
 				}
 			}
 		}
