@@ -1,8 +1,13 @@
 package de.caegroup.process;
 
+import de.caegroup.commons.MyLicense;
+import de.caegroup.commons.WhereAmI;
 import de.caegroup.process.Process;
 import de.caegroup.process.Step;
+
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 //import de.caegroup.view.Stepconnector;
 //import org.w3c.dom.*;
 //import org.xml.sax.*;
@@ -22,6 +27,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
+import org.ini4j.Ini;
+import org.ini4j.InvalidFileFormatException;
 
 public class Manager
 {
@@ -30,6 +37,7 @@ public class Manager
 	  structure
 	----------------------------*/
 	static CommandLine line;
+	static Ini ini;
 
 	
 	/*----------------------------
@@ -51,6 +59,34 @@ public class Manager
 //		{
 //			System.out.println("***ArrayIndexOutOfBoundsException: Please specify procesdefinition.lrd and processinstance.lri\n" + e.toString());
 //		}
+		
+		/*----------------------------
+		  get options from ini-file
+		----------------------------*/
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Manager.class) + "/" + "../etc/process-perlcode.ini");
+
+		if (inifile.exists())
+		{
+			try
+			{
+				ini = new Ini(inifile);
+			}
+			catch (InvalidFileFormatException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			catch (IOException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		else
+		{
+			System.err.println("ini file does not exist: "+inifile.getAbsolutePath());
+			System.exit(1);
+		}
 		
 		/*----------------------------
 		  create boolean options
@@ -121,6 +157,30 @@ public class Manager
 		else if (!( line.hasOption("instance") ))
 		{
 			exiter();
+		}
+		
+		/*----------------------------
+		  die lizenz ueberpruefen und ggf abbrechen
+		----------------------------*/
+
+		// check for valid license
+		ArrayList<String> allPortAtHost = new ArrayList<String>();
+		allPortAtHost.add(ini.get("license-server", "license-server-1"));
+		allPortAtHost.add(ini.get("license-server", "license-server-2"));
+		allPortAtHost.add(ini.get("license-server", "license-server-3"));
+		
+		MyLicense lic = new MyLicense(allPortAtHost, "1", "user-edition", "0.1");
+		
+		// lizenz-logging ausgeben
+		for(String actLine : (ArrayList<String>) lic.getLog())
+		{
+			System.err.println(actLine);
+		}
+
+		// abbruch, wenn lizenz nicht valide
+		if (!lic.isValid())
+		{
+			System.exit(1);
 		}
 		
 		/*----------------------------
