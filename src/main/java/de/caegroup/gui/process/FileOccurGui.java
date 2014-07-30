@@ -376,11 +376,12 @@ public class FileOccurGui
 	 */
 	public void commit(Step step)
 	{
+		step.log("debug", "data of FileOccurGui.commit: "+this.data.getContent().toString());
 		if ( this.data.getContent() != null && (!(this.data.getContent().matches("^$"))))
 		{
 			// setzen des pfades
 			file.setAbsfilename(text.getText());
-			step.log("debug", "FileOccurGui.commitit: committing " + file.toString() + file.getAbsfilename());
+			step.log("debug", "FileOccurGui.commit: committing " + file.toString() + file.getAbsfilename());
 			step.commitFile(file);
 //			System.out.println("committingly "+file.getAbsfilename());
 		}
