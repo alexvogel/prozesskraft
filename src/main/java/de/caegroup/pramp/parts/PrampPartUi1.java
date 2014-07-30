@@ -86,6 +86,7 @@ import org.eclipse.swt.widgets.Combo;
 
 
 
+
 import com.google.common.collect.Multimap;
 //import com.jcraft.jsch.ChannelExec;
 //import com.jcraft.jsch.JSch;
@@ -1325,14 +1326,16 @@ public class PrampPartUi1 extends ModelObject
 					{
 						log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
 	
-						String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"" + ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary()+"\""};
-						ProcessBuilder pb = new ProcessBuilder(args_for_command);
+						String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"" + ini.get("apps", "process") +" manager -instance "+process.getOutfilebinary()+"\""};
+
+//						ProcessBuilder pb = new ProcessBuilder(args_for_command);
+//						java.lang.Process sysproc = pb.start();
 	
 						log ("info", "calling: " + StringUtils.join(args_for_command, " "));
 						try
 						{
-							java.lang.Process p = pb.start();
-							log ("debug", "hashCode="+p.hashCode());
+							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_command, " "));
+							log ("debug", "hashCode="+sysproc.hashCode());
 						} catch (IOException e)
 						{
 							// TODO Auto-generated catch block
@@ -1346,14 +1349,16 @@ public class PrampPartUi1 extends ModelObject
 					{
 						log ("info", "launching pmodel viewer");
 	
-						String[] args_for_command2 = {ini.get("apps", "pmodel"), "-instance", process.getOutfilebinary()};
+						String[] args_for_command2 = {ini.get("apps", "pmodel"), "gui", "-instance", process.getOutfilebinary()};
 	
-						ProcessBuilder pb2 = new ProcessBuilder(args_for_command2);
+//						ProcessBuilder pb2 = new ProcessBuilder(args_for_command2);
+//						java.lang.Process sysproc = pb.start();
+
 						log ("info", "calling: " + StringUtils.join(args_for_command2, " "));
 						try
 						{
-							java.lang.Process p2 = pb2.start();
-							log ("debug", "hashCode="+p2.hashCode());
+							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_command2, " "));
+							log ("debug", "hashCode="+sysproc.hashCode());
 						} catch (IOException e)
 						{
 							// TODO Auto-generated catch block
