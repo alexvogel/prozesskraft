@@ -354,7 +354,8 @@ public class FileOccurGui
 
 		DataBindingContext bindingContext = new DataBindingContext();
 
-		IObservableValue targetObservableContent = WidgetProperties.text(SWT.Modify).observeDelayed(800, text);
+//		IObservableValue targetObservableContent = WidgetProperties.text(SWT.Modify).observeDelayed(800, text);
+		IObservableValue targetObservableContent = WidgetProperties.text(SWT.Modify).observe(text);
 		IObservableValue modelObservableContent = BeanProperties.value("content").observe(data);
 		bindingContext.bindValue(targetObservableContent, modelObservableContent, strategyTest, null);
 //		bindingContext.bindValue(targetObservableContent, modelObservableContent);

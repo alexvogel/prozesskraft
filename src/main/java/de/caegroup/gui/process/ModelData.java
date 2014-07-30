@@ -5,7 +5,7 @@ package de.caegroup.gui.process;
 
 public class ModelData extends ModelObject
 {
-	public String content = "/home/avo/process.pdf";
+	public String content = null;
 	
 	public ModelData()
 	{
