@@ -101,6 +101,7 @@
 			</plugin>
 
 <!-- Obfuskieren des jars. das output ueberschreibt das default-jar, welches durch 'maven-jar-plugin' id=default produziert wurde -->
+<!--
 			<plugin>
 				<groupId>com.pyx4me</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
@@ -114,7 +115,7 @@
 					</execution>
 				</executions>
 				<configuration>
-<!-- 					<includeDependency>true</includeDependency> -->
+// 					<includeDependency>true</includeDependency> 
 					<obfuscate>true</obfuscate>
 					<outputDirectory>${project.build.directory}</outputDirectory>
 					<injar>${project.name}-${project.version}-nonObf.jar</injar>
@@ -129,6 +130,7 @@
 					<proguardVersion>4.8</proguardVersion>
 				</configuration>
 			</plugin>
+-->
 			
 <!-- Alle unter dependency definierten Abhaengigkeiten werden aus dem maven-repo in ein eigenes lib-verzeichnis kopiert -->
 			<plugin>
