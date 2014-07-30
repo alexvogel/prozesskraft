@@ -1321,7 +1321,7 @@ public class PrampPartUi1 extends ModelObject
 					
 					// starten des process-manager remote
 					// ....
-					if(ini.get("start", "manager").matches("^true$"))
+					if(ini.get("start", "manager").equals("true"))
 					{
 						log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
 	
@@ -1342,7 +1342,7 @@ public class PrampPartUi1 extends ModelObject
 					}
 //					// starten des pmodel gui lokal
 //					// ....
-					if(ini.get("start", "pmodel").matches("^true$"))
+					if(ini.get("start", "pmodel").equals("true"))
 					{
 						log ("info", "launching pmodel viewer");
 	
