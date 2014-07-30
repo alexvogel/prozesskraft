@@ -64,7 +64,7 @@ public class FileOccurGui
 	Text text = null;
 	Button button = null;
 
-	ModelData data = new ModelData();
+	public ModelData data = new ModelData();
 
 	public FileOccurGui(FileGui parent_filegui, Composite parent, File file, String key, boolean textexist, boolean buttonexist)
 	{
@@ -307,9 +307,11 @@ public class FileOccurGui
 		// Einrichten der ControlDecoration über dem combofeld
 		final ControlDecoration controlDecorationCombo = new ControlDecoration(text, SWT.LEFT | SWT.TOP);
 //		controlDecorationCombo.setDescriptionText("test failed");
+
 		FieldDecoration fieldDecorationError = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
 		controlDecorationCombo.setImage(fieldDecorationError.getImage());
-//		FieldDecoration fieldDecorationInfo = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
+
+		final FieldDecoration fieldDecorationInfo = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 //		controlDecorationCombo.setImage(fieldDecorationInfo.getImage());
 		
 		// Validator mit Verbindung zur Controldecoration
@@ -324,10 +326,14 @@ public class FileOccurGui
 					file.performAllTests();
 					if ( file.doAllTestsPass() )
 					{
-						controlDecorationCombo.hide();
+						// bei bestandenen tests soll das symbol ein Info-Symbol sein
+						controlDecorationCombo.setImage(fieldDecorationInfo.getImage());
+						
+						// bei bestandenen Tests soll das Symbol augeblendet werden
+//						controlDecorationCombo.hide();
 
 //						// debug
-						controlDecorationCombo.show();
+//						controlDecorationCombo.show();
 						controlDecorationCombo.setDescriptionText( file.getAllTestsFeedback() );
 //						
 						return ValidationStatus.ok();
