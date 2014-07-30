@@ -64,7 +64,7 @@ public class FileOccurGui
 	Text text = null;
 	Button button = null;
 
-	public ModelData data = new ModelData();
+	ModelData data = new ModelData();
 
 	public FileOccurGui(FileGui parent_filegui, Composite parent, File file, String key, boolean textexist, boolean buttonexist)
 	{
@@ -354,12 +354,9 @@ public class FileOccurGui
 
 		DataBindingContext bindingContext = new DataBindingContext();
 
-//		IObservableValue targetObservableContent = WidgetProperties.text(SWT.Modify).observeDelayed(800, text);
-		IObservableValue targetObservableContent = WidgetProperties.text(SWT.Modify).observe(text);
+		IObservableValue targetObservableContent = WidgetProperties.text(SWT.Modify).observeDelayed(800, text);
 		IObservableValue modelObservableContent = BeanProperties.value("content").observe(data);
 		bindingContext.bindValue(targetObservableContent, modelObservableContent, strategyTest, null);
-//		bindingContext.bindValue(targetObservableContent, modelObservableContent);
-//		bindingContext.bindValue(targetObservableContent, modelObservableContent, null, null);
 
 		IObservableValue targetObservableContentTooltip = WidgetProperties.tooltipText().observe(text);
 		IObservableValue modelObservableInstancedirectoryTooltip = BeanProperties.value("content").observe(data);
@@ -385,19 +382,19 @@ public class FileOccurGui
 	 */
 	public void commit(Step step)
 	{
-		if ( this.data.getContent() != null && (!(this.data.getContent().matches("^$"))))
+//		if ( this.data.getContent() != null && (!(this.data.getContent().matches("^$"))))
 //		if ( ! (this.text.getText().matches("^$") ) )
 		{
 			// setzen des pfades
-			file.setAbsfilename(data.getContent());
+//			file.setAbsfilename(data.getContent());
 			step.log("debug", "FileOccurGui.commit: committing " + file.toString() + file.getAbsfilename());
 			step.commitFile(file);
 //			System.out.println("committingly "+file.getAbsfilename());
 		}
-		else
-		{
-			step.log("debug", "data of FileOccurGui.commit is null or ''.");
-		}
+//		else
+//		{
+//			step.log("debug", "data of FileOccurGui.commit is null or ''.");
+//		}
 	}
 
 	
