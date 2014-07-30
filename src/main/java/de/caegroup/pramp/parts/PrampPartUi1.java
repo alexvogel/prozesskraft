@@ -1318,43 +1318,49 @@ public class PrampPartUi1 extends ModelObject
 						e1.printStackTrace();
 					}
 					
+					
 					// starten des process-manager remote
 					// ....
-					log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
-
-					String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"" + ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary()+"\""};
-					ProcessBuilder pb = new ProcessBuilder(args_for_command);
-
-					log ("info", "calling: " + StringUtils.join(args_for_command, " "));
-					try
+					if(ini.get("start", "manager").matches("^true$"))
 					{
-						java.lang.Process p = pb.start();
-						log ("debug", "hashCode="+p.hashCode());
-					} catch (IOException e)
-					{
-						// TODO Auto-generated catch block
-						log ("error", "IOException: problems with executing via ssh");
-						e.printStackTrace();
+						log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
+	
+						String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"" + ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary()+"\""};
+						ProcessBuilder pb = new ProcessBuilder(args_for_command);
+	
+						log ("info", "calling: " + StringUtils.join(args_for_command, " "));
+						try
+						{
+							java.lang.Process p = pb.start();
+							log ("debug", "hashCode="+p.hashCode());
+						} catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							log ("error", "IOException: problems with executing via ssh");
+							e.printStackTrace();
+						}
 					}
-
 //					// starten des pmodel gui lokal
 //					// ....
-//					log ("info", "launching pmodel viewer");
-//
-//					String[] args_for_command2 = {"pmodel", "gui", "-instance", process.getOutfilebinary()};
-//
-//					ProcessBuilder pb2 = new ProcessBuilder(args_for_command2);
-//					log ("info", "calling: " + StringUtils.join(args_for_command2, " "));
-//					try
-//					{
-//						java.lang.Process p2 = pb2.start();
-//						log ("debug", "hashCode="+p2.hashCode());
-//					} catch (IOException e)
-//					{
-//						// TODO Auto-generated catch block
-//						log ("error", "IOException: problems with execution");
-//						e.printStackTrace();
-//					}
+					if(ini.get("start", "pmodel").matches("^true$"))
+					{
+						log ("info", "launching pmodel viewer");
+	
+						String[] args_for_command2 = {"pmodel", "gui", "-instance", process.getOutfilebinary()};
+	
+						ProcessBuilder pb2 = new ProcessBuilder(args_for_command2);
+						log ("info", "calling: " + StringUtils.join(args_for_command2, " "));
+						try
+						{
+							java.lang.Process p2 = pb2.start();
+							log ("debug", "hashCode="+p2.hashCode());
+						} catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							log ("error", "IOException: problems with execution");
+							e.printStackTrace();
+						}
+					}
 
 					return true;
 
