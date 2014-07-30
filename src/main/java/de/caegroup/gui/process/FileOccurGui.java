@@ -386,7 +386,7 @@ public class FileOccurGui
 		}
 		else
 		{
-			step.log("debug", "data of FileOccurGui.commit is null or ''. text is "+text.getText());
+			step.log("debug", "data of FileOccurGui.commit is null or ''.");
 		}
 	}
 
