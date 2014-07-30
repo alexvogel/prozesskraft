@@ -330,7 +330,7 @@ public class FileOccurGui
 						controlDecorationCombo.setImage(fieldDecorationInfo.getImage());
 						
 						// bei bestandenen Tests soll das Symbol augeblendet werden
-//						controlDecorationCombo.hide();
+						controlDecorationCombo.hide();
 
 //						// debug
 //						controlDecorationCombo.show();
