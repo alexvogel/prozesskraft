@@ -309,7 +309,7 @@ public class FileOccurGui
 				if (value instanceof String)
 				{
 					file.setAbsfilename((String)value);
-					System.out.println("ACTUAL FILENAME IS: "+file.getAbsfilename());
+//					System.out.println("ACTUAL FILENAME IS: "+file.getAbsfilename());
 					file.performAllTests();
 					if ( file.doAllTestsPass() )
 					{
@@ -373,11 +373,12 @@ public class FileOccurGui
 //		if ( ! (this.text.getText().matches("^$") ) )
 		{
 			// setzen des pfades
-			file.setAbsfilename(data.getContent());
-			if(file.getAbsfilename() != null)
+//			file.setAbsfilename(data.getContent());
+			// nur committen, falls es sichtbar ist
+			if(this.textexist)
 			{
-				step.log("debug", "FileOccurGui.commit: committing " + file.toString() + file.getAbsfilename());
-				step.commitFile(file);
+				step.log("debug", "FileOccurGui.commit: committing " + file.toString() +":"+ file.getAbsfilename().toString());
+//				step.commitFile(file);
 			}
 //			System.out.println("committingly "+file.getAbsfilename());
 		}
