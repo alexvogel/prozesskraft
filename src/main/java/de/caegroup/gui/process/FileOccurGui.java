@@ -320,15 +320,15 @@ public class FileOccurGui
 				if (value instanceof String)
 				{
 					file.setAbsfilename((String)value);
-//					System.out.println("ACTUAL FILENAME IS: "+file.getAbsfilename());
+					System.out.println("ACTUAL FILENAME IS: "+file.getAbsfilename());
 					file.performAllTests();
 					if ( file.doAllTestsPass() )
 					{
 						controlDecorationCombo.hide();
 
 //						// debug
-//						controlDecorationCombo.show();
-//						controlDecorationCombo.setDescriptionText( file.getAllTestsFeedback() );
+						controlDecorationCombo.show();
+						controlDecorationCombo.setDescriptionText( file.getAllTestsFeedback() );
 //						
 						return ValidationStatus.ok();
 
@@ -378,8 +378,8 @@ public class FileOccurGui
 	 */
 	public void commit(Step step)
 	{
-//		if ( this.data.getContent() != null && (!(this.data.getContent().matches("^$"))))
-		if ( ! (this.text.getText().matches("^$") ) )
+		if ( this.data.getContent() != null && (!(this.data.getContent().matches("^$"))))
+//		if ( ! (this.text.getText().matches("^$") ) )
 		{
 			// setzen des pfades
 			file.setAbsfilename(text.getText());
