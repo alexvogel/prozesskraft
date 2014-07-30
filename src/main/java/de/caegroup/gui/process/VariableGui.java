@@ -202,7 +202,7 @@ public class VariableGui
 	 */
 	public void commit (Step step)
 	{
-		step.log("debug", "Commit all occurances of variable.");
+		step.log("debug", "Commit all occurances "+ variableoccurGui.size() +" of variable.");
 		for(VariableOccurGui actualVariableoccurGui : variableoccurGui)
 		{
 			actualVariableoccurGui.commit(step);

@@ -186,7 +186,7 @@ public class FileGui
 	 */
 	public void commit (Step step)
 	{
-		step.log("debug", "Commit all occurances of file.");
+		step.log("debug", "Commit all occurances "+ fileoccurGui.size() +" of file.");
 		for(FileOccurGui actualFileoccurGui : fileoccurGui)
 		{
 			actualFileoccurGui.commit(step);
