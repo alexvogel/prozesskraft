@@ -320,7 +320,7 @@ public class FileOccurGui
 				if (value instanceof String)
 				{
 					file.setAbsfilename((String)value);
-//					System.out.println("ACTUAL FILENAME IS: "+file.getAbsfilename());
+					System.out.println("ACTUAL FILENAME IS: "+file.getAbsfilename());
 					file.performAllTests();
 					if ( file.doAllTestsPass() )
 					{
