@@ -388,7 +388,7 @@ public class FileOccurGui
 			// setzen des pfades
 //			file.setAbsfilename(data.getContent());
 			step.log("debug", "FileOccurGui.commit: committing " + file.toString() + file.getAbsfilename());
-			step.commitFile(file);
+//			step.commitFile(file);
 //			System.out.println("committingly "+file.getAbsfilename());
 		}
 //		else
