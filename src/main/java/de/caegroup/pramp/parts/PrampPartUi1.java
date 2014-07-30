@@ -1321,7 +1321,7 @@ public class PrampPartUi1 extends ModelObject
 					
 					// starten des process-manager remote
 					// ....
-					if(ini.get("start", "manager").equals("true"))
+					if(ini.get("start", "process-manager").equals("true"))
 					{
 						log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
 	
