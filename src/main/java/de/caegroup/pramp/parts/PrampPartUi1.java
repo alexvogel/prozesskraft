@@ -1346,7 +1346,7 @@ public class PrampPartUi1 extends ModelObject
 					{
 						log ("info", "launching pmodel viewer");
 	
-						String[] args_for_command2 = {"pmodel", "gui", "-instance", process.getOutfilebinary()};
+						String[] args_for_command2 = {ini.get("apps", "pmodel"), "-instance", process.getOutfilebinary()};
 	
 						ProcessBuilder pb2 = new ProcessBuilder(args_for_command2);
 						log ("info", "calling: " + StringUtils.join(args_for_command2, " "));
