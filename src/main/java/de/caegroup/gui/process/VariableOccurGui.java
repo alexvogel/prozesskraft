@@ -330,7 +330,7 @@ public class VariableOccurGui
 		}
 		else
 		{
-			step.log("debug", "data of VariableOccurGui.commit is null or ''");
+			step.log("debug", "data of VariableOccurGui.commit is null or ''. combo is "+combo.getText());
 		}
 	}
 
