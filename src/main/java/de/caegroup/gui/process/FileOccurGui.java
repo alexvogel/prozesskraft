@@ -378,7 +378,9 @@ public class FileOccurGui
 			if(this.textexist)
 			{
 				step.log("debug", "FileOccurGui.commit: committing " + file.toString() +":"+ file.getAbsfilename().toString());
-				step.commitFile(file);
+				step.commitFile(label.getText(), text.getText());
+				step.log("debug", "soeben committed: " + label.getText() +"="+ text.getText());
+//				step.commitFile(file);
 			}
 //			System.out.println("committingly "+file.getAbsfilename());
 		}
