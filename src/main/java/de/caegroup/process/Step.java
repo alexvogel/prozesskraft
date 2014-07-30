@@ -1222,7 +1222,7 @@ implements Serializable, Cloneable
 		{
 			success = this.rootcommit();
 		}
-		
+
 		// nur wenn es nicht der root-step ist, soll auf konventionelle art committed werden
 		else
 		{
