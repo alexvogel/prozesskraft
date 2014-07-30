@@ -134,7 +134,6 @@ public class PmodelPartUi1 extends ModelObject
 
 	int logLineCount = 0;
 
-	String processManagerCall = "undefined";
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
 	 * @wbp.parser.entryPoint
@@ -365,9 +364,33 @@ public class PmodelPartUi1 extends ModelObject
 		button_stopmanager.setText("stop manager");
 		button_stopmanager.addSelectionListener(listener_stopmanager_button);
 		
+		// Group apps
+		Group grpApps = new Group(composite_11, SWT.NONE);
+		grpApps.setText("apps");
+		GridData gd_grpApps = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_grpApps.widthHint = 152;
+		grpApps.setLayoutData(gd_grpApps);
+		grpApps.setLayout(new GridLayout(2, false));
+		
+		Button btnNewButton3 = new Button(grpApps, SWT.NONE);
+		GridData gd_btnNewButton3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd_btnNewButton3.widthHint = 141;
+		btnNewButton3.setLayoutData(gd_btnNewButton3);
+		btnNewButton3.setText("pRamp");
+		btnNewButton3.addSelectionListener(listener_pramp_button);
+		
+		Button btnNewButton4 = new Button(grpApps, SWT.NONE);
+		GridData gd_btnNewButton4 = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd_btnNewButton4.widthHint = 141;
+		btnNewButton4.setLayoutData(gd_btnNewButton4);
+		btnNewButton4.setText("pRadar");
+		btnNewButton4.addSelectionListener(listener_pradar_button);
+		
+//
 		label_marked = new Label(composite_11, SWT.NONE);
-		label_marked.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		label_marked.setText("New Label");
+		label_marked.setVisible(false);
+//		label_marked.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+//		label_marked.setText("New Label");
 		
 		SashForm sashForm = new SashForm(composite_1, SWT.SMOOTH);
 		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -654,7 +677,7 @@ public class PmodelPartUi1 extends ModelObject
 	
 	public void managerActivate()
 	{
-		String aufruf = this.processManagerCall+" -instance "+this.einstellungen.process.getInfilebinary();
+		String aufruf = ini.get("apps", "process-manager")+" -instance "+this.einstellungen.process.getInfilebinary();
 		try
 		{
 			log("info", aufruf);
@@ -688,7 +711,7 @@ public class PmodelPartUi1 extends ModelObject
 	
 	public void managerDeactivate()
 	{
-		String aufruf = this.processManagerCall+" -stop -instance "+this.einstellungen.process.getInfilebinary();
+		String aufruf = ini.get("apps", "process-manager")+" -stop -instance "+this.einstellungen.process.getInfilebinary();
 		try
 		{
 			log("info", aufruf);
@@ -710,6 +733,61 @@ public class PmodelPartUi1 extends ModelObject
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * pramp-button oeffnet die anwendung pramp-gui
+	 **/
+	SelectionAdapter listener_pramp_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			log("info", "starten von pramp");
+			String aufruf = ini.get("apps", "pramp");
+			
+			try
+			{
+				log("info", "calling: " + aufruf);
+				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (NullPointerException e)
+			{
+				log("error", "problems with calling pramp with: "+aufruf);
+			}
+		}
+	};
+	
+	/**
+	 * pradar-button oeffnet die anwendung pradar-gui
+	 **/
+	SelectionAdapter listener_pradar_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			log("info", "starten von pradar");
+			String aufruf = ini.get("apps", "pradar");
+			
+			try
+			{
+				log("info", "calling: " + aufruf);
+				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (NullPointerException e)
+			{
+				log("error", "problems with calling pradar with: "+aufruf);
+			}
+
+		}
+	};
 	
 	SelectionAdapter listener_autoscale_button = new SelectionAdapter()
 	{
@@ -888,8 +966,6 @@ public class PmodelPartUi1 extends ModelObject
 			}
 			this.license_server_port_at_hostname = license_server_list;
 
-			this.processManagerCall = ini.get("process", "manager");
-			
 		}
 		catch (FileNotFoundException e)
 		{
