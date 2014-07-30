@@ -109,11 +109,13 @@ public class CommitGui
 		// commit aller variables
 		for(VariableGui actualVariableGui : variableGui)
 		{
+			step.log("debug", "Commit: its a variable");
 			actualVariableGui.commit(step);
 		}
 		// commit aller files
 		for(FileGui actualFileGui : fileGui)
 		{
+			step.log("debug", "Commit: its a file");
 			actualFileGui.commit(step);
 		}
 	}
