@@ -320,7 +320,7 @@ public class FileOccurGui
 				if (value instanceof String)
 				{
 					file.setAbsfilename((String)value);
-					System.out.println("ACTUAL FILENAME IS: "+file.getAbsfilename());
+//					System.out.println("ACTUAL FILENAME IS: "+file.getAbsfilename());
 					file.performAllTests();
 					if ( file.doAllTestsPass() )
 					{
@@ -350,9 +350,9 @@ public class FileOccurGui
 
 		IObservableValue targetObservableContent = WidgetProperties.text(SWT.Modify).observeDelayed(800, text);
 		IObservableValue modelObservableContent = BeanProperties.value("content").observe(data);
-//		bindingContext.bindValue(targetObservableContent, modelObservableContent, strategyTest, null);
+		bindingContext.bindValue(targetObservableContent, modelObservableContent, strategyTest, null);
 //		bindingContext.bindValue(targetObservableContent, modelObservableContent);
-		bindingContext.bindValue(targetObservableContent, modelObservableContent, null, null);
+//		bindingContext.bindValue(targetObservableContent, modelObservableContent, null, null);
 
 		IObservableValue targetObservableContentTooltip = WidgetProperties.tooltipText().observe(text);
 		IObservableValue modelObservableInstancedirectoryTooltip = BeanProperties.value("content").observe(data);
@@ -378,7 +378,8 @@ public class FileOccurGui
 	 */
 	public void commit(Step step)
 	{
-		if ( this.data.getContent() != null && (!(this.data.getContent().matches("^$"))))
+//		if ( this.data.getContent() != null && (!(this.data.getContent().matches("^$"))))
+		if ( ! (this.text.getText().matches("^$") ) )
 		{
 			// setzen des pfades
 			file.setAbsfilename(text.getText());
@@ -398,8 +399,7 @@ public class FileOccurGui
 		if(this.textexist)
 		{
 			System.out.println("testResult file '"+this.key+"' "+this.file.doAllTestsPass());
-			return true;
-//			return this.file.doAllTestsPass();
+			return this.file.doAllTestsPass();
 		}
 		return true;
 	}
