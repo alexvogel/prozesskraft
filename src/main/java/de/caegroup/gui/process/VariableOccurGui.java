@@ -322,11 +322,15 @@ public class VariableOccurGui
 	 */
 	public void commit(Step step)
 	{
-		step.log("debug", "data of VariableOccurGui.commit: "+this.data.getContent().toString());
+		
 		if ( data.getContent() != null && (!(this.data.getContent().matches("^$"))))
 		{
 			step.log("debug", "VariableOccurGui.commitit: committing " + variable.toString() + variable.getValue());
 			step.commitVariable(this.key, data.getContent());
+		}
+		else
+		{
+			step.log("debug", "data of VariableOccurGui.commit is null or ''");
 		}
 	}
 
