@@ -350,7 +350,8 @@ public class FileOccurGui
 
 		IObservableValue targetObservableContent = WidgetProperties.text(SWT.Modify).observeDelayed(800, text);
 		IObservableValue modelObservableContent = BeanProperties.value("content").observe(data);
-		bindingContext.bindValue(targetObservableContent, modelObservableContent, strategyTest, null);
+//		bindingContext.bindValue(targetObservableContent, modelObservableContent, strategyTest, null);
+		bindingContext.bindValue(targetObservableContent, modelObservableContent, null, null);
 
 		IObservableValue targetObservableContentTooltip = WidgetProperties.tooltipText().observe(text);
 		IObservableValue modelObservableInstancedirectoryTooltip = BeanProperties.value("content").observe(data);
