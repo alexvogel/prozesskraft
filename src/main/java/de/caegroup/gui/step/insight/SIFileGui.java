@@ -151,7 +151,7 @@ public class SIFileGui
 					return f.getFilename();
 					
 				case 3:
-					return f.toString() + ":"+ f.getAbsfilename();
+					return f.getAbsfilename();
 			}
 			// should never get here
 			return "";
