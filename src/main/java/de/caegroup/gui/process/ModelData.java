@@ -18,7 +18,7 @@ public class ModelData extends ModelObject
 
 	public void setContent(String content)
 	{
-		System.out.println("updating content: "+content);
+		System.err.println("updating content: "+content);
 		firePropertyChange("content", this.content, this.content = content);
 	}
 }

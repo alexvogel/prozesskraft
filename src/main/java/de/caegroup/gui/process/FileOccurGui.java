@@ -369,25 +369,14 @@ public class FileOccurGui
 	 */
 	public void commit(Step step)
 	{
-//		if ( this.data.getContent() != null && (!(this.data.getContent().matches("^$"))))
-//		if ( ! (this.text.getText().matches("^$") ) )
+		// nur committen, falls es sichtbar ist
+		if(this.textexist)
 		{
 			// setzen des pfades
-//			file.setAbsfilename(data.getContent());
-			// nur committen, falls es sichtbar ist
-			if(this.textexist)
-			{
-				step.log("debug", "FileOccurGui.commit: committing " + file.toString() +":"+ file.getAbsfilename().toString());
-				step.commitFile(label.getText(), text.getText());
-				step.log("debug", "soeben committed: " + label.getText() +"="+ text.getText());
-//				step.commitFile(file);
-			}
-//			System.out.println("committingly "+file.getAbsfilename());
+			file.setAbsfilename(data.getContent());
+			step.log("debug", "FileOccurGui.commit: " + file.getKey() +"="+ file.getAbsfilename());
+			step.commitFile(file);
 		}
-//		else
-//		{
-//			step.log("debug", "data of FileOccurGui.commit is null or ''.");
-//		}
 	}
 
 	
@@ -395,7 +384,7 @@ public class FileOccurGui
 	{
 		if(this.textexist)
 		{
-			System.out.println("testResult file '"+this.key+"' "+this.file.doAllTestsPass());
+//			System.out.println("testResult file '"+this.key+"' "+this.file.doAllTestsPass());
 			return this.file.doAllTestsPass();
 		}
 		return true;

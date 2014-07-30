@@ -311,15 +311,12 @@ public class VariableOccurGui
 	 */
 	public void commit(Step step)
 	{
-		
-		if ( data.getContent() != null && (!(this.data.getContent().matches("^$"))))
+		// committen, wenn sichtbar (unsichtbare gibts bei optionalen parametern)
+		if ( comboexist )
 		{
-			step.log("debug", "VariableOccurGui.commitit: committing " + variable.toString() + variable.getValue());
-			step.commitVariable(this.key, data.getContent());
-		}
-		else
-		{
-			step.log("debug", "data of VariableOccurGui.commit is null or  ''.");
+			variable.setValue(this.data.getContent());
+			step.log("debug", "VariableOccurGui.commit: " + variable.getKey() +"="+ variable.getValue());
+			step.commitVariable(variable);
 		}
 	}
 
