@@ -872,7 +872,7 @@ implements Serializable, Cloneable
 //		System.out.println("anzahl der Steps im Prozess nach dem fanning: "+this.parent.getSteps().size());
 	}
 
-	public boolean work()
+	public boolean work(String processSyscall)
 	{
 		boolean success = true;
 		this.setStatus("working");
@@ -929,7 +929,7 @@ implements Serializable, Cloneable
 			
 			try
 			{
-				String[] args_for_syscall = {this.getParent().ini.get("apps", "process-syscall"), call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
+				String[] args_for_syscall = {processSyscall, call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
 
 //				// erstellen prozessbuilder
 //				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);

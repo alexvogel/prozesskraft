@@ -100,8 +100,6 @@ implements Serializable
 	private String touchAsString = "";
 	private long touchInMillis = 0;
 	
-	public Ini ini = new Ini();
-
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -129,37 +127,7 @@ implements Serializable
 //		}
 //		System.out.println("absdir von prozess ist: "+this.absdir);
 		
-		/*----------------------------
-		  get options from ini-file
-		----------------------------*/
-		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Process.class) + "/" + "../etc/process-core.ini");
-
-		if (inifile.exists())
-		{
-			try
-			{
-				ini.load(inifile);
-			}
-			catch (InvalidFileFormatException e1)
-			{
-			// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			catch (IOException e1)
-			{
-			// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
-		else
-		{
-			log("error", "ini file does not exist: "+inifile.getAbsolutePath());
-			log("warn", "setting default: [apps] process-syscall=process sysiphus");
-			ini.add("apps", "process-syscall", "process sysiphus");
-		}
-
 	}
-
 	/*----------------------------
 	  methods
 	----------------------------*/
