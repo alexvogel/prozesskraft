@@ -1298,27 +1298,39 @@ public class PrampPartUi1 extends ModelObject
 					// ....
 					if(ini.get("start", "process-manager").equals("true"))
 					{
-						log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
+//						log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
 
-						if(!(DistantHostActions.isHostReachable(combo_hosts.getText())))
-						{
-							log ("error", "host "+combo_hosts.getText()+" not reachable");
-							return false;
-						}
+//						if(!(DistantHostActions.isHostReachable(combo_hosts.getText())))
+//						{
+//							log ("error", "host "+combo_hosts.getText()+" not reachable");
+//							return false;
+//						}
 						
+						String call = ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary();
 						
+//						try
+//						{
+//							log ("info", "calling on host " + combo_hosts.getText() + ": "+call);
+//							DistantHostActions.sysCallOnDistantHost(combo_hosts.getText(), call );
+//						}
+//						catch (JSchException e1)
+//						{
+//							log ("error", "cannot launch process on host " + combo_hosts.getText());
+////							e1.printStackTrace();
+//						}
+						
+						log ("info", "calling: " + call);
 						try
 						{
-							String call = ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary();
-							log ("info", "calling on host " + combo_hosts.getText() + ": "+call);
-							DistantHostActions.sysCallOnDistantHost(combo_hosts.getText(), call );
-						}
-						catch (JSchException e1)
+							java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+							log ("debug", "hashCode="+sysproc.hashCode());
+						} catch (IOException e)
 						{
-							log ("error", "cannot launch process on host " + combo_hosts.getText());
-//							e1.printStackTrace();
+							// TODO Auto-generated catch block
+							log ("error", "IOException: problems with execution");
+							e.printStackTrace();
 						}
-						
+
 //						String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"" + ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary()+"\""};
 
 //						ProcessBuilder pb = new ProcessBuilder(args_for_command);
