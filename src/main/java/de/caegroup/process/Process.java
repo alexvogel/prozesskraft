@@ -100,7 +100,7 @@ implements Serializable
 	private String touchAsString = "";
 	private long touchInMillis = 0;
 	
-	public Ini ini;
+	public Ini ini = new Ini();
 
 	/*----------------------------
 	  constructors
@@ -138,7 +138,7 @@ implements Serializable
 		{
 			try
 			{
-				ini = new Ini(inifile);
+				ini.load(inifile);
 			}
 			catch (InvalidFileFormatException e1)
 			{
@@ -153,8 +153,9 @@ implements Serializable
 		}
 		else
 		{
-			System.err.println("ini file does not exist: "+inifile.getAbsolutePath());
-			System.exit(1);
+			log("error", "ini file does not exist: "+inifile.getAbsolutePath());
+			log("warn", "setting default: [apps] process-syscall=process sysiphus");
+			ini.add("apps", "process-syscall", "process sysiphus");
 		}
 
 	}
