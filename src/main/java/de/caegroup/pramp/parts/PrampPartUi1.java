@@ -3,24 +3,18 @@ package de.caegroup.pramp.parts;
 import de.caegroup.commons.DistantHostActions;
 import de.caegroup.gui.process.CommitCreator;
 
-import java.awt.Frame;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.NotDirectoryException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
@@ -37,9 +31,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.UpdateListStrategy;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.list.IObservableList;
@@ -50,8 +42,6 @@ import org.eclipse.jface.databinding.swt.WidgetProperties;
 //import org.eclipse.jface.bindings.Binding;
 //import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.awt.SWT_AWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -59,9 +49,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.TextLayout;
-import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -78,29 +65,14 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.eclipse.swt.widgets.Combo;
 
-
-
-
-
-
-
-
-
-
-
 import com.google.common.collect.Multimap;
 import com.jcraft.jsch.JSchException;
-//import com.jcraft.jsch.ChannelExec;
-//import com.jcraft.jsch.JSch;
-//import com.jcraft.jsch.Session;
 import com.license4j.License;
 import com.license4j.LicenseValidator;
 
 import de.caegroup.commons.*;
-import de.caegroup.process.Commit;
 import de.caegroup.process.Log;
 import de.caegroup.process.Process;
-import de.caegroup.process.Variable;
 
 public class PrampPartUi1 extends ModelObject
 //public class PrampPartUi1

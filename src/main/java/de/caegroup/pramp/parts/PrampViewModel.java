@@ -1,8 +1,5 @@
 package de.caegroup.pramp.parts;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 public class PrampViewModel extends ModelObject
 {
 	public String[] processes = null;
