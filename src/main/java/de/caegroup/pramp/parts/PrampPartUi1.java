@@ -1,6 +1,6 @@
 package de.caegroup.pramp.parts;
 
-import de.caegroup.commons.*;
+import de.caegroup.commons.DistantHostActions;
 import de.caegroup.gui.process.CommitCreator;
 
 import java.awt.Frame;
