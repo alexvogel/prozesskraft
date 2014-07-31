@@ -87,7 +87,9 @@ import org.eclipse.swt.widgets.Combo;
 
 
 
+
 import com.google.common.collect.Multimap;
+import com.jcraft.jsch.JSchException;
 //import com.jcraft.jsch.ChannelExec;
 //import com.jcraft.jsch.JSch;
 //import com.jcraft.jsch.Session;
@@ -1325,23 +1327,41 @@ public class PrampPartUi1 extends ModelObject
 					if(ini.get("start", "process-manager").equals("true"))
 					{
 						log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
-	
-						String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"" + ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary()+"\""};
+
+						if(!(DistantHostActions.isHostReachable(combo_hosts.getText())))
+						{
+							log ("error", "host "+combo_hosts.getText()+" not reachable");
+							return false;
+						}
+						
+						
+						try
+						{
+							String call = ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary();
+							log ("info", "calling on host " + combo_hosts.getText() + ": "+call);
+							DistantHostActions.sysCallOnDistantHost(combo_hosts.getText(), call );
+						}
+						catch (JSchException e1)
+						{
+							log ("error", "cannot launch process on host " + combo_hosts.getText());
+//							e1.printStackTrace();
+						}
+						
+//						String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"" + ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary()+"\""};
 
 //						ProcessBuilder pb = new ProcessBuilder(args_for_command);
 //						java.lang.Process sysproc = pb.start();
 	
-						log ("info", "calling: " + StringUtils.join(args_for_command, " "));
-						try
-						{
-							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_command, " "));
-							log ("debug", "hashCode="+sysproc.hashCode());
-						} catch (IOException e)
-						{
-							// TODO Auto-generated catch block
-							log ("error", "IOException: problems with executing via ssh");
-							e.printStackTrace();
-						}
+//						try
+//						{
+//							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_command, " "));
+//							log ("debug", "hashCode="+sysproc.hashCode());
+//						} catch (IOException e)
+//						{
+//							// TODO Auto-generated catch block
+//							log ("error", "IOException: problems with executing via ssh");
+//							e.printStackTrace();
+//						}
 					}
 //					// starten des pmodel gui lokal
 //					// ....

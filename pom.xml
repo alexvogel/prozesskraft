@@ -277,5 +277,10 @@
 			<artifactId>guava</artifactId>
 			<version>17.0</version>
 		</dependency>
+		<dependency>
+			<groupId>de.caegroup.commons</groupId>
+			<artifactId>avoge-commons</artifactId>
+			<version>0.1</version>
+		</dependency>
 	</dependencies>
 </project>
