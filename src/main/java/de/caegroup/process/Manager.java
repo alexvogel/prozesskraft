@@ -348,7 +348,7 @@ public class Manager
 				{
 					p3.log("debug", "manager "+managerid+": working step '"+step.getName()+"'");
 					// versuchen alle works zu starten
-					if (step.work())
+					if (step.work(ini.get("apps", "process-syscall")))
 					{
 						p3.log("debug", "manager "+managerid+": launching work-program of step '"+step.getName()+"' succesfull");
 					}
@@ -363,7 +363,7 @@ public class Manager
 				{
 					// ueberpruefen ob work noch laeuft
 					p3.log("debug", "manager "+managerid+": check whether work-program of step '"+step.getName()+"' is still running");
-					if (step.work())
+					if (step.work(ini.get("apps", "process-syscall")))
 					{
 						p3.log("debug", "manager "+managerid+": work-program of step '"+step.getName()+"' finished");
 					}
