@@ -12,7 +12,7 @@ import com.jcraft.jsch.Session;
 public class DistantHostActions {
   
 	
-	public boolean isHostReachable(String host)
+	public static boolean isHostReachable(String host)
 	{
 		return isHostReachable(getDefaultSshIdRsa(), host);
 	}
@@ -21,7 +21,7 @@ public class DistantHostActions {
 	 * determines whether host is reachable via ssh
 	 * @return boolean
 	 */
-	public boolean isHostReachable(String sshIdRelPath, String host)
+	public static boolean isHostReachable(String sshIdRelPath, String host)
 	{
 		boolean reachable = false;
 		
@@ -60,44 +60,43 @@ public class DistantHostActions {
 		return reachable;
 	}
 
-	public void sysCallOnDistantHost(String host, String sysCall)
+	/**
+	 * executes a call on distant host
+	 * @return boolean
+	 * @throws JSchException 
+	 */
+	public static void sysCallOnDistantHost(String host, String sysCall) throws JSchException
 	{
 		sysCallOnDistantHost(getDefaultSshIdRsa(), host, sysCall);
 		
 	}
 	
 	/**
-	 * determines whether PID is alive on host
+	 * executes a call on distant host
 	 * @return boolean
+	 * @throws JSchException 
 	 */
-	public void sysCallOnDistantHost(String sshIdRelPath, String host, String sysCall)
+	public static void sysCallOnDistantHost(String sshIdRelPath, String host, String sysCall) throws JSchException
 	{
 		String sshIdAbsPath = System.getProperty("user.home")+"/"+sshIdRelPath;
 		System.out.println("using ssh-id-rsa: "+sshIdAbsPath);
 
-		try
-		{
-			JSch jsch = new JSch();
-
-			jsch.addIdentity(sshIdAbsPath);
-
-			Session session = jsch.getSession(System.getProperty("user.name"), host, 22);
-			session.setConfig("StrictHostKeyChecking", "no");
-			session.connect();
-			
-			ChannelExec channelExec = (ChannelExec)session.openChannel("exec");
-			channelExec.setCommand(sysCall);
-
-//			System.out.println("setting command to: "+command);
-			channelExec.connect();
-
-			channelExec.disconnect();
-			session.disconnect();
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+		JSch jsch = new JSch();
+	
+		jsch.addIdentity(sshIdAbsPath);
+	
+		Session session = jsch.getSession(System.getProperty("user.name"), host, 22);
+		session.setConfig("StrictHostKeyChecking", "no");
+		session.connect();
+		
+		ChannelExec channelExec = (ChannelExec)session.openChannel("exec");
+		channelExec.setCommand(sysCall);
+	
+		//System.out.println("setting command to: "+command);
+		channelExec.connect();
+	
+		channelExec.disconnect();
+		session.disconnect();
 		
 	}
 	
