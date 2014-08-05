@@ -1,7 +1,5 @@
 package de.caegroup.process;
 
-import de.caegroup.process.Process;
-import de.caegroup.process.Step;
 import java.io.IOException;
 //import de.caegroup.view.Stepconnector;
 //import org.w3c.dom.*;

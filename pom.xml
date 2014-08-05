@@ -4,7 +4,7 @@
 	<groupId>de.caegroup.process</groupId>
 	<artifactId>process-manager</artifactId>
 	<packaging>jar</packaging>
-	<version>0.5.0</version>
+	<version>0.6.0</version>
 	<name>process-manager</name>
 	<url>http://maven.apache.org</url>
 	<build>
@@ -126,7 +126,7 @@
 		<dependency>
 			<groupId>de.caegroup.process</groupId>
 			<artifactId>process-core</artifactId>
-			<version>0.5.0</version>
+			<version>0.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
