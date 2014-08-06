@@ -23,19 +23,11 @@ import java.util.Set;
 import javax.xml.bind.JAXBException;
 
 import net.sf.jasperreports.engine.JRException;
+
+
+
+
 //import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
-
-
-
-
-
-
-
-
-
-
-
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
@@ -46,6 +38,15 @@ import org.apache.commons.cli.Options;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
+import org.docx4j.openpackaging.exceptions.InvalidFormatException;
+import org.docx4j.openpackaging.packages.OpcPackage;
+import org.docx4j.openpackaging.packages.PresentationMLPackage;
+import org.docx4j.openpackaging.parts.Part;
+import org.docx4j.openpackaging.parts.PartName;
+import org.docx4j.openpackaging.parts.PresentationML.MainPresentationPart;
+import org.docx4j.openpackaging.parts.PresentationML.SlideLayoutPart;
+import org.docx4j.openpackaging.parts.PresentationML.SlidePart;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
@@ -56,6 +57,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
+import org.pptx4j.Pptx4jException;
 
 import de.caegroup.commons.AutoCropBorder;
 import de.caegroup.commons.WhereAmI;
@@ -131,19 +133,14 @@ public class Createdoc
 //				.isRequired()
 				.create("definition");
 		
-		Option otype = OptionBuilder.withArgName("type")
-				.hasArg()
-				.withDescription("[optional, default=full] documentation type (full)")
-				.create("type");
-		
 		Option oformat = OptionBuilder.withArgName("format")
 				.hasArg()
-				.withDescription("[optional, default=pdf] output format (pdf|odt|docx|html) ")
+				.withDescription("[mandatory, default=pdf] output format (pdf|pptx) ")
 				.create("format");
 		
 		Option ooutput = OptionBuilder.withArgName("output")
 				.hasArg()
-				.withDescription("[mandatory] output file (pdf) with documentation of process definition")
+				.withDescription("[mandatory, default=out.<format>] output file with full documentation of process definition")
 //				.isRequired()
 				.create("output");
 		
@@ -161,7 +158,7 @@ public class Createdoc
 		options.addOption( ohelp );
 		options.addOption( ov );
 		options.addOption( odefinition );
-		options.addOption( otype );
+//		options.addOption( otype );
 		options.addOption( oformat );
 		options.addOption( ooutput );
 ////		options.addOption( property );
@@ -185,7 +182,7 @@ public class Createdoc
 		
 		if ( line.hasOption("v"))
 		{
-			System.out.println("author:  alexander.vogel@caegroup.de");
+			System.out.println("web:     www.prozesskraft.de");
 			System.out.println("version: [% version %]");
 			System.out.println("date:    [% date %]");
 			System.exit(0);
@@ -215,26 +212,16 @@ public class Createdoc
 			error++;
 		}
 		
-		// festlegen von type
-		if ( line.hasOption("type") )
-		{
-			type = line.getOptionValue("type");
-		}
-		else
-		{
-			type = "full";
-		}
-		
 		// festlegen von format
 		if ( line.hasOption("format") )
 		{
-			if (line.getOptionValue("format").matches("pdf|pptx|odt|docx|html"))
+			if (line.getOptionValue("format").matches("pdf|pptx"))
 			{
 				format = line.getOptionValue("format");
 			}
 			else
 			{
-				System.err.println("for -format use only pdf|pptx|odt|docx|html");
+				System.err.println("for -format use only pdf|pptx");
 				error++;
 			}
 		}
@@ -1368,8 +1355,15 @@ public class Createdoc
 			Thread.currentThread().interrupt();
 		}
 		
-		// pdfs mergen
-		mergePdf(pdfRankFiles, output);
+		// merge and output
+		if(format.equals("pdf"))
+		{
+			mergePdf(pdfRankFiles, output);
+		}
+		else if(format.equals("pptx"))
+		{
+			mergePptx(pptxRankFiles, output);
+		}
 
 		
 		
@@ -1427,6 +1421,90 @@ public class Createdoc
 			e.printStackTrace();
 		}
 	}
+
+//////////////////////////////////////////
+	/**
+	 * merge the pptx
+	 */
+	private static void mergePptx(Map<String,String> pptxRankFiles, String output)
+	{
+		System.out.println("merging pptx to a single file");
+		
+		Set<String> keySet = pptxRankFiles.keySet();
+		ArrayList<String> listKey = new ArrayList(keySet);
+		Collections.sort(listKey);
+		
+		try
+		{
+			java.io.File targetFile = new java.io.File(output);
+			
+			PresentationMLPackage targetPackage = PresentationMLPackage.createPackage();
+			
+//			MainPresentationPart pp = (MainPresentationPart) targetPackage.getParts().getParts().get(new PartName("/ppt/presentation.xml"));
+//			SlideLayoutPart layoutPart = (SlideLayoutPart) targetPackage.getParts().getParts().get(new PartName("/ppt/slideLayouts/slideLayout1.xml"));
+			
+//			int counter = 1;
+			
+			for(String actualKey : listKey)
+			{
+				java.io.File sourceFile = new java.io.File(pptxRankFiles.get(actualKey));
+				PresentationMLPackage sourcePackage = (PresentationMLPackage) OpcPackage.load(sourceFile);
+				
+				Map<PartName,Part> partMap = sourcePackage.getParts().getParts();
+				for(PartName name : partMap.keySet())
+				{
+					Part part = partMap.get(name);
+					if(part instanceof SlidePart)
+					{
+						SlidePart slide = (SlidePart) part;
+						SlidePart slidePart = sourcePackage.getMainPresentationPart().getSlide(1);
+						slidePart.setJaxbElement(slide.getJaxbElement());
+					}
+				}
+			}
+			
+			targetPackage.save(targetFile);
+			
+//			PDDocument document = new PDDocument();
+//			for(String actualKey : listKey)
+//			{
+//
+//				PDDocument part = PDDocument.load(pdfRankFiles.get(actualKey));
+//				System.out.println("merging "+pdfRankFiles.get(actualKey));
+//				ArrayList<PDPage> list = (ArrayList<PDPage>)part.getDocumentCatalog().getAllPages();
+//				for(PDPage page : list)
+//				{
+//					document.addPage(page);
+//				}
+//				
+//			}
+//			try
+//			{
+//				System.out.println("writing "+output);
+//				document.save(output);
+//			} catch (COSVisitorException e)
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+		}
+//		catch (IOException e)
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Docx4JException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Pptx4jException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	
 	
 	/**
