@@ -94,7 +94,9 @@ public class Createdoc
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Createdoc.class) + "/" + "../etc/process-createdoc.ini");
+		File installDir = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Createdoc.class) + "/" + "..");
+		
+		File inifile = new java.io.File(installDir.getAbsolutePath() + "/etc/process-createdoc.ini");
 
 		if (inifile.exists())
 		{
@@ -405,7 +407,7 @@ public class Createdoc
 		// P03) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
 		if (ini.get("process-createdoc", "p03") != null )
 		{
-			report.setJasper(ini.get("process-createdoc", "p03"));
+			report.setJasper(installDir.getAbsolutePath() + ini.get("process-createdoc", "p03"));
 			report.setJasperFilled(randomPathJasperFilled+"/p03.jasperFilled");
 			report.setPdf(randomPathPdf+"/p03.pdf");
 			pdfRankFiles.put("0.0.03", randomPathPdf+"/p03.pdf");
@@ -424,7 +426,7 @@ public class Createdoc
 		report.setParameter("processName", process.getName());
 		report.setParameter("processVersion", process.getVersion());
 		report.setParameter("processDatum", dateFormat.format(date));
-		report.setParameter("processArchitectLogoImagePath", ini.get("process-createdoc", "logo"));
+		report.setParameter("processArchitectLogoImagePath", installDir.getAbsolutePath() + ini.get("process-createdoc", "logo"));
 		report.setParameter("processArchitectCompany", process.getArchitectCompany());
 		report.setParameter("processArchitectName", process.getArchitectName());
 		report.setParameter("processArchitectMail", process.getArchitectMail());
@@ -477,7 +479,7 @@ public class Createdoc
 		// P05) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
 		if (ini.get("process-createdoc", "p05") != null )
 		{
-			report.setJasper(ini.get("process-createdoc", "p05"));
+			report.setJasper(installDir.getAbsolutePath() + ini.get("process-createdoc", "p05"));
 			report.setJasperFilled(randomPathJasperFilled+"/p05.jasperFilled");
 			report.setPdf(randomPathPdf+"/p05.pdf");
 			pdfRankFiles.put("0.0.05", randomPathPdf+"/p05.pdf");
@@ -545,7 +547,7 @@ public class Createdoc
 		// P10) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
 		if (ini.get("process-createdoc", "p10") != null )
 		{
-			report.setJasper(ini.get("process-createdoc", "p10"));
+			report.setJasper(installDir.getAbsolutePath() + ini.get("process-createdoc", "p10"));
 			report.setJasperFilled(randomPathJasperFilled+"/p10.jasperFilled");
 			report.setPdf(randomPathPdf+"/p10.pdf");
 			pdfRankFiles.put("0.1.0", randomPathPdf+"/p10.pdf");
@@ -674,7 +676,7 @@ public class Createdoc
 		// P20) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
 		if (ini.get("process-createdoc", "p20") != null )
 		{
-			report.setJasper(ini.get("process-createdoc", "p20"));
+			report.setJasper(installDir.getAbsolutePath() + ini.get("process-createdoc", "p20"));
 			report.setJasperFilled(randomPathJasperFilled+"/p20.jasperFilled");
 			report.setPdf(randomPathPdf+"/p20.pdf");
 			pdfRankFiles.put("0.2.0", randomPathPdf+"/p20.pdf");
@@ -814,7 +816,7 @@ public class Createdoc
 		// P30) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
 		if (ini.get("process-createdoc", "p30") != null )
 		{
-			report.setJasper(ini.get("process-createdoc", "p30"));
+			report.setJasper(installDir.getAbsolutePath() + ini.get("process-createdoc", "p30"));
 			report.setJasperFilled(randomPathJasperFilled+"/p30.jasperFilled");
 			report.setPdf(randomPathPdf+"/p30.pdf");
 			pdfRankFiles.put("0.3.0", randomPathPdf+"/p30.pdf");
@@ -884,7 +886,7 @@ public class Createdoc
 		// P40) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
 		if (ini.get("process-createdoc", "p40") != null )
 		{
-			report.setJasper(ini.get("process-createdoc", "p40"));
+			report.setJasper(installDir.getAbsolutePath() + ini.get("process-createdoc", "p40"));
 			report.setJasperFilled(randomPathJasperFilled+"/p40.jasperFilled");
 			report.setPdf(randomPathPdf+"/p40.pdf");
 			pdfRankFiles.put("0.4.0", randomPathPdf+"/p40.pdf");
@@ -1003,7 +1005,7 @@ public class Createdoc
 				// P51x) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
 				if (ini.get("process-createdoc", "p51") != null )
 				{
-					report.setJasper(ini.get("process-createdoc", "p51"));
+					report.setJasper(installDir.getAbsolutePath() + ini.get("process-createdoc", "p51"));
 					report.setJasperFilled(randomPathJasperFilled+"/p5."+stepRank+".1.jasperFilled");
 					report.setPdf(randomPathPdf+"/p5."+stepRank+".1.pdf");
 					report.setPptx(randomPathPptx+"/p5."+stepRank+".1.pptx");
@@ -1186,7 +1188,7 @@ public class Createdoc
 				// P52x) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
 				if (ini.get("process-createdoc", "p52") != null )
 				{
-					report.setJasper(ini.get("process-createdoc", "p52"));
+					report.setJasper(installDir.getAbsolutePath() + ini.get("process-createdoc", "p52"));
 					report.setJasperFilled(randomPathJasperFilled+"/p5."+stepRank+".2.jasperFilled");
 					report.setPdf(randomPathPdf+"/p5."+stepRank+".2.pdf");
 					report.setPptx(randomPathPptx+"/p5."+stepRank+".2.pptx");
@@ -1467,7 +1469,9 @@ public class Createdoc
 //				slidePartRel.addPart(slidePart, "slide", ctm)
 				
 //				pp.addTargetPart(slidePartRel);
-				pp.addTargetPart(slidePart);
+//				pp.addTargetPart(slidePart);
+				
+				pp.addSlide(slidePart);
 				
 				
 				
