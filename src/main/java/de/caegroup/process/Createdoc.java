@@ -403,7 +403,7 @@ public class Createdoc
 			report.setJasperFilled(randomPathJasperFilled+"/p03.jasperFilled");
 			report.setPdf(randomPathPdf+"/p03.pdf");
 			pdfRankFiles.put("0.0.03", randomPathPdf+"/p03.pdf");
-			report.setPptx(randomPathPdf+"/p03.pptx");
+			report.setPptx(randomPathPptx+"/p03.pptx");
 			pptxRankFiles.put("0.0.03", randomPathPptx+"/p03.pptx");
 		}
 		else
