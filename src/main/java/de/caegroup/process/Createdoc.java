@@ -193,7 +193,6 @@ public class Createdoc
 		----------------------------*/
 		int error = 0;
 		String definition = null;
-		String type = null;
 		String format = null;
 		String output = null;
 		
@@ -237,7 +236,7 @@ public class Createdoc
 		}
 		else
 		{
-			output = "out."+type;
+			output = "out."+format;
 		}
 		
 		// aussteigen, falls fehler aufgetaucht sind
@@ -1440,10 +1439,10 @@ public class Createdoc
 			
 			PresentationMLPackage targetPackage = PresentationMLPackage.createPackage();
 			
-//			MainPresentationPart pp = (MainPresentationPart) targetPackage.getParts().getParts().get(new PartName("/ppt/presentation.xml"));
-//			SlideLayoutPart layoutPart = (SlideLayoutPart) targetPackage.getParts().getParts().get(new PartName("/ppt/slideLayouts/slideLayout1.xml"));
+			MainPresentationPart pp = (MainPresentationPart) targetPackage.getParts().getParts().get(new PartName("/ppt/presentation.xml"));
+			SlideLayoutPart layoutPart = (SlideLayoutPart) targetPackage.getParts().getParts().get(new PartName("/ppt/slideLayouts/slideLayout1.xml"));
 			
-//			int counter = 1;
+			int counter = 1;
 			
 			for(String actualKey : listKey)
 			{
@@ -1457,7 +1456,8 @@ public class Createdoc
 					if(part instanceof SlidePart)
 					{
 						SlidePart slide = (SlidePart) part;
-						SlidePart slidePart = sourcePackage.getMainPresentationPart().getSlide(0);
+						SlidePart slidePart = PresentationMLPackage.createSlidePart(pp, layoutPart, new PartName("/ppt/slides/slide"+ counter++ +".xml"));
+//						SlidePart slidePart = sourcePackage.getMainPresentationPart().getSlide(0);
 						slidePart.setJaxbElement(slide.getJaxbElement());
 					}
 				}
@@ -1499,7 +1499,7 @@ public class Createdoc
 		} catch (Docx4JException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (Pptx4jException e) {
+		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
