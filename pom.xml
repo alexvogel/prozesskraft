@@ -136,7 +136,7 @@
 		<dependency>
 			<groupId>de.caegroup.report</groupId>
 			<artifactId>report-core</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>de.caegroup.pmodel</groupId>

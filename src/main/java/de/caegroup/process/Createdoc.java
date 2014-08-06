@@ -76,6 +76,7 @@ public class Createdoc
 	static String processTopologyImagePath;
 	static Map<String,String> stepTopologyImagePath = new HashMap<String,String>();
 	static Map<String,String> pdfRankFiles = new HashMap<String,String>();
+	static Map<String,String> pptxRankFiles = new HashMap<String,String>();
 	static boolean produktiv = true;
 
 	/*----------------------------
@@ -227,13 +228,13 @@ public class Createdoc
 		// festlegen von format
 		if ( line.hasOption("format") )
 		{
-			if (line.getOptionValue("format").matches("pdf|odt|docx|html"))
+			if (line.getOptionValue("format").matches("pdf|pptx|odt|docx|html"))
 			{
 				format = line.getOptionValue("format");
 			}
 			else
 			{
-				System.err.println("for -format use only pdf|odt|docx|html");
+				System.err.println("for -format use only pdf|pptx|odt|docx|html");
 				error++;
 			}
 		}
@@ -288,10 +289,12 @@ public class Createdoc
 		String randomPathJasperFilled = "/tmp/"+jetztMillis+"_jasperFilled";
 		String randomPathPng          = "/tmp/"+jetztMillis+"_png";
 		String randomPathPdf          = "/tmp/"+jetztMillis+"_pdf";
+		String randomPathPptx         = "/tmp/"+jetztMillis+"_pptx";
 		
 		new File(randomPathJasperFilled).mkdirs();
 		new File(randomPathPng).mkdirs();
 		new File(randomPathPdf).mkdirs();
+		new File(randomPathPptx).mkdirs();
 		
 //////////////////////////////////////////
 
@@ -413,6 +416,8 @@ public class Createdoc
 			report.setJasperFilled(randomPathJasperFilled+"/p03.jasperFilled");
 			report.setPdf(randomPathPdf+"/p03.pdf");
 			pdfRankFiles.put("0.0.03", randomPathPdf+"/p03.pdf");
+			report.setPptx(randomPathPdf+"/p03.pptx");
+			pptxRankFiles.put("0.0.03", randomPathPptx+"/p03.pptx");
 		}
 		else
 		{
@@ -444,8 +449,20 @@ public class Createdoc
 			e.printStackTrace();
 		}
 		
+		// export to pdf
 		try {
 			report.exportToPdf();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// export to pptx
+		try {
+			report.exportToPptx();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -471,6 +488,8 @@ public class Createdoc
 			report.setJasperFilled(randomPathJasperFilled+"/p05.jasperFilled");
 			report.setPdf(randomPathPdf+"/p05.pdf");
 			pdfRankFiles.put("0.0.05", randomPathPdf+"/p05.pdf");
+			report.setPptx(randomPathPptx+"/p05.pptx");
+			pptxRankFiles.put("0.0.05", randomPathPptx+"/p05.pptx");
 		}
 		else
 		{
@@ -497,8 +516,20 @@ public class Createdoc
 			e.printStackTrace();
 		}
 		
+		// export to pdf
 		try {
 			report.exportToPdf();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// export to pptx
+		try {
+			report.exportToPptx();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -525,6 +556,8 @@ public class Createdoc
 			report.setJasperFilled(randomPathJasperFilled+"/p10.jasperFilled");
 			report.setPdf(randomPathPdf+"/p10.pdf");
 			pdfRankFiles.put("0.1.0", randomPathPdf+"/p10.pdf");
+			report.setPptx(randomPathPptx+"/p10.pptx");
+			pptxRankFiles.put("0.1.0", randomPathPptx+"/p10.pptx");
 		}
 		else
 		{
@@ -614,8 +647,20 @@ public class Createdoc
 			e.printStackTrace();
 		}
 
+		// export to pdf
 		try {
 			report.exportToPdf();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// export to pptx
+		try {
+			report.exportToPptx();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -640,6 +685,8 @@ public class Createdoc
 			report.setJasperFilled(randomPathJasperFilled+"/p20.jasperFilled");
 			report.setPdf(randomPathPdf+"/p20.pdf");
 			pdfRankFiles.put("0.2.0", randomPathPdf+"/p20.pdf");
+			report.setPptx(randomPathPptx+"/p20.pptx");
+			pptxRankFiles.put("0.2.0", randomPathPptx+"/p20.pptx");
 		}
 		else
 		{
@@ -740,8 +787,20 @@ public class Createdoc
 			e.printStackTrace();
 		}
 
+		// export to pdf
 		try {
 			report.exportToPdf();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// export to pptx
+		try {
+			report.exportToPptx();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -766,6 +825,8 @@ public class Createdoc
 			report.setJasperFilled(randomPathJasperFilled+"/p30.jasperFilled");
 			report.setPdf(randomPathPdf+"/p30.pdf");
 			pdfRankFiles.put("0.3.0", randomPathPdf+"/p30.pdf");
+			report.setPptx(randomPathPptx+"/p30.pptx");
+			pptxRankFiles.put("0.3.0", randomPathPptx+"/p30.pptx");
 		}
 		else
 		{
@@ -795,8 +856,20 @@ public class Createdoc
 			e.printStackTrace();
 		}
 
+		// export to pdf
 		try {
 			report.exportToPdf();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// export to pptx
+		try {
+			report.exportToPptx();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -822,6 +895,8 @@ public class Createdoc
 			report.setJasperFilled(randomPathJasperFilled+"/p40.jasperFilled");
 			report.setPdf(randomPathPdf+"/p40.pdf");
 			pdfRankFiles.put("0.4.0", randomPathPdf+"/p40.pdf");
+			report.setPptx(randomPathPptx+"/p40.pptx");
+			pptxRankFiles.put("0.4.0", randomPathPptx+"/p40.pptx");
 		}
 		else
 		{
@@ -885,8 +960,20 @@ public class Createdoc
 			e.printStackTrace();
 		}
 
+		// export to pdf
 		try {
 			report.exportToPdf();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// export to pptx
+		try {
+			report.exportToPptx();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -926,6 +1013,7 @@ public class Createdoc
 					report.setJasper(ini.get("process-createdoc", "p51"));
 					report.setJasperFilled(randomPathJasperFilled+"/p5."+stepRank+".1.jasperFilled");
 					report.setPdf(randomPathPdf+"/p5."+stepRank+".1.pdf");
+					report.setPptx(randomPathPptx+"/p5."+stepRank+".1.pptx");
 					String[] rankArray = stepRank.split("\\.");
 					Integer[] rankArrayInt = new Integer[rankArray.length];
 					for(int x=0; x < rankArray.length; x++)
@@ -935,6 +1023,7 @@ public class Createdoc
 					String rankFormated = String.format("%03d.%03d", rankArrayInt);
 
 					pdfRankFiles.put(rankFormated+".1", randomPathPdf+"/p5."+stepRank+".1.pdf");
+					pptxRankFiles.put(rankFormated+".1", randomPathPptx+"/p5."+stepRank+".1.pptx");
 }
 				else
 				{
@@ -1051,9 +1140,21 @@ public class Createdoc
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	
+
+				// export to pdf
 				try {
 					report.exportToPdf();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JRException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				// export to pptx
+				try {
+					report.exportToPptx();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -1095,6 +1196,7 @@ public class Createdoc
 					report.setJasper(ini.get("process-createdoc", "p52"));
 					report.setJasperFilled(randomPathJasperFilled+"/p5."+stepRank+".2.jasperFilled");
 					report.setPdf(randomPathPdf+"/p5."+stepRank+".2.pdf");
+					report.setPptx(randomPathPptx+"/p5."+stepRank+".2.pptx");
 					String[] rankArray = stepRank.split("\\.");
 					Integer[] rankArrayInt = new Integer[rankArray.length];
 					for(int x=0; x < rankArray.length; x++)
@@ -1104,6 +1206,7 @@ public class Createdoc
 					String rankFormated = String.format("%03d.%03d", rankArrayInt);
 					
 					pdfRankFiles.put(rankFormated+".2", randomPathPdf+"/p5."+stepRank+".2.pdf");
+					pptxRankFiles.put(rankFormated+".2", randomPathPptx+"/p5."+stepRank+".2.pptx");
 				}
 				else
 				{
@@ -1229,9 +1332,21 @@ public class Createdoc
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
+				// export to pdf
 				try {
 					report.exportToPdf();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JRException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				// export to pptx
+				try {
+					report.exportToPptx();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
