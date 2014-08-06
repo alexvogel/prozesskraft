@@ -27,6 +27,7 @@ import net.sf.jasperreports.engine.JRException;
 
 
 
+
 //import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -47,6 +48,7 @@ import org.docx4j.openpackaging.parts.PartName;
 import org.docx4j.openpackaging.parts.PresentationML.MainPresentationPart;
 import org.docx4j.openpackaging.parts.PresentationML.SlideLayoutPart;
 import org.docx4j.openpackaging.parts.PresentationML.SlidePart;
+import org.docx4j.openpackaging.parts.relationships.RelationshipsPart;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
@@ -1445,9 +1447,9 @@ public class Createdoc
 			PresentationMLPackage targetPackage = PresentationMLPackage.createPackage();
 			
 			MainPresentationPart pp = (MainPresentationPart) targetPackage.getParts().getParts().get(new PartName("/ppt/presentation.xml"));
-			SlideLayoutPart layoutPart = (SlideLayoutPart) targetPackage.getParts().getParts().get(new PartName("/ppt/slideLayouts/slideLayout1.xml"));
+//			SlideLayoutPart layoutPart = (SlideLayoutPart) targetPackage.getParts().getParts().get(new PartName("/ppt/slideLayouts/slideLayout1.xml"));
 			
-			int counter = 1;
+//			int counter = 1;
 			
 			for(String actualKey : listKey)
 			{
@@ -1455,7 +1457,17 @@ public class Createdoc
 				PresentationMLPackage sourcePackage = (PresentationMLPackage) OpcPackage.load(sourceFile);
 				
 				SlidePart slidePart = sourcePackage.getMainPresentationPart().getSlide(0);
+				
+				slidePart.setPartName(new PartName(actualKey));
+				
+				RelationshipsPart slidePartRel = slidePart.getRelationshipsPart();
+				slidePartRel.setPartName(slidePart.getPartName());
+				
+//				RelationshipsPart slidePartRel = new RelationshipsPart(slidePart.getPartName());
+//				slidePartRel.addPart(slidePart, "slide", ctm)
+				
 				pp.addTargetPart(slidePart);
+				
 				
 				
 				
