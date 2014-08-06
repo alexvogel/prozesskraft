@@ -1458,10 +1458,10 @@ public class Createdoc
 				
 				SlidePart slidePart = sourcePackage.getMainPresentationPart().getSlide(0);
 				
-				slidePart.setPartName(new PartName("/ppt/slides/"+actualKey));
+				slidePart.setPartName(new PartName("/ppt/slides/"+actualKey, false));
 				
 				RelationshipsPart slidePartRel = slidePart.getRelationshipsPart();
-				slidePartRel.setPartName(new PartName("/ppt/slides/"+actualKey));
+				slidePartRel.setPartName(new PartName("/ppt/slides/"+actualKey, false));
 				
 //				RelationshipsPart slidePartRel = new RelationshipsPart(slidePart.getPartName());
 //				slidePartRel.addPart(slidePart, "slide", ctm)
