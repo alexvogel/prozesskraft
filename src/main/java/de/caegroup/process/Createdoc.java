@@ -1457,7 +1457,7 @@ public class Createdoc
 					if(part instanceof SlidePart)
 					{
 						SlidePart slide = (SlidePart) part;
-						SlidePart slidePart = sourcePackage.getMainPresentationPart().getSlide(1);
+						SlidePart slidePart = sourcePackage.getMainPresentationPart().getSlide(0);
 						slidePart.setJaxbElement(slide.getJaxbElement());
 					}
 				}
