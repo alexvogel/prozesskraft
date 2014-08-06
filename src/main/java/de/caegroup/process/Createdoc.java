@@ -1458,7 +1458,7 @@ public class Createdoc
 				
 				SlidePart slidePart = sourcePackage.getMainPresentationPart().getSlide(0);
 				
-				slidePart.setPartName(new PartName(actualKey));
+				slidePart.setPartName(new PartName("/ppt/slides/"+actualKey));
 				
 				RelationshipsPart slidePartRel = slidePart.getRelationshipsPart();
 				slidePartRel.setPartName(slidePart.getPartName());
