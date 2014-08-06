@@ -158,10 +158,8 @@ public class Createdoc
 		options.addOption( ohelp );
 		options.addOption( ov );
 		options.addOption( odefinition );
-//		options.addOption( otype );
 		options.addOption( oformat );
 		options.addOption( ooutput );
-////		options.addOption( property );
 		
 		/*----------------------------
 		  create the parser
@@ -237,6 +235,13 @@ public class Createdoc
 		else
 		{
 			output = "out."+format;
+		}
+		
+		// feststellen ob output bereits existiert
+		if(new java.io.File(output).exists())
+		{
+			System.err.println("output already exists: "+output);
+			error++;
 		}
 		
 		// aussteigen, falls fehler aufgetaucht sind
@@ -1449,18 +1454,24 @@ public class Createdoc
 				java.io.File sourceFile = new java.io.File(pptxRankFiles.get(actualKey));
 				PresentationMLPackage sourcePackage = (PresentationMLPackage) OpcPackage.load(sourceFile);
 				
-				Map<PartName,Part> partMap = sourcePackage.getParts().getParts();
-				for(PartName name : partMap.keySet())
-				{
-					Part part = partMap.get(name);
-					if(part instanceof SlidePart)
-					{
-						SlidePart slide = (SlidePart) part;
-						SlidePart slidePart = PresentationMLPackage.createSlidePart(pp, layoutPart, new PartName("/ppt/slides/slide"+ counter++ +".xml"));
+				SlidePart slidePart = sourcePackage.getMainPresentationPart().getSlide(0);
+				pp.addTargetPart(slidePart);
+				
+				
+				
+//				Map<PartName,Part> partMap = sourcePackage.getParts().getParts();
+//				for(PartName name : partMap.keySet())
+//				{
+//					Part part = partMap.get(name);
+//					if(part instanceof SlidePart)
+//					{
+////						SlidePart slide = (SlidePart) part;
+////						SlidePart slidePart = PresentationMLPackage.createSlidePart(pp, layoutPart, new PartName("/ppt/slides/slide"+ counter++ +".xml"));
 //						SlidePart slidePart = sourcePackage.getMainPresentationPart().getSlide(0);
-						slidePart.setJaxbElement(slide.getJaxbElement());
-					}
-				}
+//						pp.addTargetPart(slidePart);
+////						slidePart.setJaxbElement(slide.getJaxbElement());
+//					}
+//				}
 			}
 			
 			targetPackage.save(targetFile);
@@ -1499,7 +1510,10 @@ public class Createdoc
 		} catch (Docx4JException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (JAXBException e) {
+//		} catch (JAXBException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+		} catch (Pptx4jException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
