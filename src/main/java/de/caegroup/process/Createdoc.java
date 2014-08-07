@@ -28,6 +28,7 @@ import net.sf.jasperreports.engine.JRException;
 
 
 
+
 //import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -49,6 +50,7 @@ import org.docx4j.openpackaging.parts.PresentationML.MainPresentationPart;
 import org.docx4j.openpackaging.parts.PresentationML.SlideLayoutPart;
 import org.docx4j.openpackaging.parts.PresentationML.SlidePart;
 import org.docx4j.openpackaging.parts.relationships.RelationshipsPart;
+import org.docx4j.relationships.Relationship;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
@@ -537,6 +539,74 @@ public class Createdoc
 		
 		//System.exit(0);
 				
+//////////////////////////////////////////
+		report = new Report();
+
+		// P08) erstellen des p08
+		System.out.println("info: generating p08.");
+
+		// P08) feststellen, welches jasperreports-template fuer den angeforderten typ verwendet werden soll
+		if (ini.get("process-createdoc", "p08") != null )
+		{
+			report.setJasper(installDir.getAbsolutePath() + "/" + ini.get("process-createdoc", "p08"));
+			report.setJasperFilled(randomPathJasperFilled+"/p08.jasperFilled");
+			report.setPdf(randomPathPdf+"/p08.pdf");
+			pdfRankFiles.put("0.0.08", randomPathPdf+"/p08.pdf");
+			report.setPptx(randomPathPptx+"/p08.pptx");
+			pptxRankFiles.put("0.0.08", randomPathPptx+"/p08.pptx");
+		}
+		else
+		{
+			System.err.println("no entry 'p08' found in ini file");
+			System.exit(1);
+		}
+
+		report.setParameter("processName", process.getName());
+		report.setParameter("processVersion", process.getVersion());
+		report.setParameter("processArchitectCompany", process.getArchitectCompany());
+		report.setParameter("processArchitectName", process.getArchitectName());
+		report.setParameter("processArchitectMail", process.getArchitectMail());
+		report.setParameter("processCustomerCompany", process.getCustomerCompany());
+		report.setParameter("processCustomerName", process.getCustomerName());
+		report.setParameter("processCustomerMail", process.getCustomerMail());
+		report.setParameter("processDescription", process.getDescription());
+
+		try {
+			report.fillPReport();
+		} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+		// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// export to pdf
+		try {
+			report.exportToPdf();
+		} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+		// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// export to pptx
+		try {
+			report.exportToPptx();
+		} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JRException e) {
+		// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		report = null;
+
+//System.exit(0);
+
 //////////////////////////////////////////
 		
 		report = new Report();
@@ -1459,10 +1529,12 @@ public class Createdoc
 				PresentationMLPackage sourcePackage = (PresentationMLPackage) OpcPackage.load(sourceFile);
 				
 				SlidePart slidePart = sourcePackage.getMainPresentationPart().getSlide(0);
+				Relationship rel = slidePart.getSourceRelationship();
+				
 				
 				slidePart.setPartName(new PartName("/ppt/slides/"+actualKey));
 				
-//				RelationshipsPart slidePartRel = slidePart.getRelationshipsPart();
+				RelationshipsPart slidePartRel = slidePart.getRelationshipsPart();
 //				slidePartRel.setPartName(new PartName("/ppt/slides/_rel/"+actualKey+".rel"));
 				
 //				RelationshipsPart slidePartRel = new RelationshipsPart(slidePart.getPartName());
@@ -1473,23 +1545,9 @@ public class Createdoc
 				
 				pp.addSlide(slidePart);
 				
-				
-				
-//				Map<PartName,Part> partMap = sourcePackage.getParts().getParts();
-//				for(PartName name : partMap.keySet())
-//				{
-//					Part part = partMap.get(name);
-//					if(part instanceof SlidePart)
-//					{
-////						SlidePart slide = (SlidePart) part;
-////						SlidePart slidePart = PresentationMLPackage.createSlidePart(pp, layoutPart, new PartName("/ppt/slides/slide"+ counter++ +".xml"));
-//						SlidePart slidePart = sourcePackage.getMainPresentationPart().getSlide(0);
-//						pp.addTargetPart(slidePart);
-////						slidePart.setJaxbElement(slide.getJaxbElement());
-//					}
-//				}
 			}
 			
+			System.out.println("slide added");
 			targetPackage.save(targetFile);
 			
 //			PDDocument document = new PDDocument();
