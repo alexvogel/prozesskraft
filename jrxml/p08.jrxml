@@ -10,6 +10,7 @@
 	<parameter name="processCustomerName" class="java.lang.String"/>
 	<parameter name="processCustomerCompany" class="java.lang.String"/>
 	<parameter name="processCustomerMail" class="java.lang.String"/>
+	<parameter name="processDescription" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
