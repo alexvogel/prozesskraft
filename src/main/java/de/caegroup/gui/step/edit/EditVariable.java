@@ -1,6 +1,9 @@
 package de.caegroup.gui.step.edit;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -8,25 +11,30 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import de.caegroup.pmodel.PmodelViewPage;
 import de.caegroup.process.*;
+
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.FormLayout;
 
 public class EditVariable
 {
 	private Variable variable = null;
-
+	Shell shell = new Shell(Display.getCurrent());
+	Display display = Display.getCurrent();
+	
+	
 	/**
 	 * @wbp.parser.entryPoint
 	 */
 	public EditVariable()
 	{
-		Shell shell = new Shell(Display.getCurrent());
 		shell.setText("edit/delete variable");
 		shell.setSize(425, 162);
 		shell.setLayout(new FormLayout());
@@ -45,11 +53,8 @@ public class EditVariable
 	{
 		this.variable = variable;
 
-		Display display = Display.getCurrent();
-		
 		try
 		{
-			Shell shell = new Shell(display);
 			shell.setSize(425, 162);
 			shell.setLayout(new FormLayout());
 			Composite composite = new Composite(shell, SWT.NONE);
@@ -143,10 +148,21 @@ public class EditVariable
 		btnCancel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnCancel.setText("cancel");
 		new Label(compositeBtn, SWT.NONE);
-
+		btnCancel.addSelectionListener(listenerButtonCancel);
+		
 		Button btnDelete = new Button(compositeBtn, SWT.NONE);
 		btnDelete.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnDelete.setText("delete");
 		
 	}
+	
+	
+	SelectionAdapter listenerButtonCancel = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			shell.dispose();
+		}
+	};	
+	
 }
