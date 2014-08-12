@@ -22,7 +22,7 @@ public class EditVariable
 		try
 		{
 			Shell shell = new Shell(display);
-			shell.setText("pramp-gui "+"v[% version %]");
+			shell.setText("edit variable");
 			shell.setLayout(new FillLayout());
 			Composite composite = new Composite(shell, SWT.NO_FOCUS);
 			GridLayout gl_composite = new GridLayout(2, false);
@@ -51,9 +51,11 @@ public class EditVariable
 				}
 			}
 			
-		} finally
+		}
+		// wenn display disposed wird, wird auch das aufrufende fenster gekillt
+		finally
 		{
-			display.dispose();
+//			display.dispose();
 		}
 
 	}
@@ -64,7 +66,7 @@ public class EditVariable
 	public void createControls(Composite composite)
 	{
 
-		composite.setSize(613, 649);
+		composite.setSize(150, 150);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_composite.minimumWidth = 10;
 		gd_composite.minimumHeight = 10;
