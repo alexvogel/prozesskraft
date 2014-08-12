@@ -12,26 +12,53 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import de.caegroup.pmodel.PmodelViewPage;
 import de.caegroup.process.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.layout.FormLayout;
 
 public class EditVariable
 {
 	private Variable variable = null;
+
+	/**
+	 * @wbp.parser.entryPoint
+	 */
+	public EditVariable()
+	{
+		Shell shell = new Shell(Display.getCurrent());
+		shell.setText("edit/delete variable");
+		shell.setSize(425, 162);
+		shell.setLayout(new FormLayout());
+		Composite composite = new Composite(shell, SWT.NONE);
+		FormData fd_composite = new FormData();
+		fd_composite.bottom = new FormAttachment(0, 129);
+		fd_composite.right = new FormAttachment(0, 415);
+		fd_composite.top = new FormAttachment(0);
+		fd_composite.left = new FormAttachment(0);
+		composite.setLayoutData(fd_composite);
+		createControls(composite);
+		
+	}
 
 	public EditVariable(Variable variable)
 	{
 		this.variable = variable;
 
 		Display display = Display.getCurrent();
+		
 		try
 		{
 			Shell shell = new Shell(display);
-			shell.setText("edit/delete variable");
-			shell.setLayout(new FillLayout());
-			Composite composite = new Composite(shell, SWT.NO_FOCUS);
-			GridLayout gl_composite = new GridLayout(2, false);
-			gl_composite.marginWidth = 0;
-			gl_composite.marginHeight = 0;
+			shell.setSize(425, 162);
+			shell.setLayout(new FormLayout());
+			Composite composite = new Composite(shell, SWT.NONE);
+			FormData fd_composite = new FormData();
+			fd_composite.bottom = new FormAttachment(0, 129);
+			fd_composite.right = new FormAttachment(0, 415);
+			fd_composite.top = new FormAttachment(0);
+			fd_composite.left = new FormAttachment(0);
+			composite.setLayoutData(fd_composite);
 			createControls(composite);
 			
 			try
@@ -61,7 +88,6 @@ public class EditVariable
 		{
 //			display.dispose();
 		}
-
 	}
 	
 	/**
@@ -69,32 +95,58 @@ public class EditVariable
 	 */
 	public void createControls(Composite composite)
 	{
-
-		composite.setSize(150, 150);
+		composite.setLayout(new GridLayout(1, false));
+		
+		Composite compositeEntries = new Composite(composite, SWT.NONE);
+		compositeEntries.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		GridLayout entriesLayout = new GridLayout(2, false);
+		compositeEntries.setLayout(entriesLayout);
+		
 		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		gd_composite.minimumWidth = 10;
 		gd_composite.minimumHeight = 10;
-		composite.setLayoutData(gd_composite);
-		composite.setLayout(new GridLayout(1, false));
+		compositeEntries.setLayoutData(gd_composite);
 
-		Label variableKey = new Label(composite, SWT.NONE);
+		Label variableKey = new Label(compositeEntries, SWT.NONE);
+		variableKey.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		variableKey.setAlignment(SWT.RIGHT);
 		variableKey.setText("key");
 		variableKey.setToolTipText("name of variable");
+		
+		Text textKey = new Text(compositeEntries, SWT.BORDER);
+		textKey.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		textKey.setToolTipText("name of variable");
+		textKey.setMessage("name of variable");
 
-		FormData fd_variableKey = new FormData();
-		fd_variableKey.top = new FormAttachment(0, 4);
-		fd_variableKey.right = new FormAttachment(0,100);
-		variableKey.setLayoutData(fd_variableKey);
+		Label variableValue = new Label(compositeEntries, SWT.NONE);
+		variableValue.setAlignment(SWT.RIGHT);
+		variableValue.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		variableValue.setToolTipText("value of variable");
+		variableValue.setText("value");
+		
+		Text textValue = new Text(compositeEntries, SWT.BORDER);
+		textValue.setToolTipText("value of variable");
+		textValue.setMessage("value of variable");
+		textValue.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
-		Text text = new Text(composite, SWT.BORDER);
-		text.setToolTipText("name of variable");
-		text.setMessage("name of variable");
+		Composite compositeBtn = new Composite(composite, SWT.NONE);
+		compositeBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		GridLayout sss = new GridLayout(5, true);
+		compositeBtn.setLayout(sss);
+		
+		Button btnEnter = new Button(compositeBtn, SWT.NONE);
+		btnEnter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		btnEnter.setText("enter");
+		new Label(compositeBtn, SWT.NONE);
 
-		FormData fd_text_file = new FormData();
-		fd_text_file.top = new FormAttachment(0, 0);
-		fd_text_file.left = new FormAttachment(0, 120);
-		fd_text_file.width = 190;
-		text.setLayoutData(fd_text_file);
+		Button btnCancel = new Button(compositeBtn, SWT.NONE);
+		btnCancel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		btnCancel.setText("cancel");
+		new Label(compositeBtn, SWT.NONE);
+
+		Button btnDelete = new Button(compositeBtn, SWT.NONE);
+		btnDelete.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		btnDelete.setText("delete");
+		
 	}
-
 }
