@@ -1,13 +1,19 @@
 package de.caegroup.gui.step.insight;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -19,6 +25,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+
+//import de.caegroup.pradar.Entity;
 import de.caegroup.process.File;
 import de.caegroup.process.Log;
 import de.caegroup.process.Step;
@@ -59,20 +67,40 @@ public class SIVariableGui
 		fD[0].setHeight(8);
 		table.setFont(new Font(table.getDisplay(), fD[0]));
 
-		TableColumn colTime = new TableColumn(table, SWT.LEFT);
-		colTime.setText("key");
-		colTime.setWidth(80);
+		TableColumn colKey = new TableColumn(table, SWT.LEFT);
+		colKey.setText("key");
+		colKey.setToolTipText("key");
+		colKey.setWidth(80);
 		
 		TableColumn colLevel = new TableColumn(table, SWT.LEFT);
 		colLevel.setText("value");
+		colLevel.setToolTipText("value");
 		colLevel.setWidth(150);
 
+		
 		viewer.setContentProvider(new MyContentProvider());
 		viewer.setLabelProvider(new MyLabelProvider());
 		viewer.setInput(step.getVariable());
 		
+		viewer.addDoubleClickListener(listener_double_click);
+
 		System.out.println("Anzahl ist: "+step.getLog().size());
 	}
+	
+	IDoubleClickListener listener_double_click = new IDoubleClickListener()
+	{
+		public void doubleClick(DoubleClickEvent event)
+		{
+			TreeViewer viewer = (TreeViewer) event.getSource();
+			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
+			
+			Variable variable = (Variable) thisselection.getFirstElement();
+
+			de.caegroup.gui.step.edit.EditVariable editor = new de.caegroup.gui.step.edit.EditVariable(variable);
+		}
+	};
+	
+
 	
 	public class MyContentProvider implements IStructuredContentProvider
 	{
@@ -101,7 +129,6 @@ public class SIVariableGui
 		{
 			// add the listener to my list
 			listeners.add(listener);
-			
 		}
 
 		public void dispose()
