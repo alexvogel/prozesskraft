@@ -91,7 +91,7 @@ public class SIVariableGui
 	{
 		public void doubleClick(DoubleClickEvent event)
 		{
-			TreeViewer viewer = (TreeViewer) event.getSource();
+			TableViewer viewer = (TableViewer) event.getSource();
 			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
 			
 			Variable variable = (Variable) thisselection.getFirstElement();
