@@ -2,7 +2,6 @@ package de.caegroup.pradar.parts;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.awt.event.MouseWheelEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,8 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -37,25 +34,18 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.ChangeEvent;
 import org.eclipse.core.databinding.observable.IChangeListener;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.core.databinding.validation.IValidator;
-import org.eclipse.core.databinding.validation.ValidationStatus;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
-import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.fieldassist.FieldDecoration;
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
-import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -63,14 +53,12 @@ import org.eclipse.swt.awt.SWT_AWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -83,14 +71,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 
-import de.caegroup.pradar.Db;
 import de.caegroup.pradar.Entity;
 import de.caegroup.commons.WhereAmI;
 
-import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Spinner;
 //import java.beans.PropertyChangeSupport;
 //import java.beans.PropertyChangeListener;
@@ -110,7 +95,6 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 import com.license4j.License;
 import com.license4j.LicenseValidator;
-import com.license4j.util.FileUtils;
 
 public class PradarPartUi3 extends ModelObject
 {
@@ -133,6 +117,8 @@ public class PradarPartUi3 extends ModelObject
 	private Frame frame_radar = null;
 	PradarViewModel einstellungen = new PradarViewModel();
 
+	public Ini ini = null;
+	
 	Entity entity_filter = new Entity();
 	
 	public ArrayList<Entity> entities_all = new ArrayList<Entity>();
@@ -155,6 +141,7 @@ public class PradarPartUi3 extends ModelObject
 //	Composite composite_12;
 	CTabFolder tabFolder_12;
 	ArrayList<PradarViewLogPage> logPages = new ArrayList<PradarViewLogPage>();
+	ArrayList<PradarViewHtmlPage> htmlPages = new ArrayList<PradarViewHtmlPage>();
 	CTabItem tabItem_radar;
 	CTabItem tabItem_tree;
 	Composite composite_tabItem_radar;
@@ -374,6 +361,21 @@ public class PradarPartUi3 extends ModelObject
 		new Label(composite_1, SWT.NONE);
 		btnNewButton2.addSelectionListener(listener_autoscale_button);
 
+		// Group apps
+		Group grpApps = new Group(composite_11, SWT.NONE);
+		grpApps.setText("apps");
+		GridData gd_grpApps = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_grpApps.widthHint = 152;
+		grpApps.setLayoutData(gd_grpApps);
+		grpApps.setLayout(new GridLayout(2, false));
+		
+		Button btnNewButton3 = new Button(grpApps, SWT.NONE);
+		GridData gd_btnNewButton3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd_btnNewButton3.widthHint = 141;
+		btnNewButton3.setLayoutData(gd_btnNewButton3);
+		btnNewButton3.setText("pRamp");
+		btnNewButton3.addSelectionListener(listener_pramp_button);
+
 		// tabFolder erzeugen
 		tabFolder_12 = new CTabFolder(composite_1, SWT.BORDER);
 		tabFolder_12.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -532,22 +534,27 @@ public class PradarPartUi3 extends ModelObject
 		public void widgetSelected(SelectionEvent event)
 		{
 //			System.out.println("button wurde gedrueckt");
-			if (einstellungen.entitySelected != null && (!(einstellungen.entitySelected.getResource().equals(""))))
-			{
-				log("info", "showing logfile "+einstellungen.entitySelected.getResource());
-				showLogFile(einstellungen.entitySelected);
-			}
-			else if (einstellungen.entitySelected != null && einstellungen.entitySelected.getResource().equals(""))
+			if (einstellungen.entitySelected != null && einstellungen.entitySelected.getResource().equals(""))
 			{
 				log("warn", "no logfile for entity "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
 			}
-			else if (einstellungen.entitySelected != null && (new File(einstellungen.entitySelected.getResource()).canRead() ) )
+			else if (einstellungen.entitySelected != null && (!(new File(einstellungen.entitySelected.getResource()).canRead())) )
 			{
 				log("warn", "cannot read logfile of entity "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
 			}
 			else if (einstellungen.entitySelected != null && (!(new File(einstellungen.entitySelected.getResource()).exists()) ) )
 			{
 				log("warn", "logfile of entity does not exist "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
+			}
+			else if (einstellungen.entitySelected != null && ((einstellungen.entitySelected.getResource().matches("\\.log|\\.txt$"))))
+			{
+				log("info", "showing logfile "+einstellungen.entitySelected.getResource());
+				showLogFile(einstellungen.entitySelected);
+			}
+			else if (einstellungen.entitySelected != null && ((einstellungen.entitySelected.getResource().matches(".+html"))))
+			{
+				log("info", "showing logfile "+einstellungen.entitySelected.getResource());
+				showHtmlFile(einstellungen.entitySelected);
 			}
 			else
 			{
@@ -606,6 +613,7 @@ public class PradarPartUi3 extends ModelObject
 		
 				int portNumber = Integer.parseInt(port_and_machine[0]);
 				String machineName = port_and_machine[1];
+				log("info", "want to clean database");
 				log("info", "trying pradar-server "+portNumber+"@"+machineName);
 				try
 				{
@@ -699,6 +707,7 @@ public class PradarPartUi3 extends ModelObject
 				
 						int portNumber = Integer.parseInt(port_and_machine[0]);
 						String machineName = port_and_machine[1];
+						log("info", "want to delete data from database");
 						log("info", "trying pradar-server "+portNumber+"@"+machineName);
 						try
 						{
@@ -760,6 +769,29 @@ public class PradarPartUi3 extends ModelObject
 		{
 //			System.out.println("button wurde gedrueckt");
 			applet_autoscale();
+		}
+	};
+
+	/**
+	 * pramp-button oeffnet die anwendung pramp-gui
+	 **/
+	SelectionAdapter listener_pramp_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			log("info", "starten von pramp");
+			String aufruf = ini.get("apps", "pramp");
+			
+			try
+			{
+				log("info", "calling: " + aufruf);
+				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	};
 	
@@ -1036,23 +1068,35 @@ public class PradarPartUi3 extends ModelObject
 	
 			int portNumber = Integer.parseInt(port_and_machine[0]);
 			String machineName = port_and_machine[1];
+			log("info", "want to load data from pradar-server");
 			log("info", "trying pradar-server "+portNumber+"@"+machineName);
 			try
 			{
 				// socket einrichten und Out/Input-Streams setzen
+//				log("debug", "machineName="+machineName+" | portNumber="+portNumber);
 				Socket server = new Socket(machineName, portNumber);
+//				log("debug", "server objekt erstellt");
 				OutputStream out = server.getOutputStream();
+//				log("debug", "outputStream erstellt");
 				InputStream in = server.getInputStream();
-				ObjectOutputStream objectOut = new ObjectOutputStream(out);
+//				log("debug", "inputStream erstellt");
 				ObjectInputStream  objectIn  = new ObjectInputStream(in);
+//				log("debug", "objectInputStream  erstellt");
+				ObjectOutputStream objectOut = new ObjectOutputStream(out);
+//				log("debug", "objectOutputStream  erstellt");
 				
 				// Objekte zum server uebertragen
+//				log("debug", "write: getall");
 				objectOut.writeObject("getall");
+				objectOut.flush();
 	
 				// Antwort vom Server lesen. (Liste bereits Druckfertig aufbereitet)
 				try
 				{
+//					log("debug", "read");
+
 					this.entities_all = (ArrayList<Entity>) objectIn.readObject();
+//					log("debug", "read finished");
 				}
 				catch (ClassNotFoundException e)
 				{
@@ -1098,8 +1142,6 @@ public class PradarPartUi3 extends ModelObject
 	{
 //		PradarViewProcessingPage tmp = new PradarViewProcessingPage(this);
 		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(this.getClass()) + "/" + "../etc/pradar-gui.ini");
-			
-		Ini ini;
 			
 		ArrayList<String> pradar_server_list = new ArrayList<String>();
 		ArrayList<String> license_server_list = new ArrayList<String>();
@@ -1159,6 +1201,7 @@ public class PradarPartUi3 extends ModelObject
 
 			int portNumber = Integer.parseInt(port_and_machine[0]);
 			String machineName = port_and_machine[1];
+			log("info", "determining pradar-server");
 			log("info", "trying pradar-server "+portNumber+"@"+machineName);
 			try
 			{
@@ -1402,8 +1445,55 @@ public class PradarPartUi3 extends ModelObject
 	}
 
 	/**
+	 * opens a seperate Tab and shows the content of a html file
+	 * @param Entity entity
+	 */
+	void showHtmlFile(Entity entity)
+	{
+		File file = new File(entity.getResource());
+		if (!(file.exists()))
+		{
+			log("warn", "cannot read file: "+entity.getResource());
+			return;
+		}
+
+		log("info", "opening in external browser: "+entity.getResource());
+
+		String[] args_for_syscall = {"firefox", entity.getResource()};
+		ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
+		try {
+			java.lang.Process p = pb.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		log ("info", "calling: " + StringUtils.join(args_for_syscall, " "));
+
+		// alternative: embedded browser
+//		else
+//		{
+//			String tabName = entity.getProcess()+"<"+entity.getId()+">";
+//			
+//			// ueberpruefen ob es von diesem file schon ein tab gibt
+//			if (isTabPresentByName(tabFolder_12, tabName))
+//			{
+//				tabFolder_12.setSelection(getTabIdByName(tabFolder_12, tabName));
+//			}
+//			
+//			// tab mit logfile ansicht erzeugen
+//			else
+//			{
+//				this.htmlPages.add(new PradarViewHtmlPage(this.tabFolder_12, this, entity, tabName));
+//				// focus auf den neuen Tab
+//				tabFolder_12.setSelection(tabFolder_12.getItemCount()-1);
+//			}
+//		}
+	}	
+
+	/**
 	 * opens a seperate Tab and shows the content of a file
-	 * @param String pathToFile
+	 * @param Entity entity
 	 */
 	void showLogFile(Entity entity)
 	{
@@ -1433,6 +1523,8 @@ public class PradarPartUi3 extends ModelObject
 			}
 		}
 		
+	}
+
 		// tab mit logfile ansicht erzeugen
 //		else
 //		{
@@ -1480,8 +1572,6 @@ public class PradarPartUi3 extends ModelObject
 //			tabFolder_12.setSelection(tabFolder_12.getItemCount()-1);
 //		}
 		
-	}
-
 	/**
 	 * determines whether a Tab is present by Name
 	 * @param CTabFolder folder, String TabItemName
@@ -1638,8 +1728,19 @@ public class PradarPartUi3 extends ModelObject
 				{
 					Shell shell = new Shell(display);
 					shell.setText("pradar-gui "+"v[% version %]");
+
+					// set an icon
+					if(this.getClass().getResourceAsStream("/logoSymbol50Transp.png") != null)
+					{
+						shell.setImage(new Image(display, this.getClass().getResourceAsStream("/logoSymbol50Transp.png")));
+					}
+					else if((new java.io.File("logoSymbol50Transp.png")).exists())
+					{
+						shell.setImage(new Image(display, "logoSymbol50Transp.png"));
+					}
+					
 					shell.setLayout(new FillLayout());
-					shell.setSize(1300, 800);
+					shell.setSize(1300, 845);
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
 					GridLayout gl_composite = new GridLayout(2, false);
 					gl_composite.marginWidth = 0;

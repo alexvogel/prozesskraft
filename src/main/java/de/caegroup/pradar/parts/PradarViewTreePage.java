@@ -1,5 +1,6 @@
 package de.caegroup.pradar.parts;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.databinding.DataBindingContext;
@@ -7,6 +8,7 @@ import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -30,6 +32,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 import de.caegroup.pradar.Entity;
+
 import org.eclipse.jface.viewers.ViewerSorter;
 
 
@@ -107,20 +110,25 @@ public class PradarViewTreePage
 		fD[0].setHeight(8);
 		entityTree.setFont(new Font(entityTree.getDisplay(), fD[0]));
 
-		TreeColumn columnId = new TreeColumn(entityTree, SWT.LEFT);
-		columnId.setAlignment(SWT.LEFT);
-		columnId.setText("id");
-		columnId.setWidth(20);
-
 		TreeColumn columnId2 = new TreeColumn(entityTree, SWT.LEFT);
 		columnId2.setAlignment(SWT.LEFT);
 		columnId2.setText("id2");
 		columnId2.setWidth(220);
 		
+		TreeColumn columnId = new TreeColumn(entityTree, SWT.LEFT);
+		columnId.setAlignment(SWT.LEFT);
+		columnId.setText("id");
+		columnId.setWidth(1);
+
 		TreeColumn columnProcess = new TreeColumn(entityTree, SWT.RIGHT);
 		columnProcess.setAlignment(SWT.LEFT);
 		columnProcess.setText("process");
-		columnProcess.setWidth(120);
+		columnProcess.setWidth(100);
+		
+		TreeColumn columnVersion = new TreeColumn(entityTree, SWT.RIGHT);
+		columnVersion.setAlignment(SWT.LEFT);
+		columnVersion.setText("version");
+		columnVersion.setWidth(50);
 		
 		TreeColumn columnActive = new TreeColumn(entityTree, SWT.RIGHT);
 		columnActive.setAlignment(SWT.LEFT);
@@ -219,22 +227,34 @@ public class PradarViewTreePage
 	{
 		public void doubleClick(DoubleClickEvent event)
 		{
-//			TreeViewer viewer = (TreeViewer) event.getSource();
-//			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
-//			
-//			Entity entity = (Entity) thisselection.getFirstElement();
-//
-//			String aufruf = "nedit "+entity.getResource();
-//			try
-//			{
-//				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-//			}
-//			catch (IOException e)
-//			{
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			TreeViewer viewer = (TreeViewer) event.getSource();
+			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
+			
+			Entity entity = (Entity) thisselection.getFirstElement();
 
+			java.io.File pmbFile = new java.io.File((new java.io.File(entity.getResource()).getParent()+"/"+entity.getProcess()+".pmb"));
+			
+			if(!(pmbFile.exists()))
+			{
+				parentData.log("error", "process-model-file does not exist");
+			}
+			
+			else
+			{
+				parentData.log("info", "opening process-model-file for inspection");
+				String aufruf = parentData.ini.get("apps",  "pmodel") + " -instance "+pmbFile.getAbsolutePath();
+				parentData.log("info", "calling " + aufruf);
+				
+				try
+				{
+					java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 	};
 	
@@ -360,7 +380,7 @@ public class PradarViewTreePage
 			Entity entity = ((Entity) element);
 			switch (columnIndex)
 			{
-				case 3:
+				case 4:
 				{
 					// Das Ampelmaennchen erstellen
 					Image img_ampelmaennchen = null;
@@ -384,7 +404,7 @@ public class PradarViewTreePage
 
 				
 				
-				case 4:
+				case 5:
 				{
 					// den progressbalken erstellen
 					int breite = 50;
@@ -436,16 +456,17 @@ public class PradarViewTreePage
 			Entity entity = ((Entity) element);
 			switch (columnIndex)
 			{
-				case 0: return entity.getId();
-				case 1: return entity.getId2();
+				case 0: return entity.getId2();
+				case 1: return entity.getId();
 				case 2: return entity.getProcess();
-//				case 3: return entity.getActive();
-				case 4: return entity.getProgressAsString();
-				case 5: return entity.getUser();
-				case 6: return entity.getHost();
-				case 7: return entity.getCheckinAsString();
-				case 8: return entity.getCheckoutAsString();
-				case 9: return entity.getExitcode();
+				case 3: return entity.getVersion();
+//				case 4: return entity.getActive();
+				case 5: return entity.getProgressAsString();
+				case 6: return entity.getUser();
+				case 7: return entity.getHost();
+				case 8: return entity.getCheckinAsString();
+				case 9: return entity.getCheckoutAsString();
+				case 10: return entity.getExitcode();
 			}
 			
 			return null;
