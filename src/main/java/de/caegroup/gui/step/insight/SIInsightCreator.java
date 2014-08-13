@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
+import de.caegroup.gui.step.edit.EditVariable;
 import de.caegroup.process.Commit;
 import de.caegroup.process.Step;
 import de.caegroup.process.Variable;
@@ -35,11 +36,12 @@ import de.caegroup.process.Process;
 
 public class SIInsightCreator
 {
-	Step step;
-	Composite parent;
+	private Step step;
+	private Composite parent;
+	public CTabFolder tabFolder;
 
-	Composite composite;
-	ScrolledComposite sc;
+	private Composite composite;
+	private ScrolledComposite sc;
 	
 //	ArrayList<CommitGui> commitGui = new ArrayList<CommitGui>();
 //	
@@ -85,7 +87,7 @@ public class SIInsightCreator
 		label2.setText("status: "+step.getStatus());
 
 		// tabFolder erzeugen
-		CTabFolder tabFolder = new CTabFolder(composite, SWT.BORDER);
+		tabFolder = new CTabFolder(composite, SWT.BORDER);
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		tabFolder.setTabPosition(SWT.TOP);
@@ -95,6 +97,7 @@ public class SIInsightCreator
 		// ein tabItem fuer das log erzeugen
 		CTabItem tabItem_log = new CTabItem(tabFolder, SWT.NONE);
 		tabItem_log.setText("log");					
+		tabItem_log.setToolTipText("the logging of step "+step.getName());
 		
 		// erstellen eines composites fuer 'log'
 		Composite composite_tabItem_log = new Composite(tabFolder, SWT.NONE);
@@ -109,9 +112,28 @@ public class SIInsightCreator
 		tabItem_log.setControl(composite_tabItem_log);
 		new SILogGui(composite_tabItem_log, step);
 
+		// ein tabItem fuer 'lists' erzeugen
+		CTabItem tabItem_lists = new CTabItem(tabFolder, SWT.NONE);
+		tabItem_lists.setText("lists");
+		tabItem_lists.setToolTipText("lists that have been initialized in step "+step.getName());
+
+		// erstellen eines composites fuer 'lists'
+		Composite composite_tabItem_lists = new Composite(tabFolder, SWT.NONE);
+		composite_tabItem_lists.setLayout(new GridLayout(1, false));
+		GridData gd_composite_lists = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_composite_lists.heightHint = 390;
+		gd_composite_lists.minimumWidth = 10;
+		gd_composite_lists.minimumHeight = 10;
+		composite_tabItem_lists.setLayoutData(gd_composite_lists);
+
+		// befuellen des composites fuer 'lists'
+		tabItem_lists.setControl(composite_tabItem_lists);
+		new SIListsGui(composite_tabItem_lists, step);
+
 		// ein tabItem fuer 'files' erzeugen
 		CTabItem tabItem_files = new CTabItem(tabFolder, SWT.NONE);
 		tabItem_files.setText("files");
+		tabItem_files.setToolTipText("files which have been committed to step "+step.getName());
 
 		// erstellen eines composites fuer 'files'
 		Composite composite_tabItem_files = new Composite(tabFolder, SWT.NONE);
@@ -129,6 +151,7 @@ public class SIInsightCreator
 		// ein tabItem fuer 'variables' erzeugen
 		CTabItem tabItem_variables = new CTabItem(tabFolder, SWT.NONE);
 		tabItem_variables.setText("variables");
+		tabItem_variables.setToolTipText("variables which have been committed to step "+step.getName());
 
 		// erstellen eines composites fuer 'variables'
 		Composite composite_tabItem_variables = new Composite(tabFolder, SWT.NONE);
@@ -143,36 +166,29 @@ public class SIInsightCreator
 		tabItem_variables.setControl(composite_tabItem_variables);
 		new SIVariableGui(composite_tabItem_variables, step);
 
-//		if(step.getList().size() != 0)
-//		{
-			// ein tabItem fuer 'lists' erzeugen
-			CTabItem tabItem_lists = new CTabItem(tabFolder, SWT.NONE);
-			tabItem_lists.setText("lists");
-	
-			// erstellen eines composites fuer 'lists'
-			Composite composite_tabItem_lists = new Composite(tabFolder, SWT.NONE);
-			composite_tabItem_lists.setLayout(new GridLayout(1, false));
-			GridData gd_composite_lists = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-			gd_composite_lists.heightHint = 390;
-			gd_composite_lists.minimumWidth = 10;
-			gd_composite_lists.minimumHeight = 10;
-			composite_tabItem_lists.setLayoutData(gd_composite_lists);
-	
-			// befuellen des composites fuer 'lists'
-			tabItem_lists.setControl(composite_tabItem_lists);
-			new SIListsGui(composite_tabItem_lists, step);
-//		}
-//		// wenn nicht 'root'
-//		if (!(step.getName().equals(step.getParent().getRootstepname())))
-//		{
-//			// ein tabItem fuer 'variables' erzeugen
-//			CTabItem tabItem_lists = new CTabItem(tabFolder, SWT.NONE);
-//			tabItem_lists.setText("lists");
-//		}
+		// erstellen eines buttons zum hinzufuegen von variables
+		Button buttonAdd = new Button(composite_tabItem_variables, SWT.NONE);
+		buttonAdd.setSelection(true);
+		GridData gd_btnNewButton = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd_btnNewButton.widthHint = 69;
+		buttonAdd.setLayoutData(gd_btnNewButton);
+		buttonAdd.setText("add");
+		buttonAdd.addSelectionListener(listener_button_add);
 
+		
+			
+			
 		tabFolder.setSelection(0);
 
 		return parent;
 	}
+
+	SelectionAdapter listener_button_add = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			new EditVariable(step);
+		}
+	};
 
 }

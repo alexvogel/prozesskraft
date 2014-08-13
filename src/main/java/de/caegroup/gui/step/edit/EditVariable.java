@@ -1,5 +1,7 @@
 package de.caegroup.gui.step.edit;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
@@ -14,6 +16,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -25,21 +28,25 @@ import org.eclipse.swt.layout.FormLayout;
 public class EditVariable
 {
 //	private Variable variable = null;
-	Shell shell = new Shell(Display.getCurrent());
-	Display display = Display.getCurrent();
+	public Shell shell = new Shell(Display.getCurrent());
+	private Display display = Display.getCurrent();
 	
-	Text textKey = null;
-	Text textValue = null;
+	private Text textKey = null;
+	private Text textValue = null;
 	
-	EditVariableModel einstellungen = null;
+	private EditVariableModel einstellungen = null;
 	
-	Variable variable = null;
+	private Step step = null;
+	private Variable variable = null;
 	/**
 	 * @wbp.parser.entryPoint
 	 */
 	public EditVariable()
 	{
+		this.step = new Step();
 		this.variable = new Variable();
+		variable.setKey("");
+		variable.setValue("");
 		
 		shell.setText("edit variable");
 		shell.setSize(425, 162);
@@ -53,11 +60,63 @@ public class EditVariable
 		fd_composite.left = new FormAttachment(0);
 		composite.setLayoutData(fd_composite);
 		createControls(composite);
-		
 	}
 
-	public EditVariable(Variable variable)
+	public EditVariable(Step step)
 	{
+		this.step = step;
+		this.variable = new Variable();
+		this.variable.setKey("");
+		this.variable.setValue("");
+		
+		try
+		{
+			shell.setText("edit variable");
+			shell.setSize(425, 162);
+			shell.setLayout(new FormLayout());
+			shell.setLocation(display.getCursorLocation());
+			
+			Composite composite = new Composite(shell, SWT.NONE);
+			FormData fd_composite = new FormData();
+			fd_composite.bottom = new FormAttachment(0, 129);
+			fd_composite.right = new FormAttachment(0, 415);
+			fd_composite.top = new FormAttachment(0);
+			fd_composite.left = new FormAttachment(0);
+			composite.setLayoutData(fd_composite);
+			createControls(composite);
+			
+			try
+			{
+				shell.open();
+
+				while (!shell.isDisposed())
+				{
+					if( ! display.readAndDispatch())
+					{
+						display.sleep();
+					}
+				}
+
+			}
+			finally
+			{
+				if (!shell.isDisposed())
+				{
+					shell.dispose();
+				}
+			}
+			
+		}
+		// wenn display disposed wird, wird auch das aufrufende fenster gekillt
+		finally
+		{
+//			display.dispose();
+		}
+	}
+	
+	public EditVariable(Step step, Variable variable)
+	{
+		this.step = step;
 		this.variable = variable;
 
 		try
@@ -149,21 +208,34 @@ public class EditVariable
 		GridLayout sss = new GridLayout(3, true);
 		compositeBtn.setLayout(sss);
 		
-		Button btnEnter = new Button(compositeBtn, SWT.NONE);
-		btnEnter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnEnter.setText("enter");
-		btnEnter.addSelectionListener(listenerButtonEnter);
-
-		new Label(compositeBtn, SWT.NONE);
-
 		Button btnCancel = new Button(compositeBtn, SWT.NONE);
 		btnCancel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnCancel.setText("cancel");
 		btnCancel.addSelectionListener(listenerButtonCancel);
+
+		Button btnDelete = new Button(compositeBtn, SWT.NONE);
+		btnDelete.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		btnDelete.setText("delete");
+		btnDelete.addSelectionListener(listenerButtonDelete);
+		if(variable.getKey().equals("") && variable.getValue().equals(""))
+		{
+			btnDelete.setEnabled(false);
+		}
+			
 		
+		Button btnEnter = new Button(compositeBtn, SWT.NONE);
+		btnEnter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		btnEnter.setText("enter");
+		btnEnter.addSelectionListener(listenerButtonEnter);
+		
+		// binding
 		bindingContextFelder();
-		einstellungen.setKey(variable.getKey());
-		einstellungen.setValue(variable.getValue());
+		System.out.println("variable-key:   "+variable.getKey());
+		System.out.println("variable-value: "+variable.getValue());
+		
+		// setzen der aktuellen werte der variable in die felder
+		textKey.setText(variable.getKey());
+		textValue.setText(variable.getValue());
 	}
 	
 	
@@ -175,13 +247,79 @@ public class EditVariable
 		}
 	};	
 	
+	SelectionAdapter listenerButtonDelete = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			Shell messageShell = new Shell();
+			MessageBox confirmation = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+			confirmation.setText("please confirm");
+			
+			String message = "do you really want to delete this variable from step "+step.getName()+"\n\n";
+			message += "  key:\t\t"+variable.getKey()+"\n";
+			message += "value:\t\t"+variable.getValue()+"\n";
+			
+			confirmation.setMessage(message);
+			
+			// open confirmation and wait for user selection
+			int returnCode = confirmation.open();
+//			System.out.println("returnCode is: "+returnCode);
+
+			// ok == 32
+			if (returnCode == 32)
+			{
+				
+				ArrayList<Variable> newVariables = new ArrayList<Variable>();
+				for(Variable actVariable : step.getVariable())
+				{
+					// alle beruecksichtigen, die nicht geloescht werden sollen
+					if(actVariable != variable)
+					{
+						newVariables.add(actVariable);
+					}
+				}
+				// neue (um das zu loeschende element) verkuerzte liste wieder in den step schreiben
+				step.setVariable(newVariables);
+				// auf platte schreiben
+				step.getParent().writeBinary();
+				messageShell.dispose();
+			}
+			shell.dispose();
+		}
+	};
+	
 	SelectionAdapter listenerButtonEnter = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
 			System.out.println("variable "+variable.getKey());
-			variable.setKey(einstellungen.getKey());
-			variable.setValue(einstellungen.getValue());
+			
+			boolean addAsNewVariable = true;
+			
+			// setzen der neuen werte in die variable
+			variable.setKey(textKey.getText());
+			variable.setValue(textValue.getText());
+			
+			// falls noch nicht in den variablen des steps existent, soll die variable hinzugefuegt werden
+			for(Variable actVariable : step.getVariable())
+			{
+				// existiert die variable im step bereits, muss sie nicht mehr hinzugefuegt werden
+				if(actVariable == variable)
+				{
+					addAsNewVariable = false;
+				}
+			}
+			
+			// wenn 
+			if(addAsNewVariable)
+			{
+				step.addVariable(variable);
+			}
+			
+			// schreiben des prozesse auf platte
+			System.out.println("act file: "+step.getParent().getOutfilebinary());
+			step.getParent().writeBinary();
+			shell.dispose();
 		}
 	};
 	

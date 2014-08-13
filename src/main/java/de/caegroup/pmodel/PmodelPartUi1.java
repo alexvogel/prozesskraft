@@ -123,6 +123,8 @@ public class PmodelPartUi1 extends ModelObject
 	Shell shell_dummy_insight;
 	Composite actualStepInsight = null;
 	CTabFolder tabFolder_12;
+	SIInsightCreator sIInsightCreator = null;
+	
 	Composite processInsight = null;
 	Map<String,Composite> stepInsight = new HashMap();
 	private Composite composite_131;
@@ -183,6 +185,7 @@ public class PmodelPartUi1 extends ModelObject
 				log("warn", "assuming binary format.");
 //				System.out.println(inFile.getAbsolutePath());
 				this.einstellungen.getProcess().setInfilebinary(inFile.getAbsolutePath());
+				this.einstellungen.getProcess().setOutfilebinary(inFile.getAbsolutePath());
 				this.einstellungen.setProcess(this.einstellungen.getProcess().readBinary());
 			}
 		
@@ -519,7 +522,7 @@ public class PmodelPartUi1 extends ModelObject
 			GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 			actualStepInsight.setLayoutData(gd_composite);
 
-			new SIInsightCreator(actualStepInsight, this.einstellungen.getProcess().getStep(einstellungen.getMarkedStepName()));
+			sIInsightCreator = new SIInsightCreator(actualStepInsight, this.einstellungen.getProcess().getStep(einstellungen.getMarkedStepName()));
 			
 			// im stapel ablegen fuer spaeter
 			this.stepInsight.put(einstellungen.getMarkedStepName(), actualStepInsight);
@@ -630,15 +633,19 @@ public class PmodelPartUi1 extends ModelObject
 		processInsight = null;
 		createControlsProcessInsight(composite_131);
 
+		// feststellen welche karteikarte im aktuellen step markiert ist
+		int indexTabItemSelected = sIInsightCreator.tabFolder.getSelectionIndex();
+		
 		// die stepdarstellungen disposen und den aktuellen neu erstellen lassen
 		for(Composite actualStepInsight : stepInsight.values())
 		{
 			actualStepInsight.dispose();
 		}
 		stepInsight = new HashMap();
-		actualStepInsight = null;
+		this.actualStepInsight = null;
 		createControlsStepInsight(composite_132);
-
+		sIInsightCreator.tabFolder.setSelection(indexTabItemSelected);
+		
 		// die processing darstellung refreshen
 		applet_refresh();
 

@@ -5,8 +5,8 @@ import de.caegroup.process.Process;
 
 public class EditVariableModel extends ModelObject
 {
-	private String key = null;
-	private String value = null;
+	public String key = null;
+	public String value = null;
 
 	/**
 	 * constructors
