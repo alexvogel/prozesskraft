@@ -1,23 +1,22 @@
 package de.caegroup.gui.step.edit;
 
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import de.caegroup.pmodel.PmodelViewPage;
 import de.caegroup.process.*;
 
 import org.eclipse.swt.widgets.Button;
@@ -25,19 +24,27 @@ import org.eclipse.swt.layout.FormLayout;
 
 public class EditVariable
 {
-	private Variable variable = null;
+//	private Variable variable = null;
 	Shell shell = new Shell(Display.getCurrent());
 	Display display = Display.getCurrent();
 	
+	Text textKey = null;
+	Text textValue = null;
 	
+	EditVariableModel einstellungen = null;
+	
+	Variable variable = null;
 	/**
 	 * @wbp.parser.entryPoint
 	 */
 	public EditVariable()
 	{
-		shell.setText("edit/delete variable");
+		this.variable = new Variable();
+		
+		shell.setText("edit variable");
 		shell.setSize(425, 162);
 		shell.setLayout(new FormLayout());
+		shell.setLocation(display.getCursorLocation());
 		Composite composite = new Composite(shell, SWT.NONE);
 		FormData fd_composite = new FormData();
 		fd_composite.bottom = new FormAttachment(0, 129);
@@ -55,8 +62,11 @@ public class EditVariable
 
 		try
 		{
+			shell.setText("edit variable");
 			shell.setSize(425, 162);
 			shell.setLayout(new FormLayout());
+			shell.setLocation(display.getCursorLocation());
+			
 			Composite composite = new Composite(shell, SWT.NONE);
 			FormData fd_composite = new FormData();
 			fd_composite.bottom = new FormAttachment(0, 129);
@@ -118,7 +128,7 @@ public class EditVariable
 		variableKey.setText("key");
 		variableKey.setToolTipText("name of variable");
 		
-		Text textKey = new Text(compositeEntries, SWT.BORDER);
+		textKey = new Text(compositeEntries, SWT.BORDER);
 		textKey.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		textKey.setToolTipText("name of variable");
 		textKey.setMessage("name of variable");
@@ -129,31 +139,31 @@ public class EditVariable
 		variableValue.setToolTipText("value of variable");
 		variableValue.setText("value");
 		
-		Text textValue = new Text(compositeEntries, SWT.BORDER);
+		textValue = new Text(compositeEntries, SWT.BORDER);
 		textValue.setToolTipText("value of variable");
 		textValue.setMessage("value of variable");
 		textValue.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		Composite compositeBtn = new Composite(composite, SWT.NONE);
 		compositeBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		GridLayout sss = new GridLayout(5, true);
+		GridLayout sss = new GridLayout(3, true);
 		compositeBtn.setLayout(sss);
 		
 		Button btnEnter = new Button(compositeBtn, SWT.NONE);
 		btnEnter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnEnter.setText("enter");
+		btnEnter.addSelectionListener(listenerButtonEnter);
+
 		new Label(compositeBtn, SWT.NONE);
 
 		Button btnCancel = new Button(compositeBtn, SWT.NONE);
 		btnCancel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnCancel.setText("cancel");
-		new Label(compositeBtn, SWT.NONE);
 		btnCancel.addSelectionListener(listenerButtonCancel);
 		
-		Button btnDelete = new Button(compositeBtn, SWT.NONE);
-		btnDelete.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnDelete.setText("delete");
-		
+		bindingContextFelder();
+		einstellungen.setKey(variable.getKey());
+		einstellungen.setValue(variable.getValue());
 	}
 	
 	
@@ -165,4 +175,29 @@ public class EditVariable
 		}
 	};	
 	
+	SelectionAdapter listenerButtonEnter = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			System.out.println("variable "+variable.getKey());
+			variable.setKey(einstellungen.getKey());
+			variable.setValue(einstellungen.getValue());
+		}
+	};
+	
+	protected DataBindingContext bindingContextFelder()
+	{
+		DataBindingContext bindingContextFelder = new DataBindingContext();
+		//
+		IObservableValue targetObservableSize = WidgetProperties.text().observe(textKey);
+		IObservableValue modelObservableSize = BeanProperties.value("key").observe(einstellungen);
+		bindingContextFelder.bindValue(targetObservableSize, modelObservableSize, null, null);
+		//
+		IObservableValue targetObservableFix = WidgetProperties.text().observe(textValue);
+		IObservableValue modelObservableFix = BeanProperties.value("value").observe(einstellungen);
+		bindingContextFelder.bindValue(targetObservableFix, modelObservableFix, null, null);
+		//
+		return bindingContextFelder;
+	}
+
 }
