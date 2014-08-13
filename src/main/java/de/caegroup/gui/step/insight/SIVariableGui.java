@@ -62,8 +62,6 @@ public class SIVariableGui
 	
 	private TableViewer viewer;
 
-	private Image imageDelete = new Image(Display.getDefault(), "icons/full/dtool16/delete.png");
-
 //	ArrayList<VariableGui> variableGui = new ArrayList<VariableGui>();
 //	ArrayList<FileGui> fileGui = new ArrayList<FileGui>();
 
