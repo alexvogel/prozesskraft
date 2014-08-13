@@ -1848,6 +1848,11 @@ implements Serializable, Cloneable
 		return this.variable;
 	}
 		
+	public void setVariable(ArrayList<Variable> variable)
+	{
+		this.variable = variable;
+	}
+		
 	public void addList(List list)
 	{
 		this.list.add(list);
