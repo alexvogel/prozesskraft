@@ -65,6 +65,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.ExpandBar;
+import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -263,6 +265,15 @@ public class PmodelPartUi1 extends ModelObject
 		grpVisual.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		grpVisual.setLayout(new GridLayout(2, false));
 		
+//		ExpandBar barVisual = new ExpandBar(composite_11, SWT.V_SCROLL);
+//		Composite grpVisual = new Composite(barVisual, SWT.NONE);
+//		ExpandItem item0 = new ExpandItem(barVisual, SWT.NONE, 0);
+//		item0.setText("visual settings");
+//		item0.setHeight(grpVisual.computeSize(SWT.DEFAULT, SWT.DEFAULT).y);
+//		item0.setControl(grpVisual);
+//		item0.setExpanded(true);
+//		barVisual.setSpacing(8);
+
 		Label lblNewLabel_2 = new Label(grpVisual, SWT.NONE);
 		lblNewLabel_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblNewLabel_2.setText("size");
@@ -522,7 +533,7 @@ public class PmodelPartUi1 extends ModelObject
 			GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 			actualStepInsight.setLayoutData(gd_composite);
 
-			sIInsightCreator = new SIInsightCreator(actualStepInsight, this.einstellungen.getProcess().getStep(einstellungen.getMarkedStepName()));
+			sIInsightCreator = new SIInsightCreator(this, actualStepInsight, this.einstellungen.getProcess().getStep(einstellungen.getMarkedStepName()));
 			
 			// im stapel ablegen fuer spaeter
 			this.stepInsight.put(einstellungen.getMarkedStepName(), actualStepInsight);
@@ -919,7 +930,7 @@ public class PmodelPartUi1 extends ModelObject
 		}
 	}
 
-	void log(String level, String logstring)
+	public void log(String level, String logstring)
 	{
 //		text_logging.setText(text_logging.getText()+logstring+"\n");
 		logstring = "["+new Timestamp(System.currentTimeMillis()) + "]:"+level+":"+logstring;

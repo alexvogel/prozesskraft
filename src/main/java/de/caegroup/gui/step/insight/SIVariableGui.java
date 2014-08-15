@@ -46,9 +46,10 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.Workbench;
-
 import org.eclipse.ui.internal.layout.Row;
 
+
+import de.caegroup.gui.step.edit.EditVariable;
 //import de.caegroup.pradar.Entity;
 import de.caegroup.process.File;
 import de.caegroup.process.Log;
@@ -57,16 +58,20 @@ import de.caegroup.process.Variable;
 
 public class SIVariableGui
 {
+	private SIInsightCreator father;
 	private Composite parent;
 	private Step step;
+	
+	private SIVariableGui This = this;
 	
 	private TableViewer viewer;
 
 //	ArrayList<VariableGui> variableGui = new ArrayList<VariableGui>();
 //	ArrayList<FileGui> fileGui = new ArrayList<FileGui>();
 
-	public SIVariableGui(Composite parent, Step step)
+	public SIVariableGui(SIInsightCreator father, Composite parent, Step step)
 	{
+		this.father = father;
 		this.parent = parent;
 		this.step = step;
 		Composite composite = new Composite(this.parent, SWT.NONE);
@@ -190,7 +195,7 @@ public class SIVariableGui
 			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
 			
 			Variable variable = (Variable) thisselection.getFirstElement();
-			de.caegroup.gui.step.edit.EditVariable editor = new de.caegroup.gui.step.edit.EditVariable(step, variable);
+			EditVariable editor = new EditVariable(This, step, variable);
 		}
 	};
 
@@ -269,5 +274,37 @@ public class SIVariableGui
 		}
 		
 	}
+
+	/**
+	 * @return the parent
+	 */
+	public Composite getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(Composite parent) {
+		this.parent = parent;
+	}
+
+	/**
+	 * @return the father
+	 */
+	public SIInsightCreator getFather() {
+		return father;
+	}
+
+	/**
+	 * @param father the father to set
+	 */
+	public void setFather(SIInsightCreator father) {
+		this.father = father;
+	}
+	
+	
+	
+	
 	
 }

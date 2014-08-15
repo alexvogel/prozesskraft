@@ -28,7 +28,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
+import de.caegroup.gui.step.edit.EditFile;
 import de.caegroup.gui.step.edit.EditVariable;
+import de.caegroup.pmodel.PmodelPartUi1;
 import de.caegroup.process.Commit;
 import de.caegroup.process.Step;
 import de.caegroup.process.Variable;
@@ -37,16 +39,20 @@ import de.caegroup.process.Process;
 public class SIInsightCreator
 {
 	private Step step;
+	private PmodelPartUi1 father;
 	private Composite parent;
 	public CTabFolder tabFolder;
 
+	private SIInsightCreator This = this;
+	
 	private Composite composite;
 	private ScrolledComposite sc;
 	
 //	ArrayList<CommitGui> commitGui = new ArrayList<CommitGui>();
 //	
-	public SIInsightCreator(Composite parent, Step step)
+	public SIInsightCreator(PmodelPartUi1 father, Composite parent, Step step)
 	{
+		this.father = father;
 		this.parent = parent;
 		this.step = step;
 
@@ -146,9 +152,18 @@ public class SIInsightCreator
 
 		// befuellen des composites fuer 'files'
 		tabItem_files.setControl(composite_tabItem_files);
-		new SIFileGui(composite_tabItem_files, step);
+		new SIFileGui(this, composite_tabItem_files, step);
 
-		// ein tabItem fuer 'variables' erzeugen
+		// erstellen eines buttons zum hinzufuegen von variables
+		Button buttonAddFile = new Button(composite_tabItem_files, SWT.NONE);
+		buttonAddFile.setSelection(true);
+		GridData gd_btnAddFile = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd_btnAddFile.widthHint = 69;
+		buttonAddFile.setLayoutData(gd_btnAddFile);
+		buttonAddFile.setText("add");
+		buttonAddFile.addSelectionListener(listener_button_add_file);
+
+	// ein tabItem fuer 'variables' erzeugen
 		CTabItem tabItem_variables = new CTabItem(tabFolder, SWT.NONE);
 		tabItem_variables.setText("variables");
 		tabItem_variables.setToolTipText("variables which have been committed to step "+step.getName());
@@ -164,7 +179,7 @@ public class SIInsightCreator
 
 		// befuellen des composites fuer 'variables'
 		tabItem_variables.setControl(composite_tabItem_variables);
-		new SIVariableGui(composite_tabItem_variables, step);
+		new SIVariableGui(this, composite_tabItem_variables, step);
 
 		// erstellen eines buttons zum hinzufuegen von variables
 		Button buttonAdd = new Button(composite_tabItem_variables, SWT.NONE);
@@ -173,7 +188,7 @@ public class SIInsightCreator
 		gd_btnNewButton.widthHint = 69;
 		buttonAdd.setLayoutData(gd_btnNewButton);
 		buttonAdd.setText("add");
-		buttonAdd.addSelectionListener(listener_button_add);
+		buttonAdd.addSelectionListener(listener_button_add_variable);
 
 		
 			
@@ -183,12 +198,49 @@ public class SIInsightCreator
 		return parent;
 	}
 
-	SelectionAdapter listener_button_add = new SelectionAdapter()
+	SelectionAdapter listener_button_add_variable = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
-			new EditVariable(step);
+			new EditVariable(This, step);
 		}
 	};
 
+	SelectionAdapter listener_button_add_file = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			new EditFile(This, step);
+		}
+	};
+
+	/**
+	 * @return the father
+	 */
+	public PmodelPartUi1 getFather() {
+		return father;
+	}
+
+	/**
+	 * @param father the father to set
+	 */
+	public void setFather(PmodelPartUi1 father) {
+		this.father = father;
+	}
+
+	/**
+	 * @return the parent
+	 */
+	public Composite getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(Composite parent) {
+		this.parent = parent;
+	}
+
+	
 }

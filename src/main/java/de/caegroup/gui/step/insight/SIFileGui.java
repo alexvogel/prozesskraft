@@ -4,8 +4,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -19,23 +22,30 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+import de.caegroup.gui.step.edit.EditFile;
+import de.caegroup.gui.step.edit.EditVariable;
 import de.caegroup.process.File;
 import de.caegroup.process.Log;
 import de.caegroup.process.Step;
+import de.caegroup.process.Variable;
 
 public class SIFileGui
 {
+	private SIInsightCreator father;
 	private Composite parent;
 	private Step step;
 	
-	TableViewer viewer;
+	private SIFileGui This = this;
+
+	private TableViewer viewer;
 //	Composite composite;
 
 //	ArrayList<VariableGui> variableGui = new ArrayList<VariableGui>();
 //	ArrayList<FileGui> fileGui = new ArrayList<FileGui>();
 
-	public SIFileGui(Composite parent, Step step)
+	public SIFileGui(SIInsightCreator father, Composite parent, Step step)
 	{
+		this.father = father;
 		this.parent = parent;
 		this.step = step;
 		Composite composite = new Composite(this.parent, SWT.NONE);
@@ -72,15 +82,28 @@ public class SIFileGui
 
 		TableColumn colPath = new TableColumn(table, SWT.LEFT);
 		colPath.setText("path");
-		colPath.setWidth(200);
+		colPath.setWidth(150);
 
 		viewer.setContentProvider(new MyContentProvider());
 		viewer.setLabelProvider(new MyLabelProvider());
 		viewer.setInput(step.getFile());
-		
+		viewer.addDoubleClickListener(listener_double_click);
+
 		System.out.println("Anzahl ist: "+step.getLog().size());
 	}
 	
+	IDoubleClickListener listener_double_click = new IDoubleClickListener()
+	{
+		public void doubleClick(DoubleClickEvent event)
+		{
+			TableViewer viewer = (TableViewer) event.getSource();
+			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
+			
+			File file = (File) thisselection.getFirstElement();
+			EditFile editor = new EditFile(This, step, file);
+		}
+	};
+
 	public class MyContentProvider implements IStructuredContentProvider
 	{
 		public Object[] getElements(Object inputElement)
@@ -145,13 +168,13 @@ public class SIFileGui
 					return f.getKey();
 					
 				case 1:
-					return ""+f.getSizeInBytes();
+					return f.getSizeAsString();
 					
 				case 2:
 					return f.getFilename();
 					
 				case 3:
-					return f.toString() + ":"+ f.getAbsfilename();
+					return f.getAbsfilename();
 			}
 			// should never get here
 			return "";
@@ -159,4 +182,19 @@ public class SIFileGui
 		
 	}
 	
+	/**
+	 * @return the father
+	 */
+	public SIInsightCreator getFather() {
+		return father;
+	}
+
+	/**
+	 * @param father the father to set
+	 */
+	public void setFather(SIInsightCreator father) {
+		this.father = father;
+	}
+	
+
 }
