@@ -1,9 +1,6 @@
 package de.caegroup.gui.process;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
@@ -18,28 +15,19 @@ import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
-import de.caegroup.process.Commit;
 import de.caegroup.process.Step;
 import de.caegroup.process.Variable;
-import de.caegroup.process.Process;
 
 public class VariableOccurGui
 {
@@ -67,7 +55,7 @@ public class VariableOccurGui
 	{
 		this.parent_variablegui = parent_variablegui;
 		this.parent = parent;
-		this.variable = variable;
+		this.variable = variable.clone();
 		this.variable.setKey(key);
 		this.key = key;
 		this.free = free;
@@ -137,7 +125,8 @@ public class VariableOccurGui
 		
 		// databinding nur, falls auch tatsaechlich eine combo box erstellt wird
 		// und bevor programmatisch ein wert gesetzt wird
-		DataBindingContext bindingContext = initDataBinding();
+//		DataBindingContext bindingContext = initDataBinding();
+		initDataBinding();
 
 		combo.setItems(variable.getChoice().toArray(new String[variable.getChoice().size()]));
 		
@@ -322,15 +311,22 @@ public class VariableOccurGui
 	 */
 	public void commit(Step step)
 	{
-		if ( data.getContent() != null )
+		// committen, wenn sichtbar (unsichtbare gibts bei optionalen parametern)
+		if ( comboexist )
 		{
-			step.commitVariable(this.key, data.getContent());
+			variable.setValue(this.data.getContent());
+			step.log("debug", "VariableOccurGui.commit: " + variable.getKey() +"="+ variable.getValue());
+			step.commitVariable(variable);
 		}
 	}
 
 	public boolean doAllTestsPass()
 	{
 //		System.out.println("testResult variable '"+this.key+"' "+this.variable.doAllTestsPass());
-		return this.variable.doAllTestsPass();
+		if(this.comboexist)
+		{
+			return this.variable.doAllTestsPass();
+		}
+		return true;
 	}
 }

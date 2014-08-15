@@ -1,7 +1,7 @@
 package de.caegroup.gui.process;
 
-import java.util.ArrayList;
-import java.util.Collections;
+//import java.util.ArrayList;
+//import java.util.Collections;
 
 public class ModelData extends ModelObject
 {
@@ -18,6 +18,7 @@ public class ModelData extends ModelObject
 
 	public void setContent(String content)
 	{
+		System.err.println("updating content: "+content);
 		firePropertyChange("content", this.content, this.content = content);
 	}
 }

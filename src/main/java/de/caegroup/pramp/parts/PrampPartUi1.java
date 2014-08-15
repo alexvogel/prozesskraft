@@ -1,27 +1,22 @@
 package de.caegroup.pramp.parts;
 
-import de.caegroup.commons.*;
+import de.caegroup.commons.DistantHostActions;
 import de.caegroup.gui.process.CommitCreator;
 
-import java.awt.Frame;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.NotDirectoryException;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -35,9 +30,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-import org.eclipse.core.databinding.Binding;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.UpdateListStrategy;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.list.IObservableList;
@@ -48,17 +42,13 @@ import org.eclipse.jface.databinding.swt.WidgetProperties;
 //import org.eclipse.jface.bindings.Binding;
 //import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.awt.SWT_AWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.TextLayout;
-import org.eclipse.swt.graphics.TextStyle;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -75,18 +65,14 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 import org.eclipse.swt.widgets.Combo;
 
-
-
-//import com.jcraft.jsch.ChannelExec;
-//import com.jcraft.jsch.JSch;
-//import com.jcraft.jsch.Session;
+import com.google.common.collect.Multimap;
+import com.jcraft.jsch.JSchException;
 import com.license4j.License;
 import com.license4j.LicenseValidator;
 
 import de.caegroup.commons.*;
-import de.caegroup.process.Commit;
+import de.caegroup.process.Log;
 import de.caegroup.process.Process;
-import de.caegroup.process.Variable;
 
 public class PrampPartUi1 extends ModelObject
 //public class PrampPartUi1
@@ -105,6 +91,7 @@ public class PrampPartUi1 extends ModelObject
 	private String processDefinitionPath = null;
 	private Process process = null;
 	private String iniFile = null;
+	private Ini ini = null;
 	private String userIniFile = null;
 	
 	private ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
@@ -304,6 +291,21 @@ public class PrampPartUi1 extends ModelObject
 		button_start.setToolTipText("start an instance of selected process");;
 		button_start.addSelectionListener(listener_startinstance_button);
 		
+		// Group apps
+		Group grpApps = new Group(composite_11, SWT.NONE);
+		grpApps.setText("apps");
+		GridData gd_grpApps = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_grpApps.widthHint = 152;
+		grpApps.setLayoutData(gd_grpApps);
+		grpApps.setLayout(new GridLayout(2, false));
+		
+		Button btnNewButton3 = new Button(grpApps, SWT.NONE);
+		GridData gd_btnNewButton3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		gd_btnNewButton3.widthHint = 141;
+		btnNewButton3.setLayoutData(gd_btnNewButton3);
+		btnNewButton3.setText("pRadar");
+		btnNewButton3.addSelectionListener(listener_pradar_button);
+
 		composite_12 = new Composite(composite_1, SWT.BORDER);
 //		composite_12.setLayout(new GridLayout(1, false));
 		composite_12.setLayout(new FillLayout());
@@ -403,6 +405,10 @@ public class PrampPartUi1 extends ModelObject
 	void updateUiComboVersions()
 	{
 		getInstalledVersionNames(combo_domains.getText(), combo_processes.getText());
+
+		// deselect first
+		combo_versions.deselect(combo_versions.getSelectionIndex());
+		// then select the last item
 		combo_versions.select(combo_versions.getItemCount()-1);
 	}
 	
@@ -497,6 +503,13 @@ public class PrampPartUi1 extends ModelObject
 	          // Set the text box to the new selection
 	        	einstellungen.setBaseDirectory(dir);
 	        	log("info", "setting instancedirectory: "+dir);
+	        	
+	        	// dieses Directory als filterPath in allen bereits bestehenden commitCreatorn setzen
+	        	for(String key : commitCreatorOld.keySet())
+	        	{
+	        		commitCreatorOld.get(key).setFilterPath(dir);
+	        	}
+	        	
 //	        	text_instancedirectory.setText(dir);
 	        }
 		}
@@ -526,14 +539,29 @@ public class PrampPartUi1 extends ModelObject
 		}
 	};
 	
-//	ModifyListener listener_versionselection = new ModifyListener()
-//	{
-//		public void modifyText(ModifyEvent arg0)
-//		{
-//			updateUiParameterAbfrage();
-//		}
-//	};	
-//	
+	/**
+	 * pramp-button oeffnet die anwendung pradar-gui
+	 **/
+	SelectionAdapter listener_pradar_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			log("info", "starten von pradar");
+			String aufruf = ini.get("apps", "pradar");
+			
+			try
+			{
+				log("info", "calling: " + aufruf);
+				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	};
+	
 	/**
 	 * binds array of domainnames to combo-box 'domains'
 	 */
@@ -669,7 +697,6 @@ public class PrampPartUi1 extends ModelObject
 	 */
 	void loadIni()
 	{
-		Ini ini;
 		ArrayList<String> license_server_list = new ArrayList<String>();
 
 		try
@@ -1067,7 +1094,7 @@ public class PrampPartUi1 extends ModelObject
 //				GridLayout gl_actualComposite = new GridLayout(1, false);
 				actualComposite.setLayout(new FillLayout());
 
-				CommitCreator commitCreator = new CommitCreator(actualComposite, this.process.getStep("root"));
+				CommitCreator commitCreator = new CommitCreator(this, actualComposite, this.process.getStep("root"));
 
 				actualComposite = commitCreator.createControls();
 //				actualComposite.pack();
@@ -1142,13 +1169,19 @@ public class PrampPartUi1 extends ModelObject
 	 * creates an instance directory if it does not exist
 	 * if directory already exists and is empty, returns true
 	 * if directory already exists and contains files or directories, returns false
-	 * @return true if after this method an empty directory exists
+	 * @return directory for the instance (null if something happended)
 	 */
-	private boolean createInstanceDir()
+	private String getInstanceDir()
 	{
-		java.io.File instanceDir = new java.io.File(this.einstellungen.getBaseDirectory());
+		// assemble a random name for instanceDir
+		Calendar now = Calendar.getInstance();
+		Random random = new Random();
+		DecimalFormat df2 = new DecimalFormat("00");
+		String randomName = this.einstellungen.getProcess() + "_v" + this.einstellungen.getVersion() + "_" + now.get(Calendar.YEAR) + df2.format(now.get(Calendar.MONTH)) + df2.format(now.get(Calendar.DAY_OF_MONTH)) + "_" + random.nextInt(100000000);
+
+		java.io.File instanceDir = new java.io.File(this.einstellungen.getBaseDirectory() + "/" + randomName);
 		
-		boolean result = false;
+		String instanceDirectoryPath = null;
 		
 		if (instanceDir.exists())
 		{
@@ -1157,21 +1190,36 @@ public class PrampPartUi1 extends ModelObject
 			{
 				log("error", "instance directory not empty: "+instanceDir.getAbsoluteFile());
 				log("info", "choose an empty or nonexistent instance directory.");
-				result = false;
+				instanceDirectoryPath = null;
 			}
 			else
 			{
 				log("info", "instance directory is empty - thats good..");
+				instanceDirectoryPath = instanceDir.getAbsolutePath();
 			}
 		}
+		
 		else
 		{
-			result = instanceDir.mkdirs();
+			if(instanceDir.mkdirs())
+			{
+				instanceDirectoryPath = instanceDir.getAbsolutePath();
+			}
+			else
+			{
+				instanceDirectoryPath = null;
+			}
 		}
-		return result;
+		
+		return instanceDirectoryPath;
 	}
 	
-	private boolean parameterAlreadyUsed(Map<String,String> content)
+	/**
+	 * prueft ob die parameter bereits verwendet wurden
+	 * TODO: erneuern auf Multimap
+	 * @return true if parameter are used the first time
+	 */
+	private boolean parameterAlreadyUsed(Multimap<String,String> content)
 	{
 		boolean result = false;
 
@@ -1282,14 +1330,20 @@ public class PrampPartUi1 extends ModelObject
 			else if(!(process.isProcessConsistent()))
 			{
 				log ("error", "process data appears to be inconsistent. check process definition.");
+				ArrayList<Log> logOfProcess = this.process.getLog();
+				for(Log actualLog : logOfProcess)
+				{
+					log (actualLog.getLevel(), actualLog.getMsg());
+				}
 				return false;
 			}
 			else
 			{
 				// holen aller user-angaben aus dem formular
-				Map<String,String> content = this.commitCreatorOld.get(getActualCommitRootName()).getContent();
+				Multimap<String,String> content = this.commitCreatorOld.get(getActualCommitRootName()).getContent();
 
-				if(parameterAlreadyUsed(content))
+//				if(parameterAlreadyUsed(content))
+				if(false)
 				{
 					log ("warn", "recently started an instance with same input.");
 					
@@ -1312,7 +1366,10 @@ public class PrampPartUi1 extends ModelObject
 					}
 				}
 				
-				if (createInstanceDir())
+				String instanceDir = getInstanceDir();
+				this.process.setRootdir(instanceDir);
+				
+				if (instanceDir != null)
 				{
 					log ("info", "all tests passed. performing commit.");
 	//				System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
@@ -1352,9 +1409,9 @@ public class PrampPartUi1 extends ModelObject
 //					System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
 //					System.out.println("Id des Prozesses: "+process.getRandomId());
 					
-					process.setOutfilebinary(this.einstellungen.getBaseDirectory()+"/"+this.einstellungen.getProcess()+".pmb");
-					process.setInfilebinary(this.einstellungen.getBaseDirectory()+"/"+this.einstellungen.getProcess()+".pmb");
-					process.setRootdir(this.einstellungen.getBaseDirectory());
+					process.setOutfilebinary(instanceDir+"/"+this.einstellungen.getProcess()+".pmb");
+					process.setInfilebinary(instanceDir+"/"+this.einstellungen.getProcess()+".pmb");
+					process.setRootdir(instanceDir);
 					
 					process.writeBinary();
 					log ("info", "writing binary instance file to disk "+process.getOutfilebinary());
@@ -1369,26 +1426,84 @@ public class PrampPartUi1 extends ModelObject
 						e1.printStackTrace();
 					}
 					
+					
 					// starten des process-manager remote
 					// ....
-					log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
-
-
-					String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\\\"process-manager -instance "+process.getOutfilebinary()+"\\\""};
-
-					ProcessBuilder pb = new ProcessBuilder(args_for_command);
-					
-					try
+					if(ini.get("start", "process-manager").equals("true"))
 					{
-						java.lang.Process p = pb.start();
-						log ("info", "calling: "+"ssh"+" "+System.getProperty("user.name")+"@"+combo_hosts.getText()+" "+"\"process-manager -instance "+process.getOutfilebinary()+"\"");
-						log ("debug", "hashCode="+p.hashCode());
-					} catch (IOException e)
-					{
-						// TODO Auto-generated catch block
-						log ("error", "IOException: problems with executing via ssh");
-						e.printStackTrace();
+//						log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
+
+//						if(!(DistantHostActions.isHostReachable(combo_hosts.getText())))
+//						{
+//							log ("error", "host "+combo_hosts.getText()+" not reachable");
+//							return false;
+//						}
+						
+						String call = ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary();
+						
+//						try
+//						{
+//							log ("info", "calling on host " + combo_hosts.getText() + ": "+call);
+//							DistantHostActions.sysCallOnDistantHost(combo_hosts.getText(), call );
+//						}
+//						catch (JSchException e1)
+//						{
+//							log ("error", "cannot launch process on host " + combo_hosts.getText());
+////							e1.printStackTrace();
+//						}
+						
+						log ("info", "calling: " + call);
+						try
+						{
+							java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+							log ("debug", "hashCode="+sysproc.hashCode());
+						} catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							log ("error", "IOException: problems with execution");
+							e.printStackTrace();
+						}
+
+//						String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"" + ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary()+"\""};
+
+//						ProcessBuilder pb = new ProcessBuilder(args_for_command);
+//						java.lang.Process sysproc = pb.start();
+	
+//						try
+//						{
+//							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_command, " "));
+//							log ("debug", "hashCode="+sysproc.hashCode());
+//						} catch (IOException e)
+//						{
+//							// TODO Auto-generated catch block
+//							log ("error", "IOException: problems with executing via ssh");
+//							e.printStackTrace();
+//						}
 					}
+//					// starten des pmodel gui lokal
+//					// ....
+					if(ini.get("start", "pmodel").equals("true"))
+					{
+						log ("info", "launching pmodel viewer");
+	
+						String[] args_for_command2 = {ini.get("apps", "pmodel"), "-instance", process.getOutfilebinary()};
+	
+//						ProcessBuilder pb2 = new ProcessBuilder(args_for_command2);
+//						java.lang.Process sysproc = pb.start();
+
+						log ("info", "calling: " + StringUtils.join(args_for_command2, " "));
+						try
+						{
+							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_command2, " "));
+							log ("debug", "hashCode="+sysproc.hashCode());
+						} catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							log ("error", "IOException: problems with execution");
+							e.printStackTrace();
+						}
+					}
+
 					return true;
 
 				}
@@ -1527,7 +1642,7 @@ public class PrampPartUi1 extends ModelObject
 		return this.einstellungen.getVersion();
 	}
 	
-	void log(String level, String logstring)
+	public void log(String level, String logstring)
 	{
 //		text_logging.setText(text_logging.getText()+logstring+"\n");
 		logstring = "["+new Timestamp(System.currentTimeMillis()) + "]:"+level+":"+logstring;
@@ -1542,10 +1657,10 @@ public class PrampPartUi1 extends ModelObject
 		}
 		else
 		{
-			System.out.println(logstring);
+			System.err.println(logstring);
 		}
 	}
-	
+
 	/**
 	 * checkout License from floatingLicenseServer
 	 * @return void
@@ -1677,7 +1792,7 @@ public class PrampPartUi1 extends ModelObject
 		{
 			HelpFormatter formatter = new HelpFormatter();
 //			formatter.printHelp("checkin --version [% version %]", options);
-			formatter.printHelp("pradar-gui", options);
+			formatter.printHelp("pramp-gui", options);
 			System.exit(0);
 		}
 		
@@ -1700,7 +1815,19 @@ public class PrampPartUi1 extends ModelObject
 				{
 					Shell shell = new Shell(display);
 					shell.setText("pramp-gui "+"v[% version %]");
+
+					// set an icon
+					if(this.getClass().getResourceAsStream("/logoSymbol50Transp.png") != null)
+					{
+						shell.setImage(new Image(display, this.getClass().getResourceAsStream("/logoSymbol50Transp.png")));
+					}
+					else if((new java.io.File("logoSymbol50Transp.png")).exists())
+					{
+						shell.setImage(new Image(display, "logoSymbol50Transp.png"));
+					}
+					
 					shell.setLayout(new FillLayout());
+					shell.setSize(620, 800);
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
 					GridLayout gl_composite = new GridLayout(2, false);
 					gl_composite.marginWidth = 0;

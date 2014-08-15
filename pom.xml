@@ -70,37 +70,38 @@
 			</plugin>
 
 <!-- erstellt eines assembly mit allen eigenen (von mir erstellten) Abhaengigkeiten-->
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 				<artifactId>maven-assembly-plugin</artifactId> -->
-<!-- 				<version>2.2.1</version> -->
-<!-- 				<configuration> -->
-<!-- 					<formats> -->
-<!-- 						<format>jar</format> -->
-<!-- 					</formats> -->
-<!-- 					<descriptors> -->
-<!-- 						<descriptor>src/main/assembly/descriptor.xml</descriptor> -->
-<!-- 					</descriptors> -->
-<!-- 					<finalName>${project.name}-${project.version}</finalName> -->
-<!-- 					<archive> -->
-<!-- 						<manifest> -->
-<!-- 							<mainClass>de.caegroup.pramp.parts.PrampPartUi1</mainClass> -->
-<!-- 							<addClasspath>true</addClasspath> -->
-<!-- 						</manifest> -->
-<!-- 					</archive> -->
-<!-- 				</configuration> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>make-assembly</id> -->
-<!-- 						<phase>package</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>single</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<formats>
+						<format>jar</format>
+					</formats>
+					<descriptors>
+						<descriptor>src/main/assembly/descriptor.xml</descriptor>
+					</descriptors>
+					<finalName>${project.name}-${project.version}</finalName>
+					<archive>
+						<manifest>
+							<mainClass>de.caegroup.pramp.parts.PrampPartUi1</mainClass>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
 <!-- Obfuskieren des jars. das output ueberschreibt das default-jar, welches durch 'maven-jar-plugin' id=default produziert wurde -->
+<!--
 			<plugin>
 				<groupId>com.pyx4me</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
@@ -114,7 +115,7 @@
 					</execution>
 				</executions>
 				<configuration>
-<!-- 					<includeDependency>true</includeDependency> -->
+// 					<includeDependency>true</includeDependency> 
 					<obfuscate>true</obfuscate>
 					<outputDirectory>${project.build.directory}</outputDirectory>
 					<injar>${project.name}-${project.version}-nonObf.jar</injar>
@@ -129,6 +130,7 @@
 					<proguardVersion>4.8</proguardVersion>
 				</configuration>
 			</plugin>
+-->
 			
 <!-- Alle unter dependency definierten Abhaengigkeiten werden aus dem maven-repo in ein eigenes lib-verzeichnis kopiert -->
 			<plugin>
@@ -189,6 +191,11 @@
 			<artifactId>dozer</artifactId>
 			<version>5.4.0</version>
 	    </dependency>
+	    <dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.7</version>
+	    </dependency>
 <!-- 	    <dependency> -->
 <!-- 			<groupId>org.slf4j</groupId> -->
 <!-- 			<artifactId>slf4j-api</artifactId> -->
@@ -210,15 +217,15 @@
 			<artifactId>commons-cli</artifactId>
 			<version>1.2</version>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>inject</artifactId>
 			<version>1.0.0</version>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>jface</artifactId>
-			<version>3.8.300</version>
+			<version>3.10.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse</groupId>
@@ -248,22 +255,32 @@
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>commands</artifactId>
-			<version>3.3.0</version>
+			<version>3.6.100</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.equinox</groupId>
 			<artifactId>common</artifactId>
-			<version>3.6.100</version>
+			<version>3.6.200</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.e4</groupId>
 			<artifactId>ui.di</artifactId>
-			<version>0.11.0</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.license4j</groupId>
 			<artifactId>license4j-runtime-library</artifactId>
 			<version>4.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>17.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.caegroup.commons</groupId>
+			<artifactId>avoge-commons</artifactId>
+			<version>0.1</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -1,9 +1,6 @@
 package de.caegroup.gui.process;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.databinding.DataBindingContext;
@@ -18,32 +15,21 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.FileDialog;
 
-import de.caegroup.process.Commit;
 import de.caegroup.process.File;
 import de.caegroup.process.Step;
-import de.caegroup.process.Variable;
-import de.caegroup.process.Process;
 
 public class FileOccurGui
 {
@@ -52,7 +38,7 @@ public class FileOccurGui
 //	Font font_5;
 
 	Composite parent;
-	FileGui parent_filegui;
+	public FileGui parent_filegui;
 	File file;
 	
 	String key;
@@ -70,26 +56,26 @@ public class FileOccurGui
 	{
 		this.parent_filegui = parent_filegui;
 		this.parent = parent;
-		this.file = file;
+		this.file = file.clone();
 		this.file.setKey(key);
 		this.key = key;
 		this.textexist = textexist;
 		this.buttonexist = buttonexist;
-		
+
 		composite = new Composite(this.parent, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
 		composite.setLayoutData(gd_composite);
 		composite.setLayout(new FormLayout());
-		
+
 		createControls();
 	}
-	
+
 	/**
 	 * creates the controls
 	 */
 	public void createControls()
 	{
-		
+
 //		FontData[] fD = new Label(parent, 0).getFont().getFontData();
 //		fD[0].setHeight(5);
 //		font_5 = new Font(parent.getDisplay(), fD[0]);
@@ -108,7 +94,7 @@ public class FileOccurGui
 		{
 			createButton();
 		}
-		
+
 		// erstellen der combobox falls noetig
 		if (textexist)
 		{
@@ -151,7 +137,8 @@ public class FileOccurGui
 		fileButton.setLayoutData(fd_file_button);
 		
 		composite.layout();
-		DataBindingContext bindingContext = initDataBinding();
+//		DataBindingContext bindingContext = initDataBinding();
+		initDataBinding();
 	}
 	
 	/**
@@ -237,7 +224,25 @@ public class FileOccurGui
 
 	        // Set the initial filter path according
 	        // to anything they've selected or typed in
-	        dlg.setFilterPath(text.getText());
+	        String initialPathInDialog = "";
+	        java.io.File dummyFile = new java.io.File(text.getText());
+	        if(dummyFile.isDirectory())
+	        {
+	        	initialPathInDialog = dummyFile.getAbsolutePath();
+	        }
+	        else if(dummyFile.isFile())
+	        {
+	        	// setzen des pfades in dem sich das file befindet
+	        	initialPathInDialog = dummyFile.getParent();
+	        	// setzen der bereits getroffenen auswahl
+		        dlg.setFileName(dummyFile.getAbsolutePath().substring(dummyFile.getAbsolutePath().lastIndexOf("/")));
+	        }
+	        else
+	        {
+	        	// was auch immer da schon drinsteht soll als filter versucht werden
+	        	initialPathInDialog = parent_filegui.parent_commitgui.parent_commitcreator.filterPath;
+	        }
+	        dlg.setFilterPath(initialPathInDialog);
 
 	        // Change the title bar text
 	        dlg.setText("File Dialog");
@@ -264,7 +269,7 @@ public class FileOccurGui
 	 */
 	private void remove()
 	{
-		parent_filegui.remove(this);
+//		parent_filegui.remove(this);
 		disposeAllWidgets();
 	}
 	
@@ -289,9 +294,11 @@ public class FileOccurGui
 		// Einrichten der ControlDecoration über dem combofeld
 		final ControlDecoration controlDecorationCombo = new ControlDecoration(text, SWT.LEFT | SWT.TOP);
 //		controlDecorationCombo.setDescriptionText("test failed");
+
 		FieldDecoration fieldDecorationError = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
 		controlDecorationCombo.setImage(fieldDecorationError.getImage());
-//		FieldDecoration fieldDecorationInfo = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
+
+		final FieldDecoration fieldDecorationInfo = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 //		controlDecorationCombo.setImage(fieldDecorationInfo.getImage());
 		
 		// Validator mit Verbindung zur Controldecoration
@@ -306,11 +313,15 @@ public class FileOccurGui
 					file.performAllTests();
 					if ( file.doAllTestsPass() )
 					{
+						// bei bestandenen tests soll das symbol ein Info-Symbol sein
+						controlDecorationCombo.setImage(fieldDecorationInfo.getImage());
+						
+						// bei bestandenen Tests soll das Symbol augeblendet werden
 						controlDecorationCombo.hide();
 
 //						// debug
 //						controlDecorationCombo.show();
-//						controlDecorationCombo.setDescriptionText( file.getAllTestsFeedback() );
+						controlDecorationCombo.setDescriptionText( file.getAllTestsFeedback() );
 //						
 						return ValidationStatus.ok();
 
@@ -358,18 +369,25 @@ public class FileOccurGui
 	 */
 	public void commit(Step step)
 	{
-		if ( data.getContent() != null )
+		// nur committen, falls es sichtbar ist
+		if(this.textexist)
 		{
+			// setzen des pfades
+			file.setAbsfilename(data.getContent());
+			step.log("debug", "FileOccurGui.commit: " + file.getKey() +"="+ file.getAbsfilename());
 			step.commitFile(file);
-//			System.out.println("Id des Prozesses: "+step.getParent().getRandomId());
 		}
 	}
 
 	
 	public boolean doAllTestsPass()
 	{
-//		System.out.println("testResult file '"+this.key+"' "+this.file.doAllTestsPass());
-		return this.file.doAllTestsPass();
+		if(this.textexist)
+		{
+//			System.out.println("testResult file '"+this.key+"' "+this.file.doAllTestsPass());
+			return this.file.doAllTestsPass();
+		}
+		return true;
 	}
 
 }

@@ -1,35 +1,19 @@
 package de.caegroup.gui.process;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 import de.caegroup.process.Commit;
 import de.caegroup.process.Step;
-import de.caegroup.process.Variable;
-import de.caegroup.process.Process;
-
 import de.caegroup.pramp.parts.*;
 
 public class CommitCreator
@@ -39,14 +23,18 @@ public class CommitCreator
 	
 	Step step;
 	
+	String filterPath = "";
+	
 	Composite parent;
+	PrampPartUi1 parent_prampgui;
 	Composite composite;
 	ScrolledComposite sc;
 	
 	ArrayList<CommitGui> commitGui = new ArrayList<CommitGui>();
 	
-	public CommitCreator(Composite parent, Step step)
+	public CommitCreator(PrampPartUi1 parentPrampGui, Composite parent, Step step)
 	{
+		this.parent_prampgui = parentPrampGui;
 		this.parent = parent;
 		this.step = step;
 
@@ -84,9 +72,9 @@ public class CommitCreator
 		return parent;
 	}
 	
-	public Map<String,String> getContent()
+	public Multimap<String,String> getContent()
 	{
-		Map<String,String> content = new HashMap<String,String>();
+		Multimap<String,String> content = HashMultimap.create();
 		for (CommitGui actualCommitGui : commitGui)
 		{
 			content.putAll(actualCommitGui.getContent());
@@ -96,6 +84,10 @@ public class CommitCreator
 	
 	public void commitAll()
 	{
+		// alles bestehende aus letztem start loeschen
+		step.getVariable().clear();
+		step.getFile().clear();
+		step.log("debug", "CommitCreator: work on all commits");
 		for (CommitGui actualCommitGui : commitGui)
 		{
 			actualCommitGui.commit(step);
@@ -118,5 +110,19 @@ public class CommitCreator
 	public Step getStep()
 	{
 		return this.step;
+	}
+
+	/**
+	 * @return the filterPath
+	 */
+	public String getFilterPath() {
+		return filterPath;
+	}
+
+	/**
+	 * @param filterPath the filterPath to set
+	 */
+	public void setFilterPath(String filterPath) {
+		this.filterPath = filterPath;
 	}
 }

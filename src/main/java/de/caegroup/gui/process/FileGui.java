@@ -1,39 +1,22 @@
 package de.caegroup.gui.process;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 
-import de.caegroup.process.Commit;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import de.caegroup.process.File;
 import de.caegroup.process.Step;
-import de.caegroup.process.Variable;
-import de.caegroup.process.Process;
 
 public class FileGui
 {
-	File file;
+	File file = null;
 	
 	Composite parent;
 	CommitGui parent_commitgui;
@@ -96,8 +79,8 @@ public class FileGui
 		// ist die mindestanzahl der eintraege erreicht UND maximalanzahl der eintraege noch nicht erreicht, und existiert noch kein einzelnes button, soll ein einzelnes button erzeugt werden
 		if ( (this.fileoccurGui.size() >= file.getMinoccur()) && (this.fileoccurGui.size() < file.getMaxoccur()) && (!(isFileOccurWithOnlyAButtonPresent())))
 		{
-			FileOccurGui variableoccur = new FileOccurGui(this, composite, file, file.getKey(), false, true);
-			fileoccurGui.add(variableoccur);
+			FileOccurGui fileoccur = new FileOccurGui(this, composite, file, file.getKey(), false, true);
+			fileoccurGui.add(fileoccur);
 		}
 	}
 	
@@ -134,11 +117,11 @@ public class FileGui
 	 */
 	public void remove(FileOccurGui fileoccurgui)
 	{
-//		System.out.println("Anzahl vor remove: "+this.variableoccurGui.size());
+		this.parent_commitgui.parent_commitcreator.parent_prampgui.log("debug", "Anzahl vor remove: "+this.fileoccurGui.size());
 		
 		this.fileoccurGui.remove(fileoccurgui);
 		
-//		System.out.println("Anzahl nach remove: "+this.variableoccurGui.size());
+		this.parent_commitgui.parent_commitcreator.parent_prampgui.log("debug", "Anzahl nach remove: "+this.fileoccurGui.size());
 		
 		if (this.fileoccurGui.size() == 0)
 		{
@@ -160,26 +143,20 @@ public class FileGui
 	/**
 	 * get the content of the combo / textfield
 	 */
-	public Map<String,String> getContent ()
+	public Multimap<String,String> getContent ()
 	{
-		Map<String,String> content = new HashMap<String,String>();
+		Multimap<String,String> content = HashMultimap.create();
 		for(FileOccurGui actualFileoccurGui : fileoccurGui)
 		{
 			// die map aus FileOccur holen
-			Map<String,String> map_actualFileoccurGui = actualFileoccurGui.getContent();
+			Map<String,String> mapActualFileoccurGui = actualFileoccurGui.getContent();
 			// iterieren ueber die map und schon vorhandene schluessel mit -1 hochzaehlern
-			int zaehler = 1;
-			for(String key : map_actualFileoccurGui.keySet())
+			for(String key : mapActualFileoccurGui.keySet())
 			{
-				while(content.containsKey(key+"-"+zaehler))
-				{
-					zaehler++;
-				}
-				
 				// die schluessel-werte paare ablegen
-				content.put(key+"-"+zaehler, map_actualFileoccurGui.get(key));
+				content.put(key, mapActualFileoccurGui.get(key));
 			}
-			//content.add(actualFileoccurGui.getContent());
+
 		}
 		return content;
 	}
@@ -189,6 +166,7 @@ public class FileGui
 	 */
 	public void commit (Step step)
 	{
+		step.log("debug", "Commit all occurances "+ fileoccurGui.size() +" of file.");
 		for(FileOccurGui actualFileoccurGui : fileoccurGui)
 		{
 			actualFileoccurGui.commit(step);
