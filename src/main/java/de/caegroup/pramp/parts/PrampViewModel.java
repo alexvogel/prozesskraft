@@ -1,13 +1,12 @@
 package de.caegroup.pramp.parts;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 public class PrampViewModel extends ModelObject
 {
+	public String[] domains = null;
 	public String[] processes = null;
 	public String[] versions = null;
 	public String[] hosts = null;
+	public String domain = null;
 	public String process = null;
 	public String version = null;
 	public String host = null;
@@ -17,6 +16,16 @@ public class PrampViewModel extends ModelObject
 	{
 	}
 	
+	public String[] getDomains()
+	{
+		return domains;
+	}
+
+	public void setDomains(String[] domains)
+	{
+		firePropertyChange("domains", this.domains, this.domains = domains);
+	}
+
 	public String[] getProcesses()
 	{
 		return processes;
@@ -45,6 +54,16 @@ public class PrampViewModel extends ModelObject
 	public void setVersions(String[] versions)
 	{
 		firePropertyChange("versions", this.versions, this.versions = versions);
+	}
+
+	public String getDomain()
+	{
+		return domain;
+	}
+
+	public void setDomain(String domain)
+	{
+		firePropertyChange("domain", this.domain, this.domain = domain);
 	}
 
 	public String getProcess()

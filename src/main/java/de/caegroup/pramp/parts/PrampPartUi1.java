@@ -97,10 +97,11 @@ public class PrampPartUi1 extends ModelObject
 	private Button button_doc = null;
 //	private Text text_logging = null;
 	private StyledText text_logging = null;
+	private Combo combo_domains = null;
 	private Combo combo_processes = null;
 	private Combo combo_versions = null;
 	private Combo combo_hosts = null;
-	private String processMainDir = null;
+	private String domainMainDir = null;
 	private String processDefinitionPath = null;
 	private Process process = null;
 	private String iniFile = null;
@@ -144,7 +145,7 @@ public class PrampPartUi1 extends ModelObject
 		setUserIni();
 		loadIni();
 		checkLicense();
-		getInstalledProcessNames();
+		getInstalledDomainNames();
 		getHosts();
 //		setRandomRootdirectory();
 		createControls(composite);
@@ -160,7 +161,7 @@ public class PrampPartUi1 extends ModelObject
 		loadIni();
 		checkLicense();
 		setUserIni();
-		getInstalledProcessNames();
+		getInstalledDomainNames();
 		getHosts();
 //		setRandomRootdirectory();
 		createControls(composite);
@@ -214,8 +215,18 @@ public class PrampPartUi1 extends ModelObject
 		
 		Group grpFilter = new Group(composite_11, SWT.NONE);
 		grpFilter.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
-		grpFilter.setText("select definition");
+		grpFilter.setText("select process");
 		grpFilter.setLayout(new GridLayout(4, false));
+		
+		Label labelDomain = new Label(grpFilter, SWT.NONE);
+		labelDomain.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1));
+		labelDomain.setText("domain");
+		new Label(grpFilter, SWT.NONE);
+		
+		combo_domains = new Combo(grpFilter, SWT.NONE | SWT.READ_ONLY);
+		combo_domains.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		combo_domains.addModifyListener(listener_domainselection);
+		new Label(grpFilter, SWT.NONE);
 		
 		Label lblNewLabel = new Label(grpFilter, SWT.NONE);
 		lblNewLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1));
@@ -329,12 +340,16 @@ public class PrampPartUi1 extends ModelObject
 		text_logging = new StyledText(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
 		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
+		// Datenbindung Domains-Combo
+		initDataBindingsDomains();
 		// Datenbindung Processes-Combo
 		initDataBindingsProcesses();
 		// Datenbindung Versions-Combo
 		initDataBindingsVersions();
 		// Datenbindung Hosts-Combo
 		initDataBindingsHosts();
+		// Datenbindung Domains-Combo-Selection
+		initDataBindingsProcess();
 		// Datenbindung Processes-Combo-Selection
 		initDataBindingsProcess();
 		// Datenbindung Versions-Combo-Selection
@@ -344,6 +359,8 @@ public class PrampPartUi1 extends ModelObject
 		// Datenbindung instancedirectory textfeld
 		initDataBindingsInstancedirectory();
 
+		// auswahl der Domains-Combo auf das erste Element setzen
+		combo_domains.select(0);
 		// auswahl der Processes-Combo auf das erste Element setzen
 		combo_processes.select(0);
 		new Label(grpFilter, SWT.NONE);
@@ -377,12 +394,31 @@ public class PrampPartUi1 extends ModelObject
 
 	}
 	
+	void updateUiComboProcesses()
+	{
+		getInstalledProcessNames(combo_domains.getText());
+		combo_processes.select(combo_processes.getItemCount()-1);
+	}
+	
 	void updateUiComboVersions()
 	{
-		getInstalledVersionNames(combo_processes.getText());
+		getInstalledVersionNames(combo_domains.getText(), combo_processes.getText());
 		combo_versions.select(combo_versions.getItemCount()-1);
 	}
 	
+	/**
+	 * listener for Modifications/Selections in combobox 'domains'
+	 */
+	ModifyListener listener_domainselection = new ModifyListener()
+	{
+		public void modifyText(ModifyEvent arg0)
+		{
+        	log("info", "setting domain: "+combo_domains.getText());
+			updateUiComboProcesses();
+//			setRandomInstancedirectory();
+		}
+	};
+
 	/**
 	 * listener for Modifications/Selections in combobox 'processes'
 	 */
@@ -499,6 +535,34 @@ public class PrampPartUi1 extends ModelObject
 //	};	
 //	
 	/**
+	 * binds array of domainnames to combo-box 'domains'
+	 */
+	protected DataBindingContext initDataBindingsDomains()
+	{
+		DataBindingContext bindingContextDomains = new DataBindingContext();
+		//
+		IObservableList targetObservableDomains = WidgetProperties.items().observe(combo_domains);
+		IObservableList modelObservableDomains = BeanProperties.list("domains").observe(einstellungen);
+		bindingContextDomains.bindList(targetObservableDomains, modelObservableDomains, null, null);
+		//
+		return bindingContextDomains;
+	}
+	
+	/**
+	 * binds selection of combo-box 'domains' to String domain
+	 */
+	protected DataBindingContext initDataBindingsDomain()
+	{
+		DataBindingContext bindingContextDomain = new DataBindingContext();
+		//
+		IObservableValue targetObservableDomain = WidgetProperties.text().observe(combo_processes);
+		IObservableValue modelObservableDomain = BeanProperties.value("domain").observe(einstellungen);
+		bindingContextDomain.bindValue(targetObservableDomain, modelObservableDomain, null, null);
+		//
+		return bindingContextDomain;
+	}
+	
+	/**
 	 * binds array of processnames to combo-box 'processes'
 	 */
 	protected DataBindingContext initDataBindingsProcesses()
@@ -611,15 +675,15 @@ public class PrampPartUi1 extends ModelObject
 		try
 		{
 			ini = new Ini(getIniAsFile());
-			if (ini.get("process", "process-installation-directory") != null )
+			if (ini.get("process", "domain-installation-directory") != null )
 			{
-				this.processMainDir = (ini.get("process", "process-installation-directory"));
+				this.domainMainDir = (ini.get("process", "domain-installation-directory"));
 				
 				// wenn es sich um einen relativen path handelt, soll dieser mit dem installationsverzeichnis ergaenzt werden
-				if(!(this.processMainDir.matches("^/.+")))
+				if(!(this.domainMainDir.matches("^/.+")))
 				{
 					
-					this.processMainDir = WhereAmI.getInstallDirectoryAbsolutePath(this.getClass())+"/"+this.processMainDir;
+					this.domainMainDir = WhereAmI.getInstallDirectoryAbsolutePath(this.getClass())+"/"+this.domainMainDir;
 				}
 				
 			}
@@ -664,9 +728,9 @@ public class PrampPartUi1 extends ModelObject
 		try
 		{
 			ini = new Ini(getUserIniAsFile());
-			if (ini.get("process", "process-installation-directory") != null )
+			if (ini.get("process", "domain-installation-directory") != null )
 			{
-				this.processMainDir = (ini.get("process", "process-installation-directory"));
+				this.domainMainDir = (ini.get("process", "domain-installation-directory"));
 			}
 		}
 		catch (InvalidFileFormatException e1)
@@ -681,39 +745,107 @@ public class PrampPartUi1 extends ModelObject
 		}
 	}
 
+//	/**
+//	 * determines all processes of a specific process-installation-directory
+//	 * @return a list of all installed processes sorted in alphabetical order
+//	 */
+//	public ArrayList<String> getInstalledProcessNames()
+//	{
+//		ArrayList<String> processes = new ArrayList<String>();
+//		try
+//		{
+//			processes = getSubDirectories(this.processMainDir);
+//		} catch (NotDirectoryException e)
+//		{
+//			System.err.println("not a directory: "+this.processMainDir);
+////			e.printStackTrace();
+//		}
+//
+//		// sortieren
+//		Collections.sort(processes);
+//
+//		// zentrale daten setzen
+//		einstellungen.setProcesses((String[]) processes.toArray(new String[processes.size()]));
+//		
+//		return processes;
+//	}
+
 	/**
-	 * determines all processes of a specific process-installation-directory
-	 * @return a list of all installed processes sorted in alphabetical order
+	 * determines all domains
+	 * @return a list of all installed domains sorted in alphabetical order
 	 */
-	public ArrayList<String> getInstalledProcessNames()
+	public ArrayList<String> getInstalledDomainNames()
 	{
-		ArrayList<String> processes = new ArrayList<String>();
+		ArrayList<String> domains = new ArrayList<String>();
+		String directoryPath = this.domainMainDir;
 		try
 		{
-			processes = getSubDirectories(this.processMainDir);
+			domains = getSubDirectories(directoryPath);
+		}
+		catch (NotDirectoryException e)
+		{
+			System.err.println("not a directory: "+directoryPath);
+			e.printStackTrace();
+		}
+
+		ArrayList<String> domainsFiltered = new ArrayList<String>();
+		// alle domains mit vorangestelltem "_" herausfiltern
+		for(String actDomain : domains)
+		{
+			if(!actDomain.matches("^_.*$"))
+			{
+				System.out.println("kein fuehrendes _ bei "+actDomain);
+				domainsFiltered.add(actDomain);
+			}
+		}
+		
+		// sortieren
+		Collections.sort(domainsFiltered);
+		
+		// zentrale daten setzen
+		einstellungen.setDomains((String[]) domainsFiltered.toArray(new String[domainsFiltered.size()]));
+		
+		return domainsFiltered;
+	}
+	
+	/**
+	 * determines all processes of a specific domain
+	 * @return a list of all installed domains sorted in alphabetical order
+	 */
+	public ArrayList<String> getInstalledProcessNames(String domainName)
+	{
+		ArrayList<String> processes = new ArrayList<String>();
+		String directoryPath = this.domainMainDir+"/"+domainName;
+		try
+		{
+			processes = getSubDirectories(directoryPath);
 		} catch (NotDirectoryException e)
 		{
-			System.err.println("not a directory: "+this.processMainDir);
-//			e.printStackTrace();
+			System.err.println("not a directory: "+directoryPath);
+			e.printStackTrace();
 		}
 
 		// sortieren
 		Collections.sort(processes);
-
+		
 		// zentrale daten setzen
 		einstellungen.setProcesses((String[]) processes.toArray(new String[processes.size()]));
 		
+//		// in combo_box einfuegen
+//		combo_versions.setItems((String[]) versions.toArray(new String[versions.size()]));
+//		combo_versions.select(versions.size()-1);
+//		
 		return processes;
 	}
-
+	
 	/**
 	 * determines all versions of a specific process
 	 * @return a list of all installed processes sorted in alphabetical order
 	 */
-	public ArrayList<String> getInstalledVersionNames(String processName)
+	public ArrayList<String> getInstalledVersionNames(String domainName, String processName)
 	{
 		ArrayList<String> versions = new ArrayList<String>();
-		String directoryPath = this.processMainDir+"/"+processName;
+		String directoryPath = this.domainMainDir+"/"+domainName+"/"+processName;
 		try
 		{
 			versions = getSubDirectories(directoryPath);
@@ -803,21 +935,22 @@ public class PrampPartUi1 extends ModelObject
 	{
 		String processDefinitionDirectory = null;
 		
+		String domain  = this.combo_domains.getText();
 		String process = this.combo_processes.getText();
 		String version = this.combo_versions.getText();
-		String installationPath = this.processMainDir;
+		String installationPath = this.domainMainDir;
 		
 		if ((process != null) && (version != null) && (installationPath != null))
 		{
-			processDefinitionDirectory = installationPath+"/"+process+"/"+version;
+			processDefinitionDirectory = installationPath+"/"+domain+"/"+process+"/"+version;
 		}
-		
+
 		if ( (processDefinitionDirectory == null) || (!(new java.io.File(processDefinitionDirectory).exists()))  || (!(new java.io.File(processDefinitionDirectory).isDirectory())))
 		{
 	    	log("error", "process definition directory does not exist: "+processDefinitionDirectory);
 	    	processDefinitionDirectory = null;
 		}
-		
+
 		return processDefinitionDirectory;
 	}
 	
@@ -1309,14 +1442,14 @@ public class PrampPartUi1 extends ModelObject
 //		}
 //	}
 
-	void setProcessMainDir (String processMainDir)
+	void setDomainMainDir (String domainMainDir)
 	{
-		this.processMainDir = processMainDir;
+		this.domainMainDir = domainMainDir;
 	}
 	
-	String getProcessMainDir ()
+	String getDomainMainDir ()
 	{
-		return this.processMainDir;
+		return this.domainMainDir;
 	}
 	
 	void setIni (String relPath)
