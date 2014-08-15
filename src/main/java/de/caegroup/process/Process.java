@@ -42,6 +42,8 @@ import javax.xml.validation.SchemaFactory;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.dozer.DozerBeanMapper;
+import org.ini4j.Ini;
+import org.ini4j.InvalidFileFormatException;
 //import org.dozer.Mapper;
 //import org.dozer.loader.api.BeanMappingBuilder;
 import org.w3c.dom.Element;
@@ -52,6 +54,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import de.caegroup.codegen.Script;
 import de.caegroup.codegen.UnknownCodeBlockException;
+import de.caegroup.commons.WhereAmI;
 
 
 public class Process extends ModelObject
@@ -96,6 +99,7 @@ implements Serializable
 	private int randomId = 0;  
 	private String touchAsString = "";
 	private long touchInMillis = 0;
+	
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -122,8 +126,8 @@ implements Serializable
 //			e.printStackTrace();
 //		}
 //		System.out.println("absdir von prozess ist: "+this.absdir);
+		
 	}
-
 	/*----------------------------
 	  methods
 	----------------------------*/

@@ -872,7 +872,7 @@ implements Serializable, Cloneable
 //		System.out.println("anzahl der Steps im Prozess nach dem fanning: "+this.parent.getSteps().size());
 	}
 
-	public boolean work()
+	public boolean work(String processSyscall)
 	{
 		boolean success = true;
 		this.setStatus("working");
@@ -916,49 +916,48 @@ implements Serializable, Cloneable
 		// wenn schritt noch nicht gestartet wurde
 		else 
 		{
-//			System.out.println("PROCESS-STEP IST NOCH NICHT GESTARTET");
+//			System.out.println("STEP IST NOCH NICHT GESTARTET");
 			log("info", "process work (script,program,..) not lauched yet");
 			log("info", "creating directory "+this.getAbsdir());
-			success = this.mkdir(this.getAbsdir());
+			
+			// step-directory anlegen, falls es noch nicht existiert
+			// falls es ein wrapper-process ist, gibt es das directory warsch. schon
+			if(!(new java.io.File(this.getAbsdir()).exists()))
+			{
+				this.mkdir(this.getAbsdir());
+			}
 			
 			try
 			{
-//					System.out.println("AUFRUF: /bin/bash /home/avo/bin/procsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
-//					String[] args_for_syscall = {"/bin/bash", "/home/avo/bin/procsyscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
-//				System.out.println("AUFRUF: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
-				String[] args_for_syscall = {"process", "syscall", call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
-				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
-//				log("info", "constructing the systemcall to: processsyscall "+call+" "+this.getAbsstdout()+" "+this.getAbsstderr()+" "+this.getAbspid());
+				String[] args_for_syscall = {processSyscall, call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
 
-				// erweitern des PATHs um den prozesseigenen path
-				Map<String,String> env = pb.environment();
-				String path = env.get("PATH");
-				log("info", "adding to path: "+this.parent.getAbsPath());
-				path = this.parent.getAbsPath()+":"+path;
-				env.put("PATH", path);
-				log("info", "path: "+path);
-//				System.out.println("new PATH: "+path);
-				
-				java.io.File directory = new java.io.File(this.getAbsdir());
-				pb.directory(directory);
-				java.io.File checkdirectory = pb.directory().getAbsoluteFile();
-//				System.out.println("ALS AKTUELLES VERZEICHNIS WIRD GESETZT+GECHECKT: "+checkdirectory);
+//				// erstellen prozessbuilder
+//				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
+//
+//				// erweitern des PATHs um den prozesseigenen path
+//				Map<String,String> env = pb.environment();
+//				String path = env.get("PATH");
+//				log("info", "adding to path: "+this.parent.getAbsPath());
+//				path = this.parent.getAbsPath()+":"+path;
+//				env.put("PATH", path);
+//				log("info", "path: "+path);
+//				
+//				// setzen der aktuellen directory
+//				java.io.File directory = new java.io.File(this.getAbsdir());
+//				pb.directory(directory);
+//				
+//				// starten des prozesses
+//				java.lang.Process sysproc = pb.start();
+
 				log ("info", "calling: " + StringUtils.join(args_for_syscall, " "));
-				java.lang.Process p = pb.start();
-				
+
+//				alternativer aufruf
+				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
+
 				// wait 2 seconds for becoming the pid-file visible
 				Thread.sleep(2000);
 				
-//					Map<String,String> env = pb.environment();
-//					String cwd = env.get("PWD");
-//					String cwd = "/data/prog/workspace/prozesse/dummy/inst";
-//					java.io.File directory = new java.io.File(cwd);
-//					System.out.println("DIRECTORY SETZEN AUF "+directory.getAbsolutePath());
-//					pb.directory(directory);
-//					java.lang.Process p = pb.start();
-//					java.lang.Process p = Runtime.getRuntime().exec(args_for_syscall);
-//				System.out.println("PROCESS: "+p.hashCode());
-				log("info", "process work (script,program,..) launched. pid="+p.hashCode());
+				log("info", "process work (script,program,..) launched. pid="+sysproc.hashCode());
 				success = true;
 			}			
 			catch (Exception e2)
@@ -1215,14 +1214,14 @@ implements Serializable, Cloneable
 
 		this.log("info", "will try to commit...");
 		this.setStatus("committing");
-		this.log("info", "status is jet to "+this.getStatus());
+		this.log("info", "status is set to "+this.getStatus());
 
 		// wenn es sich um root handelt, wird vor dem eigentlichen commit noch etwas anderes committed
 		if (this.getName().equals(this.parent.getRootstepname()))
 		{
 			success = this.rootcommit();
 		}
-		
+
 		// nur wenn es nicht der root-step ist, soll auf konventionelle art committed werden
 		else
 		{
@@ -1746,7 +1745,12 @@ implements Serializable, Cloneable
 	public String getAbsdir()
 	{
 		String absDir = "";
-		if (this.getName().matches("^" + this.parent.getRootstepname() + "$"))
+
+		if (this.getName().equals(this.parent.getRootstepname()))
+		{
+			absDir = this.parent.getRootdir();
+		}
+		else if (this.getParent().isWrapper())
 		{
 			absDir = this.parent.getRootdir();
 		}
