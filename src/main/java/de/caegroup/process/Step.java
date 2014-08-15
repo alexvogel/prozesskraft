@@ -1750,6 +1750,10 @@ implements Serializable, Cloneable
 		{
 			absDir = this.parent.getRootdir();
 		}
+		else if(this.getParent().isWrapper())
+		{
+			absDir = this.parent.getRootdir();
+		}
 		else
 		{
 			absDir = this.parent.getRootdir()+"/dir4step_"+this.getName();
@@ -1841,6 +1845,11 @@ implements Serializable, Cloneable
 	public ArrayList<File> getFile()
 	{
 		return this.file;
+	}
+		
+	public void setFile(ArrayList<File> file)
+	{
+		this.file = file;
 	}
 		
 	public ArrayList<Variable> getVariable()

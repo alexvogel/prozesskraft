@@ -192,7 +192,7 @@ implements Serializable
 			setTestFeedback("file '"+testFile.getAbsfilename()+"' does not exist.");
 			result = false;
 		}
-		else
+		else if(testFile.doesExist())
 		{
 			setTestFeedback("file '"+testFile.getAbsfilename()+"' does exist");
 		}

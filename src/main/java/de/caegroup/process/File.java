@@ -150,7 +150,15 @@ implements Serializable, Cloneable
 
 	public boolean doesExist()
 	{
-		return new java.io.File(this.getAbsfilename()).exists();
+		java.io.File myFile = new java.io.File(this.getAbsfilename());
+		if (myFile.exists() && !myFile.isDirectory())
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	/*----------------------------
 	  methods get
@@ -258,6 +266,24 @@ implements Serializable, Cloneable
 		return size;
 	}
 	
+	public String getSizeAsString()
+	{
+		long size = getSizeInKilobytes();
+		String sizeString = size + " KB";
+		
+		if(size > 1024)
+		{
+			size = getSizeInMegabytes();
+			sizeString = size + " MB";
+		}
+		else if(size > 1024)
+		{
+			size = getSizeInGigabytes();
+			sizeString = size + " GB";
+		}
+		return sizeString;
+	}
+	
 	/*----------------------------
 	methods set
 	----------------------------*/
@@ -294,6 +320,11 @@ implements Serializable, Cloneable
 	public void setTest(ArrayList<Test> test)
 	{
 		this.test = test;
+	}
+
+	public void addTest(Test test)
+	{
+		this.test.add(test);
 	}
 
 
