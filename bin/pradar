@@ -18,7 +18,7 @@ Getopt::Long::Configure("pass_through");
 use File::Spec;
 use File::Copy;
 use Cwd;
-use Time::HiRes qw(gettimeofday);
+# use Time::HiRes qw(gettimeofday);
 #----------------------------------------------------------------------------
 # processcraft:modules:end
 #============================================================================
