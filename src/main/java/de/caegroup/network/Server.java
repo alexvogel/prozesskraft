@@ -1,5 +1,6 @@
 package de.caegroup.network;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +45,7 @@ public class Server
 		{
 			this.s.setSoTimeout(9000);
 			// streams erstellen
-			OutputStream streamToClient = this.s.getOutputStream();
+			BufferedOutputStream streamToClient = new BufferedOutputStream(this.s.getOutputStream());
 			objectToClient = new ObjectOutputStream(streamToClient);
 			objectToClient.flush();
 			
