@@ -1083,32 +1083,30 @@ public class PradarPartUi3 extends ModelObject
 				connectToServerSocket.setSoTimeout(10000);
 				
 				log("debug", "outputStream erstellen");
-				OutputStream out = connectToServerSocket.getOutputStream();
+				OutputStream streamToServer = connectToServerSocket.getOutputStream();
 
 				log("debug", "objectOutputStream  erstellen");
-				ObjectOutputStream objectOut = new ObjectOutputStream(out);
-				objectOut.flush();
+				ObjectOutputStream objectToServer = new ObjectOutputStream(streamToServer);
+				objectToServer.flush();
 				
 				log("debug", "inputStream erstellen");
-				InputStream in = connectToServerSocket.getInputStream();
+				InputStream streamFromServer = connectToServerSocket.getInputStream();
 
 				log("debug", "objectInputStream  erstellen");
-				ObjectInputStream  objectIn  = new ObjectInputStream(in);
+				ObjectInputStream  objectFromServer  = new ObjectInputStream(streamFromServer);
 				
 				// Objekte zum server uebertragen
 				log("debug", "write: getall");
-				objectOut.writeObject("getall");
-				objectOut.flush();
-				objectOut.close();
-				out.close();
+				objectToServer.writeObject("getall");
+				objectToServer.flush();
+				objectToServer.close();
 	
-				// Antwort vom Server lesen. (Liste bereits Druckfertig aufbereitet)
+				// Antwort vom Server lesen - ein array aller Entities
 				try
 				{
 					log("debug", "read");
-					this.entities_all = (ArrayList<Entity>) objectIn.readObject();
-					objectIn.close();
-					in.close();
+					this.entities_all = (ArrayList<Entity>) objectFromServer.readObject();
+					objectFromServer.close();
 					log("debug", "read finished");
 				}
 				catch (ClassNotFoundException e)
