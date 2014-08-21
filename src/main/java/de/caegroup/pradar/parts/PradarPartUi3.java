@@ -1068,7 +1068,7 @@ public class PradarPartUi3 extends ModelObject
 		{
 			String portAtMachineAsString = iterPradarServer.next();
 			String [] port_and_machine = portAtMachineAsString.split("@");
-	
+			
 			int portNumber = Integer.parseInt(port_and_machine[0]);
 			String machineName = port_and_machine[1];
 			log("info", "want to load data from pradar-server");
@@ -1092,16 +1092,16 @@ public class PradarPartUi3 extends ModelObject
 				log("debug", "objectOutputStream  flushen");
 				objectToServer.flush();
 				
-				log("debug", "inputStream erstellen");
-				InputStream streamFromServer = connectToServerSocket.getInputStream();
-
-				log("debug", "objectInputStream  erstellen");
-				ObjectInputStream  objectFromServer  = new ObjectInputStream(streamFromServer);
-				
 				// Objekte zum server uebertragen
 				log("debug", "write: getall");
 				objectToServer.writeObject("getall");
 				objectToServer.flush();
+				
+				log("debug", "inputStream erstellen");
+				InputStream streamFromServer = connectToServerSocket.getInputStream();
+
+				log("debug", "objectInputStream  erstellen");
+				ObjectInputStream  objectFromServer = new ObjectInputStream(streamFromServer);
 				
 				String firstAnswer = (String) objectFromServer.readObject();
 				log("debug", "firstAnswer is "+firstAnswer);
