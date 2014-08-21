@@ -1107,8 +1107,31 @@ public class PradarPartUi3 extends ModelObject
 				// Antwort vom Server lesen - ein array aller Entities
 				try
 				{
-					log("debug", "read");
-					this.entities_all = (ArrayList<Entity>) objectFromServer.readObject();
+					log("debug", "reading");
+					Object serverAnswer = objectFromServer.readObject();
+					
+					ArrayList<Object> serverAnswer2 = null;
+					if(serverAnswer instanceof ArrayList)
+					{
+						log("debug", "serverAnswer is an ArrayList");
+						serverAnswer2 = (ArrayList<Object>) serverAnswer;
+					}
+
+					Object firstItem = serverAnswer2.get(0);
+					
+					this.entities_all.clear();
+					for(Object actObject : serverAnswer2)
+					{
+						if(actObject instanceof Entity)
+						{
+							log("debug", "item of ArrayList<Object> is an Entity  --->  adding to ArrayList<Entity>");
+							this.entities_all.add((Entity) actObject);
+						}
+					}
+
+//					this.entities_all = (ArrayList<Entity>) objectFromServer.readObject();
+					log("debug", "reading done! closing ");
+
 					objectFromServer.close();
 					log("debug", "read finished");
 				}
