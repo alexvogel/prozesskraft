@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Timestamp;
 
 import de.caegroup.pradar.Db;
 import de.caegroup.commons.*;
@@ -136,7 +137,9 @@ public class ConcurrentServer implements Runnable
 		{
 			while(true)
 			{
+				log("info", "new connection from "+server.getInetAddress());
 				Socket client = server.accept();
+				log("info", "new connection from "+server.getInetAddress()+" "+client.getPort());
 				new Client(client, this).run();
 			}
 		}
@@ -197,6 +200,12 @@ public class ConcurrentServer implements Runnable
 	public void setSshIdRelPath(String sshIdRelPath)
 	{
 		this.sshIdRelPath = sshIdRelPath;
+	}
+
+	void log(String loglevel, String message)
+	{
+		String logstring = "["+new Timestamp(System.currentTimeMillis()) + "]:"+loglevel+":"+message;
+		System.out.println(logstring);
 	}
 
 }
