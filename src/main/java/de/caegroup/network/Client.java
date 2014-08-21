@@ -35,10 +35,6 @@ public class Client
 	{
 		this.s = s;
 		this.parent = p;
-		out = s.getOutputStream();
-		in = s.getInputStream();
-		objectOut = new ObjectOutputStream(out);
-		objectIn  = new ObjectInputStream(in);
 	}
 	
 	/*----------------------------
@@ -48,6 +44,12 @@ public class Client
 	{
 		try
 		{
+			// streams erstellen
+			out = this.s.getOutputStream();
+			in = this.s.getInputStream();
+			objectOut = new ObjectOutputStream(out);
+			objectIn  = new ObjectInputStream(in);
+
 			String type   = (String) objectIn.readObject();			
 			if (type.equals("init"))
 			{

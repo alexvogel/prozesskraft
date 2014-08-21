@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 
 import de.caegroup.pradar.Db;
@@ -36,6 +37,7 @@ public class ConcurrentServer implements Runnable
 		try
 		{
 			server = new ServerSocket(port);
+			server.setSoTimeout(10000);
 			thread = new Thread(this);
 			thread.start();
 		}
@@ -62,6 +64,7 @@ public class ConcurrentServer implements Runnable
 		try
 		{
 			server = new ServerSocket(port);
+			server.setSoTimeout(10000);
 			thread = new Thread(this);
 			thread.start();
 		}
@@ -88,6 +91,7 @@ public class ConcurrentServer implements Runnable
 		try
 		{
 			server = new ServerSocket(port);
+			server.setSoTimeout(10000);
 			thread = new Thread(this);
 			thread.start();
 		}
@@ -114,6 +118,7 @@ public class ConcurrentServer implements Runnable
 		try
 		{
 			server = new ServerSocket(port);
+			server.setSoTimeout(10000);
 			thread = new Thread(this);
 			thread.start();
 		}
@@ -137,9 +142,7 @@ public class ConcurrentServer implements Runnable
 		{
 			while(true)
 			{
-				log("info", "new connection from "+server.getInetAddress());
 				Socket client = server.accept();
-				log("info", "new connection from "+server.getInetAddress()+" "+client.getPort());
 				new Client(client, this).run();
 			}
 		}
@@ -147,6 +150,7 @@ public class ConcurrentServer implements Runnable
 		{
 			e.printStackTrace();
 		}
+
 	}
 	
 	public void stop()
