@@ -44,7 +44,7 @@ public class ConcurrentServer implements Runnable
 		catch(BindException e)
 		{
 			System.out.println("Adress '"+port+"' is already in use.");
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		catch(Exception e)
 		{
@@ -71,7 +71,7 @@ public class ConcurrentServer implements Runnable
 		catch(BindException e)
 		{
 			System.out.println("Adress '"+port+"' is already in use.");
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		catch(Exception e)
 		{
@@ -98,7 +98,7 @@ public class ConcurrentServer implements Runnable
 		catch(BindException e)
 		{
 			System.out.println("Adress '"+port+"' is already in use.");
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		catch(Exception e)
 		{
@@ -125,7 +125,7 @@ public class ConcurrentServer implements Runnable
 		catch(BindException e)
 		{
 			System.out.println("Adress '"+port+"' is already in use.");
-//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		catch(Exception e)
 		{
