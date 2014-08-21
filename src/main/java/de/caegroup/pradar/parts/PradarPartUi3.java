@@ -1109,6 +1109,7 @@ public class PradarPartUi3 extends ModelObject
 				{
 					log("debug", "reading");
 					Object serverAnswer = objectFromServer.readObject();
+					log("debug", "reading done");
 					
 					ArrayList<Object> serverAnswer2 = null;
 					if(serverAnswer instanceof ArrayList)
@@ -1117,8 +1118,6 @@ public class PradarPartUi3 extends ModelObject
 						serverAnswer2 = (ArrayList<Object>) serverAnswer;
 					}
 
-					Object firstItem = serverAnswer2.get(0);
-					
 					this.entities_all.clear();
 					for(Object actObject : serverAnswer2)
 					{
