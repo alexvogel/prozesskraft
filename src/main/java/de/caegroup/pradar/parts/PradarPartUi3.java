@@ -2,6 +2,7 @@ package de.caegroup.pradar.parts;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -1083,7 +1084,7 @@ public class PradarPartUi3 extends ModelObject
 				connectToServerSocket.setSoTimeout(10000);
 				
 				log("debug", "outputStream erstellen");
-				OutputStream streamToServer = connectToServerSocket.getOutputStream();
+				BufferedOutputStream streamToServer = new BufferedOutputStream(connectToServerSocket.getOutputStream());
 
 				log("debug", "objectOutputStream  erstellen");
 				ObjectOutputStream objectToServer = new ObjectOutputStream(streamToServer);
