@@ -332,25 +332,25 @@ public class Db
 			{
 				Entity matched_entity = new Entity();
 
-				System.out.println(rs.getString("id"));
+//				System.out.println(rs.getString("id"));
 				matched_entity.setId(rs.getString("id"));
 				
-				System.out.println(rs.getString("id2"));
+//				System.out.println(rs.getString("id2"));
 				matched_entity.setId2(rs.getString("id2"));
 				
-				System.out.println(rs.getString("parentid"));
+//				System.out.println(rs.getString("parentid"));
 				matched_entity.setParentid(rs.getString("parentid"));
 				
-				System.out.println(rs.getString("process"));
+//				System.out.println(rs.getString("process"));
 				matched_entity.setProcess(rs.getString("process"));
 				
-				System.out.println(rs.getString("version"));
+//				System.out.println(rs.getString("version"));
 				matched_entity.setVersion(rs.getString("version"));
 				
-				System.out.println(rs.getString("user"));
+//				System.out.println(rs.getString("user"));
 				matched_entity.setUser(rs.getString("user"));
 				
-				System.out.println(rs.getString("host"));
+//				System.out.println(rs.getString("host"));
 				matched_entity.setHost(rs.getString("host"));
 				
 				String checkin = rs.getString("checkin");

@@ -96,7 +96,6 @@ public class Server
 			}
 			else if (type.equals("getall"))
 			{
-				objectToClient.writeObject("Hi HO THERE!!!");
 				log("info", "obtaining information about all entities");
 				ArrayList<Entity> allEntities = this.parent.db.getAllEntities();
 				log("info", allEntities.size()+"all entities written to objectOutputStream");
