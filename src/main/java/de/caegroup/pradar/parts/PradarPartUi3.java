@@ -1103,10 +1103,6 @@ public class PradarPartUi3 extends ModelObject
 				log("debug", "objectInputStream  erstellen");
 				ObjectInputStream  objectFromServer = new ObjectInputStream(streamFromServer);
 				
-				String firstAnswer = (String) objectFromServer.readObject();
-				log("debug", "firstAnswer is "+firstAnswer);
-//				objectToServer.close();
-	
 				// Antwort vom Server lesen - ein array aller Entities
 				try
 				{
@@ -1157,10 +1153,7 @@ public class PradarPartUi3 extends ModelObject
 			{
 				log("warn", "input / output problems at "+portNumber+"@"+machineName);
 						e.printStackTrace();
-			} catch (ClassNotFoundException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			} 
 	
 			this.refresh_last = Calendar.getInstance();
 			this.refresh_next = Calendar.getInstance();
