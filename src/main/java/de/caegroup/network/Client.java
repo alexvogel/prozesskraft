@@ -41,6 +41,7 @@ public class Client
 		in = this.s.getInputStream();
 		objectOut = new ObjectOutputStream(out);
 		out.flush();
+		objectOut.flush();
 		objectIn  = new ObjectInputStream(in);
 	}
 	
