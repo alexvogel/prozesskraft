@@ -103,7 +103,7 @@ public class Db
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
-			sql = "create table radar (id TEXT, id2 TEXT, parentid TEXT, process TEXT, host TEXT, user TEXT, checkin TEXT, checkout TEXT, active TEXT, stepcount TEXT, stepcountcompleted Text, exitcode TEXT, resource TEXT)";
+			sql = "create table radar (id TEXT, id2 TEXT, parentid TEXT, process TEXT, version TEXT, host TEXT, user TEXT, checkin TEXT, checkout TEXT, active TEXT, stepcount TEXT, stepcountcompleted Text, exitcode TEXT, resource TEXT)";
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
@@ -145,8 +145,8 @@ public class Db
 			Statement statement = this.connection.createStatement();
 
 			statement.setQueryTimeout(10);
-			String sql = "INSERT INTO radar (id, id2, parentid, process, host, user, checkin, checkout, active, stepcount, stepcountcompleted, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getId2()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getStepcount()+"', '"+entity.getStepcountcompleted()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
-//			System.out.println(sql);
+			String sql = "INSERT INTO radar (id, id2, parentid, process, version, host, user, checkin, checkout, active, stepcount, stepcountcompleted, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getId2()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getVersion()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getStepcount()+"', '"+entity.getStepcountcompleted()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
+			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
 			this.connection.close();
@@ -176,7 +176,7 @@ public class Db
 			if (!(entity.getStepcount().equals("")))
 			{
 				String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', stepcount='"+entity.getStepcount()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
-//				System.out.println(sql);
+				System.out.println(sql);
 				statement.executeUpdate(sql);
 			}
 			else
@@ -210,8 +210,9 @@ public class Db
 			
 			statement.setQueryTimeout(10);
 			
+//			String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='"+ entity.getExitcode() +"' WHERE id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"' AND version IS '"+entity.getVersion()+"' AND active IS 'true'";
 			String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='"+ entity.getExitcode() +"' WHERE id IS '"+entity.getId()+"' AND host IS '"+entity.getHost()+"' AND user IS '"+entity.getUser()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
-//			System.out.println(sql);
+			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
 			this.connection.close();
@@ -275,7 +276,7 @@ public class Db
 			this.getConnection();
 			Statement statement = this.connection.createStatement();
 			statement.setQueryTimeout(10);
-			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND id2 LIKE '"+entity.getId2SqlPattern()+"' AND parentid LIKE '"+entity.getParentidSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"' AND resource LIKE '"+entity.getResourceSqlPattern()+"' AND ( checkin > '"+grenzzeitInMillis+"' OR checkout > '"+grenzzeitInMillis+"')";
+			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND id2 LIKE '"+entity.getId2SqlPattern()+"' AND parentid LIKE '"+entity.getParentidSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND version LIKE '"+entity.getVersionSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"' AND resource LIKE '"+entity.getResourceSqlPattern()+"' AND ( checkin > '"+grenzzeitInMillis+"' OR checkout > '"+grenzzeitInMillis+"')";
 //			System.out.println(sql);
 			ResultSet rs = statement.executeQuery(sql);
 		
@@ -286,6 +287,7 @@ public class Db
 				matched_entity.setId2(rs.getString("id2"));
 				matched_entity.setParentid(rs.getString("parentid"));
 				matched_entity.setProcess(rs.getString("process"));
+				matched_entity.setProcess(rs.getString("version"));
 				matched_entity.setUser(rs.getString("user"));
 				matched_entity.setHost(rs.getString("host"));
 				matched_entity.setCheckin(Long.valueOf(rs.getString("checkin")).longValue());
@@ -341,6 +343,9 @@ public class Db
 				
 //				System.out.println(rs.getString("process"));
 				matched_entity.setProcess(rs.getString("process"));
+				
+//				System.out.println(rs.getString("version"));
+				matched_entity.setVersion(rs.getString("version"));
 				
 //				System.out.println(rs.getString("user"));
 				matched_entity.setUser(rs.getString("user"));
@@ -413,17 +418,14 @@ public class Db
 				System.out.println("result is empty!");
 			}
 			
-			String formatstring = "|%-14s|%-30s|%-14s|%-11s|%-7s|%-13s|%-6s|%-13s|%-19s|%-19s|%-8s|";
+			String formatstring = "|%-14s|%-30s|%-14s|%-11s|%-7s|%-7s|%-13s|%-6s|%-13s|%-19s|%-19s|%-8s|";
 
-			ausgabe.add(String.format(formatstring, "id", "id2", "parentid", "process", "user", "host", "active", "progress", "checkin", "checkout", "exitcode"));
-			ausgabe.add(String.format(formatstring, "--------------", "------------------------------", "--------------", "-----------", "-------", "-------------", "------", "------------", "-------------------", "-------------------", "--------"));
+			ausgabe.add(String.format(formatstring, "id",             "id2",                            "parentid",       "process",     "version","user",    "host",          "active", "progress",     "checkin",             "checkout",            "exitcode"));
+			ausgabe.add(String.format(formatstring, "--------------", "------------------------------", "--------------", "-----------", "-------","-------", "-------------", "------", "------------", "-------------------", "-------------------", "--------"));
 
-			Iterator<Entity> iterentity = matched_entities.iterator();
-			
-			while (iterentity.hasNext())
+			for(Entity actEntity : matched_entities)
 			{
-				Entity actual_entity = iterentity.next();
-				ausgabe.add(String.format(formatstring, actual_entity.getId(), actual_entity.getId2(), actual_entity.getParentid(), actual_entity.getProcess(), actual_entity.getUser(), actual_entity.getHost(), actual_entity.getActive(), actual_entity.getProgressAsString(), actual_entity.getCheckinAsString(), actual_entity.getCheckoutAsString(), actual_entity.getExitcode() ));
+				ausgabe.add(String.format(formatstring, actEntity.getId(), actEntity.getId2(), actEntity.getParentid(), actEntity.getProcess(), actEntity.getVersion(), actEntity.getUser(), actEntity.getHost(), actEntity.getActive(), actEntity.getProgressAsString(), actEntity.getCheckinAsString(), actEntity.getCheckoutAsString(), actEntity.getExitcode() ));
 			}
 
 			this.connection.close();
@@ -439,6 +441,7 @@ public class Db
 	 * cleans Db: checks out all active instances where
 	 * 1) host is reachable, but pid is no longer active
 	 * 2) host is unreachable and instance is older than 1 week
+	 * 3) instance is older than 1 year
 	 * 
 	 */
 	public void cleanDb(String sshIdRelPath, String user)
@@ -472,6 +475,16 @@ public class Db
 				System.out.println("result is empty!");
 			}
 			
+			// alle entities (und deren kinder) loeschen, die aelter sind als 1 jahr
+			for (Entity actualEntity : all_entities_to_check)
+			{
+				Long yearAgo = System.currentTimeMillis() - (8760 * 60 * 60 * 1000);
+				if (actualEntity.getCheckinInMillis() < yearAgo)
+				{
+					this.deleteEntity(actualEntity);
+				}
+			}
+
 			for (Entity actualEntity : all_entities_to_check)
 			{
 				if (actualEntity.isActive())

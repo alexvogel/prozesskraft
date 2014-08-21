@@ -31,6 +31,7 @@ implements Serializable
 	public Calendar checkin = Calendar.getInstance();
 	public Calendar checkout = Calendar.getInstance();
 	public String process = "";
+	public String version = "";
 	public String host = "";
 	public String user = "";
 	public String active = "";
@@ -471,6 +472,28 @@ implements Serializable
 		else
 		{
 			return "%"+this.process+"%";
+		}
+	}
+	
+	public void setVersion(String version)
+	{
+		this.version = version;
+	}
+
+	public String getVersion()
+	{
+		return version;
+	}
+
+	public String getVersionSqlPattern()
+	{
+		if ((this.version.matches("")) || (this.version.matches("all")) )
+		{
+			return "%";
+		}
+		else
+		{
+			return "%"+this.version+"%";
 		}
 	}
 	
