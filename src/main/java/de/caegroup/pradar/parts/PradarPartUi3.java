@@ -1081,7 +1081,7 @@ public class PradarPartUi3 extends ModelObject
 				
 				log("debug", "server objekt erstellen");
 				Socket connectToServerSocket = new Socket(machineName, portNumber);
-				connectToServerSocket.setSoTimeout(10000);
+				connectToServerSocket.setSoTimeout(20000);
 				
 				log("debug", "outputStream erstellen");
 				BufferedOutputStream streamToServer = new BufferedOutputStream(connectToServerSocket.getOutputStream());
