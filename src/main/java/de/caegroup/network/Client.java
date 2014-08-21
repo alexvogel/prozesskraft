@@ -48,6 +48,7 @@ public class Client
 			out = this.s.getOutputStream();
 			in = this.s.getInputStream();
 			objectOut = new ObjectOutputStream(out);
+			out.flush();
 			objectIn  = new ObjectInputStream(in);
 
 			String type   = (String) objectIn.readObject();			
