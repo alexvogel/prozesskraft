@@ -87,9 +87,10 @@ public class Server
 			}
 			else if (type.equals("list"))
 			{
+				// dieses entity enthaelt die filter informationen der auszugebenden liste
 				Entity entity = (Entity) objectFromClient.readObject();
 				
-				log("info", "checking in entity id "+entity.getId());
+				log("info", "obtaining list about entities that pass the filter: "+entity.getId());
 				ArrayList<String> list = this.parent.db.list(entity);
 				objectToClient.writeObject(list);
 			}
