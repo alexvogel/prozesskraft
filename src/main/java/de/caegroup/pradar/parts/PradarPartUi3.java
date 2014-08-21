@@ -1077,30 +1077,38 @@ public class PradarPartUi3 extends ModelObject
 
 				// socket einrichten und Out/Input-Streams setzen
 				log("debug", "machineName="+machineName+" | portNumber="+portNumber);
-				Socket serverSocket = new Socket(machineName, portNumber);
-				log("debug", "server objekt erstellt");
-				OutputStream out = serverSocket.getOutputStream();
-				log("debug", "outputStream erstellt");
-				InputStream in = serverSocket.getInputStream();
-				log("debug", "inputStream erstellt");
-				ObjectInputStream  objectIn  = new ObjectInputStream(in);
-				log("debug", "objectInputStream  erstellt");
-				ObjectOutputStream objectOut = new ObjectOutputStream(out);
-				log("debug", "objectOutputStream  erstellt");
 				
+				log("debug", "server objekt erstellen");
+				Socket connectToServerSocket = new Socket(machineName, portNumber);
+				connectToServerSocket.setSoTimeout(10000);
+				
+				log("debug", "outputStream erstellen");
+				OutputStream out = connectToServerSocket.getOutputStream();
+
+				log("debug", "inputStream erstellen");
+				InputStream in = connectToServerSocket.getInputStream();
+
+				log("debug", "objectInputStream  erstellen");
+				ObjectInputStream  objectIn  = new ObjectInputStream(in);
+				
+				log("debug", "objectOutputStream  erstellen");
+				ObjectOutputStream objectOut = new ObjectOutputStream(out);
+
 				// Objekte zum server uebertragen
 				log("debug", "write: getall");
 				objectOut.writeObject("getall");
 				objectOut.flush();
+				objectOut.close();
+				out.close();
 	
 				// Antwort vom Server lesen. (Liste bereits Druckfertig aufbereitet)
 				try
 				{
-//					log("debug", "read");
-
+					log("debug", "read");
 					this.entities_all = (ArrayList<Entity>) objectIn.readObject();
-
-//					log("debug", "read finished");
+					objectIn.close();
+					in.close();
+					log("debug", "read finished");
 				}
 				catch (ClassNotFoundException e)
 				{
@@ -1110,24 +1118,16 @@ public class PradarPartUi3 extends ModelObject
 				
 				// daten holen aus db
 				log("info", "refreshing data...");
-				serverSocket.close();
+				connectToServerSocket.close();
 				
 			}
 			catch (UnknownHostException e)
 			{
-				// TODO Auto-generated catch block
 				log("warn", "unknown host "+machineName);
 				this.pradar_server_port_at_hostname = null;
-	//					e.printStackTrace();
 			}
-	//		catch (ConnectException e)
-	//		{
-	//			log("warn", "no pradar-server found at "+portNumber+"@"+machineName);
-	////					e.printStackTrace();
-	//		}
 			catch (IOException e)
 			{
-				// TODO Auto-generated catch block
 				log("warn", "input / output problems at "+portNumber+"@"+machineName);
 						e.printStackTrace();
 			}
