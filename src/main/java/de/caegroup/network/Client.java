@@ -36,6 +36,7 @@ public class Client
 		this.s = s;
 		this.parent = p;
 		
+		this.s.setSoTimeout(9000);
 		// streams erstellen
 		out = this.s.getOutputStream();
 		in = this.s.getInputStream();
