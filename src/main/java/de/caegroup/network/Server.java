@@ -101,6 +101,7 @@ public class Server
 				ArrayList<Entity> allEntities = this.parent.db.getAllEntities();
 				log("info", allEntities.size()+"all entities written to objectOutputStream");
 				objectToClient.writeObject(allEntities);
+				objectToClient.flush();
 				log("info", "all entities written to objectOutputStream");
 			}
 			else if (type.equals("stop"))
