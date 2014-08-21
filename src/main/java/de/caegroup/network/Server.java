@@ -43,7 +43,6 @@ public class Server
 	{
 		try
 		{
-			this.s.setSoTimeout(5000);
 			// streams erstellen
 			log("debug", "outputStream erstellen");
 			BufferedOutputStream streamToClient = new BufferedOutputStream(this.s.getOutputStream());
