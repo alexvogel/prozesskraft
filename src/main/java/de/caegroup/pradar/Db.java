@@ -375,7 +375,7 @@ public class Db
 //				System.out.println(rs.getString("exitcode"));
 				matched_entity.setExitcode(rs.getString("exitcode"));
 				
-				System.out.println(rs.getString("resource"));
+//				System.out.println(rs.getString("resource"));
 				matched_entity.setResource(rs.getString("resource"));
 				
 				allEntities.add(matched_entity);

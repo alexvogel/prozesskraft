@@ -34,6 +34,24 @@ public class Server
 	{
 		this.s = s;
 		this.parent = p;
+		
+		// streams erstellen
+		log("debug", "outputStream erstellen");
+		BufferedOutputStream streamToClient = new BufferedOutputStream(this.s.getOutputStream());
+
+		log("debug", "objectOutputStream  erstellen");
+		objectToClient = new ObjectOutputStream(streamToClient);
+
+		log("debug", "objectOutputStream  flushen");
+		streamToClient.flush();
+		objectToClient.flush();
+		
+		log("debug", "inputStream erstellen");
+		InputStream streamFromClient = this.s.getInputStream();
+
+		log("debug", "objectInputStream  erstellen");
+		objectFromClient  = new ObjectInputStream(streamFromClient);
+
 	}
 	
 	/*----------------------------
@@ -43,22 +61,6 @@ public class Server
 	{
 		try
 		{
-			// streams erstellen
-			log("debug", "outputStream erstellen");
-			BufferedOutputStream streamToClient = new BufferedOutputStream(this.s.getOutputStream());
-
-			log("debug", "objectOutputStream  erstellen");
-			objectToClient = new ObjectOutputStream(streamToClient);
-
-			log("debug", "objectOutputStream  flushen");
-			streamToClient.flush();
-			objectToClient.flush();
-			
-			log("debug", "inputStream erstellen");
-			InputStream streamFromClient = this.s.getInputStream();
-
-			log("debug", "objectInputStream  erstellen");
-			objectFromClient  = new ObjectInputStream(streamFromClient);
 
 			String type   = (String) objectFromClient.readObject();			
 			if (type.equals("init"))
