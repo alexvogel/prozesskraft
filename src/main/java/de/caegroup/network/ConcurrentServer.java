@@ -37,7 +37,6 @@ public class ConcurrentServer implements Runnable
 		try
 		{
 			server = new ServerSocket(port);
-			server.setSoTimeout(10000);
 			thread = new Thread(this);
 			thread.start();
 		}
@@ -64,7 +63,6 @@ public class ConcurrentServer implements Runnable
 		try
 		{
 			server = new ServerSocket(port);
-			server.setSoTimeout(10000);
 			thread = new Thread(this);
 			thread.start();
 		}
@@ -91,7 +89,6 @@ public class ConcurrentServer implements Runnable
 		try
 		{
 			server = new ServerSocket(port);
-			server.setSoTimeout(10000);
 			thread = new Thread(this);
 			thread.start();
 		}
@@ -118,7 +115,6 @@ public class ConcurrentServer implements Runnable
 		try
 		{
 			server = new ServerSocket(port);
-			server.setSoTimeout(10000);
 			thread = new Thread(this);
 			thread.start();
 		}
