@@ -8,9 +8,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -1072,21 +1074,22 @@ public class PradarPartUi3 extends ModelObject
 			log("info", "trying pradar-server "+portNumber+"@"+machineName);
 			try
 			{
+
 				// socket einrichten und Out/Input-Streams setzen
-//				log("debug", "machineName="+machineName+" | portNumber="+portNumber);
-				Socket server = new Socket(machineName, portNumber);
-//				log("debug", "server objekt erstellt");
-				OutputStream out = server.getOutputStream();
-//				log("debug", "outputStream erstellt");
-				InputStream in = server.getInputStream();
-//				log("debug", "inputStream erstellt");
+				log("debug", "machineName="+machineName+" | portNumber="+portNumber);
+				Socket serverSocket = new Socket(machineName, portNumber);
+				log("debug", "server objekt erstellt");
+				OutputStream out = serverSocket.getOutputStream();
+				log("debug", "outputStream erstellt");
+				InputStream in = serverSocket.getInputStream();
+				log("debug", "inputStream erstellt");
 				ObjectInputStream  objectIn  = new ObjectInputStream(in);
-//				log("debug", "objectInputStream  erstellt");
+				log("debug", "objectInputStream  erstellt");
 				ObjectOutputStream objectOut = new ObjectOutputStream(out);
-//				log("debug", "objectOutputStream  erstellt");
+				log("debug", "objectOutputStream  erstellt");
 				
 				// Objekte zum server uebertragen
-//				log("debug", "write: getall");
+				log("debug", "write: getall");
 				objectOut.writeObject("getall");
 				objectOut.flush();
 	
@@ -1096,6 +1099,7 @@ public class PradarPartUi3 extends ModelObject
 //					log("debug", "read");
 
 					this.entities_all = (ArrayList<Entity>) objectIn.readObject();
+
 //					log("debug", "read finished");
 				}
 				catch (ClassNotFoundException e)
@@ -1106,7 +1110,7 @@ public class PradarPartUi3 extends ModelObject
 				
 				// daten holen aus db
 				log("info", "refreshing data...");
-				server.close();
+				serverSocket.close();
 				
 			}
 			catch (UnknownHostException e)
@@ -1187,8 +1191,8 @@ public class PradarPartUi3 extends ModelObject
 //			e1.printStackTrace();
 		}
 			
-		// einchecken in die DB
-		Socket server = null;
+//		// einchecken in die DB
+//		Socket serverSocket = null;
 			
 		boolean pradar_server_not_found = true;
 			
@@ -1205,13 +1209,30 @@ public class PradarPartUi3 extends ModelObject
 			log("info", "trying pradar-server "+portNumber+"@"+machineName);
 			try
 			{
-				// socket einrichten und Out/Input-Streams setzen
-				server = new Socket(machineName, portNumber);
-				OutputStream out = server.getOutputStream();
-				InputStream in = server.getInputStream();
-				ObjectOutputStream objectOut = new ObjectOutputStream(out);
-				ObjectInputStream  objectIn  = new ObjectInputStream(in);
+				Socket serverSocket = new Socket(machineName, portNumber);
 				
+//				PrintWriter out = new PrintWriter(serverSocket.getOutputStream(), true);
+//				BufferedReader in = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+//				BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+				
+				
+				
+//				// socket einrichten und Out/Input-Streams setzen
+//				serverSocket = new Socket(machineName, portNumber);
+//				log("debug", "server.getOutputStream()");
+//				OutputStream out = serverSocket.getOutputStream();
+//
+//				log("debug", "server.getInputStream()");
+//				InputStream in = serverSocket.getInputStream();
+//
+//				log("debug", "new ObjectOutputStream(...)");
+//				ObjectOutputStream objectOut = new ObjectOutputStream(out);
+//
+//				log("debug", "new ObjectInputStream(...)");
+//				ObjectInputStream  objectIn  = new ObjectInputStream(in);
+
+//				log("debug", "streams fertig");
+
 				// socket wurde erfolgreich mit dem server verbunden. pradar-server soll fuer weitere Anfragen gemerkt werden
 				this.pradar_server_port_at_hostname.add(port_and_machine_as_string);
 				pradar_server_not_found = false;
@@ -1234,7 +1255,6 @@ public class PradarPartUi3 extends ModelObject
 				log("warn", "input / output problems at "+portNumber+"@"+machineName);
 //					e.printStackTrace();
 			}
-			
 		}
 		if (pradar_server_not_found)
 		{
