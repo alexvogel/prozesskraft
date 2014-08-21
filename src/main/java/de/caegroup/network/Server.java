@@ -45,11 +45,19 @@ public class Server
 		{
 			this.s.setSoTimeout(9000);
 			// streams erstellen
+			log("debug", "outputStream erstellen");
 			BufferedOutputStream streamToClient = new BufferedOutputStream(this.s.getOutputStream());
+
+			log("debug", "objectOutputStream  erstellen");
 			objectToClient = new ObjectOutputStream(streamToClient);
+
+			log("debug", "objectOutputStream  flushen");
 			objectToClient.flush();
 			
+			log("debug", "inputStream erstellen");
 			InputStream streamFromClient = this.s.getInputStream();
+
+			log("debug", "objectInputStream  erstellen");
 			objectFromClient  = new ObjectInputStream(streamFromClient);
 
 			String type   = (String) objectFromClient.readObject();			
