@@ -39,10 +39,9 @@ public class Client
 		this.s.setSoTimeout(9000);
 		// streams erstellen
 		out = this.s.getOutputStream();
-		in = this.s.getInputStream();
 		objectOut = new ObjectOutputStream(out);
-		out.flush();
 		objectOut.flush();
+		in = this.s.getInputStream();
 		objectIn  = new ObjectInputStream(in);
 	}
 	
