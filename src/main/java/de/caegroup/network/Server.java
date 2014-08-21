@@ -98,6 +98,7 @@ public class Server
 				log("info", "obtaining information about all entities");
 				ArrayList<Entity> allEntities = this.parent.db.getAllEntities();
 				objectToClient.writeObject(allEntities);
+				log("info", "all entities written to objectOutputStream");
 			}
 			else if (type.equals("stop"))
 			{
