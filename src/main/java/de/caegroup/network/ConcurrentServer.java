@@ -142,8 +142,8 @@ public class ConcurrentServer implements Runnable
 		{
 			while(true)
 			{
-				Socket client = server.accept();
-				new Client(client, this).run();
+				Socket socket = server.accept();
+				new Server(socket, this).run();
 			}
 		}
 		catch(Exception e)

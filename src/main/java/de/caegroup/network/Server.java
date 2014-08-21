@@ -15,34 +15,24 @@ import de.caegroup.pradar.Entity;
 import de.caegroup.commons.*;
 
 
-public class Client
+public class Server
 {
 	/*----------------------------
 	  fields
 	----------------------------*/
 	private Socket s;
-	private OutputStream out;
-	private InputStream in;
-	private ObjectOutputStream objectOut;
-	private ObjectInputStream objectIn;
-	private boolean typeUnknown = true;
+	private ObjectOutputStream objectToClient;
+	private ObjectInputStream objectFromClient;
+//	private boolean typeUnknown = true;
 	private ConcurrentServer parent;
 	
 	/*----------------------------
 	  constructors
 	----------------------------*/
-	public Client(Socket s, ConcurrentServer p) throws IOException
+	public Server(Socket s, ConcurrentServer p) throws IOException
 	{
 		this.s = s;
 		this.parent = p;
-		
-		this.s.setSoTimeout(9000);
-		// streams erstellen
-		out = this.s.getOutputStream();
-		objectOut = new ObjectOutputStream(out);
-		objectOut.flush();
-		in = this.s.getInputStream();
-		objectIn  = new ObjectInputStream(in);
 	}
 	
 	/*----------------------------
@@ -52,8 +42,16 @@ public class Client
 	{
 		try
 		{
+			this.s.setSoTimeout(9000);
+			// streams erstellen
+			OutputStream streamToClient = this.s.getOutputStream();
+			objectToClient = new ObjectOutputStream(streamToClient);
+			objectToClient.flush();
+			
+			InputStream streamFromClient = this.s.getInputStream();
+			objectFromClient  = new ObjectInputStream(streamFromClient);
 
-			String type   = (String) objectIn.readObject();			
+			String type   = (String) objectFromClient.readObject();			
 			if (type.equals("init"))
 			{
 				this.parent.db.initDb();
@@ -66,31 +64,31 @@ public class Client
 			}
 			else if (type.equals("checkin"))
 			{
-				Entity entity = (Entity) objectIn.readObject();
+				Entity entity = (Entity) objectFromClient.readObject();
 				
 				log("info", "checking in entity id "+entity.getId());
 				this.parent.db.checkinEntity(entity);
 			}
 			else if (type.equals("checkout"))
 			{
-				Entity entity = (Entity) objectIn.readObject();
+				Entity entity = (Entity) objectFromClient.readObject();
 				
 				log("info", "checking out entity id "+entity.getId());
 				this.parent.db.checkoutEntity(entity);
 			}
 			else if (type.equals("list"))
 			{
-				Entity entity = (Entity) objectIn.readObject();
+				Entity entity = (Entity) objectFromClient.readObject();
 				
 				log("info", "checking in entity id "+entity.getId());
 				ArrayList<String> list = this.parent.db.list(entity);
-				objectOut.writeObject(list);
+				objectToClient.writeObject(list);
 			}
 			else if (type.equals("getall"))
 			{
 				log("info", "obtaining information about all entities");
 				ArrayList<Entity> allEntities = this.parent.db.getAllEntities();
-				objectOut.writeObject(allEntities);
+				objectToClient.writeObject(allEntities);
 			}
 			else if (type.equals("stop"))
 			{
@@ -104,19 +102,19 @@ public class Client
 			}
 			else if (type.equals("cleandb_user"))
 			{
-				String user = (String) objectIn.readObject();
+				String user = (String) objectFromClient.readObject();
 				log("info", "cleaning db on behalf of user "+user);
 				this.parent.db.cleanDb(this.parent.getSshIdRelPath(), user);
 			}
 			else if (type.equals("delete"))
 			{
-				Entity entity = (Entity) objectIn.readObject();
+				Entity entity = (Entity) objectFromClient.readObject();
 				log("info", "deleting entity id "+entity.getId());
 				this.parent.db.deleteEntity(entity);
 			}
 			else if (type.equals("progress"))
 			{
-				Entity entity = (Entity) objectIn.readObject();
+				Entity entity = (Entity) objectFromClient.readObject();
 				log("info", "updating progress for entity id "+entity.getId());
 				this.parent.db.setProgress(entity);
 			}
