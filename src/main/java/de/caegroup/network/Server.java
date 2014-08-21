@@ -97,6 +97,7 @@ public class Server
 			{
 				log("info", "obtaining information about all entities");
 				ArrayList<Entity> allEntities = this.parent.db.getAllEntities();
+				log("info", allEntities.size()+"all entities written to objectOutputStream");
 				objectToClient.writeObject(allEntities);
 				log("info", "all entities written to objectOutputStream");
 			}
