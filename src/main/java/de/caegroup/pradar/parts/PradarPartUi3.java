@@ -1100,7 +1100,7 @@ public class PradarPartUi3 extends ModelObject
 
 				// sende-object zerstoeren - wird nicht mehr gebraucht
 				log("debug", "objectOutputStream schliessen");
-				objectToServer.close();
+//				objectToServer.close();
 
 				log("debug", "inputStream erstellen");
 				InputStream streamFromServer = connectToServerSocket.getInputStream();
