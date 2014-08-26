@@ -46,11 +46,6 @@ public class Server
 		streamToClient.flush();
 		objectToClient.flush();
 		
-		log("debug", "inputStream erstellen");
-		InputStream streamFromClient = this.s.getInputStream();
-
-		log("debug", "objectInputStream  erstellen");
-		objectFromClient  = new ObjectInputStream(streamFromClient);
 
 	}
 	
@@ -62,17 +57,32 @@ public class Server
 		try
 		{
 
+			log("debug", "inputStream erstellen");
+			InputStream streamFromClient = this.s.getInputStream();
+
+			log("debug", "objectInputStream  erstellen");
+			objectFromClient  = new ObjectInputStream(streamFromClient);
+
 			String type   = (String) objectFromClient.readObject();			
+
+			// object zerstoeren - wird nicht mehr gebraucht
+			objectFromClient.close();
+
+			// wenn der befehl vom client 'init' lautet, soll die datenbank initialisiert werden
 			if (type.equals("init"))
 			{
 				this.parent.db.initDb();
 				log("info", "creating new dbfile");
 			}
+
+			// wenn der befehl vom client 'initforce' lautet, soll die datenbank - initialisierung erzwungen werden
 			else if (type.equals("initforce"))
 			{
 				log("info", "creating new dbfile with force");
 				this.parent.db.initForceDb();
 			}
+
+			// wenn der befehl vom client 'checkin' lautet, soll ein prozess eingecheckt werden
 			else if (type.equals("checkin"))
 			{
 				Entity entity = (Entity) objectFromClient.readObject();
@@ -80,6 +90,8 @@ public class Server
 				log("info", "checking in entity id "+entity.getId());
 				this.parent.db.checkinEntity(entity);
 			}
+
+			// wenn der befehl vom client 'checkout' lautet, soll ein prozess ausgecheckt werden
 			else if (type.equals("checkout"))
 			{
 				Entity entity = (Entity) objectFromClient.readObject();
@@ -87,6 +99,8 @@ public class Server
 				log("info", "checking out entity id "+entity.getId());
 				this.parent.db.checkoutEntity(entity);
 			}
+
+			// wenn der befehl vom client 'list' lautet, soll der DB-Inhalt gelistet werden
 			else if (type.equals("list"))
 			{
 				// dieses entity enthaelt die filter informationen der auszugebenden liste
@@ -96,43 +110,56 @@ public class Server
 				ArrayList<String> list = this.parent.db.list(entity);
 				objectToClient.writeObject(list);
 			}
+
+			// wenn der befehl vom client 'getall' lautet, sollen alle Entities der DB geliefert werden
 			else if (type.equals("getall"))
 			{
+				OutputStream streamToClient = this.s.getOutputStream();
+				ObjectOutputStream objectToClient = new ObjectOutputStream(streamToClient);
+
 				log("info", "obtaining information about all entities");
 				ArrayList<Entity> allEntities = this.parent.db.getAllEntities();
 				log("info", allEntities.size()+"all entities written to objectOutputStream");
 				objectToClient.writeObject(allEntities);
 				objectToClient.flush();
 				log("info", "all entities written to objectOutputStream");
+				
+				objectToClient.close();
 			}
+
 			else if (type.equals("stop"))
 			{
 				log("info", "stopping pradar-server");
 				System.exit(0);
 			}
+
 			else if (type.equals("cleandb"))
 			{
 				log("info", "cleaning db for all users");
 				this.parent.db.cleanDb(this.parent.getSshIdRelPath(), "");
 			}
+
 			else if (type.equals("cleandb_user"))
 			{
 				String user = (String) objectFromClient.readObject();
 				log("info", "cleaning db on behalf of user "+user);
 				this.parent.db.cleanDb(this.parent.getSshIdRelPath(), user);
 			}
+
 			else if (type.equals("delete"))
 			{
 				Entity entity = (Entity) objectFromClient.readObject();
 				log("info", "deleting entity id "+entity.getId());
 				this.parent.db.deleteEntity(entity);
 			}
+
 			else if (type.equals("progress"))
 			{
 				Entity entity = (Entity) objectFromClient.readObject();
 				log("info", "updating progress for entity id "+entity.getId());
 				this.parent.db.setProgress(entity);
 			}
+
 			else
 			{
 				log("info", "unknown type ("+type+"). don't know what to do");
