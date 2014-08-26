@@ -1077,59 +1077,59 @@ public class PradarPartUi3 extends ModelObject
 			{
 
 				// socket einrichten und Out/Input-Streams setzen
-				log("debug", "machineName="+machineName+" | portNumber="+portNumber);
+//				log("debug", "machineName="+machineName+" | portNumber="+portNumber);
 
-				log("debug", "server objekt erstellen");
+//				log("debug", "server objekt erstellen");
 				Socket connectToServerSocket = new Socket(machineName, portNumber);
 				connectToServerSocket.setSoTimeout(20000);
 
-				log("debug", "outputStream erstellen");
+//				log("debug", "outputStream erstellen");
 				OutputStream streamToServer = connectToServerSocket.getOutputStream();
 
-				log("debug", "outputStream  flushen");
+//				log("debug", "outputStream  flushen");
 				streamToServer.flush();
 				
-				log("debug", "objectOutputStream  erstellen");
+//				log("debug", "objectOutputStream  erstellen");
 				ObjectOutputStream objectToServer = new ObjectOutputStream(streamToServer);
 
-				log("debug", "objectOutputStream  flushen");
+//				log("debug", "objectOutputStream  flushen");
 				objectToServer.flush();
 				
 				// Objekte zum server uebertragen
-				log("debug", "write: getall");
+//				log("debug", "write: getall");
 				objectToServer.writeObject("getall");
 
-				log("debug", "outputStream  flushen");
+//				log("debug", "outputStream  flushen");
 				streamToServer.flush();
 
-				log("debug", "objectOutputStream  flushen");
+//				log("debug", "objectOutputStream  flushen");
 				objectToServer.flush();
 
 				// sende-object zerstoeren - wird nicht mehr gebraucht
 //				log("debug", "objectOutputStream schliessen");
 //				objectToServer.close();
 
-				log("debug", "inputStream erstellen");
+//				log("debug", "inputStream erstellen");
 				InputStream streamFromServer = connectToServerSocket.getInputStream();
 
-				log("debug", "objectInputStream  erstellen");
+//				log("debug", "objectInputStream  erstellen");
 				ObjectInputStream  objectFromServer = new ObjectInputStream(streamFromServer);
 
 				// Antwort vom Server lesen - ein array aller Entities
 				try
 				{
-					log("debug", "reading");
+//					log("debug", "reading");
 					Object serverAnswer = objectFromServer.readObject();
-					log("debug", "reading done");
+//					log("debug", "reading done");
 
 					// lese-object zerstoeren - wird nicht mehr gebraucht
 					objectFromServer.close();
-					log("debug", "objectFromServer closed");
+//					log("debug", "objectFromServer closed");
 
 					ArrayList<Object> serverAnswer2 = null;
 					if(serverAnswer instanceof ArrayList)
 					{
-						log("debug", "serverAnswer is an ArrayList");
+//						log("debug", "serverAnswer is an ArrayList");
 						serverAnswer2 = (ArrayList<Object>) serverAnswer;
 					}
 
@@ -1138,16 +1138,15 @@ public class PradarPartUi3 extends ModelObject
 					{
 						if(actObject instanceof Entity)
 						{
-							log("debug", "item of ArrayList<Object> is an Entity  --->  adding to ArrayList<Entity>");
+//							log("debug", "item of ArrayList<Object> is an Entity  --->  adding to ArrayList<Entity>");
 							this.entities_all.add((Entity) actObject);
 						}
 					}
 
-//					this.entities_all = (ArrayList<Entity>) objectFromServer.readObject();
-					log("debug", "reading done! closing ");
-
+//					log("debug", "reading done! closing ");
 					objectFromServer.close();
-					log("debug", "read finished");
+
+//					log("debug", "read finished");
 				}
 				catch (ClassNotFoundException e)
 				{
