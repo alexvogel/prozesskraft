@@ -1280,6 +1280,8 @@ public class PradarPartUi3 extends ModelObject
 
 //				log("debug", "streams fertig");
 
+				serverSocket.close();
+				
 				// socket wurde erfolgreich mit dem server verbunden. pradar-server soll fuer weitere Anfragen gemerkt werden
 				this.pradar_server_port_at_hostname.add(port_and_machine_as_string);
 				pradar_server_not_found = false;
