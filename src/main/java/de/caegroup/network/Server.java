@@ -65,9 +65,9 @@ public class Server
 			log("debug", "typ der anforderung von client empfangen");
 			String type   = (String) objectFromClient.readObject();			
 
-			log("debug", "objectInputStream schliessen");
+//			log("debug", "objectInputStream schliessen");
 			// object zerstoeren - wird nicht mehr gebraucht
-			objectFromClient.close();
+//			objectFromClient.close();
 
 			// wenn der befehl vom client 'init' lautet, soll die datenbank initialisiert werden
 			if (type.equals("init"))
@@ -119,13 +119,13 @@ public class Server
 
 				log("info", "obtaining information about all entities");
 				ArrayList<Entity> allEntities = this.parent.db.getAllEntities();
-				log("info", allEntities.size()+" entities written to objectOutputStream");
+				log("info", "plan" + allEntities.size()+" entities written to objectOutputStream");
 				objectToClient.writeObject(allEntities);
 				objectToClient.flush();
 				log("info", "all entities written to objectOutputStream");
 				
 				log("debug", "objectOutputStream schliessen");
-				objectToClient.close();
+//				objectToClient.close();
 			}
 
 			else if (type.equals("stop"))
