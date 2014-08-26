@@ -34,6 +34,16 @@ public class Server
 	{
 		this.s = s;
 		this.parent = p;
+		
+		log("debug", "outputStream erstellen");
+		OutputStream streamToClient = this.s.getOutputStream();
+		
+		log("debug", "outputStream flushen");
+		streamToClient.flush();
+		
+		log("debug", "objectOutputStream erstellen");
+		objectToClient = new ObjectOutputStream(streamToClient);
+		objectToClient.flush();
 	}
 	
 	/*----------------------------
@@ -104,14 +114,6 @@ public class Server
 			else if (type.equals("getall"))
 			{
 				log("debug", "anforderung von client lautet 'getall'");
-				log("debug", "outputStream erstellen");
-				OutputStream streamToClient = this.s.getOutputStream();
-				
-				log("debug", "outputStream flushen");
-				streamToClient.flush();
-				
-				log("debug", "objectOutputStream erstellen");
-				ObjectOutputStream objectToClient = new ObjectOutputStream(streamToClient);
 
 				log("info", "obtaining information about all entities");
 				ArrayList<Entity> allEntities = this.parent.db.getAllEntities();
