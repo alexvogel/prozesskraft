@@ -1105,14 +1105,6 @@ public class PradarPartUi3 extends ModelObject
 				log("debug", "objectOutputStream  flushen");
 				objectToServer.flush();
 
-				log("debug", "objectOutputStream  flushen");
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
 				// sende-object zerstoeren - wird nicht mehr gebraucht
 //				log("debug", "objectOutputStream schliessen");
 //				objectToServer.close();
