@@ -35,16 +35,16 @@ public class Server
 		this.s = s;
 		this.parent = p;
 		
-		log("debug", "outputStream erstellen");
+//		log("debug", "outputStream erstellen");
 		OutputStream streamToClient = this.s.getOutputStream();
 		
-		log("debug", "outputStream flushen");
+//		log("debug", "outputStream flushen");
 		streamToClient.flush();
 		
-		log("debug", "objectOutputStream erstellen");
+//		log("debug", "objectOutputStream erstellen");
 		objectToClient = new ObjectOutputStream(streamToClient);
 
-		log("debug", "objectOutputStream flushen");
+//		log("debug", "objectOutputStream flushen");
 		objectToClient.flush();
 	}
 	
@@ -56,13 +56,13 @@ public class Server
 		try
 		{
 
-			log("debug", "inputStream erstellen");
+//			log("debug", "inputStream erstellen");
 			InputStream streamFromClient = this.s.getInputStream();
 
-			log("debug", "objectInputStream erstellen");
+//			log("debug", "objectInputStream erstellen");
 			objectFromClient  = new ObjectInputStream(streamFromClient);
 
-			log("debug", "typ der anforderung von client empfangen");
+//			log("debug", "typ der anforderung von client empfangen");
 			String type   = (String) objectFromClient.readObject();			
 
 //			log("debug", "objectInputStream schliessen");
