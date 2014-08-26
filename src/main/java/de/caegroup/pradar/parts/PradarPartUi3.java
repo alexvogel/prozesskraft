@@ -1086,6 +1086,9 @@ public class PradarPartUi3 extends ModelObject
 				log("debug", "outputStream erstellen");
 				OutputStream streamToServer = connectToServerSocket.getOutputStream();
 
+				log("debug", "outputStream  flushen");
+				streamToServer.flush();
+				
 				log("debug", "objectOutputStream  erstellen");
 				ObjectOutputStream objectToServer = new ObjectOutputStream(streamToServer);
 
