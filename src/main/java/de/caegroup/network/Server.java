@@ -34,19 +34,6 @@ public class Server
 	{
 		this.s = s;
 		this.parent = p;
-		
-		// streams erstellen
-		log("debug", "outputStream erstellen");
-		BufferedOutputStream streamToClient = new BufferedOutputStream(this.s.getOutputStream());
-
-		log("debug", "objectOutputStream  erstellen");
-		objectToClient = new ObjectOutputStream(streamToClient);
-
-		log("debug", "objectOutputStream  flushen");
-		streamToClient.flush();
-		objectToClient.flush();
-		
-
 	}
 	
 	/*----------------------------
@@ -114,7 +101,9 @@ public class Server
 			// wenn der befehl vom client 'getall' lautet, sollen alle Entities der DB geliefert werden
 			else if (type.equals("getall"))
 			{
+				log("info", "outputStream erstellen");
 				OutputStream streamToClient = this.s.getOutputStream();
+				log("info", "objectOutputStream erstellen");
 				ObjectOutputStream objectToClient = new ObjectOutputStream(streamToClient);
 
 				log("info", "obtaining information about all entities");
