@@ -1294,7 +1294,7 @@ public class PrampPartUi1 extends ModelObject
 		else
 		{
 			String pdfreader = ini.get("apps", "pdfreader");
-			log ("info", "showing documentation with call: pdfreader " + fileDoc.getAbsolutePath());
+			log ("info", "showing documentation with call: " +pdfreader +" " + fileDoc.getAbsolutePath());
 			String[] args_for_command = {pdfreader, fileDoc.getAbsolutePath()};
 			ProcessBuilder pb = new ProcessBuilder(args_for_command);
 			
