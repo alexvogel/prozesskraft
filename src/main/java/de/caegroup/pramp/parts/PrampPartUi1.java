@@ -1277,7 +1277,7 @@ public class PrampPartUi1 extends ModelObject
 	
 	
 	/**
-	 * show documentation in acroread if any exists
+	 * show documentation in a pdfreader if any exists
 	 */
 	private boolean showDoc()
 	{
@@ -1293,8 +1293,9 @@ public class PrampPartUi1 extends ModelObject
 		
 		else
 		{
-			log ("info", "showing documentation with call: acroread " + fileDoc.getAbsolutePath());
-			String[] args_for_command = {"acroread", fileDoc.getAbsolutePath()};
+			String pdfreader = ini.get("apps", "pdfreader");
+			log ("info", "showing documentation with call: pdfreader " + fileDoc.getAbsolutePath());
+			String[] args_for_command = {pdfreader, fileDoc.getAbsolutePath()};
 			ProcessBuilder pb = new ProcessBuilder(args_for_command);
 			
 			try
