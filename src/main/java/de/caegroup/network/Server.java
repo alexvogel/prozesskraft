@@ -43,6 +43,8 @@ public class Server
 		
 		log("debug", "objectOutputStream erstellen");
 		objectToClient = new ObjectOutputStream(streamToClient);
+
+		log("debug", "objectOutputStream flushen");
 		objectToClient.flush();
 	}
 	
