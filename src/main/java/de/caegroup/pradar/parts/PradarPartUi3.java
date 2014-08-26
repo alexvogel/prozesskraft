@@ -1078,13 +1078,13 @@ public class PradarPartUi3 extends ModelObject
 
 				// socket einrichten und Out/Input-Streams setzen
 				log("debug", "machineName="+machineName+" | portNumber="+portNumber);
-				
+
 				log("debug", "server objekt erstellen");
 				Socket connectToServerSocket = new Socket(machineName, portNumber);
 				connectToServerSocket.setSoTimeout(20000);
-				
+
 				log("debug", "outputStream erstellen");
-				BufferedOutputStream streamToServer = new BufferedOutputStream(connectToServerSocket.getOutputStream());
+				OutputStream streamToServer = connectToServerSocket.getOutputStream();
 
 				log("debug", "objectOutputStream  erstellen");
 				ObjectOutputStream objectToServer = new ObjectOutputStream(streamToServer);
@@ -1096,20 +1096,27 @@ public class PradarPartUi3 extends ModelObject
 				log("debug", "write: getall");
 				objectToServer.writeObject("getall");
 				objectToServer.flush();
-				
+
+				// sende-object zerstoeren - wird nicht mehr gebraucht
+				objectToServer.close();
+
 				log("debug", "inputStream erstellen");
 				InputStream streamFromServer = connectToServerSocket.getInputStream();
 
 				log("debug", "objectInputStream  erstellen");
 				ObjectInputStream  objectFromServer = new ObjectInputStream(streamFromServer);
-				
+
 				// Antwort vom Server lesen - ein array aller Entities
 				try
 				{
 					log("debug", "reading");
 					Object serverAnswer = objectFromServer.readObject();
 					log("debug", "reading done");
-					
+
+					// lese-object zerstoeren - wird nicht mehr gebraucht
+					objectFromServer.close();
+					log("debug", "objectFromServer closed");
+
 					ArrayList<Object> serverAnswer2 = null;
 					if(serverAnswer instanceof ArrayList)
 					{
@@ -1138,7 +1145,7 @@ public class PradarPartUi3 extends ModelObject
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				// daten holen aus db
 				log("info", "refreshing data...");
 				connectToServerSocket.close();
