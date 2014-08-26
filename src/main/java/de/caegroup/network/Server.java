@@ -47,11 +47,13 @@ public class Server
 			log("debug", "inputStream erstellen");
 			InputStream streamFromClient = this.s.getInputStream();
 
-			log("debug", "objectInputStream  erstellen");
+			log("debug", "objectInputStream erstellen");
 			objectFromClient  = new ObjectInputStream(streamFromClient);
 
+			log("debug", "typ der anforderung von client empfangen");
 			String type   = (String) objectFromClient.readObject();			
 
+			log("debug", "objectInputStream schliessen");
 			// object zerstoeren - wird nicht mehr gebraucht
 			objectFromClient.close();
 
@@ -101,18 +103,20 @@ public class Server
 			// wenn der befehl vom client 'getall' lautet, sollen alle Entities der DB geliefert werden
 			else if (type.equals("getall"))
 			{
-				log("info", "outputStream erstellen");
+				log("debug", "anforderung von client lautet 'getall'");
+				log("debug", "outputStream erstellen");
 				OutputStream streamToClient = this.s.getOutputStream();
-				log("info", "objectOutputStream erstellen");
+				log("debug", "objectOutputStream erstellen");
 				ObjectOutputStream objectToClient = new ObjectOutputStream(streamToClient);
 
 				log("info", "obtaining information about all entities");
 				ArrayList<Entity> allEntities = this.parent.db.getAllEntities();
-				log("info", allEntities.size()+"all entities written to objectOutputStream");
+				log("info", allEntities.size()+" entities written to objectOutputStream");
 				objectToClient.writeObject(allEntities);
 				objectToClient.flush();
 				log("info", "all entities written to objectOutputStream");
 				
+				log("debug", "objectOutputStream schliessen");
 				objectToClient.close();
 			}
 
