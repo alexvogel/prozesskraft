@@ -106,6 +106,10 @@ public class Server
 				log("debug", "anforderung von client lautet 'getall'");
 				log("debug", "outputStream erstellen");
 				OutputStream streamToClient = this.s.getOutputStream();
+				
+				log("debug", "outputStream flushen");
+				streamToClient.flush();
+				
 				log("debug", "objectOutputStream erstellen");
 				ObjectOutputStream objectToClient = new ObjectOutputStream(streamToClient);
 
