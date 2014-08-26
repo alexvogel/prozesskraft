@@ -1098,6 +1098,10 @@ public class PradarPartUi3 extends ModelObject
 				// Objekte zum server uebertragen
 				log("debug", "write: getall");
 				objectToServer.writeObject("getall");
+
+				log("debug", "outputStream  flushen");
+				streamToServer.flush();
+				
 				log("debug", "objectOutputStream  flushen");
 				objectToServer.flush();
 
