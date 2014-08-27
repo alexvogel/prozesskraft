@@ -57,7 +57,6 @@ $v =~ s/\.//g;
 
 my $error;
 
-my $instancedir = "/tmp/".$procname."_" . $datum . "_" . $$;
 my $stack = "/home/".$ENV{'USER'}."/.".$procname."/".$procname.".stack";
 my $conf = $etc . "/$procname.conf";
 
@@ -478,6 +477,7 @@ foreach my $refh_stackline (@CONFIG)
 	
 	#-------------------
 	# kopieren des repos nach $instancedir/<random>
+	my $instancedir = "/tmp/".$procname."_" . $datum . "_" . $now_app . "_" . $$;
 	my $random = int(rand(10000000));
 	my $TMPDIR = $instancedir . "/" . $now_app."_". $random;
 	
