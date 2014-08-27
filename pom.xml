@@ -99,7 +99,7 @@
 			</plugin>
 
 <!-- Obfuskieren des jars. das output ueberschreibt das default-jar, welches durch 'maven-jar-plugin' id=default produziert wurde -->
-			<plugin>
+<!-- 			<plugin>
 				<groupId>com.pyx4me</groupId>
 				<artifactId>proguard-maven-plugin</artifactId>
 				<version>2.0.4</version>
@@ -127,7 +127,7 @@
 					<proguardVersion>4.8</proguardVersion>
 				</configuration>
 			</plugin>
-			
+ -->			
 <!-- Alle unter dependency definierten Abhaengigkeiten werden aus dem maven-repo in ein eigenes lib-verzeichnis kopiert -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
