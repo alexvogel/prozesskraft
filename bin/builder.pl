@@ -416,7 +416,8 @@ foreach my $refh_stackline (@CONFIG)
 		$now_targetbulk = $now_targetdir . "/install";
 		$now_targetbulkapp = $now_targetbulk . "/" . $$refh_stackline{'app'};
 		$now_targetuser = $ENV{'USER'};
-		$now_targetmachine = $ENV{'HOSTNAME'};
+		$now_targetmachine = `hostname`;
+		chomp $now_targetmachine;
 		$now_targetbin = "/dev/null";
 	}
 	
@@ -751,6 +752,17 @@ foreach my $refh_stackline (@CONFIG)
 			foreach my $appToMerge (sort keys %appsToMerge)
 			{
 				
+#				# das zielverzeichnis fuer die temporaere installation erstellen
+#				print "info: creating dir\n";
+#				print "mkdir $TMPDIR . /install\n"; 
+#				mkdir $TMPDIR . "/install"; 
+#				print "info: creating dir\n";
+#				print "mkdir $TMPDIR . /install/$appToMerge\n"; 
+#				mkdir $TMPDIR . "/install/$appToMerge";
+#				print "info: creating dir\n";
+#				print "mkdir $TMPDIR . /install/$appToMerge/$actBranch\n"; 
+#				mkdir $TMPDIR . "/install/$appToMerge/$actBranch";
+#				
 				my @param;
 				push(@param, "--app=".$appToMerge);
 				push(@param, "--branch=".$actBranch);
