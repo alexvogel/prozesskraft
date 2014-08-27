@@ -1,6 +1,8 @@
 package de.caegroup.process;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -9,6 +11,11 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.ini4j.Ini;
+import org.ini4j.InvalidFileFormatException;
+
+import de.caegroup.commons.MyLicense;
+import de.caegroup.commons.WhereAmI;
 
 
 public class Commitit
@@ -18,6 +25,7 @@ public class Commitit
 	  structure
 	----------------------------*/
 	static CommandLine commandline;
+	static Ini ini;
 	
 	/*----------------------------
 	  constructors
@@ -38,6 +46,34 @@ public class Commitit
 //		{
 //			System.out.println("***ArrayIndexOutOfBoundsException: Please specify processdefinition.xml, openoffice_template.od*, newfile_for_processdefinitions.odt\n" + e.toString());
 //		}
+		
+		/*----------------------------
+		  get options from ini-file
+		----------------------------*/
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Commitit.class) + "/" + "../etc/process-commitit.ini");
+
+		if (inifile.exists())
+		{
+			try
+			{
+				ini = new Ini(inifile);
+			}
+			catch (InvalidFileFormatException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			catch (IOException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		else
+		{
+			System.err.println("ini file does not exist: "+inifile.getAbsolutePath());
+			System.exit(1);
+		}
 		
 		/*----------------------------
 		  create boolean options
@@ -150,6 +186,30 @@ public class Commitit
 			exiter();
 		}
 
+		/*----------------------------
+		  die lizenz ueberpruefen und ggf abbrechen
+		----------------------------*/
+
+		// check for valid license
+		ArrayList<String> allPortAtHost = new ArrayList<String>();
+		allPortAtHost.add(ini.get("license-server", "license-server-1"));
+		allPortAtHost.add(ini.get("license-server", "license-server-2"));
+		allPortAtHost.add(ini.get("license-server", "license-server-3"));
+		
+		MyLicense lic = new MyLicense(allPortAtHost, "1", "user-edition", "0.1");
+		
+		// lizenz-logging ausgeben
+		for(String actLine : (ArrayList<String>) lic.getLog())
+		{
+			System.err.println(actLine);
+		}
+
+		// abbruch, wenn lizenz nicht valide
+		if (!lic.isValid())
+		{
+			System.exit(1);
+		}
+		
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
