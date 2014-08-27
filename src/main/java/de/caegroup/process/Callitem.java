@@ -139,8 +139,16 @@ implements Serializable
 			}
 			
 			// das muster soll durch den ersten eintrag in der list ersetzt werden
-			resolvedString = m.replaceAll(list.getItem().get(0));
-			log("info", "resolved {$"+listname+"} to "+resolvedString);
+			if(!list.getItem().isEmpty())
+			{
+				resolvedString = m.replaceAll(list.getItem().get(0));
+				log("info", "resolved '{$"+listname+"}' to '"+resolvedString+"'");
+			}
+			else
+			{
+				resolvedString = m.replaceAll("");
+				log("error", "resolved '{$"+listname+"}' to '', because list "+list.getName()+" is empty. (perhaps init.minoccur == 0 and you use it in a callitem without loop="+list.getName()+")");
+			}
 		}
 		else
 		{
