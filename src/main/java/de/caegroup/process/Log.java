@@ -1,6 +1,7 @@
 package de.caegroup.process;
 
 import java.io.*;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class Log
@@ -57,6 +58,14 @@ implements Serializable, Comparable
 	public long getTime()
 	{
 		return this.date.getTime();
+	}
+
+	/**
+	 * @return the time as a Timestamp-String
+	 */
+	public String getTimestamp()
+	{
+		return this.date.toString();
 	}
 
 	/**
