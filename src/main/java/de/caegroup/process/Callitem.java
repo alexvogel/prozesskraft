@@ -139,7 +139,7 @@ implements Serializable
 			}
 			
 			// das muster soll durch den ersten eintrag in der list ersetzt werden
-			if(!list.getItem().isEmpty())
+			if(list.itemCount() > 0)
 			{
 				resolvedString = m.replaceAll(list.getItem().get(0));
 				log("info", "resolved '{$"+listname+"}' to '"+resolvedString+"'");

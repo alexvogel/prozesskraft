@@ -129,4 +129,12 @@ implements Serializable
 	}
 	
 
+	/**
+	 * @param itemcount
+	 */
+	public int itemCount()
+	{
+		return this.item.size();
+	}
+	
 }
