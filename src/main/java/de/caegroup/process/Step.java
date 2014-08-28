@@ -1892,9 +1892,12 @@ implements Serializable, Cloneable
 		{
 			logRecursive.addAll(actInit.getLogRecursive());
 		}
-		
+
 		// die logs des Work in die Sammlung uebernehmen
-		logRecursive.addAll(work.getLogRecursive());
+		if(!(this.work == null))
+		{
+			logRecursive.addAll(work.getLogRecursive());
+		}
 
 		// die logs aller Callitems in die Sammlung uebernehmen
 		for(Commit actCommit : this.getCommit())
