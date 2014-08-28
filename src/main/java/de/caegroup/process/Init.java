@@ -2,6 +2,7 @@ package de.caegroup.process;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 //import java.util.HashMap;
 //import java.util.Map;
 
@@ -29,6 +30,8 @@ implements Serializable
 	private String loop = new String();
 	private String loopvar = new String();
 	
+	private ArrayList<Log> log = new ArrayList<Log>();
+
 	private String status = new String();	// waiting/initializing/working/committing/ finished/broken/cancelled
 
 	private Step parent = null;
@@ -144,6 +147,25 @@ implements Serializable
 		return this.parent;
 	}
 
+	public ArrayList<Log> getLog()
+	{
+		return this.log;
+	}
+
+	public ArrayList<Log> getLogRecursive()
+	{
+		ArrayList<Log> logRecursive = this.log;
+		for(Match actMatch : this.match)
+		{
+			logRecursive.addAll(actMatch.getLog());
+		}
+
+		// sortieren nach Datum
+		Collections.sort(logRecursive);
+
+		return logRecursive;
+	}
+
 	/*----------------------------
 	methods set
 	----------------------------*/
@@ -230,6 +252,18 @@ implements Serializable
 	}
 
 	/*----------------------------
+	  methods
+	----------------------------*/
+	/**
+	 * stores a message in the object log
+	 * @param String loglevel, String logmessage
+	 */
+	public void log(String loglevel, String logmessage)
+	{
+		this.log.add(new Log(this, loglevel, logmessage));
+	}
+	
+	/*----------------------------
 	  methods consistent
 	----------------------------*/
 
@@ -245,19 +279,19 @@ implements Serializable
 		if( !(this.getParent().getParent().isStep(this.getFromstep())) )
 		{
 			result = false;
-			this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': fromstep '"+this.getFromstep()+"' does not exist in processModel");
+			this.log("error", "fromstep '"+this.getFromstep()+"' does not exist");
 		}
 		
 		if( !(this.getFromobjecttype().matches("file|variable") ))
 		{
 			result = false;
-			this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': fromobjecttype '"+this.getFromobjecttype()+"' does not match /file|variable/");
+			this.log("error", "fromobjecttype '"+this.getFromobjecttype()+"' does not match /file|variable/");
 		}
 		
 		if( !(this.getReturnfield().matches(".+") ))
 		{
 			result = false;
-			this.getParent().getParent().log("error", "error in step '"+this.getParent().getName()+"' init '"+this.getListname()+"': returnfield '"+this.getReturnfield()+"' does not match /.+/");
+			log("error", "returnfield '"+this.getReturnfield()+"' does not match /.+/");
 		}
 		
 		return result;

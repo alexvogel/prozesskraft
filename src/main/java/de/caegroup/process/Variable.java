@@ -26,7 +26,9 @@ implements Serializable
 	private String type = "string"; // string|float|integer|flag
 	private boolean free = true;
 	
+	private ArrayList<Log> log = new ArrayList<Log>();
 
+	
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -64,7 +66,7 @@ implements Serializable
 	{
 		String fieldname = match.getField();
 		String pattern = match.getPattern();
-		
+
 		String string_to_test = new String();
 		if 		(fieldname.equals("key")) 		{string_to_test = this.getKey();}
 		else if (fieldname.equals("value")) 	{string_to_test = this.getValue();}
@@ -156,6 +158,15 @@ implements Serializable
 		return testsFeedback;
 	}
 
+	/**
+	 * stores a message in the object log
+	 * @param String loglevel, String logmessage
+	 */
+	public void log(String loglevel, String logmessage)
+	{
+		this.log.add(new Log(this, loglevel, logmessage));
+	}
+
 	/*----------------------------
 	  methods get
 	----------------------------*/
@@ -218,6 +229,11 @@ implements Serializable
 		return returnvalue;
 	}
 	
+	public ArrayList<Log> getLog()
+	{
+		return this.log;
+	}
+
 	/*----------------------------
 	methods set
 	----------------------------*/
@@ -279,5 +295,6 @@ implements Serializable
 	public void setType(String type) {
 		this.type = type;
 	}
+
 
 }

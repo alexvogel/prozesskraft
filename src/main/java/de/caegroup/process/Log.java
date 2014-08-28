@@ -1,39 +1,40 @@
 package de.caegroup.process;
 
 import java.io.*;
-import java.sql.Timestamp;
-//import java.util.*;
-//import org.apache.solr.common.util.NamedList;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 
 public class Log
-implements Serializable
+implements Serializable, Comparable
+
 {
 	/*----------------------------
 	  structure
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private long time = System.currentTimeMillis();
-	private String level = "";
+
+	private Object parent = null;
+	private Date date = new Date();
+	private String level = "default";
 	private String msg = "";
-	
+
 	/*----------------------------
 	  constructors
 	----------------------------*/
-	public Log()
+	public Log(Object parent)
 	{
-
+		this.parent = parent;
 	}
 
-	public Log(String msg)
+	public Log(Object parent, String msg)
 	{
+		this.parent = parent;
 		this.msg = msg;
 	}
 
-	public Log(String level, String msg)
+	public Log(Object parent, String level, String msg)
 	{
+		this.parent = parent;
 		this.level = level;
 		this.msg = msg;
 	}
@@ -43,19 +44,43 @@ implements Serializable
 
 	public void print()
 	{
-		System.out.println("["+new Timestamp(this.time)+"]:"+this.getLevel()+":"+this.getMsg());
+		System.out.println("["+this.date.toString()+"]:"+this.getLevel()+":"+this.getMsg());
 	}
-	
+
 	/*----------------------------
 	  methods getter & setter
 	----------------------------*/
 
 	/**
-	 * @return the time
+	 * @return the time in Milliseconds
 	 */
 	public long getTime()
 	{
-		return this.time;
+		return this.date.getTime();
+	}
+
+	/**
+	 * @param time the time to set
+	 */
+	public void setTime(long time)
+	{
+		this.date.setTime(time);
+	}
+
+	/**
+	 * @return the date
+	 */
+	public Date getDate()
+	{
+		return this.date;
+	}
+
+	/**
+	 * @param set the date
+	 */
+	public void setDate(Date date)
+	{
+		this.date = date;
 	}
 
 	/**
@@ -67,22 +92,6 @@ implements Serializable
 	}
 
 	/**
-	 * @return the msg
-	 */
-	public String getMsg()
-	{
-		return this.msg;
-	}
-
-	/**
-	 * @param time the time to set
-	 */
-	public void setTime(long time)
-	{
-		this.time = time;
-	}
-
-	/**
 	 * @param level the level to set
 	 */
 	public void setLevel(String level)
@@ -91,11 +100,32 @@ implements Serializable
 	}
 
 	/**
+	 * @return the msg
+	 */
+	public String getMsg()
+	{
+		return this.msg;
+	}
+
+	/**
 	 * @param msg the msg to set
 	 */
 	public void setMsg(String msg)
 	{
 		this.msg = msg;
+	}
+
+	/**
+	 * @return the parentType
+	 */
+	public String getParentType()
+	{
+		return "" + this.parent.getClass();
+	}
+
+	public int compareTo(Object logToCompare)
+	{
+		return (this.getDate().compareTo(((Log)logToCompare).getDate()));
 	}
 
 }

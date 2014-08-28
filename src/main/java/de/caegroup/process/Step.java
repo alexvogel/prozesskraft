@@ -2,9 +2,7 @@ package de.caegroup.process;
 
 import java.io.*;
 import java.util.*;
-import java.util.regex.Pattern;
 
-import de.caegroup.codegen.BBusiness;
 import de.caegroup.codegen.Script;
 import de.caegroup.process.Commit;
 
@@ -1501,14 +1499,13 @@ implements Serializable, Cloneable
 	}
 	
 	/**
-	 * stores a message for the process
+	 * stores a message in the object log
 	 * @param String loglevel, String logmessage
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log(loglevel, logmessage));
+		this.log.add(new Log(this, loglevel, logmessage));
 	}
-	
 
 	/*----------------------------
 	  methods get
@@ -1883,6 +1880,31 @@ implements Serializable, Cloneable
 	
 	public ArrayList<Log> getLog()
 	{
+		return this.log;
+	}
+	
+	public ArrayList<Log> getLogRecursive()
+	{
+		ArrayList<Log> logRecursive = new ArrayList<Log>();
+		
+		// die logs aller Inits in die Sammlung uebernehmen
+		for(Init actInit : this.getInit())
+		{
+			logRecursive.addAll(actInit.getLogRecursive());
+		}
+		
+		// die logs des Work in die Sammlung uebernehmen
+		logRecursive.addAll(work.getLogRecursive());
+
+		// die logs aller Callitems in die Sammlung uebernehmen
+		for(Commit actCommit : this.getCommit())
+		{
+			logRecursive.addAll(actCommit.getLogRecursive());
+		}
+
+		// sortierte KeyListe erstellen
+		java.util.Collections.sort(logRecursive);
+		
 		return this.log;
 	}
 	

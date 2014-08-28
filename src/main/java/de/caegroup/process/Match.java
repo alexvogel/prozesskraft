@@ -3,6 +3,7 @@ package de.caegroup.process;
 import java.io.*;
 //import java.util.*;
 //import org.apache.solr.common.util.NamedList;
+import java.util.ArrayList;
 
 public class Match
 implements Serializable
@@ -14,6 +15,8 @@ implements Serializable
 	static final long serialVersionUID = 1;
 	private String field = new String();
 	private String pattern = new String();
+
+	private ArrayList<Log> log = new ArrayList<Log>();
 
 	/*----------------------------
 	  constructors
@@ -37,6 +40,10 @@ implements Serializable
 		return this.pattern;
 	}
 
+	public ArrayList<Log> getLog()
+	{
+		return this.log;
+	}
 
 	/*----------------------------
 	methods set
@@ -51,5 +58,17 @@ implements Serializable
 		this.pattern = pattern;
 	}
 
+	/*----------------------------
+	  methods
+	----------------------------*/
+	/**
+	 * stores a message in the object log
+	 * @param String loglevel, String logmessage
+	 */
+	public void log(String loglevel, String logmessage)
+	{
+		this.log.add(new Log(this, loglevel, logmessage));
+	}
+	
 
 }

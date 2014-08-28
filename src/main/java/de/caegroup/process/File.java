@@ -24,6 +24,8 @@ implements Serializable, Cloneable
 	private int minoccur = 0;
 	private int maxoccur = 999999;
 	
+	private ArrayList<Log> log = new ArrayList<Log>();
+
 
 	/*----------------------------
 	  constructors
@@ -160,7 +162,17 @@ implements Serializable, Cloneable
 			return false;
 		}
 	}
-	/*----------------------------
+
+	/**
+	 * stores a message in the object log
+	 * @param String loglevel, String logmessage
+	 */
+	public void log(String loglevel, String logmessage)
+	{
+		this.log.add(new Log(this, loglevel, logmessage));
+	}
+
+/*----------------------------
 	  methods get
 	----------------------------*/
 	public String getKey()
@@ -284,6 +296,11 @@ implements Serializable, Cloneable
 		return sizeString;
 	}
 	
+	public ArrayList<Log> getLog()
+	{
+		return this.log;
+	}
+
 	/*----------------------------
 	methods set
 	----------------------------*/

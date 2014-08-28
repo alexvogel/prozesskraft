@@ -5,6 +5,7 @@ import java.io.*;
 //import java.util.HashMap;
 //import java.util.Map;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -30,6 +31,7 @@ implements Serializable
 	private int exitvalue;
 	private Step parent;
 
+	private ArrayList<Log> log = new ArrayList<Log>();
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -133,6 +135,32 @@ implements Serializable
 		return this.parent;
 	}
 	
+	public ArrayList<Log> getLog()
+	{
+		return this.log;
+	}
+
+	public ArrayList<Log> getLogRecursive()
+	{
+		ArrayList<Log> logRecursive = this.log;
+
+// alle logs aller Variablen hinzufuegen
+		for(Variable actVariable : this.variable)
+		{
+			logRecursive.addAll(actVariable.getLog());
+		}
+// alle logs aller Files hinzufuegen
+		for(File actFile : this.file)
+		{
+			logRecursive.addAll(actFile.getLog());
+		}
+
+		// sortieren nach Datum
+		Collections.sort(logRecursive);
+
+		return logRecursive;
+	}
+
 	/*----------------------------
 	methods set
 	----------------------------*/
@@ -187,6 +215,15 @@ implements Serializable
 	public void setParent(Step step)
 	{
 		this.parent = step;
+	}
+
+	/**
+	 * stores a message in the object log
+	 * @param String loglevel, String logmessage
+	 */
+	public void log(String loglevel, String logmessage)
+	{
+		this.log.add(new Log(this, loglevel, logmessage));
 	}
 
 }

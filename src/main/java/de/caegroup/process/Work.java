@@ -24,6 +24,8 @@ implements Serializable
 	private ArrayList<Exit> exit = new ArrayList<Exit>();
 	private String loop = null;
 
+	private ArrayList<Log> log = new ArrayList<Log>();
+
 	private String status = new String();	// waiting/initializing/working/committing/ finished/broken/cancelled
 	private int exitvalue;
 	public Step parent;
@@ -224,6 +226,25 @@ implements Serializable
 		return this.parent;
 	}
 	
+	public ArrayList<Log> getLog()
+	{
+		return this.log;
+	}
+
+	public ArrayList<Log> getLogRecursive()
+	{
+		ArrayList<Log> logRecursive = this.log;
+		for(Callitem actCallitem : this.callitem)
+		{
+			logRecursive.addAll(actCallitem.getLog());
+		}
+
+		// sortieren nach Datum
+		Collections.sort(logRecursive);
+
+		return logRecursive;
+	}
+
 	/*----------------------------
 	methods set
 	----------------------------*/
@@ -290,5 +311,15 @@ implements Serializable
 	{
 		this.exit = exit;
 	}
+
+	/**
+	 * stores a message in the object log
+	 * @param String loglevel, String logmessage
+	 */
+	public void log(String loglevel, String logmessage)
+	{
+		this.log.add(new Log(this, loglevel, logmessage));
+	}
+	
 
 }

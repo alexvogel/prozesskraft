@@ -81,24 +81,24 @@ implements Serializable
 			
 			if(loopList == null)
 			{
-				System.err.println("list " + this.getLoop() + "does not exist");
+				log("error", "list " + this.getLoop() + "does not exist");
 			}
 			
 			else
 			{
 				
-				System.out.println("debug: loopliste '"+loopList.getName()+"' hat "+loopList.getItem().size()+" items.");
+				log("debug", "loopliste '"+loopList.getName()+"' hat "+loopList.getItem().size()+" items.");
 				for(String actItem : loopList.getItem())
 				{
 					// loopen
 					Callitem clonedCallitem = this.clone();
 					clonedCallitem.setLoop(null);
-					System.out.println("debug: par="+this.getPar()+" | del="+this.getDel()+" | val="+this.getVal() + " | actItem="+actItem);
+					log("debug", "par="+this.getPar()+" | del="+this.getDel()+" | val="+this.getVal() + " | actItem="+actItem);
 					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
 					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
 					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
 					
-					this.parent.parent.log("debug", "val="+this.getVal());
+					this.log("debug", "val="+this.getVal());
 					
 					// placeholder, die auf listen referenzieren ersetzen
 					clonedCallitem.setPar(clonedCallitem.getRespar());
@@ -166,7 +166,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log(loglevel, logmessage));
+		this.log.add(new Log(this, loglevel, logmessage));
 	}
 	
 
@@ -218,6 +218,11 @@ implements Serializable
 		return this.loop;
 	}
 	
+	public ArrayList<Log> getLog()
+	{
+		return this.log;
+	}
+
 	/*----------------------------
 	methods set
 	----------------------------*/
@@ -255,5 +260,6 @@ implements Serializable
 	{
 		this.parent = work;
 	}
+
 
 }
