@@ -147,7 +147,6 @@ public class SIDebugGui
 					
 				case 1:
 					return l.getLabel();
-//					return l.getLabel().replace("step-.+$", "step");
 					
 				case 2:
 					return l.getLevel();
