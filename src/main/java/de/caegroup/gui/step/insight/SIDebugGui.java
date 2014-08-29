@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import de.caegroup.process.Log;
 import de.caegroup.process.Step;
 
-public class SILogGui
+public class SIDebugGui
 {
 	private Composite parent;
 	private Step step;
@@ -33,7 +33,7 @@ public class SILogGui
 //	ArrayList<VariableGui> variableGui = new ArrayList<VariableGui>();
 //	ArrayList<FileGui> fileGui = new ArrayList<FileGui>();
 
-	public SILogGui(Composite parent, Step step)
+	public SIDebugGui(Composite parent, Step step)
 	{
 		this.parent = parent;
 		this.step = step;

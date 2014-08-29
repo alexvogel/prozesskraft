@@ -100,24 +100,6 @@ public class SIInsightCreator
 //		tabFolder.setTabHeight(30);
 //		tabFolder.addSelectionListener(listener_tabFolder_selection);
 
-		// ein tabItem fuer das log erzeugen
-		CTabItem tabItem_log = new CTabItem(tabFolder, SWT.NONE);
-		tabItem_log.setText("log");					
-		tabItem_log.setToolTipText("the logging of step "+step.getName());
-		
-		// erstellen eines composites fuer 'log'
-		Composite composite_tabItem_log = new Composite(tabFolder, SWT.NONE);
-		composite_tabItem_log.setLayout(new GridLayout(1, false));
-		GridData gd_composite_log = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		gd_composite_log.heightHint = 390;
-		gd_composite_log.minimumWidth = 10;
-		gd_composite_log.minimumHeight = 10;
-		composite_tabItem_log.setLayoutData(gd_composite_log);
-
-		// befuellen des composites fuer 'log'
-		tabItem_log.setControl(composite_tabItem_log);
-		new SILogGui(composite_tabItem_log, step);
-
 		// ein tabItem fuer 'lists' erzeugen
 		CTabItem tabItem_lists = new CTabItem(tabFolder, SWT.NONE);
 		tabItem_lists.setText("lists");
@@ -190,9 +172,24 @@ public class SIInsightCreator
 		buttonAdd.setText("add");
 		buttonAdd.addSelectionListener(listener_button_add_variable);
 
+		// ein tabItem fuer das debug erzeugen
+		CTabItem tabItem_debug = new CTabItem(tabFolder, SWT.NONE);
+		tabItem_debug.setText("debug");					
+		tabItem_debug.setToolTipText("the logging in step "+step.getName());
 		
-			
-			
+		// erstellen eines composites fuer 'debug'
+		Composite composite_tabItem_debug = new Composite(tabFolder, SWT.NONE);
+		composite_tabItem_debug.setLayout(new GridLayout(1, false));
+		GridData gd_composite_debug = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gd_composite_debug.heightHint = 390;
+		gd_composite_debug.minimumWidth = 10;
+		gd_composite_debug.minimumHeight = 10;
+		composite_tabItem_debug.setLayoutData(gd_composite_debug);
+
+		// befuellen des composites fuer 'debug'
+		tabItem_debug.setControl(composite_tabItem_debug);
+		new SIDebugGui(composite_tabItem_debug, step);
+
 		tabFolder.setSelection(0);
 
 		return parent;
