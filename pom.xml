@@ -141,7 +141,7 @@
 		<dependency>
 			<groupId>de.caegroup.pmodel</groupId>
 			<artifactId>pmodel-gui</artifactId>
-			<version>0.5.0</version>
+			<version>0.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>de.caegroup.commons</groupId>
