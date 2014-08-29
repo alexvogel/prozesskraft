@@ -146,7 +146,8 @@ public class SIDebugGui
 					return l.getTimestamp();
 					
 				case 1:
-					return l.getLabel().replace("step-.+$", "step");
+					return l.getLabel();
+//					return l.getLabel().replace("step-.+$", "step");
 					
 				case 2:
 					return l.getLevel();
