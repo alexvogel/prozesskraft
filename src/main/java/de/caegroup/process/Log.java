@@ -109,6 +109,14 @@ implements Serializable, Comparable
 	}
 
 	/**
+	 * @return the objecttype
+	 */
+	public String getObject()
+	{
+		return this.object;
+	}
+
+	/**
 	 * @return the parentType
 	 */
 	public String getParentType()
