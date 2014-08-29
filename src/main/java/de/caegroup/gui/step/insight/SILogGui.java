@@ -61,6 +61,10 @@ public class SILogGui
 		colTime.setText("time");
 		colTime.setWidth(150);
 		
+		TableColumn colObject = new TableColumn(table, SWT.LEFT);
+		colObject.setText("object");
+		colObject.setWidth(80);
+
 		TableColumn colLevel = new TableColumn(table, SWT.LEFT);
 		colLevel.setText("level");
 		colLevel.setWidth(80);
@@ -139,12 +143,15 @@ public class SILogGui
 			switch(columnIndex)
 			{
 				case 0:
-					return (new Timestamp(l.getTime())).toString();
+					return l.getTimestamp();
 					
 				case 1:
-					return l.getLevel();
+					return l.getObject();
 					
 				case 2:
+					return l.getLevel();
+					
+				case 3:
 					return l.getMsg();
 			}
 			// should never get here
