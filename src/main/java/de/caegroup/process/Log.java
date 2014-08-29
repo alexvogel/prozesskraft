@@ -13,7 +13,8 @@ implements Serializable, Comparable
 
 	static final long serialVersionUID = 1;
 
-	private String object = "unknown";
+	private String label = "";
+	
 	private long time = System.currentTimeMillis();
 	private String level = "default";
 	private String msg = "";
@@ -21,20 +22,20 @@ implements Serializable, Comparable
 	/*----------------------------
 	  constructors
 	----------------------------*/
-	public Log(String object)
+	public Log(String label)
 	{
-		this.object = object;
+		this.label = label;
 	}
 
-	public Log(String object, String msg)
+	public Log(String label, String msg)
 	{
-		this.object = object;
+		this.label = label;
 		this.msg = msg;
 	}
 
-	public Log(String object, String level, String msg)
+	public Log(String label, String level, String msg)
 	{
-		this.object = object;
+		this.label = label;
 		this.level = level;
 		this.msg = msg;
 	}
@@ -109,19 +110,11 @@ implements Serializable, Comparable
 	}
 
 	/**
-	 * @return the objecttype
+	 * @return the label of parent
 	 */
-	public String getObject()
+	public String getLabel()
 	{
-		return this.object;
-	}
-
-	/**
-	 * @return the parentType
-	 */
-	public String getParentType()
-	{
-		return this.object;
+		return this.label;
 	}
 
 	public int compareTo(Object logToCompare)
