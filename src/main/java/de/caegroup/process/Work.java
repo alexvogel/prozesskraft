@@ -318,7 +318,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log(this, loglevel, logmessage));
+		this.log.add(new Log("work-"+this.getName(), loglevel, logmessage));
 	}
 	
 

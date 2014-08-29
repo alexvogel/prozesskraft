@@ -149,14 +149,15 @@ implements Serializable
 		{
 			logRecursive.addAll(actVariable.getLog());
 		}
-// alle logs aller Files hinzufuegen
-		for(File actFile : this.file)
-		{
-			logRecursive.addAll(actFile.getLog());
-		}
+//// alle logs aller Files hinzufuegen
+//		for(File actFile : this.file)
+//		{
+//			System.err.println("actual Step: "+this.getParent().getName()+" | actual Commit: "+this.getName()+" | actual File is: "+actFile.getKey()+" | size of File-log: "+actFile.getLog().size());
+//			logRecursive.addAll(actFile.getLog());
+//		}
 
 		// sortieren nach Datum
-		Collections.sort(logRecursive);
+//		Collections.sort(logRecursive);
 
 		return logRecursive;
 	}
@@ -223,7 +224,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log(this, loglevel, logmessage));
+		this.log.add(new Log("commit-"+this.getName(), loglevel, logmessage));
 	}
 
 }

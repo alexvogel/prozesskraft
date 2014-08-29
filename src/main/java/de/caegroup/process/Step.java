@@ -1504,7 +1504,7 @@ implements Serializable, Cloneable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log(this, loglevel, logmessage));
+		this.log.add(new Log("step-"+this.getName(), loglevel, logmessage));
 	}
 
 	/*----------------------------
@@ -1902,7 +1902,7 @@ implements Serializable, Cloneable
 		// die logs aller Callitems in die Sammlung uebernehmen
 		for(Commit actCommit : this.getCommit())
 		{
-			logRecursive.addAll(actCommit.getLogRecursive());
+//			logRecursive.addAll(actCommit.getLogRecursive());
 		}
 
 		// sortierte KeyListe erstellen

@@ -32,7 +32,7 @@ implements Serializable, Cloneable
 	----------------------------*/
 	public File()
 	{
-
+		log("info", "object created");
 	}
 
 
@@ -169,7 +169,7 @@ implements Serializable, Cloneable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log(this, loglevel, logmessage));
+		this.log.add(new Log("file-"+this.getKey(), loglevel, logmessage));
 	}
 
 /*----------------------------

@@ -2,7 +2,6 @@ package de.caegroup.process;
 
 import java.io.*;
 import java.sql.Timestamp;
-import java.util.Date;
 
 public class Log
 implements Serializable, Comparable
@@ -14,28 +13,28 @@ implements Serializable, Comparable
 
 	static final long serialVersionUID = 1;
 
-	private Object parent = null;
-	private Date date = new Date();
+	private String object = "unknown";
+	private long time = System.currentTimeMillis();
 	private String level = "default";
 	private String msg = "";
 
 	/*----------------------------
 	  constructors
 	----------------------------*/
-	public Log(Object parent)
+	public Log(String object)
 	{
-		this.parent = parent;
+		this.object = object;
 	}
 
-	public Log(Object parent, String msg)
+	public Log(String object, String msg)
 	{
-		this.parent = parent;
+		this.object = object;
 		this.msg = msg;
 	}
 
-	public Log(Object parent, String level, String msg)
+	public Log(String object, String level, String msg)
 	{
-		this.parent = parent;
+		this.object = object;
 		this.level = level;
 		this.msg = msg;
 	}
@@ -45,7 +44,7 @@ implements Serializable, Comparable
 
 	public void print()
 	{
-		System.out.println("["+this.date.toString()+"]:"+this.getLevel()+":"+this.getMsg());
+		System.out.println("["+this.getTimestamp()+"]:"+this.getLevel()+":"+this.getMsg());
 	}
 
 	/*----------------------------
@@ -57,7 +56,7 @@ implements Serializable, Comparable
 	 */
 	public long getTime()
 	{
-		return this.date.getTime();
+		return this.time;
 	}
 
 	/**
@@ -65,7 +64,8 @@ implements Serializable, Comparable
 	 */
 	public String getTimestamp()
 	{
-		return this.date.toString();
+//		return "unbekannt";
+		return (new Timestamp(this.time)).toString();
 	}
 
 	/**
@@ -73,23 +73,7 @@ implements Serializable, Comparable
 	 */
 	public void setTime(long time)
 	{
-		this.date.setTime(time);
-	}
-
-	/**
-	 * @return the date
-	 */
-	public Date getDate()
-	{
-		return this.date;
-	}
-
-	/**
-	 * @param set the date
-	 */
-	public void setDate(Date date)
-	{
-		this.date = date;
+		this.time = time;
 	}
 
 	/**
@@ -129,12 +113,12 @@ implements Serializable, Comparable
 	 */
 	public String getParentType()
 	{
-		return "" + this.parent.getClass();
+		return this.object;
 	}
 
 	public int compareTo(Object logToCompare)
 	{
-		return (this.getDate().compareTo(((Log)logToCompare).getDate()));
+		return (int)(this.time - ((Log)logToCompare).getTime());
 	}
 
 }
