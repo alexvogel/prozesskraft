@@ -87,11 +87,11 @@ public class SIInsightCreator
 //		actualComposite.setLayout(gl_actualComposite);
 
 		Label label = new Label(composite, SWT.NONE);
-		label.setText("stepname: "+step.getName());
-		
+		label.setText("step: "+step.getName());
+
 		Label label2 = new Label(composite, SWT.NONE);
 		label2.setText("status: "+step.getStatus());
-
+		
 		// tabFolder erzeugen
 		tabFolder = new CTabFolder(composite, SWT.BORDER);
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
