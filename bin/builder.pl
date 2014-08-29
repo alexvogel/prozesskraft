@@ -57,7 +57,7 @@ $v =~ s/\.//g;
 
 my $error;
 
-my $stack = "/home/".$ENV{'USER'}."/.".$procname."/".$procname.".stack";
+my $stack = $ENV{'HOME'}."/.".$procname."/".$procname.".stack";
 my $conf = $etc . "/$procname.conf";
 
 #my $commondriver = "/home/".$ENV{'USER'}."/.".$procname."/".$procname.".commondriver";
