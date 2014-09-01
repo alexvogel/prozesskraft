@@ -83,6 +83,7 @@ implements Serializable
 	private ArrayList<Step> step = new ArrayList<Step>();
 //	private ArrayList<Init> inits = new ArrayList<Init>();
 	
+	private boolean run = false;
 	private String status = new String();	// waiting/working/finished/broken/paused
 	private String rootdir = "";
 	private double managerid = -1;
@@ -1323,6 +1324,41 @@ implements Serializable
 		}
 	}
 	
+	/**
+	 * schiebe den process einen bearbeitungsschritt weiter
+	 * gehe alle steps durch und versuche zu initialisieren, arbeiten, committen
+	 * @return
+	 */
+	public void doIt(String aufrufProcessSyscall)
+	{
+		while(this.run)
+		{
+			if(this.getStatus().equals("error") || this.getStatus().equals("finished"))
+			{
+				this.run = false;
+			}
+			
+			for(Step actStep : this.getStep())
+			{
+				// alle steps, die nicht aus gutem grund beendet sind, sollen angeschoben werden
+				if(!(actStep.getStatus().equals("finished"))  ||  !(actStep.getStatus().equals("cancelled")) ||  !(actStep.getStatus().equals("error")))
+				{
+					actStep.doIt(aufrufProcessSyscall);
+				}
+			}
+		}
+
+		// 1 Minute schlafen
+		try {
+			Thread.sleep(60000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
 	public int getMaxLevel()
 	{
 		int maxLevel = 0;
@@ -1655,7 +1691,40 @@ implements Serializable
 
 	public String getStatus()
 	{
-		return this.status;
+		String status = "unknown";
+		
+		ArrayList<String> statusAllSteps = new ArrayList<String>();
+
+		for(Step actStep : this.getStep())
+		{
+			statusAllSteps.add(actStep.getStatus());
+		}
+
+		// ist der status 'error' vorhanden? prozess=error
+		if(statusAllSteps.contains("error"))
+		{
+			return "error";
+		}
+		
+		// wenn schluessel waiting/initializing/working/committing nicht vorhanden sind, und nur finished vorhanden ist, dann ist prozess finished
+		else if(  statusAllSteps.contains("initializing") || statusAllSteps.contains("working") || statusAllSteps.contains("committing")   )
+		{
+			return "rolling";
+		}
+
+		// wenn schluessel waiting vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist prozess waiting
+		else if(  statusAllSteps.contains("waiting") )
+		{
+			return "waiting";
+		}
+		
+		// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist prozess finished
+		else if(  statusAllSteps.contains("finished") )
+		{
+			return "finished";
+		}
+		
+		return status;
 	}
 
 	/**

@@ -3,6 +3,7 @@ package de.caegroup.process;
 import java.io.*;
 import java.util.*;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.common.util.NamedList;
 
 import de.caegroup.process.Callitem;
@@ -26,7 +27,7 @@ implements Serializable
 
 	private ArrayList<Log> log = new ArrayList<Log>();
 
-	private String status = new String();	// waiting/initializing/working/committing/ finished/broken/cancelled
+	private String status = new String();	// waiting/working/worked/finished/error/cancelled
 	private int exitvalue;
 	public Step parent;
 	/*----------------------------
@@ -321,5 +322,157 @@ implements Serializable
 		this.log.add(new Log("work-"+this.getName(), loglevel, logmessage));
 	}
 	
+	/**
+	 * does the work!
+	 * 1) executes the call 
+	 * 2) if the call already has been executed, then check whether it is still running
+	 * 3) if it is not running anymore, the 
+	 * 
+	 * @param String loglevel, String logmessage
+	 */
+	public void doIt(String processSyscall)
+	{
 
+		// wenn schritt schon gestartet wurde
+		if (this.isPidfileexistent())
+		{
+			String pid = this.getPid();	// aus der absdir des steps soll aus der Datei '.pid' die pid ermittelt werden. wenn noch keine existiert, wurde der schritt noch nicht gestartet
+			log("info", "call already executed pid="+pid);
+//			System.out.println("PROCESS-STEP BEREITS GESTARTET: "+pid);
+
+			if (isPidalive(pid))
+			{
+				log("info", "program still running. pid="+pid);
+//				System.out.println("PROCESS-STEP LAEUFT NOCH: "+pid);
+			}
+			else
+			{
+				log("info", "program already finished. pid="+pid);
+				log("info", "setting status to 'finished'");
+				this.setStatus("finished");
+			}
+		}
+
+		// wenn schritt noch nicht gestartet wurde
+		else 
+		{
+			// den aufruf erstellen
+			log("info", "program not lauched yet");
+
+			String call = this.getCall();
+			log("info", "generating call: "+call);
+
+			// step-directory anlegen, falls es noch nicht existiert
+			// falls es ein wrapper-process ist, gibt es das directory warsch. schon
+			if(!(new java.io.File(this.getParent().getAbsdir()).exists()))
+			{
+				log("info", "creating step directory "+this.getParent().getAbsdir());
+				this.getParent().mkdir(this.getParent().getAbsdir());
+			}
+
+			// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)
+			String AbsLogSyscallWrapper = new java.io.File(new java.io.File(this.getParent().getAbspid()).getParent()).getAbsolutePath()+"/log";
+
+			try
+			{
+				String[] args_for_syscall = {processSyscall, "-call \""+call+"\"", "-stdout "+this.getParent().getAbsstdout(), "-stderr "+this.getParent().getAbsstderr(), "-pid "+this.getParent().getAbspid(), "-log "+AbsLogSyscallWrapper};
+
+//				// erstellen prozessbuilder
+//				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
+//
+//				// erweitern des PATHs um den prozesseigenen path
+//				Map<String,String> env = pb.environment();
+//				String path = env.get("PATH");
+//				log("info", "adding to path: "+this.parent.getAbsPath());
+//				path = this.parent.getAbsPath()+":"+path;
+//				env.put("PATH", path);
+//				log("info", "path: "+path);
+//				
+//				// setzen der aktuellen directory
+//				java.io.File directory = new java.io.File(this.getAbsdir());
+//				pb.directory(directory);
+//				
+//				// starten des prozesses
+//				java.lang.Process sysproc = pb.start();
+
+				log ("info", "calling: " + StringUtils.join(args_for_syscall, " "));
+
+//				alternativer aufruf
+				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
+
+				// wait 2 seconds for becoming the pid-file visible
+				Thread.sleep(2000);
+				
+				log("info", "call executed. pid="+sysproc.hashCode());
+			}			
+			catch (Exception e2)
+			{
+				log("error", "something went wrong. an exception...");
+				log("info", "setting status to 'error'");
+			}
+		}
+	}
+	
+	
+	public boolean isPidfileexistent()
+	{
+		java.io.File pidfile = new java.io.File(this.getParent().getAbspid());
+		if (pidfile.canRead())
+		{
+			System.out.println("PIDFILE GEFUNDEN: "+pidfile.getAbsolutePath());
+			return true;
+		}
+		else
+		{
+			System.out.println("PIDFILE NICHT GEFUNDEN: "+pidfile.getAbsolutePath());
+			return false;
+		}
+	}
+	
+	public static boolean isPidalive(String pid)
+	{
+		try
+		{
+			java.lang.Process ps = Runtime.getRuntime().exec("ps "+pid);
+			InputStream is_stdout = ps.getInputStream();
+			InputStreamReader isr_stdout = new InputStreamReader(is_stdout);
+			BufferedReader br_stdout = new BufferedReader(isr_stdout);
+//			String line1 = br_stdout.readLine();	// die ueberschriftenzeile lesen
+			br_stdout.readLine();	// die ueberschriftenzeile lesen
+			String line2 = br_stdout.readLine();	// die zeile mit den processinfos lesen, falls vorhanden
+			if (line2 != null)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch (Exception e)
+		{
+//			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public String getPid()
+	{
+		String abspidpath = this.getParent().getAbspid();
+		String pid = new String();
+		try
+		{
+			log("debug", "pid ermitteln aus file: "+abspidpath);
+			FileReader fr = new FileReader(abspidpath);
+			BufferedReader br = new BufferedReader(fr);
+			pid = br.readLine();
+			br.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return "no";
+		}
+		return pid;
+	}
 }

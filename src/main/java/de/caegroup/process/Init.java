@@ -263,6 +263,125 @@ implements Serializable
 		this.log.add(new Log("init-"+this.getListname(), loglevel, logmessage));
 	}
 	
+	/**
+	 * initialisierung durchfuehren
+	 */
+	public void doIt()
+	{
+		// die Steps einsammeln, die im attribut 'fromstep' definiert sind
+		// wenn es ein multistep ist, koennen hier auch mehr als 1 zurueckgeliefert werden
+		// wenn kann multistep, so ist nur 1 fromstep in der liste
+		ArrayList<Step> fromsteps = this.getParent().getParent().getSteps(this.getFromstep());
+
+		// ueber alle fromsteps iterieren und die gefordterte liste (mit dem namen des inits) erstellen (nur EINE insgesamt, nicht eine PRO fromstep)
+		for (Step actualFromstep : fromsteps)
+		{
+			log("debug", "looking for field '"+this.getReturnfield()+"' from a "+this.getFromobjecttype()+" of step '"+actualFromstep.getName()+"'");
+
+			// wenn es ein file ist
+			if (this.getFromobjecttype().equals("file"))
+			{
+				ArrayList<File> files_from_fromstep = actualFromstep.getFile();
+				ArrayList<File> files_from_fromstep_which_matched = new ArrayList<File>();
+				// wenn match-angaben vorhanden sind, wird die fileliste reduziert
+				
+				for(Match actualMatch : this.getMatch())
+				{
+					log("debug", "accepting only "+this.getFromobjecttype()+"(s) which match '"+actualMatch.getPattern()+"' and field '"+actualMatch.getField()+"'");
+					// iteriere ueber alle Files der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
+					for(File actualFile : files_from_fromstep)
+					{
+						if (actualFile.match(actualMatch))
+						{
+							files_from_fromstep_which_matched.add(actualFile);
+						}
+					}
+				}
+
+				// feststellen ob die gewuenschte anzahl gematched hat
+				if( (files_from_fromstep_which_matched.size() < this.getMinoccur()) || (files_from_fromstep_which_matched.size() > this.getMaxoccur()) )
+				{
+					log("debug", "found "+files_from_fromstep_which_matched.size()+" items to add to the list, but minoccur="+this.getMinoccur()+", maxoccur="+this.getMaxoccur());
+					setStatus("error");
+					return;
+				}
+
+				// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
+				// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
+				List list;
+				if (this.getParent().getList(this.getListname()) != null)
+				{
+					list = this.getParent().getList(this.getListname());
+				}
+				// ansonsten eine anlegen und this hinzufuegen
+				else
+				{
+					list = new List();
+					list.setName(this.getListname());
+					this.getParent().addList(list);
+				}
+				for (File actualFile : files_from_fromstep_which_matched)
+				{
+					list.addItem(actualFile.getField(this.getReturnfield()));
+				}
+				log("debug", "new list '"+list.getName()+"' with "+list.getItem().size()+" item(s).");
+			}
+			
+			// wenn es ein variable ist
+			else if (this.getFromobjecttype().equals("variable"))
+			{
+				ArrayList<Variable> variables_from_fromstep = actualFromstep.getVariable();
+				ArrayList<Variable> variables_from_fromstep_which_matched = new ArrayList<Variable>();
+
+				for (Match actualMatch : this.getMatch())
+				{
+					log("debug", "accepting only "+this.getFromobjecttype()+"(s) which match '"+actualMatch.getPattern()+"' and field '"+actualMatch.getField()+"'");
+					// iteriere ueber alle Variablen der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
+					for (Variable actualVariable : variables_from_fromstep)
+					{
+						if (actualVariable.match(actualMatch))
+						{
+							variables_from_fromstep_which_matched.add(actualVariable);
+						}
+					}
+				}
+
+				// feststellen ob die gewuenschte anzahl der variablen gematched hat
+				if( (variables_from_fromstep_which_matched.size() < this.getMinoccur()) || (variables_from_fromstep_which_matched.size() > this.getMaxoccur()) )
+				{
+					log("debug", "found "+variables_from_fromstep_which_matched.size()+" items to add to the list, but minoccur="+this.getMinoccur()+", maxoccur="+this.getMaxoccur());
+					this.setStatus("error");
+					return;
+				}
+
+				// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
+				// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
+				List list;
+				if (this.getParent().getList(this.getListname()) != null)
+				{
+					list = this.getParent().getList(this.getListname());
+				}
+				// ansonsten eine anlegen und this hinzufuegen
+				else
+				{
+					list = new List();
+					list.setName(this.getListname());
+					this.getParent().addList(list);
+				}
+
+				// hinzufuegen der listitems
+				for(Variable actualVariable : variables_from_fromstep_which_matched)
+				{
+					list.addItem(actualVariable.getField(this.getReturnfield()));
+				}
+				
+				log("debug", "new list '"+list.getName()+"' with "+list.getItem().size()+" item(s).");
+			}
+		}
+		this.setStatus("finished");
+	}
+	
+					
 	/*----------------------------
 	  methods consistent
 	----------------------------*/

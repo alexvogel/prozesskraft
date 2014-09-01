@@ -25,6 +25,8 @@ implements Serializable, Cloneable
 	private String type = "automatic";
 	private String description = new String();
 	private ArrayList<List> list = new ArrayList<List>();
+	private ArrayList<List> defaultlist = new ArrayList<List>();
+
 	private ArrayList<Init> init = new ArrayList<Init>();
 	private Work work = null;
 	private ArrayList<Commit> commit = new ArrayList<Commit>();
@@ -39,7 +41,7 @@ implements Serializable, Cloneable
 //	private String absstderr = new String();
 	private ArrayList<File> file = new ArrayList<File>();
 	private ArrayList<Variable> variable = new ArrayList<Variable>();
-	private String status = "waiting";	// waiting/initializing/working/committing/ finished/broken/cancelled
+	private String status = "waiting";	// waiting/initializing/working/committing/ finished/error/cancelled
 	
 	private ArrayList<Log> log = new ArrayList<Log>();
 	private String rank = "";
@@ -678,672 +680,186 @@ implements Serializable, Cloneable
 		return allfinished;
 	}
 	
-	public boolean initialize()
+	/**
+	 * tue was auch immer als naechstes getan werden muss
+	 */
+	public void doIt(String aufrufProcessSyscall)
 	{
-		// wenn nicht alle fromsteps den status 'finished' haben, wird nichts initialisiert
-		if (!(this.areFromstepsfinished()))
+		if(this.getStatus().equals("finished"))
 		{
-			return false;
+			return;
 		}
-		
-		this.getList().clear();
+
+		else if(this.getStatus().equals("waiting") || this.getStatus().equals("fanned"))
+		{
+			// wenn nicht alle fromsteps den status 'finished' haben, wird nichts initialisiert
+			if (!(this.areFromstepsfinished()))
+			{
+				log("debug", "predecessor step(s) not finished. initialization postponed.");
+				return;
+			}
+			
+			// wenn alle fromsteps den status 'finished' haben wird evtl. zuerst 'gefanned'
+			if (this.loop!=null && !(this.loop.equals("")))
+			{
+				try {
+					this.fan();
+				} catch (CloneNotSupportedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return;
+			}
+
+			// initialisieren
+			this.initialize();
+			return;
+		}
+
+		else if(this.getStatus().equals("initialized"))
+		{
+			this.work(aufrufProcessSyscall);
+			return;
+		}
+
+		else if(this.getStatus().equals("working"))
+		{
+			this.work(aufrufProcessSyscall);
+			return;
+		}
+
+		else if(this.getStatus().equals("worked"))
+		{
+			this.commit();
+			return;
+		}
+
+		else if(this.getStatus().equals("committed"))
+		{
+			this.setStatus("finished");
+			return;
+		}
+	}
+
+	public void initialize()
+	{
 		this.setStatus("initializing");
-		log("info", "setting status to 'initializing'");
-		boolean initializing_success = true;
+
+		this.getList().clear();
+		this.setList(this.getDefaultlist());
+
 		// ueber alle inits iterieren
+		ArrayList<String> allInitStatus = new ArrayList<String>();
 		for( Init actualInit : this.getInits())
 		{
-			// die init-angaben in lokale variablen uebernehmen
-//			String fromobjecttype = actualInit.getFromobjecttype();
-//			String name = actualInit.getName();
-//			String returnfield = actualInit.getReturnfield();
-			ArrayList<Step> fromsteps = parent.getSteps(actualInit.getFromstep());
-			
-			// ueber alle fromsteps gehen und die gefordterte liste erstellen (nur EINE insgesamt, nicht eine PRO fromstep)
-			for (Step actualFromstep : fromsteps)
-			{
-				log("debug", "init '"+actualInit.getListname()+"': looking for field '"+actualInit.getReturnfield()+"' from a "+actualInit.getFromobjecttype()+" of step '"+actualFromstep.getName()+"'");
-	
-				ArrayList<Match> matchs = actualInit.getMatch();
-			
-				// wenn es ein file ist
-				if (actualInit.getFromobjecttype().equals("file"))
-				{
-					ArrayList<File> files_from_fromstep = actualFromstep.getFile();
-					ArrayList<File> files_from_fromstep_which_matched = new ArrayList<File>();
-					// wenn match-angaben vorhanden sind, wird die fileliste reduziert
-					
-					for(Match actualMatch : matchs)
-					{
-						log("debug", "init '"+name+"': accepting only "+actualInit.getFromobjecttype()+"(s) which match '"+actualMatch.getPattern()+"' and field '"+actualMatch.getField()+"'");
-						// iteriere ueber alle Files der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
-						for(File actualFile : files_from_fromstep)
-						{
-							if (actualFile.match(actualMatch))
-							{
-								files_from_fromstep_which_matched.add(actualFile);
-							}
-						}
-					}
-
-					// feststellen ob die gewuenschte anzahl der variablen gematched hat
-					if( (files_from_fromstep_which_matched.size() < actualInit.getMinoccur()) || (files_from_fromstep_which_matched.size() > actualInit.getMaxoccur()) )
-					{
-						log("debug", "init '"+name+"': found "+files_from_fromstep_which_matched.size()+" items to add to the list, but minoccur="+actualInit.getMinoccur()+", maxoccur="+actualInit.getMaxoccur());
-						initializing_success = false;
-					}
-
-					// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
-					// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
-					List list;
-					if (this.getList(actualInit.getListname()) != null)
-					{
-						list = this.getList(actualInit.getListname());
-					}
-					// ansonsten eine anlegen und this hinzufuegen
-					else
-					{
-						list = new List();
-						list.setName(actualInit.getListname());
-						this.addList(list);
-					}
-					for (File actualFile : files_from_fromstep_which_matched)
-					{
-						list.addItem(actualFile.getField(actualInit.getReturnfield()));
-					}
-					log("debug", "init '"+name+"': new list '"+list.getName()+"' with "+list.getItem().size()+" item(s).");
-				}
-				
-				// wenn es ein variable ist
-				else if (actualInit.getFromobjecttype().equals("variable"))
-				{
-					ArrayList<Variable> variables_from_fromstep = actualFromstep.getVariable();
-					ArrayList<Variable> variables_from_fromstep_which_matched = new ArrayList<Variable>();
-	
-					for (Match actualMatch : matchs)
-					{
-						log("debug", "init '"+name+"': accepting only "+actualInit.getFromobjecttype()+"(s) which match '"+actualMatch.getPattern()+"' and field '"+actualMatch.getField()+"'");
-						// iteriere ueber alle Variablen der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
-						for (Variable actualVariable : variables_from_fromstep)
-						{
-							if (actualVariable.match(actualMatch))
-							{
-								variables_from_fromstep_which_matched.add(actualVariable);
-							}
-						}
-					}
-
-					// feststellen ob die gewuenschte anzahl der variablen gematched hat
-					if( (variables_from_fromstep_which_matched.size() < actualInit.getMinoccur()) || (variables_from_fromstep_which_matched.size() > actualInit.getMaxoccur()) )
-					{
-						log("debug", "init '"+name+"': found "+variables_from_fromstep_which_matched.size()+" items to add to the list, but minoccur="+actualInit.getMinoccur()+", maxoccur="+actualInit.getMaxoccur());
-						initializing_success = false;
-					}
-
-					// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
-					// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
-					List list;
-					if (this.getList(actualInit.getListname()) != null)
-					{
-						list = this.getList(actualInit.getListname());
-					}
-					// ansonsten eine anlegen und this hinzufuegen
-					else
-					{
-						list = new List();
-						list.setName(actualInit.getListname());
-						this.addList(list);
-					}
-	
-					// hinzufuegen der listitems
-					for(Variable actualVariable : variables_from_fromstep_which_matched)
-					{
-						list.addItem(actualVariable.getField(actualInit.getReturnfield()));
-					}
-					
-					log("debug", "init '"+name+"': new list '"+list.getName()+"' with "+list.getItem().size()+" item(s).");
-				}
-			}
+			actualInit.doIt();
+			allInitStatus.add(actualInit.getStatus());
 		}
 		
-		// wenn alle initialisierung funktioniert habenn den status aendern
-		if (initializing_success)
+		// status feststellen
+		if(allInitStatus.contains("error"))
+		{
+			this.setStatus("error");
+		}
+		else
 		{
 			this.setStatus("initialized");
-			log("info", "setting status to 'initialized'");
-						
-			return true;
-		}
-		else
-		{
-			this.setStatus("initialization failed");
-			log("debug", "initialization failed.");
-			return false;
 		}
 	}
-	
-	public boolean fan() throws CloneNotSupportedException
+
+	public void fan() throws CloneNotSupportedException
 	{
 		this.setStatus("fanning");
-		log("info", "setting status to 'fanning'");
-		
-		if (this.loop!=null && !(this.loop.equals("")))
+
+		// wenn die loopliste mindestens 1 wert enthaelt, ueber dioe liste iterieren und fuer jeden wert den aktuellen step clonen
+		if (this.getListItems(this.loop).size() > 0)
 		{
-			// wenn die loopliste mindestens 1 wert enthaelt, ueber dioe liste iterieren und fuer jeden wert den aktuellen step clonen
-			if (this.getListItems(this.loop).size() > 0)
+			// cloner erstellen fuer einen deep-copy
+			Cloner cloner = new Cloner();
+			int x = 1;
+			for(String loopVariable : this.getListItems(this.loop))
 			{
-				// cloner erstellen fuer einen deep-copy
-				Cloner cloner = new Cloner();
-				int x = 1;
-				for(String loopVariable : this.getListItems(this.loop))
-				{
-					// einen neuen step erzeugen (klon von this)
-					Step newstep = cloner.deepClone(this);
-					newstep.setLoopvar(loopVariable);
-					newstep.setLoop(null);
-					newstep.setName(newstep.getName()+"@"+x);
-					newstep.setStatus("fanned");
-					newstep.log("info", "this step '"+newstep.getName()+"' was fanned out from step '"+this.getName()+"'");
-					newstep.log("info", "setting status to 'fanned'");
+				// einen neuen step erzeugen (klon von this)
+				Step newstep = cloner.deepClone(this);
+				newstep.setLoopvar(loopVariable);
+				newstep.setLoop(null);
+				newstep.setName(newstep.getName()+"@"+x);
+				newstep.log("info", "this step '"+newstep.getName()+"' was fanned out from step '"+this.getName()+"'");
+				newstep.setStatus("fanned");
 
-					// eine liste mit dem namen 'loop' anlegen und darin die loopvar speichern
-					List listLoop = new List();
-					listLoop.setName("loopvar");
-					listLoop.addItem(loopVariable);
-					newstep.addList(listLoop);
+				// eine liste mit dem namen 'loop' anlegen und darin die loopvar speichern
+				List listLoop = new List();
+				listLoop.setName("loopvar");
+				listLoop.addItem(loopVariable);
+				newstep.addList(listLoop);
 
-					// den neuen step (klon von this) dem prozess hinzufuegen
-					this.parent.addStep(newstep);
-					x++;
-				}
-				
-				// den urspruenglichen step (this) aus dem prozess entfernen
-				this.parent.removeStep(this);
-				return true;
+				// den neuen step (klon von this) dem prozess hinzufuegen
+				this.parent.addStep(newstep);
+				x++;
 			}
+			
+			// den urspruenglichen step (this) aus dem prozess entfernen
+			this.parent.removeStep(this);
 		}
-		
-		// falls kein loop, soll der status trotzdem gesetzt werden
-		this.setStatus("fanned");
-		log("info", "setting status to 'fanned'");
-		return true;
+
 //		System.out.println("anzahl der Steps im Prozess nach dem fanning: "+this.parent.getSteps().size());
 	}
-
-	public boolean work(String processSyscall)
-	{
-		boolean success = true;
-		this.setStatus("working");
-		log("info", "setting status to 'working'");
-
-//			String call = work.generateCall(this.getListall());
-		String call = this.getWork().getCall();
-
-		// holen der zugehoerigen Systemprozess-ID - feststellen ob fuer diesen work schon ein aufruf getaetigt wurde
-		log("info", "generated call for the work-phase (name='"+ this.getWork().getName() +"') is: "+call);
-		
-		// wenn schritt schon gestartet wurde
-		if (this.isPidfileexistent())
-		{
-			String pid = this.getPid();	// aus der absdir des 'work' soll aus der Datei '.pid' die pid ermittelt werden. wenn noch keine existiert, wurde der schritt noch nicht gestartet
-			log("info", "process work (script,program,..) already launched. pid="+pid);
-//			System.out.println("PROCESS-STEP BEREITS GESTARTET: "+pid);
-			
-			if (Step.isPidalive(pid))
-			{
-				log("info", "process work (script,program,..) still running. pid="+pid);
-				success = false;
-//				System.out.println("PROCESS-STEP LAEUFT NOCH: "+pid);
-			}
-			else if (this.getParent().isWrapper())
-			{
-				log("info", "process work (script,program,..) already finished. pid="+pid);
-				this.setStatus("finished");
-				log("info", "setting status to 'finished' (no commit, because this is a wrapper-process)");
-				success = true;
-			}
-			else
-			{
-				log("info", "process work (script,program,..) already finished. pid="+pid);
-//				System.out.println("PROCESS-STEP LAEUFT NICHT MEHR: "+pid);
-				this.setStatus("worked");
-				log("info", "setting status to 'worked'");
-				success = true;
-			}
-		}
-		// wenn schritt noch nicht gestartet wurde
-		else 
-		{
-//			System.out.println("STEP IST NOCH NICHT GESTARTET");
-			log("info", "process work (script,program,..) not lauched yet");
-			log("info", "creating directory "+this.getAbsdir());
-			
-			// step-directory anlegen, falls es noch nicht existiert
-			// falls es ein wrapper-process ist, gibt es das directory warsch. schon
-			if(!(new java.io.File(this.getAbsdir()).exists()))
-			{
-				this.mkdir(this.getAbsdir());
-			}
-			
-			try
-			{
-				String[] args_for_syscall = {processSyscall, call, this.getAbsstdout(), this.getAbsstderr(), this.getAbspid()};
-
-//				// erstellen prozessbuilder
-//				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
-//
-//				// erweitern des PATHs um den prozesseigenen path
-//				Map<String,String> env = pb.environment();
-//				String path = env.get("PATH");
-//				log("info", "adding to path: "+this.parent.getAbsPath());
-//				path = this.parent.getAbsPath()+":"+path;
-//				env.put("PATH", path);
-//				log("info", "path: "+path);
-//				
-//				// setzen der aktuellen directory
-//				java.io.File directory = new java.io.File(this.getAbsdir());
-//				pb.directory(directory);
-//				
-//				// starten des prozesses
-//				java.lang.Process sysproc = pb.start();
-
-				log ("info", "calling: " + StringUtils.join(args_for_syscall, " "));
-
-//				alternativer aufruf
-				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
-
-				// wait 2 seconds for becoming the pid-file visible
-				Thread.sleep(2000);
-				
-				log("info", "process work (script,program,..) launched. pid="+sysproc.hashCode());
-				success = true;
-			}			
-			catch (Exception e2)
-			{
-//				e2.printStackTrace();
-				
-				log("error", "something went wrong. an exception...");
-				success = false;
-			}
-		}
-		return success;
-	}
-	
-
-	// eine extra methode fuer den step 'root'. es werden alle files/variablen aus 'path' committet
-	// es werden standardvariablen committet
-	public boolean rootcommit() throws IOException
-	{
-
-		this.log("info", "special commit, because this step is root");
-
-		//ueber alle initCommitDirs verzeichnisse iterieren
-		this.log("info", "commit all initCommitDirs");
-		for(java.io.File actualCommitDir : this.parent.getInitCommitDirs2())
-		{
-			this.commitdir(actualCommitDir);
-			this.log("info", "committed dir "+actualCommitDir.getAbsolutePath());
-		}
-
-		//ueber alle commitvarfiles iterieren
-		this.log("info", "commit all initCommitVarfiles");
-		for(java.io.File actCommitVarfile : this.parent.getInitCommitVarfiles2())
-		{
-			this.commitvarfile(actCommitVarfile);
-			this.log("info", "committed dir "+actCommitVarfile.getAbsolutePath());
-		}
-		
-		this.log("info", "commit all standard entries");
-		// das stepdir als variable ablegen
-		commitVariable("dir", this.getAbsdir());
-		this.log("info", "committed variable dir="+this.getAbsdir());
-		
-		this.setStatus("finished");
-		
-		this.log("info", "special commit of step 'root' ended");
-		return true;
-	}
-	
-	// den inhalt eines ganzen directories in den aktuellen step committen
-	public boolean commitdir(java.io.File dir)
-	{
-		this.log("info", "will commit directory "+dir.toString());
-		this.log("info", "test whether it is a directory "+dir.toString());
-		
-		if (dir.isDirectory())
-		{
-			boolean all_commitfiles_ok = true;
-			
-			this.log("info", "it is really a directory");
-			ArrayList<java.io.File> allfiles = new ArrayList<java.io.File>(Arrays.asList(dir.listFiles()));
-			Iterator<java.io.File> iterfile = allfiles.iterator();
-			while (iterfile.hasNext())
-			{
-				java.io.File file = iterfile.next();
-				this.log("info", "test whether it is a file "+file.toString());
-				if (file.isFile())
-				{
-					this.log("info", "it is a file");
-					if (!(this.commitFile("default", file)))
-					{
-						all_commitfiles_ok = false;
-					}
-				}
-				else
-				{
-					this.log("info", "it is NOT a file - skipping");
-				}
-			}
-			return all_commitfiles_ok;
-		}
-		else
-		{
-			this.log("info", "it is not a directory - skipping");
-			return false;
-		}
-	}
-
-	public boolean commitdir(String absfilepathdir)
-	{
-		java.io.File file = new java.io.File(absfilepathdir);
-		return commitdir(file);
-	}
-
-	// ein file in den aktuellen step committen
-	public boolean commitFile(String key, java.io.File file)
-	{
-		if (file.canRead())
-		{
-			File newfile = new File();
-			newfile.setAbsfilename(file.getPath());
-			newfile.setKey(key);
-			return this.commitFile(newfile);
-		}
-		else
-		{
-			this.log("info", "file NOT committed (CANT READ!): "+file.getAbsolutePath());
-			return false;
-		}
-	}
-
-	public boolean commitFile(String key, String absfilepathdir)
-	{
-		java.io.File file = new java.io.File(absfilepathdir);
-		return commitFile(key, file);
-	}
-
 	/**
-	 * das file wird in das step-verzeichnis (oder root) kopiert, falls es nicht schon dort liegt
-	 * dieses file im step-verzeichnis (oder root) wird in die file-ablage des step-objects aufgenommen 
-	 * @param file
-	 * @return success
+	 * work!
+	 * @param aufrufProcessSyscall
 	 */
-	public boolean commitFile(File file)
+	public void work(String aufrufProcessSyscall)
 	{
-		this.log("info", "commit: planning for file: "+file.getAbsfilename());
+		this.setStatus("working");
 
-		// wenn der pfad des files NICHT identisch ist mit dem pfad des step-directories
-		this.log("debug", "step.commitFile(File): file.getAbsfilename():"+file.getAbsfilename());
-		this.log("debug", "step.commitFile(File): step.getAbsfilename():"+this.getAbsdir());
-		if (!(new java.io.File(file.getAbsfilename()).getParent().matches("^"+this.getAbsdir()+"$")))
+		if(this.getWork().getStatus().equals("finished"))
 		{
-			// wenn sich das file nicht im step-verzeichnis gefunden wird, soll es dorthin kopiert werden
-			java.io.File zielFile = new java.io.File(this.getAbsdir()+"/"+file.getFilename());
-			if(!(zielFile.exists()))
-			{
-				log("info", "commit: copying file to step-directory.");
-				try
-				{
-					// copy
-					String aufruf = "cp "+file.getAbsfilename()+" "+zielFile.getAbsolutePath();
-					log("info", "commit: call: "+aufruf);
-					Runtime.getRuntime().exec(aufruf);
-					
-					// anpassen des pfads
-					file.setAbsfilename(zielFile.getAbsolutePath());
-				} catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					log("error", "IOException while copying file.");
-					e.printStackTrace();
-					return false;
-				}
-			}
+			this.setStatus("worked");
 		}
-		else
+
+		else if(this.getWork().getStatus().equals("error"))
 		{
-			log("info", "commit: file already found in step-directory. skipping copy.");
+			this.setStatus("error");
 		}
 		
-		log("info", "commit: adding file to step object: "+file.getAbsfilename());
-		this.addFile(file);
-//		System.out.println("AMOUNT OF FILES ARE NOW: "+this.file.size());
-		return true;
-	}
-
-	/**
-	 * commit einer variable aus zwei strings (name, value)
-	 * @input key, value
-	 * @return success
-	*/	
-	public boolean commitVariable(String key, String value)
-	{
-		Variable variable = new Variable();
-		variable.setKey(key);
-		variable.setValue(value);
-		return this.commitVariable(variable);
-	}
-
-	/**
-	 * commit einer variable an this
-	 * @input variable
-	 * @return success
-	*/	
-	public boolean commitVariable(Variable variable)
-	{
-		this.addVariable(variable);
-		return true;
-	}
-	
-	/**
-	 * commit von variablen aus einem file
-	 * Eingabe ist ein Objekt des Typs java.io.File
-	 * jede zeile des files, auf die das Muster "^[^#]([^=\s\n]+)=([^=\s\n]+)\s*\n?" passt
-	 * wird zu einer variable geparst (split an "=")
-	 *
-	 * der linke wert wird als 'name' verwendet
-	 * der rechte wert wird als 'value' verwendet
-	 * @throws IOException 
-	*/
-	public boolean commitvarfile(java.io.File file) throws IOException
-	{
-		try
+		if(this.getParent().isWrapper())
 		{
-			// wenn das file nicht zu gross ist (<100kB)
-			if (file.length() < 102400.)
-			{
-				BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-				
-				try
-				{
-					String line;
-					while ((line = in.readLine()) != null)
-					{
-						if (line.matches("^[^#]([^= \n]+)=([^= \n]+) *\n?"))
-						{
-							String[] linelist = line.split("=", 2);
-							Variable variable = new Variable();
-							variable.setKey(linelist[0]);
-							variable.setValue(linelist[1]);
-							this.addVariable(variable);
-							this.log("info", "variable committed from file: "+file.getAbsolutePath()+" name: "+variable.getKey()+" value: "+variable.getValue());
-						}
-					}
-				}
-				finally
-				{
-					in.close();
-				}
-				return true;
-			}
-			else
-			{
-				this.log("info", "file is to big (>100kB) to commit content as variables: "+file.getAbsolutePath());
-				return false;
-			}
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-			this.log("info", "variables not committed (cannot read file): "+file.getAbsolutePath());
-			return false;
+			log("info", "setting status to 'finished' (no commit, because this is a wrapper-process)");
+			this.setStatus("finished");
 		}
 	}
 
-	public boolean commitvarfile(String absfilepathdir) throws IOException
+	/**
+	 * commit!
+	 */
+	public void commit()
 	{
-		java.io.File file = new java.io.File(absfilepathdir);
-		return commitvarfile(file);
-	}
-
-	public boolean commit() throws IOException
-	{
-		boolean success = true;
-
-		this.log("info", "will try to commit...");
 		this.setStatus("committing");
-		this.log("info", "status is set to "+this.getStatus());
 
-		// wenn es sich um root handelt, wird vor dem eigentlichen commit noch etwas anderes committed
-		if (this.getName().equals(this.parent.getRootstepname()))
+		// alle commits durchfuehren
+		for(Commit actCommit : this.getCommit())
 		{
-			success = this.rootcommit();
+			actCommit.doIt();
 		}
 
-		// nur wenn es nicht der root-step ist, soll auf konventionelle art committed werden
-		else
+		// sind alle commits erfolgreich?
+		if(this.areAllCommitsSuccessfull())
 		{
-			// ueber alle commits iterieren
-			for( Commit actualCommit : this.commit)
-			{
-				this.log("info", "commit name "+actualCommit.getName());
-				
-				// wenn das zu committende objekt ein File ist...
-				for(File actualFile : actualCommit.getFile())
-				{
-					this.log("info", "actual file is key "+actualFile.getKey());
-									// ausfuehren von evtl. vorhandenen globs in den files
-					if(actualFile.getAbsfilename().equals(""))
-					{
-						if( ( actualFile.getGlob() != null)&& !(actualFile.getGlob().equals("")))
-						{
-							log("info", "globbing for files with'"+actualFile.getGlob()+"'");
-							java.io.File dir = new java.io.File(this.getAbsdir());
-							FileFilter fileFilter = new WildcardFileFilter(actualFile.getGlob());
-							java.io.File[] files = dir.listFiles(fileFilter);
-							if(files.length == 0)
-							{
-								log("info", "no file matched glob '"+actualFile.getGlob()+"'");
-							}
-							
-							else
-							{
-								log("info", files.length+" file(s) matched glob '"+actualFile.getGlob()+"'");
-							}
-							
-							// globeintrag im File loeschen, damit es nicht erneut geglobbt wird
-							actualFile.setGlob("");
-							
-							// passt es bzgl. minoccur und maxoccur?
-							log("info", "checking amount of occurances.");
-							if (files.length < actualFile.getMinoccur())
-							{
-								log("error", "minoccur is "+actualFile.getMinoccur()+" but only "+files.length+" file(s) globbed.");
-							}
-							else if (files.length > actualFile.getMaxoccur())
-							{
-								log("error", "maxoccur is "+actualFile.getMaxoccur()+" but "+files.length+" file(s) globbed.");
-							}
-							
-							else
-							{
-								for(int x = 0; x < files.length; x++)
-								{
-									// ist es der letzte glob? Dann soll das urspruengliche file object verwendet werden
-									if((x+1) == files.length)
-									{
-										actualFile.setAbsfilename(files[x].getAbsolutePath());
-										log("info", "setting absolute filename to: "+actualFile.getAbsfilename());
-									}
-									// alle anderen werden aus einem clon erstellt
-									else
-									{
-										log("info", "cloning file-object and setting filename: "+actualFile.getAbsfilename());
-										File pFile = actualFile.clone();
-										pFile.setAbsfilename(files[x].getAbsolutePath());
-										// das zusaetzliche file dem commit hinzufuegen
-										actualCommit.addFile(pFile);
-									}
-								}
-							}
-						}
-					}
-				}
+			this.setStatus("finished");
+		}
 
-				// ueber alle files des commits iterieren und dem step hinzufuegen
-				for(File actualFile : actualCommit.getFile())
-				{
-					this.log("info", "commit: file "+actualFile.getKey()+":"+actualFile.getAbsfilename());
-					if(!(this.commitFile(actualFile)))
-					{
-						success = false;
-					}
-	
-					this.log("debug", "rootstepname of this process is: " + this.getParent().getRootstepname() + " || this stepname is: " + this.getName());
-					// falls nicht rootstep und wenn das File auch dem prozess committed werden soll...
-					if (actualCommit.getToroot() && (!(this.getName().equals(this.getParent().getRootstepname()))))
-					{
-						this.log("info", "commit to root: file "+actualFile.getKey()+":"+actualFile.getAbsfilename());
-						// dem root-step committen
-						if (!(this.parent.getStep(this.parent.getRootstepname()).commitFile(actualFile)))
-						{
-							success = false;
-						}
-					}
-				}
-				
-				// wenn das zu committende objekt eine Variable ist...
-				for(Variable actualVariable : actualCommit.getVariable())
-				{
-					this.log("info", "commit: variable "+actualVariable.getKey()+":"+actualVariable.getValue());
-					if (!(this.commitVariable(actualVariable)))
-					{
-						success = false;
-					}
-	
-					// wenn die Variable auch dem prozess committed werden soll...
-					if (actualCommit.getToroot() && (!(this.getName().equals(this.getParent().getRootstepname()))))
-					{
-						this.log("info", "commit to root: variable "+actualVariable.getKey()+":"+actualVariable.getValue());
-						// dem root-step committen
-						if (!(this.parent.getStep(this.parent.getRootstepname()).commitVariable(actualVariable)))
-						{
-							success = false;
-						}
-					}
-				}
-			
-				actualCommit.setSuccess(success);
-			}
-			if (this.areAllcommitssuccessfull())
+		// gibt es ein commit mit 'error'?
+		for(Commit actCommit : this.getCommit())
+		{
+			if(actCommit.getStatus().equals("error"))
 			{
-				this.setStatus("finished");
+				this.log("error", "error in commit "+actCommit.getName());
+				this.setStatus("error");
 			}
 		}
-		return success;
 	}
 
-	public boolean areAllcommitssuccessfull()
+	public boolean areAllCommitsSuccessfull()
 	{
 		boolean allcommitssuccessfull = true;
 		// ueber alle commits iterieren
@@ -1351,7 +867,7 @@ implements Serializable, Cloneable
 		while (itercommit.hasNext())
 		{
 			Commit commit = itercommit.next();
-			if (!(commit.getSuccess())) {allcommitssuccessfull = false;}
+			if (!(commit.getStatus().equals("finished"))) {allcommitssuccessfull = false;}
 		}
 		return allcommitssuccessfull;
 	}
@@ -1549,68 +1065,7 @@ implements Serializable, Cloneable
 	{
 		return this.getAbsdir()+"/pid";
 	}
-	
-	public boolean isPidfileexistent()
-	{
-		java.io.File pidfile = new java.io.File(this.getAbspid());
-		if (pidfile.canRead())
-		{
-			System.out.println("PIDFILE GEFUNDEN: "+this.getAbspid());
-			return true;
-		}
-		else
-		{
-			System.out.println("PIDFILE NICHT GEFUNDEN: "+this.getAbspid());
-			return false;
-		}
-	}
-	
-	public String getPid()
-	{
-		String abspidpath = this.getAbspid();
-		String pid = new String();
-		try
-		{
-			System.out.println("PROCESS_ID FESTSTELLEN IN FILE: "+abspidpath);
-			FileReader fr = new FileReader(abspidpath);
-			BufferedReader br = new BufferedReader(fr);
-			pid = br.readLine();
-			br.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return "no";
-		}
-		return pid;
-	}
-	
-	public static boolean isPidalive(String pid)
-	{
-		try
-		{
-			java.lang.Process ps = Runtime.getRuntime().exec("ps "+pid);
-			InputStream is_stdout = ps.getInputStream();
-			InputStreamReader isr_stdout = new InputStreamReader(is_stdout);
-			BufferedReader br_stdout = new BufferedReader(isr_stdout);
-//			String line1 = br_stdout.readLine();	// die ueberschriftenzeile lesen
-			br_stdout.readLine();	// die ueberschriftenzeile lesen
-			String line2 = br_stdout.readLine();	// die zeile mit den processinfos lesen, falls vorhanden
-			if (line2 != null)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		catch (Exception e)
-		{
-//			e.printStackTrace();
-			return false;
-		}
-	}
+
 	
 	public String getType()
 	{
@@ -1967,6 +1422,7 @@ implements Serializable, Cloneable
 	
 	public void setStatus(String status)
 	{
+		log("info", "setting status to '"+status+"'");
 		this.status = status;
 	}
 	
@@ -1994,6 +1450,30 @@ implements Serializable, Cloneable
 	public void setRank(String rank)
 	{
 		this.rank = rank;
+	}
+
+	public boolean isRoot()
+	{
+		boolean iAmRoot = false;
+		if(this.getParent().getRootstepname().equals(this.getName()))
+		{
+			iAmRoot = true;
+		}
+		return iAmRoot;
+	}
+
+	/**
+	 * @return the defaultlist
+	 */
+	public ArrayList<List> getDefaultlist() {
+		return defaultlist;
+	}
+
+	/**
+	 * @param defaultlist the defaultlist to set
+	 */
+	public void setDefaultlist(ArrayList<List> defaultlist) {
+		this.defaultlist = defaultlist;
 	}
 
 	/*----------------------------
