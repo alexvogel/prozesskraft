@@ -72,7 +72,11 @@ implements Serializable
 	public void addFile(File file)
 	{
 		this.file.add(file);
-//		System.out.println("NOW FILES AMOUNT: "+this.files.size());
+	}
+
+	public void addVariable(Variable variable)
+	{
+		this.variable.add(variable);
 	}
 
 	/*----------------------------
@@ -270,15 +274,14 @@ implements Serializable
 			
 			this.log("info", "it is really a directory");
 			ArrayList<java.io.File> allfiles = new ArrayList<java.io.File>(Arrays.asList(dir.listFiles()));
-			Iterator<java.io.File> iterfile = allfiles.iterator();
-			while (iterfile.hasNext())
+			
+			for(java.io.File actFile : allfiles)
 			{
-				java.io.File file = iterfile.next();
 				this.log("info", "test whether it is a file "+file.toString());
-				if (file.isFile())
+				if (actFile.isFile())
 				{
 					this.log("info", "it is a file");
-					this.commitFile("default", file);
+					this.commitFile("default", actFile);
 				}
 				else
 				{
@@ -336,7 +339,7 @@ implements Serializable
 		if (!(new java.io.File(file.getAbsfilename()).getParent().matches("^"+this.getAbsdir()+"$")))
 		{
 			log("info", "file is not in step-directory");
-			
+
 			// wenn sich das file nicht im step-verzeichnis gefunden wird, soll es dorthin kopiert werden
 			java.io.File zielFile = new java.io.File(this.getAbsdir()+"/"+file.getFilename());
 			if(!(zielFile.exists()))
@@ -348,7 +351,7 @@ implements Serializable
 					String aufruf = "cp "+file.getAbsfilename()+" "+zielFile.getAbsolutePath();
 					log("info", "commit: call: "+aufruf);
 					Runtime.getRuntime().exec(aufruf);
-					
+
 					// anpassen des pfads
 					file.setAbsfilename(zielFile.getAbsolutePath());
 				} catch (IOException e)
@@ -410,7 +413,7 @@ implements Serializable
 			if (file.length() < 102400.)
 			{
 				BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-				
+
 				try
 				{
 					String line;

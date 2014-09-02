@@ -83,7 +83,7 @@ implements Serializable
 	private ArrayList<Step> step = new ArrayList<Step>();
 //	private ArrayList<Init> inits = new ArrayList<Init>();
 	
-	private boolean run = false;
+	public boolean run = false;
 	private String status = new String();	// waiting/working/finished/broken/paused
 	private String rootdir = "";
 	private double managerid = -1;
@@ -99,8 +99,8 @@ implements Serializable
 	private ArrayList<Log> log = new ArrayList<Log>();
 	private int randomId = 0;  
 	private String touchAsString = "";
-	private long touchInMillis = 0;
-	
+	public long touchInMillis = 0;
+
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -1178,8 +1178,8 @@ implements Serializable
 		System.out.println("    description: "+this.getDescription());
 		System.out.println("           path: "+this.getPath());
 		System.out.println("      architect: "+this.getArchitectName());
-		System.out.println("number of steps: "+this.getSteps().size());
-		Iterator<Step> iterstep = this.getSteps().iterator();
+		System.out.println("number of steps: "+this.getStep().size());
+		Iterator<Step> iterstep = this.getStep().iterator();
 		while(iterstep.hasNext())
 		{
 			Step step = iterstep.next();
@@ -1331,7 +1331,7 @@ implements Serializable
 	 */
 	public void doIt(String aufrufProcessSyscall)
 	{
-		while(this.run)
+		if(this.run)
 		{
 			if(this.getStatus().equals("error") || this.getStatus().equals("finished"))
 			{
@@ -1346,14 +1346,6 @@ implements Serializable
 					actStep.doIt(aufrufProcessSyscall);
 				}
 			}
-		}
-
-		// 1 Minute schlafen
-		try {
-			Thread.sleep(60000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		
 	}
@@ -1818,15 +1810,70 @@ implements Serializable
 	{
 		return this.step.get(id);
 	}
-	public ArrayList<Step> getSteps()
-	{
-		return this.step;
-	}
+//	public ArrayList<Step> getSteps()
+//	{
+//		return this.step;
+//	}
 
 	public ArrayList<Step> getStep()
 	{
 		return this.step;
 	}
+
+	/**
+	 * liefert alle steps, die erfolgreich verarbeitet wurden, zurueck
+	 * @param 
+	 * @return ArrayList<Step>
+	 */
+	public ArrayList<Step> getStepFinished()
+	{
+		ArrayList<Step> finishedStep = new ArrayList<Step>();
+		for(Step actStep : this.getStep())
+		{
+			if(actStep.getStatus().equals("finished"))
+			{
+				finishedStep.add(actStep);
+			}
+		}
+		return finishedStep;
+	}
+	
+	/**
+	 * liefert alle steps, die fehler enthalten,, zurueck
+	 * @param 
+	 * @return ArrayList<Step>
+	 */
+	public ArrayList<Step> getStepError()
+	{
+		ArrayList<Step> errorStep = new ArrayList<Step>();
+		for(Step actStep : this.getStep())
+		{
+			if(actStep.getStatus().equals("error"))
+			{
+				errorStep.add(actStep);
+			}
+		}
+		return errorStep;
+	}
+	
+	/**
+	 * liefert alle steps, die noch verarbeitet werden muessen, zurueck
+	 * @param 
+	 * @return ArrayList<Step>
+	 */
+	public ArrayList<Step> getStepTogo()
+	{
+		ArrayList<Step> togoStep = new ArrayList<Step>();
+		for(Step actStep : this.getStep())
+		{
+			if(!actStep.getStatus().equals("finished") || !actStep.getStatus().equals("cancelled"))
+			{
+				togoStep.add(actStep);
+			}
+		}
+		return togoStep;
+	}
+	
 
 	/**
 	 * liefert alle steps, nach dem Rank sortiert (linearisiert), zurueck
@@ -1927,7 +1974,7 @@ implements Serializable
 	{
 		ArrayList<Step> steps = new ArrayList<Step>();
 		
-		for(Step actualStep : this.getSteps())
+		for(Step actualStep : this.getStep())
 		{
 //			System.out.println("looking for "+stepname+" => "+actualStep.getName()+" does not match.");
 			if ( (actualStep.getName().equals(stepname)) || (actualStep.getName().matches("^"+stepname+"@.+")) )
@@ -1941,7 +1988,7 @@ implements Serializable
 
 	public Step[] getSteps2()
 	{
-		Step[] steps = new Step[this.getSteps().size()];
+		Step[] steps = new Step[this.getStep().size()];
 		for(int i=0; i<steps.length; i++)
 		{
 			steps[i] = this.step.get(i);
@@ -1951,7 +1998,7 @@ implements Serializable
 
 	public String[] getStepnames()
 	{
-		String[] stepnames = new String[this.getSteps().size()];
+		String[] stepnames = new String[this.getStep().size()];
 		for(int i=0; i<stepnames.length; i++)
 		{
 			stepnames[i] = this.step.get(i).getName();

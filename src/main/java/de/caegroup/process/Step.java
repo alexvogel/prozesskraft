@@ -905,7 +905,7 @@ implements Serializable, Cloneable
 			return false;
 		}
 	}
-	
+
 	/**
 	 * sets the parent of all dependents to this instance
 	 */
@@ -1152,13 +1152,11 @@ implements Serializable, Cloneable
 
 	public Commit getCommit(String name)
 	{
-		Iterator<Commit> iterCommit = this.commit.iterator();
-		while(iterCommit.hasNext())
+		for(Commit actCommit : this.getCommit())
 		{
-			Commit actualCommit = iterCommit.next();
-			if (actualCommit.getName().equals(name))
+			if (actCommit.getName().equals(name))
 			{
-				return actualCommit;
+				return actCommit;
 			}
 		}
 		return null;

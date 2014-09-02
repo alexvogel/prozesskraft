@@ -15,7 +15,7 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private String key = "";
+	private String key = "default";
 	private String value = null;
 	private String description = "";
 	private String glob = null;
