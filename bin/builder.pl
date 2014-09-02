@@ -857,15 +857,20 @@ foreach my $refh_stackline (@CONFIG)
 					print "skipping binary file: ".$File::Find::name."\n";
 					next;
 				}
+				my $exceptFound = 0;
 				foreach my $exceptFile (@exceptFiles)
 				{
-					print "is this file the one that should be excepted?\n";
-					print $File::Find::name ." =~ m/" . $exceptFile . "/";
+#					print "is this file the one that should be excepted?\n";
+#					print $File::Find::name ." =~ m/" . $exceptFile . "/";
 					if ($File::Find::name =~ m/$exceptFile/)
 					{
 						print "skipping file, because it is in the exception-list to the action 'perl_cb2': ".$File::Find::name."\n";
-						next;
+						$exceptFound++;
 					}
+				}
+				if($exceptFound)
+				{
+					next;
 				}
 				
 				if (!open (FILE, "<$File::Find::name")) {die "cannot read $File::Find::name: $!\n";}
