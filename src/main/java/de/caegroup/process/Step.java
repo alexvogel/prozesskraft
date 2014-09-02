@@ -818,8 +818,16 @@ implements Serializable, Cloneable
 	 */
 	public void work(String aufrufProcessSyscall)
 	{
-		this.setStatus("working");
+		// setzen des status auf working, falls nicht schon geschehen
+		if(!this.getStatus().equals("working"))
+		{
+			this.setStatus("working");
+		}
 
+		// work ausfuehren
+		this.getWork().doIt(aufrufProcessSyscall);
+		
+		// entsprechend des erfolgs, den status des steps festlegen
 		if(this.getWork().getStatus().equals("finished"))
 		{
 			this.setStatus("worked");
