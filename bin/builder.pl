@@ -859,6 +859,8 @@ foreach my $refh_stackline (@CONFIG)
 				}
 				foreach my $exceptFile (@exceptFiles)
 				{
+					print "is this file the one that should be excepted?\n";
+					print $File::Find::name ." =~ m/" . $exceptFile . "/";
 					if ($File::Find::name =~ m/$exceptFile/)
 					{
 						print "skipping file, because it is in the exception-list to the action 'perl_cb2': ".$File::Find::name."\n";
