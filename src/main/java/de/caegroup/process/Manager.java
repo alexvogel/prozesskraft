@@ -16,8 +16,10 @@ import java.util.ArrayList;
 //import java.io.NotSerializableException;
 import java.util.Calendar;
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 //import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -26,6 +28,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang3.StringUtils;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
@@ -87,7 +90,7 @@ public class Manager
 			System.err.println("ini file does not exist: "+inifile.getAbsolutePath());
 			System.exit(1);
 		}
-		
+
 		/*----------------------------
 		  create boolean options
 		----------------------------*/
@@ -203,6 +206,7 @@ public class Manager
 		else
 		{
 			System.out.println("file does not exist: "+fileBinary.getAbsolutePath());
+			exiter();
 		}
 		
 		if ( line.hasOption("stop") )
@@ -252,16 +256,7 @@ public class Manager
 
 			p3.log("debug", "manager "+managerid+": actual infilexml is: "+p3.getInfilexml());
 			p3.log("debug", "manager "+managerid+": reading binary file: "+p2.getInfilebinary());
-			
-			// wenn der prozess den status 'finished' hat, soll dieses programm beendet werden
-			if (p3.getStatus().equals("finished"))
-			{
-				p3.log("info", "manager "+managerid+": process instance is finished. goodbye from manager id "+p3.getManagerid());
-				p3.writeBinary();
-//				System.out.println("process instance is finished. goodbye from manager id "+managerid+".");
-				System.exit(0);
-			}
-			
+
 			// die manager-id mit eigener vergleichen. wenn nicht gleich, dann beenden.
 			if (!(p3.getManagerid() == managerid))
 			{
@@ -271,183 +266,173 @@ public class Manager
 			}
 
 			Calendar time_entry = Calendar.getInstance();
-			
+
 			// jeden step durchgehen
 //			for(Step actualStep : p3.getSteps())
-			Iterator<Step> iterstep = p3.getSteps().iterator();
 			boolean pradar =  (!(p3.isWrapper()));
 //			System.out.println("Anzahl Steps: "+p3.getSteps().size());
-			while(iterstep.hasNext())
-			{
-				Step step = new Step(p3);
-				try
-				{
-					step = iterstep.next();
-				}
-				catch (ConcurrentModificationException e)
-				{
-					break;
-				}
 
-				// if step is waiting or init failed
-				if (step.getStatus().equals("waiting") || step.getStatus().equals("initialization failed"))
+			p3.run = true;
+
+			int lastStepcount = 0;
+			int lastStepcountFinished = 0;
+
+			while(p3.run)
+			{
+				// bevor gestartet wird, soll der pradar-eintrag aktualisiert werden
+				if(pradar)
 				{
-					if (!(step.getName().equals("root")))
+					// prozess laufen lassen
+					p3.doIt(ini.get("apps", "process-syscall"));
+
+					if(! (p3.touchInMillis == 0))
 					{
-						// versuchen zu initialisieren
-						p3.log("debug", "manager "+managerid+": initializing step '"+step.getName()+"'");
-						if (step.initialize())
-						{
-							p3.log("debug", "manager "+managerid+": initialisation of step '"+step.getName()+"' succesfull");
-						}
-						else
-						{
-							p3.log("debug", "manager "+managerid+": initialisation of step '"+step.getName()+"' failed");
-						}
-					}
-					else
-					{
-						// versuchen zu comitten
-						p3.log("debug", "manager "+managerid+": committing step '"+step.getName()+"'");
+						String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-resource="+pathBinary};
+						p3.log("info", "call: " + StringUtils.join(argsForCheckin, " "));
 						try
 						{
-							if (step.commit())
-							{
-								p3.log("debug", "manager "+managerid+": commit of step '"+step.getName()+"' succesfull");
-							}
-							else
-							{
-								p3.log("debug", "manager "+managerid+": commit of step '"+step.getName()+"' failed");
-							}
+							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForCheckin, " "));
 						}
 						catch (IOException e)
 						{
-							p3.log("debug", "manager "+managerid+": caught an IOException.");
-							e.printStackTrace();
+							p3.log("warn", "IOException when trying to pradar checkin");
 						}
-					}
-					updateFile(p3);
-				}
 
-				if (step.getStatus().equals("initialized"))
-				{
-					// versuchen den step aufzufaechern
-					p3.log("debug", "manager "+managerid+": fanning step '"+step.getName()+"'");
-					if (step.fan())
-					{
-						p3.log("debug", "manager "+managerid+": fan-out of step '"+step.getName()+"' succesfull");
-					}
-					else
-					{
-						p3.log("debug", "manager "+managerid+": fan-out of step '"+step.getName()+"' failed");
-					}
-					updateFile(p3);
-				}
-
-				if (step.getStatus().equals("fanned"))
-				{
-					p3.log("debug", "manager "+managerid+": working step '"+step.getName()+"'");
-					// versuchen alle works zu starten
-					if (step.work(ini.get("apps", "process-syscall")))
-					{
-						p3.log("debug", "manager "+managerid+": launching work-program of step '"+step.getName()+"' succesfull");
-					}
-					else
-					{
-						p3.log("debug", "manager "+managerid+": launching work-program of step '"+step.getName()+"' failed");
-					}
-					updateFile(p3);
-				}
-
-				if (step.getStatus().equals("working"))
-				{
-					// ueberpruefen ob work noch laeuft
-					p3.log("debug", "manager "+managerid+": check whether work-program of step '"+step.getName()+"' is still running");
-					if (step.work(ini.get("apps", "process-syscall")))
-					{
-						p3.log("debug", "manager "+managerid+": work-program of step '"+step.getName()+"' finished");
-					}
-					else
-					{
-						p3.log("debug", "manager "+managerid+": work-program of step '"+step.getName()+"' is still running");
-					}
-					updateFile(p3);
-				}
-
-				if (step.getStatus().equals("worked"))
-				{
-					// versuchen zu comitten
-					p3.log("debug", "manager "+managerid+": commit of step '"+step.getName()+"'");
-					try
-					{
-						if (step.commit())
-						{
-							p3.log("debug", "manager "+managerid+": commit of step '"+step.getName()+"' succesfull");
-						}
-						else
-						{
-							p3.log("debug", "manager "+managerid+": commit of step '"+step.getName()+"' failed");
-						}
-					} catch (IOException e)
-					{
-						// TODO Auto-generated catch block
-//						System.out.println("problems with commit in step "+step.getName());
-						p3.log("debug", "manager "+managerid+": caught an IOException.");
-						e.printStackTrace();
-					}
-					updateFile(p3);
-				}
-
-				if (step.getStatus().equals("committing"))
-				{
-					// ueberpruefen ob work noch laeuft
-					try {
-						step.commit();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-				if (step.getStatus().equals("committed"))
-				{
-					if (pradar)
-					{
-						// aufruf von pradar-progress
+						// progress
+						lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
+						lastStepcountFinished = p3.getStepFinished().size();
+						String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
+						p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
 						try
 						{
-							java.lang.Process sysproc = Runtime.getRuntime().exec("pradar-progress ");
-						} catch (IOException e)
+							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
+						}
+						catch (IOException e)
 						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							p3.log("warn", "IOException when trying to pradar progress");
 						}
 					}
-//					step.setStatus("finished");
-					updateFile(p3);
+
+					// wenn prozess den status finished oder error hat, soll pradar checkout werden
+					else if(p3.getStatus().equals("finished"))
+					{
+						// progress nur aktualisieren, falls sich der fortschritt veraendert hat
+						if((lastStepcount != p3.getStepTogo().size()+p3.getStepFinished().size()) || (lastStepcountFinished != p3.getStepFinished().size()))
+						{
+							lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
+							lastStepcountFinished = p3.getStepFinished().size();
+							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
+							p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
+							try
+							{
+								java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
+							}
+							catch (IOException e)
+							{
+								p3.log("warn", "IOException when trying to pradar progress");
+							}
+						}
+						// checkout
+						String[] argsForCheckout = {ini.get("apps", "pradar-checkout"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-exitcode=0"};
+						p3.log("info", "call: " + StringUtils.join(argsForCheckout, " "));
+						try
+						{
+							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForCheckout, " "));
+						}
+						catch (IOException e)
+						{
+							p3.log("warn", "IOException when trying to pradar checkout");
+						}
+					}
+					
+					else if(p3.getStatus().equals("error"))
+					{
+						// progress nur aktualisieren, falls sich der fortschritt veraendert hat
+						if((lastStepcount != p3.getStepTogo().size()+p3.getStepFinished().size()) || (lastStepcountFinished != p3.getStepFinished().size()))
+						{
+							lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
+							lastStepcountFinished = p3.getStepFinished().size();
+							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
+							p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
+							try
+							{
+								java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
+							}
+							catch (IOException e)
+							{
+								p3.log("warn", "IOException when trying to pradar progress");
+							}
+						}
+						
+						// errorcode string erzeugen
+						String exitCode = "error in step(s):";
+						for(Step actStep : p3.getStepError())
+						{
+							exitCode = exitCode + " " + actStep.getName();
+						}
+						String[] argsForCheckout = {ini.get("apps", "pradar-checkout"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-exitcode=\""+exitCode+"\""};
+						p3.log("info", "call: " + StringUtils.join(argsForCheckout, " "));
+						try
+						{
+							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForCheckout, " "));
+						}
+						catch (IOException e)
+						{
+							p3.log("warn", "IOException when trying to pradar checkout");
+						}
+					}
+					
+					// mit letztem progress vergleichen, falls sich etwas veraendert hat , soll ein progress abgesetzt werden
+					else if(p3.getStatus().equals("working"))
+					{
+						// progress nur aktualisieren, falls sich der fortschritt veraendert hat
+						if((lastStepcount != p3.getStepTogo().size()+p3.getStepFinished().size()) || (lastStepcountFinished != p3.getStepFinished().size()))
+						{
+							lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
+							lastStepcountFinished = p3.getStepFinished().size();
+							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
+							p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
+							try
+							{
+								java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
+							}
+							catch (IOException e)
+							{
+								p3.log("warn", "IOException when trying to pradar progress");
+							}
+						}
+					}
+				}
+
+				updateFile(p3);
+
+				Calendar time_exit = Calendar.getInstance();
+				long seconds_for_loop = (time_exit.getTimeInMillis() - time_entry.getTimeInMillis()) / 1000;
+
+				long rest_looptime_seconds = loop_period_seconds - seconds_for_loop;
+
+				if(p3.getStatus().equals("finished"))
+				{
+					// wenn der prozess den status 'finished' hat, soll dieses programm beendet werden
+					p3.log("info", "manager "+managerid+": process instance is finished. goodbye from manager id "+p3.getManagerid());
+					p3.run = false;
+					System.exit(0);
 				}
 				
-			}
-			
-//			p3.printToc();
-			updateFile(p3);
-			
-			Calendar time_exit = Calendar.getInstance();
-			long seconds_for_loop = (time_exit.getTimeInMillis() - time_entry.getTimeInMillis()) / 1000;
-			
-			long rest_looptime_seconds = loop_period_seconds - seconds_for_loop;
-			
-			if ((rest_looptime_seconds) > 0)
-			{
-//				Thread.currentThread();
-				try {
-					Thread.sleep(rest_looptime_seconds*1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if ((rest_looptime_seconds) > 0)
+				{
+	//				Thread.currentThread();
+					try
+					{
+						Thread.sleep(rest_looptime_seconds*1000);
+					}
+					catch (InterruptedException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
-
 		}
 	}
 
