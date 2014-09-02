@@ -196,26 +196,30 @@ public class Startinstance
 		
 			// step, an den die commits gehen, soll 'root' sein.
 			Step step = p2.getStep(p2.getRootstepname());
-			// committen
+			
+			// den Commit 'by-process-commitit' heraussuchen oder einen neuen Commit dieses Namens erstellen
+			Commit commit = step.getCommit("by-hand");
+			if(commit == null)
+			{
+				commit = new Commit(step);
+				commit.setName("by-process-commitit");
+			}
+
+			// committen von files (ueber einen glob)
 			if (commandline.hasOption("commitfile"))
 			{
-				java.io.File fileCommit = new java.io.File(commandline.getOptionValue("commitfile"));
-				if (fileCommit.exists())
-				{
-					step.commitFile("default", fileCommit);
-				}
-				else
-				{
-					System.err.println("-commitfile "+commandline.getOptionValue("commitfile")+" does not exist.");
-					exiter();
-				}
+				de.caegroup.process.File file = new de.caegroup.process.File();
+				file.setGlob(commandline.getOptionValue("commitfile"));
+				file.setKey("default");
+
+				commit.addFile(file);
 			}
 			
 			if (commandline.hasOption("commitvarfile"))
 			{
 				if (new java.io.File(commandline.getOptionValue("commitvarfile")).exists())
 				{
-					step.commitvarfile(commandline.getOptionValue("commitvarfile"));
+					commit.commitvarfile(commandline.getOptionValue("commitvarfile"));
 				}
 				else
 				{
@@ -228,7 +232,7 @@ public class Startinstance
 			{
 				if (new java.io.File(commandline.getOptionValue("commitdir")).exists())
 				{
-					step.commitdir(commandline.getOptionValue("commitdir"));
+					commit.commitdir(commandline.getOptionValue("commitdir"));
 				}
 				else
 				{
@@ -241,7 +245,20 @@ public class Startinstance
 			{
 				if (commandline.getOptionValue("commitvariable").matches(".+=.+"))
 				{
-					step.commitVariable("default", commandline.getOptionValue("commitvariable"));
+					String keyValue = commandline.getOptionValue("commitvariable");
+					String[] parts = keyValue.split("=");
+					Variable variable = new Variable();
+					variable.setKey(parts[0]);
+
+					if(parts.length < 2)
+					{
+						variable.setValue("default");
+					}
+					else
+					{
+						variable.setValue(parts[1]);
+					}
+					step.addVariable(variable);
 				}
 				else
 				{
@@ -254,6 +271,8 @@ public class Startinstance
 			{
 				p2.setRootdir(commandline.getOptionValue("rootdir"));
 			}
+			
+			commit.doIt();
 			
 			p2.makeRootdir();
 			p2.writeBinary();
