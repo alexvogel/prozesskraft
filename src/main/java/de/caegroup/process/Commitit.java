@@ -2,6 +2,7 @@ package de.caegroup.process;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 import org.apache.commons.cli.CommandLine;
@@ -222,7 +223,6 @@ public class Commitit
 		String key = "default";
 		if (commandline.hasOption("key")) {key = commandline.getOptionValue("key");}
 
-		
 		Process p1 = new Process();
 			
 		p1.setInfilebinary( commandline.getOptionValue("instance") );
@@ -232,27 +232,50 @@ public class Commitit
 		
 		// step ueber den namen heraussuchen
 		Step step = p2.getStep(stepname);
+		if(step == null)
+		{
+			System.err.println("step not found: "+stepname);
+			exiter();
+		}
+		
+		// den Commit 'by-process-commitit' heraussuchen oder einen neuen Commit dieses Namens erstellen
+		Commit commit = step.getCommit("by-hand");
+		if(commit == null)
+		{
+			commit = new Commit(step);
+			commit.setName("by-process-commitit");
+		}
 
 		// committen
 		if (commandline.hasOption("file"))
 		{
-			step.commitFile(key, commandline.getOptionValue("file"));
+			de.caegroup.process.File file = new de.caegroup.process.File();
+			file.setKey(key);
+			file.setGlob(commandline.getOptionValue("file"));
+			commit.addFile(file);
+			commit.doIt();
 		}
-		
-		if (commandline.hasOption("varfile"))
-		{
-			step.commitvarfile(commandline.getOptionValue("varfile"));
-		}
-		
-		if (commandline.hasOption("dir"))
-		{
-			step.commitdir(commandline.getOptionValue("dir"));
-		}
-		
+
 		if (commandline.hasOption("variable"))
 		{
-			step.commitVariable(key, commandline.getOptionValue("variable"));
+			de.caegroup.process.Variable variable = new de.caegroup.process.Variable();
+			variable.setKey(key);
+			variable.setValue(commandline.getOptionValue("variable"));
+			commit.addVariable(variable);
+			commit.doIt();
 		}
+
+		if (commandline.hasOption("varfile"))
+		{
+			commit.commitvarfile(commandline.getOptionValue("varfile"));
+		}
+
+		if (commandline.hasOption("dir"))
+		{
+			commit.commitdir(new java.io.File(commandline.getOptionValue("dir")));
+		}
+
+		commit.setStatus("finished");
 		
 		p2.writeBinary();
 		System.out.println("info: writing process instance "+p2.getOutfilebinary());
