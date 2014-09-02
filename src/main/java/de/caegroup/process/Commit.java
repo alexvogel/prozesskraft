@@ -189,15 +189,15 @@ implements Serializable
 		{
 			logRecursive.addAll(actVariable.getLog());
 		}
-//// alle logs aller Files hinzufuegen
-//		for(File actFile : this.file)
-//		{
+// alle logs aller Files hinzufuegen
+		for(File actFile : this.file)
+		{
 //			System.err.println("actual Step: "+this.getParent().getName()+" | actual Commit: "+this.getName()+" | actual File is: "+actFile.getKey()+" | size of File-log: "+actFile.getLog().size());
-//			logRecursive.addAll(actFile.getLog());
-//		}
+			logRecursive.addAll(actFile.getLog());
+		}
 
 		// sortieren nach Datum
-//		Collections.sort(logRecursive);
+		Collections.sort(logRecursive);
 
 		return logRecursive;
 	}

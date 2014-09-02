@@ -1699,9 +1699,16 @@ implements Serializable
 		}
 		
 		// wenn schluessel waiting/initializing/working/committing nicht vorhanden sind, und nur finished vorhanden ist, dann ist prozess finished
-		else if(  statusAllSteps.contains("initializing") || statusAllSteps.contains("working") || statusAllSteps.contains("committing")   )
+		else if(  statusAllSteps.contains("initializing") || statusAllSteps.contains("initialized") || statusAllSteps.contains("working")  || statusAllSteps.contains("worked") || statusAllSteps.contains("committing")   )
 		{
-			return "rolling";
+			if(this.run)
+			{
+				return "rolling";
+			}
+			else
+			{
+				return "paused";
+			}
 		}
 
 		// wenn schluessel waiting vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist prozess waiting
