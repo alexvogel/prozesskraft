@@ -827,6 +827,16 @@ foreach my $refh_stackline (@CONFIG)
 			# gibt es ausnahmen?
 			my @matched_now_action = grep { /perl_cb2/ } @now_action;
 			my @except = grep { /except/ } @matched_now_action;
+			
+			# alles entfernen bis auf die ausnahmen
+			foreach my $except(@except)
+			{
+				$except =~ s/perl_cb2//;
+				$except =~ s/\(//;
+				$except =~ s/\)//;
+			}
+			
+			# splitten des string except=<filename>,<filename>,...)
 			my @exceptString = split("=", $except[0]);
 			my @exceptFiles = split(",", $exceptString[1]);
 			
