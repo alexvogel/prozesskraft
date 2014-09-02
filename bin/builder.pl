@@ -1007,7 +1007,7 @@ foreach my $refh_stackline (@CONFIG)
 		}
 
 		# vorab rechte in zielverzeichnis setzen auf 755 (dies ist nur notwendig, wenn now_app == builder ist, schadet aber bei anderen nicht)
-		print "info: setting rights in targetbulk to 755\n";
+		print "info: vorab setting rights in targetbulk to 755 (dies ist nur notwendig, wenn now_app == builder ist, schadet aber bei anderen nicht)\n";
 		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulk\"\n"; 
 		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulk\"";
 
