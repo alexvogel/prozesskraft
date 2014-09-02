@@ -938,27 +938,44 @@ implements Serializable, Cloneable
 	}
 
 	/*----------------------------
-	  methods add
+	  methods add / remove
 	----------------------------*/
 	public void addInit(Init init)
 	{
 		this.init.add(init);
+		this.log("debug", "adding Init "+init.getListname());
 	}
 
 	public void addCommit(Commit commit)
 	{
 		this.commit.add(commit);
+		this.log("debug", "adding Commit "+commit.getName());
+	}
+
+	public void removeCommit(Commit commit)
+	{
+		ArrayList<Commit> commitsWithoutTheRemovedOne = new ArrayList<Commit>();
+		for(Commit actCommit : this.getCommit())
+		{
+			if(!(actCommit.equals(commit)))
+			{
+				commitsWithoutTheRemovedOne.add(actCommit);
+			}
+		}
+		this.setCommit(commitsWithoutTheRemovedOne);
+		this.log("debug", "removing Commit "+commit.getName());
 	}
 
 	public void addFile(File file)
 	{
 		this.file.add(file);
-//		System.out.println("NOW FILES AMOUNT: "+this.files.size());
+		this.log("debug", "adding File (key="+file.getKey()+", glob="+file.getGlob()+", path="+file.getAbsfilename()+")");
 	}
 
 	public void addVariable(Variable variable)
 	{
 		this.variable.add(variable);
+		this.log("debug", "adding Variable (key="+variable.getKey()+", value="+variable.getValue()+")");
 	}
 	
 	public String genName()
