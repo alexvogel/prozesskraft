@@ -379,6 +379,7 @@ public class FileOccurGui
 			myCommit.setName("by-pramp");
 			myCommit.addFile(file);
 			myCommit.doIt();
+			step.removeCommit(myCommit);
 		}
 	}
 
