@@ -398,13 +398,13 @@ implements Serializable
 				log ("info", "calling: " + StringUtils.join(args_for_syscall, " "));
 
 //				alternativer aufruf
-				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
+//				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
 
 				// wait 2 seconds for becoming the pid-file visible
 				Thread.sleep(2000);
 				
-				log("info", "call executed. pid="+sysproc.hashCode());
-			}			
+//				log("info", "call executed. pid="+sysproc.hashCode());
+			}
 			catch (Exception e2)
 			{
 				log("error", "something went wrong. an exception...");
