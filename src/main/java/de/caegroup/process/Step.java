@@ -712,7 +712,14 @@ implements Serializable, Cloneable
 			}
 
 			// initialisieren
-			this.initialize();
+			if(this.getName().equals(this.getParent().getRootstepname()))
+			{
+				this.commit();
+			}
+			else
+			{
+				this.initialize();
+			}
 			return;
 		}
 
