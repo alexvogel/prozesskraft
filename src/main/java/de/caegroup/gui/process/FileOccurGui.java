@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.FileDialog;
 
+import de.caegroup.process.Commit;
 import de.caegroup.process.File;
 import de.caegroup.process.Step;
 
@@ -374,8 +375,10 @@ public class FileOccurGui
 		{
 			// setzen des pfades
 			file.setAbsfilename(data.getContent());
-			step.log("debug", "FileOccurGui.commit: " + file.getKey() +"="+ file.getAbsfilename());
-			step.commitFile(file);
+			Commit myCommit = new Commit(step);
+			myCommit.setName("by-pramp");
+			myCommit.addFile(file);
+			myCommit.doIt();
 		}
 	}
 

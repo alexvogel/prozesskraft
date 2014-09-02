@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import de.caegroup.process.Commit;
 import de.caegroup.process.Step;
 import de.caegroup.process.Variable;
 
@@ -315,8 +316,10 @@ public class VariableOccurGui
 		if ( comboexist )
 		{
 			variable.setValue(this.data.getContent());
-			step.log("debug", "VariableOccurGui.commit: " + variable.getKey() +"="+ variable.getValue());
-			step.commitVariable(variable);
+			Commit myCommit = new Commit(step);
+			myCommit.setName("by-pramp");
+			myCommit.addVariable(variable);
+			myCommit.doIt();
 		}
 	}
 
