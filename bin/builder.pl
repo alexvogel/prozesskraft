@@ -822,7 +822,14 @@ foreach my $refh_stackline (@CONFIG)
 			#-------------------
 			# suchen und ersetzen des platzhalters fuer 'version' in allen files
 			print "info: action 'perl_cb2' found in array (@now_action)\n";
-			print "info: add '#!/opt/cb2/perl/bin/perl' as shebang-line to all perl-scripts.\n";
+			print "info: add '#!/opt/cb2/perl/bin/perl' as shebang-line to all perl-scripts (except the ones except=.....).\n";
+			
+			# gibt es ausnahmen?
+			my @matched_now_action = grep { /perl_cb2/ } @now_action;
+			my @except = grep { /except/ } @matched_now_action;
+			my @exceptString = split("=", $except[0]);
+			my @exceptFiles = split(",", $exceptString[1]);
+			
 			find( sub { wanted2() }, "$TMPDIR");
 			
 			sub wanted2
@@ -840,6 +847,15 @@ foreach my $refh_stackline (@CONFIG)
 					print "skipping binary file: ".$File::Find::name."\n";
 					next;
 				}
+				foreach my $exceptFile (@exceptFiles)
+				{
+					if ($File::Find::name =~ m/$exceptFile/)
+					{
+						print "skipping file, because it is in the exception-list to the action 'perl_cb2': ".$File::Find::name."\n";
+						next;
+					}
+				}
+				
 				if (!open (FILE, "<$File::Find::name")) {die "cannot read $File::Find::name: $!\n";}
 				
 				my $zeile = 1;
