@@ -230,38 +230,6 @@ implements Serializable
 		this.log.add(new Log("commit-"+this.getName(), loglevel, logmessage));
 	}
 
-	// eine extra methode fuer den step 'root'. es werden alle files/variablen aus 'path' committet
-	// es werden standardvariablen committet
-	public boolean rootCommit()
-	{
-
-		this.log("info", "special commit, because this step is root");
-
-		//ueber alle initCommitDirs verzeichnisse iterieren
-		this.log("info", "commit all initCommitDirs");
-		for(java.io.File actualCommitDir : this.getParent().getParent().getInitCommitDirs2())
-		{
-			this.commitdir(actualCommitDir);
-			this.log("info", "committed dir "+actualCommitDir.getAbsolutePath());
-		}
-
-		//ueber alle commitvarfiles iterieren
-		this.log("info", "commit all initCommitVarfiles");
-		for(java.io.File actCommitVarfile : this.getParent().getParent().getInitCommitVarfiles2())
-		{
-			this.commitvarfile(actCommitVarfile);
-			this.log("info", "committed dir "+actCommitVarfile.getAbsolutePath());
-		}
-
-		this.log("info", "commit all standard entries");
-		// das stepdir als variable ablegen
-		commitVariable("dir", this.getParent().getAbsdir());
-		this.log("info", "committed variable dir="+this.getParent().getAbsdir());
-		
-		this.log("info", "special commit of step 'root' ended");
-		return true;
-	}
-	
 	// den inhalt eines ganzen directories in den aktuellen step committen
 	public void commitdir(java.io.File dir)
 	{
@@ -479,14 +447,8 @@ implements Serializable
 	{
 		this.setStatus("committing");
 
-		// wenn es sich um root handelt, wird vor dem eigentlichen commit noch etwas anderes committed
-		if (this.getParent().isRoot())
-		{
-			this.rootCommit();
-		}
-
 		// und jetzt der konventionelle commit
-		
+
 		// wenn das zu committende objekt ein File ist...
 		for(File actualFile : this.getFile())
 		{

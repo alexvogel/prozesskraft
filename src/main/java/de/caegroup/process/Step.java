@@ -714,6 +714,7 @@ implements Serializable, Cloneable
 			// initialisieren
 			if(this.getName().equals(this.getParent().getRootstepname()))
 			{
+				this.rootCommit();
 				this.commit();
 			}
 			else
@@ -864,6 +865,41 @@ implements Serializable, Cloneable
 				this.setStatus("error");
 			}
 		}
+	}
+
+	// eine extra methode fuer den step 'root'. es werden alle files/variablen aus 'path' committet
+	// es werden standardvariablen committet
+	public void rootCommit()
+	{
+		Commit rootStandardCommit = new Commit(this);
+		rootStandardCommit.setName("root-standard");
+		rootStandardCommit.setStatus("committing");
+		
+		this.log("info", "special commit, because this step is root");
+
+		//ueber alle initCommitDirs verzeichnisse iterieren
+		this.log("info", "commit all initCommitDirs");
+		for(java.io.File actualCommitDir : this.getParent().getInitCommitDirs2())
+		{
+			rootStandardCommit.commitdir(actualCommitDir);
+			rootStandardCommit.log("info", "committed dir "+actualCommitDir.getAbsolutePath());
+		}
+
+		//ueber alle commitvarfiles iterieren
+		this.log("info", "commit all initCommitVarfiles");
+		for(java.io.File actCommitVarfile : this.getParent().getInitCommitVarfiles2())
+		{
+			rootStandardCommit.commitvarfile(actCommitVarfile);
+			rootStandardCommit.log("info", "committed dir "+actCommitVarfile.getAbsolutePath());
+		}
+
+		this.log("info", "commit all standard entries");
+		// das stepdir als variable ablegen
+		rootStandardCommit.commitVariable("dir", this.getAbsdir());
+		rootStandardCommit.log("info", "committed variable dir="+this.getAbsdir());
+
+		this.log("info", "special commit of step 'root' ended");
+		rootStandardCommit.setStatus("finished");
 	}
 
 	public boolean areAllCommitsSuccessfull()
