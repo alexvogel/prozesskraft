@@ -178,7 +178,6 @@ public class Syscall {
 						
 			// Aufruf in das call -logfile schreiben
 			PrintWriter writerLog = new PrintWriter(sMylog);
-			writerLog.println(new Timestamp(System.currentTimeMillis()));
 			writerLog.println("process syscall");
 			writerLog.println("-call \""+sCall+"\"");
 			writerLog.println("-stdout "+sStdout);
@@ -186,9 +185,8 @@ public class Syscall {
 			writerLog.println("-pid "+sPid);
 			writerLog.println("-log "+sMylog);
 			writerLog.println("-maxrun "+sMaxrun);
-			writerLog.println(sCall);
 			writerLog.println("------------------------------------------------------");
-			writerLog.println("start at               : "+ startDate.toString());
+			writerLog.println("start at         : "+ startDate.toString());
 			writerLog.println("will terminate at: "+ termDate.toString());
 			writerLog.println("-------------- STDOUT and STDERR----------------");
 			writerLog.close();
@@ -249,14 +247,14 @@ public class Syscall {
 			{
 				if (!(line_out == null))
 				{
-					System.out.println(line_out);
+//					System.out.println(line_out);
 					fw_stdout.write(line_out);
 					fw_stdout.write("\n");
 					fw_stdout.flush();
 				}
 				if (!(line_err == null))
 				{
-					System.out.println(line_err);
+//					System.out.println(line_err);
 					fw_stderr.write(line_err);
 					fw_stderr.write("\n");
 					fw_stderr.flush();
@@ -273,21 +271,31 @@ public class Syscall {
 //			
 			
 			// der prozess soll bis laengstens
-			sysproc.wait(Integer.parseInt(sMaxrun) * 60 *1000);
+			try
+			{
+				sysproc.wait(Integer.parseInt(sMaxrun) * 60 *1000);
+			}
+			catch (IllegalMonitorStateException e)
+			{
+				System.out.println("------------------------------------------------------");
+				System.out.println("normal termination at "+new Date().toString());
+				System.out.println("exitvalue: "+sysproc.exitValue());
+			}
 			
-			System.out.println("terminating at "+new Date().toString());
+			System.out.println("------------------------------------------------------");
+			System.out.println("forced termination at "+new Date().toString());
+			System.out.println("exitvalue: "+sysproc.exitValue());
+
 			sysproc.destroy();
-			
+
 //			sysproc.waitFor();
-			int sysproc_exitvalue = sysproc.exitValue();
-			System.out.println("EXITVALUE: "+sysproc_exitvalue);
 			
-			fw_stderr.write("EXITVALUE: "+sysproc_exitvalue);
+//			fw_stderr.write("EXITVALUE: "+sysproc_exitvalue);
 			
 			fw_stdout.close();
 			fw_stderr.close();
 
-			System.exit(sysproc_exitvalue);
+			System.exit(sysproc.exitValue());
 
 		}
 		catch (IOException e)
