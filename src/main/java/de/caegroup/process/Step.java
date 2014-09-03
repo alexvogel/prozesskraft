@@ -696,10 +696,11 @@ implements Serializable, Cloneable
 			if (!(this.areFromstepsfinished()))
 			{
 				log("debug", "predecessor step(s) not finished. initialization postponed.");
+				return;
 			}
 
 			// wenn alle fromsteps den status 'finished' haben wird evtl. zuerst 'gefanned'
-			if (this.loop!=null && !(this.loop.equals("")))
+			else if (this.loop!=null && !(this.loop.equals("")))
 			{
 				try {
 					this.fan();
