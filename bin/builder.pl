@@ -1096,6 +1096,14 @@ foreach my $refh_stackline (@CONFIG)
 		#-------------------
 		# --- END ACTION 'add_caller' --- #
 
+		# wenn --setdefault verwendet wurde, soll ein file mit dem string im installationsverzeichnis angelegt werden
+		if($setdefault)
+		{
+			print "info: set default version of app to $setdefault/\n";
+			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
+			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
+		}
+
 		# rechte in zielverzeichnis setzen auf 755
 		print "info: setting rights in targetbulk to 755\n";
 		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulk\"\n"; 
@@ -1118,14 +1126,6 @@ foreach my $refh_stackline (@CONFIG)
 		print "info: setting rights in targetbulk to 750 for all files/dirs matching /.source*/\n";
 		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulk -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\"\n"; 
 		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulk -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\""; 
-
-		# wenn --setdefault verwendet wurde, soll ein file mit dem string im installationsverzeichnis angelegt werden
-		if($setdefault)
-		{
-			print "info: set default version of app to $setdefault/\n";
-			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
-			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
-		}
 
 		# wenn das flag --pack gesetzt wurde, soll das installationsverzeichnis in ein *.tar.gz archiv gepackt werden
 		if($pack)
