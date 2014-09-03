@@ -427,19 +427,31 @@ unless($subcommand)
 	exit(1);
 }
 
-# wrap all arguments in quotes
-@ARGV = map { $_ = '"' . $_ . '"' } @ARGV;
+# wrap all arguments with whitespaces in quotes
+my @ARGV_QUOTES;
+foreach my $arg (@ARGV)
+{
+	if ($arg =~ m/\s/)
+	{
+		push(@ARGV_QUOTES, '"' . $arg . '"');
+	}
+	else
+	{
+		push(@ARGV_QUOTES, $arg);
+	}
+}
+#@ARGV = map { $_ = '"' . $_ . '"' } @ARGV;
 
 my $return = 0;
 if (getOption("hh"))
 {
-	my $call = getConfig($subcommand) . " @ARGV --help";
+	my $call = getConfig($subcommand) . " @ARGV_QUOTES --help";
 	logit("info", "launching $subcommand: $call");
 	$return = system($call);
 }
 else
 {
-	my $call = getConfig($subcommand) . " @ARGV";
+	my $call = getConfig($subcommand) . " @ARGV_QUOTES";
 	logit("info", "launching $subcommand: $call");
 	$return = system($call);
 }
