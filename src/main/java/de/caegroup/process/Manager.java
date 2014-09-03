@@ -215,7 +215,7 @@ public class Manager
 			Process p2 = p1.readBinary();
 			p2.log("info", "stopping manager "+p2.getManagerid());
 			p2.setManagerid(0);
-			p2.setStatus("paused");
+			p2.run = false;
 			p2.setOutfilebinary(pathBinary);
 			p2.writeBinary();
 			System.exit(0);
@@ -282,10 +282,8 @@ public class Manager
 				// bevor gestartet wird, soll der pradar-eintrag aktualisiert werden
 				if(pradar)
 				{
-					// prozess laufen lassen
-					p3.doIt(ini.get("apps", "process-syscall"));
-
-					if(! (p3.touchInMillis == 0))
+					// falls der prozess noch unberuehrt ist, soll er eingecheckt werden
+					if(p3.touchInMillis == 0)
 					{
 						String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-resource="+pathBinary};
 						p3.log("info", "call: " + StringUtils.join(argsForCheckin, " "));
@@ -403,6 +401,9 @@ public class Manager
 						}
 					}
 				}
+
+				// prozess laufen lassen
+				p3.doIt(ini.get("apps", "process-syscall"));
 
 				updateFile(p3);
 
