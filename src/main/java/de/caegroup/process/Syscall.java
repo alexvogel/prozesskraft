@@ -43,11 +43,11 @@ public class Syscall {
 //				.isRequired()
 				.create("call");
 		
-		Option olog = OptionBuilder.withArgName("FILE")
+		Option omylog = OptionBuilder.withArgName("FILE")
 				.hasArg()
 				.withDescription("[mandatory] the executed call will be printed to this file.")
 //				.isRequired()
-				.create("log");
+				.create("mylog");
 		
 		Option ostdout = OptionBuilder.withArgName("FILE")
 				.hasArg()
@@ -85,7 +85,7 @@ public class Syscall {
 		options.addOption( ostdout );
 		options.addOption( ostderr );
 		options.addOption( opid );
-		options.addOption( olog );
+		options.addOption( omylog );
 		options.addOption( omaxrun );
 		
 		/*----------------------------
@@ -111,7 +111,7 @@ public class Syscall {
 		if ( commandline.hasOption("help"))
 		{
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("wrap", options);
+			formatter.printHelp("syscall", options);
 			System.exit(0);
 		}
 		
@@ -150,9 +150,9 @@ public class Syscall {
 			exiter();
 		}
 		
-		if ( !( commandline.hasOption("log")) )
+		if ( !( commandline.hasOption("mylog")) )
 		{
-			System.err.println("option -log is mandatory.");
+			System.err.println("option -mylog is mandatory.");
 			exiter();
 		}
 		
