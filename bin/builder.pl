@@ -95,7 +95,7 @@ my $result = GetOptions(
                         "cleanapp"   => \$cleanapp,
                         "cleanbranch"=> \$cleanbranch,
                         "pack"=> \$pack,
-                        "setdefault"=> \$setdefault,
+                        "setdefault=s"=> \$setdefault,
                         "genstack"=> \$genstack,
                         "log=s"=> \$log,
                         );
