@@ -392,6 +392,10 @@ implements Serializable
 				// setzen der aktuellen directory
 				java.io.File directory = new java.io.File(this.getParent().getAbsdir());
 				pb.directory(directory);
+
+				// zum debuggen ein paar ausgaben
+				Runtime.getRuntime().exec("date >> ~/tmp.debug.work.txt");
+				Runtime.getRuntime().exec("ls -la "+directory.getAbsolutePath()+" >> ~/tmp.debug.work.txt");
 				
 				// starten des prozesses
 				java.lang.Process sysproc = pb.start();
@@ -400,7 +404,6 @@ implements Serializable
 
 //				alternativer aufruf
 //				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
-				
 				
 				log("info", "call executed. pid="+sysproc.hashCode());
 
