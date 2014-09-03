@@ -427,6 +427,8 @@ unless($subcommand)
 	exit(1);
 }
 
+# wrap all arguments in quotes
+@ARGV = map { $_ = '"' . $_ . '"' } @ARGV;
 
 my $return = 0;
 if (getOption("hh"))
