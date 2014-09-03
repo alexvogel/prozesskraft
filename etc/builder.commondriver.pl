@@ -130,7 +130,7 @@ unless ($version)
     if ($default) {$version = $default;}
     else
     {
-    	print "no default version of command '$filename' defined\n";
+    	print "no default version of command '$filename' defined ($defaultVersionFile)\n";
     	exit(1);
     }
 }

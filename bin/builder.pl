@@ -76,6 +76,7 @@ my $cleanapp;
 my $cleanbranch;
 my $genstack;
 my $pack;
+my $setdefault;
 my $log = $ENV{'HOME'}."/.builder/builder.log";
 my $result = GetOptions(
 #                        "scenesdir=s"=> \$scenesdir,
@@ -94,6 +95,7 @@ my $result = GetOptions(
                         "cleanapp"   => \$cleanapp,
                         "cleanbranch"=> \$cleanbranch,
                         "pack"=> \$pack,
+                        "setdefault"=> \$setdefault,
                         "genstack"=> \$genstack,
                         "log=s"=> \$log,
                         );
@@ -143,6 +145,7 @@ $helptext .= " --cleanbranch		[optional] prior to install all content in target 
 $helptext .= " --cleanapp			[optional] prior to build all branches of the processed app will be deleted.\n";
 $helptext .= " --pack				[optional] delivers the installation directory as a *.tar.gz file\n";
 $helptext .= " --batch              [optional] direct execution of all relevant buildinstances without possibility to abort.\n";
+$helptext .= " --setdefault      [optional] creates a file 'version.<appname> with the version string inside\n";
 $helptext .= " --log                [optional, default: ~/.builder/builder.log] this logfile will be used.\n";
 $helptext .= "\n";
 $helptext .= "Example 1:\n";
@@ -167,7 +170,7 @@ if ($help)
 #-------------------
 
 #-------------------
-# check ob --cleanapp gleichzeitig genutzt werden
+# check ob --cleanapp und --cleanbranch gleichzeitig genutzt werden
 if (($cleanapp) && ($cleanbranch))
 {
 	print "fatal: dont use --cleanapp and --cleanbranch at the same time\n";
@@ -1061,7 +1064,7 @@ foreach my $refh_stackline (@CONFIG)
 #	 			$tt->process($relname, $vars, $relname) || die $tt->error();
 #			}
 #		}
-		
+
 		# den angepassten commondriver installieren
 		print "info: installing common driver $TMPDIR/commondriver to $now_targetbin"."/".$now_app."\n";
 		print "rsync -avz $TMPDIR/commondriver ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbin."/".$now_app."\n";
@@ -1082,7 +1085,7 @@ foreach my $refh_stackline (@CONFIG)
 					push(@all_caller, split(",", $1));
 				}
 			}
-			
+
 			foreach my $caller (@all_caller)
 			{
 				print "info: installing additional common driver $TMPDIR/commondriver to $now_targetbin"."/".$caller."\n";
@@ -1100,7 +1103,7 @@ foreach my $refh_stackline (@CONFIG)
 		print "info: setting rights in targetbin to 755\n";
 		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbin\"\n"; 
 		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbin\"";
-		
+
 		# rechte aller files, die mit "Makefile.PL" enden, sollen auf 444 (nur lesen) gesetzt werden
 		print "info: setting rights in targetbulk to 444 for all files/dirs matching /*Makefile.PL/\n";
 		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*Makefile.PL' -exec chmod -R 444 {} \\;\"\n"; 
@@ -1115,6 +1118,11 @@ foreach my $refh_stackline (@CONFIG)
 		print "info: setting rights in targetbulk to 750 for all files/dirs matching /.source*/\n";
 		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulk -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\"\n"; 
 		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulk -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\""; 
+
+		# wenn --setdefault verwendet wurde, soll ein file mit dem string im installationsverzeichnis angelegt werden
+		print "info: set default version of app to $setdefault/\n";
+		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
+		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
 
 		# wenn das flag --pack gesetzt wurde, soll das installationsverzeichnis in ein *.tar.gz archiv gepackt werden
 		if($pack)
