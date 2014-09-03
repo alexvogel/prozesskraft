@@ -165,7 +165,7 @@ public class Syscall {
 		try {
 
 			String sCall = commandline.getOptionValue("call");
-			String sLog = commandline.getOptionValue("log");
+			String sMylog = commandline.getOptionValue("mylog");
 			String sPid = commandline.getOptionValue("pid");
 			String sStdout = commandline.getOptionValue("stdout");
 			String sStderr = commandline.getOptionValue("stderr");
@@ -177,14 +177,14 @@ public class Syscall {
 			Date termDate = new Date(startDate.getTime() + Integer.parseInt(sMaxrun)*60*1000);
 						
 			// Aufruf in das call -logfile schreiben
-			PrintWriter writerLog = new PrintWriter(sLog);
+			PrintWriter writerLog = new PrintWriter(sMylog);
 			writerLog.println(new Timestamp(System.currentTimeMillis()));
 			writerLog.println("process syscall");
 			writerLog.println("-call \""+sCall+"\"");
 			writerLog.println("-stdout "+sStdout);
 			writerLog.println("-stderr "+sStderr);
 			writerLog.println("-pid "+sPid);
-			writerLog.println("-log "+sLog);
+			writerLog.println("-log "+sMylog);
 			writerLog.println("-maxrun "+sMaxrun);
 			writerLog.println(sCall);
 			writerLog.println("------------------------------------------------------");
@@ -194,7 +194,7 @@ public class Syscall {
 			writerLog.close();
 
 			// Umleitung von STDOUT und STDERR dieses Scripts in das angegebene logfile
-			FileOutputStream logStream = new FileOutputStream(sLog);
+			FileOutputStream logStream = new FileOutputStream(sMylog);
 			PrintStream logPrintStream = new PrintStream(logStream);
 			System.setOut(logPrintStream);
 			System.setErr(logPrintStream);
