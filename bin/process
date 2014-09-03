@@ -431,10 +431,10 @@ unless($subcommand)
 my @ARGV_QUOTES;
 foreach my $arg (@ARGV)
 {
-	print "AKTUELLES ARGUMENT: $arg\n";
+#	print "AKTUELLES ARGUMENT: $arg\n";
 	if ($arg =~ m/\s/)
 	{
-		print "quoting argument $arg\n";
+		logit("info", "quoting argument $arg\n");
 		push(@ARGV_QUOTES, '"' . $arg . '"');
 	}
 	else
