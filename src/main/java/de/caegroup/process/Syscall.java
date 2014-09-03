@@ -194,7 +194,7 @@ public class Syscall {
 			writerLog.close();
 
 			// Umleitung von STDOUT und STDERR dieses Scripts in das angegebene logfile
-			FileOutputStream logStream = new FileOutputStream(sMylog);
+			FileOutputStream logStream = new FileOutputStream(sMylog, true);
 			PrintStream logPrintStream = new PrintStream(logStream);
 			System.setOut(logPrintStream);
 			System.setErr(logPrintStream);
