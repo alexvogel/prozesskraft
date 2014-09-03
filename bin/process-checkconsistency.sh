@@ -13,10 +13,10 @@ if [ -f $BASEDIR/../java/latest/bin/java ];
 		if [ "$ERRORSTRING" == "Error" ];
 			then
 				echo using the own - very local - java \(64-bit\)
-				$BASEDIR/../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib64/*:$BASEDIR/*" $MAINCLASS $@
+				$BASEDIR/../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib64/*:$BASEDIR/*" $MAINCLASS "$@"
 			else
 				echo using the own - very local - java \(32-bit\)
-				$BASEDIR/../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib32/*:$BASEDIR/*" $MAINCLASS $@
+				$BASEDIR/../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib32/*:$BASEDIR/*" $MAINCLASS "$@"
 		fi
 
 # ansonsten wenn eine lokale javainstallation vorhanden ist, soll diese verwendet werden
@@ -28,10 +28,10 @@ elif [ -f $BASEDIR/../../../java/latest/bin/java ];
 		if [ "$ERRORSTRING" == "Error" ];
 			then
 				echo using local java \(64-bit\)
-				$BASEDIR/../../../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib64/*:$BASEDIR/*" $MAINCLASS $@
+				$BASEDIR/../../../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib64/*:$BASEDIR/*" $MAINCLASS "$@"
 			else
 				echo using local java \(32-bit\)
-				$BASEDIR/../../../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib32/*:$BASEDIR/*" $MAINCLASS $@
+				$BASEDIR/../../../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib32/*:$BASEDIR/*" $MAINCLASS "$@"
 		fi
 
 # wenn keine lokalen javainstallationen vorhanden sind, soll die zentral installierte verwendet werden
@@ -42,10 +42,10 @@ elif [ -f $BASEDIR/../../../java/latest/bin/java ];
 		if [ "$ERRORSTRING" == "Error" ];
 			then
 				echo using central java \(64-bit\)
-				java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib64/*:$BASEDIR/*" $MAINCLASS $@
+				java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib64/*:$BASEDIR/*" $MAINCLASS "$@"
 			else
 				echo using central java \(32-bit\)
-				java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib32/*:$BASEDIR/*" $MAINCLASS $@
+				java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib32/*:$BASEDIR/*" $MAINCLASS "$@"
 		fi
 		
 fi
