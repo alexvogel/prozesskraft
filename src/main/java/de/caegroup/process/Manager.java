@@ -192,7 +192,7 @@ public class Manager
 		
 		Process p1 = new Process();
 		
-		long loop_period_seconds = 20;
+		long loop_period_seconds = 60;
 		
 		double managerid = p1.genManagerid();
 
