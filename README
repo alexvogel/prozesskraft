@@ -1,0 +1,13 @@
+1) go to the directory where you want to install the toolbox and unpack
+	tar -xvf pramp-0.5.0.tar.gz
+
+2) link the launch script "bin/pramp" from a PATH-directory. for example
+	cd ~/bin
+	ln -s <installdirectory>/bin/pramp
+
+3) edit the configuration file etc/pramp-gui.ini
+	define a 'domain-installation-directory' - this is where pramp expects all the domain/processes
+	define at least one license-server (for example: license-server-1=16090@sv02)
+	define a pdfreader
+
+checkout www.prozesskraft.de for further informations or even more tools.
