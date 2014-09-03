@@ -407,10 +407,8 @@ public class Manager
 				{
 					p3.run = false;
 					p3.log("info", "error in process detected. setting run = false");
+					p2.log("info", "stopping manager "+p2.getManagerid());
 				}
-				
-				// prozess laufen lassen
-				p3.doIt(ini.get("apps", "process-syscall"));
 
 				updateFile(p3);
 
@@ -419,9 +417,18 @@ public class Manager
 					// wenn der prozess den status 'finished' hat, soll dieses programm beendet werden
 					p3.log("info", "manager "+managerid+": process instance is finished. goodbye from manager id "+p3.getManagerid());
 					p3.run = false;
+				}
+				
+				updateFile(p3);
+
+				if(p3.run == false)
+				{
 					System.exit(0);
 				}
 				
+				// prozess laufen lassen
+				p3.doIt(ini.get("apps", "process-syscall"));
+
 				try
 				{
 					Thread.sleep(loop_period_seconds*1000);
@@ -433,7 +440,6 @@ public class Manager
 				}
 			}
 			
-			System.out.println("bye bye");
 		}
 	}
 
