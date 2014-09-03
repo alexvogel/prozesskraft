@@ -560,7 +560,7 @@ sub getOption
 	
 	elsif (ref($OPT{$key}) eq "ARRAY")
 	{
-		if ( (!defined @{$OPT{$key}}) || (scalar @{$OPT{$key}} == 0) )
+		if ( (! @{$OPT{$key}}) || (scalar @{$OPT{$key}} == 0) )
 		{
 			return undef;
 		}
