@@ -402,6 +402,13 @@ public class Manager
 					}
 				}
 
+				// austeigen wenn status==error
+				if(p3.getStatus().equals("error"))
+				{
+					p3.run = false;
+					p3.log("info", "error in process detected. setting run = false");
+				}
+				
 				// prozess laufen lassen
 				p3.doIt(ini.get("apps", "process-syscall"));
 
@@ -425,6 +432,8 @@ public class Manager
 					e.printStackTrace();
 				}
 			}
+			
+			System.out.println("bye bye");
 		}
 	}
 
