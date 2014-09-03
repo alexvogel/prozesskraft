@@ -260,7 +260,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("init-"+this.getListname(), loglevel, logmessage));
+		this.log.add(new Log("init "+this.getListname(), loglevel, logmessage));
 	}
 	
 	/**

@@ -227,7 +227,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("commit-"+this.getName(), loglevel, logmessage));
+		this.log.add(new Log("commit "+this.getName(), loglevel, logmessage));
 	}
 
 	// den inhalt eines ganzen directories in den aktuellen step committen

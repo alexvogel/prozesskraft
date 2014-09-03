@@ -320,7 +320,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("work-"+this.getName(), loglevel, logmessage));
+		this.log.add(new Log("work", loglevel, logmessage));
 	}
 	
 	/**
@@ -376,7 +376,7 @@ implements Serializable
 
 			try
 			{
-				String[] args_for_syscall = {processSyscall, "-call \""+call+"\"", "-stdout "+this.getParent().getAbsstdout(), "-stderr "+this.getParent().getAbsstderr(), "-pid "+this.getParent().getAbspid(), "-log "+AbsLogSyscallWrapper, "-maxrun "+this.maxrun};
+				String[] args_for_syscall = {processSyscall, "-call \""+call+"\"", "-stdout "+this.getParent().getAbsstdout(), "-stderr "+this.getParent().getAbsstderr(), "-pid "+this.getParent().getAbspid(), "-mylog "+AbsLogSyscallWrapper, "-maxrun "+this.maxrun};
 
 //				// erstellen prozessbuilder
 //				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
