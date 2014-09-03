@@ -28,6 +28,10 @@ public class Syscall {
 	public static void main(String[] args) throws org.apache.commons.cli.ParseException, IOException
 	{
 	 
+		for(String arg : args)
+		{
+			System.out.println("syscall: "+arg);
+		}
 		/*----------------------------
 		  create boolean options
 		----------------------------*/
