@@ -1120,9 +1120,12 @@ foreach my $refh_stackline (@CONFIG)
 		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulk -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\""; 
 
 		# wenn --setdefault verwendet wurde, soll ein file mit dem string im installationsverzeichnis angelegt werden
-		print "info: set default version of app to $setdefault/\n";
-		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
-		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
+		if($setdefault)
+		{
+			print "info: set default version of app to $setdefault/\n";
+			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
+			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
+		}
 
 		# wenn das flag --pack gesetzt wurde, soll das installationsverzeichnis in ein *.tar.gz archiv gepackt werden
 		if($pack)
