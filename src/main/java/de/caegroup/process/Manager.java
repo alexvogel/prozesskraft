@@ -248,7 +248,7 @@ public class Manager
 		p2.writeBinary();
 
 		boolean incharge = true;
-		
+
 		while(incharge)
 		{
 			// processinstanz frisch einlesen
@@ -407,11 +407,6 @@ public class Manager
 
 				updateFile(p3);
 
-				Calendar time_exit = Calendar.getInstance();
-				long seconds_for_loop = (time_exit.getTimeInMillis() - time_entry.getTimeInMillis()) / 1000;
-
-				long rest_looptime_seconds = loop_period_seconds - seconds_for_loop;
-
 				if(p3.getStatus().equals("finished"))
 				{
 					// wenn der prozess den status 'finished' hat, soll dieses programm beendet werden
@@ -420,18 +415,14 @@ public class Manager
 					System.exit(0);
 				}
 				
-				if ((rest_looptime_seconds) > 0)
+				try
 				{
-	//				Thread.currentThread();
-					try
-					{
-						Thread.sleep(rest_looptime_seconds*1000);
-					}
-					catch (InterruptedException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					Thread.sleep(loop_period_seconds*1000);
+				}
+				catch (InterruptedException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}
