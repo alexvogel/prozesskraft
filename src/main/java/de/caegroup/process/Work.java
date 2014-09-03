@@ -18,6 +18,7 @@ implements Serializable
 	static final long serialVersionUID = 1;
 	private String name = "unnamed";
 	private String description = "no description";
+	private int maxrun = 5;
 	private String interpreter = "";
 	private String command = "";
 	private String logfile = "";
@@ -78,9 +79,9 @@ implements Serializable
 	{
 //		this.parent.log("debug", "constructing call");
 		String call = this.command;
-		this.parent.log("debug", "constructing call a): "+call);
+		this.log("debug", "constructing call a): "+call);
 
-		this.parent.log("debug", "there are "+this.getCallitem().size()+" unresolved callitems in this 'work'");
+		this.log("debug", "there are "+this.getCallitem().size()+" unresolved callitems in this 'work'");
 
 		// resolven aller callitems
 		for(Callitem actCallitem : this.getCallitemssorted())
@@ -91,11 +92,11 @@ implements Serializable
 				call = call + actResolvedCallitem.getPar();
 				call = call + actResolvedCallitem.getDel();
 				call = call + actResolvedCallitem.getVal();
-				this.parent.log("debug", "constructing call b): "+call);
+				this.log("debug", "constructing call b): "+call);
 			}
 		}
 		
-		this.parent.log("debug", "constructing call");
+		this.log("debug", "constructing call");
 		return call;
 	}
 	
@@ -375,7 +376,7 @@ implements Serializable
 
 			try
 			{
-				String[] args_for_syscall = {processSyscall, "-call \""+call+"\"", "-stdout "+this.getParent().getAbsstdout(), "-stderr "+this.getParent().getAbsstderr(), "-pid "+this.getParent().getAbspid(), "-log "+AbsLogSyscallWrapper};
+				String[] args_for_syscall = {processSyscall, "-call \""+call+"\"", "-stdout "+this.getParent().getAbsstdout(), "-stderr "+this.getParent().getAbsstderr(), "-pid "+this.getParent().getAbspid(), "-log "+AbsLogSyscallWrapper, "-maxrun "+this.maxrun};
 
 //				// erstellen prozessbuilder
 //				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);

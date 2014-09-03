@@ -1406,7 +1406,8 @@ implements Serializable, Cloneable
 	
 	public ArrayList<Log> getLogRecursive()
 	{
-		ArrayList<Log> logRecursive = new ArrayList<Log>();
+		// zuerst das eigene log kopieren
+		ArrayList<Log> logRecursive = this.getLog();
 		
 		// die logs aller Inits in die Sammlung uebernehmen
 		for(Init actInit : this.getInit())
@@ -1429,7 +1430,7 @@ implements Serializable, Cloneable
 		// sortierte KeyListe erstellen
 		java.util.Collections.sort(logRecursive);
 		
-		return this.log;
+		return logRecursive;
 	}
 	
 	public String getRank()
