@@ -3,6 +3,7 @@ package de.caegroup.process;
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,7 +33,7 @@ public class Syscall {
 		----------------------------*/
 		Option ohelp = new Option("help", "print this message");
 		Option ov = new Option("v", "prints version and build-date");
-		
+
 		/*----------------------------
 		  create argument options
 		----------------------------*/
@@ -66,6 +67,12 @@ public class Syscall {
 //				.isRequired()
 				.create("pid");
 
+		Option omaxrun = OptionBuilder.withArgName("INTEGER")
+				.hasArg()
+				.withDescription("[mandatory] after this amount of minutes the run will get terminated..")
+//				.isRequired()
+				.create("maxrun");
+
 		
 		/*----------------------------
 		  create options object
@@ -79,6 +86,7 @@ public class Syscall {
 		options.addOption( ostderr );
 		options.addOption( opid );
 		options.addOption( olog );
+		options.addOption( omaxrun );
 		
 		/*----------------------------
 		  create the parser
@@ -148,6 +156,12 @@ public class Syscall {
 			exiter();
 		}
 		
+		if ( !( commandline.hasOption("maxrun")) )
+		{
+			System.err.println("option -maxrun is mandatory.");
+			exiter();
+		}
+		
 		try {
 
 			String sCall = commandline.getOptionValue("call");
@@ -155,9 +169,13 @@ public class Syscall {
 			String sPid = commandline.getOptionValue("pid");
 			String sStdout = commandline.getOptionValue("stdout");
 			String sStderr = commandline.getOptionValue("stderr");
+			String sMaxrun = commandline.getOptionValue("maxrun");
 
-			// DEBUG
 			
+			// startzeit merken
+			Date startDate = new Date();
+			Date termDate = new Date(startDate.getTime() + Integer.parseInt(sMaxrun)*60*1000);
+						
 			// Aufruf in das call -logfile schreiben
 			PrintWriter writerLog = new PrintWriter(sLog);
 			writerLog.println(new Timestamp(System.currentTimeMillis()));
@@ -167,7 +185,11 @@ public class Syscall {
 			writerLog.println("-stderr "+sStderr);
 			writerLog.println("-pid "+sPid);
 			writerLog.println("-log "+sLog);
+			writerLog.println("-maxrun "+sMaxrun);
 			writerLog.println(sCall);
+			writerLog.println("------------------------------------------------------");
+			writerLog.println("start at               : "+ startDate.toString());
+			writerLog.println("will terminate at: "+ termDate.toString());
 			writerLog.println("-------------- STDOUT and STDERR----------------");
 			writerLog.close();
 
@@ -250,7 +272,13 @@ public class Syscall {
 //			}
 //			
 			
-			sysproc.waitFor();
+			// der prozess soll bis laengstens
+			sysproc.wait(Integer.parseInt(sMaxrun) * 60 *1000);
+			
+			System.out.println("terminating at "+new Date().toString());
+			sysproc.destroy();
+			
+//			sysproc.waitFor();
 			int sysproc_exitvalue = sysproc.exitValue();
 			System.out.println("EXITVALUE: "+sysproc_exitvalue);
 			
