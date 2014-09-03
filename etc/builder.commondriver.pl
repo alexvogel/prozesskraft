@@ -54,7 +54,7 @@ if(stat $defaultVersionFile)
 my @versions;
 
 # alle numerischen versionsstring durchsuchen und sortieren.
-@versions = sort (grep { !/[abcdefghijklmnopqrstuvwxyz]/i } @all_versions);
+@versions = sort { $a <=> $b } @all_versions;
 
 #------------
 #------------
