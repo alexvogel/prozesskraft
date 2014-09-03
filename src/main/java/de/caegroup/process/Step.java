@@ -696,9 +696,8 @@ implements Serializable, Cloneable
 			if (!(this.areFromstepsfinished()))
 			{
 				log("debug", "predecessor step(s) not finished. initialization postponed.");
-				return;
 			}
-			
+
 			// wenn alle fromsteps den status 'finished' haben wird evtl. zuerst 'gefanned'
 			if (this.loop!=null && !(this.loop.equals("")))
 			{
@@ -708,7 +707,6 @@ implements Serializable, Cloneable
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				return;
 			}
 
 			// initialisieren
@@ -721,31 +719,26 @@ implements Serializable, Cloneable
 			{
 				this.initialize();
 			}
-			return;
 		}
 
 		else if(this.getStatus().equals("initialized"))
 		{
 			this.work(aufrufProcessSyscall);
-			return;
 		}
 
 		else if(this.getStatus().equals("working"))
 		{
 			this.work(aufrufProcessSyscall);
-			return;
 		}
 
 		else if(this.getStatus().equals("worked"))
 		{
 			this.commit();
-			return;
 		}
 
 		else if(this.getStatus().equals("committed"))
 		{
 			this.setStatus("finished");
-			return;
 		}
 	}
 
