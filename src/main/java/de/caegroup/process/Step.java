@@ -718,6 +718,7 @@ implements Serializable, Cloneable
 			}
 			else
 			{
+				this.mkdir(this.getAbsdir());
 				this.initialize();
 			}
 		}
@@ -757,7 +758,7 @@ implements Serializable, Cloneable
 			actualInit.doIt();
 			allInitStatus.add(actualInit.getStatus());
 		}
-		
+
 		// status feststellen
 		if(allInitStatus.contains("error"))
 		{
