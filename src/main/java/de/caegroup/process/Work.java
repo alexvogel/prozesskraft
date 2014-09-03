@@ -410,8 +410,8 @@ implements Serializable
 			}
 			catch (Exception e2)
 			{
-				log("error", "something went wrong. an exception...");
-				log("info", "setting status to 'error'");
+				log("error", e2.getMessage());
+				this.setStatus("error");
 			}
 		}
 	}
