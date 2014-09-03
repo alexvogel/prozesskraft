@@ -2,11 +2,11 @@
 
 use strict;
 use warnings;
+use Getopt::Long;
+Getopt::Long::Configure("pass_through");
 
-my $driverversion = "0.2.2";
-my $date = "Feb 21 2013";
-
-my $query;
+my $driverversion = "0.3.0";
+my $date = "Sep 3 2014";
 
 #------------
 # appname feststellen
@@ -18,11 +18,13 @@ BEGIN
 }
 #------------
 
+my $appname = $filename;
+my $default;
 
 #------------
 # feststellen der verfuegbaren versionen
 #my $installdir = $directories."../install/$filename";
-my $installdir = $directories."../install/<appname>";
+my $installdir = $directories."../install/$appname";
 opendir INPDIR, $installdir;   # READ INPUT DIRECTORY FILE LIST
 my @all_versions = readdir INPDIR;  # Read file list
 @all_versions = grep { !/^\.$/ && !/^\.\.$/ } @all_versions;
@@ -32,58 +34,28 @@ closedir INPDIR;  #Close directory
 #------------
 
 #------------
+# feststellen der default version
+my $defaultVersionFile = $directories."../install/version.$appname";
+if(stat $defaultVersionFile)
+{
+	open (DEFAULT, '<', $defaultVersionFile) or die "Can't read $defaultVersionFile: $!";
+	my @defaultVersionFile = <DEFAULT>;
+	chomp @defaultVersionFile;
+	close DEFAULT;
+	
+	# in der ersten zeile steht die version
+	$default = shift @defaultVersionFile;
+}
+#------------
+
 
 #------------
 # Produktivversion
-my $version;
 my @versions;
-my $default;
-my $newest;
 
 # alle numerischen versionsstring durchsuchen und sortieren.
 @versions = sort (grep { !/[abcdefghijklmnopqrstuvwxyz]/i } @all_versions);
-#print "versions are: @versions\n";
 
-# der versionsstring mit der hoechsten nummer ist vorerst der default
-if (@versions)
-{
-	$default = $versions[-1];
-}
-
-# gibt es eine version die exakt 'default' heisst, ist diese der default
-@versions = sort (grep { /^default$/i } @all_versions);
-if (@versions)
-{
-	$default = $versions[0];
-}
-
-# gibt es versionsstring mit buchstaben drin? - das sind die beta versionen und die letzte ist die neueste - vorerst
-@versions = sort (grep { /[abcdefghijklmnopqrstuvwxyz]/i } @all_versions);
-#print "versions are: @versions\n";
-if (@versions)
-{
-	$newest = $versions[-1];
-}
-else
-{
-	$newest = $default;
-}
-
-# gibt es versionsstring 'master' ist das der neueste
-@versions = sort (grep { /^master$/i } @all_versions);
-if (@versions)
-{
-	$newest = $versions[0];
-}
-
-# gibt es versionsstring 'newest' ist das der neueste
-@versions = sort (grep { /^newest$/i } @all_versions);
-if (@versions)
-{
-	$newest = $versions[0];
-}
-
-my @neue_argumente;
 #------------
 #------------
 ## installierte Versionen
@@ -102,70 +74,16 @@ my @neue_argumente;
 #		 );
 ##------------
 
-#------------
-# Den Aufruf durchsuchen nach '--query'
-if ( grep { $_ =~ "-query" } @ARGV ) { $query = 1; }
-#------------
-
-#------------
-# Den Aufruf durchsuchen nach '--version'. version feststellen und aus den argumenten entfernen
-elsif ( grep { $_ =~ /-version/ } @ARGV )
-{
-	my $last_arg_was_plain_version;
-	for(my $x=0; $x<@ARGV; $x++)
-	{
-		if ($ARGV[$x] =~ m/-version/)
-		{
-			if ($ARGV[$x] =~ m/-version$/)
-			{
-				$last_arg_was_plain_version = 1;
-			}
-			elsif ($ARGV[$x] =~ m/-version=(.+)$/)
-			{
-				$version = $1;
-			}
-		}
-		elsif ($last_arg_was_plain_version)
-		{
-			$last_arg_was_plain_version = 0;
-			$version = $ARGV[$x];
-		}
-		else
-		{
-			push(@neue_argumente, $ARGV[$x]);
-		}
-	}
-	if ($version eq "default")
-	{
-		$version = $default;
-	}
-	
-	elsif ($version eq "newest")
-	{
-		if ($newest)
-		{
-			$version = $newest;
-		}
-		else
-		{
-			$version = $default;
-		}
-	}
-	
-}
+my $query;
+my $version;
+my $result = GetOptions(
+#                        "scenesdir=s"=> \$scenesdir,
+                        "query"	=> \$query,
+                        "version=s"	=> \$version,
+                        );
 #------------
 
 #------------
-# wenn @neue_argumente leer ist, dann die @ARGV kopieren
-else
-{
-	@neue_argumente = @ARGV;
-}
-#------------
-
-			
-
-
 
 if ($query)
 {
@@ -195,8 +113,14 @@ if ($query)
         }
         print "\n";
     }
-    if ($default) {print "default is $default\n";}
-    if ($newest) {print "newest is  $newest\n";}
+    if ($default)
+    {
+    	print "default is $default\n";
+    }
+    else
+    {
+    	print "no default defined\n";
+    }
     print "------------------------------\n";
     exit;
 }
@@ -204,8 +128,11 @@ if ($query)
 unless ($version)
 {
     if ($default) {$version = $default;}
-    elsif ($newest) {$version = $newest;}
-    else {print "no version of $filename installed.\n";exit(1);}
+    else
+    {
+    	print "no default version of command '$filename' defined\n";
+    	exit(1);
+    }
 }
 
 unless (grep { $_ eq $version } @all_versions)
@@ -219,6 +146,12 @@ unless (grep { $_ eq $version } @all_versions)
 my @callpossibilities = glob("$installdir/$version/bin/*");
 my @caller;
 #print "$versionen{$version} @neue_argumente\n";
+
+my @neue_argumente;
+foreach my $arg (@ARGV)
+{
+	push(@neue_argumente, '"' . $arg . '"');
+}
 
 # wenn ein einstiegsprogramm gefunden wird, das genauso heisst wie dieses, soll das verwendet werden
 if (@caller = grep {$_ =~ m/$installdir\/$version\/bin\/$filename$/ } @callpossibilities)
