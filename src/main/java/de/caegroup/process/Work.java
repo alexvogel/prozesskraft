@@ -394,8 +394,10 @@ implements Serializable
 				pb.directory(directory);
 
 				// zum debuggen ein paar ausgaben
-				Runtime.getRuntime().exec("date >> ~/tmp.debug.work.txt");
-				Runtime.getRuntime().exec("ls -la "+directory.getAbsolutePath()+" >> ~/tmp.debug.work.txt");
+				java.lang.Process p1 = Runtime.getRuntime().exec("date >> ~/tmp.debug.work.txt");
+				p1.waitFor();
+				java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+directory.getAbsolutePath()+" >> ~/tmp.debug.work.txt");
+				p2.waitFor();
 				
 				// starten des prozesses
 				java.lang.Process sysproc = pb.start();
