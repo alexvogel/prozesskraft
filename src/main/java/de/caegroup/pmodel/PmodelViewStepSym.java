@@ -137,7 +137,7 @@ public class PmodelViewStepSym
 		
 //		makeTimeStamp("5211");
 		// festlegen der circle color in Abhaengigkeit des stepstatus
-		if (this.step.getStatus().equals("waiting|initialized|working|worked|committing|committed|fanning|fanned")) {this.setColor(150,150,150); this.setStrokecolor(50,50,50);} // grau
+		if (this.step.getStatus().matches("waiting|initialized|working|worked|committing|committed|fanning|fanned")) {this.setColor(150,150,150); this.setStrokecolor(50,50,50);} // grau
 		else if (this.step.getStatus().matches("finished"))	{this.setColor(0, 155, 0); this.setStrokecolor(50,50,50);}	// gruen
 		else if (this.step.getStatus().equals("canceled")) {this.setColor(240, 240, 240); this.setStrokecolor(200,200,200);} // fuellung hellgrau, kante grau
 		else if (this.step.getStatus().equals("error")) {this.setColor(220, 0, 0); this.setStrokecolor(50,50,50);} // rot
@@ -229,14 +229,11 @@ public class PmodelViewStepSym
 			parent.text(rank, this.getDrawPosition1() - rank.length()*(neue_rankgroesse/6), this.getDrawPosition2() + (neue_rankgroesse/3));
 		}
 		
-//		tickTimer("5216");
-//		makeTimeStamp("5216");
 		// zeichne beschriftung
 		parent.fill(this.getTextcolor1(), this.getTextcolor2(), this.getTextcolor3());
-		float neue_textgroesse = (this.getRadius()/2)*this.parent.bezugsgroesse*parent.einstellungen.getLabelsize()/10 * this.parent.einstellungen.getZoom()/100;
-		parent.textSize(neue_textgroesse);
-		parent.text(this.getName(), this.getDrawPosition1()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse), this.getDrawPosition2() + (neue_textgroesse/3));
-//		parent.text(this.getName(), this.getPosition1()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse), this.getPosition2()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse));
+//		float neue_textgroesse = (this.getRadius()/2)*this.parent.bezugsgroesse*parent.einstellungen.getLabelsize()/10 * this.parent.einstellungen.getZoom()/100;
+//		parent.textSize(neue_textgroesse);
+//		parent.text(this.getName(), this.getDrawPosition1()+this.getTextdistance()+((this.getRadius()/2)*this.parent.bezugsgroesse), this.getDrawPosition2() + (neue_textgroesse/3));
 		parent.textSize(this.parent.textSize_gemerkt);
 
 		

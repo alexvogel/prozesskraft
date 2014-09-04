@@ -727,10 +727,10 @@ public class PmodelViewPage extends PApplet
 		this.einstellungen.setSize(size);
 	}
 	
-	public void setLabelsize(int labelsize)
-	{
-		this.einstellungen.setLabelsize(labelsize);
-	}
+//	public void setLabelsize(int labelsize)
+//	{
+//		this.einstellungen.setLabelsize(labelsize);
+//	}
 	
 	public void setRootpositionratiox(float rootpositionratiox)
 	{

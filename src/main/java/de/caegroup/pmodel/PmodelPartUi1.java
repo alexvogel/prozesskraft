@@ -102,7 +102,7 @@ public class PmodelPartUi1 extends ModelObject
 	private Scale scale_zoom;
 	private Spinner spinner_textsize;
 	private Spinner spinner_refreshinterval;
-	private Spinner spinner_labelsize;
+//	private Spinner spinner_labelsize;
 	private Button button_fix;
 	private Button button_refresh;
 	private Button button_startmanager;
@@ -300,11 +300,10 @@ public class PmodelPartUi1 extends ModelObject
 		lblNewLabel_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblNewLabel_3.setText("label");
 		
-		spinner_labelsize = new Spinner(grpVisual, SWT.BORDER);
-		spinner_labelsize.setMaximum(20);
-		spinner_labelsize.setSelection(10);
-		spinner_labelsize.setMinimum(0);
-//		new Label(grpVisual, SWT.NONE);
+//		spinner_labelsize = new Spinner(grpVisual, SWT.BORDER);
+//		spinner_labelsize.setMaximum(20);
+//		spinner_labelsize.setSelection(10);
+//		spinner_labelsize.setMinimum(0);
 		
 		Label lblNewLabel_4 = new Label(grpVisual, SWT.NONE);
 		lblNewLabel_4.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -798,9 +797,9 @@ public class PmodelPartUi1 extends ModelObject
 		IObservableValue modelObservableZoomTooltip = BeanProperties.value("sizestring").observe(einstellungen);
 		bindingContextVisual.bindValue(targetObservableZoomTooltip, modelObservableZoomTooltip, null, null);
 		//
-		IObservableValue targetObservableLabelsize = WidgetProperties.selection().observe(spinner_labelsize);
-		IObservableValue modelObservableLabelsize = BeanProperties.value("labelsize").observe(einstellungen);
-		bindingContextVisual.bindValue(targetObservableLabelsize, modelObservableLabelsize, null, null);
+//		IObservableValue targetObservableLabelsize = WidgetProperties.selection().observe(spinner_labelsize);
+//		IObservableValue modelObservableLabelsize = BeanProperties.value("labelsize").observe(einstellungen);
+//		bindingContextVisual.bindValue(targetObservableLabelsize, modelObservableLabelsize, null, null);
 		//
 		IObservableValue targetObservableTextsize = WidgetProperties.selection().observe(spinner_textsize);
 		IObservableValue modelObservableTextsize = BeanProperties.value("textsize").observe(einstellungen);
