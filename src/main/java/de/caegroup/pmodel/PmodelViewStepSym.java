@@ -298,9 +298,10 @@ public class PmodelViewStepSym
 		{
 			double pumpScalierung = 1.0 + (0.1 * Math.sin(System.currentTimeMillis()/500));
 			System.out.println("millis: "+System.currentTimeMillis());
-			System.out.println("sin(millis): "+Math.sin(System.currentTimeMillis()));
-			System.out.println("0.1 * sin(millis): "+(0.1 * Math.sin(System.currentTimeMillis())));
-			System.out.println("1.0 + (0.1 * sin(millis)): "+(1.0 + (0.1 * Math.sin(System.currentTimeMillis()))));
+			System.out.println("millis/500: "+System.currentTimeMillis()/500);
+			System.out.println("sin(millis/500): "+Math.sin(System.currentTimeMillis()/500));
+			System.out.println("0.1 * sin(millis/500): "+(0.1 * Math.sin(System.currentTimeMillis()/500)));
+			System.out.println("1.0 + (0.1 * sin(millis/500)): "+(1.0 + (0.1 * Math.sin(System.currentTimeMillis()/500))));
 			System.out.println("aktueller pumpScale: "+pumpScalierung);
 			
 			parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung * (float)pumpScalierung, this.getRadius() * scalierung * (float)pumpScalierung);
