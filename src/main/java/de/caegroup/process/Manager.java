@@ -213,7 +213,7 @@ public class Manager
 		{
 			p1.setInfilebinary(pathBinary);
 			Process p2 = p1.readBinary();
-			p2.log("info", "stopping manager "+p2.getManagerid());
+			p2.log("debug", "setting new manager-Id (0) to signal actual manager ("+p2.getManagerid()+") that he is no longer in charge ");
 			p2.setManagerid(0);
 			p2.run = false;
 			p2.setOutfilebinary(pathBinary);
