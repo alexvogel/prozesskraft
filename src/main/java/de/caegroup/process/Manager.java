@@ -262,18 +262,17 @@ public class Manager
 			{
 //				p3.log("warn", "manager "+managerid+": it appears that another manager (id: "+p3.getManagerid()+") took over. killing myself. bye.");
 				System.out.println("it appears another instance of manager (id: "+p3.getManagerid()+") took over. so i'm (id: "+managerid+") not longer needed. killing myself. byebye.");
+				incharge = false;
 				System.exit(1);
 			}
 
-			Calendar time_entry = Calendar.getInstance();
-
-			// jeden step durchgehen
-//			for(Step actualStep : p3.getSteps())
+			// wenn es kein wrapper-prozess ist, dann soll die komunikation mit pradar vom manager uebernommen werden
 			boolean pradar =  (!(p3.isWrapper()));
-//			System.out.println("Anzahl Steps: "+p3.getSteps().size());
 
+			// den prozess auf run setzen
 			p3.run = true;
 
+			// die letzten festgestellten werte fuer die abarbeitung
 			int lastStepcount = 0;
 			int lastStepcountFinished = 0;
 
