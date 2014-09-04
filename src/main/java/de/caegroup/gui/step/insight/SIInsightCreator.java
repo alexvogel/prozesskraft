@@ -65,7 +65,7 @@ public class SIInsightCreator
 		composite = new Composite(sc, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		composite.setLayoutData(gd_composite);
-		composite.setLayout(new GridLayout(2, false));
+		composite.setLayout(new GridLayout(1, true));
 		
 		sc.setContent(composite);
 //		sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -91,6 +91,8 @@ public class SIInsightCreator
 
 		Label label2 = new Label(composite, SWT.NONE);
 		label2.setText("status: "+step.getStatus());
+		
+		
 		
 		// tabFolder erzeugen
 		tabFolder = new CTabFolder(composite, SWT.BORDER);
