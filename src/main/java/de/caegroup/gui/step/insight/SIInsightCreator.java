@@ -65,7 +65,7 @@ public class SIInsightCreator
 		composite = new Composite(sc, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		composite.setLayoutData(gd_composite);
-		composite.setLayout(new GridLayout(3, true));
+		composite.setLayout(new GridLayout(2, true));
 		
 		sc.setContent(composite);
 //		sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -81,32 +81,36 @@ public class SIInsightCreator
 	 */
 	public Composite createControls(Composite composite)
 	{
-//		Composite actualComposite = new Composite(composite, SWT.NONE);
-//		actualComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-//		GridLayout gl_actualComposite = new GridLayout(1, false);
-//		actualComposite.setLayout(gl_actualComposite);
 
-		Label labelName = new Label(composite, SWT.NONE);
+		// im bereich fuer die step-daten, soll im oberen teil
+		// links textinformationen stehen
+		// rechts buttons angeordnet sein
+		Composite compositeInfos = new Composite(composite, SWT.NONE);
+		GridData gd_compositeInfos = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		compositeInfos.setLayoutData(gd_compositeInfos);
+		compositeInfos.setLayout(new GridLayout(1, true));
+
+		Label labelName = new Label(compositeInfos, SWT.NONE);
 		labelName.setText("step: "+step.getName());
 
-		Label labelDummy1 = new Label(composite, SWT.NONE);
-		labelDummy1.setText("");
-
-		Button buttonFileBrowser = new Button(composite, SWT.NONE);
-		buttonFileBrowser.setText("browse");
-
-		Label labelStatus = new Label(composite, SWT.NONE);
+		Label labelStatus = new Label(compositeInfos, SWT.NONE);
 		labelStatus.setText("status: "+step.getStatus());
 		
-		Label labelDummy3 = new Label(composite, SWT.NONE);
-		labelDummy3.setText("");
-
-		Label labelDummy4 = new Label(composite, SWT.NONE);
-		labelDummy4.setText("");
+		// im bereich fuer die step-daten, soll im oberen teil
+		// links textinformationen stehen
+		// rechts buttons angeordnet sein
+		Composite compositeButtons = new Composite(composite, SWT.NONE);
+		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		compositeButtons.setLayoutData(gd_compositeButtons);
+		compositeButtons.setLayout(new GridLayout(2, true));
+		
+		Button buttonFileBrowser = new Button(compositeButtons, SWT.NONE);
+		buttonFileBrowser.setText("browse");
+		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		// tabFolder erzeugen
 		tabFolder = new CTabFolder(composite, SWT.BORDER);
-		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		tabFolder.setTabPosition(SWT.TOP);
 //		tabFolder.setTabHeight(30);
