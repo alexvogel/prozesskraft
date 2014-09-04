@@ -248,7 +248,7 @@ public class Manager
 
 		p2.writeBinary();
 
-		// processinstanz frisch einlesen
+		// processinstanz erstmalig einlesen
 		Process p3 = p2.readBinary();
 
 		// wenn es kein wrapper-prozess ist, dann soll die komunikation mit pradar vom manager uebernommen werden
@@ -278,6 +278,9 @@ public class Manager
 			
 		while(p3.run)
 		{
+			// prozess instanz frisch einlesen
+			p3 = p2.readBinary();
+			
 			p3.log("debug", "manager "+managerid+": actual infilexml is: "+p3.getInfilexml());
 			p3.log("debug", "manager "+managerid+": reading binary file: "+p2.getInfilebinary());
 			// die manager-id mit eigener vergleichen. wenn nicht gleich, dann beenden.
@@ -399,7 +402,7 @@ public class Manager
 				p3.log("info", "manager "+managerid+": process instance is finished. goodbye from manager id "+p3.getManagerid());
 				p3.run = false;
 			}
-			
+
 			updateFile(p3);
 
 			if(p3.run == false)
