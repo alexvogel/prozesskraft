@@ -397,12 +397,12 @@ public class PmodelPartUi1 extends ModelObject
 		gl_composite_131.marginHeight = 0;
 		composite_131.setLayout(gl_composite_131);
 
-//		composite_132 = new Composite(composite_13, SWT.BORDER);
-//		composite_132.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-//		GridLayout gl_composite_132 = new GridLayout(1, false);
-//		gl_composite_132.marginWidth = 0;
-//		gl_composite_132.marginHeight = 0;
-//		composite_132.setLayout(gl_composite_132);
+		composite_132 = new Composite(composite_13, SWT.BORDER);
+		composite_132.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		GridLayout gl_composite_132 = new GridLayout(1, false);
+		gl_composite_132.marginWidth = 0;
+		gl_composite_132.marginHeight = 0;
+		composite_132.setLayout(gl_composite_132);
 
 		Composite composite_2 = new Composite(composite, SWT.NONE);
 		composite_2.setLayout(new GridLayout(1, false));
