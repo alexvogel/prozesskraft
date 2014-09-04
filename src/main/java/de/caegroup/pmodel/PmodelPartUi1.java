@@ -654,8 +654,8 @@ public class PmodelPartUi1 extends ModelObject
 			
 			try
 			{
-				log("info", "waiting a second for process become available on disk");
-				Thread.sleep(1000);
+				log("info", "waiting 2 seconds for process become available on disk");
+				Thread.sleep(2000);
 			} catch (InterruptedException e)
 			{
 				// TODO Auto-generated catch block
