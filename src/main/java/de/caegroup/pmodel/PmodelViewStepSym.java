@@ -394,7 +394,7 @@ public class PmodelViewStepSym
 		{
 			// wenn er sich ausserhalb des sichtbaren bereichs befindet oder einfach so repositioniert werden soll
 			if(	(p.einstellungen.getRootReposition()) ||
-					((this.getPosition1() > p.getWidth()) || (this.getPosition2() > p.getHeight()) || (this.getPosition1() < 0) || (this.getPosition2() < 0))
+					((this.getPosition1() > (p.getWidth() *p.einstellungen.getZoom())) || (this.getPosition2() > p.getHeight() *p.einstellungen.getZoom()) || (this.getPosition1() < 0) || (this.getPosition2() < 0))
 				)
 			{
 				this.parent.deltax = (int) ((p.getWidth() * this.parent.einstellungen.getRootpositionratiox()) - this.getPosition1());
