@@ -1,5 +1,6 @@
 package de.caegroup.gui.step.insight;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -142,6 +143,8 @@ public class SIInsightCreator
 		Button buttonFileBrowser = new Button(compositeButtons, SWT.NONE);
 		buttonFileBrowser.setText("browse");
 		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonFileBrowser.setToolTipText("open step directory with a filebrowser");
+		buttonFileBrowser.addSelectionListener(listener_button_browse);
 
 		// tabFolder erzeugen
 		tabFolder = new CTabFolder(composite, SWT.BORDER);
@@ -259,6 +262,42 @@ public class SIInsightCreator
 		public void widgetSelected(SelectionEvent event)
 		{
 			new EditFile(This, step);
+		}
+	};
+
+	SelectionAdapter listener_button_browse = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			java.io.File stepDir = new java.io.File(step.getAbsdir());
+			if(!stepDir.exists())
+			{
+				father.log("error", "directory does not exist: "+stepDir.getAbsolutePath());
+			}
+			else if(!stepDir.isDirectory())
+			{
+				father.log("error", "is not a directory: "+stepDir.getAbsolutePath());
+			}
+			else if(!stepDir.canRead())
+			{
+				father.log("error", "cannot read directory: "+stepDir.getAbsolutePath());
+			}
+			
+			else
+			{
+				String call = father.getIni().get("apps", "filebrowser") + " " + stepDir.getAbsolutePath(); 
+				father.log("info", "calling: "+call);
+				
+				try
+				{
+					java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+				}
+				catch (IOException e)
+				{
+					father.log("error", e.getMessage());
+				}
+			}
+
 		}
 	};
 

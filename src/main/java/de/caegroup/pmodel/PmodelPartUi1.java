@@ -849,7 +849,7 @@ public class PmodelPartUi1 extends ModelObject
 		this.iniFile = file.getAbsolutePath();
 	}
 
-	String getIni ()
+	public String getInifile ()
 	{
 		return this.iniFile;
 	}
@@ -857,6 +857,11 @@ public class PmodelPartUi1 extends ModelObject
 	File getIniAsFile ()
 	{
 		return new File(this.iniFile);
+	}
+	
+	public Ini getIni ()
+	{
+		return this.ini;
 	}
 	
 	/**
@@ -927,6 +932,7 @@ public class PmodelPartUi1 extends ModelObject
 		return this.einstellungen.getProcess();
 	}
 	
+
 	/**
 	 * checkout License from floatingLicenseServer
 	 * @return void
