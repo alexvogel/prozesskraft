@@ -107,7 +107,7 @@ public class SIInsightCreator
 		labelStatus.setText("status: "+step.getStatus());
 
 		// oben-rechts sind buttons angeordnet
-		Composite compositeButtons = new Composite(composite, SWT.NONE);
+		Composite compositeButtons = new Composite(compositeInfoAction, SWT.NONE);
 		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		compositeButtons.setLayoutData(gd_compositeButtons);
 		compositeButtons.setLayout(new GridLayout(1, true));
@@ -116,13 +116,13 @@ public class SIInsightCreator
 		buttonFileBrowser.setText("browse");
 		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-//		// tabFolder erzeugen
-//		tabFolder = new CTabFolder(composite, SWT.BORDER);
-////		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-//		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
-//		tabFolder.setTabPosition(SWT.TOP);
-////		tabFolder.setTabHeight(30);
-////		tabFolder.addSelectionListener(listener_tabFolder_selection);
+		// tabFolder erzeugen
+		tabFolder = new CTabFolder(composite, SWT.BORDER);
+//		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
+		tabFolder.setTabPosition(SWT.TOP);
+//		tabFolder.setTabHeight(30);
+//		tabFolder.addSelectionListener(listener_tabFolder_selection);
 
 //		// ein tabItem fuer 'lists' erzeugen
 //		CTabItem tabItem_lists = new CTabItem(tabFolder, SWT.NONE);
