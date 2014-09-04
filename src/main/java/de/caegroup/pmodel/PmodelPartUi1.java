@@ -542,7 +542,8 @@ public class PmodelPartUi1 extends ModelObject
 	public void applet_autoscale()
 	{
 		this.einstellungen.setSize(100);
-		this.einstellungen.setRootReposition(true);
+		this.einstellungen.setRootpositionratiox(1/5);
+		this.einstellungen.setRootpositionratioy(1/2);
 		//		applet.autoscale();
 	}
 	
