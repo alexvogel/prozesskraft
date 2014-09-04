@@ -138,14 +138,10 @@ public class PmodelViewStepSym
 		
 //		makeTimeStamp("5211");
 		// festlegen der circle color in Abhaengigkeit des stepstatus
-		if (this.step.getStatus().equals("waiting")) {this.setColor(200, 200, 200);}
-		else if (this.step.getStatus().matches("initializing|initialized|working|worked|committing|committed|fanning|fanned|finished"))
-		{
-			System.out.println(this.step.getName() + ": setting collor to 155/0/0");
-			this.setColor(155, 0, 0);
-		}
-		else if (this.step.getStatus().equals("canceled")) {this.setColor(240, 240, 240);}
-		else if (this.step.getStatus().equals("error")) {this.setColor(220, 0, 0);}
+		if (this.step.getStatus().equals("waiting")) {this.setColor(200, 200, 200);} // grau
+		else if (this.step.getStatus().matches("finished"))	{this.setColor(155, 0, 0);}	// gruen
+		else if (this.step.getStatus().equals("canceled")) {this.setColor(240, 240, 240);} // hellgrau
+		else if (this.step.getStatus().equals("error")) {this.setColor(220, 0, 0);} // rot
 		
 //		tickTimer("5212");
 //		makeTimeStamp("5212");
