@@ -723,7 +723,7 @@ implements Serializable, Cloneable
 			}
 		}
 
-		else if(this.getStatus().equals("initialized"))
+		if(this.getStatus().equals("initialized"))
 		{
 			this.work(aufrufProcessSyscall);
 		}
@@ -733,7 +733,7 @@ implements Serializable, Cloneable
 			this.work(aufrufProcessSyscall);
 		}
 
-		else if(this.getStatus().equals("worked"))
+		if(this.getStatus().equals("worked"))
 		{
 			this.commit();
 		}
