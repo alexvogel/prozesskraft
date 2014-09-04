@@ -114,7 +114,7 @@ public class SIInsightCreator
 		GridData gd_compositeInfo = new GridData(SWT.FILL, SWT.FILL, true, true,1, 1);
 		compositeInfo.setLayoutData(gd_compositeInfo);
 
-		GridLayout gridLayout_Info = new GridLayout(2, true);
+		GridLayout gridLayout_Info = new GridLayout(1, true);
 		gridLayout_Info.marginBottom = 0;
 		gridLayout_Info.marginTop = 0;
 		gridLayout_Info.marginLeft = 0;
@@ -132,7 +132,7 @@ public class SIInsightCreator
 		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		compositeButtons.setLayoutData(gd_compositeButtons);
 
-		GridLayout gridLayout_Action = new GridLayout(1, true);
+		GridLayout gridLayout_Action = new GridLayout(2, true);
 		gridLayout_Action.marginBottom = 0;
 		gridLayout_Action.marginTop = 0;
 		gridLayout_Action.marginLeft = 0;
