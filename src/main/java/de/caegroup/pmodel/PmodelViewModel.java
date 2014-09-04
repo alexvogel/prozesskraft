@@ -11,7 +11,7 @@ public class PmodelViewModel extends ModelObject
 	public int size = 100;
 	public int zoom = 100;
 	public String zoomstring = "";
-//	public int labelsize = 10;
+
 	public int textsize = 10;
 	public int ranksize = 10;
 	public float rootpositionratiox = 0f;
@@ -100,16 +100,6 @@ public class PmodelViewModel extends ModelObject
 	{
 		firePropertyChange("zoomstring", this.zoomstring, this.zoomstring = zoomstring);
 	}
-
-//	public int getLabelsize()
-//	{
-//		return labelsize;
-//	}
-//
-//	public void setLabelsize(int labelsize)
-//	{
-//		firePropertyChange("labelsize", this.labelsize, this.labelsize = labelsize);
-//	}
 
 	public int getTextsize()
 	{

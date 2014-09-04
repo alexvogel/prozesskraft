@@ -102,13 +102,11 @@ public class PmodelPartUi1 extends ModelObject
 	private Scale scale_zoom;
 	private Spinner spinner_textsize;
 	private Spinner spinner_refreshinterval;
-//	private Spinner spinner_labelsize;
+
 	private Button button_fix;
 	private Button button_refresh;
 	private Button button_startmanager;
 	private Button button_stopmanager;
-	private Scale scale_gravx;
-	private Scale scale_gravy;
 //	private Process process = new Process();
 	private String iniFile = null;
 	private Ini ini = null;
@@ -312,28 +310,6 @@ public class PmodelPartUi1 extends ModelObject
 		spinner_textsize.setMaximum(20);
 		spinner_textsize.setSelection(10);
 		spinner_textsize.setMinimum(0);
-		
-		scale_gravx = new Scale(grpVisual, SWT.NONE);
-		scale_gravx.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		scale_gravx.setMaximum(100);
-		scale_gravx.setMinimum(1);
-		scale_gravx.setSelection(1);
-		
-		Label lblNewLabel_5 = new Label(grpVisual, SWT.NONE);
-		lblNewLabel_5.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblNewLabel_5.setText("gravX");
-		
-		scale_gravy = new Scale(grpVisual, SWT.NONE);
-		scale_gravy.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		scale_gravy.setMaximum(100);
-		scale_gravy.setMinimum(0);
-		scale_gravy.setSelection(10);
-//		scale_gravx.addMouseWheelListener(listener_mousewheel);
-		
-		Label lblNewLabel_6 = new Label(grpVisual, SWT.NONE);
-		lblNewLabel_6.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblNewLabel_6.setText("gravX");
-		//		scale_gravx.addMouseWheelListener(listener_mousewheel);
 				
 		button_fix = new Button(grpVisual, SWT.NONE | SWT.TOGGLE);
 		button_fix.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -566,6 +542,7 @@ public class PmodelPartUi1 extends ModelObject
 	public void applet_autoscale()
 	{
 		this.einstellungen.setSize(100);
+		this.einstellungen.setRootReposition(true);
 		//		applet.autoscale();
 	}
 	
