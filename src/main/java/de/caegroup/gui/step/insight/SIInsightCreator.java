@@ -91,7 +91,7 @@ public class SIInsightCreator
 
 		// oberer Bereich fuer die stepdaten
 		Composite compositeInfoAction = new Composite(composite, SWT.NONE);
-		GridData gd_compositeInfoAction = new GridData(SWT.FILL, SWT.FILL, true, false,2, 1);
+		GridData gd_compositeInfoAction = new GridData(SWT.FILL, SWT.NONE, true, false,2, 1);
 		compositeInfoAction.setLayoutData(gd_compositeInfoAction);
 		compositeInfoAction.setLayout(new GridLayout(2, true));
 
@@ -111,7 +111,7 @@ public class SIInsightCreator
 		Composite compositeButtons = new Composite(compositeInfoAction, SWT.NONE);
 		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		compositeButtons.setLayoutData(gd_compositeButtons);
-		compositeButtons.setLayout(new GridLayout(1, true));
+		compositeButtons.setLayout(new GridLayout(2, true));
 
 		Button buttonFileBrowser = new Button(compositeButtons, SWT.NONE);
 		buttonFileBrowser.setText("browse");
