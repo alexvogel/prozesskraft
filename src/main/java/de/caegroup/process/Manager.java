@@ -41,6 +41,7 @@ public class Manager
 	----------------------------*/
 	static CommandLine line;
 	static Ini ini;
+	static boolean weiterlaufen = true;
 
 	
 	/*----------------------------
@@ -246,40 +247,37 @@ public class Manager
 
 		p2.log("debug", "manager "+managerid+": writing process to binary file to occupy instance.");
 
-		p2.writeBinary();
-
-		// processinstanz erstmalig einlesen
-		Process p3 = p2.readBinary();
+		p2.run = true;
 
 		// wenn es kein wrapper-prozess ist, dann soll die komunikation mit pradar vom manager uebernommen werden
-		boolean pradar =  (!(p3.isWrapper()));
-
-		// den prozess auf run setzen
-		p3.run = true;
+		boolean pradar =  (!(p2.isWrapper()));
 
 		// die letzten festgestellten werte fuer die abarbeitung
 		int lastStepcount = 0;
 		int lastStepcountFinished = 0;
 
 		// pradar checkin
-		if(pradar && p3.run && p3.touchInMillis == 0)
+		if(pradar && p2.run && p2.touchInMillis == 0)
 		{
-			String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-resource="+pathBinary};
-			p3.log("info", "call: " + StringUtils.join(argsForCheckin, " "));
+			String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p2.getRandomId(), "-process="+p2.getName(), "-resource="+pathBinary};
+			p2.log("info", "call: " + StringUtils.join(argsForCheckin, " "));
 			try
 			{
 				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForCheckin, " "));
 			}
 			catch (IOException e)
 			{
-				p3.log("warn", e.getMessage());
+				p2.log("warn", e.getMessage());
 			}
 		}
 			
-		while(p3.run)
+		p2.writeBinary();
+		
+		while(weiterlaufen)
 		{
 			// prozess instanz frisch einlesen
-			p3 = p2.readBinary();
+			Process p3 = p2.readBinary();
+			weiterlaufen = p3.run;
 			
 			p3.log("debug", "manager "+managerid+": actual infilexml is: "+p3.getInfilexml());
 			p3.log("debug", "manager "+managerid+": reading binary file: "+p2.getInfilebinary());
