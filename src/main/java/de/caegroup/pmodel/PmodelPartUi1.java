@@ -387,17 +387,17 @@ public class PmodelPartUi1 extends ModelObject
 //		tabFolder_13.addSelectionListener(listener_tabFolder_selection);
 		new Label(composite_1, SWT.NONE);
 
-		SashForm sashForm_13 = new SashForm(composite_13, SWT.SMOOTH | SWT.VERTICAL);
-		sashForm_13.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+//		SashForm sashForm_13 = new SashForm(composite_13, SWT.SMOOTH | SWT.VERTICAL);
+//		composite_13.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-		composite_131 = new Composite(sashForm_13, SWT.BORDER);
+		composite_131 = new Composite(composite_13, SWT.BORDER);
 		composite_131.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		GridLayout gl_composite_131 = new GridLayout(2, false);
 		gl_composite_131.marginWidth = 0;
 		gl_composite_131.marginHeight = 0;
 		composite_131.setLayout(gl_composite_131);
 
-		composite_132 = new Composite(sashForm_13, SWT.BORDER);
+		composite_132 = new Composite(composite_13, SWT.BORDER);
 		composite_132.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		GridLayout gl_composite_132 = new GridLayout(1, false);
 		gl_composite_132.marginWidth = 0;
