@@ -92,50 +92,50 @@ public class PIInsightCreator
 		label_processName2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		label_processName2.setText(this.process.getName());
 		
-		// instanceFile
-		Label label_instanceDirectory1 = new Label(fieldComposite, SWT.NONE);
-		label_instanceDirectory1.setText("instance file: ");
+//		// instanceFile
+//		Label label_instanceDirectory1 = new Label(fieldComposite, SWT.NONE);
+//		label_instanceDirectory1.setText("instance file: ");
+//
+//		Label label_instanceDirectory2 = new Label(fieldComposite, SWT.NONE);
+//		label_instanceDirectory2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+//		if ((new java.io.File(this.process.getInfilebinary()).getParent()) != null)
+//		{
+//			label_instanceDirectory2.setText(new java.io.File(this.process.getInfilebinary()).getAbsolutePath());
+//		}
+//		else
+//		{
+//			label_instanceDirectory2.setText("unknown");
+//		}
 
-		Label label_instanceDirectory2 = new Label(fieldComposite, SWT.NONE);
-		label_instanceDirectory2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		if ((new java.io.File(this.process.getInfilebinary()).getParent()) != null)
-		{
-			label_instanceDirectory2.setText(new java.io.File(this.process.getInfilebinary()).getAbsolutePath());
-		}
-		else
-		{
-			label_instanceDirectory2.setText("unknown");
-		}
+//		// rootDirectory
+//		Label label_rootDirectory1 = new Label(fieldComposite, SWT.NONE);
+//		label_rootDirectory1.setText("root directory: ");
+//		
+//		Label label_rootDirectory2 = new Label(fieldComposite, SWT.NONE);
+//		label_rootDirectory2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+//		if ((new java.io.File(this.process.getRootdir()).getParent()) != null)
+//		{
+//			label_rootDirectory2.setText(new java.io.File(this.process.getRootdir()).getAbsolutePath());
+//		}
+//		else
+//		{
+//			label_rootDirectory2.setText("unknown");
+//		}
 
-		// rootDirectory
-		Label label_rootDirectory1 = new Label(fieldComposite, SWT.NONE);
-		label_rootDirectory1.setText("root directory: ");
-		
-		Label label_rootDirectory2 = new Label(fieldComposite, SWT.NONE);
-		label_rootDirectory2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		if ((new java.io.File(this.process.getRootdir()).getParent()) != null)
-		{
-			label_rootDirectory2.setText(new java.io.File(this.process.getRootdir()).getAbsolutePath());
-		}
-		else
-		{
-			label_rootDirectory2.setText("unknown");
-		}
-
-		// definitionDirectory
-		Label label_definitionDirectory1 = new Label(fieldComposite, SWT.NONE);
-		label_definitionDirectory1.setText("definition directory: ");
-		
-		Label label_definitionDirectory2 = new Label(fieldComposite, SWT.NONE);
-		label_definitionDirectory2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		if ((new java.io.File(this.process.getInfilexml()).getParent()) != null)
-		{
-			label_definitionDirectory2.setText((new java.io.File(this.process.getInfilexml()).getParent()));
-		}
-		else
-		{
-			label_definitionDirectory2.setText("unknown");
-		}
+//		// definitionDirectory
+//		Label label_definitionDirectory1 = new Label(fieldComposite, SWT.NONE);
+//		label_definitionDirectory1.setText("definition directory: ");
+//		
+//		Label label_definitionDirectory2 = new Label(fieldComposite, SWT.NONE);
+//		label_definitionDirectory2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+//		if ((new java.io.File(this.process.getInfilexml()).getParent()) != null)
+//		{
+//			label_definitionDirectory2.setText((new java.io.File(this.process.getInfilexml()).getParent()));
+//		}
+//		else
+//		{
+//			label_definitionDirectory2.setText("unknown");
+//		}
 
 		// lastTouchByManager
 		Label label_lastTouch1 = new Label(fieldComposite, SWT.NONE);
@@ -154,7 +154,7 @@ public class PIInsightCreator
 		label_processStatus2.setText("unknown");
 
 		// erstellen eines table fuer das Prozess-Logging
-		new PILogGui(composite, process);
+//		new PILogGui(composite, process);
 
 		// databinding
 		initDataBindingsProcess();

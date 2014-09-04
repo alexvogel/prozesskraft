@@ -76,8 +76,9 @@ public class SIDebugGui
 
 		viewer.setContentProvider(new MyContentProvider());
 		viewer.setLabelProvider(new MyLabelProvider());
-		viewer.setInput(step.getLogRecursive());
 		
+		viewer.setInput(step.getLogRecursive());
+
 		// auf die letzte zeile fokussieren
 		table.setSelection(table.getItemCount()-1);
 //		System.out.println("Anzahl ist: "+step.getLog().size());
