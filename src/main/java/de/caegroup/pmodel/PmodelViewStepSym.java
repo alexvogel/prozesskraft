@@ -140,7 +140,7 @@ public class PmodelViewStepSym
 		if (this.step.getStatus().equals("waiting")) {this.setColor(200, 200, 200);}
 		else if (this.step.getStatus().matches("initializing|initialized|working|worked|committing|committed|fanning|fanned|finished"))
 		{
-			System.out.println("setting collor to 0/155/0");
+			System.out.println(this.step.getName() + ": setting collor to 0/155/0");
 			this.setColor(0, 155, 0);
 		}
 		else if (this.step.getStatus().equals("canceled")) {this.setColor(240, 240, 240);}
@@ -296,8 +296,8 @@ public class PmodelViewStepSym
 		double pumpScalierung = 1.0 + (0.1 * Math.sin(System.currentTimeMillis()));
 		System.out.println("millis: "+System.currentTimeMillis());
 		System.out.println("sin(millis): "+Math.sin(System.currentTimeMillis()));
-		System.out.println("0.1 * sin(millis): "+0.1 * Math.sin(System.currentTimeMillis()));
-		System.out.println("1.0 + (0.1 * sin(millis)): "+1.0 + (0.1 * Math.sin(System.currentTimeMillis())));
+		System.out.println("0.1 * sin(millis): "+(0.1 * Math.sin(System.currentTimeMillis())));
+		System.out.println("1.0 + (0.1 * sin(millis)): "+(1.0 + (0.1 * Math.sin(System.currentTimeMillis()))));
 		System.out.println("aktueller pumpScale: "+pumpScalierung);
 		
 		parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung, this.getRadius() * scalierung);
