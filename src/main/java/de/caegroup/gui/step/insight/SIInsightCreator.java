@@ -109,7 +109,7 @@ public class SIInsightCreator
 
 		// oben-rechts sind buttons angeordnet
 		Composite compositeButtons = new Composite(compositeInfoAction, SWT.NONE);
-		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2);
+		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		compositeButtons.setLayoutData(gd_compositeButtons);
 		compositeButtons.setLayout(new GridLayout(1, true));
 
