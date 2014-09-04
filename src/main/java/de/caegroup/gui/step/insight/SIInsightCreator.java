@@ -84,9 +84,8 @@ public class SIInsightCreator
 
 		// im bereich fuer die step-daten, soll im oberen teil
 		// links textinformationen stehen
-		// rechts buttons angeordnet sein
 		Composite compositeInfos = new Composite(composite, SWT.NONE);
-		GridData gd_compositeInfos = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		GridData gd_compositeInfos = new GridData(SWT.FILL, SWT.FILL, true, true,2, 1);
 		compositeInfos.setLayoutData(gd_compositeInfos);
 		compositeInfos.setLayout(new GridLayout(1, true));
 
@@ -97,16 +96,15 @@ public class SIInsightCreator
 		labelStatus.setText("status: "+step.getStatus());
 		
 		// im bereich fuer die step-daten, soll im oberen teil
-		// links textinformationen stehen
 		// rechts buttons angeordnet sein
 		Composite compositeButtons = new Composite(composite, SWT.NONE);
-		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1);
 		compositeButtons.setLayoutData(gd_compositeButtons);
 		compositeButtons.setLayout(new GridLayout(2, true));
 		
 		Button buttonFileBrowser = new Button(compositeButtons, SWT.NONE);
 		buttonFileBrowser.setText("browse");
-		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
 		// tabFolder erzeugen
 		tabFolder = new CTabFolder(composite, SWT.BORDER);
