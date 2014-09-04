@@ -92,8 +92,8 @@ public class SIInsightCreator
 		Label labelDummy1 = new Label(composite, SWT.NONE);
 		labelDummy1.setText("");
 
-		Label labelDummy2 = new Label(composite, SWT.NONE);
-		labelDummy2.setText("");
+		Button buttonFileBrowser = new Button(composite, SWT.NONE);
+		buttonFileBrowser.setText("browse");
 
 		Label labelStatus = new Label(composite, SWT.NONE);
 		labelStatus.setText("status: "+step.getStatus());
