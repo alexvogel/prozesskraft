@@ -65,7 +65,13 @@ public class SIInsightCreator
 		composite = new Composite(sc, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		composite.setLayoutData(gd_composite);
-		composite.setLayout(new GridLayout(2, true));
+
+		FillLayout fillLayoutStepBereich = new FillLayout();
+		fillLayoutStepBereich.type = SWT.VERTICAL;
+		composite.setLayout(fillLayoutStepBereich);
+
+		// alternativ mit GridLayout
+//		composite.setLayout(new GridLayout(2, true));
 		
 		sc.setContent(composite);
 //		sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -84,8 +90,8 @@ public class SIInsightCreator
 
 		// oberer Bereich fuer die stepdaten
 		Composite compositeInfoAction = new Composite(composite, SWT.NONE);
-		GridData gd_compositeInfoAction = new GridData(SWT.FILL, SWT.FILL, true, false,1, 1);
-		compositeInfoAction.setLayoutData(gd_compositeInfoAction);
+//		GridData gd_compositeInfoAction = new GridData(SWT.FILL, SWT.FILL, true, false,1, 1);
+//		compositeInfoAction.setLayoutData(gd_compositeInfoAction);
 		compositeInfoAction.setLayout(new GridLayout(2, true));
 
 		// oben-links stehen textinformationen
@@ -112,7 +118,7 @@ public class SIInsightCreator
 
 		// tabFolder erzeugen
 		tabFolder = new CTabFolder(composite, SWT.BORDER);
-		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+//		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		tabFolder.setTabPosition(SWT.TOP);
 //		tabFolder.setTabHeight(30);
