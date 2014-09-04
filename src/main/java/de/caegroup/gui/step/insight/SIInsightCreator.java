@@ -72,7 +72,14 @@ public class SIInsightCreator
 //		composite.setLayout(fillLayoutStepBereich);
 
 		// alternativ mit GridLayout
-		composite.setLayout(new GridLayout(2, true));
+		GridLayout gridLayoutStepBereich = new GridLayout(2, true);
+		gridLayoutStepBereich.marginBottom = 0;
+		gridLayoutStepBereich.marginTop = 0;
+		gridLayoutStepBereich.marginLeft = 0;
+		gridLayoutStepBereich.marginRight = 0;
+//		gridLayoutStepBereich.horizontalSpacing = 0;
+//		gridLayoutStepBereich.verticalSpacing = 0;
+		composite.setLayout(gridLayoutStepBereich);
 		
 		sc.setContent(composite);
 //		sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -92,8 +99,15 @@ public class SIInsightCreator
 		// oberer Bereich fuer die stepdaten
 		Composite compositeInfoAction = new Composite(composite, SWT.NONE);
 		GridData gd_compositeInfoAction = new GridData(SWT.FILL, SWT.NONE, true, false,2, 1);
+
 		compositeInfoAction.setLayoutData(gd_compositeInfoAction);
-		compositeInfoAction.setLayout(new GridLayout(2, true));
+		
+		GridLayout gridLayout_InfoAction = new GridLayout(2, true);
+		gridLayout_InfoAction.marginBottom = 0;
+		gridLayout_InfoAction.marginTop = 0;
+		gridLayout_InfoAction.marginLeft = 0;
+		gridLayout_InfoAction.marginRight = 0;
+		compositeInfoAction.setLayout(gridLayout_InfoAction);
 
 		// oben-links stehen textinformationen
 		Composite compositeInfo = new Composite(compositeInfoAction, SWT.NONE);
