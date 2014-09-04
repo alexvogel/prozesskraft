@@ -95,7 +95,7 @@ public class PIInsightCreator
 		// instanceFile
 		Label label_instanceDirectory1 = new Label(fieldComposite, SWT.NONE);
 		label_instanceDirectory1.setText("instance file: ");
-		
+
 		Label label_instanceDirectory2 = new Label(fieldComposite, SWT.NONE);
 		label_instanceDirectory2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		if ((new java.io.File(this.process.getInfilebinary()).getParent()) != null)

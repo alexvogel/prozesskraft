@@ -138,7 +138,6 @@ public class PmodelPartUi1 extends ModelObject
 
 	int logLineCount = 0;
 
-	String processManagerCall = "undefined";
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
 	 * @wbp.parser.entryPoint
@@ -671,7 +670,7 @@ public class PmodelPartUi1 extends ModelObject
 	
 	public void managerActivate()
 	{
-		String aufruf = this.processManagerCall+" -instance "+this.einstellungen.process.getInfilebinary();
+		String aufruf = ini.get("apps", "process-manager")+" -instance "+this.einstellungen.process.getInfilebinary();
 		try
 		{
 			log("info", aufruf);
@@ -705,7 +704,7 @@ public class PmodelPartUi1 extends ModelObject
 	
 	public void managerDeactivate()
 	{
-		String aufruf = this.processManagerCall+" -stop -instance "+this.einstellungen.process.getInfilebinary();
+		String aufruf =  ini.get("apps", "process-manager")+" -stop -instance "+this.einstellungen.process.getInfilebinary();
 		try
 		{
 			log("info", aufruf);
@@ -905,8 +904,6 @@ public class PmodelPartUi1 extends ModelObject
 			}
 			this.license_server_port_at_hostname = license_server_list;
 
-			this.processManagerCall = ini.get("process", "manager");
-			
 		}
 		catch (FileNotFoundException e)
 		{
