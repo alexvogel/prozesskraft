@@ -132,7 +132,7 @@ public class SIInsightCreator
 		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		compositeButtons.setLayoutData(gd_compositeButtons);
 
-		GridLayout gridLayout_Action = new GridLayout(2, true);
+		GridLayout gridLayout_Action = new GridLayout(1, true);
 		gridLayout_Action.marginBottom = 0;
 		gridLayout_Action.marginTop = 0;
 		gridLayout_Action.marginLeft = 0;
@@ -144,8 +144,7 @@ public class SIInsightCreator
 		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		// tabFolder erzeugen
-		tabFolder = new CTabFolder(composite, SWT.NONE);
-//		tabFolder = new CTabFolder(composite, SWT.BORDER);
+		tabFolder = new CTabFolder(composite, SWT.BORDER);
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		tabFolder.setTabPosition(SWT.TOP);
