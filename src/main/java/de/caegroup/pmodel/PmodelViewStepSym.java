@@ -58,8 +58,9 @@ public class PmodelViewStepSym
 		this.name = s.getName();
 
 		// festlegen der initialen position und rank
-		if (p.rootstepname.equals(this.name))
+		if (p.rootstepname.equals(this.name) && p.einstellungen.getRootReposition())
 		{
+			p.einstellungen.setRootReposition(false);
 			this.setPosition(p.einstellungen.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.einstellungen.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);
 			System.out.println(this.step.getName()+" " + this.step.getLevel() + " position: "+this.getPosition1()+", "+this.getPosition2());
 //			this.rank = "";
@@ -391,18 +392,13 @@ public class PmodelViewStepSym
 		// wenn es der root-step ist
 		if (p.rootstepname.equals(this.name))
 		{
-			// wenn er automatisch repositioniert werden darf
-			if(this.parent.einstellungen.getRootReposition())
+			// wenn er sich ausserhalb des sichtbaren bereichs befindet oder einfach so repositioniert werden soll
+			if(	(p.einstellungen.getRootReposition()) ||
+					((this.getPosition1() > p.getWidth()) || (this.getPosition2() > p.getHeight()) || (this.getPosition1() < 0) || (this.getPosition2() < 0))
+				)
 			{
-				// wenn er sich ausserhalb des sichtbaren bereichs befindet, soll die gesamte flaeche verschoben werden
-				if((this.getPosition1() > p.getWidth()) || (this.getPosition2() > p.getHeight()) || (this.getPosition1() < 0) || (this.getPosition2() < 0))
-				{
-//					System.out.println("rootpositionratiox: "+this.parent.einstellungen.getRootpositionratiox());
-//					System.out.println("rootpositionratioy: "+this.parent.einstellungen.getRootpositionratioy());
-					this.parent.deltax = (int) ((p.getWidth() * this.parent.einstellungen.getRootpositionratiox()) - this.getPosition1());
-					this.parent.deltay = (int) ((p.getHeight() * this.parent.einstellungen.getRootpositionratioy()) - this.getPosition2());
-//					this.setPosition(p.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);
-				}
+				this.parent.deltax = (int) ((p.getWidth() * this.parent.einstellungen.getRootpositionratiox()) - this.getPosition1());
+				this.parent.deltay = (int) ((p.getHeight() * this.parent.einstellungen.getRootpositionratioy()) - this.getPosition2());
 			}
 		}
 		
