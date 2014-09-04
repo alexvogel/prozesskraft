@@ -19,7 +19,7 @@ public class PmodelViewStepSym
 	private long nanoTime = System.nanoTime();
 	private Random generator = new Random();
 	private String name = new String();
-	private int[] color = {255,255,255};
+	private int[] color = {255,255,255}; // (Gruen / Rot / Blau) nicht RGB!
 	private int radius = 40;
 	private float[] position = new float[3];
 //	private float[] textposition = {this.position[0] + (this.radius / 2) + this.textdistance, this.position[1] + (this.textsize / 2), this.position[2]};
@@ -295,7 +295,7 @@ public class PmodelViewStepSym
 		
 		if(pump)
 		{
-			double pumpScalierung = 1.0 + (0.1 * Math.sin(System.currentTimeMillis()));
+			double pumpScalierung = 1.0 + (0.1 * Math.sin(System.currentTimeMillis()/1000));
 			System.out.println("millis: "+System.currentTimeMillis());
 			System.out.println("sin(millis): "+Math.sin(System.currentTimeMillis()));
 			System.out.println("0.1 * sin(millis): "+(0.1 * Math.sin(System.currentTimeMillis())));
