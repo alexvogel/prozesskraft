@@ -63,7 +63,7 @@ public class SIInsightCreator
 //		sc.setAlwaysShowScrollBars(true);
 		
 		composite = new Composite(sc, SWT.NONE);
-		GridData gd_composite = new GridData();
+		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		composite.setLayoutData(gd_composite);
 		composite.setLayout(new GridLayout(2, false));
 		
