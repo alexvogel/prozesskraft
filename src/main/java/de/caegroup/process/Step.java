@@ -1401,8 +1401,15 @@ implements Serializable, Cloneable
 	
 	public ArrayList<Log> getLogRecursive()
 	{
+		
 		// zuerst das eigene log kopieren
 		ArrayList<Log> logRecursive = this.getLog();
+		
+		// wenn this root ist, soll das logging von process mitgenommen werden
+		if(this.getParent().getRootstepname().equals(this.getName()))
+		{
+			logRecursive.addAll(this.getParent().getLog());
+		}
 		
 		// die logs aller Inits in die Sammlung uebernehmen
 		for(Init actInit : this.getInit())
