@@ -18,7 +18,7 @@ public class PmodelViewStepSym
 //	private double maxspeed = 0;
 	private long nanoTime = System.nanoTime();
 	private Random generator = new Random();
-	private String name = new String();
+	private String name = "";
 	private int[] color = {255,255,255}; // (Gruen / Rot / Blau) nicht RGB!
 	private int radius = 40;
 	private float[] position = new float[3];
@@ -137,22 +137,25 @@ public class PmodelViewStepSym
 		
 //		makeTimeStamp("5211");
 		// festlegen der circle color in Abhaengigkeit des stepstatus
-		if (this.step.getStatus().equals("waiting")) {this.setColor(200, 200, 200);} // grau
+		if (this.step.getStatus().equals("waiting|initialized|working|worked|committing|committed|fanning|fanned")) {this.setColor(200, 200, 200);} // grau
 		else if (this.step.getStatus().matches("finished"))	{this.setColor(155, 0, 0);}	// gruen
-		else if (this.step.getStatus().equals("canceled")) {this.setColor(240, 240, 240);} // hellgrau
+		else if (this.step.getStatus().equals("canceled")) {this.setColor(240, 240, 240);this.setStrokecolor(200,200,200);} // fuellung hellgrau, kante grau
 		else if (this.step.getStatus().equals("error")) {this.setColor(220, 0, 0);} // rot
 		
 //		tickTimer("5212");
 //		makeTimeStamp("5212");
 
-		// wenn der stepcircle gerade markiert ist, soll die komplimentaerfarbe gewaehlt werden
-		float R = this.getColor1();
-		float G = this.getColor2();
-		float B = this.getColor3();
-		float minRGB = PApplet.min(R,PApplet.min(G,B));
-		float maxRGB = PApplet.max(R,PApplet.max(G,B));
-		float minPlusMax = minRGB + maxRGB;
-		this.setColor((int)(minPlusMax - R), (int)(minPlusMax - G), (int)(minPlusMax - B));
+		// wenn der stepcircle gerade markiert ist, soll als fuellung die komplimentaerfarbe gewaehlt werden
+		if(this.isClicked())
+		{
+			float R = this.getColor1();
+			float G = this.getColor2();
+			float B = this.getColor3();
+			float minRGB = PApplet.min(R,PApplet.min(G,B));
+			float maxRGB = PApplet.max(R,PApplet.max(G,B));
+			float minPlusMax = minRGB + maxRGB;
+			this.setColor((int)(minPlusMax - R), (int)(minPlusMax - G), (int)(minPlusMax - B));
+		}
 		
 //		makeTimeStamp("5213");
 //		System.out.println("name is: "+this.step.getName());
@@ -292,12 +295,12 @@ public class PmodelViewStepSym
 		if(pump)
 		{
 			double pumpScalierung = 0.96 + (0.04 * Math.sin(System.currentTimeMillis()/100));
-			System.out.println("millis: "+System.currentTimeMillis());
-			System.out.println("millis/100: "+System.currentTimeMillis()/100);
-			System.out.println("sin(millis/100): "+Math.sin(System.currentTimeMillis()/100));
-			System.out.println("0.04 * sin(millis/100): "+(0.04 * Math.sin(System.currentTimeMillis()/100)));
-			System.out.println("0.96 + (0.04 * sin(millis/100)): "+(0.96 + (0.04 * Math.sin(System.currentTimeMillis()/100))));
-			System.out.println("aktueller pumpScale: "+pumpScalierung);
+//			System.out.println("millis: "+System.currentTimeMillis());
+//			System.out.println("millis/100: "+System.currentTimeMillis()/100);
+//			System.out.println("sin(millis/100): "+Math.sin(System.currentTimeMillis()/100));
+//			System.out.println("0.04 * sin(millis/100): "+(0.04 * Math.sin(System.currentTimeMillis()/100)));
+//			System.out.println("0.96 + (0.04 * sin(millis/100)): "+(0.96 + (0.04 * Math.sin(System.currentTimeMillis()/100))));
+//			System.out.println("aktueller pumpScale: "+pumpScalierung);
 			
 			parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung * (float)pumpScalierung, this.getRadius() * scalierung * (float)pumpScalierung);
 		}
