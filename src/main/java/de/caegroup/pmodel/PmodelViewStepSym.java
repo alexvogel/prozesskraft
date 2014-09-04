@@ -137,10 +137,10 @@ public class PmodelViewStepSym
 		
 //		makeTimeStamp("5211");
 		// festlegen der circle color in Abhaengigkeit des stepstatus
-		if (this.step.getStatus().equals("waiting|initialized|working|worked|committing|committed|fanning|fanned")) {this.setColor(200, 200, 200);} // grau
-		else if (this.step.getStatus().matches("finished"))	{this.setColor(0, 155, 0);}	// gruen
-		else if (this.step.getStatus().equals("canceled")) {this.setColor(240, 240, 240);this.setStrokecolor(200,200,200);} // fuellung hellgrau, kante grau
-		else if (this.step.getStatus().equals("error")) {this.setColor(220, 0, 0);} // rot
+		if (this.step.getStatus().equals("waiting|initialized|working|worked|committing|committed|fanning|fanned")) {this.setColor(150,150,150); this.setStrokecolor(50,50,50);} // grau
+		else if (this.step.getStatus().matches("finished"))	{this.setColor(0, 155, 0); this.setStrokecolor(50,50,50);}	// gruen
+		else if (this.step.getStatus().equals("canceled")) {this.setColor(240, 240, 240); this.setStrokecolor(200,200,200);} // fuellung hellgrau, kante grau
+		else if (this.step.getStatus().equals("error")) {this.setColor(220, 0, 0); this.setStrokecolor(50,50,50);} // rot
 		
 //		tickTimer("5212");
 //		makeTimeStamp("5212");
@@ -161,6 +161,10 @@ public class PmodelViewStepSym
 		if(this.isMarked())
 		{
 			this.strokethickness = 3;
+		}
+		else
+		{
+			this.strokethickness = 1;
 		}
 		
 		// zeichne stepsymbol
