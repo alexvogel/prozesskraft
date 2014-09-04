@@ -1309,7 +1309,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log(loglevel, logmessage));
+		this.log.add(new Log("process", loglevel, logmessage));
 	}
 	
 	/**
