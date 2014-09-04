@@ -146,6 +146,12 @@ public class SIInsightCreator
 		buttonFileBrowser.setToolTipText("open step directory with a filebrowser");
 		buttonFileBrowser.addSelectionListener(listener_button_browse);
 
+		Label labelDummy1 = new Label(compositeButtons, SWT.NONE);
+
+		Label labelDummy2 = new Label(compositeButtons, SWT.NONE);
+
+		Label labelDummy3 = new Label(compositeButtons, SWT.NONE);
+
 		// tabFolder erzeugen
 		tabFolder = new CTabFolder(composite, SWT.BORDER);
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
