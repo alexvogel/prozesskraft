@@ -45,7 +45,8 @@ public class PmodelViewStepSym
 	
     // soll das symbol pumpbewegungen machen?
     private boolean pump = false;
-    
+    private double pumpScale = 1.0;
+   
     private PmodelViewPage parent;
     public Step step;
 	/*----------------------------
@@ -295,7 +296,7 @@ public class PmodelViewStepSym
 		
 		if(pump)
 		{
-			double pumpScalierung = 1.0 + (0.1 * Math.sin(System.currentTimeMillis()/100));
+			double pumpScalierung = 1.0 + (0.1 * Math.sin(System.currentTimeMillis()/20));
 			System.out.println("millis: "+System.currentTimeMillis());
 			System.out.println("sin(millis): "+Math.sin(System.currentTimeMillis()));
 			System.out.println("0.1 * sin(millis): "+(0.1 * Math.sin(System.currentTimeMillis())));
