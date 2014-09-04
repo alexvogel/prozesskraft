@@ -113,7 +113,13 @@ public class SIInsightCreator
 		Composite compositeInfo = new Composite(compositeInfoAction, SWT.NONE);
 		GridData gd_compositeInfo = new GridData(SWT.FILL, SWT.FILL, true, true,1, 1);
 		compositeInfo.setLayoutData(gd_compositeInfo);
-		compositeInfo.setLayout(new GridLayout(1, true));
+
+		GridLayout gridLayout_Info = new GridLayout(2, true);
+		gridLayout_Info.marginBottom = 0;
+		gridLayout_Info.marginTop = 0;
+		gridLayout_Info.marginLeft = 0;
+		gridLayout_Info.marginRight = 0;
+		compositeInfo.setLayout(gridLayout_Info);
 
 		Label labelName = new Label(compositeInfo, SWT.NONE);
 		labelName.setText("step: "+step.getName());
@@ -125,14 +131,21 @@ public class SIInsightCreator
 		Composite compositeButtons = new Composite(compositeInfoAction, SWT.NONE);
 		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		compositeButtons.setLayoutData(gd_compositeButtons);
-		compositeButtons.setLayout(new GridLayout(2, true));
+
+		GridLayout gridLayout_Action = new GridLayout(2, true);
+		gridLayout_Action.marginBottom = 0;
+		gridLayout_Action.marginTop = 0;
+		gridLayout_Action.marginLeft = 0;
+		gridLayout_Action.marginRight = 0;
+		compositeButtons.setLayout(gridLayout_Action);
 
 		Button buttonFileBrowser = new Button(compositeButtons, SWT.NONE);
 		buttonFileBrowser.setText("browse");
 		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		// tabFolder erzeugen
-		tabFolder = new CTabFolder(composite, SWT.BORDER);
+		tabFolder = new CTabFolder(composite, SWT.NONE);
+//		tabFolder = new CTabFolder(composite, SWT.BORDER);
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		tabFolder.setTabPosition(SWT.TOP);
