@@ -106,15 +106,15 @@ public class SIInsightCreator
 		Label labelStatus = new Label(compositeInfo, SWT.NONE);
 		labelStatus.setText("status: "+step.getStatus());
 
-//		// oben-rechts sind buttons angeordnet
-//		Composite compositeButtons = new Composite(composite, SWT.NONE);
-//		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-//		compositeButtons.setLayoutData(gd_compositeButtons);
-//		compositeButtons.setLayout(new GridLayout(1, true));
-//
-//		Button buttonFileBrowser = new Button(compositeButtons, SWT.NONE);
-//		buttonFileBrowser.setText("browse");
-//		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		// oben-rechts sind buttons angeordnet
+		Composite compositeButtons = new Composite(composite, SWT.NONE);
+		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		compositeButtons.setLayoutData(gd_compositeButtons);
+		compositeButtons.setLayout(new GridLayout(1, true));
+
+		Button buttonFileBrowser = new Button(compositeButtons, SWT.NONE);
+		buttonFileBrowser.setText("browse");
+		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 //		// tabFolder erzeugen
 //		tabFolder = new CTabFolder(composite, SWT.BORDER);
