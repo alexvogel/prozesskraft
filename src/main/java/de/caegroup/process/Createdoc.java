@@ -330,7 +330,6 @@ public class Createdoc
 		page.einstellungen.setSize(100);
 		page.einstellungen.setZoom(100);
 //		page.einstellungen.setZoom(8 * 100/process.getMaxLevel());
-		page.einstellungen.setLabelsize(0);
 		page.einstellungen.setTextsize(0);
 		page.einstellungen.setRanksize(7);
 		page.einstellungen.setWidth(2500);
