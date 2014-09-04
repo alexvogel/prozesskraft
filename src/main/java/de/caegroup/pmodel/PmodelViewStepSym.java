@@ -45,7 +45,6 @@ public class PmodelViewStepSym
 	
     // soll das symbol pumpbewegungen machen?
     private boolean pump = false;
-    private double pumpScale = 1.0;
    
     private PmodelViewPage parent;
     public Step step;
