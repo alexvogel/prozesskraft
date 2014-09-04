@@ -295,7 +295,7 @@ public class PmodelViewStepSym
 		
 		if(pump)
 		{
-			double pumpScalierung = 1.0 + (0.1 * Math.sin(System.currentTimeMillis()/1000));
+			double pumpScalierung = 1.0 + (0.1 * Math.sin(System.currentTimeMillis()/100));
 			System.out.println("millis: "+System.currentTimeMillis());
 			System.out.println("sin(millis): "+Math.sin(System.currentTimeMillis()));
 			System.out.println("0.1 * sin(millis): "+(0.1 * Math.sin(System.currentTimeMillis())));
