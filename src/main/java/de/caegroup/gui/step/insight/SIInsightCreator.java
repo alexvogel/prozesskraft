@@ -106,105 +106,105 @@ public class SIInsightCreator
 		buttonFileBrowser.setText("browse");
 		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 
-		// tabFolder erzeugen
-		tabFolder = new CTabFolder(composite, SWT.BORDER);
-		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
-		tabFolder.setTabPosition(SWT.TOP);
-//		tabFolder.setTabHeight(30);
-//		tabFolder.addSelectionListener(listener_tabFolder_selection);
-
-		// ein tabItem fuer 'lists' erzeugen
-		CTabItem tabItem_lists = new CTabItem(tabFolder, SWT.NONE);
-		tabItem_lists.setText("lists");
-		tabItem_lists.setToolTipText("lists that have been initialized in step "+step.getName());
-
-		// erstellen eines composites fuer 'lists'
-		Composite composite_tabItem_lists = new Composite(tabFolder, SWT.NONE);
-		composite_tabItem_lists.setLayout(new GridLayout(1, false));
-		GridData gd_composite_lists = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		gd_composite_lists.heightHint = 390;
-		gd_composite_lists.minimumWidth = 10;
-		gd_composite_lists.minimumHeight = 10;
-		composite_tabItem_lists.setLayoutData(gd_composite_lists);
-
-		// befuellen des composites fuer 'lists'
-		tabItem_lists.setControl(composite_tabItem_lists);
-		new SIListsGui(composite_tabItem_lists, step);
-
-		// ein tabItem fuer 'files' erzeugen
-		CTabItem tabItem_files = new CTabItem(tabFolder, SWT.NONE);
-		tabItem_files.setText("files");
-		tabItem_files.setToolTipText("files which have been committed to step "+step.getName());
-
-		// erstellen eines composites fuer 'files'
-		Composite composite_tabItem_files = new Composite(tabFolder, SWT.NONE);
-		composite_tabItem_files.setLayout(new GridLayout(1, false));
-		GridData gd_composite_files = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		gd_composite_files.heightHint = 390;
-		gd_composite_files.minimumWidth = 10;
-		gd_composite_files.minimumHeight = 10;
-		composite_tabItem_files.setLayoutData(gd_composite_files);
-
-		// befuellen des composites fuer 'files'
-		tabItem_files.setControl(composite_tabItem_files);
-		new SIFileGui(this, composite_tabItem_files, step);
-
-		// erstellen eines buttons zum hinzufuegen von variables
-		Button buttonAddFile = new Button(composite_tabItem_files, SWT.NONE);
-		buttonAddFile.setSelection(true);
-		GridData gd_btnAddFile = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-		gd_btnAddFile.widthHint = 69;
-		buttonAddFile.setLayoutData(gd_btnAddFile);
-		buttonAddFile.setText("add");
-		buttonAddFile.addSelectionListener(listener_button_add_file);
-
-	// ein tabItem fuer 'variables' erzeugen
-		CTabItem tabItem_variables = new CTabItem(tabFolder, SWT.NONE);
-		tabItem_variables.setText("variables");
-		tabItem_variables.setToolTipText("variables which have been committed to step "+step.getName());
-
-		// erstellen eines composites fuer 'variables'
-		Composite composite_tabItem_variables = new Composite(tabFolder, SWT.NONE);
-		composite_tabItem_variables.setLayout(new GridLayout(1, false));
-		GridData gd_composite_variables = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		gd_composite_variables.heightHint = 390;
-		gd_composite_variables.minimumWidth = 10;
-		gd_composite_variables.minimumHeight = 10;
-		composite_tabItem_variables.setLayoutData(gd_composite_variables);
-
-		// befuellen des composites fuer 'variables'
-		tabItem_variables.setControl(composite_tabItem_variables);
-		new SIVariableGui(this, composite_tabItem_variables, step);
-
-		// erstellen eines buttons zum hinzufuegen von variables
-		Button buttonAdd = new Button(composite_tabItem_variables, SWT.NONE);
-		buttonAdd.setSelection(true);
-		GridData gd_btnNewButton = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-		gd_btnNewButton.widthHint = 69;
-		buttonAdd.setLayoutData(gd_btnNewButton);
-		buttonAdd.setText("add");
-		buttonAdd.addSelectionListener(listener_button_add_variable);
-
-		// ein tabItem fuer das debug erzeugen
-		CTabItem tabItem_debug = new CTabItem(tabFolder, SWT.NONE);
-		tabItem_debug.setText("debug");					
-		tabItem_debug.setToolTipText("the logging in step "+step.getName());
-		
-		// erstellen eines composites fuer 'debug'
-		Composite composite_tabItem_debug = new Composite(tabFolder, SWT.NONE);
-		composite_tabItem_debug.setLayout(new GridLayout(1, false));
-		GridData gd_composite_debug = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		gd_composite_debug.heightHint = 390;
-		gd_composite_debug.minimumWidth = 10;
-		gd_composite_debug.minimumHeight = 10;
-		composite_tabItem_debug.setLayoutData(gd_composite_debug);
-
-		// befuellen des composites fuer 'debug'
-		tabItem_debug.setControl(composite_tabItem_debug);
-		new SIDebugGui(composite_tabItem_debug, step);
-
-		tabFolder.setSelection(0);
+//		// tabFolder erzeugen
+//		tabFolder = new CTabFolder(composite, SWT.BORDER);
+//		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+//		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
+//		tabFolder.setTabPosition(SWT.TOP);
+////		tabFolder.setTabHeight(30);
+////		tabFolder.addSelectionListener(listener_tabFolder_selection);
+//
+//		// ein tabItem fuer 'lists' erzeugen
+//		CTabItem tabItem_lists = new CTabItem(tabFolder, SWT.NONE);
+//		tabItem_lists.setText("lists");
+//		tabItem_lists.setToolTipText("lists that have been initialized in step "+step.getName());
+//
+//		// erstellen eines composites fuer 'lists'
+//		Composite composite_tabItem_lists = new Composite(tabFolder, SWT.NONE);
+//		composite_tabItem_lists.setLayout(new GridLayout(1, false));
+//		GridData gd_composite_lists = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+//		gd_composite_lists.heightHint = 390;
+//		gd_composite_lists.minimumWidth = 10;
+//		gd_composite_lists.minimumHeight = 10;
+//		composite_tabItem_lists.setLayoutData(gd_composite_lists);
+//
+//		// befuellen des composites fuer 'lists'
+//		tabItem_lists.setControl(composite_tabItem_lists);
+//		new SIListsGui(composite_tabItem_lists, step);
+//
+//		// ein tabItem fuer 'files' erzeugen
+//		CTabItem tabItem_files = new CTabItem(tabFolder, SWT.NONE);
+//		tabItem_files.setText("files");
+//		tabItem_files.setToolTipText("files which have been committed to step "+step.getName());
+//
+//		// erstellen eines composites fuer 'files'
+//		Composite composite_tabItem_files = new Composite(tabFolder, SWT.NONE);
+//		composite_tabItem_files.setLayout(new GridLayout(1, false));
+//		GridData gd_composite_files = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+//		gd_composite_files.heightHint = 390;
+//		gd_composite_files.minimumWidth = 10;
+//		gd_composite_files.minimumHeight = 10;
+//		composite_tabItem_files.setLayoutData(gd_composite_files);
+//
+//		// befuellen des composites fuer 'files'
+//		tabItem_files.setControl(composite_tabItem_files);
+//		new SIFileGui(this, composite_tabItem_files, step);
+//
+//		// erstellen eines buttons zum hinzufuegen von variables
+//		Button buttonAddFile = new Button(composite_tabItem_files, SWT.NONE);
+//		buttonAddFile.setSelection(true);
+//		GridData gd_btnAddFile = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+//		gd_btnAddFile.widthHint = 69;
+//		buttonAddFile.setLayoutData(gd_btnAddFile);
+//		buttonAddFile.setText("add");
+//		buttonAddFile.addSelectionListener(listener_button_add_file);
+//
+//	// ein tabItem fuer 'variables' erzeugen
+//		CTabItem tabItem_variables = new CTabItem(tabFolder, SWT.NONE);
+//		tabItem_variables.setText("variables");
+//		tabItem_variables.setToolTipText("variables which have been committed to step "+step.getName());
+//
+//		// erstellen eines composites fuer 'variables'
+//		Composite composite_tabItem_variables = new Composite(tabFolder, SWT.NONE);
+//		composite_tabItem_variables.setLayout(new GridLayout(1, false));
+//		GridData gd_composite_variables = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+//		gd_composite_variables.heightHint = 390;
+//		gd_composite_variables.minimumWidth = 10;
+//		gd_composite_variables.minimumHeight = 10;
+//		composite_tabItem_variables.setLayoutData(gd_composite_variables);
+//
+//		// befuellen des composites fuer 'variables'
+//		tabItem_variables.setControl(composite_tabItem_variables);
+//		new SIVariableGui(this, composite_tabItem_variables, step);
+//
+//		// erstellen eines buttons zum hinzufuegen von variables
+//		Button buttonAdd = new Button(composite_tabItem_variables, SWT.NONE);
+//		buttonAdd.setSelection(true);
+//		GridData gd_btnNewButton = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+//		gd_btnNewButton.widthHint = 69;
+//		buttonAdd.setLayoutData(gd_btnNewButton);
+//		buttonAdd.setText("add");
+//		buttonAdd.addSelectionListener(listener_button_add_variable);
+//
+//		// ein tabItem fuer das debug erzeugen
+//		CTabItem tabItem_debug = new CTabItem(tabFolder, SWT.NONE);
+//		tabItem_debug.setText("debug");					
+//		tabItem_debug.setToolTipText("the logging in step "+step.getName());
+//		
+//		// erstellen eines composites fuer 'debug'
+//		Composite composite_tabItem_debug = new Composite(tabFolder, SWT.NONE);
+//		composite_tabItem_debug.setLayout(new GridLayout(1, false));
+//		GridData gd_composite_debug = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+//		gd_composite_debug.heightHint = 390;
+//		gd_composite_debug.minimumWidth = 10;
+//		gd_composite_debug.minimumHeight = 10;
+//		composite_tabItem_debug.setLayoutData(gd_composite_debug);
+//
+//		// befuellen des composites fuer 'debug'
+//		tabItem_debug.setControl(composite_tabItem_debug);
+//		new SIDebugGui(composite_tabItem_debug, step);
+//
+//		tabFolder.setSelection(0);
 
 		return parent;
 	}
