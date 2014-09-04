@@ -145,24 +145,23 @@ public class PmodelViewStepSym
 //		tickTimer("5212");
 //		makeTimeStamp("5212");
 
-		// wenn der stepcircle gerade markiert ist, soll als fuellung die komplimentaerfarbe gewaehlt werden
+//		// wenn der stepcircle gerade markiert ist, soll als fuellung die komplimentaerfarbe gewaehlt werden
+//		if(this.isMarked())
+//		{
+//			float R = this.getColor1();
+//			float G = this.getColor2();
+//			float B = this.getColor3();
+//			float minRGB = PApplet.min(R,PApplet.min(G,B));
+//			float maxRGB = PApplet.max(R,PApplet.max(G,B));
+//			float minPlusMax = minRGB + maxRGB;
+//			this.setColor((int)(minPlusMax - R), (int)(minPlusMax - G), (int)(minPlusMax - B));
+//		}
+		
+		// wenn der stepcircle gerade markiert ist, der stroke dicker sein
 		if(this.isMarked())
 		{
-			float R = this.getColor1();
-			float G = this.getColor2();
-			float B = this.getColor3();
-			float minRGB = PApplet.min(R,PApplet.min(G,B));
-			float maxRGB = PApplet.max(R,PApplet.max(G,B));
-			float minPlusMax = minRGB + maxRGB;
-			this.setColor((int)(minPlusMax - R), (int)(minPlusMax - G), (int)(minPlusMax - B));
+			this.strokethickness = this.strokethickness * 3;
 		}
-		
-//		makeTimeStamp("5213");
-//		System.out.println("name is: "+this.step.getName());
-//		System.out.println("type is: "+this.step.getType());
-//		System.out.println("is a multistep?: "+this.step.isAmultistep());
-
-//		System.out.println(this.step.getName()+" is a multistep: "+this.step.isAmultistep());
 		
 		// zeichne stepsymbol
 		
