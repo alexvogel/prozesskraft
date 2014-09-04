@@ -84,7 +84,7 @@ public class SIInsightCreator
 
 		// oberer Bereich fuer die stepdaten
 		Composite compositeInfoAction = new Composite(composite, SWT.NONE);
-		GridData gd_compositeInfoAction = new GridData(SWT.FILL, SWT.NONE, true, true,1, 1);
+		GridData gd_compositeInfoAction = new GridData(SWT.FILL, SWT.FILL, true, false,1, 1);
 		compositeInfoAction.setLayoutData(gd_compositeInfoAction);
 		compositeInfoAction.setLayout(new GridLayout(2, true));
 
