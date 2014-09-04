@@ -286,7 +286,7 @@ public class Manager
 			{
 //					p3.log("warn", "manager "+managerid+": it appears that another manager (id: "+p3.getManagerid()+") took over. killing myself. bye.");
 				System.out.println("it appears another instance of manager (id: "+p3.getManagerid()+") took over. so i'm (id: "+managerid+") not longer needed. killing myself. byebye.");
-				System.exit(1);
+				System.exit(0);
 			}
 
 			// bevor gestartet wird, soll der pradar-eintrag aktualisiert werden
