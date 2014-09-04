@@ -160,7 +160,7 @@ public class PmodelViewStepSym
 		// wenn der stepcircle gerade markiert ist, der stroke dicker sein
 		if(this.isMarked())
 		{
-			this.strokethickness = this.strokethickness * 3;
+			this.strokethickness = 3;
 		}
 		
 		// zeichne stepsymbol
