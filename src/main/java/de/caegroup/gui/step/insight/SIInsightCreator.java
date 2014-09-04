@@ -65,7 +65,7 @@ public class SIInsightCreator
 		composite = new Composite(sc, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		composite.setLayoutData(gd_composite);
-		composite.setLayout(new GridLayout(1, true));
+		composite.setLayout(new GridLayout(3, true));
 		
 		sc.setContent(composite);
 //		sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -86,17 +86,27 @@ public class SIInsightCreator
 //		GridLayout gl_actualComposite = new GridLayout(1, false);
 //		actualComposite.setLayout(gl_actualComposite);
 
-		Label label = new Label(composite, SWT.NONE);
-		label.setText("step: "+step.getName());
+		Label labelName = new Label(composite, SWT.NONE);
+		labelName.setText("step: "+step.getName());
 
-		Label label2 = new Label(composite, SWT.NONE);
-		label2.setText("status: "+step.getStatus());
+		Label labelDummy1 = new Label(composite, SWT.NONE);
+		labelDummy1.setText("");
+
+		Label labelDummy2 = new Label(composite, SWT.NONE);
+		labelDummy2.setText("");
+
+		Label labelStatus = new Label(composite, SWT.NONE);
+		labelStatus.setText("status: "+step.getStatus());
 		
-		
-		
+		Label labelDummy3 = new Label(composite, SWT.NONE);
+		labelDummy3.setText("");
+
+		Label labelDummy4 = new Label(composite, SWT.NONE);
+		labelDummy4.setText("");
+
 		// tabFolder erzeugen
 		tabFolder = new CTabFolder(composite, SWT.BORDER);
-		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		tabFolder.setTabPosition(SWT.TOP);
 //		tabFolder.setTabHeight(30);
