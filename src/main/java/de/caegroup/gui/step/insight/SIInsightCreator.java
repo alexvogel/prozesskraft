@@ -94,18 +94,18 @@ public class SIInsightCreator
 //		compositeInfoAction.setLayoutData(gd_compositeInfoAction);
 		compositeInfoAction.setLayout(new GridLayout(2, true));
 
-//		// oben-links stehen textinformationen
-//		Composite compositeInfo = new Composite(compositeInfoAction, SWT.NONE);
-//		GridData gd_compositeInfo = new GridData(SWT.FILL, SWT.FILL, true, true,1, 1);
-//		compositeInfo.setLayoutData(gd_compositeInfo);
-//		compositeInfo.setLayout(new GridLayout(1, true));
-//
-//		Label labelName = new Label(compositeInfo, SWT.NONE);
-//		labelName.setText("step: "+step.getName());
-//
-//		Label labelStatus = new Label(compositeInfo, SWT.NONE);
-//		labelStatus.setText("status: "+step.getStatus());
-//
+		// oben-links stehen textinformationen
+		Composite compositeInfo = new Composite(compositeInfoAction, SWT.NONE);
+		GridData gd_compositeInfo = new GridData(SWT.FILL, SWT.FILL, true, true,1, 1);
+		compositeInfo.setLayoutData(gd_compositeInfo);
+		compositeInfo.setLayout(new GridLayout(1, true));
+
+		Label labelName = new Label(compositeInfo, SWT.NONE);
+		labelName.setText("step: "+step.getName());
+
+		Label labelStatus = new Label(compositeInfo, SWT.NONE);
+		labelStatus.setText("status: "+step.getStatus());
+
 //		// oben-rechts sind buttons angeordnet
 //		Composite compositeButtons = new Composite(composite, SWT.NONE);
 //		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
