@@ -277,42 +277,29 @@ public class Manager
 			int lastStepcount = 0;
 			int lastStepcountFinished = 0;
 
+			// pradar checkin
+			if(pradar && p3.run && p3.touchInMillis == 0)
+			{
+				String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-resource="+pathBinary};
+				p3.log("info", "call: " + StringUtils.join(argsForCheckin, " "));
+				try
+				{
+					java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForCheckin, " "));
+				}
+				catch (IOException e)
+				{
+					p3.log("warn", e.getMessage());
+				}
+			}
+			
 			while(p3.run)
 			{
 				// bevor gestartet wird, soll der pradar-eintrag aktualisiert werden
 				if(pradar)
 				{
-					// falls der prozess noch unberuehrt ist, soll er eingecheckt werden
-					if(p3.touchInMillis == 0)
-					{
-						String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-resource="+pathBinary};
-						p3.log("info", "call: " + StringUtils.join(argsForCheckin, " "));
-						try
-						{
-							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForCheckin, " "));
-						}
-						catch (IOException e)
-						{
-							p3.log("warn", "IOException when trying to pradar checkin");
-						}
-
-						// progress
-						lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
-						lastStepcountFinished = p3.getStepFinished().size();
-						String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
-						p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
-						try
-						{
-							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
-						}
-						catch (IOException e)
-						{
-							p3.log("warn", "IOException when trying to pradar progress");
-						}
-					}
 
 					// wenn prozess den status finished oder error hat, soll pradar checkout werden
-					else if(p3.getStatus().equals("finished"))
+					if(p3.getStatus().equals("finished"))
 					{
 						// progress nur aktualisieren, falls sich der fortschritt veraendert hat
 						if((lastStepcount != p3.getStepTogo().size()+p3.getStepFinished().size()) || (lastStepcountFinished != p3.getStepFinished().size()))
@@ -401,6 +388,8 @@ public class Manager
 						}
 					}
 				}
+				// prozess laufen lassen
+				p3.doIt(ini.get("apps", "process-syscall"));
 
 				// austeigen wenn status==error
 				if(p3.getStatus().equals("error"))
@@ -409,8 +398,6 @@ public class Manager
 					p3.log("info", "error in process detected. setting run = false");
 					p2.log("info", "stopping manager "+p2.getManagerid());
 				}
-
-				updateFile(p3);
 
 				if(p3.getStatus().equals("finished"))
 				{
@@ -426,8 +413,6 @@ public class Manager
 					System.exit(0);
 				}
 				
-				// prozess laufen lassen
-				p3.doIt(ini.get("apps", "process-syscall"));
 
 				try
 				{
