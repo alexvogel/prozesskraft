@@ -914,6 +914,7 @@ public class PmodelPartUi1 extends ModelObject
 			else if (level.equals("error"))	{	text_logging.setLineBackground(logLineCount, 1, colorLogError);}
 			logLineCount = logLineCount+1;
 			text_logging.setTopIndex(text_logging.getLineCount()-1);
+			text_logging.update();
 		}
 		else
 		{
