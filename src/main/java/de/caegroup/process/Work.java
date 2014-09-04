@@ -398,8 +398,8 @@ implements Serializable
 				p1.waitFor();
 				java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
 				p2.waitFor();
-				java.lang.Process p3 = Runtime.getRuntime().exec("nautilus");
-				p3.waitFor();
+//				java.lang.Process p3 = Runtime.getRuntime().exec("nautilus");
+//				p3.waitFor();
 				
 				// starten des prozesses
 //				java.lang.Process sysproc = pb.start();
@@ -413,7 +413,6 @@ implements Serializable
 
 				// wait 2 seconds for becoming the pid-file visible
 				Thread.sleep(2000);
-
 			}
 			catch (Exception e2)
 			{
