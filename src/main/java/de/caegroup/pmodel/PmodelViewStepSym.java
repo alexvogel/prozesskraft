@@ -43,6 +43,9 @@ public class PmodelViewStepSym
    
     private String rank = "";
 	
+    // soll das symbol pumpbewegungen machen?
+    private boolean pump = false;
+    
     private PmodelViewPage parent;
     public Step step;
 	/*----------------------------
@@ -135,16 +138,13 @@ public class PmodelViewStepSym
 //		makeTimeStamp("5211");
 		// festlegen der circle color in Abhaengigkeit des stepstatus
 		if (this.step.getStatus().equals("waiting")) {this.setColor(200, 200, 200);}
-		else if (this.step.getStatus().matches("initializing|initialized|committing|committed|fanning|fanned")) {this.setColor(155, 213, 255);}
-		else if (this.step.getStatus().equals("working")) {this.setColor(165, 99, 66);}
-		else if (this.step.getStatus().equals("worked")) {this.setColor(165, 99, 66);}
-		else if (this.step.getStatus().equals("finished")) {this.setColor(155, 213, 141);}
+		else if (this.step.getStatus().matches("initializing|initialized|working|worked|committing|committed|fanning|fanned|finished")) {this.setColor(0, 155, 0);}
 		else if (this.step.getStatus().equals("canceled")) {this.setColor(240, 240, 240);}
 		else if (this.step.getStatus().equals("error")) {this.setColor(220, 0, 0);}
 		
 //		tickTimer("5212");
 //		makeTimeStamp("5212");
-		
+
 		// wenn der stepcircle gerade markiert ist, soll die komplimentaerfarbe gewaehlt werden
 		float R = this.getColor1();
 		float G = this.getColor2();
@@ -165,6 +165,17 @@ public class PmodelViewStepSym
 		
 //		tickTimer("5214");
 //		makeTimeStamp("5214");
+		
+		// feststellen ob symbol pumpen soll
+		if (this.step.getStatus().matches("initialized|working|worked|committing|committed|fanning|fanned"))
+		{
+			this.pump = true;
+		}
+		else
+		{
+			this.pump = false;
+		}
+		
 		if ( this.step.getName().equals(this.step.getParent().getRootstepname()))
 		{
 			symbol_quadrat_mit_x(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, true);
@@ -173,7 +184,7 @@ public class PmodelViewStepSym
 		
 		else if ( this.step.getType().equals("automatic") && !(this.step.isAmultistep()) )
 		{
-			symbol_circle(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, 0, 0, true);
+			symbol_circle(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, 0, 0, true, pump);
 //			System.out.println("symbol: kreis");
 		}
 		else if ( this.step.getType().equals("manual") && !(this.step.isAmultistep()) )
@@ -265,7 +276,7 @@ public class PmodelViewStepSym
 		
 	}
 
-	private void symbol_circle(float scalierung, float x_offset, float y_offset, boolean fill)
+	private void symbol_circle(float scalierung, float x_offset, float y_offset, boolean fill, boolean pump)
 	{
 		if (fill)
 		{
@@ -273,10 +284,14 @@ public class PmodelViewStepSym
 		}
 		else
 		{
-			parent.fill(255, 255, 255);
+			parent.fill(255, 255, 255); // weiss
 		}
 		parent.strokeWeight(this.getStrokethickness());
 		parent.stroke(getStrokecolor1(), getStrokecolor2(), getStrokecolor3());
+		
+		double pumpScalierung = 1.0 * (0.1 * Math.sin(System.currentTimeMillis()));
+		System.out.println("aktueller pumpScale: "+pumpScalierung);
+		
 		parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung, this.getRadius() * scalierung);
 	}
 	
@@ -318,7 +333,7 @@ public class PmodelViewStepSym
 		//
 		if (type.equals("circle"))
 		{
-			symbol_circle(scalierung, 0, 0, false);
+			symbol_circle(scalierung, 0, 0, false, this.pump);
 		}
 		else if (type.equals("quadrat"))
 		{
@@ -334,7 +349,7 @@ public class PmodelViewStepSym
 			
 			if (type.equals("circle"))
 			{
-				symbol_circle(verkl_faktor, (float)x_offset, (float)y_offset, true);
+				symbol_circle(verkl_faktor, (float)x_offset, (float)y_offset, true, this.pump);
 			}
 			else if (type.equals("quadrat"))
 			{
