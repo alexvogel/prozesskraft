@@ -296,9 +296,9 @@ public class PmodelPartUi1 extends ModelObject
 		scale_zoom.setSelection(100);
 		scale_zoom.addMouseWheelListener(listener_mousewheel_zoom);
 		
-		Label lblNewLabel_3 = new Label(grpVisual, SWT.NONE);
-		lblNewLabel_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		lblNewLabel_3.setText("label");
+//		Label lblNewLabel_3 = new Label(grpVisual, SWT.NONE);
+//		lblNewLabel_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+//		lblNewLabel_3.setText("label");
 		
 //		spinner_labelsize = new Spinner(grpVisual, SWT.BORDER);
 //		spinner_labelsize.setMaximum(20);
