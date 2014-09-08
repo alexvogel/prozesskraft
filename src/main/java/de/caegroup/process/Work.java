@@ -376,10 +376,20 @@ implements Serializable
 
 			try
 			{
-				String[] args_for_syscall = {processSyscall, "-call \""+call+"\"", "-stdout "+this.getParent().getAbsstdout(), "-stderr "+this.getParent().getAbsstderr(), "-pid "+this.getParent().getAbspid(), "-mylog "+AbsLogSyscallWrapper, "-maxrun "+this.maxrun};
+				// den Aufrufstring fuer die externe App (process syscall --version 0.6.0)) splitten
+				// beim aufruf muss das erste argument im path zu finden sein, sonst gibt die fehlermeldung 'no such file or directory'
+				ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(processSyscall.split(" ")));
+
+				// die sonstigen argumente hinzufuegen
+				processSyscallWithArgs.add("-call \""+call+"\"");
+				processSyscallWithArgs.add("-stdout "+this.getParent().getAbsstdout());
+				processSyscallWithArgs.add("-stderr "+this.getParent().getAbsstderr());
+				processSyscallWithArgs.add("-pid "+this.getParent().getAbspid());
+				processSyscallWithArgs.add("-mylog "+AbsLogSyscallWrapper);
+				processSyscallWithArgs.add("-maxrun "+this.maxrun);
 
 				// erstellen prozessbuilder
-				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
+				ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
 
 				// erweitern des PATHs um den prozesseigenen path
 				Map<String,String> env = pb.environment();
@@ -404,7 +414,7 @@ implements Serializable
 				// starten des prozesses
 				java.lang.Process sysproc = pb.start();
 
-				log ("info", "calling: " + StringUtils.join(args_for_syscall, " "));
+				log ("info", "calling: " + StringUtils.join(processSyscallWithArgs, " "));
 
 //				alternativer aufruf
 //				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
