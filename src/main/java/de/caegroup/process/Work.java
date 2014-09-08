@@ -408,7 +408,7 @@ implements Serializable
 //				p1.waitFor();
 //				java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
 //				p2.waitFor();
-//				java.lang.Process p3 = Runtime.getRuntime().exec("nautilus");
+				java.lang.Process p3 = Runtime.getRuntime().exec("nautilus");
 //				p3.waitFor();
 				
 				// starten des prozesses
