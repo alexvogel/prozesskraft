@@ -409,7 +409,7 @@ implements Serializable
 //				java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
 //				p2.waitFor();
 				java.lang.Process pro = Runtime.getRuntime().exec("nautilus");
-				java.lang.Process superpro = Runtime.getRuntime().exec((String[])processSyscallWithArgs.toArray());
+				java.lang.Process superpro = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
 //				p3.waitFor();
 				
 				// starten des prozesses
