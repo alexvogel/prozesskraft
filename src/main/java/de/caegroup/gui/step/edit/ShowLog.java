@@ -57,8 +57,8 @@ public class ShowLog
 		this.log = new Log();
 		
 		shell.setText("log");
-		shell.setSize(425, 162);
-		shell.setLayout(new FormLayout());
+		shell.setSize(825, 262);
+		shell.setLayout(new GridLayout(1, false));
 		shell.setLocation(display.getCursorLocation());
 		Composite composite = new Composite(shell, SWT.NONE);
 
@@ -74,13 +74,13 @@ public class ShowLog
 		try
 		{
 			shell.setText("log");
-			shell.setSize(425, 162);
-			shell.setLayout(new FormLayout());
+			shell.setSize(825, 262);
+			shell.setLayout(new GridLayout(1, false));
 			shell.setLocation(display.getCursorLocation());
 			
 			Composite composite = new Composite(shell, SWT.NONE);
 
-			composite.setLayoutData(new GridData(2, 1));
+			composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 			createControls(composite);
 			
 			try
@@ -117,32 +117,58 @@ public class ShowLog
 	 */
 	public void createControls(Composite composite)
 	{
-		composite.setLayout(new GridLayout(2, false));
+		composite.setLayout(new GridLayout(1, false));
 		
 		Composite compositeEntries = new Composite(composite, SWT.NONE);
-		compositeEntries.setLayout(new FormLayout());
 
 		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, true, true, 1, 1);
 		gd_composite.minimumWidth = 10;
 		gd_composite.minimumHeight = 10;
 		compositeEntries.setLayoutData(gd_composite);
 
+		compositeEntries.setLayout(new GridLayout(2, false));
+
 		// time
 		Label time = new Label(compositeEntries, SWT.NONE);
-		time.setLayoutData(new GridData(1, 1));
+		time.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		time.setText("time");
-		time.setToolTipText("creation time of log");
+		time.setToolTipText("when was this log created?");
 		
 		Text timeText = new Text(compositeEntries, SWT.NONE);
-		timeText.setLayoutData(new GridData(1, 1));
+		timeText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		timeText.setText(this.log.getTimestamp());
 		
 		// object
+		Label object = new Label(compositeEntries, SWT.NONE);
+		object.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		object.setText("object");
+		object.setToolTipText("which object created this log?");
 		
-		
+		Text objectText = new Text(compositeEntries, SWT.NONE);
+		objectText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		objectText.setText(this.log.getLabel());
+			
 		// log-level
+		Label level = new Label(compositeEntries, SWT.NONE);
+		level.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		level.setText("level");
+		level.setToolTipText("what is the level of this log?");
+		
+		Text levelText = new Text(compositeEntries, SWT.NONE);
+		levelText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		levelText.setText(this.log.getLevel());
 
+		// log-message
+		Label message = new Label(compositeEntries, SWT.NONE);
+		message.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		message.setText("message");
+		message.setToolTipText("what is the message of this log?");
+		
+		Text messageLevel = new Text(compositeEntries, SWT.NONE);
+		messageLevel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		messageLevel.setText(this.log.getMsg());
 
+		// button
 		Composite compositeBtn = new Composite(composite, SWT.NONE);
 		compositeBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		GridLayout sss = new GridLayout(3, true);

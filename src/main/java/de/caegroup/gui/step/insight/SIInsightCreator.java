@@ -87,7 +87,15 @@ public class SIInsightCreator
 		
 		composite.layout();
 
-		this.createControls(composite);
+		if(step == null)
+		{
+			Label labelMessage = new Label(composite, SWT.NONE);
+			labelMessage.setText("marked Step is null");
+		}
+		else
+		{
+			this.createControls(composite);
+		}
 		
 	}
 	
@@ -123,6 +131,9 @@ public class SIInsightCreator
 		compositeInfo.setLayout(gridLayout_Info);
 
 		Label labelName = new Label(compositeInfo, SWT.NONE);
+
+		System.out.println("stepObject: "+step.toString());
+
 		labelName.setText("step: "+step.getName());
 
 		Label labelStatus = new Label(compositeInfo, SWT.NONE);
