@@ -382,8 +382,9 @@ implements Serializable
 
 				// die sonstigen argumente hinzufuegen
 				processSyscallWithArgs.add("-call");
+				processSyscallWithArgs.add(call);
 //				processSyscallWithArgs.add("\""+call+"\"");
-				processSyscallWithArgs.add("nautilus");
+//				processSyscallWithArgs.add("nautilus");
 				processSyscallWithArgs.add("-stdout");
 				processSyscallWithArgs.add(this.getParent().getAbsstdout());
 				processSyscallWithArgs.add("-stderr");
@@ -396,7 +397,7 @@ implements Serializable
 				processSyscallWithArgs.add(""+this.maxrun);
 
 				// erstellen prozessbuilder
-//				ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
+				ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
 
 				// erweitern des PATHs um den prozesseigenen path
 //				Map<String,String> env = pb.environment();
@@ -416,11 +417,11 @@ implements Serializable
 //				java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
 //				p2.waitFor();
 //				java.lang.Process pro = Runtime.getRuntime().exec("nautilus");
-				java.lang.Process superpro = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
+//				java.lang.Process superpro = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
 //				p3.waitFor();
 				
 				// starten des prozesses
-//				java.lang.Process sysproc = pb.start();
+				java.lang.Process sysproc = pb.start();
 
 				log ("info", "calling: " + StringUtils.join(processSyscallWithArgs, " "));
 
