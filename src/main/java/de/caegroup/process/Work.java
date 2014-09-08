@@ -379,12 +379,12 @@ implements Serializable
 				String[] args_for_syscall = {processSyscall, "-call \""+call+"\"", "-stdout "+this.getParent().getAbsstdout(), "-stderr "+this.getParent().getAbsstderr(), "-pid "+this.getParent().getAbspid(), "-mylog "+AbsLogSyscallWrapper, "-maxrun "+this.maxrun};
 
 				// erstellen prozessbuilder
-//				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
+				ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
 
 				// erweitern des PATHs um den prozesseigenen path
-//				Map<String,String> env = pb.environment();
-//				String path = env.get("PATH");
-//				log("info", "adding to path: "+this.parent.getAbsPath());
+				Map<String,String> env = pb.environment();
+				String path = env.get("PATH");
+				log("debug", "$PATH="+path);
 //				path = this.parent.getAbsPath()+":"+path;
 //				env.put("PATH", path);
 //				log("info", "path: "+path);
@@ -394,20 +394,20 @@ implements Serializable
 //				pb.directory(directory);
 
 				// zum debuggen ein paar ausgaben
-				java.lang.Process p1 = Runtime.getRuntime().exec("date >> ~/tmp.debug.work.txt");
-				p1.waitFor();
-				java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
-				p2.waitFor();
+//				java.lang.Process p1 = Runtime.getRuntime().exec("date >> ~/tmp.debug.work.txt");
+//				p1.waitFor();
+//				java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
+//				p2.waitFor();
 //				java.lang.Process p3 = Runtime.getRuntime().exec("nautilus");
 //				p3.waitFor();
 				
 				// starten des prozesses
-//				java.lang.Process sysproc = pb.start();
+				java.lang.Process sysproc = pb.start();
 
 				log ("info", "calling: " + StringUtils.join(args_for_syscall, " "));
 
 //				alternativer aufruf
-				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
+//				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
 				
 				log("info", "call executed. pid="+sysproc.hashCode());
 
