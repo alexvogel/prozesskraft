@@ -22,6 +22,11 @@ implements Serializable, Comparable
 	/*----------------------------
 	  constructors
 	----------------------------*/
+	public Log()
+	{
+
+	}
+
 	public Log(String label)
 	{
 		this.label = label;
