@@ -283,12 +283,12 @@ public class Syscall {
 			{
 				System.out.println("------------------------------------------------------");
 				System.out.println("normal termination at "+new Date().toString());
-				System.out.println("exitvalue: "+sysproc.exitValue());
+				System.out.println("exitvalue: "+sysproc.waitFor());
 			}
 			
 			System.out.println("------------------------------------------------------");
 			System.out.println("forced termination at "+new Date().toString());
-			System.out.println("exitvalue: "+sysproc.exitValue());
+			System.out.println("exitvalue: "+sysproc.waitFor());
 
 			sysproc.destroy();
 
