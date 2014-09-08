@@ -389,12 +389,12 @@ implements Serializable
 				processSyscallWithArgs.add("-maxrun "+this.maxrun);
 
 				// erstellen prozessbuilder
-				ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
+//				ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
 
 				// erweitern des PATHs um den prozesseigenen path
-				Map<String,String> env = pb.environment();
-				String path = env.get("PATH");
-				log("debug", "$PATH="+path);
+//				Map<String,String> env = pb.environment();
+//				String path = env.get("PATH");
+//				log("debug", "$PATH="+path);
 //				path = this.parent.getAbsPath()+":"+path;
 //				env.put("PATH", path);
 //				log("info", "path: "+path);
@@ -408,18 +408,19 @@ implements Serializable
 //				p1.waitFor();
 //				java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
 //				p2.waitFor();
-				java.lang.Process p3 = Runtime.getRuntime().exec("nautilus");
+				java.lang.Process pro = Runtime.getRuntime().exec("nautilus");
+				java.lang.Process superpro = Runtime.getRuntime().exec(StringUtils.join(processSyscallWithArgs, " "));
 //				p3.waitFor();
 				
 				// starten des prozesses
-				java.lang.Process sysproc = pb.start();
+//				java.lang.Process sysproc = pb.start();
 
 				log ("info", "calling: " + StringUtils.join(processSyscallWithArgs, " "));
 
 //				alternativer aufruf
 //				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
 				
-				log("info", "call executed. pid="+sysproc.hashCode());
+//				log("info", "call executed. pid="+sysproc.hashCode());
 
 				// wait 2 seconds for becoming the pid-file visible
 				Thread.sleep(2000);
