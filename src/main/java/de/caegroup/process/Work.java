@@ -382,7 +382,8 @@ implements Serializable
 
 				// die sonstigen argumente hinzufuegen
 				processSyscallWithArgs.add("-call");
-				processSyscallWithArgs.add("\""+call+"\"");
+//				processSyscallWithArgs.add("\""+call+"\"");
+				processSyscallWithArgs.add("nautilus");
 				processSyscallWithArgs.add("-stdout");
 				processSyscallWithArgs.add(this.getParent().getAbsstdout());
 				processSyscallWithArgs.add("-stderr");
@@ -414,7 +415,7 @@ implements Serializable
 //				p1.waitFor();
 //				java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
 //				p2.waitFor();
-				java.lang.Process pro = Runtime.getRuntime().exec("nautilus");
+//				java.lang.Process pro = Runtime.getRuntime().exec("nautilus");
 				java.lang.Process superpro = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
 //				p3.waitFor();
 				
