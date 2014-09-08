@@ -381,12 +381,18 @@ implements Serializable
 				ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(processSyscall.split(" ")));
 
 				// die sonstigen argumente hinzufuegen
-				processSyscallWithArgs.add("-call \""+call+"\"");
-				processSyscallWithArgs.add("-stdout "+this.getParent().getAbsstdout());
-				processSyscallWithArgs.add("-stderr "+this.getParent().getAbsstderr());
-				processSyscallWithArgs.add("-pid "+this.getParent().getAbspid());
-				processSyscallWithArgs.add("-mylog "+AbsLogSyscallWrapper);
-				processSyscallWithArgs.add("-maxrun "+this.maxrun);
+				processSyscallWithArgs.add("-call");
+				processSyscallWithArgs.add("\""+call+"\"");
+				processSyscallWithArgs.add("-stdout");
+				processSyscallWithArgs.add(this.getParent().getAbsstdout());
+				processSyscallWithArgs.add("-stderr");
+				processSyscallWithArgs.add(this.getParent().getAbsstderr());
+				processSyscallWithArgs.add("-pid");
+				processSyscallWithArgs.add(this.getParent().getAbspid());
+				processSyscallWithArgs.add("-mylog");
+				processSyscallWithArgs.add(AbsLogSyscallWrapper);
+				processSyscallWithArgs.add("-maxrun");
+				processSyscallWithArgs.add(""+this.maxrun);
 
 				// erstellen prozessbuilder
 //				ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
@@ -417,6 +423,7 @@ implements Serializable
 
 				log ("info", "calling: " + StringUtils.join(processSyscallWithArgs, " "));
 
+				
 //				alternativer aufruf
 //				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
 				
