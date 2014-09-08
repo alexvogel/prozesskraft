@@ -303,6 +303,10 @@ implements Serializable
 	{
 		this.log("info", "commit: planning for file: "+file.getAbsfilename());
 
+		System.out.println("file is: "+file.getAbsfilename());
+		System.out.println("dir of file is: "+new java.io.File(file.getAbsfilename()).getParent());
+		System.out.println("dir of Step is: "+this.getAbsdir());
+
 		// wenn der pfad des files NICHT identisch ist mit dem pfad des step-directories
 		if (!(new java.io.File(file.getAbsfilename()).getParent().matches("^"+this.getAbsdir()+"$")))
 		{
