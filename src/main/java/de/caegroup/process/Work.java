@@ -420,10 +420,11 @@ implements Serializable
 //				java.lang.Process superpro = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
 //				p3.waitFor();
 				
+				log ("info", "calling: " + pb.command());
+
 				// starten des prozesses
 				java.lang.Process sysproc = pb.start();
 
-				log ("info", "calling: " + StringUtils.join(processSyscallWithArgs, " "));
 
 				
 //				alternativer aufruf
