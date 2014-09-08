@@ -4,8 +4,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -19,13 +22,18 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+import de.caegroup.gui.step.edit.EditVariable;
+import de.caegroup.gui.step.edit.ShowLog;
 import de.caegroup.process.Log;
 import de.caegroup.process.Step;
+import de.caegroup.process.Variable;
 
 public class SIDebugGui
 {
 	private Composite parent;
 	private Step step;
+	
+	private SIDebugGui This = this;
 	
 	TableViewer viewer;
 //	Composite composite;
@@ -79,11 +87,24 @@ public class SIDebugGui
 		
 		viewer.setInput(step.getLogRecursive());
 
+		viewer.addDoubleClickListener(listener_double_click);
+
 		// auf die letzte zeile fokussieren
 		table.setSelection(table.getItemCount()-1);
-//		System.out.println("Anzahl ist: "+step.getLog().size());
 	}
 	
+	IDoubleClickListener listener_double_click = new IDoubleClickListener()
+	{
+		public void doubleClick(DoubleClickEvent event)
+		{
+			TableViewer viewer = (TableViewer) event.getSource();
+			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
+			
+			Log log = (Log) thisselection.getFirstElement();
+			ShowLog shower = new ShowLog(This, log);
+		}
+	};
+
 	public class MyContentProvider implements IStructuredContentProvider
 	{
 		public Object[] getElements(Object inputElement)
