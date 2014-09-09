@@ -347,6 +347,7 @@ implements Serializable
 		// wenn das file bereits einen absdir hat und das file existiert, dann muss dies nicht ueber globbing ermittelt werden
 		if(new java.io.File(master.getAbsfilename()).exists())
 		{
+			System.out.println("info: file has already a absfilename, so no need to glob");
 			filesToCommit.add(master);
 		}
 
@@ -354,6 +355,7 @@ implements Serializable
 		// das Verzeichnis des Steps
 		else if((master.getGlob()!=null) && (!master.getGlob().equals("")))
 		{
+			System.out.println("info: file does not have a absfilename, so i need to glob it");
 			java.io.File stepDir = new java.io.File(this.getAbsdir());
 
 			// alle eintraege des Verzeichnisses
