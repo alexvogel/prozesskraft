@@ -86,22 +86,11 @@ public class Startinstance
 //				.isRequired()
 				.create("definition");
 		
-		Option odir = OptionBuilder.withArgName("DIR")
-				.hasArg()
-				.withDescription("[optional] the content of this directory will be committed as files.")
-				.create("commitdir");
-		
 		Option ofile = OptionBuilder.withArgName("FILE")
 				.hasArg()
 				.withDescription("[optional] this file will be committed as file.")
 //				.isRequired()
 				.create("commitfile");
-		
-		Option ovarfile = OptionBuilder.withArgName("FILE")
-				.hasArg()
-				.withDescription("[optional] every line of this file that contains something like name=value will be committed as a variable.")
-//				.isRequired()
-				.create("commitvarfile");
 		
 		Option ovariable = OptionBuilder.withArgName("NAME=VALUE")
 				.hasArg()
@@ -118,9 +107,7 @@ public class Startinstance
 		options.addOption( ov );
 		options.addOption( orootdir );
 		options.addOption( odefinition );
-		options.addOption( odir );
 		options.addOption( ofile );
-		options.addOption( ovarfile );
 		options.addOption( ovariable );
 		
 		/*----------------------------
@@ -213,32 +200,6 @@ public class Startinstance
 				file.setKey("default");
 
 				commit.addFile(file);
-			}
-			
-			if (commandline.hasOption("commitvarfile"))
-			{
-				if (new java.io.File(commandline.getOptionValue("commitvarfile")).exists())
-				{
-					commit.commitvarfile(commandline.getOptionValue("commitvarfile"));
-				}
-				else
-				{
-					System.err.println("-commitvarfile "+commandline.getOptionValue("commitvarfile")+" does not exist.");
-					exiter();
-				}
-			}
-			
-			if (commandline.hasOption("commitdir"))
-			{
-				if (new java.io.File(commandline.getOptionValue("commitdir")).exists())
-				{
-					commit.commitdir(commandline.getOptionValue("commitdir"));
-				}
-				else
-				{
-					System.err.println("-commitdir "+commandline.getOptionValue("commitdir")+" does not exist.");
-					exiter();
-				}
 			}
 			
 			if (commandline.hasOption("commitvariable"))
