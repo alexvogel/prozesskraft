@@ -1211,10 +1211,11 @@ implements Serializable, Cloneable
 		
 		// Die Inits untersuchen
 		ArrayList<String> statusAllInits = new ArrayList<String>(); //waiting/initializing/finished/error
-
+		
 		for(Init actInit : this.getInit())
 		{
 			statusAllInits.add(actInit.getStatus());
+			System.out.println(this.getName()+": Init="+actInit.getListname()+"="+actInit.getStatus());
 		}
 
 		// ist der status 'error' vorhanden? prozess=error
@@ -1223,7 +1224,7 @@ implements Serializable, Cloneable
 			status = "error";
 			return status;
 		}
-		
+
 		// wenn schluessel initializing vorhanden ist, dann gilt 'initializing'
 		else if(  statusAllInits.contains("initializing")  )
 		{
@@ -1281,6 +1282,7 @@ implements Serializable, Cloneable
 		for(Commit actCommit : this.getCommit())
 		{
 			statusAllCommits.add(actCommit.getStatus());
+			System.out.println(this.getName()+": Init="+actCommit.getName()+"="+actCommit.getStatus());
 		}
 
 		// ist der status 'error' vorhanden, dann gilt 'error'
