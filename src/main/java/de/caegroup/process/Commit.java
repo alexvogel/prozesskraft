@@ -339,7 +339,8 @@ implements Serializable
 	*/	
 	public void commitFile(File master)
 	{
-		log("info", "want to commit the file(s) (key=" +master.getKey()+") that glob "+master.getGlob());
+		log("info", "want to commit the file(s) (key=" +master.getKey()+")");
+		System.out.println("info: want to commit the file(s) (key=" +master.getKey()+")");
 
 		ArrayList<File> filesToCommit = new ArrayList<File>();
 
@@ -354,7 +355,7 @@ implements Serializable
 		else if((master.getGlob()!=null) && (!master.getGlob().equals("")))
 		{
 			java.io.File stepDir = new java.io.File(this.getAbsdir());
-	
+
 			// alle eintraege des Verzeichnisses
 			java.io.File[] allEntriesOfDirectory = stepDir.listFiles();
 			log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath());
@@ -482,7 +483,8 @@ implements Serializable
 	*/	
 	public void commitVariable(Variable master)
 	{
-		log("info", "want to commit the variable(s) (key=" +master.getKey()+") which value is expected to be in file(s) that glob "+master.getGlob());
+		log("info", "want to commit the variable(s) (key=" +master.getKey()+")");
+		System.out.println("info: want to commit the variable(s) (key=" +master.getKey()+")");
 
 		ArrayList<Variable> variablesToCommit = new ArrayList<Variable>();
 
