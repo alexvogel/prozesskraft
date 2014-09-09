@@ -177,6 +177,11 @@ implements Serializable, Cloneable
 /*----------------------------
 	  methods get
 	----------------------------*/
+	public java.io.File asFile()
+	{
+		return new java.io.File(this.getAbsfilename());
+	}
+	
 	public String getKey()
 	{
 		return this.key;

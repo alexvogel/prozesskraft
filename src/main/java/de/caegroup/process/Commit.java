@@ -1,11 +1,11 @@
 package de.caegroup.process;
 
 import java.io.*;
+import java.nio.file.CopyOption;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.PathMatcher;
-//import java.util.*;
-//import java.util.HashMap;
-//import java.util.Map;
+import java.nio.file.StandardCopyOption.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,6 +24,7 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
+	private static final CopyOption REPLACE_EXISTING = null;
 	private String name = "";
 	private boolean toroot = false;
 	private String loop = "";
@@ -390,7 +391,25 @@ implements Serializable
 			}
 		}
 
-		// DIE ERMITTELTEN FILES UEBERPRUEFEN
+		// DIE ERMITTELTEN FILES EVTL. KOPIEREN UND UEBERPRUEFEN
+		// falls files nicht im step-directory zu finden sind, dann sollen sie dort hin kopiert werden
+		for(File actFile : filesToCommit)
+		{
+			// wenn die verzeichnisse nicht uebereinstimmen, muss das file kopiert werden
+			if(!(this.getAbsdir().equals(actFile.asFile().getParent())))
+			{
+				try
+				{
+					log("info", "copying file "+actFile.getAbsfilename()+" to "+this.getAbsdir());
+					Files.copy(actFile.asFile().toPath(), new java.io.File(this.getAbsdir()).toPath(), REPLACE_EXISTING);
+				}
+				catch(Exception e)
+				{
+					master.log("error", e.getMessage()+"\n"+"error while copying: "+actFile.getAbsfilename() +" => "+this.getAbsdir() );
+					master.setStatus("error");
+				}
+			}
+		}
 
 		// ueberpruefen ob Anzahl der ermittelten Variablen mit minoccur und maxoccur zusammen passt
 		if(filesToCommit.size() < master.getMinoccur())
