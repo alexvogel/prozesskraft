@@ -390,7 +390,7 @@ public class Createdoc
 			String stepImagePath = randomPathPng+"/step_"+actualStep.getName()+"_Topology.png";
 			
 			// Farbe des Steps auf working aendern
-			actualStep.setStatus("working");
+//			actualStep.setStatus("working");
 			
 			// etwas warten, bis die farbe bezeichnet wurde
 			long jetzt4 = System.currentTimeMillis();
@@ -411,7 +411,7 @@ public class Createdoc
 			stepTopologyImagePath.put(actualStep.getName(), stepImagePath);
 			
 			// farbe wieder auf grau aendern
-			actualStep.setStatus("waiting");
+//			actualStep.setStatus("waiting");
 			
 			System.out.println("erstelle bild fuer step: "+actualStep.getName());
 
