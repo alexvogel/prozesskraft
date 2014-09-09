@@ -96,22 +96,11 @@ public class Commitit
 //				.isRequired()
 				.create("step");
 		
-		Option odir = OptionBuilder.withArgName("DIR")
-				.hasArg()
-				.withDescription("[optional] the content of this directory will be committed as files.")
-				.create("dir");
-		
 		Option ofile = OptionBuilder.withArgName("FILE")
 				.hasArg()
 				.withDescription("[optional] this file will be committed as file. key will be set to 'default'")
 //				.isRequired()
 				.create("file");
-		
-		Option ovarfile = OptionBuilder.withArgName("FILE")
-				.hasArg()
-				.withDescription("[optional] every line of this file that contains s.th. like KEY=VALUE will be committed as a variable.")
-//				.isRequired()
-				.create("varfile");
 		
 		Option okey = OptionBuilder.withArgName("KEY")
 				.hasArg()
@@ -133,9 +122,7 @@ public class Commitit
 		options.addOption( ohelp );
 		options.addOption( oinstance );
 		options.addOption( ostep );
-		options.addOption( odir );
 		options.addOption( ofile );
-		options.addOption( ovarfile );
 		options.addOption( okey );
 		options.addOption( ovariable );
 		
@@ -263,16 +250,6 @@ public class Commitit
 			variable.setValue(commandline.getOptionValue("variable"));
 			commit.addVariable(variable);
 			commit.doIt();
-		}
-
-		if (commandline.hasOption("varfile"))
-		{
-			commit.commitvarfile(commandline.getOptionValue("varfile"));
-		}
-
-		if (commandline.hasOption("dir"))
-		{
-			commit.commitdir(new java.io.File(commandline.getOptionValue("dir")));
 		}
 
 		commit.setStatus("finished");
