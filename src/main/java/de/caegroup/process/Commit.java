@@ -415,10 +415,10 @@ implements Serializable
 
 					log("info", "copying file "+quellFile.getAbsolutePath()+" to "+zielFile.getAbsolutePath());
 					System.out.println("info: copying file "+quellFile.getAbsolutePath()+" to "+zielFile.getAbsolutePath());
-					
+
 					// kopieren durchfuehren
 					Files.copy(quellFile.toPath(), zielFile.toPath());
-					
+
 					// den pfad in dem jeweiligen File-Objekt auf die neue position aendern
 					System.out.println("info: setzen des absoluten pfad des files auf die neue position: "+zielFile.getAbsolutePath());
 					actFile.setAbsfilename(zielFile.getAbsolutePath());
