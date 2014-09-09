@@ -1312,15 +1312,22 @@ implements Serializable, Cloneable
 				return status;
 			}
 	
-			// wenn schluessel initializing vorhanden ist, dann gilt 'initializing'
-			else if(  statusAllInits.contains("working")  )
+			// wenn schluessel working vorhanden ist, dann gilt 'working'
+			else if( this.work.equals("working")  )
 			{
 				status = "working";
 				return status;
 			}
 	
+			// wenn schluessel waiting vorhanden ist, dann gilt 'waiting'
+			else if(  this.work.equals("waiting") && statusAllInits.isEmpty())
+			{
+				status = "waiting";
+				return status;
+			}
+	
 			// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
-			else if(  statusAllInits.contains("finished") )
+			else if(  this.work.equals("finished") )
 			{
 				status = "worked";
 			}
@@ -1345,6 +1352,13 @@ implements Serializable, Cloneable
 		else if(  statusAllCommits.contains("committing")  )
 		{
 			status = "committing";
+			return status;
+		}
+
+		// wenn schluessel waiting vorhanden ist, dann gilt 'waiting'
+		else if(  statusAllCommits.contains("waiting")  && statusAllCommits.isEmpty()  &&  this.work == null)
+		{
+			status = "waiting";
 			return status;
 		}
 
