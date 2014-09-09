@@ -417,7 +417,7 @@ implements Serializable
 					System.out.println("info: copying file "+quellFile.getAbsolutePath()+" to "+zielFile.getAbsolutePath());
 					
 					// kopieren durchfuehren
-					Files.copy(quellFile.toPath(), zielFile.toPath(), REPLACE_EXISTING);
+					Files.copy(quellFile.toPath(), zielFile.toPath());
 					
 					// den pfad in dem jeweiligen File-Objekt auf die neue position aendern
 					System.out.println("info: setzen des absoluten pfad des files auf die neue position: "+zielFile.getAbsolutePath());
