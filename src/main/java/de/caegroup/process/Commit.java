@@ -186,15 +186,15 @@ implements Serializable
 	{
 		ArrayList<Log> logRecursive = this.log;
 
-// alle logs aller Variablen hinzufuegen
+		// alle logs aller Variablen hinzufuegen
 		for(Variable actVariable : this.variable)
 		{
 			logRecursive.addAll(actVariable.getLog());
 		}
-// alle logs aller Files hinzufuegen
+		// alle logs aller Files hinzufuegen
 		for(File actFile : this.file)
 		{
-//			System.err.println("actual Step: "+this.getParent().getName()+" | actual Commit: "+this.getName()+" | actual File is: "+actFile.getKey()+" | size of File-log: "+actFile.getLog().size());
+			//System.err.println("actual Step: "+this.getParent().getName()+" | actual Commit: "+this.getName()+" | actual File is: "+actFile.getKey()+" | size of File-log: "+actFile.getLog().size());
 			logRecursive.addAll(actFile.getLog());
 		}
 
@@ -206,14 +206,48 @@ implements Serializable
 
 	public String getStatus()
 	{
+		String status = "unknown";
+
+		ArrayList<String> statusAllFilesVariables = new ArrayList<String>();
+
+		for(File actFile : this.getFile())
+		{
+			statusAllFilesVariables.add(actFile.getStatus());
+		}
+		for(Variable actVariable : this.getVariable())
+		{
+			statusAllFilesVariables.add(actVariable.getStatus());
+		}
+
+		// ist der status 'error' vorhanden? prozess=error
+		if(statusAllFilesVariables.contains("error"))
+		{
+			status = "error";
+			return status;
+		}
+
+		// wenn schluessel waiting nicht vorhanden sind, und nur finished vorhanden ist, dann ist commit finished
+		else if(  statusAllFilesVariables.contains("waiting") )
+		{
+			status = "waiting";
+			return status;
+		}
+
+		// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist prozess finished
+		else if(  statusAllFilesVariables.contains("finished") )
+		{
+			status = "finished";
+			return status;
+		}
+
 		return status;
 	}
 
-	public void setStatus(String status)
-	{
-		log("info", "setting status to '"+status+"'");
-		this.status = status;
-	}
+//	public void setStatus(String status)
+//	{
+//		log("info", "setting status to '"+status+"'");
+//		this.status = status;
+//	}
 
 	public String getAbsdir()
 	{
@@ -302,62 +336,76 @@ implements Serializable
 	 * 7) hinzufuegen zu step
 	 * @param File
 	*/	
-	public void commitFile(File file)
+	public void commitFile(File master)
 	{
-		log("info", "want to commit the file(s) (key=" +file.getKey()+") that glob "+file.getGlob());
+		log("info", "want to commit the file(s) (key=" +master.getKey()+") that glob "+master.getGlob());
 
-		// das Verzeichnis des Steps
-		java.io.File stepDir = new java.io.File(this.getAbsdir());
-		
-		// alle eintraege des Verzeichnisses
-		java.io.File[] allEntriesOfDirectory = stepDir.listFiles();
-		log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath());
-		
-		// nur die files des verzeichnisses
-		ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
-		for(java.io.File actFile : allEntriesOfDirectory)
-		{
-			if(!actFile.isDirectory())
-			{
-				allFilesOfDirectory.add(actFile);
-			}
-		}
-		log("info", allFilesOfDirectory.size()+" files in directory "+stepDir.getAbsolutePath());
-
-		// nur die files auf die der glob passt
-		PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+file.getGlob());
-		ArrayList<java.io.File> allFilesThatGlob = new ArrayList<java.io.File>();
-		for(java.io.File actFile :allFilesOfDirectory)
-		{
-			if(matcher.matches(actFile.toPath()))
-			{
-				allFilesThatGlob.add(actFile);
-			}
-		}
-
-		// files aus den java.io.files generieren und jedes mal das vorliegende file clonen
 		ArrayList<File> filesToCommit = new ArrayList<File>();
-		for(java.io.File actFile : allFilesThatGlob)
+
+		// wenn das file bereits einen absdir hat und das file existiert, dann muss dies nicht ueber globbing ermittelt werden
+		if(new java.io.File(master.getAbsfilename()).exists())
 		{
-			File clonedFile = file.clone();
-			clonedFile.setAbsfilename(actFile.getAbsolutePath());
-			filesToCommit.add(clonedFile);
+			filesToCommit.add(master);
 		}
-		
+
+		// ansonsten muss mit dem glob festgestellt werden welche files gemeint sind
+		// das Verzeichnis des Steps
+		else if((master.getGlob()!=null) && (!master.getGlob().equals("")))
+		{
+			java.io.File stepDir = new java.io.File(this.getAbsdir());
+	
+			// alle eintraege des Verzeichnisses
+			java.io.File[] allEntriesOfDirectory = stepDir.listFiles();
+			log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath());
+	
+			// nur die files des verzeichnisses
+			ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
+			for(java.io.File actFile : allEntriesOfDirectory)
+			{
+				if(!actFile.isDirectory())
+				{
+					allFilesOfDirectory.add(actFile);
+				}
+			}
+			log("info", allFilesOfDirectory.size()+" files in directory "+stepDir.getAbsolutePath());
+	
+			// nur die files auf die der glob passt
+			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+master.getGlob());
+			ArrayList<java.io.File> allFilesThatGlob = new ArrayList<java.io.File>();
+			for(java.io.File actFile :allFilesOfDirectory)
+			{
+				if(matcher.matches(actFile.toPath()))
+				{
+					allFilesThatGlob.add(actFile);
+				}
+			}
+	
+			// files aus den java.io.files generieren und jedes mal das vorliegende file clonen
+			for(java.io.File actFile : allFilesThatGlob)
+			{
+				File clonedFile = master.clone();
+				clonedFile.setGlob("");
+				clonedFile.setAbsfilename(actFile.getAbsolutePath());
+				filesToCommit.add(clonedFile);
+			}
+		}
+
+		// DIE ERMITTELTEN FILES UEBERPRUEFEN
+
 		// ueberpruefen ob Anzahl der ermittelten Variablen mit minoccur und maxoccur zusammen passt
-		if(filesToCommit.size() < file.getMinoccur())
+		if(filesToCommit.size() < master.getMinoccur())
 		{
-			log("error", "amount of determined files is "+filesToCommit.size()+". this is lower than the needed "+file.getMinoccur()+" (minoccur)");
-			this.setStatus("error");
+			log("error", "amount of determined files is "+filesToCommit.size()+". this is lower than the needed "+master.getMinoccur()+" (minoccur)");
+			master.setStatus("error");
 		}
-		else if (filesToCommit.size() > file.getMaxoccur())
+		else if (filesToCommit.size() > master.getMaxoccur())
 		{
-			log("error", "amount of determined files is "+filesToCommit.size()+". this is more than the maximum allowed amount "+file.getMaxoccur()+" (maxoccur)");
-			this.setStatus("error");
+			log("error", "amount of determined files is "+filesToCommit.size()+". this is more than the maximum allowed amount "+master.getMaxoccur()+" (maxoccur)");
+			master.setStatus("error");
 		}
 		else
 		{
-			log("info", "amount of determined files is "+filesToCommit.size()+". (minoccur="+file.getMinoccur()+", maxoccur="+file.getMaxoccur()+")");
+			log("info", "amount of determined files is "+filesToCommit.size()+". (minoccur="+master.getMinoccur()+", maxoccur="+master.getMaxoccur()+")");
 		}
 
 		// durchfuehren evtl. definierter tests
@@ -370,15 +418,15 @@ implements Serializable
 			else
 			{
 				log("error", "tests failed ("+actFile.getAllTestsFeedback()+")");
-				this.setStatus("error");
+				master.setStatus("error");
 			}
 		}
 
 		// wenn alles gut gegangen ist bisher, dann committen
-		if(! this.getStatus().equals("error"))
+		if(! master.getStatus().equals("error"))
 		{
 			this.getParent().addFile(filesToCommit);
-			this.setStatus("finished");
+			master.setStatus("finished");
 		}
 	}
 
@@ -397,66 +445,78 @@ implements Serializable
 	/**
 	 * commit einer variable
 	 * 1) globben
-	 * 2) aus den globs die values extrahieren
+	 * 2) aus den geglobbten files die values extrahieren
 	 * 3) fuer jeden value eine variable an step committen
 	 * @input variable
 	*/	
-	public void commitVariable(Variable variable)
+	public void commitVariable(Variable master)
 	{
-		log("info", "want to commit the variable(s) (key=" +variable.getKey()+") which value is expected to be in file(s) that glob "+variable.getGlob());
+		log("info", "want to commit the variable(s) (key=" +master.getKey()+") which value is expected to be in file(s) that glob "+master.getGlob());
 
-		// das Verzeichnis des Steps
-		java.io.File stepDir = new java.io.File(this.getAbsdir());
-		
-		// alle eintraege des Verzeichnisses
-		java.io.File[] allEntriesOfDirectory = stepDir.listFiles();
-		log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath());
-		
-		// nur die files des verzeichnisses
-		ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
-		for(java.io.File actFile : allEntriesOfDirectory)
-		{
-			if(!actFile.isDirectory())
-			{
-				allFilesOfDirectory.add(actFile);
-			}
-		}
-		log("info", allFilesOfDirectory.size()+" files in directory "+stepDir.getAbsolutePath());
-		
-		// nur die files auf die der glob passt
-		PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+variable.getGlob());
-		ArrayList<java.io.File> allFilesThatGlob = new ArrayList<java.io.File>();
-		for(java.io.File actFile :allFilesOfDirectory)
-		{
-			if(matcher.matches(actFile.toPath()))
-			{
-				allFilesThatGlob.add(actFile);
-			}
-		}
-		
-		// variablen aus den files generieren und jedes mal die vorliegende variable clonen
 		ArrayList<Variable> variablesToCommit = new ArrayList<Variable>();
-		for(java.io.File actFile : allFilesThatGlob)
+
+		// wenn die variable bereits einen value hat, dann muss dies nicht ueber globbing ermittelt werden
+		if((!master.getValue().equals("")) && (master.getValue()!=null))
 		{
-			variablesToCommit.addAll(extractVariables(variable, actFile, true));
+			variablesToCommit.add(master);
 		}
+
+		// ansonsten muss mit dem glob festgestellt werden welche files gemeint sind
+		else if((master.getValue()!=null) && (!master.getGlob().equals("")))
+		{
+			// das Verzeichnis des Steps
+			java.io.File stepDir = new java.io.File(this.getAbsdir());
+			
+			// alle eintraege des Verzeichnisses
+			java.io.File[] allEntriesOfDirectory = stepDir.listFiles();
+			log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath());
+			
+			// nur die files des verzeichnisses
+			ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
+			for(java.io.File actFile : allEntriesOfDirectory)
+			{
+				if(!actFile.isDirectory())
+				{
+					allFilesOfDirectory.add(actFile);
+				}
+			}
+			log("info", allFilesOfDirectory.size()+" files in directory "+stepDir.getAbsolutePath());
+			
+			// nur die files auf die der glob passt
+			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+master.getGlob());
+			ArrayList<java.io.File> allFilesThatGlob = new ArrayList<java.io.File>();
+			for(java.io.File actFile :allFilesOfDirectory)
+			{
+				if(matcher.matches(actFile.toPath()))
+				{
+					allFilesThatGlob.add(actFile);
+				}
+			}
+	
+			// variablen aus den files generieren und jedes mal die vorliegende variable clonen
+			for(java.io.File actFile : allFilesThatGlob)
+			{
+				variablesToCommit.addAll(extractVariables(master, actFile, true));
+			}
+		}
+
 		
 		// ueberpruefen ob Anzahl der ermittelten Variablen mit minoccur und maxoccur zusammen passt
-		if(variablesToCommit.size() < variable.getMinoccur())
+		if(variablesToCommit.size() < master.getMinoccur())
 		{
-			log("error", "amount of determined variables is "+variablesToCommit.size()+". this is lower than the needed "+variable.getMinoccur()+" (minoccur)");
-			this.setStatus("error");
+			log("error", "amount of determined variables is "+variablesToCommit.size()+". this is lower than the needed "+master.getMinoccur()+" (minoccur)");
+			master.setStatus("error");
 		}
-		else if (variablesToCommit.size() > variable.getMaxoccur())
+		else if (variablesToCommit.size() > master.getMaxoccur())
 		{
-			log("error", "amount of determined variables is "+variablesToCommit.size()+". this is more than the maximum allowed amount "+variable.getMaxoccur()+" (maxoccur)");
-			this.setStatus("error");
+			log("error", "amount of determined variables is "+variablesToCommit.size()+". this is more than the maximum allowed amount "+master.getMaxoccur()+" (maxoccur)");
+			master.setStatus("error");
 		}
 		else
 		{
-			log("info", "amount of determined variables is "+variablesToCommit.size()+". (minoccur="+variable.getMinoccur()+", maxoccur="+variable.getMaxoccur()+")");
+			log("info", "amount of determined variables is "+variablesToCommit.size()+". (minoccur="+master.getMinoccur()+", maxoccur="+master.getMaxoccur()+")");
 		}
-		
+
 		// durchfuehren evtl. definierter tests
 		for(Variable actVariable : variablesToCommit)
 		{
@@ -467,15 +527,15 @@ implements Serializable
 			else
 			{
 				log("error", "tests failed ("+actVariable.getAllTestsFeedback()+")");
-				this.setStatus("error");
+				master.setStatus("error");
 			}
 		}
 
 		// wenn alles gut gegangen ist bisher, dann committen
-		if(! this.getStatus().equals("error"))
+		if(! master.getStatus().equals("error"))
 		{
 			this.getParent().addVariable(variablesToCommit);
-			this.setStatus("finished");
+			master.setStatus("finished");
 		}
 	}
 	
@@ -517,7 +577,7 @@ implements Serializable
 					catch (IOException e)
 					{
 						this.log("error", e.getMessage());
-						this.setStatus("error");
+						master.setStatus("error");
 					}
 				}
 				finally
@@ -528,7 +588,7 @@ implements Serializable
 					catch (IOException e)
 					{
 						this.log("error", "IOException");
-						this.setStatus("error");
+						master.setStatus("error");
 						e.printStackTrace();
 					}
 				}
@@ -536,14 +596,14 @@ implements Serializable
 			else
 			{
 				this.log("info", "file is to big (>100kB) to commit content as variables: "+fileToExtractFrom.getAbsolutePath());
-				this.setStatus("error");
+				master.setStatus("error");
 			}
 		}
 		catch (FileNotFoundException e)
 		{
 			e.printStackTrace();
 			this.log("info", "variables not committed (cannot read file): "+fileToExtractFrom.getAbsolutePath());
-			this.setStatus("error");
+			master.setStatus("error");
 		}
 		
 		return extractedVariables;
@@ -557,8 +617,6 @@ implements Serializable
 	{
 		try
 		{
-			this.setStatus("committing");
-
 			// und jetzt der konventionelle commit
 
 			// wenn das zu committende objekt ein File ist...
@@ -566,99 +624,20 @@ implements Serializable
 			{
 				this.log("info", "file key="+actualFile.getKey());
 				// ausfuehren von evtl. vorhandenen globs in den files
-				if(actualFile.getAbsfilename().equals(""))
-				{
-					if( ( actualFile.getGlob() != null)&& !(actualFile.getGlob().equals("")))
-					{
-						log("info", "globbing for files with'"+actualFile.getGlob()+"'");
-						java.io.File dir = new java.io.File(this.getAbsdir());
-						FileFilter fileFilter = new WildcardFileFilter(actualFile.getGlob());
-						java.io.File[] files = dir.listFiles(fileFilter);
-						if(files.length == 0)
-						{
-							log("info", "no file matched glob '"+actualFile.getGlob()+"'");
-						}
-	
-						else
-						{
-							log("info", files.length+" file(s) matched glob '"+actualFile.getGlob()+"'");
-						}
-	
-						// globeintrag im File loeschen, damit es nicht erneut geglobbt wird
-						actualFile.setGlob("");
-	
-						// passt es bzgl. minoccur und maxoccur?
-						log("info", "checking amount of occurances.");
-						if (files.length < actualFile.getMinoccur())
-						{
-							log("error", "minoccur is "+actualFile.getMinoccur()+" but only "+files.length+" file(s) globbed.");
-						}
-						else if (files.length > actualFile.getMaxoccur())
-						{
-							log("error", "maxoccur is "+actualFile.getMaxoccur()+" but "+files.length+" file(s) globbed.");
-						}
-						else
-						{
-							for(int x = 0; x < files.length; x++)
-							{
-								// ist es der letzte glob? Dann soll das urspruengliche file object verwendet werden
-								if((x+1) == files.length)
-								{
-									actualFile.setAbsfilename(files[x].getAbsolutePath());
-									log("info", "setting absolute filename to: "+actualFile.getAbsfilename());
-								}
-								// alle anderen werden aus einem clon erstellt
-								else
-								{
-									log("info", "cloning file-object and setting filename: "+actualFile.getAbsfilename());
-									File pFile = actualFile.clone();
-									pFile.setAbsfilename(files[x].getAbsolutePath());
-									// das zusaetzliche file dem commit hinzufuegen
-									this.addFile(pFile);
-								}
-							}
-						}
-					}
-				}
+				commitFile(actualFile);
 			}
-			// ueber alle files des commits iterieren und dem step hinzufuegen
-			for(File actFile : this.getFile())
-			{
-				this.log("info", "commit: file "+actFile.getKey()+":"+actFile.getAbsfilename());
-				commitFile(actFile);
-	
-				// falls nicht rootstep und wenn das File auch dem prozess committed werden soll...
-				if (this.getToroot() && (!(this.getParent().isRoot())))
-				{
-					this.log("info", "this file also goes also to root: file "+actFile.getKey()+":"+actFile.getAbsfilename());
-	
-					// dem root-step committen
-					this.getParent().getParent().getStep(this.getParent().getParent().getRootstepname()).addFile(actFile);
-				}
-			}
-					
+
 			// wenn das zu committende objekt eine Variable ist...
 			for(Variable actVariable : this.getVariable())
 			{
-				this.log("info", "variable "+actVariable.getKey()+":"+actVariable.getValue());
+				this.log("info", "variable "+actVariable.getKey());
 				this.commitVariable(actVariable);
-	
-				// wenn die Variable auch dem prozess committed werden soll...
-				if (this.getToroot() && (!(this.getName().equals(this.getParent().isRoot()))))
-				{
-					this.log("info", "this variable goes also to root: variable "+actVariable.getKey()+":"+actVariable.getValue());
-					// dem root-step committen
-					this.getParent().getParent().getStep(this.getParent().getParent().getRootstepname()).addVariable(actVariable);
-				}
 			}
-	
-			this.setStatus("finished");
+
 		}
 		catch (Exception e)
 		{
 			log("fatal", e.getMessage() + "\n" +Arrays.toString(e.getStackTrace()));
-			this.setStatus("error");
 		}
 	}
-		
 }

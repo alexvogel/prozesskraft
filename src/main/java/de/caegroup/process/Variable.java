@@ -26,6 +26,8 @@ implements Serializable
 	private String type = "string"; // string|float|integer|flag
 	private boolean free = true;
 	
+	private String status = "";	// waiting/finished/error
+
 	private ArrayList<Log> log = new ArrayList<Log>();
 
 	
@@ -294,6 +296,17 @@ implements Serializable
 	 */
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(String status)
+	{
+		log("info", "setting status to '"+status+"'");
+		this.status = status;
 	}
 
 

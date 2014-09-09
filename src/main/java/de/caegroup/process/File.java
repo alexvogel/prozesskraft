@@ -23,7 +23,9 @@ implements Serializable, Cloneable
 	private ArrayList<Test> test = new ArrayList<Test>();
 	private int minoccur = 0;
 	private int maxoccur = 999999;
-	
+
+	private String status = "";	// waiting/finished/error
+
 	private ArrayList<Log> log = new ArrayList<Log>();
 
 
@@ -344,5 +346,15 @@ implements Serializable, Cloneable
 		this.test.add(test);
 	}
 
+	public String getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(String status)
+	{
+		log("info", "setting status to '"+status+"'");
+		this.status = status;
+	}
 
 }

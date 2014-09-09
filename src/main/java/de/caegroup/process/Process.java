@@ -1695,7 +1695,8 @@ implements Serializable
 		// ist der status 'error' vorhanden? prozess=error
 		if(statusAllSteps.contains("error"))
 		{
-			return "error";
+			status = "error";
+			return status;
 		}
 		
 		// wenn schluessel waiting/initializing/working/committing nicht vorhanden sind, und nur finished vorhanden ist, dann ist prozess finished
@@ -1703,24 +1704,28 @@ implements Serializable
 		{
 			if(this.run)
 			{
-				return "rolling";
+				status = "rolling";
+				return status;
 			}
 			else
 			{
-				return "paused";
+				status = "paused";
+				return status;
 			}
 		}
 
 		// wenn schluessel waiting vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist prozess waiting
 		else if(  statusAllSteps.contains("waiting") )
 		{
-			return "waiting";
+			status = "waiting";
+			return status;
 		}
 		
 		// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist prozess finished
 		else if(  statusAllSteps.contains("finished") )
 		{
-			return "finished";
+			status = "finished";
+			return status;
 		}
 		
 		return status;

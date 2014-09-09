@@ -28,7 +28,7 @@ implements Serializable
 
 	private ArrayList<Log> log = new ArrayList<Log>();
 
-	private String status = new String();	// waiting/working/worked/finished/error/cancelled
+	private String status = new String();	// waiting/working/finished/error/cancelled
 	private int exitvalue;
 	public Step parent;
 	/*----------------------------

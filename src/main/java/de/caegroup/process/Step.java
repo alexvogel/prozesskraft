@@ -876,7 +876,6 @@ implements Serializable, Cloneable
 	{
 		Commit rootStandardCommit = new Commit(this);
 		rootStandardCommit.setName("root-standard");
-		rootStandardCommit.setStatus("committing");
 		
 		this.log("info", "special commit, because this step is root");
 
@@ -904,7 +903,6 @@ implements Serializable, Cloneable
 		this.addVariable(var);
 
 		this.log("info", "special commit of step 'root' ended");
-		rootStandardCommit.setStatus("finished");
 	}
 
 	public boolean areAllCommitsSuccessfull()
@@ -1267,7 +1265,107 @@ implements Serializable, Cloneable
 
 	public String getStatus()
 	{
-		return this.status;
+		String status = "unknown";
+		
+		// Die Inits untersuchen
+		ArrayList<String> statusAllInits = new ArrayList<String>(); //waiting/initializing/finished/error
+
+		for(Init actInit : this.getInit())
+		{
+			statusAllInits.add(actInit.getStatus());
+		}
+
+		// ist der status 'error' vorhanden? prozess=error
+		if(statusAllInits.contains("error"))
+		{
+			status = "error";
+			return status;
+		}
+		
+		// wenn schluessel initializing vorhanden ist, dann gilt 'initializing'
+		else if(  statusAllInits.contains("initializing")  )
+		{
+			status = "initializing";
+			return status;
+		}
+
+		// wenn schluessel waiting vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'waiting'
+		else if(  statusAllInits.contains("waiting") )
+		{
+			status = "waiting";
+			return status;
+		}
+		
+		// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
+		else if(  statusAllInits.contains("finished") )
+		{
+			status = "initialized";
+		}
+		
+		// Work untersuchen
+		// ist der status 'error' vorhanden? prozess=error
+		if(this.work.getStatus().equals("error"))
+		{
+			status = "error";
+			return status;
+		}
+
+		// wenn schluessel initializing vorhanden ist, dann gilt 'initializing'
+		else if(  statusAllInits.contains("working")  )
+		{
+			status = "working";
+			return status;
+		}
+
+		// wenn schluessel waiting vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'waiting'
+		else if(  statusAllInits.contains("waiting") )
+		{
+			status = "waiting";
+			return status;
+		}
+		
+		// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
+		else if(  statusAllInits.contains("finished") )
+		{
+			status = "worked";
+		}
+		
+		// Die Commits untersuchen
+		ArrayList<String> statusAllCommits = new ArrayList<String>(); //waiting/initializing/finished/error
+
+		for(Commit actCommit : this.getCommit())
+		{
+			statusAllCommits.add(actCommit.getStatus());
+		}
+
+		// ist der status 'error' vorhanden, dann gilt 'error'
+		if(statusAllCommits.contains("error"))
+		{
+			status = "error";
+			return status;
+		}
+		
+		// wenn schluessel committing vorhanden ist, dann gilt 'committing'
+		else if(  statusAllCommits.contains("committing")  )
+		{
+			status = "committing";
+			return status;
+		}
+
+		// wenn schluessel waiting vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'waiting'
+		else if(  statusAllCommits.contains("waiting") )
+		{
+			status = "waiting";
+			return status;
+		}
+		
+		// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
+		else if(  statusAllCommits.contains("finished") )
+		{
+			status = "finished";
+		}
+		
+		return status;
 	}
 
 	public Process getParent()
@@ -1443,10 +1541,10 @@ implements Serializable, Cloneable
 			logRecursive.addAll(work.getLogRecursive());
 		}
 
-		// die logs aller Callitems in die Sammlung uebernehmen
+		// die logs aller Commits in die Sammlung uebernehmen
 		for(Commit actCommit : this.getCommit())
 		{
-//			logRecursive.addAll(actCommit.getLogRecursive());
+			logRecursive.addAll(actCommit.getLogRecursive());
 		}
 
 		// sortierte KeyListe erstellen
