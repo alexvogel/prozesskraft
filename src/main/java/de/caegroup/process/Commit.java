@@ -32,7 +32,7 @@ implements Serializable
 	private ArrayList<Variable> variable = new ArrayList<Variable>();
 	private ArrayList<File> file = new ArrayList<File>();
 	
-	private String status = "";	// waiting/committing/finished/error/cancelled
+//	private String status = "waiting";	// waiting/committing/finished/error/cancelled
 
 	private java.lang.Process proc;
 	private int exitvalue;

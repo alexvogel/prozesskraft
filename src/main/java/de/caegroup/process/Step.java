@@ -41,7 +41,7 @@ implements Serializable, Cloneable
 //	private String absstderr = new String();
 	private ArrayList<File> file = new ArrayList<File>();
 	private ArrayList<Variable> variable = new ArrayList<Variable>();
-	private String status = "waiting";	// waiting/initializing/working/committing/ finished/error/cancelled
+//	private String status = "waiting";	// waiting/initializing/working/committing/ finished/error/cancelled
 	
 	private ArrayList<Log> log = new ArrayList<Log>();
 	private String rank = "";
@@ -738,41 +738,24 @@ implements Serializable, Cloneable
 			this.commit();
 		}
 
-		else if(this.getStatus().equals("committed"))
-		{
-			this.setStatus("finished");
-		}
 	}
 
 	public void initialize()
 	{
-		this.setStatus("initializing");
 
 		this.getList().clear();
 		this.setList(this.getDefaultlist());
 
-		// ueber alle inits iterieren
-		ArrayList<String> allInitStatus = new ArrayList<String>();
+		// ueber alle inits iterieren und ausfuehren
 		for( Init actualInit : this.getInits())
 		{
 			actualInit.doIt();
-			allInitStatus.add(actualInit.getStatus());
 		}
 
-		// status feststellen
-		if(allInitStatus.contains("error"))
-		{
-			this.setStatus("error");
-		}
-		else
-		{
-			this.setStatus("initialized");
-		}
 	}
 
 	public void fan() throws CloneNotSupportedException
 	{
-		this.setStatus("fanning");
 
 		// wenn die loopliste mindestens 1 wert enthaelt, ueber dioe liste iterieren und fuer jeden wert den aktuellen step clonen
 		if (this.getListItems(this.loop).size() > 0)
@@ -788,7 +771,6 @@ implements Serializable, Cloneable
 				newstep.setLoop(null);
 				newstep.setName(newstep.getName()+"@"+x);
 				newstep.log("info", "this step '"+newstep.getName()+"' was fanned out from step '"+this.getName()+"'");
-				newstep.setStatus("fanned");
 
 				// eine liste mit dem namen 'loop' anlegen und darin die loopvar speichern
 				List listLoop = new List();
@@ -813,31 +795,8 @@ implements Serializable, Cloneable
 	 */
 	public void work(String aufrufProcessSyscall)
 	{
-		// setzen des status auf working, falls nicht schon geschehen
-		if(!this.getStatus().equals("working"))
-		{
-			this.setStatus("working");
-		}
-
 		// work ausfuehren
 		this.getWork().doIt(aufrufProcessSyscall);
-		
-		// entsprechend des erfolgs, den status des steps festlegen
-		if(this.getWork().getStatus().equals("finished"))
-		{
-			this.setStatus("worked");
-		}
-
-		else if(this.getWork().getStatus().equals("error"))
-		{
-			this.setStatus("error");
-		}
-		
-		if(this.getParent().isWrapper())
-		{
-			log("info", "setting status to 'finished' (no commit, because this is a wrapper-process)");
-			this.setStatus("finished");
-		}
 	}
 
 	/**
@@ -845,28 +804,11 @@ implements Serializable, Cloneable
 	 */
 	public void commit()
 	{
-		this.setStatus("committing");
 
 		// alle commits durchfuehren
 		for(Commit actCommit : this.getCommit())
 		{
 			actCommit.doIt();
-		}
-
-		// sind alle commits erfolgreich?
-		if(this.areAllCommitsSuccessfull())
-		{
-			this.setStatus("finished");
-		}
-
-		// gibt es ein commit mit 'error'?
-		for(Commit actCommit : this.getCommit())
-		{
-			if(actCommit.getStatus().equals("error"))
-			{
-				this.log("error", "error in commit "+actCommit.getName());
-				this.setStatus("error");
-			}
 		}
 	}
 
@@ -1610,11 +1552,11 @@ implements Serializable, Cloneable
 		this.init = init;
 	}
 	
-	public void setStatus(String status)
-	{
-		log("info", "setting status to '"+status+"'");
-		this.status = status;
-	}
+//	public void setStatus(String status)
+//	{
+//		log("info", "setting status to '"+status+"'");
+//		this.status = status;
+//	}
 	
 	public void setParent(Process process)
 	{
