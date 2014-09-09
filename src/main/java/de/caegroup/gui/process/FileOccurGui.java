@@ -374,12 +374,12 @@ public class FileOccurGui
 		if(this.textexist)
 		{
 			// setzen des pfades
-			file.setAbsfilename(data.getContent());
+			file.setGlob(data.getContent());
 			Commit myCommit = new Commit(step);
 			myCommit.setName("by-pramp");
 			myCommit.addFile(file);
 			myCommit.doIt();
-			step.removeCommit(myCommit);
+//			step.removeCommit(myCommit);
 		}
 	}
 

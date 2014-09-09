@@ -320,7 +320,7 @@ public class VariableOccurGui
 			myCommit.setName("by-pramp");
 			myCommit.addVariable(variable);
 			myCommit.doIt();
-			step.removeCommit(myCommit);
+//			step.removeCommit(myCommit);
 		}
 	}
 
