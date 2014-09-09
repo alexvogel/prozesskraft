@@ -1302,34 +1302,37 @@ implements Serializable, Cloneable
 			status = "initialized";
 		}
 		
-		// Work untersuchen
-		// ist der status 'error' vorhanden? prozess=error
-		if(this.work.getStatus().equals("error"))
+		// Work untersuchen, falls vorhanden
+		if(this.work != null)
 		{
-			status = "error";
-			return status;
+			// ist der status 'error' vorhanden? prozess=error
+			if(this.work.getStatus().equals("error"))
+			{
+				status = "error";
+				return status;
+			}
+	
+			// wenn schluessel initializing vorhanden ist, dann gilt 'initializing'
+			else if(  statusAllInits.contains("working")  )
+			{
+				status = "working";
+				return status;
+			}
+	
+			// wenn schluessel waiting vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'waiting'
+			else if(  statusAllInits.contains("waiting") )
+			{
+				status = "waiting";
+				return status;
+			}
+			
+			// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
+			else if(  statusAllInits.contains("finished") )
+			{
+				status = "worked";
+			}
 		}
 
-		// wenn schluessel initializing vorhanden ist, dann gilt 'initializing'
-		else if(  statusAllInits.contains("working")  )
-		{
-			status = "working";
-			return status;
-		}
-
-		// wenn schluessel waiting vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'waiting'
-		else if(  statusAllInits.contains("waiting") )
-		{
-			status = "waiting";
-			return status;
-		}
-		
-		// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
-		else if(  statusAllInits.contains("finished") )
-		{
-			status = "worked";
-		}
-		
 		// Die Commits untersuchen
 		ArrayList<String> statusAllCommits = new ArrayList<String>(); //waiting/initializing/finished/error
 
