@@ -380,9 +380,6 @@ public class FileOccurGui
 			newFile.setAbsfilename(this.data.getContent());
 
 			commit.getParent().addFile(newFile);
-			
-			// setzen des urspruenglichen filkes auf 'finished' obwohl man das hier nicht so genau sagen kann
-			file.setStatus("finished");
 		}
 	}
 

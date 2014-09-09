@@ -321,9 +321,6 @@ public class VariableOccurGui
 			newVariable.setValue(this.data.getContent());
 
 			commit.getParent().addVariable(newVariable);
-			
-			// setzen des urspruenglichen filkes auf 'finished' obwohl man das hier nicht so genau sagen kann
-			variable.setStatus("finished");
 		}
 	}
 

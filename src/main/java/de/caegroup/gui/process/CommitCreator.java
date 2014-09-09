@@ -13,7 +13,9 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import de.caegroup.process.Commit;
+import de.caegroup.process.File;
 import de.caegroup.process.Step;
+import de.caegroup.process.Variable;
 import de.caegroup.pramp.parts.*;
 
 public class CommitCreator
@@ -92,6 +94,19 @@ public class CommitCreator
 		for (CommitGui actualCommitGui : commitGui)
 		{
 			actualCommitGui.commit(step);
+		}
+		
+		// alle files/variablen aller commits des aktuellen steps sollen auf 'finished' gesetzt werden
+		for(Commit actCommit : step.getCommit())
+		{
+			for(File actFile : actCommit.getFile())
+			{
+				actFile.setStatus("finished");
+			}
+			for(Variable actVariable : actCommit.getVariable())
+			{
+				actVariable.setStatus("finished");
+			}
 		}
 	}
 	
