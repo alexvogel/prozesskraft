@@ -395,13 +395,25 @@ implements Serializable
 		// falls files nicht im step-directory zu finden sind, dann sollen sie dort hin kopiert werden
 		for(File actFile : filesToCommit)
 		{
-			// wenn die verzeichnisse nicht uebereinstimmen, muss das file kopiert werden
+			// wenn die verzeichnisse nicht uebereinstimmen, muss das file kopiert werden und der neue pfad in das file eingetragen werden
 			if(!(this.getAbsdir().equals(actFile.asFile().getParent())))
 			{
 				try
 				{
 					log("info", "copying file "+actFile.getAbsfilename()+" to "+this.getAbsdir());
-					Files.copy(actFile.asFile().toPath(), new java.io.File(this.getAbsdir()).toPath(), REPLACE_EXISTING);
+					
+					// benamungen feststellen
+					java.io.File quellFile = actFile.asFile();
+					String quellFilename = quellFile.getName();
+					
+					java.io.File zielFile = new java.io.File(this.getAbsdir() + "/" + quellFilename);
+					
+					// kopieren durchfuehren
+					Files.copy(quellFile.toPath(), zielFile.toPath(), REPLACE_EXISTING);
+					
+					// den pfad in dem jeweiligen File-Objekt auf die neue position aendern
+					actFile.setAbsfilename(zielFile.getAbsolutePath());
+					
 				}
 				catch(Exception e)
 				{
