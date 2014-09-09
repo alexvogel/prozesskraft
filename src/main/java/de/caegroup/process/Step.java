@@ -880,26 +880,28 @@ implements Serializable, Cloneable
 		
 		this.log("info", "special commit, because this step is root");
 
-		//ueber alle initCommitDirs verzeichnisse iterieren
-		this.log("info", "commit all initCommitDirs");
-		for(java.io.File actualCommitDir : this.getParent().getInitCommitDirs2())
-		{
-			rootStandardCommit.commitdir(actualCommitDir);
-			rootStandardCommit.log("info", "committed dir "+actualCommitDir.getAbsolutePath());
-		}
+//		//ueber alle initCommitDirs verzeichnisse iterieren
+//		this.log("info", "commit all initCommitDirs");
+//		for(java.io.File actualCommitDir : this.getParent().getInitCommitDirs2())
+//		{
+//			rootStandardCommit.commitdir(actualCommitDir);
+//			rootStandardCommit.log("info", "committed dir "+actualCommitDir.getAbsolutePath());
+//		}
 
-		//ueber alle commitvarfiles iterieren
-		this.log("info", "commit all initCommitVarfiles");
-		for(java.io.File actCommitVarfile : this.getParent().getInitCommitVarfiles2())
-		{
-			rootStandardCommit.commitvarfile(actCommitVarfile);
-			rootStandardCommit.log("info", "committed dir "+actCommitVarfile.getAbsolutePath());
-		}
+//		//ueber alle commitvarfiles iterieren
+//		this.log("info", "commit all initCommitVarfiles");
+//		for(java.io.File actCommitVarfile : this.getParent().getInitCommitVarfiles2())
+//		{
+//			rootStandardCommit.commitVarfile(actCommitVarfile);
+//			rootStandardCommit.log("info", "committed dir "+actCommitVarfile.getAbsolutePath());
+//		}
 
 		this.log("info", "commit all standard entries");
 		// das stepdir als variable ablegen
-		rootStandardCommit.commitVariable("dir", this.getAbsdir());
-		rootStandardCommit.log("info", "committed variable dir="+this.getAbsdir());
+		Variable var = new Variable();
+		var.setKey("_dir");
+		var.setValue(this.getAbsdir());
+		this.addVariable(var);
 
 		this.log("info", "special commit of step 'root' ended");
 		rootStandardCommit.setStatus("finished");
@@ -1007,14 +1009,32 @@ implements Serializable, Cloneable
 
 	public void addFile(File file)
 	{
-		this.file.add(file);
 		this.log("debug", "adding File (key="+file.getKey()+", glob="+file.getGlob()+", path="+file.getAbsfilename()+")");
+		this.file.add(file);
+	}
+
+	public void addFile(ArrayList<File> file)
+	{
+		for(File actFile : file)
+		{
+			this.log("debug", "adding File (key="+actFile.getKey()+", glob="+actFile.getGlob()+", path="+actFile.getAbsfilename()+")");
+			this.file.add(actFile);
+		}
 	}
 
 	public void addVariable(Variable variable)
 	{
-		this.variable.add(variable);
 		this.log("debug", "adding Variable (key="+variable.getKey()+", value="+variable.getValue()+")");
+		this.variable.add(variable);
+	}
+	
+	public void addVariable(ArrayList<Variable> variable)
+	{
+		for(Variable actVariable : variable)
+		{
+			this.log("debug", "adding Variable (key="+actVariable.getKey()+", value="+actVariable.getValue()+")");
+			this.variable.add(actVariable);
+		}
 	}
 	
 	public String genName()

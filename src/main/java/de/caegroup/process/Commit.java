@@ -1,6 +1,8 @@
 package de.caegroup.process;
 
 import java.io.*;
+import java.nio.file.FileSystems;
+import java.nio.file.PathMatcher;
 //import java.util.*;
 //import java.util.HashMap;
 //import java.util.Map;
@@ -230,184 +232,292 @@ implements Serializable
 		this.log.add(new Log("commit "+this.getName(), loglevel, logmessage));
 	}
 
-	// den inhalt eines ganzen directories in den aktuellen step committen
-	public void commitdir(java.io.File dir)
-	{
-		this.log("info", "will commit directory "+dir.toString());
-		this.log("info", "test whether it is a directory "+dir.toString());
-		
-		if (dir.isDirectory())
-		{
-			boolean all_commitfiles_ok = true;
-			
-			this.log("info", "it is really a directory");
-			ArrayList<java.io.File> allfiles = new ArrayList<java.io.File>(Arrays.asList(dir.listFiles()));
-			
-			for(java.io.File actFile : allfiles)
-			{
-				this.log("info", "test whether it is a file "+file.toString());
-				if (actFile.isFile())
-				{
-					this.log("info", "it is a file");
-					this.commitFile("default", actFile);
-				}
-				else
-				{
-					this.log("info", "it is NOT a file - skipping");
-				}
-			}
-		}
-		else
-		{
-			this.log("info", "it is not a directory - skipping");
-			this.setStatus("error");
-		}
-	}
+//	// den inhalt eines ganzen directories in den aktuellen step committen
+//	public void commitdir(java.io.File dir)
+//	{
+//		this.log("info", "will commit directory "+dir.toString());
+//		this.log("info", "test whether it is a directory "+dir.toString());
+//		
+//		if (dir.isDirectory())
+//		{
+//			boolean all_commitfiles_ok = true;
+//			
+//			this.log("info", "it is really a directory");
+//			ArrayList<java.io.File> allfiles = new ArrayList<java.io.File>(Arrays.asList(dir.listFiles()));
+//			
+//			for(java.io.File actFile : allfiles)
+//			{
+//				this.log("info", "test whether it is a file "+file.toString());
+//				if (actFile.isFile())
+//				{
+//					this.log("info", "it is a file");
+//					this.commitFile("default", actFile);
+//				}
+//				else
+//				{
+//					this.log("info", "it is NOT a file - skipping");
+//				}
+//			}
+//		}
+//		else
+//		{
+//			this.log("info", "it is not a directory - skipping");
+//			this.setStatus("error");
+//		}
+//	}
 
-	public void commitdir(String absfilepathdir)
-	{
-		java.io.File file = new java.io.File(absfilepathdir);
-		commitdir(file);
-	}
+//	// ein file in den aktuellen step committen
+//	public void commitFile(String key, java.io.File file)
+//	{
+//		if (file.canRead())
+//		{
+//			File newfile = new File();
+//			newfile.setAbsfilename(file.getPath());
+//			newfile.setKey(key);
+//			this.commitFile(newfile);
+//		}
+//		else
+//		{
+//			this.log("error", "file NOT committed (CANT READ!): "+file.getAbsolutePath());
+//			setStatus("error");
+//		}
+//	}
 
-	// ein file in den aktuellen step committen
-	public void commitFile(String key, java.io.File file)
-	{
-		if (file.canRead())
-		{
-			File newfile = new File();
-			newfile.setAbsfilename(file.getPath());
-			newfile.setKey(key);
-			this.commitFile(newfile);
-		}
-		else
-		{
-			this.log("error", "file NOT committed (CANT READ!): "+file.getAbsolutePath());
-			setStatus("error");
-		}
-	}
-
-	public void commitFile(String key, String absfilepathdir)
-	{
-		java.io.File file = new java.io.File(absfilepathdir);
-		commitFile(key, file);
-	}
+//	public void commitFile(String key, String absfilepathdir)
+//	{
+//		java.io.File file = new java.io.File(absfilepathdir);
+//		commitFile(key, file);
+//	}
 
 	/**
-	 * das file wird in das step-verzeichnis (oder root) kopiert, falls es nicht schon dort liegt
-	 * dieses file im step-verzeichnis (oder root) wird in die file-ablage des step-objects aufgenommen 
-	 * @param file
-	 * @return success
-	 */
+	 * commit von files
+	 * 1) globben
+	 * 2) falls step=root:
+	 * 	2a) falls die files noch nicht im step-verzeichnis liegen, sollen sie dorthin kopiert werden
+	 * 3) falls step != root
+	 * 	3a) falls die files nicht im stepverzeichnis liegen => error
+	 *	4) fuer jedes file: clone von master file, setzen des AbsPath
+	 * 5) ueberpruefen minoccur/maxoccur
+	 * 6) durchfuehren evtl. vorhandener tests
+	 * 7) hinzufuegen zu step
+	 * @param File
+	*/	
 	public void commitFile(File file)
 	{
-		this.log("info", "commit: planning for file: "+file.getAbsfilename());
+		log("info", "want to commit the file(s) (key=" +file.getKey()+") that glob "+file.getGlob());
 
-		System.out.println("file is: "+file.getAbsfilename());
-		System.out.println("dir of file is: "+new java.io.File(file.getAbsfilename()).getParent());
-		System.out.println("dir of Step is: "+this.getAbsdir());
-
-		// wenn der pfad des files NICHT identisch ist mit dem pfad des step-directories
-		if (!(new java.io.File(file.getAbsfilename()).getParent().matches("^"+this.getAbsdir()+"$")))
+		// das Verzeichnis des Steps
+		java.io.File stepDir = new java.io.File(this.getAbsdir());
+		
+		// alle eintraege des Verzeichnisses
+		java.io.File[] allEntriesOfDirectory = stepDir.listFiles();
+		log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath());
+		
+		// nur die files des verzeichnisses
+		ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
+		for(java.io.File actFile : allEntriesOfDirectory)
 		{
-			log("info", "file is not in step-directory");
-
-			// wenn sich das file nicht im step-verzeichnis gefunden wird, soll es dorthin kopiert werden
-			java.io.File zielFile = new java.io.File(this.getAbsdir()+"/"+file.getFilename());
-			if(!(zielFile.exists()))
+			if(!actFile.isDirectory())
 			{
-				log("info", "commit: copying file to step-directory.");
-				try
-				{
-					// copy
-					String aufruf = "cp "+file.getAbsfilename()+" "+zielFile.getAbsolutePath();
-					log("info", "commit: call: "+aufruf);
-					Runtime.getRuntime().exec(aufruf);
-
-					// anpassen des pfads
-					file.setAbsfilename(zielFile.getAbsolutePath());
-				} catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					log("error", "IOException while copying file.");
-					e.printStackTrace();
-					this.setStatus("error");
-				}
+				allFilesOfDirectory.add(actFile);
 			}
+		}
+		log("info", allFilesOfDirectory.size()+" files in directory "+stepDir.getAbsolutePath());
+
+		// nur die files auf die der glob passt
+		PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+file.getGlob());
+		ArrayList<java.io.File> allFilesThatGlob = new ArrayList<java.io.File>();
+		for(java.io.File actFile :allFilesOfDirectory)
+		{
+			if(matcher.matches(actFile.toPath()))
+			{
+				allFilesThatGlob.add(actFile);
+			}
+		}
+
+		// files aus den java.io.files generieren und jedes mal das vorliegende file clonen
+		ArrayList<File> filesToCommit = new ArrayList<File>();
+		for(java.io.File actFile : allFilesThatGlob)
+		{
+			File clonedFile = file.clone();
+			clonedFile.setAbsfilename(actFile.getAbsolutePath());
+			filesToCommit.add(clonedFile);
+		}
+		
+		// ueberpruefen ob Anzahl der ermittelten Variablen mit minoccur und maxoccur zusammen passt
+		if(filesToCommit.size() < file.getMinoccur())
+		{
+			log("error", "amount of determined files is "+filesToCommit.size()+". this is lower than the needed "+file.getMinoccur()+" (minoccur)");
+			this.setStatus("error");
+		}
+		else if (filesToCommit.size() > file.getMaxoccur())
+		{
+			log("error", "amount of determined files is "+filesToCommit.size()+". this is more than the maximum allowed amount "+file.getMaxoccur()+" (maxoccur)");
+			this.setStatus("error");
 		}
 		else
 		{
-			log("info", "file already in step-directory. no copy needed.");
+			log("info", "amount of determined files is "+filesToCommit.size()+". (minoccur="+file.getMinoccur()+", maxoccur="+file.getMaxoccur()+")");
 		}
 
-		log("info", "adding file to step object: "+file.getAbsfilename());
-		this.getParent().addFile(file);
-//		System.out.println("AMOUNT OF FILES ARE NOW: "+this.file.size());
-		this.setStatus("finished");
+		// durchfuehren evtl. definierter tests
+		for(File actFile : filesToCommit)
+		{
+			if(actFile.doAllTestsPass())
+			{
+				log("info", "all tests passed successfully ("+actFile.getAllTestsFeedback()+")");
+			}
+			else
+			{
+				log("error", "tests failed ("+actFile.getAllTestsFeedback()+")");
+				this.setStatus("error");
+			}
+		}
+
+		// wenn alles gut gegangen ist bisher, dann committen
+		if(! this.getStatus().equals("error"))
+		{
+			this.getParent().addFile(filesToCommit);
+			this.setStatus("finished");
+		}
 	}
 
-	/**
-	 * commit einer variable aus zwei strings (name, value)
-	 * @input key, value
-	*/	
-	public void commitVariable(String key, String value)
-	{
-		Variable variable = new Variable();
-		variable.setKey(key);
-		variable.setValue(value);
-		this.commitVariable(variable);
-	}
+//	/**
+//	 * commit einer variable aus zwei strings (name, value)
+//	 * @input key, value
+//	*/	
+//	public void commitVariable(String key, String value)
+//	{
+//		Variable variable = new Variable();
+//		variable.setKey(key);
+//		variable.setValue(value);
+//		this.commitVariable(variable);
+//	}
 
 	/**
-	 * commit einer variable an this
+	 * commit einer variable
+	 * 1) globben
+	 * 2) aus den globs die values extrahieren
+	 * 3) fuer jeden value eine variable an step committen
 	 * @input variable
 	*/	
 	public void commitVariable(Variable variable)
 	{
-		this.getParent().addVariable(variable);
+		log("info", "want to commit the variable(s) (key=" +variable.getKey()+") which value is expected to be in file(s) that glob "+variable.getGlob());
+
+		// das Verzeichnis des Steps
+		java.io.File stepDir = new java.io.File(this.getAbsdir());
+		
+		// alle eintraege des Verzeichnisses
+		java.io.File[] allEntriesOfDirectory = stepDir.listFiles();
+		log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath());
+		
+		// nur die files des verzeichnisses
+		ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
+		for(java.io.File actFile : allEntriesOfDirectory)
+		{
+			if(!actFile.isDirectory())
+			{
+				allFilesOfDirectory.add(actFile);
+			}
+		}
+		log("info", allFilesOfDirectory.size()+" files in directory "+stepDir.getAbsolutePath());
+		
+		// nur die files auf die der glob passt
+		PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+variable.getGlob());
+		ArrayList<java.io.File> allFilesThatGlob = new ArrayList<java.io.File>();
+		for(java.io.File actFile :allFilesOfDirectory)
+		{
+			if(matcher.matches(actFile.toPath()))
+			{
+				allFilesThatGlob.add(actFile);
+			}
+		}
+		
+		// variablen aus den files generieren und jedes mal die vorliegende variable clonen
+		ArrayList<Variable> variablesToCommit = new ArrayList<Variable>();
+		for(java.io.File actFile : allFilesThatGlob)
+		{
+			variablesToCommit.addAll(extractVariables(variable, actFile, true));
+		}
+		
+		// ueberpruefen ob Anzahl der ermittelten Variablen mit minoccur und maxoccur zusammen passt
+		if(variablesToCommit.size() < variable.getMinoccur())
+		{
+			log("error", "amount of determined variables is "+variablesToCommit.size()+". this is lower than the needed "+variable.getMinoccur()+" (minoccur)");
+			this.setStatus("error");
+		}
+		else if (variablesToCommit.size() > variable.getMaxoccur())
+		{
+			log("error", "amount of determined variables is "+variablesToCommit.size()+". this is more than the maximum allowed amount "+variable.getMaxoccur()+" (maxoccur)");
+			this.setStatus("error");
+		}
+		else
+		{
+			log("info", "amount of determined variables is "+variablesToCommit.size()+". (minoccur="+variable.getMinoccur()+", maxoccur="+variable.getMaxoccur()+")");
+		}
+		
+		// durchfuehren evtl. definierter tests
+		for(Variable actVariable : variablesToCommit)
+		{
+			if(actVariable.doAllTestsPass())
+			{
+				log("info", "all tests passed successfully ("+actVariable.getAllTestsFeedback()+")");
+			}
+			else
+			{
+				log("error", "tests failed ("+actVariable.getAllTestsFeedback()+")");
+				this.setStatus("error");
+			}
+		}
+
+		// wenn alles gut gegangen ist bisher, dann committen
+		if(! this.getStatus().equals("error"))
+		{
+			this.getParent().addVariable(variablesToCommit);
+			this.setStatus("finished");
+		}
 	}
 	
 	/**
-	 * commit von variablen aus einem file
-	 * Eingabe ist ein Objekt des Typs java.io.File
-	 * jede zeile des files, auf die das Muster "^[^#]([^=\s\n]+)=([^=\s\n]+)\s*\n?" passt
-	 * wird zu einer variable geparst (split an "=")
+	 * 1) Das File wird eingelesen, wenn groesse < 100kB
+	 * 2a) Wenn boolean==false, dann soll jede zeile als jeweils 1 Value interpretiert werden
+	 * 2b) Wenn boolean==true, dann soll nur die erste Zeile als 1 Variable interpretiert werden (alle weiteren Zeilen werden ignoriert)
+	 * 3) Ein clone der Variable wird mit einem Value bestueckt und als Teiol der ArrayList zurueck gegeben.
 	 *
-	 * der linke wert wird als 'name' verwendet
-	 * der rechte wert wird als 'value' verwendet
+	 * @param Variable, java.io.File, boolean
 	 * @throws IOException 
 	*/
-	public void commitvarfile(java.io.File file)
+	public ArrayList<Variable> extractVariables(Variable master, java.io.File fileToExtractFrom, boolean onlyFirstLine)
 	{
+		ArrayList<Variable> extractedVariables = new ArrayList<Variable>();
 		try
 		{
 			// wenn das file nicht zu gross ist (<100kB)
-			if (file.length() < 102400.)
+			if (fileToExtractFrom.length() < 102400.)
 			{
-				BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+				BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(fileToExtractFrom)));
 
 				try
 				{
-					String line;
+					String line = null;
 					try {
 						while ((line = in.readLine()) != null)
 						{
-							if (line.matches("^[^#]([^= \n]+)=([^= \n]+) *\n?"))
+							Variable newVariable = master.clone();
+							newVariable.setValue(line);
+							extractedVariables.add(newVariable);
+							
+							if(onlyFirstLine)
 							{
-								String[] linelist = line.split("=", 2);
-								Variable variable = new Variable();
-								variable.setKey(linelist[0]);
-								variable.setValue(linelist[1]);
-								this.getParent().addVariable(variable);
-								this.log("info", "variable committed from file: "+file.getAbsolutePath()+" name: "+variable.getKey()+" value: "+variable.getValue());
+								break;
 							}
 						}
 					}
 					catch (IOException e)
 					{
-						this.log("error", "IOException");
+						this.log("error", e.getMessage());
 						this.setStatus("error");
-						e.printStackTrace();
 					}
 				}
 				finally
@@ -425,22 +535,18 @@ implements Serializable
 			}
 			else
 			{
-				this.log("info", "file is to big (>100kB) to commit content as variables: "+file.getAbsolutePath());
+				this.log("info", "file is to big (>100kB) to commit content as variables: "+fileToExtractFrom.getAbsolutePath());
 				this.setStatus("error");
 			}
 		}
 		catch (FileNotFoundException e)
 		{
 			e.printStackTrace();
-			this.log("info", "variables not committed (cannot read file): "+file.getAbsolutePath());
+			this.log("info", "variables not committed (cannot read file): "+fileToExtractFrom.getAbsolutePath());
 			this.setStatus("error");
 		}
-	}
-
-	public void commitvarfile(String absfilepathdir) throws IOException
-	{
-		java.io.File file = new java.io.File(absfilepathdir);
-		commitvarfile(file);
+		
+		return extractedVariables;
 	}
 
 	/**
@@ -452,9 +558,9 @@ implements Serializable
 		try
 		{
 			this.setStatus("committing");
-	
+
 			// und jetzt der konventionelle commit
-	
+
 			// wenn das zu committende objekt ein File ist...
 			for(File actualFile : this.getFile())
 			{
