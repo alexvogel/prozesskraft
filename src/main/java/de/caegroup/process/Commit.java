@@ -407,21 +407,21 @@ implements Serializable
 				System.out.println("verzeichnisse stimmen nicht ueberein, deshalb muss das file kopiert werden");
 				try
 				{
-					log("info", "copying file "+actFile.getAbsfilename()+" to "+this.getAbsdir());
-					System.out.println("info: copying file "+actFile.getAbsfilename()+" to "+this.getAbsdir());
 					
 					// benamungen feststellen
 					java.io.File quellFile = actFile.asFile();
 					String quellFilename = quellFile.getName();
-					
 					java.io.File zielFile = new java.io.File(this.getAbsdir() + "/" + quellFilename);
+
+					log("info", "copying file "+quellFile.getAbsolutePath()+" to "+zielFile.getAbsolutePath());
+					System.out.println("info: copying file "+quellFile.getAbsolutePath()+" to "+zielFile.getAbsolutePath());
 					
 					// kopieren durchfuehren
 					Files.copy(quellFile.toPath(), zielFile.toPath(), REPLACE_EXISTING);
 					
 					// den pfad in dem jeweiligen File-Objekt auf die neue position aendern
+					System.out.println("info: setzen des absoluten pfad des files auf die neue position: "+zielFile.getAbsolutePath());
 					actFile.setAbsfilename(zielFile.getAbsolutePath());
-					
 				}
 				catch(Exception e)
 				{
