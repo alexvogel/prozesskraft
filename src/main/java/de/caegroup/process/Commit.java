@@ -426,7 +426,9 @@ implements Serializable
 				catch(Exception e)
 				{
 					master.log("error", e.getMessage()+"\n"+"error while copying: "+actFile.getAbsfilename() +" => "+this.getAbsdir() );
+					System.out.println("error: "+ e.getMessage()+"\n"+"error while copying: "+actFile.getAbsfilename() +" => "+this.getAbsdir() );
 					master.setStatus("error");
+					e.printStackTrace();
 				}
 			}
 		}
