@@ -252,8 +252,6 @@ public class Commitit
 			commit.doIt();
 		}
 
-		commit.setStatus("finished");
-		
 		p2.writeBinary();
 		System.out.println("info: writing process instance "+p2.getOutfilebinary());
 		
