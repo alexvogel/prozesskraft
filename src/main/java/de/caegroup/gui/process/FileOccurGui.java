@@ -373,6 +373,7 @@ public class FileOccurGui
 		// nur committen, falls es sichtbar ist
 		if(this.textexist)
 		{
+			step.log("debug", "committing pramp-entry for file glob: "+file.getGlob());
 			// setzen des pfades
 			file.setGlob(data.getContent());
 			Commit myCommit = new Commit(step);
