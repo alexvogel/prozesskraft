@@ -361,7 +361,7 @@ implements Serializable
 			// alle eintraege des Verzeichnisses
 			java.io.File[] allEntriesOfDirectory = stepDir.listFiles();
 			log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath());
-	
+
 			// nur die files des verzeichnisses
 			ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
 			for(java.io.File actFile : allEntriesOfDirectory)
@@ -372,7 +372,7 @@ implements Serializable
 				}
 			}
 			log("info", allFilesOfDirectory.size()+" files in directory "+stepDir.getAbsolutePath());
-	
+
 			// nur die files auf die der glob passt
 			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+master.getGlob());
 			ArrayList<java.io.File> allFilesThatGlob = new ArrayList<java.io.File>();
@@ -394,16 +394,21 @@ implements Serializable
 			}
 		}
 
+		System.out.println("jetzt liegen die files vor (mit oder ohne glob)");
+
 		// DIE ERMITTELTEN FILES EVTL. KOPIEREN UND UEBERPRUEFEN
 		// falls files nicht im step-directory zu finden sind, dann sollen sie dort hin kopiert werden
 		for(File actFile : filesToCommit)
 		{
+			System.out.println("kuemmere: "+actFile.getKey() + " = " +actFile.getAbsfilename());
 			// wenn die verzeichnisse nicht uebereinstimmen, muss das file kopiert werden und der neue pfad in das file eingetragen werden
 			if(!(this.getAbsdir().equals(actFile.asFile().getParent())))
 			{
+				System.out.println("verzeichnisse stimmen nicht ueberein, deshalb muss das file kopiert werden");
 				try
 				{
 					log("info", "copying file "+actFile.getAbsfilename()+" to "+this.getAbsdir());
+					System.out.println("info: copying file "+actFile.getAbsfilename()+" to "+this.getAbsdir());
 					
 					// benamungen feststellen
 					java.io.File quellFile = actFile.asFile();
