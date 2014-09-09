@@ -384,7 +384,6 @@ implements Serializable
 				processSyscallWithArgs.add("-call");
 				processSyscallWithArgs.add(call);
 //				processSyscallWithArgs.add("\""+call+"\"");
-//				processSyscallWithArgs.add("nautilus");
 				processSyscallWithArgs.add("-stdout");
 				processSyscallWithArgs.add(this.getParent().getAbsstdout());
 				processSyscallWithArgs.add("-stderr");
@@ -408,8 +407,9 @@ implements Serializable
 //				log("info", "path: "+path);
 				
 				// setzen der aktuellen directory
-//				java.io.File directory = new java.io.File(this.getParent().getAbsdir());
-//				pb.directory(directory);
+				java.io.File directory = new java.io.File(this.getParent().getAbsdir());
+				log("info", "setting execution directory to: "+directory.getAbsolutePath());
+				pb.directory(directory);
 
 				// zum debuggen ein paar ausgaben
 //				java.lang.Process p1 = Runtime.getRuntime().exec("date >> ~/tmp.debug.work.txt");
