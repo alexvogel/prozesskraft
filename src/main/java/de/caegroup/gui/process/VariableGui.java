@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+import de.caegroup.process.Commit;
 import de.caegroup.process.Step;
 import de.caegroup.process.Variable;
 
@@ -181,12 +182,12 @@ public class VariableGui
 	/**
 	 * commit the content of the combo / textfield to ste step of process
 	 */
-	public void commit (Step step)
+	public void commit (Commit commit)
 	{
-		step.log("debug", "Commit all occurances "+ variableoccurGui.size() +" of variable.");
+		commit.log("debug", "Commit all occurances "+ variableoccurGui.size() +" of variable.");
 		for(VariableOccurGui actualVariableoccurGui : variableoccurGui)
 		{
-			actualVariableoccurGui.commit(step);
+			actualVariableoccurGui.commit(commit);
 		}
 	}
 

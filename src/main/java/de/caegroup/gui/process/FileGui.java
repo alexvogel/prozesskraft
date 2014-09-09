@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+import de.caegroup.process.Commit;
 import de.caegroup.process.File;
 import de.caegroup.process.Step;
 
@@ -164,12 +165,12 @@ public class FileGui
 	/**
 	 * commit the content of the combo / textfield to ste step of process
 	 */
-	public void commit (Step step)
+	public void commit (Commit commit)
 	{
-		step.log("debug", "Commit all occurances "+ fileoccurGui.size() +" of file.");
+		commit.log("debug", "Commit all occurances "+ fileoccurGui.size() +" of file.");
 		for(FileOccurGui actualFileoccurGui : fileoccurGui)
 		{
-			actualFileoccurGui.commit(step);
+			actualFileoccurGui.commit(commit);
 		}
 	}
 	

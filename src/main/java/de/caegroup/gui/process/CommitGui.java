@@ -93,14 +93,15 @@ public class CommitGui
 		for(VariableGui actualVariableGui : variableGui)
 		{
 			step.log("debug", "Commit: its a variable");
-			actualVariableGui.commit(step);
+			actualVariableGui.commit(this.commit);
 		}
 		// commit aller files
 		for(FileGui actualFileGui : fileGui)
 		{
 			step.log("debug", "Commit: its a file");
-			actualFileGui.commit(step);
+			actualFileGui.commit(this.commit);
 		}
+		
 	}
 
 	public boolean doAllTestsPass()

@@ -310,18 +310,20 @@ public class VariableOccurGui
 	 * commits the actual content of input field to process-object
 	 * @param Step step
 	 */
-	public void commit(Step step)
+	public void commit(Commit commit)
 	{
 		// committen, wenn sichtbar (unsichtbare gibts bei optionalen parametern)
 		if ( comboexist )
 		{
-			step.log("debug", "setting the value for variable ("+variable.getKey()+") to the pramp-entry: "+data.getContent());
-			variable.setValue(this.data.getContent());
-			Commit myCommit = new Commit(step);
-			myCommit.setName("by-pramp");
-			myCommit.addVariable(variable);
-			myCommit.doIt();
-//			step.removeCommit(myCommit);
+			commit.log("debug", "setting the value for variable ("+variable.getKey()+") to the pramp-entry: "+data.getContent());
+
+			Variable newVariable = variable.clone();
+			newVariable.setValue(this.data.getContent());
+
+			commit.getParent().addVariable(newVariable);
+			
+			// setzen des urspruenglichen filkes auf 'finished' obwohl man das hier nicht so genau sagen kann
+			variable.setStatus("finished");
 		}
 	}
 

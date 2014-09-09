@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import de.caegroup.process.Commit;
 import de.caegroup.process.File;
 import de.caegroup.process.Step;
+import de.caegroup.process.Variable;
 
 public class FileOccurGui
 {
@@ -368,19 +369,20 @@ public class FileOccurGui
 	 * commits the actual content of input field to process-object
 	 * @param Step step
 	 */
-	public void commit(Step step)
+	public void commit(Commit commit)
 	{
 		// nur committen, falls es sichtbar ist
 		if(this.textexist)
 		{
-			step.log("debug", "setting the path for file ("+file.getKey()+") to the pramp-entry: "+data.getContent());
+			commit.log("debug", "setting the path for file ("+file.getKey()+") to the pramp-entry: "+data.getContent());
 			// setzen des pfades
-			file.setAbsfilename(data.getContent());
-			Commit myCommit = new Commit(step);
-			myCommit.setName("by-pramp");
-			myCommit.addFile(file);
-			myCommit.doIt();
-//			step.removeCommit(myCommit);
+			File newFile = file.clone();
+			newFile.setAbsfilename(this.data.getContent());
+
+			commit.getParent().addFile(newFile);
+			
+			// setzen des urspruenglichen filkes auf 'finished' obwohl man das hier nicht so genau sagen kann
+			file.setStatus("finished");
 		}
 	}
 
