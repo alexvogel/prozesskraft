@@ -373,9 +373,9 @@ public class FileOccurGui
 		// nur committen, falls es sichtbar ist
 		if(this.textexist)
 		{
-			step.log("debug", "committing pramp-entry for file glob: "+file.getGlob());
+			step.log("debug", "setting the path for file ("+file.getKey()+") to the pramp-entry: "+data.getContent());
 			// setzen des pfades
-			file.setGlob(data.getContent());
+			file.setAbsfilename(data.getContent());
 			Commit myCommit = new Commit(step);
 			myCommit.setName("by-pramp");
 			myCommit.addFile(file);

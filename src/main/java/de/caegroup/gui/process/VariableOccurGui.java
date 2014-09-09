@@ -315,7 +315,7 @@ public class VariableOccurGui
 		// committen, wenn sichtbar (unsichtbare gibts bei optionalen parametern)
 		if ( comboexist )
 		{
-			step.log("debug", "committing pramp-entry for variable: key="+variable.getKey()+", value="+variable.getValue() );
+			step.log("debug", "setting the value for variable ("+variable.getKey()+") to the pramp-entry: "+data.getContent());
 			variable.setValue(this.data.getContent());
 			Commit myCommit = new Commit(step);
 			myCommit.setName("by-pramp");
