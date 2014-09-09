@@ -379,6 +379,8 @@ public class FileOccurGui
 			File newFile = file.clone();
 			newFile.setAbsfilename(this.data.getContent());
 
+			commit.copyFileToStepdirIfNeeded(newFile);
+			
 			commit.getParent().addFile(newFile);
 		}
 	}
