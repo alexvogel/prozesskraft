@@ -1319,13 +1319,6 @@ implements Serializable, Cloneable
 				return status;
 			}
 	
-			// wenn schluessel waiting vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'waiting'
-			else if(  statusAllInits.contains("waiting") )
-			{
-				status = "waiting";
-				return status;
-			}
-			
 			// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
 			else if(  statusAllInits.contains("finished") )
 			{
@@ -1355,13 +1348,6 @@ implements Serializable, Cloneable
 			return status;
 		}
 
-		// wenn schluessel waiting vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'waiting'
-		else if(  statusAllCommits.contains("waiting") )
-		{
-			status = "waiting";
-			return status;
-		}
-		
 		// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
 		else if(  statusAllCommits.contains("finished") )
 		{

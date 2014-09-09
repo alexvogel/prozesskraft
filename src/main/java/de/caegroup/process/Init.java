@@ -32,7 +32,7 @@ implements Serializable
 	
 	private ArrayList<Log> log = new ArrayList<Log>();
 
-	private String status = new String();	// waiting/initializing/finished/error
+	private String status = "waiting";	// waiting/initializing/finished/error
 
 	private Step parent = null;
 	/*----------------------------
