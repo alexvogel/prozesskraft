@@ -1215,7 +1215,6 @@ implements Serializable, Cloneable
 		for(Init actInit : this.getInit())
 		{
 			statusAllInits.add(actInit.getStatus());
-			System.out.println(this.getName()+": Init="+actInit.getListname()+"="+actInit.getStatus());
 		}
 
 		// ist der status 'error' vorhanden? prozess=error
@@ -1282,7 +1281,6 @@ implements Serializable, Cloneable
 		for(Commit actCommit : this.getCommit())
 		{
 			statusAllCommits.add(actCommit.getStatus());
-			System.out.println(this.getName()+": Init="+actCommit.getName()+"="+actCommit.getStatus());
 		}
 
 		// ist der status 'error' vorhanden, dann gilt 'error'
