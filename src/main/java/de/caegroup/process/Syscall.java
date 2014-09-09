@@ -182,6 +182,9 @@ public class Syscall {
 						
 			// Aufruf in das call -logfile schreiben
 			PrintWriter writerLog = new PrintWriter(sMylog);
+			writerLog.println("this program runs in directory:");
+			writerLog.println(System.getProperty("user.dir"));
+			writerLog.println("------------------------------------------------------");
 			writerLog.println("process syscall");
 			writerLog.println("-call \""+sCall+"\"");
 			writerLog.println("-stdout "+sStdout);
