@@ -93,7 +93,6 @@ public class CommitCreator
 		{
 			actualCommitGui.commit(step);
 		}
-		step.setStatus("committed");
 	}
 	
 	public boolean doAllTestsPass()
