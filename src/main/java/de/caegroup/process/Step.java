@@ -1298,7 +1298,7 @@ implements Serializable, Cloneable
 		}
 
 		// wenn schluessel waiting vorhanden ist, dann gilt 'waiting'
-		else if(  statusAllCommits.contains("waiting")  && statusAllCommits.isEmpty()  &&  this.work == null)
+		else if(  statusAllCommits.contains("waiting")  && statusAllInits.isEmpty()  &&  this.work == null)
 		{
 			status = "waiting";
 			return status;
@@ -1309,7 +1309,7 @@ implements Serializable, Cloneable
 		{
 			status = "finished";
 		}
-		
+
 		return status;
 	}
 
