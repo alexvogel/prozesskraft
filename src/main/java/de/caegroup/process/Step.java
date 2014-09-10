@@ -935,7 +935,10 @@ implements Serializable, Cloneable
 		
 		for(List actList : this.getList())
 		{
-			resolvedString.replaceAll("\\{\\$"+actList.getName()+"\\}", resolvedString);
+			if(actList.getItem().size() > 0)
+			{
+				resolvedString.replaceAll("\\{\\$"+actList.getName()+"\\}", actList.getItem().get(0));
+			}
 		}
 		
 		if(resolvedString.matches("\\{\\$.+\\}"))
