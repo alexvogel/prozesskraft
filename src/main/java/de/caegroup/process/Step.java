@@ -1255,7 +1255,7 @@ implements Serializable, Cloneable
 			}
 	
 			// wenn schluessel working vorhanden ist, dann gilt 'working'
-			else if( this.work.equals("working")  )
+			else if( this.work.getStatus().equals("working")  )
 			{
 				status = "working";
 				return status;
