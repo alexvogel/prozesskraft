@@ -1262,14 +1262,14 @@ implements Serializable, Cloneable
 			}
 
 			// wenn schluessel waiting vorhanden ist, dann gilt 'waiting'
-			else if(  this.work.equals("waiting") && statusAllInits.isEmpty())
+			else if(  this.work.getStatus().equals("waiting") && statusAllInits.isEmpty())
 			{
 				status = "waiting";
 				return status;
 			}
 
 			// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
-			else if(  this.work.equals("finished") )
+			else if(  this.work.getStatus().equals("finished") )
 			{
 				status = "worked";
 			}
