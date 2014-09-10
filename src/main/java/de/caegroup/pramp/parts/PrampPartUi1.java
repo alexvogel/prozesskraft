@@ -1177,7 +1177,7 @@ public class PrampPartUi1 extends ModelObject
 		Calendar now = Calendar.getInstance();
 		Random random = new Random();
 		DecimalFormat df2 = new DecimalFormat("00");
-		String randomName = this.einstellungen.getProcess() + "_v" + this.einstellungen.getVersion() + "_" + now.get(Calendar.YEAR) + df2.format(now.get(Calendar.MONTH)) + df2.format(now.get(Calendar.DAY_OF_MONTH)) + "_" + random.nextInt(100000000);
+		String randomName = this.einstellungen.getProcess() + "_v" + this.einstellungen.getVersion() + "_" + now.get(Calendar.YEAR) + df2.format(now.get(Calendar.MONTH)+1) + df2.format(now.get(Calendar.DAY_OF_MONTH)) + "_" + random.nextInt(100000000);
 
 		java.io.File instanceDir = new java.io.File(this.einstellungen.getBaseDirectory() + "/" + randomName);
 		

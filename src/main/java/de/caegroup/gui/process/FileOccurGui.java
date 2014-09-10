@@ -30,8 +30,6 @@ import org.eclipse.swt.widgets.FileDialog;
 
 import de.caegroup.process.Commit;
 import de.caegroup.process.File;
-import de.caegroup.process.Step;
-import de.caegroup.process.Variable;
 
 public class FileOccurGui
 {
