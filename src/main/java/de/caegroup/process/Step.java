@@ -939,7 +939,7 @@ implements Serializable, Cloneable
 			log("debug", "resolving every placeholder that could be linked to list: "+actList.getName());
 			if(actList.getItem().size() > 0)
 			{
-				resolvedString.replaceAll("\\{\\$"+actList.getName()+"\\}", actList.getItem().get(0));
+				resolvedString = resolvedString.replaceAll("\\{\\$"+actList.getName()+"\\}", actList.getItem().get(0));
 			}
 			else
 			{
