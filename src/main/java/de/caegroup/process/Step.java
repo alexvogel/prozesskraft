@@ -1243,7 +1243,7 @@ implements Serializable, Cloneable
 		{
 			status = "initialized";
 		}
-		
+
 		// Work untersuchen, falls vorhanden
 		if(this.work != null)
 		{

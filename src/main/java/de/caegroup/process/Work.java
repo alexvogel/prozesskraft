@@ -333,6 +333,7 @@ implements Serializable
 	 */
 	public void doIt(String processSyscall)
 	{
+		this.setStatus("working");
 
 		// wenn schritt schon gestartet wurde
 		if (this.isPidfileexistent())
