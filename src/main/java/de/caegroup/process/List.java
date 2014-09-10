@@ -4,6 +4,8 @@ import java.io.*;
 //import java.util.*;
 //import org.apache.solr.common.util.NamedList;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class List
 implements Serializable
@@ -42,7 +44,29 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
+	/**
+	 * clears the list
+	 */
+	public void clear()
+	{
+		this.item.clear();
+	}
 
+	/**
+	 * remove doubles
+	 */
+	public void removeDoubles()
+	{
+		Map<String,String> itemMap = new HashMap<String,String>();
+		for(String actItem : this.getItem())
+		{
+			itemMap.put(actItem, "dummy");
+		}
+		
+		ArrayList<String> uniqueItems = new ArrayList<String>();
+		uniqueItems = new ArrayList<String>(itemMap.keySet());
+		this.setItem(uniqueItems);
+	}
 
 	/*----------------------------
 	  methods getter & setter

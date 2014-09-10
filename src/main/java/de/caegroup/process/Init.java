@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 //import java.util.HashMap;
 //import java.util.Map;
+import java.util.HashMap;
+import java.util.Map;
 
 //import org.apache.solr.common.util.NamedList;
 
@@ -356,32 +358,63 @@ implements Serializable
 
 				// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
 				// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
-				List list;
-				if (this.getParent().getList(this.getListname()) != null)
-				{
-					list = this.getParent().getList(this.getListname());
-				}
+				log("debug", "fetching list if exists: "+this.getListname());
+				List list = this.getParent().getList(this.getListname());
+
 				// ansonsten eine anlegen und this hinzufuegen
-				else
+				if(list == null)
 				{
+					log("debug", "list does not exists - creating one: "+this.getListname());
 					list = new List();
 					list.setName(this.getListname());
 					this.getParent().addList(list);
 				}
 
-				// hinzufuegen der listitems
-				for(Variable actualVariable : variables_from_fromstep_which_matched)
+				// wenn insertrule==append, hinzufuegen der listitems, unabhaengig was schon vorhanden ist
+				if(this.getInsertrule().equals("append"))
 				{
-					list.addItem(actualVariable.getField(this.getReturnfield()));
+					log("info", "insertrule: "+this.getInsertrule());
+					for(Variable actualVariable : variables_from_fromstep_which_matched)
+					{
+						list.addItem(actualVariable.getField(this.getReturnfield()));
+					}
 				}
-				
-				log("debug", "new list '"+list.getName()+"' with "+list.getItem().size()+" item(s).");
+				// wenn insertrule==overwrite, wenn etwas hinzuzufuegen ist (so bleiben defaults erhalten), dann zuerst liste leeren, und dann alles hinzufuegen
+				else if(this.getInsertrule().equals("overwrite"))
+				{
+					log("info", "insertrule: "+this.getInsertrule());
+					if(!variables_from_fromstep_which_matched.isEmpty())
+					{
+						list.clear();
+						for(Variable actualVariable : variables_from_fromstep_which_matched)
+						{
+							list.addItem(actualVariable.getField(this.getReturnfield()));
+						}
+					}
+				}
+				// wenn insertrule==overlap zuerst alles hinzufuegen und dann mehrfachvorkommende loeschen
+				else if(this.getInsertrule().equals("overlap"))
+				{
+					log("info", "insertrule: "+this.getInsertrule());
+					for(Variable actualVariable : variables_from_fromstep_which_matched)
+					{
+						list.addItem(actualVariable.getField(this.getReturnfield()));
+					}
+					list.removeDoubles();
+				}
+				else
+				{
+					log("error", "unknown insertrule: "+this.getInsertrule());
+					this.setStatus("error");
+				}
+
+				log("debug", "list '"+list.getName()+"' contains "+list.getItem().size()+" item(s).");
 			}
 		}
 		this.setStatus("finished");
 	}
-	
-					
+
+
 	/*----------------------------
 	  methods consistent
 	----------------------------*/
