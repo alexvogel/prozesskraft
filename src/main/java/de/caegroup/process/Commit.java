@@ -502,7 +502,7 @@ implements Serializable
 		ArrayList<Variable> variablesToCommit = new ArrayList<Variable>();
 
 		// wenn die variable bereits einen value hat, dann muss dies nicht ueber globbing ermittelt werden
-		if((!master.getValue().equals("")) && (master.getValue()!=null))
+		if((master.getValue()!=null) && (!master.getValue().equals("")))
 		{
 			variablesToCommit.add(master);
 		}
