@@ -508,7 +508,7 @@ implements Serializable
 		}
 
 		// ansonsten muss mit dem glob festgestellt werden welche files gemeint sind
-		else if((master.getValue()!=null) && (!master.getGlob().equals("")))
+		else if((master.getValue()==null) && (!master.getGlob().equals("")))
 		{
 			// das Verzeichnis des Steps
 			java.io.File stepDir = new java.io.File(this.getAbsdir());
