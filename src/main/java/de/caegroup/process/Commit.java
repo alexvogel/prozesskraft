@@ -394,7 +394,7 @@ implements Serializable
 
 			// alle eintraege des Verzeichnisses
 			java.io.File[] allEntriesOfDirectory = stepDir.listFiles();
-			log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath());
+			log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath() + " " + Arrays.toString(allEntriesOfDirectory));
 
 			// nur die files des verzeichnisses
 			ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
@@ -405,16 +405,34 @@ implements Serializable
 					allFilesOfDirectory.add(actFile);
 				}
 			}
-			log("info", allFilesOfDirectory.size()+" files in directory "+stepDir.getAbsolutePath());
+			// interpolieren aller files in einen String fuer die logging ausgabe
+			String allFiles = "[";
+			for(java.io.File actFile : allFilesOfDirectory)
+			{
+				allFiles += actFile.getAbsolutePath() +", ";
+			}
+			allFiles = allFiles.substring(0, allFiles.length()-3);
+			allFiles += "]";
+			
+			log("info", allFilesOfDirectory.size()+" files in directory "+stepDir.getAbsolutePath() + " " + allFiles);
 
 			// nur die files auf die der glob passt
-			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+master.getGlob());
+			// dem glob aus dem modell soll das stepverzeichnis voran gestellt werden
+			String resolvedGlob = this.parent.resolveString(master.getGlob());
+
+			log("info", "globbing: "+this.getAbsdir()+"/"+resolvedGlob);
+			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+this.getAbsdir()+"/"+resolvedGlob);
 			ArrayList<java.io.File> allFilesThatGlob = new ArrayList<java.io.File>();
 			for(java.io.File actFile :allFilesOfDirectory)
 			{
 				if(matcher.matches(actFile.toPath()))
 				{
 					allFilesThatGlob.add(actFile);
+					log("info", "glob matches: "+actFile.getAbsolutePath());
+				}
+				else
+				{
+					log("info", "glob NOT matches: "+actFile.getAbsolutePath());
 				}
 			}
 	
@@ -456,6 +474,7 @@ implements Serializable
 		// durchfuehren evtl. definierter tests
 		for(File actFile : filesToCommit)
 		{
+			actFile.performAllTests();
 			if(actFile.doAllTestsPass())
 			{
 				log("info", "all tests passed successfully ("+actFile.getAllTestsFeedback()+")");
@@ -526,7 +545,7 @@ implements Serializable
 					allFilesOfDirectory.add(actFile);
 				}
 			}
-			// interpolieren in einen String
+			// interpolieren aller files in einen String fuer die logging ausgabe
 			String allFiles = "[";
 			for(java.io.File actFile : allFilesOfDirectory)
 			{
