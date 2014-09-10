@@ -81,6 +81,7 @@ implements Serializable
 	{
 		for(Test t : this.test)
 		{
+			log("debug", "perform test: "+t.getName());
 			t.performTest(this);
 		}
 	}

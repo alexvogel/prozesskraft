@@ -584,6 +584,7 @@ implements Serializable
 		// durchfuehren evtl. definierter tests
 		for(Variable actVariable : variablesToCommit)
 		{
+			actVariable.performAllTests();
 			if(actVariable.doAllTestsPass())
 			{
 				log("info", "all tests passed successfully ("+actVariable.getAllTestsFeedback()+")");
