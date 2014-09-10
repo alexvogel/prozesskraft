@@ -926,18 +926,24 @@ implements Serializable, Cloneable
 	 */
 	public String resolveString(String stringToResolve)
 	{
+		log("debug", "resolving string "+stringToResolve);
 		String resolvedString = stringToResolve;
 		if(!stringToResolve.matches("\\{\\$.+\\}"))
 		{
 			log("debug", "nothing to resolve in string "+stringToResolve);
 			return stringToResolve;
 		}
-		
+
 		for(List actList : this.getList())
 		{
+			log("debug", "resolving every placeholder that could be linked to list: "+actList.getName());
 			if(actList.getItem().size() > 0)
 			{
 				resolvedString.replaceAll("\\{\\$"+actList.getName()+"\\}", actList.getItem().get(0));
+			}
+			else
+			{
+				log("debug", "no items in list: "+actList.getName());
 			}
 		}
 		
