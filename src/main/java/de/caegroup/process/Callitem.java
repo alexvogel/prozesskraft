@@ -74,7 +74,7 @@ implements Serializable
 			this.setVal(this.getResval());
 			loopedThisToCallitems.add(this);
 		}
-		
+
 		else
 		{
 			List loopList = this.parent.parent.getList(this.getLoop());

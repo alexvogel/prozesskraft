@@ -921,6 +921,31 @@ implements Serializable, Cloneable
 		}
 	}
 
+	/**
+	 * resolves all the placeholders and gives back the resolved string
+	 */
+	public String resolveString(String stringToResolve)
+	{
+		String resolvedString = stringToResolve;
+		if(!stringToResolve.matches("\\{\\$.+\\}"))
+		{
+			log("debug", "nothing to resolve in string "+stringToResolve);
+			return stringToResolve;
+		}
+		
+		for(List actList : this.getList())
+		{
+			resolvedString.replaceAll("\\{\\$"+actList.getName()+"\\}", resolvedString);
+		}
+		
+		if(resolvedString.matches("\\{\\$.+\\}"))
+		{
+			log("error", "could not resolve some field(s). resolved String still contains fields: "+resolvedString);
+		}
+		
+		return resolvedString;
+	}
+	
 	/*----------------------------
 	  methods add / remove
 	----------------------------*/

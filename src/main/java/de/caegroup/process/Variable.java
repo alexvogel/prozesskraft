@@ -30,7 +30,7 @@ implements Serializable
 
 	private ArrayList<Log> log = new ArrayList<Log>();
 
-	
+
 	/*----------------------------
 	  constructors
 	----------------------------*/

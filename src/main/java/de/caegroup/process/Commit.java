@@ -516,7 +516,7 @@ implements Serializable
 			// alle eintraege des Verzeichnisses
 			java.io.File[] allEntriesOfDirectory = stepDir.listFiles();
 			log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath() + " " + Arrays.toString(allEntriesOfDirectory));
-			
+
 			// nur die files des verzeichnisses
 			ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
 			for(java.io.File actFile : allEntriesOfDirectory)
@@ -539,8 +539,10 @@ implements Serializable
 			
 			// nur die files auf die der glob passt
 			// dem glob aus dem modell soll das stepverzeichnis voran gestellt werden
-			log("info", "globbing: "+this.getAbsdir()+"/"+master.getGlob());
-			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+this.getAbsdir()+"/"+master.getGlob());
+			String resolvedGlob = this.parent.resolveString(master.getGlob());
+
+			log("info", "globbing: "+this.getAbsdir()+"/"+resolvedGlob);
+			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+this.getAbsdir()+"/"+resolvedGlob);
 			ArrayList<java.io.File> allFilesThatGlob = new ArrayList<java.io.File>();
 			for(java.io.File actFile :allFilesOfDirectory)
 			{
