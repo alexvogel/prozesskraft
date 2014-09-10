@@ -287,16 +287,27 @@ implements Serializable
 				ArrayList<File> files_from_fromstep_which_matched = new ArrayList<File>();
 				// wenn match-angaben vorhanden sind, wird die fileliste reduziert
 				
-				for(Match actualMatch : this.getMatch())
+				// jedes file im fraglichen fromstep durchgehen und ueberpruefen ob ALLE matches passen
+				for (File actualFile : files_from_fromstep)
 				{
-					log("debug", "accepting only "+this.getFromobjecttype()+"(s) which match '"+actualMatch.getPattern()+"' and field '"+actualMatch.getField()+"'");
-					// iteriere ueber alle Files der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
-					for(File actualFile : files_from_fromstep)
+					// iteriere ueber alle Matches
+					boolean matchPositive = true;
+					for (Match actualMatch : this.getMatch())
 					{
-						if (actualFile.match(actualMatch))
+						if (!actualFile.match(actualMatch))
 						{
-							files_from_fromstep_which_matched.add(actualFile);
+							log("debug", "variable "+actualFile.getKey()+" from step "+this.getParent().getName()+" does NOT match '"+actualMatch.getPattern()+"' in field '"+actualMatch.getField()+"'");
+							matchPositive = false;
 						}
+						else
+						{
+							log("debug", "variable "+actualFile.getKey()+" from step "+this.getParent().getName()+" does match '"+actualMatch.getPattern()+"' in field '"+actualMatch.getField()+"'");
+						}
+					}
+					// wenn alle matches passen, soll es zum ergebnis kollektiv hinzugefuegt werden
+					if(matchPositive)
+					{
+						files_from_fromstep_which_matched.add(actualFile);
 					}
 				}
 
@@ -335,16 +346,27 @@ implements Serializable
 				ArrayList<Variable> variables_from_fromstep = actualFromstep.getVariable();
 				ArrayList<Variable> variables_from_fromstep_which_matched = new ArrayList<Variable>();
 
-				for (Match actualMatch : this.getMatch())
+				// jede variable im fraglichen fromstep durchgehen und ueberpruefen ob ALLE matches passen
+				for (Variable actualVariable : variables_from_fromstep)
 				{
-					log("debug", "accepting only "+this.getFromobjecttype()+"(s) which match '"+actualMatch.getPattern()+"' and field '"+actualMatch.getField()+"'");
-					// iteriere ueber alle Variablen der (womoeglich bereits durch vorherige matchs reduzierte) liste und ueberpruefe ob sie matchen
-					for (Variable actualVariable : variables_from_fromstep)
+					// iteriere ueber alle Matches
+					boolean matchPositive = true;
+					for (Match actualMatch : this.getMatch())
 					{
-						if (actualVariable.match(actualMatch))
+						if (!actualVariable.match(actualMatch))
 						{
-							variables_from_fromstep_which_matched.add(actualVariable);
+							log("debug", "variable "+actualVariable.getKey()+" from step "+this.getParent().getName()+" does NOT match '"+actualMatch.getPattern()+"' in field '"+actualMatch.getField()+"'");
+							matchPositive = false;
 						}
+						else
+						{
+							log("debug", "variable "+actualVariable.getKey()+" from step "+this.getParent().getName()+" does match '"+actualMatch.getPattern()+"' in field '"+actualMatch.getField()+"'");
+						}
+					}
+					// wenn alle matches passen, soll es zum ergebnis kollektiv hinzugefuegt werden
+					if(matchPositive)
+					{
+						variables_from_fromstep_which_matched.add(actualVariable);
 					}
 				}
 
