@@ -602,7 +602,7 @@ implements Serializable
 			master.setStatus("finished");
 		}
 	}
-	
+
 	/**
 	 * 1) Das File wird eingelesen, wenn groesse < 100kB
 	 * 2a) Wenn boolean==false, dann soll jede zeile als jeweils 1 Value interpretiert werden
@@ -629,9 +629,14 @@ implements Serializable
 						while ((line = in.readLine()) != null)
 						{
 							Variable newVariable = master.clone();
+							
+							// entfernen einen evtl. vorhandenen newlines
+							line = line.replaceAll("(\\r|\\n)", "");
+							log("debug", "extracting value '"+line+"' from file "+fileToExtractFrom.getAbsolutePath());
+
 							newVariable.setValue(line);
 							extractedVariables.add(newVariable);
-							
+
 							if(onlyFirstLine)
 							{
 								break;
