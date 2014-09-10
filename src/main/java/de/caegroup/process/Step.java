@@ -107,7 +107,7 @@ implements Serializable, Cloneable
 	{
 		return SerializationUtils.clone(this);
 	}
-	
+
 	/**
 	 * getCommandResolveAsPerlCode()
 	 * generates perlcode for resolving a command
@@ -742,10 +742,13 @@ implements Serializable, Cloneable
 
 	public void initialize()
 	{
-
-		this.getList().clear();
-		this.setList(this.getDefaultlist());
-
+		// alle listen leeren (damit machen wir den letzten initialization versuch rueckgaengig)
+		for(List actList : this.getList())
+		{
+			actList.clear();
+			actList.setItem(actList.getDefaultitem());
+		}
+		
 		// ueber alle inits iterieren und ausfuehren
 		for( Init actualInit : this.getInits())
 		{

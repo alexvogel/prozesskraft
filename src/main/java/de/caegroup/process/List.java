@@ -19,6 +19,7 @@ implements Serializable
 	private int min = 0;
 	private int max = 99999;
 	private ArrayList<String> item = new ArrayList<String>();
+	private ArrayList<String> defaultitem = new ArrayList<String>();
 	
 	private Step parent = null;
 
@@ -159,6 +160,20 @@ implements Serializable
 	public int itemCount()
 	{
 		return this.item.size();
+	}
+
+	/**
+	 * @return the defaultitem
+	 */
+	public ArrayList<String> getDefaultitem() {
+		return defaultitem;
+	}
+
+	/**
+	 * @param defaultitem the defaultitem to set
+	 */
+	public void setDefaultitem(ArrayList<String> defaultitem) {
+		this.defaultitem = defaultitem;
 	}
 	
 }
