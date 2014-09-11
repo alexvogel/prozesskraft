@@ -390,6 +390,8 @@ public class SIInsightCreator
 
 			step.reset();
 
+			step.getParent().writeBinary();
+			
 			// den update anstossen
 			father.refreshAppletAndUi();
 
