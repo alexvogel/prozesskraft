@@ -973,19 +973,19 @@ implements Serializable, Cloneable
 		{
 			return;
 		}
-		
+
 		// log leeren
 		this.getLog().clear();
-		
+
 		// listen leeren
 		this.getList().clear();
-		
+
 		// variablen leeren
 		this.getVariable().clear();
-		
+
 		// files leeren
 		this.getFile().clear();
-		
+
 		// inits reseten
 		for(Init actInit : this.getInit())
 		{
@@ -993,14 +993,21 @@ implements Serializable, Cloneable
 		}
 
 		this.getWork().reset();
-		
+
 		// commits reseten
 		for(Commit actCommit : this.getCommit())
 		{
 			actCommit.reset();
 		}
 	}
-	
+
+	/**
+	 * resets the this step and all dependent steps
+	 */
+	public void resetRecursive()
+	{
+		this.getParent().resetStep(this.getName());
+	}
 	/*----------------------------
 	  methods add / remove
 	----------------------------*/
