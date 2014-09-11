@@ -45,6 +45,8 @@ implements Serializable, Cloneable
 	
 	private ArrayList<Log> log = new ArrayList<Log>();
 	private String rank = "";
+	private int reset = 0;
+			
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 	/*----------------------------
 	  constructors
@@ -954,6 +956,50 @@ implements Serializable, Cloneable
 		
 		return resolvedString;
 	}
+
+	/**
+	 * resets the step
+	 * 1) clear log
+	 * 2) clear lists
+	 * 3) clear variables
+	 * 4) clear files
+	 * 5) delete step-directory
+	 * 6) hochzaehlen des resetzaehlers
+	 */
+	public void reset()
+	{
+		// root kann nicht resettet werden!
+		if(this.getName().equals(this.getParent().getRootstepname()))
+		{
+			return;
+		}
+		
+		// log leeren
+		this.getLog().clear();
+		
+		// listen leeren
+		this.getList().clear();
+		
+		// variablen leeren
+		this.getVariable().clear();
+		
+		// files leeren
+		this.getFile().clear();
+		
+		// inits reseten
+		for(Init actInit : this.getInit())
+		{
+			actInit.reset();
+		}
+
+		this.getWork().reset();
+		
+		// commits reseten
+		for(Commit actCommit : this.getCommit())
+		{
+			actCommit.reset();
+		}
+	}
 	
 	/*----------------------------
 	  methods add / remove
@@ -1374,6 +1420,10 @@ implements Serializable, Cloneable
 		else
 		{
 			absDir = this.parent.getRootdir()+"/dir4step_"+this.getName();
+			if(this.reset > 0)
+			{
+				absDir += absDir + "_" + this.reset;
+			}
 		}
 		return absDir;
 	}

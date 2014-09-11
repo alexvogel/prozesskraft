@@ -38,6 +38,11 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
+	public void reset()
+	{
+		this.setTestFeedback(null);
+		this.setTestResult(false);
+	}
 	
 	/**
 	 * tests the variable

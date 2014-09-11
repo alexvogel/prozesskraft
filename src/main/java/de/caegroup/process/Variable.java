@@ -64,6 +64,19 @@ implements Serializable
 		return SerializationUtils.clone(this);
 	}
 	
+	/**
+	 * reset this
+	 */
+	public void reset()
+	{
+		this.getLog().clear();
+		this.setStatus("");
+		for(Test actTest : this.getTest())
+		{
+			actTest.reset();
+		}
+	}
+	
 	public boolean match(Match match)
 	{
 		String fieldname = match.getField();

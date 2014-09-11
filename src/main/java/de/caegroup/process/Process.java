@@ -114,20 +114,6 @@ implements Serializable
 		generator.setSeed(System.currentTimeMillis());
 		randomId = generator.nextInt();
 		
-//		Step step = new Step(this);
-//		step.setName(this.rootstepname);
-//		this.addStep(step);
-		
-//		try
-//		{
-//			absdir = new java.io.File( "." ).getAbsolutePath();
-//		}
-//		catch (Exception e)
-//		{
-//			e.printStackTrace();
-//		}
-//		System.out.println("absdir von prozess ist: "+this.absdir);
-		
 	}
 	/*----------------------------
 	  methods
@@ -142,6 +128,21 @@ implements Serializable
 	public Process clone()
 	{
 		return SerializationUtils.clone(this);
+	}
+	
+	/**
+	 * reset a certain step and all subsequent steps (the steps who have an Init, that link to a fromstep that has been reset)
+	 * @param Step
+	 */
+	public void resetStep(String stepname)
+	{
+		Step stepToReset = this.getStep(stepname);
+		stepToReset.reset();
+		
+		for(Step actStep : this.getStepDependent(stepname))
+		{
+			actStep.reset();
+		}
 	}
 	
 	/**
@@ -1822,10 +1823,6 @@ implements Serializable
 	{
 		return this.step.get(id);
 	}
-//	public ArrayList<Step> getSteps()
-//	{
-//		return this.step;
-//	}
 
 	public ArrayList<Step> getStep()
 	{
@@ -1937,6 +1934,62 @@ implements Serializable
 			}
 		}
 		return stepOfLevel;
+	}
+
+	/**
+	 * liefert alle steps, die von einem bestimmten step abhaengig sind
+	 * @param String
+	 * @return ArrayList<Step>
+	 */
+	public ArrayList<Step> getStepDependent(String stepname)
+	{
+		
+		ArrayList<Step> allDependentSteps = new ArrayList<Step>();
+		int letzteAnzahlDerDependentSteps = 0;
+		
+		// feststellen aller abhaengigen Steps von dem einen genannten Step
+		for(Step actStep : this.getStep())
+		{
+			for(Init actInit : actStep.getInit())
+			{
+				if(actInit.getListname().equals(stepname))
+				{
+					allDependentSteps.add(actStep);
+				}
+			}
+		}
+
+		// solange die abhaengigen Steps zunehmen, so lange nach neuen abhaengigen suchen
+		while(allDependentSteps.size() > letzteAnzahlDerDependentSteps)
+		{
+			// die anzahl gleich setzen
+			letzteAnzahlDerDependentSteps = allDependentSteps.size();
+
+			// fuer alle bisher bekannten abhaengigen Steps
+			for(Step actDependentStep : allDependentSteps)
+			{
+				// alle Steps durchgehen
+				for(Step actStep : this.getStep())
+				{
+					// alle Inits durchgehen
+					for(Init actInit : actStep.getInit())
+					{
+						// wenn ein Init einen Fromstepverweis hat, der einem bekannten abhaengigen Step entspricht
+						if(actInit.getFromstep().equals(actDependentStep.getName()))
+						{
+							// und dieser noch nicht in der abhaengigen liste drin ist
+							if(!allDependentSteps.contains(actStep))
+							{
+								// der liste hinzufuegen
+								allDependentSteps.add(actStep);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return allDependentSteps;
 	}
 
 	/**

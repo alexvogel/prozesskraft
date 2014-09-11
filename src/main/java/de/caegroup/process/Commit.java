@@ -35,7 +35,6 @@ implements Serializable
 //	private String status = "waiting";	// waiting/committing/finished/error/cancelled
 
 	private java.lang.Process proc;
-	private int exitvalue;
 	private Step parent;
 
 	private ArrayList<Log> log = new ArrayList<Log>();
@@ -81,7 +80,32 @@ implements Serializable
 	{
 		this.variable.add(variable);
 	}
-
+	
+	/**
+	 * reset this
+	 * 1) alle files:
+	 *     log leeren
+	 *     status auf "" setzen
+	 * 2) alle variablen:
+	 *    log leeren
+	 *    den status auf "" setzen
+	 * 3) log leeren
+	 */
+	public void reset()
+	{
+		for(File actFile : this.getFile())
+		{
+			actFile.getLog().clear();
+			actFile.setStatus("");
+		}
+		for(Variable actVariable : this.getVariable())
+		{
+			actVariable.getLog().clear();
+			actVariable.setStatus("");
+		}
+		this.getLog().clear();
+	}
+	
 	/*----------------------------
 	  methods getter/setter
 	----------------------------*/
@@ -153,16 +177,6 @@ implements Serializable
 	public void setProc(java.lang.Process proc)
 	{
 		this.proc = proc;
-	}
-
-	public int getExitvalue()
-	{
-		return this.exitvalue;
-	}
-	
-	public void setExitvalue(int exitvalue)
-	{
-		this.exitvalue = exitvalue;
 	}
 
 	public Step getParent()

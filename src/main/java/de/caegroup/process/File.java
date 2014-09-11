@@ -67,6 +67,19 @@ implements Serializable, Cloneable
 		else { return false; }
 	}
 	
+	/**
+	 * reset this
+	 */
+	public void reset()
+	{
+		this.getLog().clear();
+		this.setStatus("");
+		for(Test actTest : this.getTest())
+		{
+			actTest.reset();
+		}
+	}
+	
 	public void performAllTests()
 	{
 //		System.out.println("performing "+this.test.size()+" file tests");
@@ -287,15 +300,20 @@ implements Serializable, Cloneable
 	
 	public String getSizeAsString()
 	{
-		long size = getSizeInKilobytes();
-		String sizeString = size + " KB";
+		long size = getSizeInBytes();
+		String sizeString = size + " B";
 		
+		if(size > 1024)
+		{
+			size = getSizeInKilobytes();
+			sizeString = size + " KB";
+		}
 		if(size > 1024)
 		{
 			size = getSizeInMegabytes();
 			sizeString = size + " MB";
 		}
-		else if(size > 1024)
+		if(size > 1024)
 		{
 			size = getSizeInGigabytes();
 			sizeString = size + " GB";

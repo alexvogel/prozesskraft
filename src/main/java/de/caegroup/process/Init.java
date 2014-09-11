@@ -24,14 +24,13 @@ implements Serializable
 	private String fromstep = null;
 	private String insertrule = "overwrite";  // append(initialisierte Eintraege werden zu bestehenden angefuegt) | unique (gleichlautende neue eintraege ueberschreiben bestehende = keine duplikate) | overwrite (evtl. vorher bestehende eintraege werden entfernt) 
 	private ArrayList<Match> match = new ArrayList<Match>();
-	private ArrayList<String> value = new ArrayList<String>();
 	private int minoccur = 0;
 	private int maxoccur = 999999;
 	private String description = "";
 
 	private String loop = new String();
 	private String loopvar = new String();
-	
+
 	private ArrayList<Log> log = new ArrayList<Log>();
 
 	private String status = "waiting";	// waiting/initializing/finished/error
@@ -54,12 +53,11 @@ implements Serializable
 		this.match.add(match);
 	}
 	
-	public void addValue(String value)
+	public void reset()
 	{
-		this.value.add(value);
+		this.getLog().clear();
+		this.setStatus("waiting");
 	}
-
-	
 	
 	/*----------------------------
 	  methods get
@@ -102,21 +100,6 @@ implements Serializable
 			matchs[i] = this.match.get(i);
 		}
 		return matchs;
-	}
-
-	public ArrayList<String> getValue()
-	{
-		return this.value;
-	}
-
-	public String[] getValues2()
-	{
-		String[] values = new String[this.value.size()];
-		for(int i=0; i<values.length; i++)
-		{
-			values[i] = this.value.get(i);
-		}
-		return values;
 	}
 
 	public String getLoop()
@@ -199,11 +182,6 @@ implements Serializable
 	public void setMatch(ArrayList<Match> match)
 	{
 		this.match = match;
-	}
-
-	public void setValue(ArrayList<String> value)
-	{
-		this.value = value;
 	}
 
 	public void setLoop(String loop)
@@ -414,8 +392,8 @@ implements Serializable
 						}
 					}
 				}
-				// wenn insertrule==overlap zuerst alles hinzufuegen und dann mehrfachvorkommende loeschen
-				else if(this.getInsertrule().equals("overlap"))
+				// wenn insertrule==unique zuerst alles hinzufuegen und dann mehrfachvorkommende loeschen
+				else if(this.getInsertrule().equals("unique"))
 				{
 					log("info", "insertrule: "+this.getInsertrule());
 					for(Variable actualVariable : variables_from_fromstep_which_matched)

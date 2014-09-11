@@ -72,6 +72,14 @@ implements Serializable
 		this.callitem = cleanedCallitem;
 	}
 
+	/**
+	 * reset this
+	 */
+	public void reset()
+	{
+		this.setStatus("waiting");
+	}
+	
 	/*----------------------------
 	  methods virtual get
 	----------------------------*/
