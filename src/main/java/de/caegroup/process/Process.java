@@ -1964,12 +1964,10 @@ implements Serializable
 			}
 		}
 
+		boolean aenderungImLetztenLauf = true;
 		// solange die abhaengigen Steps zunehmen, so lange nach neuen abhaengigen suchen
-		while(allDependentSteps.size() > letzteAnzahlDerDependentSteps)
+		while(aenderungImLetztenLauf)
 		{
-			// die anzahl gleich setzen
-			letzteAnzahlDerDependentSteps = allDependentSteps.size();
-
 			// fuer alle bisher bekannten abhaengigen Steps
 			for(Step actDependentStep : allDependentSteps)
 			{
@@ -1991,6 +1989,16 @@ implements Serializable
 						}
 					}
 				}
+			}
+			// wenn beim letzten durchlauf kein neuer dependent step hinzugekommen ist, soll nicht mehr weiter gesucht werden
+			if(letzteAnzahlDerDependentSteps == allDependentSteps.size())
+			{
+				aenderungImLetztenLauf = false;
+			}
+			// sonst ja und weitersuchen
+			else
+			{
+				aenderungImLetztenLauf = true;
 			}
 		}
 		
