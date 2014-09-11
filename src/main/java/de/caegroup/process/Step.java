@@ -986,11 +986,19 @@ implements Serializable, Cloneable
 		// log leeren
 		this.getLog().clear();
 
-		// alle listen leeren (bis auf die defaultitems)
+		// alle listen loeschen, die keine defaultitems enthalten
+		// listen mit defaultitems leeren (ausser den defaultitems)
 		for(List actList : this.getList())
 		{
-			actList.clear();
-			actList.setItem(actList.getDefaultitem());
+			if(actList.getDefaultitem().isEmpty())
+			{
+				this.removeList(actList);
+			}
+			else
+			{
+				actList.clear();
+				actList.setItem(actList.getDefaultitem());
+			}
 		}
 
 		// variablen leeren
@@ -1586,6 +1594,11 @@ implements Serializable, Cloneable
 	public void addList(List list)
 	{
 		this.list.add(list);
+	}
+		
+	public void removeList(List list)
+	{
+		this.getList().remove(list);
 	}
 		
 	public boolean isAmultistep()
