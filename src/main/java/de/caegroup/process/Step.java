@@ -988,18 +988,17 @@ implements Serializable, Cloneable
 
 		// alle listen loeschen, die keine defaultitems enthalten
 		// listen mit defaultitems leeren (ausser den defaultitems)
+		ArrayList<List> toPreserve = new ArrayList<List>();
 		for(List actList : this.getList())
 		{
-			if(actList.getDefaultitem().isEmpty())
-			{
-				this.removeList(actList);
-			}
-			else
+			if(!actList.getDefaultitem().isEmpty())
 			{
 				actList.clear();
 				actList.setItem(actList.getDefaultitem());
+				toPreserve.add(actList);
 			}
 		}
+		this.setList(toPreserve);
 
 		// variablen leeren
 		this.getVariable().clear();
