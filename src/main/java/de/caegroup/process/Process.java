@@ -136,15 +136,17 @@ implements Serializable
 	 */
 	public void resetStep(String stepname)
 	{
-		Step stepToReset = this.getStep(stepname);
-		stepToReset.reset();
-		log("warn", "reset step: "+stepname);
-		
+		// zuerst alle dependent steps reseten
 		for(Step actStep : this.getStepDependent(stepname))
 		{
 			log("warn", "reset step (because of dependency): "+actStep.getName());
 			actStep.reset();
 		}
+		
+		// erst dann den urspruenglichen step reseten
+		Step stepToReset = this.getStep(stepname);
+		stepToReset.reset();
+		log("warn", "reset step: "+stepname);
 	}
 	
 	/**
