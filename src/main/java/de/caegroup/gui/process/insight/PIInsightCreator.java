@@ -63,7 +63,14 @@ public class PIInsightCreator
 		composite = new Composite(sc, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		composite.setLayoutData(gd_composite);
-		composite.setLayout(new GridLayout(1, false));
+		GridLayout gridLayoutProcessBereich = new GridLayout(2, true);
+		gridLayoutProcessBereich.marginBottom = 0;
+		gridLayoutProcessBereich.marginTop = 0;
+		gridLayoutProcessBereich.marginLeft = 0;
+		gridLayoutProcessBereich.marginRight = 0;
+//		gridLayoutStepBereich.horizontalSpacing = 0;
+//		gridLayoutStepBereich.verticalSpacing = 0;
+		composite.setLayout(gridLayoutProcessBereich);
 		
 		sc.setContent(composite);
 //		sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -79,19 +86,71 @@ public class PIInsightCreator
 	 */
 	public Composite createControls(Composite composite)
 	{
-		Composite fieldComposite = new Composite(composite, SWT.NONE);
-		fieldComposite.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
-		GridLayout gl_actualComposite = new GridLayout(2, false);
-		fieldComposite.setLayout(gl_actualComposite);
+		Composite compositeInfoAction = new Composite(composite, SWT.NONE);
+		GridData gd_compositeInfoAction = new GridData(SWT.FILL, SWT.NONE, true, false,2, 1);
+
+		compositeInfoAction.setLayoutData(gd_compositeInfoAction);
 		
+		GridLayout gridLayout_InfoAction = new GridLayout(2, true);
+		gridLayout_InfoAction.marginBottom = 0;
+		gridLayout_InfoAction.marginTop = 0;
+		gridLayout_InfoAction.marginLeft = 0;
+		gridLayout_InfoAction.marginRight = 0;
+		compositeInfoAction.setLayout(gridLayout_InfoAction);
+
+		// oben-links stehen textinformationen
+		Composite compositeInfo = new Composite(compositeInfoAction, SWT.NONE);
+		GridData gd_compositeInfo = new GridData(SWT.FILL, SWT.FILL, true, true,1, 1);
+		compositeInfo.setLayoutData(gd_compositeInfo);
+
+		GridLayout gridLayout_Info = new GridLayout(1, true);
+		gridLayout_Info.marginBottom = 0;
+		gridLayout_Info.marginTop = 0;
+		gridLayout_Info.marginLeft = 0;
+		gridLayout_Info.marginRight = 0;
+		compositeInfo.setLayout(gridLayout_Info);
+
 		// processName
-		Label label_processName1 = new Label(fieldComposite, SWT.NONE);
-		label_processName1.setText("process: ");
+		Label label_processName1 = new Label(compositeInfo, SWT.NONE);
+		label_processName1.setText("process: "+this.process.getName());
+		label_processName1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		Label label_processName2 = new Label(fieldComposite, SWT.NONE);
-		label_processName2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		label_processName2.setText(this.process.getName());
+		// lastTouchByManager
+		Label label_lastTouch1 = new Label(compositeInfo, SWT.NONE);
+		label_lastTouch1.setText("last touch: "+this.process.getTouchAsString());
 		
+		// processStatus
+		Label label_processStatus1 = new Label(compositeInfo, SWT.NONE);
+		label_processStatus1.setText("status: "+this.process.getStatus());
+
+		// oben-rechts sind buttons angeordnet
+		Composite compositeAction = new Composite(compositeInfoAction, SWT.NONE);
+		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		compositeAction.setLayoutData(gd_compositeButtons);
+
+		GridLayout gridLayout_Action = new GridLayout(2, true);
+		gridLayout_Action.marginBottom = 0;
+		gridLayout_Action.marginTop = 0;
+		gridLayout_Action.marginLeft = 0;
+		gridLayout_Action.marginRight = 0;
+		compositeAction.setLayout(gridLayout_Action);
+
+		Button buttonFileBrowser = new Button(compositeAction, SWT.NONE);
+		buttonFileBrowser.setText("browse");
+		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonFileBrowser.setToolTipText("open step directory with a filebrowser");
+//		buttonFileBrowser.addSelectionListener(listener_button_browse);
+
+		Button buttonReset = new Button(compositeAction, SWT.NONE);
+		buttonReset.setText("reset");
+		buttonReset.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonReset.setToolTipText("reset this step to initial state");
+//		buttonReset.addSelectionListener(listener_button_reset);
+
+		Label labelDummy2 = new Label(compositeAction, SWT.NONE);
+
+		Label labelDummy3 = new Label(compositeAction, SWT.NONE);
+
 //		// instanceFile
 //		Label label_instanceDirectory1 = new Label(fieldComposite, SWT.NONE);
 //		label_instanceDirectory1.setText("instance file: ");
@@ -137,45 +196,29 @@ public class PIInsightCreator
 //			label_definitionDirectory2.setText("unknown");
 //		}
 
-		// lastTouchByManager
-		Label label_lastTouch1 = new Label(fieldComposite, SWT.NONE);
-		label_lastTouch1.setText("last touch: ");
-		
-		label_lastTouch2 = new Label(fieldComposite, SWT.NONE);
-		label_lastTouch2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		label_lastTouch2.setText("unknown");
-
-		// processStatus
-		Label label_processStatus1 = new Label(fieldComposite, SWT.NONE);
-		label_processStatus1.setText("status: ");
-
-		label_processStatus2 = new Label(fieldComposite, SWT.NONE);
-		label_processStatus2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		label_processStatus2.setText("unknown");
-
 		// erstellen eines table fuer das Prozess-Logging
 //		new PILogGui(composite, process);
 
 		// databinding
-		initDataBindingsProcess();
+//		initDataBindingsProcess();
 
 		return parent;
 	}
 	
-	protected DataBindingContext initDataBindingsProcess()
-	{
-		DataBindingContext bindingContextProcess = new DataBindingContext();
-		//
-		IObservableValue targetObservableStatus = WidgetProperties.text().observe(label_processStatus2);
-		IObservableValue modelObservableStatus = BeanProperties.value("status").observe(process);
-		bindingContextProcess.bindValue(targetObservableStatus, modelObservableStatus, null, null);
-		//
-		IObservableValue targetObservableTouch = WidgetProperties.text().observe(label_lastTouch2);
-		IObservableValue modelObservableTouch = BeanProperties.value("touchAsString").observe(process);
-		bindingContextProcess.bindValue(targetObservableTouch, modelObservableTouch, null, null);
-		//
-		return bindingContextProcess;
-	}
+//	protected DataBindingContext initDataBindingsProcess()
+//	{
+//		DataBindingContext bindingContextProcess = new DataBindingContext();
+//		//
+//		IObservableValue targetObservableStatus = WidgetProperties.text().observe(label_processStatus2);
+//		IObservableValue modelObservableStatus = BeanProperties.value("status").observe(process);
+//		bindingContextProcess.bindValue(targetObservableStatus, modelObservableStatus, null, null);
+//		//
+//		IObservableValue targetObservableTouch = WidgetProperties.text().observe(label_lastTouch2);
+//		IObservableValue modelObservableTouch = BeanProperties.value("touchAsString").observe(process);
+//		bindingContextProcess.bindValue(targetObservableTouch, modelObservableTouch, null, null);
+//		//
+//		return bindingContextProcess;
+//	}
 
 
 }
