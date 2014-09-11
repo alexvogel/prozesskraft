@@ -1948,9 +1948,7 @@ implements Serializable
 	 */
 	public ArrayList<Step> getStepDependent(String stepname)
 	{
-		
 		ArrayList<Step> allDependentSteps = new ArrayList<Step>();
-		int letzteAnzahlDerDependentSteps = 0;
 		
 		// feststellen aller abhaengigen Steps von dem einen genannten Step
 		for(Step actStep : this.getStep())
@@ -1968,6 +1966,7 @@ implements Serializable
 		// solange die abhaengigen Steps zunehmen, so lange nach neuen abhaengigen suchen
 		while(aenderungImLetztenLauf)
 		{
+			ArrayList<Step> newDependentSteps = new ArrayList<Step>();
 			// fuer alle bisher bekannten abhaengigen Steps
 			for(Step actDependentStep : allDependentSteps)
 			{
@@ -1984,20 +1983,21 @@ implements Serializable
 							if(!allDependentSteps.contains(actStep))
 							{
 								// der liste hinzufuegen
-								allDependentSteps.add(actStep);
+								newDependentSteps.add(actStep);
 							}
 						}
 					}
 				}
 			}
 			// wenn beim letzten durchlauf kein neuer dependent step hinzugekommen ist, soll nicht mehr weiter gesucht werden
-			if(letzteAnzahlDerDependentSteps == allDependentSteps.size())
+			if(newDependentSteps.isEmpty())
 			{
 				aenderungImLetztenLauf = false;
 			}
 			// sonst ja und weitersuchen
 			else
 			{
+				allDependentSteps.addAll(newDependentSteps);
 				aenderungImLetztenLauf = true;
 			}
 		}
