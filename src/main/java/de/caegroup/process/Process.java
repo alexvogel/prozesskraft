@@ -101,6 +101,9 @@ implements Serializable
 	private String touchAsString = "";
 	public long touchInMillis = 0;
 
+	public int cloneGeneration = 0;
+	public int cloneDerived = 0;
+	
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -2179,6 +2182,34 @@ implements Serializable
 	{
 		java.io.File dir = new java.io.File(rootdir);
 		this.rootdir = dir.getAbsolutePath();
+	}
+
+	/**
+	 * @return the cloneGeneration
+	 */
+	public int getCloneGeneration() {
+		return cloneGeneration;
+	}
+
+	/**
+	 * @param cloneGeneration the cloneGeneration to set
+	 */
+	public void setCloneGeneration(int cloneGeneration) {
+		this.cloneGeneration = cloneGeneration;
+	}
+
+	/**
+	 * @return the cloneDerived
+	 */
+	public int getCloneDerived() {
+		return cloneDerived;
+	}
+
+	/**
+	 * @param cloneDerived the cloneDerived to set
+	 */
+	public void setCloneDerived(int cloneDerived) {
+		this.cloneDerived = cloneDerived;
 	}
 
 	public void makeRootdir()
