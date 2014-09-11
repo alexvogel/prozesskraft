@@ -893,13 +893,6 @@ implements Serializable, Cloneable
 		{
 			log("debug", "directory does not exist. creating directory "+directory);
 			dir.mkdir();
-			try {
-				log("info", "short sleep to become directory available.");
-				Thread.sleep(200);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				log("info", e.getMessage()+"\n"+Arrays.toString(e.getStackTrace()));
-			}
 		}
 		
 		// zum schluss testen ob es existiert und beschreibbar ist
@@ -1479,7 +1472,7 @@ implements Serializable, Cloneable
 			absDir = this.parent.getRootdir()+"/dir4step_"+this.getName();
 			if(this.reset > 0)
 			{
-				absDir += absDir + "_" + this.reset;
+				absDir += "_" + this.reset;
 			}
 		}
 		return absDir;
