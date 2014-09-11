@@ -994,7 +994,6 @@ implements Serializable, Cloneable
 			if(!actList.getDefaultitem().isEmpty())
 			{
 				actList.clear();
-				actList.setItem(actList.getDefaultitem());
 				toPreserve.add(actList);
 			}
 		}
