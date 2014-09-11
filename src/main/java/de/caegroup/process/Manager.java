@@ -198,7 +198,7 @@ public class Manager
 
 			Process p1 = new Process();
 			
-			long loop_period_seconds = 60;
+			long loop_period_seconds = 10;
 			
 			double managerid = p1.genManagerid();
 	
@@ -414,8 +414,7 @@ public class Manager
 				{
 					System.exit(0);
 				}
-				
-	
+
 				try
 				{
 					Thread.sleep(loop_period_seconds*1000);
