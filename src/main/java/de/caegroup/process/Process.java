@@ -137,7 +137,8 @@ implements Serializable
 	public void resetStep(String stepname)
 	{
 		// zuerst alle dependent steps reseten
-		for(Step actStep : this.getStepDependent(stepname))
+		ArrayList<Step> stepsToReset = this.getStepDependent(stepname);
+		for(Step actStep : stepsToReset)
 		{
 			log("warn", "reset step (because of dependency): "+actStep.getName());
 			actStep.reset();
