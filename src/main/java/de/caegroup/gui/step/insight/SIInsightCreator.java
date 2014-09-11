@@ -28,6 +28,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 
 import de.caegroup.gui.step.edit.EditFile;
 import de.caegroup.gui.step.edit.EditVariable;
@@ -41,6 +43,7 @@ public class SIInsightCreator
 {
 	private Step step;
 	private PmodelPartUi1 father;
+	public Shell shell = new Shell(Display.getCurrent());
 	private Composite parent;
 	public CTabFolder tabFolder;
 
@@ -157,7 +160,11 @@ public class SIInsightCreator
 		buttonFileBrowser.setToolTipText("open step directory with a filebrowser");
 		buttonFileBrowser.addSelectionListener(listener_button_browse);
 
-		Label labelDummy1 = new Label(compositeButtons, SWT.NONE);
+		Button buttonReset = new Button(compositeButtons, SWT.NONE);
+		buttonReset.setText("reset");
+		buttonReset.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonReset.setToolTipText("reset this step to initial state");
+		buttonReset.addSelectionListener(listener_button_reset);
 
 		Label labelDummy2 = new Label(compositeButtons, SWT.NONE);
 
@@ -315,6 +322,42 @@ public class SIInsightCreator
 				}
 			}
 
+		}
+	};
+
+	SelectionAdapter listener_button_reset = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			Shell messageShell = new Shell();
+			MessageBox confirmation = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+			confirmation.setText("please confirm");
+			
+			String message = "WARNING\n";
+			message += "all data aggregated by this step will be deleted. all files situated in the step directory will get deleted from the filesystem.\n\n";
+			
+			message += "WARNING\n";
+			message += "all subsequent step will experience a reset.\n";
+			
+			message = "do you really want to reset step "+step.getName()+"?";
+
+			confirmation.setMessage(message);
+			
+			// open confirmation and wait for user selection
+			int returnCode = confirmation.open();
+//			System.out.println("returnCode is: "+returnCode);
+
+			// ok == 32
+			if (returnCode == 32)
+			{
+				
+				step.reset();
+
+				// den update anstossen
+				father.refreshAppletAndUi();
+
+			}
+			shell.dispose();
 		}
 	};
 
