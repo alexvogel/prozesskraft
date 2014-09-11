@@ -1034,7 +1034,7 @@ implements Serializable, Cloneable
 		}
 		catch (Exception e)
 		{
-			log("warn", e.getMessage()+"\n"+"could not delete old step directory or parts of it: "+this.getAbsdir()+"\n"+Arrays.toString(e.getStackTrace()));
+			log("warn", e.getMessage()+"\n"+"problems with deleting old step directory or parts of it: "+this.getAbsdir()+"\n"+Arrays.toString(e.getStackTrace()));
 		}
 
 		this.reset++;
@@ -1043,7 +1043,7 @@ implements Serializable, Cloneable
 	/**
 	 * resets the this step and all dependent steps
 	 */
-	public void resetRecursive()
+	public void resetIncDependent()
 	{
 		this.getParent().resetStep(this.getName());
 	}
