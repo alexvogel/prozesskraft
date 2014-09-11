@@ -757,7 +757,7 @@ implements Serializable, Cloneable
 		for(List actList : this.getList())
 		{
 			actList.clear();
-			actList.setItem(actList.getDefaultitem());
+			actList.addItem(actList.getDefaultitem());
 		}
 		
 		// ueber alle inits iterieren und ausfuehren

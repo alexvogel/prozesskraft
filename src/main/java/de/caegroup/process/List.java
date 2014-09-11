@@ -146,6 +146,14 @@ implements Serializable
 	}
 
 	/**
+	 * @param item the item to add
+	 */
+	public void addItem(ArrayList<String> item)
+	{
+		this.item.addAll(item);
+	}
+
+	/**
 	 * @param step the parent to set
 	 */
 	public void setParent(Step step)
