@@ -986,8 +986,12 @@ implements Serializable, Cloneable
 		// log leeren
 		this.getLog().clear();
 
-		// listen leeren
-		this.getList().clear();
+		// alle listen leeren (bis auf die defaultitems)
+		for(List actList : this.getList())
+		{
+			actList.clear();
+			actList.setItem(actList.getDefaultitem());
+		}
 
 		// variablen leeren
 		this.getVariable().clear();
@@ -1472,7 +1476,7 @@ implements Serializable, Cloneable
 			absDir = this.parent.getRootdir()+"/dir4step_"+this.getName();
 			if(this.reset > 0)
 			{
-				absDir += "_" + this.reset;
+				absDir += "_r" + this.reset;
 			}
 		}
 		return absDir;

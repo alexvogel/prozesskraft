@@ -76,6 +76,7 @@ implements Serializable
 	{
 		ArrayList<Callitem> loopedThisToCallitems = new ArrayList<Callitem>();
 		
+		// wenn kein loop vorhanden, direkt die felder resolven
 		if(this.getLoop() == null)
 		{
 			this.setPar(this.getRespar());

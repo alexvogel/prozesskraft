@@ -1954,7 +1954,7 @@ implements Serializable
 		{
 			for(Init actInit : actStep.getInit())
 			{
-				if(actInit.getListname().equals(stepname))
+				if(actInit.getFromstep().equals(stepname))
 				{
 					allDependentSteps.add(actStep);
 				}

@@ -101,10 +101,10 @@ implements Serializable
 		{
 			for(Callitem actResolvedCallitem : actCallitem.resolveCallitem())
 			{
-				call = call + " ";
-				call = call + actResolvedCallitem.getPar();
-				call = call + actResolvedCallitem.getDel();
-				call = call + actResolvedCallitem.getVal();
+				call += " ";
+				call += actResolvedCallitem.getPar();
+				call += actResolvedCallitem.getDel();
+				call += actResolvedCallitem.getVal();
 				this.log("debug", "constructing call b): "+call);
 			}
 		}
