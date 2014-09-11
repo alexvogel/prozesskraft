@@ -387,8 +387,8 @@ public class SIInsightCreator
 		// ok == 32
 		if (returnCode == 32)
 		{
-
-			step.reset();
+			// den step resetten und alle von diesem step abhaengigen steps
+			step.resetIncDependent();
 
 			step.getParent().writeBinary();
 			
