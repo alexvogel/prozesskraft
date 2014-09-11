@@ -382,7 +382,11 @@ implements Serializable
 			if(!(new java.io.File(this.getParent().getAbsdir()).exists()))
 			{
 				log("info", "creating step directory "+this.getParent().getAbsdir());
-				this.getParent().mkdir(this.getParent().getAbsdir());
+				if(!this.getParent().mkdir(this.getParent().getAbsdir()))
+				{
+					log("error", "could not create directory: "+this.getParent().getAbsdir());
+					this.setStatus("error");
+				}
 			}
 
 			// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)

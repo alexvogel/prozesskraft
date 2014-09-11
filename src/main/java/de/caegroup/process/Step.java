@@ -6,6 +6,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+
+import static java.nio.file.FileVisitResult.*;
+
 import java.util.*;
 
 import de.caegroup.codegen.Script;
@@ -889,6 +893,13 @@ implements Serializable, Cloneable
 		{
 			log("debug", "directory does not exist. creating directory "+directory);
 			dir.mkdir();
+			try {
+				log("info", "short sleep to become directory available.");
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				log("info", e.getMessage()+"\n"+Arrays.toString(e.getStackTrace()));
+			}
 		}
 		
 		// zum schluss testen ob es existiert und beschreibbar ist
@@ -1011,10 +1022,10 @@ implements Serializable, Cloneable
 		{
 			Files.walkFileTree(dir, new SimpleFileVisitor<Path>()
 					{
-						public FileVisitResult visitFile(Path file) throws IOException
+						public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
 						{
 							Files.delete(file);
-							return null;
+							return CONTINUE;
 						}
 						
 						public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
@@ -1022,12 +1033,12 @@ implements Serializable, Cloneable
 							if(exc == null)
 							{
 								Files.delete(dir);
+								return CONTINUE;
 							}
 							else
 							{
 								throw exc;
 							}
-							return null;
 						}
 					}
 					);
