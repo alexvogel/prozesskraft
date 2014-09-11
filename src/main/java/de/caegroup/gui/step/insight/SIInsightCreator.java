@@ -332,17 +332,24 @@ public class SIInsightCreator
 			Shell messageShell = new Shell();
 			MessageBox confirmation = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
 			confirmation.setText("please confirm");
-			
-			String message = "WARNING\n";
-			message += "all data aggregated by this step will be deleted. all files situated in the step directory will get deleted from the filesystem.\n\n";
-			
-			message += "WARNING\n";
-			message += "all subsequent step will experience a reset.\n";
-			
-			message = "do you really want to reset step "+step.getName()+"?";
+			String message = "";
+			if(step.getName().equals(step.getParent().getRootstepname()))
+			{
+				message += "WARNING\n";
+				message += "you are about to reset all steps of this instance.\n";
+				message += "aggregated data (variables, files) will be deleted, all produced files will be erased from the filesystem.\n\n";
+				message += "do you really want to reset all steps?";
+			}
+			else
+			{
+				message += "WARNING\n";
+				message += "you are about to reset step "+step.getName()+" and all steps which depend on it.\n";
+				message += "aggregated data (variables, files) will be deleted, all produced files will be erased from the filesystem.\n\n";
+				message += "do you really want to reset step "+step.getName()+" and all its dependencies?";
+			}
 
 			confirmation.setMessage(message);
-			
+
 			// open confirmation and wait for user selection
 			int returnCode = confirmation.open();
 //			System.out.println("returnCode is: "+returnCode);
@@ -350,7 +357,7 @@ public class SIInsightCreator
 			// ok == 32
 			if (returnCode == 32)
 			{
-				
+
 				step.reset();
 
 				// den update anstossen
