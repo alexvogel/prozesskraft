@@ -57,6 +57,15 @@ implements Serializable
 	}
 
 	/**
+	 * reset this
+	 */
+	public void reset()
+	{
+		this.log.clear();
+		this.setStatus("");
+	}
+	
+	/**
 	 * resolveCallitem
 	 * returns an ArrayList of Callitems with
 	 * 1) looped by loop and resolved placeholder 'loopvarcallitem'

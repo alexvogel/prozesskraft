@@ -77,7 +77,12 @@ implements Serializable
 	 */
 	public void reset()
 	{
+		this.log.clear();
 		this.setStatus("waiting");
+		for(Callitem actCallitem : this.getCallitem())
+		{
+			actCallitem.reset();
+		}
 	}
 	
 	/*----------------------------

@@ -1,6 +1,11 @@
 package de.caegroup.process;
 
 import java.io.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.util.*;
 
 import de.caegroup.codegen.Script;
@@ -999,6 +1004,40 @@ implements Serializable, Cloneable
 		{
 			actCommit.reset();
 		}
+		
+		// delete stepdirectory
+		Path dir = Paths.get(this.getAbsdir());
+		try
+		{
+			Files.walkFileTree(dir, new SimpleFileVisitor<Path>()
+					{
+						public FileVisitResult visitFile(Path file) throws IOException
+						{
+							Files.delete(file);
+							return null;
+						}
+						
+						public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
+						{
+							if(exc == null)
+							{
+								Files.delete(dir);
+							}
+							else
+							{
+								throw exc;
+							}
+							return null;
+						}
+					}
+					);
+		}
+		catch (Exception e)
+		{
+			log("warn", e.getMessage()+"\n"+"could not delete old step directory or parts of it: "+this.getAbsdir()+"\n"+Arrays.toString(e.getStackTrace()));
+		}
+
+		this.reset++;
 	}
 
 	/**
