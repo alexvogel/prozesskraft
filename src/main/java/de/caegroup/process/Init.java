@@ -303,19 +303,56 @@ implements Serializable
 				if (this.getParent().getList(this.getListname()) != null)
 				{
 					list = this.getParent().getList(this.getListname());
+					log("debug", "list '"+list.getName()+"' with "+list.getItem().size()+" item(s) already exists.");
 				}
 				// ansonsten eine anlegen und this hinzufuegen
 				else
 				{
 					list = new List();
 					list.setName(this.getListname());
+					log("debug", "list does not exist. creating '"+list.getName()+"'");
 					this.getParent().addList(list);
 				}
-				for (File actualFile : files_from_fromstep_which_matched)
+
+				// wenn insertrule==append, hinzufuegen der listitems, unabhaengig was schon vorhanden ist
+				if(this.getInsertrule().equals("append"))
 				{
-					list.addItem(actualFile.getField(this.getReturnfield()));
+					log("info", "insertrule: "+this.getInsertrule());
+					for(File actualFile : files_from_fromstep_which_matched)
+					{
+						list.addItem(actualFile.getField(this.getReturnfield()));
+					}
 				}
-				log("debug", "new list '"+list.getName()+"' with "+list.getItem().size()+" item(s).");
+				// wenn insertrule==overwrite, wenn etwas hinzuzufuegen ist (so bleiben defaults erhalten), dann zuerst liste leeren, und dann alles hinzufuegen
+				else if(this.getInsertrule().equals("overwrite"))
+				{
+					log("info", "insertrule: "+this.getInsertrule());
+					if(!files_from_fromstep_which_matched.isEmpty())
+					{
+						list.clear();
+						for(File actualFile :files_from_fromstep_which_matched)
+						{
+							list.addItem(actualFile.getField(this.getReturnfield()));
+						}
+					}
+				}
+				// wenn insertrule==unique zuerst alles hinzufuegen und dann mehrfachvorkommende loeschen
+				else if(this.getInsertrule().equals("unique"))
+				{
+					log("info", "insertrule: "+this.getInsertrule());
+					for(File actualFile : files_from_fromstep_which_matched)
+					{
+						list.addItem(actualFile.getField(this.getReturnfield()));
+					}
+					list.removeDoubles();
+				}
+				else
+				{
+					log("error", "unknown insertrule: "+this.getInsertrule());
+					this.setStatus("error");
+				}
+
+				log("debug", "list '"+list.getName()+"' finally contains "+list.getItem().size()+" item(s).");
 			}
 			
 			// wenn es ein variable ist
@@ -358,15 +395,18 @@ implements Serializable
 
 				// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
 				// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
-				log("debug", "fetching list if exists: "+this.getListname());
-				List list = this.getParent().getList(this.getListname());
-
-				// ansonsten eine anlegen und this hinzufuegen
-				if(list == null)
+				List list;
+				if (this.getParent().getList(this.getListname()) != null)
 				{
-					log("debug", "list does not exists - creating one: "+this.getListname());
+					list = this.getParent().getList(this.getListname());
+					log("debug", "list '"+list.getName()+"' with "+list.getItem().size()+" item(s) already exists.");
+				}
+				// ansonsten eine anlegen und this hinzufuegen
+				else
+				{
 					list = new List();
 					list.setName(this.getListname());
+					log("debug", "list does not exist. creating '"+list.getName()+"'");
 					this.getParent().addList(list);
 				}
 
@@ -408,7 +448,7 @@ implements Serializable
 					this.setStatus("error");
 				}
 
-				log("debug", "list '"+list.getName()+"' contains "+list.getItem().size()+" item(s).");
+				log("debug", "list '"+list.getName()+"' finally contains "+list.getItem().size()+" item(s).");
 			}
 		}
 		this.setStatus("finished");
