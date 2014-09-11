@@ -138,9 +138,11 @@ implements Serializable
 	{
 		Step stepToReset = this.getStep(stepname);
 		stepToReset.reset();
+		log("warn", "reset step: "+stepname);
 		
 		for(Step actStep : this.getStepDependent(stepname))
 		{
+			log("warn", "reset step (because of dependency): "+actStep.getName());
 			actStep.reset();
 		}
 	}
