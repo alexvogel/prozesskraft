@@ -729,7 +729,7 @@ implements Serializable, Cloneable
 			}
 			else
 			{
-				this.mkdir(this.getAbsdir());
+//				this.mkdir(this.getAbsdir());
 				this.initialize();
 			}
 		}
@@ -987,17 +987,24 @@ implements Serializable, Cloneable
 		this.getLog().clear();
 
 		// alle listen loeschen, die keine defaultitems enthalten
-		// listen mit defaultitems leeren (ausser den defaultitems)
+		// listen mit defaultitems leeren.
 		ArrayList<List> toPreserve = new ArrayList<List>();
+		log("debug", "listCount before reset-bla: "+this.getList().size());
 		for(List actList : this.getList())
 		{
 			if(!actList.getDefaultitem().isEmpty())
 			{
+				log("debug", "list: "+actList.getName()+": amount defaultitems: "+actList.getDefaultitem().size());
 				actList.clear();
 				toPreserve.add(actList);
 			}
+			else
+			{
+				log("debug", "list: "+actList.getName()+": no defaultitems");
+			}
 		}
 		this.setList(toPreserve);
+		log("debug", "listCount after reset-bla: "+this.getList().size());
 
 		// variablen leeren
 		this.getVariable().clear();

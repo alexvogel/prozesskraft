@@ -20,7 +20,7 @@ implements Serializable
 	private int max = 99999;
 	private ArrayList<String> item = new ArrayList<String>();
 	private ArrayList<String> defaultitem = new ArrayList<String>();
-	
+
 	private Step parent = null;
 
 	/*----------------------------
