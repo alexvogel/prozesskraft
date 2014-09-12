@@ -102,7 +102,7 @@ implements Serializable
 	public long touchInMillis = 0;
 
 	public int cloneGeneration = 0;
-	public int cloneDerived = 0;
+	public int cloneDescendant = 0;
 	
 	/*----------------------------
 	  constructors
@@ -1782,7 +1782,8 @@ implements Serializable
 		}
 		else if(this.getCloneGeneration() > 0)
 		{
-			return this.rootdir + "_" + this.getCloneGeneration();
+			// der namen soll erweitert werden um "_" + <clonegenerationAlsBuchstaben> + <descendantAlsInt>
+			return this.rootdir + "_" +String.valueOf((char)(this.getCloneGeneration() +64)) + this.getCloneDescendant();
 		}
 		return this.rootdir;
 	}
@@ -2220,15 +2221,15 @@ implements Serializable
 	/**
 	 * @return the cloneDerived
 	 */
-	public int getCloneDerived() {
-		return cloneDerived;
+	public int getCloneDescendant() {
+		return cloneDescendant;
 	}
 
 	/**
 	 * @param cloneDerived the cloneDerived to set
 	 */
-	public void setCloneDerived(int cloneDerived) {
-		this.cloneDerived = cloneDerived;
+	public void setCloneDescendant(int cloneDescendant) {
+		this.cloneDescendant = cloneDescendant;
 	}
 
 	public void makeRootdir()
