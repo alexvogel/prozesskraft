@@ -1774,7 +1774,7 @@ implements Serializable
 	 */
 	public String getRootdir()
 	{
-			return this.getBaseDir()+"/"+this.getName()+"_v"+this.getModelVersionPlain()+"_"+this.getId();
+			return this.getBaseDir()+"/"+this.getName()+"_v"+this.getVersion()+"_"+this.getId();
 	}
 
 	/**
