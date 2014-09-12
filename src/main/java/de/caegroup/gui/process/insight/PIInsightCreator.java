@@ -367,13 +367,19 @@ public class PIInsightCreator
 					clonedProcess.setOutfilebinary(clonedProcess.getRootdir() + "/" + "process.pmb");
 					clonedProcess.writeBinary();
 					
+					// den aufruf zusammenstellen und
 					// starten von pmodel, mit der angabe des neuen pmb
-					String[] cmd = {father.getIni().get("apps", "pmodel-gui"), "-instance", clonedProcess.getRootdir() + "/" + "process.pmb"};
-					father.log("info", "calling: "+StringUtils.join(cmd, " "));
+					ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(father.getIni().get("apps", "pmodel-gui").split(" ")));
+
+					// die sonstigen argumente hinzufuegen
+					processSyscallWithArgs.add("-instance");
+					processSyscallWithArgs.add(clonedProcess.getRootdir() + "/" + "process.pmb");
+
+					father.log("info", "calling: "+StringUtils.join(processSyscallWithArgs, " "));
 					
 					try
 					{
-						java.lang.Process pqq = Runtime.getRuntime().exec(cmd);
+						java.lang.Process pqq = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
 					}
 					catch (IOException e)
 					{
