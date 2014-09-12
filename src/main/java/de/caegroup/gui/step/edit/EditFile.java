@@ -66,8 +66,8 @@ public class EditFile
 		this.step = new Step();
 		this.file = new File();
 		file.setKey("");
-		file.setAbsfilename("");
-		
+		file.setRealposition("");
+
 		shell.setText("edit file");
 		shell.setSize(425, 162);
 		shell.setLocation(display.getCursorLocation());
@@ -83,7 +83,7 @@ public class EditFile
 		this.step = step;
 		this.file = new File();
 		this.file.setKey("");
-		this.file.setAbsfilename("");
+		this.file.setRealposition("");
 		this.entertype = "add";
 				
 		try
@@ -387,45 +387,21 @@ public class EditFile
 	 */
 	private void enterEntry()
 	{
-		try
+		System.out.println("enterType="+entertype);
+		
+		// modify bedeutet: das alte file loeschen und das neue file hineinkopieren
+		if(entertype.equals("modify"))
 		{
-			System.out.println("enterType="+entertype);
-			
-			// modify bedeutet: das alte file loeschen und das neue file hineinkopieren
-			if(entertype.equals("modify"))
-			{
-				// bei einem modify muss zuerst das file, das bereits definiert ist, geloescht werden
-				deleteEntry();
-			}
-
-			// kopieren auf filesystem ebene durchfuehren
-			// cp <den neu angegebenen pfad> <stepdirectory>
-			String source = textPath.getText();
-			String destination = new java.io.File(step.getAbsdir() + "/" + new java.io.File(textPath.getText()).getName()).getAbsolutePath();
-			Files.copy(Paths.get(source), Paths.get(destination));
-
-			// setzen des pfads, den das destination file besitzt
-			file.setAbsfilename(destination);
-			file.setKey(textKey.getText());
-			
-			// dem step hinzufuegen (weil 'add')
-			step.addFile(file);
+			// bei einem modify muss zuerst das file, das bereits definiert ist, geloescht werden
+			deleteEntry();
 		}
-		catch (IOException e)
-		{
 
-			e.printStackTrace();
-
-			// den fehler loggen
-			if(father instanceof SIFileGui)
-			{
-				((SIFileGui) father).getFather().getFather().log("error", "file not copied");
-			}
-			else if(father instanceof SIInsightCreator)
-			{
-				((SIInsightCreator) father).getFather().log("error", "file not copied");
-			}
-		}
+		// setzen des schluessels
+		file.setKey(textKey.getText());
+		file.setRealposition(textPath.getText());
+		
+		// dem step hinzufuegen (weil 'add')
+		step.addFile(file);
 
 		// schreiben des prozesse auf platte
 		step.getParent().writeBinary();
@@ -492,7 +468,7 @@ public class EditFile
 				if (value instanceof String)
 				{
 					File tmpFile = new File();
-					tmpFile.setAbsfilename((String)value);
+					tmpFile.setRealposition((String)value);
 					Test testFileExist = new Test("doesExist");
 					tmpFile.addTest(testFileExist);
 
