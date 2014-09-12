@@ -456,7 +456,7 @@ public class PmodelPartUi1 extends ModelObject
 		processInsight.setLayout(gl_processInsight);
 
 		// erstellen der Prozess-Insight-Ansicht
-		new PIInsightCreator(processInsight, this.einstellungen.getProcess());
+		new PIInsightCreator(this, processInsight, this.einstellungen.getProcess());
 		
 		composite.layout(true);
 	}

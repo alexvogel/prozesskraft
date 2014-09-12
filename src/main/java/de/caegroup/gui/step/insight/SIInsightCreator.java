@@ -143,32 +143,36 @@ public class SIInsightCreator
 		labelStatus.setText("status: "+step.getStatus());
 
 		// oben-rechts sind buttons angeordnet
-		Composite compositeButtons = new Composite(compositeInfoAction, SWT.NONE);
+		Composite compositeAction = new Composite(compositeInfoAction, SWT.NONE);
 		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		compositeButtons.setLayoutData(gd_compositeButtons);
+		compositeAction.setLayoutData(gd_compositeButtons);
 
-		GridLayout gridLayout_Action = new GridLayout(2, true);
+		GridLayout gridLayout_Action = new GridLayout(3, true);
 		gridLayout_Action.marginBottom = 0;
 		gridLayout_Action.marginTop = 0;
 		gridLayout_Action.marginLeft = 0;
 		gridLayout_Action.marginRight = 0;
-		compositeButtons.setLayout(gridLayout_Action);
+		compositeAction.setLayout(gridLayout_Action);
 
-		Button buttonFileBrowser = new Button(compositeButtons, SWT.NONE);
+		Button buttonFileBrowser = new Button(compositeAction, SWT.NONE);
 		buttonFileBrowser.setText("browse");
 		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonFileBrowser.setToolTipText("open step directory with a filebrowser");
 		buttonFileBrowser.addSelectionListener(listener_button_browse);
 
-		Button buttonReset = new Button(compositeButtons, SWT.NONE);
+		Button buttonReset = new Button(compositeAction, SWT.NONE);
 		buttonReset.setText("reset");
 		buttonReset.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonReset.setToolTipText("reset this step to initial state");
 		buttonReset.addSelectionListener(listener_button_reset);
 
-		Label labelDummy2 = new Label(compositeButtons, SWT.NONE);
+		Label labelDummy2 = new Label(compositeAction, SWT.NONE);
 
-		Label labelDummy3 = new Label(compositeButtons, SWT.NONE);
+		Label labelDummy3 = new Label(compositeAction, SWT.NONE);
+
+		Label labelDummy4 = new Label(compositeAction, SWT.NONE);
+
+		Label labelDummy5 = new Label(compositeAction, SWT.NONE);
 
 		// tabFolder erzeugen
 		tabFolder = new CTabFolder(composite, SWT.BORDER);

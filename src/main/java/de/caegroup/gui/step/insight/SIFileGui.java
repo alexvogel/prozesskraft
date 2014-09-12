@@ -73,7 +73,7 @@ public class SIFileGui
 		colKey.setWidth(80);
 		
 		TableColumn colSize = new TableColumn(table, SWT.LEFT);
-		colSize.setText("size(Bytes)");
+		colSize.setText("size");
 		colSize.setWidth(50);
 		
 		TableColumn colFilename = new TableColumn(table, SWT.LEFT);

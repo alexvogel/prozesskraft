@@ -1,10 +1,14 @@
 package de.caegroup.gui.process.insight;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
@@ -31,7 +35,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 
+import de.caegroup.pmodel.PmodelPartUi1;
 import de.caegroup.process.Commit;
 import de.caegroup.process.Step;
 import de.caegroup.process.Variable;
@@ -40,19 +47,19 @@ import de.caegroup.process.Process;
 public class PIInsightCreator
 {
 	private Process process;
+	private PmodelPartUi1 father;
 	private Composite parent;
-	private Label label_processStatus2;
-	private Label label_lastTouch2;
 	
 	private Composite composite;
 	private ScrolledComposite sc;
 	
 //	ArrayList<CommitGui> commitGui = new ArrayList<CommitGui>();
 //	
-	public PIInsightCreator(Composite parent, Process process)
+	public PIInsightCreator(PmodelPartUi1 father, Composite parent, Process process)
 	{
 		this.parent = parent;
 		this.process = process;
+		this.father = father;
 
 		sc = new ScrolledComposite(this.parent, SWT.V_SCROLL | SWT.H_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -114,11 +121,11 @@ public class PIInsightCreator
 		Label label_processName1 = new Label(compositeInfo, SWT.NONE);
 		label_processName1.setText("process: "+this.process.getName());
 		label_processName1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
+
 		// lastTouchByManager
 		Label label_lastTouch1 = new Label(compositeInfo, SWT.NONE);
 		label_lastTouch1.setText("last touch: "+this.process.getTouchAsString());
-		
+
 		// processStatus
 		Label label_processStatus1 = new Label(compositeInfo, SWT.NONE);
 		label_processStatus1.setText("status: "+this.process.getStatus());
@@ -128,7 +135,7 @@ public class PIInsightCreator
 		GridData gd_compositeButtons = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		compositeAction.setLayoutData(gd_compositeButtons);
 
-		GridLayout gridLayout_Action = new GridLayout(2, true);
+		GridLayout gridLayout_Action = new GridLayout(3, true);
 		gridLayout_Action.marginBottom = 0;
 		gridLayout_Action.marginTop = 0;
 		gridLayout_Action.marginLeft = 0;
@@ -138,18 +145,33 @@ public class PIInsightCreator
 		Button buttonFileBrowser = new Button(compositeAction, SWT.NONE);
 		buttonFileBrowser.setText("browse");
 		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		buttonFileBrowser.setToolTipText("open step directory with a filebrowser");
-//		buttonFileBrowser.addSelectionListener(listener_button_browse);
+		buttonFileBrowser.setToolTipText("open process directory with a filebrowser");
+		buttonFileBrowser.addSelectionListener(listener_button_browse);
 
 		Button buttonReset = new Button(compositeAction, SWT.NONE);
 		buttonReset.setText("reset");
 		buttonReset.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		buttonReset.setToolTipText("reset this step to initial state");
-//		buttonReset.addSelectionListener(listener_button_reset);
+		buttonReset.setToolTipText("reset process to initial state");
+		buttonReset.addSelectionListener(listener_button_reset);
 
-		Label labelDummy2 = new Label(compositeAction, SWT.NONE);
+		Button buttonClone = new Button(compositeAction, SWT.NONE);
+		buttonClone.setText("clone");
+		buttonClone.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonClone.setToolTipText("clone process");
+		buttonClone.addSelectionListener(listener_button_clone);
+
 
 		Label labelDummy3 = new Label(compositeAction, SWT.NONE);
+
+		Label labelDummy4 = new Label(compositeAction, SWT.NONE);
+
+		Label labelDummy5 = new Label(compositeAction, SWT.NONE);
+
+		Label labelDummy6 = new Label(compositeAction, SWT.NONE);
+
+		Label labelDummy7 = new Label(compositeAction, SWT.NONE);
+
+		Label labelDummy8 = new Label(compositeAction, SWT.NONE);
 
 //		// instanceFile
 //		Label label_instanceDirectory1 = new Label(fieldComposite, SWT.NONE);
@@ -204,8 +226,183 @@ public class PIInsightCreator
 
 		return parent;
 	}
+
+	SelectionAdapter listener_button_browse = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			java.io.File stepDir = new java.io.File(process.getRootdir());
+			if(!stepDir.exists())
+			{
+				process.log("error", "directory does not exist: "+stepDir.getAbsolutePath());
+			}
+			else if(!stepDir.isDirectory())
+			{
+				process.log("error", "is not a directory: "+stepDir.getAbsolutePath());
+			}
+			else if(!stepDir.canRead())
+			{
+				process.log("error", "cannot read directory: "+stepDir.getAbsolutePath());
+			}
+			
+			else
+			{
+				String call = father.getIni().get("apps", "filebrowser") + " " + stepDir.getAbsolutePath(); 
+				process.log("info", "calling: "+call);
+				
+				try
+				{
+					java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+				}
+				catch (IOException e)
+				{
+					father.log("error", e.getMessage());
+				}
+			}
+
+		}
+	};
+
+	SelectionAdapter listener_button_reset = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			if(process.getStatus().equals("rolling"))
+			{
+				reset_decline();
+			}
+			else
+			{
+				reset_execute();
+			}
+		}
+	};
+
+	private void reset_decline()
+	{
+		Shell messageShell = new Shell();
+		MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_CANCEL | SWT.CANCEL);
+//		confirmation.setText("please confirm");
+		String message = "";
+		message += "you have to stop instance before resetting.\n";
+
+		confirmation.setMessage(message);
+
+		// open confirmation and wait for user selection
+		confirmation.open();
+//		System.out.println("returnCode is: "+returnCode);
+
+		messageShell.dispose();
+	}
+
+	private void reset_execute()
+	{
+		Shell messageShell = new Shell();
+		MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
+		confirmation.setText("please confirm");
+		String message = "";
+
+		message += "WARNING\n";
+		message += "you are about to reset all steps of this instance.\n";
+		message += "aggregated data (variables, files) will be deleted, all produced files will be erased from the filesystem.\n\n";
+		message += "do you really want to reset all steps?";
+
+		confirmation.setMessage(message);
+
+		// open confirmation and wait for user selection
+		int returnCode = confirmation.open();
+//		System.out.println("returnCode is: "+returnCode);
+
+		// ok == 32
+		if (returnCode == 32)
+		{
+			// den step resetten und alle von diesem step abhaengigen steps
+			process.resetStep(process.getRootstepname());
+
+			process.writeBinary();
+			
+			// den update anstossen
+			father.refreshAppletAndUi();
+
+		}
+		messageShell.dispose();
+	}
+
+	SelectionAdapter listener_button_clone = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			Shell messageShell = new Shell();
+			MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+			confirmation.setText("please confirm");
+			String message = "";
+
+			message += "you are about to clone this instance.\n";
+			message += "a full copy of this process instance with all its nested instances and all associated files will be made.\n\n";
+			message += "do you really want to clone?";
+
+			confirmation.setMessage(message);
+
+			// open confirmation and wait for user selection
+			int returnCode = confirmation.open();
+//			System.out.println("returnCode is: "+returnCode);
+
+			// ok == 32
+			if (returnCode == 32)
+			{
+				// bisherigen process klonen
+				Process clonedProcess = process.clone();
+				clonedProcess.setCloneGeneration(process.getCloneGeneration()+1);
+				process.setCloneDerived(process.getCloneDerived()+1);
+
+				// den datenbaum umkopieren
+				try
+				{
+					FileUtils.copyDirectory(new java.io.File(process.getRootdir()), new java.io.File(clonedProcess.getAbsPath()), true);
+
+					// speichern des geklonten prozesses in das neue verzeichnis (dabei wird das alte pmb ueberschrieben)
+					clonedProcess.setOutfilebinary(clonedProcess.getRootdir() + "/" + "process.pmb");
+					clonedProcess.writeBinary();
+					
+					// starten von pmodel, mit der angabe des neuen pmb
+					String[] cmd = {father.getIni().get("apps", "pmodel-gui"), "-instance", clonedProcess.getRootdir() + "/" + "process.pmb"};
+					father.log("info", "calling: "+StringUtils.join(cmd, " "));
+					
+					try
+					{
+						java.lang.Process pqq = Runtime.getRuntime().exec(cmd);
+					}
+					catch (IOException e)
+					{
+						father.log("error", e.getMessage());
+					}
+
+				}
+				// falls directoryCopy schief laeuft, soll das clonen rueckabgewickelt werden
+				catch (IOException e)
+				{
+					process.log("error", "copying of directory tree failed -> cloning failed. deleting all copied data.");
+					process.setCloneDerived(process.getCloneDerived()-1);
+					process.log("error", e.getMessage()+"\n"+Arrays.toString(e.getStackTrace()));
+
+					try
+					{
+						FileUtils.deleteDirectory(new java.io.File(clonedProcess.getAbsPath()));
+					}
+					catch (IOException e1)
+					{
+						process.log("error", "deleting of half copied directory tree failed -> chaos arises.");
+						process.log("error", e1.getMessage()+"\n"+Arrays.toString(e1.getStackTrace()));
+					}
+				}
+
+			}
+		}
+	};
+
+
 	
-//	protected DataBindingContext initDataBindingsProcess()
+	//	protected DataBindingContext initDataBindingsProcess()
 //	{
 //		DataBindingContext bindingContextProcess = new DataBindingContext();
 //		//
