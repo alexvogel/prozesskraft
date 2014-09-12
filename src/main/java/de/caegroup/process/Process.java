@@ -1783,7 +1783,7 @@ implements Serializable
 		else if(this.getCloneGeneration() > 0)
 		{
 			// der namen soll erweitert werden um "_" + <clonegenerationAlsBuchstaben> + <descendantAlsInt>
-			return this.rootdir + "_" +String.valueOf((char)(this.getCloneGeneration() +64)) + this.getCloneDescendant();
+			return this.rootdir + "_" +String.valueOf((char)(this.getCloneGeneration() +65)) + this.getCloneDescendant();
 		}
 		return this.rootdir;
 	}
