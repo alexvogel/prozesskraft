@@ -354,9 +354,6 @@ public class PIInsightCreator
 
 				// bisherigen process klonen
 				Process clonedProcess = process.clone();
-				clonedProcess.setCloneGeneration(process.getCloneGeneration()+1);
-				process.setCloneDescendant(process.getCloneDescendant()+1);
-				clonedProcess.setCloneDescendant(0);
 
 				// den datenbaum umkopieren
 				try
