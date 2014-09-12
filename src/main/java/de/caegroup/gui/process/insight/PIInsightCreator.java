@@ -360,8 +360,8 @@ public class PIInsightCreator
 				// den datenbaum umkopieren
 				try
 				{
-					father.log("info", "copying directory tree: source="+process.getRootdir()+", target="+clonedProcess.getAbsPath());
-					FileUtils.copyDirectory(new java.io.File(process.getRootdir()), new java.io.File(clonedProcess.getAbsPath()), true);
+					father.log("info", "copying directory tree: source="+process.getRootdir()+", target="+clonedProcess.getRootdir());
+					FileUtils.copyDirectory(new java.io.File(process.getRootdir()), new java.io.File(clonedProcess.getRootdir()), true);
 
 					// speichern des geklonten prozesses in das neue verzeichnis (dabei wird das alte pmb ueberschrieben)
 					clonedProcess.setOutfilebinary(clonedProcess.getRootdir() + "/" + "process.pmb");
@@ -388,15 +388,16 @@ public class PIInsightCreator
 					process.setCloneDerived(process.getCloneDerived()-1);
 					process.log("error", e.getMessage()+"\n"+Arrays.toString(e.getStackTrace()));
 
-					try
-					{
-						FileUtils.deleteDirectory(new java.io.File(clonedProcess.getAbsPath()));
-					}
-					catch (IOException e1)
-					{
-						process.log("error", "deleting of half copied directory tree failed -> chaos arises.");
-						process.log("error", e1.getMessage()+"\n"+Arrays.toString(e1.getStackTrace()));
-					}
+//					try
+//					{
+						father.log("warn", "delete this directory by hand: "+clonedProcess.getRootdir());
+						// FileUtils.deleteDirectory(new java.io.File(clonedProcess.getRootdir()));
+//					}
+//					catch (IOException e1)
+//					{
+//						process.log("error", "deleting of half copied directory tree failed -> chaos arises.");
+//						process.log("error", e1.getMessage()+"\n"+Arrays.toString(e1.getStackTrace()));
+//					}
 				}
 
 			}
