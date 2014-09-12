@@ -101,7 +101,7 @@ implements Serializable, Cloneable
 	 */
 	public Step()
 	{
-//		this.setParent(new Process());
+		this.setParent(new Process());
 		this.setName(this.genName());
 	}
 
@@ -1481,15 +1481,11 @@ implements Serializable, Cloneable
 	{
 		String absDir = "";
 
-		if (this.getName().equals(this.parent.getRootstepname()))
+		if (this.isRoot())
 		{
 			absDir = this.parent.getRootdir();
 		}
 		else if (this.getParent().isWrapper())
-		{
-			absDir = this.parent.getRootdir();
-		}
-		else if(this.getParent().isWrapper())
 		{
 			absDir = this.parent.getRootdir();
 		}

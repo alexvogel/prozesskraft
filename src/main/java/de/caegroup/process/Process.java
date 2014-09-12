@@ -2058,6 +2058,15 @@ implements Serializable
 	}
 
 	/**
+	 * liefert den root Step zurueck
+	 * @return
+	 */
+	public Step getRootStep()
+	{
+		return this.getStep(this.getRootstepname());
+	}
+
+	/**
 	 * liefert die information ob ein step mit dem angegebenen namen existiert
 	 * @param stepname
 	 * @return exists
