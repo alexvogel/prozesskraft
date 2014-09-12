@@ -249,7 +249,7 @@ implements Serializable, Cloneable
 
 	public boolean doesExist()
 	{
-		java.io.File myFile = new java.io.File(this.getAbsfilename());
+		java.io.File myFile = new java.io.File(this.getRealposition());
 		if (myFile.exists() && !myFile.isDirectory())
 		{
 			return true;
@@ -274,7 +274,7 @@ implements Serializable, Cloneable
 	----------------------------*/
 	public java.io.File asFile()
 	{
-		return new java.io.File(this.getAbsfilename());
+		return new java.io.File(this.getRealposition());
 	}
 	
 	public String getKey()
