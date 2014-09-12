@@ -1103,8 +1103,8 @@ implements Serializable, Cloneable
 	 */
 	public void addFile(File file)
 	{
-		this.log("debug", "adding File (key="+file.getKey()+", glob="+file.getGlob()+", path="+file.getAbsfilename()+")");
 		file.setParent(this);
+		this.log("debug", "adding File (key="+file.getKey()+", glob="+file.getGlob()+", path="+file.getRealposition()+")");
 		file.copyIfNeeded();
 		this.file.add(file);
 	}

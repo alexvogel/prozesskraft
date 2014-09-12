@@ -266,7 +266,7 @@ implements Serializable, Cloneable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("file-"+this.getKey(), loglevel, logmessage));
+		this.log.add(new Log("file "+this.getKey(), loglevel, logmessage));
 	}
 
 /*----------------------------
