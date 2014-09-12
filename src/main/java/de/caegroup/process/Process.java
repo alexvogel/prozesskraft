@@ -1490,6 +1490,10 @@ implements Serializable
 		return this.path;
 	}
 
+	/**
+	 * returns the $PATH in the form <path>:<path>:...
+	 * 
+	 */
 	public String getAbsPath()
 	{
 		String absPath = "";
@@ -1507,6 +1511,12 @@ implements Serializable
 		return absPath;
 	}
 
+	/**
+	 * es geht hierbei um das Element 'path' im Element 'process'
+	 * returns the $PATH as ArrayList<String>
+	 * @return ArrayList<String>
+	 * 
+	 */
 	public ArrayList<String> getPaths()
 	{
 		String[] patharray = this.path.split(":");
@@ -1514,6 +1524,11 @@ implements Serializable
 		return paths;
 	}
 
+	/**
+	 * es geht hierbei um das Element 'path' im Element 'process'
+	 * returns the $PATH as ArrayList<File>
+	 * @return ArrayList<java.io.File>
+	 */
 	public ArrayList<java.io.File> getPaths2()
 	{
 		ArrayList<java.io.File> paths = new ArrayList<java.io.File>();
@@ -1764,6 +1779,10 @@ implements Serializable
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+		else if(this.getCloneGeneration() > 0)
+		{
+			return this.rootdir + "_" + this.getCloneGeneration();
 		}
 		return this.rootdir;
 	}
