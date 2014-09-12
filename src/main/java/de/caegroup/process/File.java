@@ -473,6 +473,7 @@ implements Serializable, Cloneable
 	 */
 	public void setRealposition(String realposition) {
 		this.realposition = realposition;
+		this.setFilename(new java.io.File(realposition).getName());
 	}
 
 	/**
