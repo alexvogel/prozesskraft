@@ -350,6 +350,8 @@ public class PIInsightCreator
 			// ok == 32
 			if (returnCode == 32)
 			{
+				father.log("info", "cloning process");
+
 				// bisherigen process klonen
 				Process clonedProcess = process.clone();
 				clonedProcess.setCloneGeneration(process.getCloneGeneration()+1);
@@ -358,6 +360,7 @@ public class PIInsightCreator
 				// den datenbaum umkopieren
 				try
 				{
+					father.log("info", "copying directory tree: source="+process.getRootdir()+", target="+clonedProcess.getAbsPath());
 					FileUtils.copyDirectory(new java.io.File(process.getRootdir()), new java.io.File(clonedProcess.getAbsPath()), true);
 
 					// speichern des geklonten prozesses in das neue verzeichnis (dabei wird das alte pmb ueberschrieben)
