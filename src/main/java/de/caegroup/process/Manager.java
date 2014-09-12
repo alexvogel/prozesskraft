@@ -264,7 +264,7 @@ public class Manager
 			// pradar checkin
 			if(pradar && p2.run && p2.touchInMillis == 0)
 			{
-				String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p2.getRandomId(), "-process="+p2.getName(), "-resource="+pathBinary};
+				String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p2.getId(), "-process="+p2.getName(), "-resource="+pathBinary};
 				p2.log("info", "call: " + StringUtils.join(argsForCheckin, " "));
 				try
 				{
@@ -308,7 +308,7 @@ public class Manager
 						{
 							lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
 							lastStepcountFinished = p3.getStepFinished().size();
-							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
+							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
 							p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
 							try
 							{
@@ -320,7 +320,7 @@ public class Manager
 							}
 						}
 						// checkout
-						String[] argsForCheckout = {ini.get("apps", "pradar-checkout"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-exitcode=0"};
+						String[] argsForCheckout = {ini.get("apps", "pradar-checkout"), "-id="+p3.getId(), "-process="+p3.getName(), "-exitcode=0"};
 						p3.log("info", "call: " + StringUtils.join(argsForCheckout, " "));
 						try
 						{
@@ -339,7 +339,7 @@ public class Manager
 						{
 							lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
 							lastStepcountFinished = p3.getStepFinished().size();
-							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
+							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
 							p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
 							try
 							{
@@ -357,7 +357,7 @@ public class Manager
 						{
 							exitCode = exitCode + " " + actStep.getName();
 						}
-						String[] argsForCheckout = {ini.get("apps", "pradar-checkout"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-exitcode=\""+exitCode+"\""};
+						String[] argsForCheckout = {ini.get("apps", "pradar-checkout"), "-id="+p3.getId(), "-process="+p3.getName(), "-exitcode=\""+exitCode+"\""};
 						p3.log("info", "call: " + StringUtils.join(argsForCheckout, " "));
 						try
 						{
@@ -377,7 +377,7 @@ public class Manager
 						{
 							lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
 							lastStepcountFinished = p3.getStepFinished().size();
-							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getRandomId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
+							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
 							p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
 							try
 							{
