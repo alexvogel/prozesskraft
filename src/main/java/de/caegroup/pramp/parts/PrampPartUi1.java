@@ -1411,8 +1411,8 @@ public class PrampPartUi1 extends ModelObject
 //					System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
 //					System.out.println("Id des Prozesses: "+process.getRandomId());
 					
-					process.setOutfilebinary(instanceDir+"/"+this.einstellungen.getProcess()+".pmb");
-					process.setInfilebinary(instanceDir+"/"+this.einstellungen.getProcess()+".pmb");
+					process.setOutfilebinary(instanceDir+"/process.pmb");
+					process.setInfilebinary(instanceDir+"/process.pmb");
 					process.setRootdir(instanceDir);
 					
 					process.writeBinary();
