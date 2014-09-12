@@ -103,6 +103,7 @@ implements Serializable
 
 	public int cloneGeneration = 0;
 	public int cloneDescendant = 0;
+	public int clonePerformed = 0;
 	
 	/*----------------------------
 	  constructors
@@ -1772,7 +1773,7 @@ implements Serializable
 				generator.setSeed(time);
 				int randomnumber = generator.nextInt(9999999);
 				
-				this.rootdir = (currentdir.getCanonicalPath()+"/"+this.getName()+"_v"+this.getModelVersionPlain()+"_"+randomnumber);
+				this.rootdir = (currentdir.getCanonicalPath()+"/"+this.getName()+"_v"+this.getModelVersionPlain()+"_"+randomnumber+"_" +String.valueOf((char)(this.getCloneGeneration() +65)) + this.getCloneDescendant());
 			}
 			catch (IOException e)
 			{
@@ -1780,11 +1781,7 @@ implements Serializable
 				e.printStackTrace();
 			}
 		}
-		else if(this.getCloneGeneration() > 0)
-		{
-			// der namen soll erweitert werden um "_" + <clonegenerationAlsBuchstaben> + <descendantAlsInt>
-			return this.rootdir + "_" +String.valueOf((char)(this.getCloneGeneration() +65)) + this.getCloneDescendant();
-		}
+
 		return this.rootdir;
 	}
 
@@ -2219,17 +2216,31 @@ implements Serializable
 	}
 
 	/**
-	 * @return the cloneDerived
+	 * @return the cloneDescendant
 	 */
 	public int getCloneDescendant() {
 		return cloneDescendant;
 	}
 
 	/**
-	 * @param cloneDerived the cloneDerived to set
+	 * @param cloneDescendant the cloneDescendant to set
 	 */
 	public void setCloneDescendant(int cloneDescendant) {
 		this.cloneDescendant = cloneDescendant;
+	}
+
+	/**
+	 * @return the clonePerformed
+	 */
+	public int getClonePerformed() {
+		return clonePerformed;
+	}
+
+	/**
+	 * @param clonePerformed the clonePerformed to set
+	 */
+	public void setClonePerformed(int clonePerformed) {
+		this.clonePerformed = clonePerformed;
 	}
 
 	public void makeRootdir()
