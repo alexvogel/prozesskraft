@@ -4,7 +4,9 @@ import java.io.*;
 //import java.util.*;
 //import org.apache.solr.common.util.NamedList;
 import java.util.ArrayList;
+import java.util.Arrays;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SerializationUtils;
 
 public class File
@@ -17,15 +19,17 @@ implements Serializable, Cloneable
 	static final long serialVersionUID = 1;
 	private String key = "default";
 	private String glob = "";
-	//	private String filename = "";
+	private String filename = "";
 	private String description = "";
-	private String absfilename = "";
+	private String realposition = "";
 	private ArrayList<Test> test = new ArrayList<Test>();
 	private int minoccur = 0;
 	private int maxoccur = 999999;
 
 	private String status = "";	// waiting/finished/error
 
+	private Step parent = null;
+	
 	private ArrayList<Log> log = new ArrayList<Log>();
 
 
@@ -34,9 +38,15 @@ implements Serializable, Cloneable
 	----------------------------*/
 	public File()
 	{
-		log("info", "object created");
+		this.parent = new Step();
+		log("info", "object created with an unknown parent");
 	}
 
+	public File( Step step)
+	{
+		this.parent = step;
+		log("info", "object created with parent step="+step.getName());
+	}
 
 	/*----------------------------
 	  methods
@@ -78,6 +88,78 @@ implements Serializable, Cloneable
 		{
 			actTest.reset();
 		}
+	}
+	
+	/**
+	 * es wird ueberprueft ob das file unter getAbsfilename() existiert und genau das gleiche ist wie unter getRealposition()
+	 * bei bedarf wird es von getRealposition() nach getAbsfilename() kopiert.
+	 * @return
+	 */
+	public boolean copyIfNeeded()
+	{
+		boolean success = false;
+
+		this.log("info", "copy files if needed");
+
+		if(this.getRealposition().equals(this.getAbsfilename()))
+		{
+			this.log("info", "source and destination are the same. no copy needed");
+		}
+		
+		// ueberpruefen ob an beiden positionen das gleiche file ist, wenn nicht, dann soll es dorthin kopiert werden
+		java.io.File quellFile = new java.io.File(this.getRealposition());
+		java.io.File zielFile = new java.io.File(this.getAbsfilename());
+		
+		if(quellFile.exists())
+		{
+			this.log("info", "source file exists: " + quellFile.getAbsolutePath());
+			if(zielFile.exists())
+			{
+				this.log("info", "destination file already exists: " + zielFile.getAbsolutePath());
+				try
+				{
+					if(FileUtils.contentEquals(quellFile, zielFile))
+					{
+						this.log("info", "both files have equal content. no copy needed.");
+						success = true;
+					}
+					else
+					{
+						this.log("info", "files are not the same. will copy source="+quellFile.getAbsolutePath()+", destination="+zielFile.getAbsolutePath());
+						FileUtils.copyFile(quellFile, zielFile, true);
+
+						// vermerken der neuen position als echte fileposition
+						this.setRealposition(this.getAbsfilename());
+						success = true;
+					}
+				}
+				catch (IOException e)
+				{
+					log("error", e.getMessage()+"\n"+Arrays.toString(e.getStackTrace()));
+					this.setStatus("error");
+					success = false;
+				}
+			}
+			else
+			{
+				try
+				{
+					this.log("info", "destination file does not exists yet. will copy source="+quellFile.getAbsolutePath()+", destination="+zielFile.getAbsolutePath());
+					FileUtils.copyFile(quellFile, zielFile, true);
+
+					// vermerken der neuen position als echte fileposition
+					this.setRealposition(this.getAbsfilename());
+					success = true;
+				}
+				catch (IOException e)
+				{
+					log("error", e.getMessage()+"\n"+Arrays.toString(e.getStackTrace()));
+					this.setStatus("error");
+					success = false;
+				}
+			}
+		}
+		return success;
 	}
 	
 	public void performAllTests()
@@ -207,8 +289,12 @@ implements Serializable, Cloneable
 
 	public String getFilename()
 	{
-		java.io.File f = new java.io.File(this.absfilename);
-		return f.getName();
+		return filename;
+	}
+
+	public void setFilename(String filename)
+	{
+		this.filename = filename;
 	}
 
 	public String getDescription()
@@ -218,7 +304,7 @@ implements Serializable, Cloneable
 
 	public String getAbsfilename()
 	{
-		return this.absfilename;
+		return this.getParent().getAbsdir() + "/" + this.getFilename();
 	}
 
 	public int getMinoccur()
@@ -344,11 +430,6 @@ implements Serializable, Cloneable
 		this.description = description;
 	}
 
-	public void setAbsfilename(String absfilename)
-	{
-		this.absfilename = absfilename;
-	}
-
 	public void setMinoccur(int minoccur)
 	{
 		this.minoccur = minoccur;
@@ -378,6 +459,41 @@ implements Serializable, Cloneable
 	{
 		log("info", "setting status to '"+status+"'");
 		this.status = status;
+	}
+
+	/**
+	 * @return the absposition
+	 */
+	public String getRealposition() {
+		return realposition;
+	}
+
+	/**
+	 * @param absposition the absposition to set
+	 */
+	public void setRealposition(String realposition) {
+		this.realposition = realposition;
+	}
+
+	/**
+	 * @return the parent
+	 */
+	public Step getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(Step parent) {
+		this.parent = parent;
+	}
+
+	/**
+	 * @param log the log to set
+	 */
+	public void setLog(ArrayList<Log> log) {
+		this.log = log;
 	}
 
 }

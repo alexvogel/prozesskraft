@@ -1097,18 +1097,27 @@ implements Serializable, Cloneable
 		this.log("debug", "removing Commit "+commit.getName());
 	}
 
+	/**
+	 * fuegt ein File diesem Step hinzu. Debei wird im File dieser STep als Parent gesetzt
+	 * @param file
+	 */
 	public void addFile(File file)
 	{
 		this.log("debug", "adding File (key="+file.getKey()+", glob="+file.getGlob()+", path="+file.getAbsfilename()+")");
+		file.setParent(this);
+		file.copyIfNeeded();
 		this.file.add(file);
 	}
 
+	/**
+	 * hinzufuegen einer ganzen liste an files
+	 * @param file
+	 */
 	public void addFile(ArrayList<File> file)
 	{
 		for(File actFile : file)
 		{
-			this.log("debug", "adding File (key="+actFile.getKey()+", glob="+actFile.getGlob()+", path="+actFile.getAbsfilename()+")");
-			this.file.add(actFile);
+			this.addFile(actFile);
 		}
 	}
 

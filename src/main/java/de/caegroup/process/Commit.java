@@ -338,40 +338,6 @@ implements Serializable
 //		commitFile(key, file);
 //	}
 
-	public void copyFileToStepdirIfNeeded(File file)
-	{
-		// wenn die verzeichnisse nicht uebereinstimmen, muss das file kopiert werden und der neue pfad in das file eingetragen werden
-		if(!(this.getAbsdir().equals(file.asFile().getParent())))
-		{
-			System.out.println("verzeichnisse stimmen nicht ueberein, deshalb muss das file kopiert werden");
-			try
-			{
-				
-				// benamungen feststellen
-				java.io.File quellFile = file.asFile();
-				String quellFilename = quellFile.getName();
-				java.io.File zielFile = new java.io.File(this.getAbsdir() + "/" + quellFilename);
-
-				log("info", "copying file "+quellFile.getAbsolutePath()+" to "+zielFile.getAbsolutePath());
-				System.out.println("info: copying file "+quellFile.getAbsolutePath()+" to "+zielFile.getAbsolutePath());
-
-				// kopieren durchfuehren
-				Files.copy(quellFile.toPath(), zielFile.toPath());
-
-				// den pfad in dem jeweiligen File-Objekt auf die neue position aendern
-				System.out.println("info: setzen des absoluten pfad des files auf die neue position: "+zielFile.getAbsolutePath());
-				file.setAbsfilename(zielFile.getAbsolutePath());
-			}
-			catch(Exception e)
-			{
-				log("error", e.getMessage()+"\n"+"error while copying: "+file.getAbsfilename() +" => "+this.getAbsdir() );
-				System.out.println("error: "+ e.getMessage()+"\n"+"error while copying: "+file.getAbsfilename() +" => "+this.getAbsdir() );
-				file.setStatus("error");
-				e.printStackTrace();
-			}
-		}
-	}
-	
 	/**
 	 * commit von files
 	 * 1) globben
@@ -455,7 +421,7 @@ implements Serializable
 			{
 				File clonedFile = master.clone();
 				clonedFile.setGlob("");
-				clonedFile.setAbsfilename(actFile.getAbsolutePath());
+				clonedFile.setRealposition(actFile.getAbsolutePath());
 				filesToCommit.add(clonedFile);
 			}
 		}
@@ -463,11 +429,6 @@ implements Serializable
 		System.out.println("jetzt liegen die files vor (mit oder ohne glob)");
 
 		// DIE ERMITTELTEN FILES EVTL. KOPIEREN UND UEBERPRUEFEN
-		// falls files nicht im step-directory zu finden sind, dann sollen sie dort hin kopiert werden
-		for(File actFile : filesToCommit)
-		{
-			this.copyFileToStepdirIfNeeded(actFile);
-		}
 
 		// ueberpruefen ob Anzahl der ermittelten Variablen mit minoccur und maxoccur zusammen passt
 		if(filesToCommit.size() < master.getMinoccur())
