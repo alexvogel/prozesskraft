@@ -308,7 +308,7 @@ public class FileOccurGui
 			{
 				if (value instanceof String)
 				{
-					file.setAbsfilename((String)value);
+					file.setRealposition((String)value);
 //					System.out.println("ACTUAL FILENAME IS: "+file.getAbsfilename());
 					file.performAllTests();
 					if ( file.doAllTestsPass() )
@@ -375,10 +375,8 @@ public class FileOccurGui
 			commit.log("debug", "setting the path for file ("+file.getKey()+") to the pramp-entry: "+data.getContent());
 			// setzen des pfades
 			File newFile = file.clone();
-			newFile.setAbsfilename(this.data.getContent());
+			newFile.setRealposition(this.data.getContent());
 
-			commit.copyFileToStepdirIfNeeded(newFile);
-			
 			commit.getParent().addFile(newFile);
 		}
 	}
