@@ -333,8 +333,8 @@ implements Serializable, Cloneable
 	
 	public long getSizeInBytes()
 	{
-		java.io.File file = new java.io.File(this.getAbsfilename());
-		
+		java.io.File file = new java.io.File(this.getRealposition());
+
 		if (file.exists())
 		{
 			return file.length();
