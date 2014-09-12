@@ -1094,7 +1094,7 @@ public class PrampPartUi1 extends ModelObject
 //				GridLayout gl_actualComposite = new GridLayout(1, false);
 				actualComposite.setLayout(new FillLayout());
 
-				CommitCreator commitCreator = new CommitCreator(this, actualComposite, this.process.getStep("root"));
+				CommitCreator commitCreator = new CommitCreator(this, actualComposite, this.process.getRootStep());
 
 				actualComposite = commitCreator.createControls();
 //				actualComposite.pack();
