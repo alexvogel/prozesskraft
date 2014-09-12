@@ -137,7 +137,12 @@ implements Serializable
 	@Override
 	public Process clone()
 	{
-		return SerializationUtils.clone(this);
+		Process clonedProcess = SerializationUtils.clone(this);
+		clonedProcess.cloneGeneration++;
+		clonedProcess.clonePerformed = 0;
+		this.clonePerformed++;
+		clonedProcess.cloneDescendant = this.clonePerformed;
+		return clonedProcess;
 	}
 	
 	/**
