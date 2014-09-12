@@ -1165,54 +1165,6 @@ public class PrampPartUi1 extends ModelObject
 ////		System.out.println("aktualisiere textfeld - einstellungen get.Instancedirectory: "+einstellungen.getInstancedirectory());
 //	}
 	
-	/**
-	 * creates an instance directory if it does not exist
-	 * if directory already exists and is empty, returns true
-	 * if directory already exists and contains files or directories, returns false
-	 * @return directory for the instance (null if something happended)
-	 */
-	private String getInstanceDir()
-	{
-		// assemble a random name for instanceDir
-		Calendar now = Calendar.getInstance();
-		Random random = new Random();
-		DecimalFormat df2 = new DecimalFormat("00");
-		String randomName = this.einstellungen.getProcess() + "_v" + this.einstellungen.getVersion() + "_" + now.get(Calendar.YEAR) + df2.format(now.get(Calendar.MONTH)+1) + df2.format(now.get(Calendar.DAY_OF_MONTH)) + "_" + random.nextInt(100000000);
-
-		java.io.File instanceDir = new java.io.File(this.einstellungen.getBaseDirectory() + "/" + randomName);
-		
-		String instanceDirectoryPath = null;
-		
-		if (instanceDir.exists())
-		{
-			log("warn", "instance directory exists: "+instanceDir.getAbsoluteFile());
-			if (instanceDir.listFiles().length > 0)
-			{
-				log("error", "instance directory not empty: "+instanceDir.getAbsoluteFile());
-				log("info", "choose an empty or nonexistent instance directory.");
-				instanceDirectoryPath = null;
-			}
-			else
-			{
-				log("info", "instance directory is empty - thats good..");
-				instanceDirectoryPath = instanceDir.getAbsolutePath();
-			}
-		}
-		
-		else
-		{
-			if(instanceDir.mkdirs())
-			{
-				instanceDirectoryPath = instanceDir.getAbsolutePath();
-			}
-			else
-			{
-				instanceDirectoryPath = null;
-			}
-		}
-		
-		return instanceDirectoryPath;
-	}
 	
 	/**
 	 * prueft ob die parameter bereits verwendet wurden
@@ -1367,10 +1319,9 @@ public class PrampPartUi1 extends ModelObject
 					}
 				}
 				
-				String instanceDir = getInstanceDir();
-				this.process.setRootdir(instanceDir);
-				
-				if (instanceDir != null)
+				this.process.setBaseDir(this.einstellungen.getBaseDirectory());
+
+				if (this.process.makeRootdir())
 				{
 					log ("info", "all tests passed. performing commit.");
 	//				System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
@@ -1411,17 +1362,16 @@ public class PrampPartUi1 extends ModelObject
 //					System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
 //					System.out.println("Id des Prozesses: "+process.getRandomId());
 					
-					process.setOutfilebinary(instanceDir+"/process.pmb");
-					process.setInfilebinary(instanceDir+"/process.pmb");
-					process.setRootdir(instanceDir);
-					
+					process.setOutfilebinary(process.getRootdir()+"/process.pmb");
+					process.setInfilebinary(process.getRootdir()+"/process.pmb");
+
 					process.writeBinary();
 					log ("info", "writing binary instance file to disk "+process.getOutfilebinary());
 					
 					// kurz schlafen damit der schreibvorgang beendet werden kann
 					try
 					{
-						Thread.sleep(1000);
+						Thread.sleep(100);
 					} catch (InterruptedException e1)
 					{
 						// TODO Auto-generated catch block
@@ -1511,7 +1461,7 @@ public class PrampPartUi1 extends ModelObject
 				}
 				else
 				{
-					log ("error", "problems handling instance directory. doing nothing.");
+					log ("error", "problems handling instance directory."+process.getRootdir()+". doing nothing.");
 					return false;
 				}
 			}
