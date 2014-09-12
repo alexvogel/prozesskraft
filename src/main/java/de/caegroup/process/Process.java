@@ -104,7 +104,7 @@ implements Serializable
 	public long touchInMillis = 0;
 
 	public int cloneGeneration = 1;
-	public int cloneDescendant = 0;
+	public int cloneDescendant = 1;
 	public int clonePerformed = 0;
 	
 	/*----------------------------
