@@ -103,7 +103,7 @@ implements Serializable
 	private String touchAsString = "";
 	public long touchInMillis = 0;
 
-	public int cloneGeneration = 0;
+	public int cloneGeneration = 1;
 	public int cloneDescendant = 0;
 	public int clonePerformed = 0;
 	
@@ -1791,7 +1791,7 @@ implements Serializable
 	 */
 	public String getId()
 	{
-		return this.idRumpf + String.valueOf((char)(this.getCloneGeneration() +65)) + this.getCloneDescendant();
+		return this.idRumpf + String.valueOf((char)(this.getCloneGeneration() +64)) + this.getCloneDescendant();
 	}
 	
 	public double getManagerid()
