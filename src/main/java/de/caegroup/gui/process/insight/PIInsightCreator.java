@@ -355,7 +355,8 @@ public class PIInsightCreator
 				// bisherigen process klonen
 				Process clonedProcess = process.clone();
 				clonedProcess.setCloneGeneration(process.getCloneGeneration()+1);
-				process.setCloneDerived(process.getCloneDerived()+1);
+				process.setCloneDescendant(process.getCloneDescendant()+1);
+				clonedProcess.setCloneDescendant(process.getCloneDescendant());
 
 				// den datenbaum umkopieren
 				try
@@ -391,7 +392,6 @@ public class PIInsightCreator
 				catch (IOException e)
 				{
 					process.log("error", "copying of directory tree failed -> cloning failed. deleting all copied data.");
-					process.setCloneDerived(process.getCloneDerived()-1);
 					process.log("error", e.getMessage()+"\n"+Arrays.toString(e.getStackTrace()));
 
 //					try
