@@ -74,11 +74,11 @@ public class Startinstance
 		/*----------------------------
 		  create argument options
 		----------------------------*/
-		Option orootdir = OptionBuilder.withArgName("DIR")
+		Option obasedir = OptionBuilder.withArgName("DIR")
 				.hasArg()
-				.withDescription("[optional, default ./<random>] root directory of instance you are about to start.")
+				.withDescription("[optional, default .] base directory where instance shourd run.")
 //				.isRequired()
-				.create("rootdir");
+				.create("basedir");
 		
 		Option odefinition = OptionBuilder.withArgName("FILE")
 				.hasArg()
@@ -105,7 +105,7 @@ public class Startinstance
 		
 		options.addOption( ohelp );
 		options.addOption( ov );
-		options.addOption( orootdir );
+		options.addOption( obasedir );
 		options.addOption( odefinition );
 		options.addOption( ofile );
 		options.addOption( ovariable );
@@ -228,19 +228,20 @@ public class Startinstance
 				}
 			}
 			
-			if (commandline.hasOption("rootdir"))
+			if (commandline.hasOption("basedir"))
 			{
-				p2.setRootdir(commandline.getOptionValue("rootdir"));
+				p2.setBaseDir(commandline.getOptionValue("basedir"));
 			}
 			
 			commit.doIt();
 			
 			p2.makeRootdir();
-			p2.writeBinary();
 			System.out.println("info: writing process instance "+p2.getOutfilebinary());
 			
 			System.out.println("info: starting processmanager for instance "+p2.getOutfilebinary());
-	
+
+			p2.writeBinary();
+
 			try
 			{
 				Thread.sleep(1500, 0);
