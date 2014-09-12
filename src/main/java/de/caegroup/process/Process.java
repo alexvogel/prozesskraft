@@ -14,8 +14,10 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -85,7 +87,7 @@ implements Serializable
 	
 	public boolean run = false;
 	private String status = new String();	// waiting/working/finished/broken/paused
-	private String rootdir = "";
+	private String baseDir = new java.io.File(".").getAbsolutePath();
 	private double managerid = -1;
 	private Date date = new Date();
 	private String infilebinary = "";
@@ -97,7 +99,7 @@ implements Serializable
 	private String fileDocJrxml = new String();
 	private String rootstepname = "root";
 	private ArrayList<Log> log = new ArrayList<Log>();
-	private int randomId = 0;  
+	private String idRumpf = "noId"; 
 	private String touchAsString = "";
 	public long touchInMillis = 0;
 
@@ -113,11 +115,15 @@ implements Serializable
 		name = "unnamed";
 		description = "without description";
 		status = "waiting";
-		
+
 		Random generator = new Random();
 		generator.setSeed(System.currentTimeMillis());
-		randomId = generator.nextInt();
-		
+		int randomInt = generator.nextInt(100000000);
+
+		// assemble a random name for instanceDir
+		Calendar now = Calendar.getInstance();
+		DecimalFormat df2 = new DecimalFormat("00");
+		this.idRumpf = now.get(Calendar.YEAR) + df2.format(now.get(Calendar.MONTH)+1) + df2.format(now.get(Calendar.DAY_OF_MONTH)) + "_" + randomInt;
 	}
 	/*----------------------------
 	  methods
@@ -1763,28 +1769,31 @@ implements Serializable
 	 */
 	public String getRootdir()
 	{
-		if (this.rootdir.equals(""))
-		{
-			java.io.File currentdir = new java.io.File (".");
-			try
-			{
-				final Random generator = new Random();
-				long time = System.currentTimeMillis();
-				generator.setSeed(time);
-				int randomnumber = generator.nextInt(9999999);
-				
-				this.rootdir = (currentdir.getCanonicalPath()+"/"+this.getName()+"_v"+this.getModelVersionPlain()+"_"+randomnumber+"_" +String.valueOf((char)(this.getCloneGeneration() +65)) + this.getCloneDescendant());
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		return this.rootdir;
+			return this.getBaseDir()+"/"+this.getName()+"_v"+this.getModelVersionPlain()+"_"+this.getId();
 	}
 
+	/**
+	 * @return the baseDir
+	 */
+	public String getBaseDir() {
+		return baseDir;
+	}
+
+	/**
+	 * @param baseDir the baseDir to set
+	 */
+	public void setBaseDir(String baseDir) {
+		this.baseDir = baseDir;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public String getId()
+	{
+		return this.idRumpf + String.valueOf((char)(this.getCloneGeneration() +65)) + this.getCloneDescendant();
+	}
+	
 	public double getManagerid()
 	{
 		return this.managerid;
@@ -2109,11 +2118,6 @@ implements Serializable
 		return rootstepname;
 	}
 
-	public int getRandomId()
-	{
-		return randomId;
-	}
-
 	public ArrayList<Log> getLog()
 	{
 		return this.log;
@@ -2195,12 +2199,6 @@ implements Serializable
 		firePropertyChange("status", this.status, this.status = status);
 	}
 
-	public void setRootdir(String rootdir)
-	{
-		java.io.File dir = new java.io.File(rootdir);
-		this.rootdir = dir.getAbsolutePath();
-	}
-
 	/**
 	 * @return the cloneGeneration
 	 */
@@ -2243,13 +2241,14 @@ implements Serializable
 		this.clonePerformed = clonePerformed;
 	}
 
-	public void makeRootdir()
+	public boolean makeRootdir()
 	{
 		java.io.File dir = new java.io.File(this.getRootdir());
 		if (!(dir.exists()))
 		{
 			dir.mkdirs();
 		}
+		return true;
 	}
 
 	public void setManagerid(double managerid)
