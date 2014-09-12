@@ -160,12 +160,12 @@ implements Serializable
 		{
 			if (testFile.getSize(sizeScale) <= sizeTreshold)
 			{
-				setTestFeedback("size of file '"+testFile.getAbsfilename()+"' is not greater than '"+sizeTreshold+"' "+sizeScale);
+				setTestFeedback("size of file '"+testFile.getRealposition()+"' is not greater than '"+sizeTreshold+"' "+sizeScale);
 				result = false;
 			}
 			else
 			{
-				setTestFeedback("size of file '"+testFile.getAbsfilename()+"' is greater than '"+sizeTreshold+"' "+sizeScale);
+				setTestFeedback("size of file '"+testFile.getRealposition()+"' is greater than '"+sizeTreshold+"' "+sizeScale);
 			}
 		}
 		else
@@ -194,12 +194,12 @@ implements Serializable
 		
 		if (!(testFile.doesExist()))
 		{
-			setTestFeedback("file '"+testFile.getAbsfilename()+"' does not exist.");
+			setTestFeedback("file '"+testFile.getRealposition()+"' does not exist.");
 			result = false;
 		}
 		else if(testFile.doesExist())
 		{
-			setTestFeedback("file '"+testFile.getAbsfilename()+"' does exist");
+			setTestFeedback("file '"+testFile.getRealposition()+"' does exist");
 		}
 		return result;
 	}
@@ -226,7 +226,7 @@ implements Serializable
 		BufferedReader reader;
 		try
 		{
-			reader = new BufferedReader( new FileReader (testFile.getAbsfilename()));
+			reader = new BufferedReader( new FileReader (testFile.getRealposition()));
 		
 			String line = null;
 			StringBuilder stringBuilder = new StringBuilder();
@@ -248,17 +248,17 @@ implements Serializable
 			{
 				if (l.matches(".*"+Pattern.quote(pattern)+".*"))
 				{
-					setTestFeedback("content of file '"+testFile.getAbsfilename()+"' matches pattern '"+pattern+"'");
+					setTestFeedback("content of file '"+testFile.getRealposition()+"' matches pattern '"+pattern+"'");
 					return true;
 				}
 			}
-			setTestFeedback("content of file '"+testFile.getAbsfilename()+"' does not match pattern '"+pattern+"'");
+			setTestFeedback("content of file '"+testFile.getRealposition()+"' does not match pattern '"+pattern+"'");
 
 		
 		} catch (FileNotFoundException e)
 		{
 			// TODO Auto-generated catch block
-			setTestFeedback("content of file '"+testFile.getAbsfilename()+"' does not match pattern '"+pattern+"', because file does not exist.");
+			setTestFeedback("content of file '"+testFile.getRealposition()+"' does not match pattern '"+pattern+"', because file does not exist.");
 //			e.printStackTrace();
 		}
 		catch (IOException e)
