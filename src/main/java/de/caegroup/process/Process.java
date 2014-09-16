@@ -116,8 +116,6 @@ implements Serializable
 		description = "without description";
 		status = "waiting";
 
-		this.addStep(new Step(this.getRootstepname()));
-		
 		Random generator = new Random();
 		generator.setSeed(System.currentTimeMillis());
 		int randomInt = generator.nextInt(100000000);

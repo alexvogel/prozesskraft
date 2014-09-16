@@ -131,7 +131,7 @@ public class TestProcess {
 
 		//-----Step 'root' testen Anfang-----
 
-		Step stepRoot = process.getStep("root");
+		Step stepRoot = process.getRootStep();
 		// testen der step-attribute
 		assertEquals("root", stepRoot.getName());
 		assertEquals(2, stepRoot.getCommit().size());
