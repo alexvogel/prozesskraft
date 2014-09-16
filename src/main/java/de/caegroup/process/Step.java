@@ -51,7 +51,9 @@ implements Serializable, Cloneable
 	private ArrayList<File> file = new ArrayList<File>();
 	private ArrayList<Variable> variable = new ArrayList<Variable>();
 //	private String status = "waiting";	// waiting/initializing/working/committing/ finished/error/cancelled
-	
+
+	public String statusOverwrite = null;
+
 	private ArrayList<Log> log = new ArrayList<Log>();
 	private String rank = "";
 	private int reset = 0;
@@ -645,18 +647,17 @@ implements Serializable, Cloneable
 				// der default wert fuer diese option
 				// aus den items der gleichnamigen listen extrahieren, die hart im xml definiert wurden
 				String def = "";
-				// wenn es eine liste mit dem gleichen namen gibt wie das init-element, sollen alle items (trennzeichen=%%) als default gesetzt werden 
+				// wenn es eine liste mit dem gleichen namen gibt wie das init-element, sollen alle defaultitems (trennzeichen=%%) als default gesetzt werden 
 				if(this.getList(actInit.getListname()) != null)
 				{
 					List list = this.getList(actInit.getListname());
-					ArrayList<String> items = list.getItem();
-					for(String item : items)
+					for(String actDefaultitem : list.getDefaultitem())
 					{
-						if(def.equals("")) {def = item;}
-						else{def += "%%" + item;}
+						if(def.equals("")) {def = actDefaultitem;}
+						else{def += "%%" + actDefaultitem;}
 					}
 				}
-				
+
 				// der hilfstext fuer diese option
 				String text2 = "no description available";
 				if(!(actInit.getDescription().matches("")))
@@ -1364,8 +1365,27 @@ implements Serializable, Cloneable
 		return this.loopvar;
 	}
 
+	/**
+	 * @return the statusOverwrite
+	 */
+	public String getStatusOverwrite() {
+		return statusOverwrite;
+	}
+
+	/**
+	 * @param statusOverwrite the statusOverwrite to set
+	 */
+	public void setStatusOverwrite(String statusOverwrite) {
+		this.statusOverwrite = statusOverwrite;
+	}
+
 	public String getStatus()
 	{
+		if((this.getStatusOverwrite() != null) && (!this.getStatusOverwrite().equals("")))
+		{
+			return this.statusOverwrite;
+		}
+		
 		String status = "unknown";
 		
 		// Die Inits untersuchen
