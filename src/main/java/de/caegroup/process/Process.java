@@ -116,6 +116,8 @@ implements Serializable
 		description = "without description";
 		status = "waiting";
 
+		this.addStep(new Step(this.getRootstepname()));
+		
 		Random generator = new Random();
 		generator.setSeed(System.currentTimeMillis());
 		int randomInt = generator.nextInt(100000000);
@@ -467,9 +469,9 @@ implements Serializable
 		script.business.addCode("&printHtmlOverview();");
 		script.business.addCode("#-------------------");
 		script.business.addCode("");
-		
+
 		// script-OPTIONS generieren aus den commit-objekten des root-steps
-		Step rootStep = this.getStep(this.getRootstepname());
+		Step rootStep = this.getRootStep();
 		for(Commit actCommitOfRootStep : rootStep.getCommit())
 		{
 			// alle Variablen
