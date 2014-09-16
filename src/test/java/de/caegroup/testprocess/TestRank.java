@@ -61,7 +61,7 @@ public class TestRank {
 		assertEquals("2.1", bStep.getRank());
 		assertEquals("3.1", cStep.getRank());
 		
-		assertEquals(3, process.getStep().size());
+		assertEquals(4, process.getStep().size());
 	}
 	
 

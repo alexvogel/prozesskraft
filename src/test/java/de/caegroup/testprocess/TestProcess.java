@@ -127,7 +127,7 @@ public class TestProcess {
 		assertEquals(pathToXml, process.getInfilexml());
 		
 		// testen der process-elemente
-		assertEquals(2, process.getStep().size());
+		assertEquals(3, process.getStep().size());
 
 		//-----Step 'root' testen Anfang-----
 
