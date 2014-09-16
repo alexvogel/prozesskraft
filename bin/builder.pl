@@ -967,7 +967,7 @@ foreach my $refh_stackline (@CONFIG)
 		# das quell-verzeichnis nach $target syncen und dabei die zu ignorierenden files beachten (deployignore.txt)
 		my $deployignore = "deployignore.txt";
 		my @deploy_ignore;
-		print "info: installing $TMPDIR to $now_targetbulkappbranch (excluding '.git' and '*deploy*' and everything from '$deployignore')\n";
+		print "info: installing $TMPDIR to $now_targetbulkappbranch (excluding '.git', '.project' and '*deploy*' and everything from '$deployignore')\n";
 		if (stat $deployignore)
 		{
 			open (DEPLOYIGNORE, '<', $deployignore) or die "can't read $deployignore: $!";
@@ -979,7 +979,7 @@ foreach my $refh_stackline (@CONFIG)
 		{
 			$rsynccall .= " --exclude=\"$exclude_string\"";
 		}
-		$rsynccall .= " --exclude=\".git\" --exclude=\"**deploy**\" -avz $TMPDIR/ ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbulkappbranch;
+		$rsynccall .= " --exclude=\".git\" --exclude=\".project\" --exclude=\"**deploy**\" -avz $TMPDIR/ ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbulkappbranch;
 
 		print $rsynccall."\n";
 		system $rsynccall;
