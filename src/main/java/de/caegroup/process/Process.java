@@ -470,102 +470,100 @@ implements Serializable
 
 		// script-OPTIONS generieren aus den commit-objekten des root-steps
 		Step rootStep = this.getRootStep();
-		for(Commit actCommitOfRootStep : rootStep.getCommit())
+		if(rootStep != null)
 		{
-			// alle Variablen
-			for(Variable actVariable : actCommitOfRootStep.getVariable())
+			for(Commit actCommitOfRootStep : rootStep.getCommit())
 			{
-				// String name, int minoccur, int maxoccur, String definition, String check, String def, String text1, String text2)
-				String optionname = actVariable.getKey();
-				int minoccur = actVariable.getMinoccur();
-				int maxoccur =  actVariable.getMaxoccur();
-				String definition = actVariable.getType();
-				String check = "";
-				
-				//integrieren des ersten tests 'matchPattern'
-				for(Test actTest : actVariable.getTest())
+				// alle Variablen
+				for(Variable actVariable : actCommitOfRootStep.getVariable())
 				{
-					if(actTest.getName().matches("^matchPattern$"))
+					// String name, int minoccur, int maxoccur, String definition, String check, String def, String text1, String text2)
+					String optionname = actVariable.getKey();
+					int minoccur = actVariable.getMinoccur();
+					int maxoccur =  actVariable.getMaxoccur();
+					String definition = actVariable.getType();
+					String check = "";
+					
+					//integrieren des ersten tests 'matchPattern'
+					for(Test actTest : actVariable.getTest())
 					{
-						check = actTest.getParam().get(0).getContent();
-					}
-				}
-				
-				// default, falls vorhanden und nicht null
-				String def = "";
-				if (actVariable.getValue() != null)
-				{
-					def = actVariable.getValue();
-				}
-
-				// text1
-				String text1 = "";
-				
-				// wenn es kein flag-parameter ist, soll ein hinweis auf die erwarteten werte geliefert werden
-				if (! definition.matches("flag"))
-				{
-					text1 = "=";
-					// wenn es free=false, gibt es vorgegebene werte - aus diesen einen pattern fuer den text1 bilden "|"-getrennt
-					if(! actVariable.getFree())
-					{
-						for(String actChoice : actVariable.getChoice())
+						if(actTest.getName().matches("^matchPattern$"))
 						{
-							text1 += actChoice + "|";
+							check = actTest.getParam().get(0).getContent();
 						}
-						text1 = text1.substring(0, text1.length()-1);
 					}
-					else
+					
+					// default, falls vorhanden und nicht null
+					String def = "";
+					if (actVariable.getValue() != null)
 					{
-						text1 += actVariable.getType().toUpperCase();
+						def = actVariable.getValue();
 					}
+	
+					// text1
+					String text1 = "";
+					
+					// wenn es kein flag-parameter ist, soll ein hinweis auf die erwarteten werte geliefert werden
+					if (! definition.matches("flag"))
+					{
+						text1 = "=";
+						// wenn es free=false, gibt es vorgegebene werte - aus diesen einen pattern fuer den text1 bilden "|"-getrennt
+						if(! actVariable.getFree())
+						{
+							for(String actChoice : actVariable.getChoice())
+							{
+								text1 += actChoice + "|";
+							}
+							text1 = text1.substring(0, text1.length()-1);
+						}
+						else
+						{
+							text1 += actVariable.getType().toUpperCase();
+						}
+					}
+					String text2 = actVariable.getDescription();
+	//				System.out.println("text2 vor dem ersetzen: "+text2);
+					text2 = text2.replaceAll("'", "\\\\'");
+	//				System.out.println("text2 nach dem ersetzen: "+text2);
+					if (text2.equals("")) {text2 = "no description available";}
+					
+					// erzeugen der option im script
+					script.addOption (optionname, minoccur, maxoccur, definition, check, def, text1, text2);
 				}
-				String text2 = actVariable.getDescription();
-//				System.out.println("text2 vor dem ersetzen: "+text2);
-				text2 = text2.replaceAll("'", "\\\\'");
-//				System.out.println("text2 nach dem ersetzen: "+text2);
-				if (text2.equals("")) {text2 = "no description available";}
 				
-				// erzeugen der option im script
-				script.addOption (optionname, minoccur, maxoccur, definition, check, def, text1, text2);
-			}
-			
-			// und fuer alle Files
-			for(File actFile : actCommitOfRootStep.getFile())
-			{
-				// String name, int minoccur, int maxoccur, String definition, String check, String def, String text1, String text2)
-				String optionname = actFile.getKey();
-				int minoccur = actFile.getMinoccur();
-				int maxoccur =  actFile.getMaxoccur();
-				String definition = "string"; // filepfad ist ein string
-				String check = "";
-				
-				//integrieren des ersten tests 'matchPattern'
-				for(Test actTest : actFile.getTest())
+				// und fuer alle Files
+				for(File actFile : actCommitOfRootStep.getFile())
 				{
-					if(actTest.getName().matches("^matchPattern$"))
+					// String name, int minoccur, int maxoccur, String definition, String check, String def, String text1, String text2)
+					String optionname = actFile.getKey();
+					int minoccur = actFile.getMinoccur();
+					int maxoccur =  actFile.getMaxoccur();
+					String definition = "string"; // filepfad ist ein string
+					String check = "";
+					
+					//integrieren des ersten tests 'matchPattern'
+					for(Test actTest : actFile.getTest())
 					{
-						check = actTest.getParam().get(0).getContent();
+						if(actTest.getName().matches("^matchPattern$"))
+						{
+							check = actTest.getParam().get(0).getContent();
+						}
 					}
+					
+					// default, falls vorhanden
+					String def = "";
+	
+					// text1
+					String text1 = "=FILE";
+					
+					String text2 = actFile.getDescription();
+					text2 = text2.replaceAll("'", "\\\\'");
+					if (text2.equals("")) {text2 = "no description available";}
+					
+					// erzeugen der option im script
+					script.addOption (optionname, minoccur, maxoccur, definition, check, def, text1, text2);
 				}
-				
-				// default, falls vorhanden
-				String def = "";
-
-				// text1
-				String text1 = "=FILE";
-				
-				String text2 = actFile.getDescription();
-				text2 = text2.replaceAll("'", "\\\\'");
-				if (text2.equals("")) {text2 = "no description available";}
-				
-				// erzeugen der option im script
-				script.addOption (optionname, minoccur, maxoccur, definition, check, def, text1, text2);
 			}
-			
-			
-			
-
-			
 		}
 		
 		// fuer jeden step einen perl-codeblock erzeugen, der jeweils den kommandoaufruf des work-Elementes aufloest
