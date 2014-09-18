@@ -360,7 +360,7 @@ implements Serializable
 					this.setStatus("error");
 				}
 
-				log("debug", "list '"+list.getName()+"' finally contains "+list.getItem().size()+" item(s).");
+				log("debug", "list '"+list.getName()+"' contains "+list.getItem().size()+" item(s).");
 			}
 			
 			// wenn es ein variable ist
