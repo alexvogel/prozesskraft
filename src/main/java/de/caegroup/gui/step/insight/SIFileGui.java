@@ -19,6 +19,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -91,18 +93,42 @@ public class SIFileGui
 
 		System.out.println("Anzahl ist: "+step.getLog().size());
 	}
-	
+
 	IDoubleClickListener listener_double_click = new IDoubleClickListener()
 	{
 		public void doubleClick(DoubleClickEvent event)
 		{
-			TableViewer viewer = (TableViewer) event.getSource();
-			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
-			
-			File file = (File) thisselection.getFirstElement();
-			EditFile editor = new EditFile(This, step, file);
+			if(step.getParent().getStatus().equals("rolling"))
+			{
+				decline();
+			}
+			else
+			{
+				TableViewer viewer = (TableViewer) event.getSource();
+				IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
+				
+				File file = (File) thisselection.getFirstElement();
+				EditFile editor = new EditFile(This, step, file);
+			}
 		}
 	};
+
+	private void decline()
+	{
+		Shell messageShell = new Shell();
+		MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_CANCEL | SWT.CANCEL);
+//		confirmation.setText("please confirm");
+		String message = "";
+		message += "you have to stop instance before editing.\n";
+
+		confirmation.setMessage(message);
+
+		// open confirmation and wait for user selection
+		confirmation.open();
+//		System.out.println("returnCode is: "+returnCode);
+
+		messageShell.dispose();
+	}
 
 	public class MyContentProvider implements IStructuredContentProvider
 	{

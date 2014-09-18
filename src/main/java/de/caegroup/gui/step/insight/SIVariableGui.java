@@ -20,9 +20,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-
 
 import de.caegroup.gui.step.edit.EditVariable;
 import de.caegroup.gui.step.edit.ShowLog;
@@ -163,13 +164,37 @@ public class SIVariableGui
 	{
 		public void doubleClick(DoubleClickEvent event)
 		{
-			TableViewer viewer = (TableViewer) event.getSource();
-			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
-			
-			Variable variable = (Variable) thisselection.getFirstElement();
-			EditVariable editor = new EditVariable(This, step, variable);
+			if(step.getParent().getStatus().equals("rolling"))
+			{
+				decline();
+			}
+			else
+			{
+				TableViewer viewer = (TableViewer) event.getSource();
+				IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
+				
+				Variable variable = (Variable) thisselection.getFirstElement();
+				EditVariable editor = new EditVariable(This, step, variable);
+			}
 		}
 	};
+
+	private void decline()
+	{
+		Shell messageShell = new Shell();
+		MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_CANCEL | SWT.CANCEL);
+//		confirmation.setText("please confirm");
+		String message = "";
+		message += "you have to stop instance before editing.\n";
+
+		confirmation.setMessage(message);
+
+		// open confirmation and wait for user selection
+		confirmation.open();
+//		System.out.println("returnCode is: "+returnCode);
+
+		messageShell.dispose();
+	}
 
 	public class MyContentProvider implements IStructuredContentProvider
 	{

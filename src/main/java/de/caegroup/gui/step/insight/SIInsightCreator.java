@@ -165,6 +165,7 @@ public class SIInsightCreator
 		buttonReset.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonReset.setToolTipText("reset this step to initial state");
 		buttonReset.addSelectionListener(listener_button_reset);
+		if(step.getParent().getStatus().equals("rolling")) {buttonReset.setEnabled(false);}
 
 		Label labelDummy2 = new Label(compositeAction, SWT.NONE);
 
@@ -226,6 +227,10 @@ public class SIInsightCreator
 		buttonAddFile.setLayoutData(gd_btnAddFile);
 		buttonAddFile.setText("add");
 		buttonAddFile.addSelectionListener(listener_button_add_file);
+		if(step.getParent().getStatus().equals("rolling"))
+		{
+			buttonAddFile.setEnabled(false);
+		}
 
 	// ein tabItem fuer 'variables' erzeugen
 		CTabItem tabItem_variables = new CTabItem(tabFolder, SWT.NONE);
@@ -246,13 +251,17 @@ public class SIInsightCreator
 		new SIVariableGui(this, composite_tabItem_variables, step);
 
 		// erstellen eines buttons zum hinzufuegen von variables
-		Button buttonAdd = new Button(composite_tabItem_variables, SWT.NONE);
-		buttonAdd.setSelection(true);
+		Button buttonAddVariable = new Button(composite_tabItem_variables, SWT.NONE);
+		buttonAddVariable.setSelection(true);
 		GridData gd_btnNewButton = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		gd_btnNewButton.widthHint = 69;
-		buttonAdd.setLayoutData(gd_btnNewButton);
-		buttonAdd.setText("add");
-		buttonAdd.addSelectionListener(listener_button_add_variable);
+		buttonAddVariable.setLayoutData(gd_btnNewButton);
+		buttonAddVariable.setText("add");
+		buttonAddVariable.addSelectionListener(listener_button_add_variable);
+		if(step.getParent().getStatus().equals("rolling"))
+		{
+			buttonAddVariable.setEnabled(false);
+		}
 
 		// ein tabItem fuer das debug erzeugen
 		CTabItem tabItem_debug = new CTabItem(tabFolder, SWT.NONE);
