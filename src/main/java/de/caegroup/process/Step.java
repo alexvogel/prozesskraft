@@ -840,7 +840,7 @@ implements Serializable, Cloneable
 		{
 			this.log("info", "commit this initCommitDir [full path] (interpolieren von getInitCommitDirs()): "+actFullPath);
 		}
-		
+
 		for(java.io.File actInitCommitDir : this.getParent().getInitCommitDirs2())
 		{
 			if(actInitCommitDir.isDirectory())
