@@ -1582,9 +1582,8 @@ implements Serializable
 		ArrayList<String> newDirarray = new ArrayList<String>();
 		if ((this.initCommitDir != null) && (!(this.initCommitDir.equals(""))))
 		{
-			String[] dirarray = this.initCommitDir.split(":");
 			
-			for(String actualInitCommitDir : dirarray)
+			for(String actualInitCommitDir : this.initCommitDir.split(":"))
 			{
 				String newInitCommitDir = "";
 				if (!(actualInitCommitDir.matches("^/")))

@@ -834,7 +834,13 @@ implements Serializable, Cloneable
 		this.log("info", "special commit, because this step is root");
 
 		//ueber alle initCommitDirs verzeichnisse iterieren und alle dateien commiten
-		this.log("info", "commit all initCommitDirs: "+this.getParent().getInitCommitDir());
+		this.log("info", "commit all initCommitDirs (getInitCommitDir()): "+this.getParent().getInitCommitDir());
+		this.log("info", "commit all initCommitDirs (getInitCommitDirs().size()): "+this.getParent().getInitCommitDirs().size());
+		for(String actFullPath : this.getParent().getInitCommitDirs())
+		{
+			this.log("info", "commit this initCommitDir [full path] (interpolieren von getInitCommitDirs()): "+actFullPath);
+		}
+		
 		for(java.io.File actInitCommitDir : this.getParent().getInitCommitDirs2())
 		{
 			if(actInitCommitDir.isDirectory())
