@@ -1383,6 +1383,7 @@ implements Serializable, Cloneable
 	{
 		if((this.getStatusOverwrite() != null) && (!this.getStatusOverwrite().equals("")))
 		{
+			this.log("debug", "actual status (because of statusOverwrite) is: "+this.statusOverwrite);
 			return this.statusOverwrite;
 		}
 		
@@ -1400,6 +1401,7 @@ implements Serializable, Cloneable
 		if(statusAllInits.contains("error"))
 		{
 			status = "error";
+			this.log("debug", "actual status is: "+status);
 			return status;
 		}
 
@@ -1407,6 +1409,7 @@ implements Serializable, Cloneable
 		else if(  statusAllInits.contains("initializing")  )
 		{
 			status = "initializing";
+			this.log("debug", "actual status is: "+status);
 			return status;
 		}
 
@@ -1414,6 +1417,7 @@ implements Serializable, Cloneable
 		else if(  statusAllInits.contains("waiting") )
 		{
 			status = "waiting";
+			this.log("debug", "actual status is: "+status);
 			return status;
 		}
 		
@@ -1430,6 +1434,7 @@ implements Serializable, Cloneable
 			if(this.work.getStatus().equals("error"))
 			{
 				status = "error";
+				this.log("debug", "actual status is: "+status);
 				return status;
 			}
 	
@@ -1437,6 +1442,7 @@ implements Serializable, Cloneable
 			else if( this.work.getStatus().equals("working")  )
 			{
 				status = "working";
+				this.log("debug", "actual status is: "+status);
 				return status;
 			}
 
@@ -1444,6 +1450,7 @@ implements Serializable, Cloneable
 			else if(  this.work.getStatus().equals("waiting") && statusAllInits.isEmpty())
 			{
 				status = "waiting";
+				this.log("debug", "actual status is: "+status);
 				return status;
 			}
 
@@ -1466,6 +1473,7 @@ implements Serializable, Cloneable
 		if(statusAllCommits.contains("error"))
 		{
 			status = "error";
+			this.log("debug", "actual status is: "+status);
 			return status;
 		}
 
@@ -1473,6 +1481,7 @@ implements Serializable, Cloneable
 		else if(  statusAllCommits.contains("committing")  )
 		{
 			status = "committing";
+			this.log("debug", "actual status is: "+status);
 			return status;
 		}
 
@@ -1480,6 +1489,7 @@ implements Serializable, Cloneable
 		else if(  statusAllCommits.contains("waiting")  && statusAllInits.isEmpty()  &&  this.work == null)
 		{
 			status = "waiting";
+			this.log("debug", "actual status is: "+status);
 			return status;
 		}
 
@@ -1489,6 +1499,7 @@ implements Serializable, Cloneable
 			status = "finished";
 		}
 
+		this.log("debug", "actual status is: "+status);
 		return status;
 	}
 
