@@ -197,6 +197,7 @@ implements Serializable
 	public void setStatus(String status)
 	{
 		this.status = status;
+		log("info", "setting status to "+status);
 	}
 
 	/**
@@ -250,7 +251,7 @@ implements Serializable
 	{
 		// die Steps einsammeln, die im attribut 'fromstep' definiert sind
 		// wenn es ein multistep ist, koennen hier auch mehr als 1 zurueckgeliefert werden
-		// wenn kann multistep, so ist nur 1 fromstep in der liste
+		// wenn kein multistep, so ist nur 1 fromstep in der liste
 		ArrayList<Step> fromsteps = this.getParent().getParent().getSteps(this.getFromstep());
 
 		// ueber alle fromsteps iterieren und die gefordterte liste (mit dem namen des inits) erstellen (nur EINE insgesamt, nicht eine PRO fromstep)
