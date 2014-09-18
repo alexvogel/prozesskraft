@@ -122,6 +122,10 @@ public class PIInsightCreator
 		label_processName1.setText("process: "+this.process.getName());
 		label_processName1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
+		// processId
+		Label label_processId = new Label(compositeInfo, SWT.NONE);
+		label_processId.setText("id: "+this.process.getId());
+
 		// lastTouchByManager
 		Label label_lastTouch1 = new Label(compositeInfo, SWT.NONE);
 		label_lastTouch1.setText("last touch: "+this.process.getTouchAsString());
@@ -142,24 +146,16 @@ public class PIInsightCreator
 		gridLayout_Action.marginRight = 0;
 		compositeAction.setLayout(gridLayout_Action);
 
-		Button buttonFileBrowser = new Button(compositeAction, SWT.NONE);
-		buttonFileBrowser.setText("browse");
-		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		buttonFileBrowser.setToolTipText("open process directory with a filebrowser");
-		buttonFileBrowser.addSelectionListener(listener_button_browse);
-
-		Button buttonReset = new Button(compositeAction, SWT.NONE);
-		buttonReset.setText("reset");
-		buttonReset.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		buttonReset.setToolTipText("reset process to initial state");
-		buttonReset.addSelectionListener(listener_button_reset);
-
 		Button buttonClone = new Button(compositeAction, SWT.NONE);
 		buttonClone.setText("clone");
 		buttonClone.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonClone.setToolTipText("clone process");
 		buttonClone.addSelectionListener(listener_button_clone);
+		if(process.getStatus().equals("rolling")) {buttonClone.setEnabled(false);}
 
+		Label labelDummy1 = new Label(compositeAction, SWT.NONE);
+
+		Label labelDummy2 = new Label(compositeAction, SWT.NONE);
 
 		Label labelDummy3 = new Label(compositeAction, SWT.NONE);
 
@@ -172,6 +168,10 @@ public class PIInsightCreator
 		Label labelDummy7 = new Label(compositeAction, SWT.NONE);
 
 		Label labelDummy8 = new Label(compositeAction, SWT.NONE);
+
+		Label labelDummy9 = new Label(compositeAction, SWT.NONE);
+
+		Label labelDummy10 = new Label(compositeAction, SWT.NONE);
 
 //		// instanceFile
 //		Label label_instanceDirectory1 = new Label(fieldComposite, SWT.NONE);
