@@ -197,7 +197,14 @@ implements Serializable
 	public void setStatus(String status)
 	{
 		this.status = status;
-		log("info", "setting status to "+status);
+		if(status.equals("error"))
+		{
+			log("error", "setting status to "+status);
+		}
+		else
+		{
+			log("info", "setting status to "+status);
+		}
 	}
 
 	/**

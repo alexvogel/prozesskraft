@@ -1611,12 +1611,13 @@ implements Serializable
 	 */
 	public ArrayList<java.io.File> getInitCommitDirs2()
 	{
+		java.io.File dirOfXml = new java.io.File(new java.io.File(this.getInfilexml()).getParent());
 		ArrayList<java.io.File> initcommitdir = new ArrayList<java.io.File>();
 		for(String actualInitCommitDir : this.getInitCommitDirs())
 		{
-			initcommitdir.add(new java.io.File(actualInitCommitDir));
+			initcommitdir.add(new java.io.File(dirOfXml + "/" + actualInitCommitDir));
 		}
-		
+
 		return initcommitdir;
 	}
 

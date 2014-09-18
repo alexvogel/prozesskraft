@@ -831,18 +831,33 @@ implements Serializable, Cloneable
 	// es werden standardvariablen committet
 	public void rootCommit()
 	{
-		Commit rootStandardCommit = new Commit(this);
-		rootStandardCommit.setName("root-standard");
-		
 		this.log("info", "special commit, because this step is root");
 
-//		//ueber alle initCommitDirs verzeichnisse iterieren
-//		this.log("info", "commit all initCommitDirs");
-//		for(java.io.File actualCommitDir : this.getParent().getInitCommitDirs2())
-//		{
-//			rootStandardCommit.commitdir(actualCommitDir);
-//			rootStandardCommit.log("info", "committed dir "+actualCommitDir.getAbsolutePath());
-//		}
+		//ueber alle initCommitDirs verzeichnisse iterieren und alle dateien commiten
+		this.log("info", "commit all initCommitDirs");
+		for(java.io.File actInitCommitDir : this.getParent().getInitCommitDirs2())
+		{
+			if(actInitCommitDir.isDirectory())
+			{
+				log("info", "committing all files in directory: "+actInitCommitDir.getAbsolutePath());
+				
+				for(java.io.File actFile : actInitCommitDir.listFiles())
+				{
+					if(actFile.isDirectory())
+					{
+						log("info", "skipping because it is a directory "+actFile.getAbsolutePath());
+					}
+					else
+					{
+						File file = new File();
+						// als schluessel soll der verzeichnisnamen mit fuehrendem "_" verwendet werden
+						file.setKey("_"+actInitCommitDir.getName());
+						file.setRealposition(actFile.getAbsolutePath());
+						this.addFile(file);
+					}
+				}
+			}
+		}
 
 //		//ueber alle commitvarfiles iterieren
 //		this.log("info", "commit all initCommitVarfiles");
@@ -852,7 +867,7 @@ implements Serializable, Cloneable
 //			rootStandardCommit.log("info", "committed dir "+actCommitVarfile.getAbsolutePath());
 //		}
 
-		this.log("info", "commit all standard entries");
+		this.log("info", "commit standard entries");
 		// das stepdir als variable ablegen
 		Variable var = new Variable();
 		var.setKey("_dir");
@@ -1401,7 +1416,7 @@ implements Serializable, Cloneable
 		if(statusAllInits.contains("error"))
 		{
 			status = "error";
-			this.log("debug", "actual status is: "+status);
+//			this.log("debug", "actual status is: "+status);
 			return status;
 		}
 
@@ -1409,7 +1424,7 @@ implements Serializable, Cloneable
 		else if(  statusAllInits.contains("initializing")  )
 		{
 			status = "initializing";
-			this.log("debug", "actual status is: "+status);
+//			this.log("debug", "actual status is: "+status);
 			return status;
 		}
 
@@ -1417,7 +1432,7 @@ implements Serializable, Cloneable
 		else if(  statusAllInits.contains("waiting") )
 		{
 			status = "waiting";
-			this.log("debug", "actual status is: "+status);
+//			this.log("debug", "actual status is: "+status);
 			return status;
 		}
 		
@@ -1434,7 +1449,7 @@ implements Serializable, Cloneable
 			if(this.work.getStatus().equals("error"))
 			{
 				status = "error";
-				this.log("debug", "actual status is: "+status);
+//				this.log("debug", "actual status is: "+status);
 				return status;
 			}
 	
@@ -1442,7 +1457,7 @@ implements Serializable, Cloneable
 			else if( this.work.getStatus().equals("working")  )
 			{
 				status = "working";
-				this.log("debug", "actual status is: "+status);
+//				this.log("debug", "actual status is: "+status);
 				return status;
 			}
 
@@ -1450,7 +1465,7 @@ implements Serializable, Cloneable
 			else if(  this.work.getStatus().equals("waiting") && statusAllInits.isEmpty())
 			{
 				status = "waiting";
-				this.log("debug", "actual status is: "+status);
+//				this.log("debug", "actual status is: "+status);
 				return status;
 			}
 
@@ -1473,7 +1488,7 @@ implements Serializable, Cloneable
 		if(statusAllCommits.contains("error"))
 		{
 			status = "error";
-			this.log("debug", "actual status is: "+status);
+//			this.log("debug", "actual status is: "+status);
 			return status;
 		}
 
@@ -1481,7 +1496,7 @@ implements Serializable, Cloneable
 		else if(  statusAllCommits.contains("committing")  )
 		{
 			status = "committing";
-			this.log("debug", "actual status is: "+status);
+//			this.log("debug", "actual status is: "+status);
 			return status;
 		}
 
@@ -1489,7 +1504,7 @@ implements Serializable, Cloneable
 		else if(  statusAllCommits.contains("waiting")  && statusAllInits.isEmpty()  &&  this.work == null)
 		{
 			status = "waiting";
-			this.log("debug", "actual status is: "+status);
+//			this.log("debug", "actual status is: "+status);
 			return status;
 		}
 
@@ -1499,7 +1514,7 @@ implements Serializable, Cloneable
 			status = "finished";
 		}
 
-		this.log("debug", "actual status is: "+status);
+//		this.log("debug", "actual status is: "+status);
 		return status;
 	}
 
