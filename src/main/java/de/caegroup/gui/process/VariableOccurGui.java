@@ -21,6 +21,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -66,7 +67,14 @@ public class VariableOccurGui
 		composite = new Composite(this.parent, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
 		composite.setLayoutData(gd_composite);
-		composite.setLayout(new FormLayout());
+
+		// alternative mit griddata
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 4;
+		gridLayout.horizontalSpacing = 10;
+		composite.setLayout(gridLayout);
+		
+//		composite.setLayout(new FormLayout());
 
 		createControls();
 	}
@@ -82,14 +90,20 @@ public class VariableOccurGui
 //		font_5 = new Font(parent.getDisplay(), fD[0]);
 		
 		// erstellen eines Label fuer den 'key' der Variable
-		Label variableKey = new Label(composite, SWT.NONE);
+		Label variableKey = new Label(composite, SWT.RIGHT);
 		variableKey.setText(this.key);
 		variableKey.setToolTipText(this.key + ": " + this.variable.getDescription());
 
-		FormData fd_variableKey = new FormData();
-		fd_variableKey.top = new FormAttachment(0, 4);
-		fd_variableKey.right = new FormAttachment(0,100);
-		variableKey.setLayoutData(fd_variableKey);
+		// alternative mit griddata
+		GridData gd_variableKey = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_variableKey.widthHint = this.parent_variablegui.parent_commitgui.parent_commitcreator.maxBreiteDerSchluessel;
+		variableKey.setLayoutData(gd_variableKey);
+
+//		FormData fd_variableKey = new FormData();
+//		fd_variableKey.top = new FormAttachment(0, 4);
+//		fd_variableKey.right = new FormAttachment(0,this.parent_variablegui.parent_commitgui.parent_commitcreator.maxBreiteDerSchluessel);
+////		fd_variableKey.right = new FormAttachment(0,100);
+//		variableKey.setLayoutData(fd_variableKey);
 
 		if (buttonexist)
 		{
@@ -123,7 +137,7 @@ public class VariableOccurGui
 		{
 			combo = new Combo(composite, SWT.NONE | SWT.READ_ONLY);
 		}
-		
+
 		// databinding nur, falls auch tatsaechlich eine combo box erstellt wird
 		// und bevor programmatisch ein wert gesetzt wird
 //		DataBindingContext bindingContext = initDataBinding();
@@ -143,12 +157,19 @@ public class VariableOccurGui
 		// Default 3: Der Wert, der als beim letzten Mal gewählt wurde
 		
 		
-		FormData fd_combo_variable = new FormData();
-		fd_combo_variable.top = new FormAttachment(0, 0);
-		fd_combo_variable.left = new FormAttachment(0, 120);
-		fd_combo_variable.width = 220;
+		// mit griddata
+		GridData gd_comboVariable;
+		if(this.buttonexist) {gd_comboVariable = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);}
+		else {gd_comboVariable = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);}
+		
+		combo.setLayoutData(gd_comboVariable);
 
-		combo.setLayoutData(fd_combo_variable);
+//		FormData fd_combo_variable = new FormData();
+//		fd_combo_variable.top = new FormAttachment(0, 0);
+//		fd_combo_variable.left = new FormAttachment(0, (this.parent_variablegui.parent_commitgui.parent_commitcreator.maxBreiteDerSchluessel)+20);
+////		fd_combo_variable.left = new FormAttachment(0, 120);
+//		fd_combo_variable.width = 220;
+//		combo.setLayoutData(fd_combo_variable);
 		
 		composite.layout();
 		
@@ -162,13 +183,17 @@ public class VariableOccurGui
 	private void createButton()
 	{
 		button = new Button(composite, SWT.NONE);
-//		button_plus.setFont(font_5);
-		
-		FormData fd_button = new FormData();
-		fd_button.top = new FormAttachment(0, 0);
-		fd_button.left = new FormAttachment(0, 340);
-		fd_button.width = 25;
-		button.setLayoutData(fd_button);
+
+		// alternative mit griddata
+		GridData gd_button = new GridData(SWT.FILL, SWT.TOP, false, false, 2, 1);
+		button.setLayoutData(gd_button);
+
+//		FormData fd_button = new FormData();
+//		fd_button.top = new FormAttachment(0, 0);
+//		fd_button.left = new FormAttachment(0, (this.parent_variablegui.parent_commitgui.parent_commitcreator.maxBreiteDerSchluessel)+20+220);
+////		fd_button.left = new FormAttachment(0, 340);
+//		fd_button.width = 25;
+//		button.setLayoutData(fd_button);
 	}
 	
 	/**
@@ -180,7 +205,7 @@ public class VariableOccurGui
 		button.removeSelectionListener(listener_plus);
 		button.addSelectionListener(listener_minus);
 	}
-	
+
 	/**
 	 * sets existent button to 'plus'
 	 */
@@ -190,7 +215,7 @@ public class VariableOccurGui
 		button.removeSelectionListener(listener_minus);
 		button.addSelectionListener(listener_plus);
 	}
-	
+
 //	/**
 //	 * deletes the combobox
 //	 */
@@ -212,7 +237,7 @@ public class VariableOccurGui
 			
 		}
 	};
-	
+
 	/**
 	 * listener for Selections of button '-'
 	 */
@@ -234,7 +259,7 @@ public class VariableOccurGui
 		parent_variablegui.remove(this);
 		disposeAllWidgets();
 	}
-	
+
 	/**
 	 * remove this
 	 */

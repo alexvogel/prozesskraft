@@ -5,11 +5,9 @@ public class PrampViewModel extends ModelObject
 	public String[] domains = null;
 	public String[] processes = null;
 	public String[] versions = null;
-	public String[] hosts = null;
 	public String domain = null;
 	public String process = null;
 	public String version = null;
-	public String host = null;
 	public String baseDirectory = null;
 	
 	public PrampViewModel()
@@ -34,16 +32,6 @@ public class PrampViewModel extends ModelObject
 	public void setProcesses(String[] processes)
 	{
 		firePropertyChange("processes", this.processes, this.processes = processes);
-	}
-
-	public String[] getHosts()
-	{
-		return hosts;
-	}
-
-	public void setHosts(String[] hosts)
-	{
-		firePropertyChange("hosts", this.hosts, this.hosts = hosts);
 	}
 
 	public String[] getVersions()
@@ -84,16 +72,6 @@ public class PrampViewModel extends ModelObject
 	public void setVersion(String version)
 	{
 		firePropertyChange("version", this.version, this.version = version);
-	}
-
-	public String getHost()
-	{
-		return host;
-	}
-
-	public void setHost(String host)
-	{
-		firePropertyChange("host", this.host, this.host = host);
 	}
 
 	public String getBaseDirectory()

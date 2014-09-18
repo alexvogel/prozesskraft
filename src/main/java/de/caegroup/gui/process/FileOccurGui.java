@@ -21,6 +21,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -65,7 +66,15 @@ public class FileOccurGui
 		composite = new Composite(this.parent, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
 		composite.setLayoutData(gd_composite);
-		composite.setLayout(new FormLayout());
+
+		// alternative mit griddata
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 4;
+		gridLayout.horizontalSpacing = 10;
+		composite.setLayout(gridLayout);
+		
+//		composite.setLayout(new GridLayout(4, false));
+//		composite.setLayout(new FormLayout());
 
 		createControls();
 	}
@@ -79,16 +88,22 @@ public class FileOccurGui
 //		FontData[] fD = new Label(parent, 0).getFont().getFontData();
 //		fD[0].setHeight(5);
 //		font_5 = new Font(parent.getDisplay(), fD[0]);
-		
+
 		// erstellen eines Label fuer den 'key' der Variable
-		Label fileKey = new Label(composite, SWT.NONE);
+		Label fileKey = new Label(composite, SWT.RIGHT);
 		fileKey.setText(this.key);
 		fileKey.setToolTipText(this.key + ": " + this.file.getDescription());
 
-		FormData fd_fileKey = new FormData();
-		fd_fileKey.top = new FormAttachment(0, 4);
-		fd_fileKey.right = new FormAttachment(0,100);
-		fileKey.setLayoutData(fd_fileKey);
+		// alternative mit griddata
+		GridData gd_fileKey = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_fileKey.widthHint = this.parent_filegui.parent_commitgui.parent_commitcreator.maxBreiteDerSchluessel;
+		fileKey.setLayoutData(gd_fileKey);
+
+//		FormData fd_fileKey = new FormData();
+//		fd_fileKey.top = new FormAttachment(0, 4);
+//		fd_fileKey.right = new FormAttachment(0,this.parent_filegui.parent_commitgui.parent_commitcreator.maxBreiteDerSchluessel);
+////		fd_fileKey.right = new FormAttachment(0,100);
+//		fileKey.setLayoutData(fd_fileKey);
 
 		if (buttonexist)
 		{
@@ -121,20 +136,29 @@ public class FileOccurGui
 		fileButton.setText("...");
 		fileButton.addSelectionListener(listener_file_button);
 
-		// Default 3: Der Wert, der beim letzten Mal gewählt wurde
-		
-		FormData fd_text_file = new FormData();
-		fd_text_file.top = new FormAttachment(0, 0);
-		fd_text_file.left = new FormAttachment(0, 120);
-		fd_text_file.width = 190;
+		// alternative mit griddata
+		GridData gd_textFile = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+		text.setLayoutData(gd_textFile);
 		textexist = true;
-		text.setLayoutData(fd_text_file);
+
+//		FormData fd_text_file = new FormData();
+//		fd_text_file.top = new FormAttachment(0, 0);
+//		fd_text_file.left = new FormAttachment(0, this.parent_filegui.parent_commitgui.parent_commitcreator.maxBreiteDerSchluessel+20);
+////		fd_text_file.left = new FormAttachment(0, 120);
+//		fd_text_file.width = 190;
+//		textexist = true;
+//		text.setLayoutData(fd_text_file);
 		
-		FormData fd_file_button = new FormData();
-		fd_file_button.top = new FormAttachment(0, 0);
-		fd_file_button.left = new FormAttachment(0, 320);
-		fd_file_button.width = 20;
-		fileButton.setLayoutData(fd_file_button);
+		// alternative mit griddata
+		GridData gd_fileButton = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
+		fileButton.setLayoutData(gd_fileButton);
+
+//		FormData fd_file_button = new FormData();
+//		fd_file_button.top = new FormAttachment(0, 0);
+//		fd_file_button.left = new FormAttachment(0, this.parent_filegui.parent_commitgui.parent_commitcreator.maxBreiteDerSchluessel+20+190+10);
+////		fd_file_button.left = new FormAttachment(0, 320);
+//		fd_file_button.width = 20;
+//		fileButton.setLayoutData(fd_file_button);
 		
 		composite.layout();
 //		DataBindingContext bindingContext = initDataBinding();
@@ -149,11 +173,17 @@ public class FileOccurGui
 		button = new Button(composite, SWT.NONE);
 //		button_plus.setFont(font_5);
 		
-		FormData fd_button = new FormData();
-		fd_button.top = new FormAttachment(0, 0);
-		fd_button.left = new FormAttachment(0, 340);
-		fd_button.width = 25;
-		button.setLayoutData(fd_button);
+		// alternative mit griddata
+		GridData gd_button = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
+		button.setLayoutData(gd_button);
+
+//		FormData fd_button = new FormData();
+//		fd_button.top = new FormAttachment(0, 0);
+//		fd_button.left = new FormAttachment(text);
+////		fd_button.left = new FormAttachment(0, this.parent_filegui.parent_commitgui.parent_commitcreator.maxBreiteDerSchluessel+20+190+30);
+////		fd_button.left = new FormAttachment(0, 340);
+//		fd_button.width = 25;
+//		button.setLayoutData(fd_button);
 	}
 	
 	/**

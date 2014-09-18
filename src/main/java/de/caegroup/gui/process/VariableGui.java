@@ -36,7 +36,7 @@ public class VariableGui
 		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
 		composite.setLayoutData(gd_composite);
 		composite.setLayout(new GridLayout(1, false));
-
+		
 		addFirst();
 	}
 

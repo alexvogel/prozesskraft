@@ -10,13 +10,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.NotDirectoryException;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -86,7 +83,7 @@ public class PrampPartUi1 extends ModelObject
 	private Combo combo_domains = null;
 	private Combo combo_processes = null;
 	private Combo combo_versions = null;
-	private Combo combo_hosts = null;
+//	private Combo combo_hosts = null;
 	private String domainMainDir = null;
 	private String processDefinitionPath = null;
 	private Process process = null;
@@ -133,7 +130,6 @@ public class PrampPartUi1 extends ModelObject
 		loadIni();
 		checkLicense();
 		getInstalledDomainNames();
-		getHosts();
 //		setRandomRootdirectory();
 		createControls(composite);
 	}
@@ -149,7 +145,6 @@ public class PrampPartUi1 extends ModelObject
 		checkLicense();
 		setUserIni();
 		getInstalledDomainNames();
-		getHosts();
 //		setRandomRootdirectory();
 		createControls(composite);
 	}
@@ -235,29 +230,11 @@ public class PrampPartUi1 extends ModelObject
 		combo_versions.addModifyListener(listener_versionselection);
 		
 		Group grpVisual = new Group(composite_11, SWT.NONE);
-		grpVisual.setText("location");
+		grpVisual.setText("base directory");
 		GridData gd_grpVisual = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
 		gd_grpVisual.widthHint = 139;
 		grpVisual.setLayoutData(gd_grpVisual);
 		grpVisual.setLayout(new GridLayout(4, false));
-		
-		Label lblNewLabel_2 = new Label(grpVisual, SWT.NONE);
-		lblNewLabel_2.setToolTipText("host to run instance");
-		lblNewLabel_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
-		lblNewLabel_2.setText("host");
-		new Label(grpVisual, SWT.NONE);
-		
-		combo_hosts = new Combo(grpVisual, SWT.NONE);
-		GridData gd_combo_hosts = new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1);
-		gd_combo_hosts.widthHint = 127;
-		combo_hosts.setLayoutData(gd_combo_hosts);
-		new Label(grpVisual, SWT.NONE);
-		
-		Label lblBasedirectory = new Label(grpVisual, SWT.NONE);
-		lblBasedirectory.setToolTipText("directory for instance data");
-		lblBasedirectory.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1));
-		lblBasedirectory.setText("base directory");
-		new Label(grpVisual, SWT.NONE);
 		
 		text_basedirectory = new Text(grpVisual, SWT.BORDER);
 		text_basedirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -348,16 +325,12 @@ public class PrampPartUi1 extends ModelObject
 		initDataBindingsProcesses();
 		// Datenbindung Versions-Combo
 		initDataBindingsVersions();
-		// Datenbindung Hosts-Combo
-		initDataBindingsHosts();
 		// Datenbindung Domains-Combo-Selection
 		initDataBindingsProcess();
 		// Datenbindung Processes-Combo-Selection
 		initDataBindingsProcess();
 		// Datenbindung Versions-Combo-Selection
 		initDataBindingsVersion();
-		// Datenbindung Hosts-Combo-Selection
-		initDataBindingsHost();
 		// Datenbindung instancedirectory textfeld
 		initDataBindingsInstancedirectory();
 
@@ -366,9 +339,6 @@ public class PrampPartUi1 extends ModelObject
 		// auswahl der Processes-Combo auf das erste Element setzen
 		combo_processes.select(0);
 		new Label(grpFilter, SWT.NONE);
-
-		// auswahl der Hosts-Combo auf das erste Element setzen
-		combo_hosts.select(0);
 
 		// setzen der random instancedirectory
 //		setRandomInstancedirectory();
@@ -647,34 +617,6 @@ public class PrampPartUi1 extends ModelObject
 	}
 	
 	/**
-	 * binds array of versions to combo-box 'hosts'
-	 */
-	protected DataBindingContext initDataBindingsHosts()
-	{
-		DataBindingContext bindingContextHosts = new DataBindingContext();
-		//
-		IObservableList targetObservableHosts = WidgetProperties.items().observe(combo_hosts);
-		IObservableList modelObservableHosts = BeanProperties.list("hosts").observe(einstellungen);
-		bindingContextHosts.bindList(targetObservableHosts, modelObservableHosts, null, null);
-		//
-		return bindingContextHosts;
-	}
-	
-	/**
-	 * binds selection of combo-box 'host' to String host
-	 */
-	protected DataBindingContext initDataBindingsHost()
-	{
-		DataBindingContext bindingContextHost = new DataBindingContext();
-		//
-		IObservableValue targetObservableHost = WidgetProperties.text().observe(combo_hosts);
-		IObservableValue modelObservableHost = BeanProperties.value("host").observe(einstellungen);
-		bindingContextHost.bindValue(targetObservableHost, modelObservableHost, null, null);
-		//
-		return bindingContextHost;
-	}
-	
-	/**
 	 * binds content of textfield 'instancedirectory' to String instancedirectory
 	 */
 	protected DataBindingContext initDataBindingsInstancedirectory()
@@ -893,37 +835,6 @@ public class PrampPartUi1 extends ModelObject
 //		combo_versions.select(versions.size()-1);
 //		
 		return versions;
-	}
-	
-	/**
-	 * determines all available hosts which are known by name
-	 * @return a list of all available hosts
-	 */
-	public ArrayList<String> getHosts()
-	{
-		ArrayList<String> hosts = new ArrayList<String>();
-		
-		// feststellen des lokalen hosts
-		try
-		{
-			hosts.add(InetAddress.getLocalHost().getHostName());
-		} catch (UnknownHostException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// sortieren
-		Collections.sort(hosts);
-		
-		// zentrale daten setzen
-		einstellungen.setHosts((String[]) hosts.toArray(new String[hosts.size()]));
-		
-//		// in combo_box einfuegen
-//		combo_versions.setItems((String[]) versions.toArray(new String[versions.size()]));
-//		combo_versions.select(versions.size()-1);
-//		
-		return hosts;
 	}
 	
 	/**
@@ -1779,7 +1690,7 @@ public class PrampPartUi1 extends ModelObject
 					}
 					
 					shell.setLayout(new FillLayout());
-					shell.setSize(620, 800);
+//					shell.setSize(620, 800);
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
 					GridLayout gl_composite = new GridLayout(2, false);
 					gl_composite.marginWidth = 0;

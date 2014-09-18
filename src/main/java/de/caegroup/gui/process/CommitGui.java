@@ -34,10 +34,11 @@ public class CommitGui
 		this.commit = commit;
 
 		composite = new Composite(this.parent, SWT.NONE);
-		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
+//		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
+		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
 		composite.setLayoutData(gd_composite);
 		composite.setLayout(new GridLayout(1, false));
-		
+
 		createControls(composite);
 	}
 	
