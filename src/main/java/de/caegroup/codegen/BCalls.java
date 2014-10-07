@@ -43,7 +43,7 @@ implements Serializable, Cloneable
 		// default
 		else
 		{
-			content.add("if (getOption(\"h\"))");
+			content.add("if (getOption(\"help\"))");
 			content.add("{");
 			content.add("\tprint STDERR $helptext;");
 			content.add("\texit(0);");
