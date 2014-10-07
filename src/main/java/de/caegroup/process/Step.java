@@ -1824,6 +1824,31 @@ implements Serializable, Cloneable
 		this.defaultlist = defaultlist;
 	}
 
+	public float getProgress()
+	{
+		String status = this.getStatus();
+		if(status.equals("waiting"))
+		{
+			return 0f;
+		}
+		else if((status.equals("initializing")) || (status.equals("initialized")) || (status.equals("fanning")) || (status.equals("fanned")))
+		{
+			return 0.3f;
+		}
+		else if((!status.equals("working")) || (!status.equals("worked")))
+		{
+			return 0.6f;
+		}
+		else if(status.equals("finished"))
+		{
+			return 1f;
+		}
+		else if(status.equals("error"))
+		{
+			return 0f;
+		}
+		return 1.1f;
+	}
 	/*----------------------------
 	  methods consistent
 	----------------------------*/
