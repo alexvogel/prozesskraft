@@ -102,7 +102,7 @@ implements Serializable, Cloneable
 			content.add("");
 			content.add("if ($error_anzahl + $error_patternchecks)");
 			content.add("{");
-			content.add("	logit('fatal', $error_anzahl + $error_patternchecks .' error(s) found in call. call -h for help. exit.');");
+			content.add("	logit('fatal', $error_anzahl + $error_patternchecks .' error(s) found in call. call --help for help. exit.');");
 			content.add("	exit(1);");
 			content.add("}");
 		}
