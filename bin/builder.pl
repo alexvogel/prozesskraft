@@ -666,12 +666,14 @@ foreach my $refh_stackline (@CONFIG)
 					print "skipping directory: ".$File::Find::name."\n";
 					next;
 				}
+				#binaere files verwerfen
 				if (!( -T $File::Find::name ))
 				{
 					print "skipping binary file: ".$File::Find::name."\n";
 					next;
 				}
-				if ($File::Find::name =~ m/\.tt/)
+				# tt-files verwerfen (diese gehoeren der applikation...) und pdf- und pptx auch
+				if ( ($File::Find::name =~ m/\.tt/) || ($File::Find::name =~ m/\.pdf$/)  || ($File::Find::name =~ m/\.pptx$/) )
 				{
 					print "skipping template toolkit file: ".$File::Find::name."\n";
 					next;
