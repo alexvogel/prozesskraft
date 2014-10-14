@@ -64,7 +64,7 @@ public class Batch {
 			// called before a directory visit
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException
 			{
-				System.out.println("before visit directory: "+dir.getFileName()+" | "+dir.toAbsolutePath());
+				System.out.println("before visit directory: "+dir.getFileName()+" | "+dir.getParent());
 
 				Entity entity = new Entity();
 				entity.setId(runningId++);
@@ -82,7 +82,7 @@ public class Batch {
 			// called for each file visited. the basic file attributes of the file are also available
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
 			{
-				System.out.println("visit file: "+file.getFileName()+" | "+file.toAbsolutePath());
+				System.out.println("visit file: "+file.getFileName()+" | "+file.getParent());
 				
 				Entity entity = new Entity();
 				entity.setId(runningId++);
