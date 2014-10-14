@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.caegroup.process.Perlcode"
+MAINCLASS="de.prozesskraft.ptest.Fingerprint"
 BASEDIR=$(dirname $0)
 
 # wenn eine eigene javainstallation vorhanden ist, soll diese verwendet werden
