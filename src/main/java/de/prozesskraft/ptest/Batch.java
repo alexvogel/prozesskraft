@@ -6,6 +6,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 
 import javax.xml.XMLConstants;
@@ -24,9 +30,52 @@ public class Batch {
 	private ArrayList<Entity> batch = new ArrayList<Entity>();
 	private String infilexml = null;
 	private String outfilexml = null;
-
+	private String basedir = null;
+	
 	public Batch()
 	{
+		
+	}
+
+	public void genFingerprint() throws NullPointerException, IOException
+	{
+		if(basedir == null)
+		{
+			throw new NullPointerException();
+		}
+		
+		// den directory-baum durchgehen und fuer jeden eintrag ein entity erstellen
+		Files.walkFileTree(FileSystems.getDefault().getPath(this.getBasedir()), new FileVisitor<Path>()
+		{
+			// called after a directory visit is complete
+			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
+			{
+				System.out.println("after visit directory: "+dir.getFileName());
+				return FileVisitResult.CONTINUE;
+			}
+			
+			// called before a directory visit
+			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException
+			{
+				System.out.println("before visit directory: "+dir.getFileName());
+				return FileVisitResult.CONTINUE;
+			}
+			
+			// called for each file visited. the basic file attributes of the file are also available
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
+			{
+				System.out.println("visit file: "+file.getFileName());
+				return FileVisitResult.CONTINUE;
+			}
+			
+			// called for each file if the visit failed
+			public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException
+			{
+				System.out.println("visit file FAILED: "+file.getFileName());
+				return FileVisitResult.CONTINUE;
+			}
+
+		});
 		
 	}
 
@@ -203,6 +252,20 @@ public class Batch {
 	 */
 	public void setOutfilexml(String outfilexml) {
 		this.outfilexml = outfilexml;
+	}
+
+	/**
+	 * @return the basedir
+	 */
+	public String getBasedir() {
+		return basedir;
+	}
+
+	/**
+	 * @param basedir the basedir to set
+	 */
+	public void setBasedir(String basedir) {
+		this.basedir = basedir;
 	}
 
 	
