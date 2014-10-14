@@ -10,6 +10,7 @@ public class Entity {
 	private int maxoccur = 99;
 	private String path = null;
 	private Size size = null;
+	private Integer parent = null;
 	
 	public Entity()
 	{
@@ -106,6 +107,20 @@ public class Entity {
 	 */
 	public void setSize(Size size) {
 		this.size = size;
+	}
+
+	/**
+	 * @return the parent
+	 */
+	public Integer getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(Integer parent) {
+		this.parent = parent;
 	}
 	
 }

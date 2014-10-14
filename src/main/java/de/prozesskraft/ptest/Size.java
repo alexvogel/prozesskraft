@@ -4,7 +4,7 @@ public class Size {
 
 	private float tolerance = 0f;
 	private String unit = "MB";
-	private float content = 0f;
+	private Long content = 0L;
 	
 	public Size()
 	{
@@ -42,14 +42,14 @@ public class Size {
 	/**
 	 * @return the content
 	 */
-	public float getContent() {
+	public Long getContent() {
 		return content;
 	}
 
 	/**
 	 * @param content the content to set
 	 */
-	public void setContent(float content) {
+	public void setContent(Long content) {
 		this.content = content;
 	}
 	

@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -32,6 +34,11 @@ public class Batch {
 	private String outfilexml = null;
 	private String basedir = null;
 	
+	private int runningId = 0;
+	
+	private Map<String,Integer> directory = new HashMap<String,Integer>();
+	private Integer actualDirId = null;
+
 	public Batch()
 	{
 		
@@ -53,21 +60,51 @@ public class Batch {
 				System.out.println("after visit directory: "+dir.getFileName());
 				return FileVisitResult.CONTINUE;
 			}
-			
+
 			// called before a directory visit
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException
 			{
-				System.out.println("before visit directory: "+dir.getFileName());
+				System.out.println("before visit directory: "+dir.getFileName()+" | "+dir.toAbsolutePath());
+
+				Entity entity = new Entity();
+				entity.setId(runningId++);
+				directory.put(dir.toAbsolutePath() + "", runningId);
+
+				entity.setPath(dir.toAbsolutePath() + "");
+				entity.setMinoccur(1);
+				entity.setMaxoccur(1);
+
+				addEntity(entity);
+
 				return FileVisitResult.CONTINUE;
 			}
-			
+
 			// called for each file visited. the basic file attributes of the file are also available
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
 			{
-				System.out.println("visit file: "+file.getFileName());
+				System.out.println("visit file: "+file.getFileName()+" | "+file.toAbsolutePath());
+				
+				Entity entity = new Entity();
+				entity.setId(runningId++);
+				if(directory.containsKey(file.toAbsolutePath()+""))
+				{
+					entity.setParent(directory.get(file.toAbsolutePath()+""));
+				}
+				entity.setPath(file.toAbsolutePath()+"");
+				entity.setMinoccur(1);
+				entity.setMaxoccur(1);
+
+				Size size = new Size();
+				size.setUnit("B");
+				size.setTolerance(0);
+				size.setContent(attrs.size());
+				
+				entity.setSize(size);
+				addEntity(entity);
+
 				return FileVisitResult.CONTINUE;
 			}
-			
+
 			// called for each file if the visit failed
 			public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException
 			{
