@@ -64,13 +64,20 @@ public class Batch {
 			// called before a directory visit
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException
 			{
-				System.out.println("before visit directory: "+dir.getFileName()+" | "+dir.getParent());
+				if(dir.getFileName().equals("."))
+				{
+					return FileVisitResult.CONTINUE;
+				}
+				
+				String pathString = dir.getParent() + "/"+dir.getFileName();
+				
+				System.out.println("before visit directory: "+pathString);
 
 				Entity entity = new Entity();
 				entity.setId(runningId++);
-				directory.put(dir.toAbsolutePath() + "", runningId);
+				directory.put(pathString, runningId);
 
-				entity.setPath(dir.toAbsolutePath() + "");
+				entity.setPath(pathString);
 				entity.setMinoccur(1);
 				entity.setMaxoccur(1);
 
@@ -82,15 +89,17 @@ public class Batch {
 			// called for each file visited. the basic file attributes of the file are also available
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
 			{
-				System.out.println("visit file: "+file.getFileName()+" | "+file.getParent());
+				String pathString = file.getParent() + "/"+file.getFileName();
+
+				System.out.println("visit file: "+pathString);
 				
 				Entity entity = new Entity();
 				entity.setId(runningId++);
-				if(directory.containsKey(file.toAbsolutePath()+""))
+				if(directory.containsKey(file.getParent()))
 				{
-					entity.setParent(directory.get(file.toAbsolutePath()+""));
+					entity.setParent(directory.get(file.getParent()));
 				}
-				entity.setPath(file.toAbsolutePath()+"");
+				entity.setPath(pathString);
 				entity.setMinoccur(1);
 				entity.setMaxoccur(1);
 
