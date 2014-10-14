@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="root">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="batch"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="batch">
+    <xs:complexType>
+    	<xs:sequence>
+    		<xs:element maxOccurs="unbounded" ref="entity" />
+    	</xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="entity">
+    <xs:complexType>
+    	<xs:sequence>
+    		<xs:element maxOccurs="1" ref="path" minOccurs="1" />
+    		<xs:element ref="size" minOccurs="0" maxOccurs="1"/>
+    	</xs:sequence>
+    	<xs:attribute name="id" use="required" type="xs:int"></xs:attribute>
+    	<xs:attribute name="type" type="xs:string" use="required"></xs:attribute>
+    	<xs:attribute name="minoccur" type="xs:int" use="required"></xs:attribute>
+    	<xs:attribute name="maxoccur" type="xs:int" use="required"></xs:attribute>
+    	<xs:attribute name="parent" type="xs:int" use="optional"></xs:attribute>
+    	<xs:attribute name="extension" type="xs:string" use="optional"></xs:attribute>
+    	<xs:attribute name="md5sum" type="xs:string" use="optional"></xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="path" type="xs:string" />
+   <xs:element name="size">
+    <xs:complexType>
+    	<xs:attribute name="tolerance" use="required" type="xs:float"></xs:attribute>
+    	<xs:attribute name="unit" type="xs:string" use="required"></xs:attribute>
+    </xs:complexType>
+   </xs:element>
+
+
+
+
+
+
+
+
+
+
+
+
+ </xs:schema>
