@@ -2,17 +2,17 @@ package de.prozesskraft.ptest;
 
 import java.util.Random;
 
-public class Entity {
+public class File {
 
 	private Integer id = null;
-	private String type = null;
 	private int minoccur = 0;
 	private int maxoccur = 99;
 	private String path = null;
-	private Size size = null;
-	private Integer parent = null;
+	private String size = null;
+	private Float sizetolerance = null;
+	private String extension = null;
 
-	public Entity()
+	public File()
 	{
 		Random generator = new Random();
 		generator.setSeed(System.currentTimeMillis());
@@ -26,8 +26,7 @@ public class Entity {
 	{
 		String entityString = "";
 		
-		entityString += "id="+this.getId()+", type: "+this.getType()+", minoccur: "+this.getMinoccur()+", maxoccur: "+this.getMaxoccur()+", path: "+this.getPath()+", parent: "+this.getParent();
-		if(this.size != null){entityString += ", "+this.size.toString();}
+		entityString += "id="+this.getId()+", minoccur: "+this.getMinoccur()+", maxoccur: "+this.getMaxoccur()+", path: "+this.getPath()+", extension: "+this.getExtension()+", size: "+this.getSize()+", sizetolerance: "+this.getSizetolerance();
 		
 		return entityString;
 	}
@@ -44,20 +43,6 @@ public class Entity {
 	 */
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	/**
@@ -105,29 +90,43 @@ public class Entity {
 	/**
 	 * @return the size
 	 */
-	public Size getSize() {
+	public String getSize() {
 		return size;
 	}
 
 	/**
 	 * @param size the size to set
 	 */
-	public void setSize(Size size) {
+	public void setSize(String size) {
 		this.size = size;
 	}
 
 	/**
-	 * @return the parent
+	 * @return the sizetolerance
 	 */
-	public Integer getParent() {
-		return parent;
+	public Float getSizetolerance() {
+		return sizetolerance;
 	}
 
 	/**
-	 * @param parent the parent to set
+	 * @param sizetolerance the sizetolerance to set
 	 */
-	public void setParent(Integer parent) {
-		this.parent = parent;
+	public void setSizetolerance(Float sizetolerance) {
+		this.sizetolerance = sizetolerance;
 	}
-	
+
+	/**
+	 * @return the extension
+	 */
+	public String getExtension() {
+		return extension;
+	}
+
+	/**
+	 * @param extension the extension to set
+	 */
+	public void setExtension(String extension) {
+		this.extension = extension;
+	}
+
 }
