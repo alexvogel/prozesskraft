@@ -145,7 +145,7 @@ public class Dir {
 			throw new NullPointerException();
 		}
 
-		JAXBContext context = JAXBContext.newInstance(de.prozesskraft.jaxb.ptest.Batch.class);
+		JAXBContext context = JAXBContext.newInstance(de.prozesskraft.jaxb.ptest.Dir.class);
 		Unmarshaller um = context.createUnmarshaller();
 		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		Schema schema;
@@ -192,7 +192,7 @@ public class Dir {
 		// das aktuelle xml-file in die jaxb-klassen einlesen
 		try
 		{
-			de.prozesskraft.jaxb.ptest.Batch xptest = (de.prozesskraft.jaxb.ptest.Batch) um.unmarshal(new java.io.File(this.getInfilexml()));
+			de.prozesskraft.jaxb.ptest.Dir xptest = (de.prozesskraft.jaxb.ptest.Dir) um.unmarshal(new java.io.File(this.getInfilexml()));
 //			System.out.println("xprocess variable1 free = "+xprocess.getStep().get(0).getCommit().get(0).getVariable().get(0).isFree());
 //			BeanMappingBuilder builder = new BeanMappingBuilder()
 //			{
@@ -244,11 +244,11 @@ public class Dir {
 		JAXBContext jaxbContext;
 		try
 		{
-			jaxbContext = JAXBContext.newInstance(de.prozesskraft.jaxb.ptest.Batch.class);
+			jaxbContext = JAXBContext.newInstance(de.prozesskraft.jaxb.ptest.Dir.class);
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		
 			// die daten aus this in das jaxb objekt mappen
-			de.prozesskraft.jaxb.ptest.Batch xptest = new de.prozesskraft.jaxb.ptest.Batch();
+			de.prozesskraft.jaxb.ptest.Dir xptest = new de.prozesskraft.jaxb.ptest.Dir();
 			DozerBeanMapper mapper = new DozerBeanMapper();
 //			mapper.map(xprocess, this);
 			mapper.map(this, xptest);
