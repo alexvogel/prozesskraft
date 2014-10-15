@@ -11,6 +11,15 @@ public class Size {
 		
 	}
 
+	public String toString()
+	{
+		String sizeString = "";
+
+		sizeString += "size: "+this.getContent()+", unit: "+this.getUnit()+", tolerance: "+this.getTolerance();
+		
+		return sizeString;
+	}
+	
 	/**
 	 * @return the tolerance
 	 */

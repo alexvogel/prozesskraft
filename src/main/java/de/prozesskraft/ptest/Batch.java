@@ -57,32 +57,46 @@ public class Batch {
 			// called after a directory visit is complete
 			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
 			{
-				System.out.println("after visit directory: "+dir.getFileName());
+				String pathString = dir.getParent() + "/"+dir.getFileName();
+				System.out.println("after visit directory: "+pathString);
 				return FileVisitResult.CONTINUE;
 			}
 
 			// called before a directory visit
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException
 			{
-				if(dir.getFileName().equals("."))
-				{
-					return FileVisitResult.CONTINUE;
-				}
+//				// wenn der parent == null, handelt es sich um "." Das soll ignoriert werden
+//				if(dir.getParent() == null)
+//				{
+//					return FileVisitResult.CONTINUE;
+//				}
 				
 				String pathString = dir.getParent() + "/"+dir.getFileName();
-				
 				System.out.println("before visit directory: "+pathString);
 
+				// entity erstellen
 				Entity entity = new Entity();
 				entity.setId(runningId++);
+
+				// dirPath=Id festhalten fuer spaetere entities
 				directory.put(pathString, runningId);
 
+				// parent feststellen, falls einer existiert
+				entity.setType("dir");
 				entity.setPath(pathString);
 				entity.setMinoccur(1);
 				entity.setMaxoccur(1);
 
+				// parent feststellen, falls einer existiert und das feld setzen
+				if(directory.containsKey(dir.getParent()))
+				{
+					entity.setParent(directory.get(dir.getParent()));
+				}
+				
 				addEntity(entity);
 
+				System.out.println(entity.toString());
+				
 				return FileVisitResult.CONTINUE;
 			}
 
@@ -90,15 +104,16 @@ public class Batch {
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
 			{
 				String pathString = file.getParent() + "/"+file.getFileName();
-
 				System.out.println("visit file: "+pathString);
 				
 				Entity entity = new Entity();
 				entity.setId(runningId++);
+
 				if(directory.containsKey(file.getParent()))
 				{
 					entity.setParent(directory.get(file.getParent()));
 				}
+				entity.setType("file");
 				entity.setPath(pathString);
 				entity.setMinoccur(1);
 				entity.setMaxoccur(1);
@@ -110,6 +125,8 @@ public class Batch {
 				
 				entity.setSize(size);
 				addEntity(entity);
+
+				System.out.println(entity.toString());
 
 				return FileVisitResult.CONTINUE;
 			}

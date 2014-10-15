@@ -11,20 +11,27 @@ public class Entity {
 	private String path = null;
 	private Size size = null;
 	private Integer parent = null;
-	
+
 	public Entity()
 	{
 		Random generator = new Random();
 		generator.setSeed(System.currentTimeMillis());
 		id = generator.nextInt(100000000);
 		
-		type = "file";
-		
 		minoccur = 0;
 		maxoccur = 99;
-		
 	}
 
+	public String toString()
+	{
+		String entityString = "";
+		
+		entityString += "id="+this.getId()+", type: "+this.getType()+", minoccur: "+this.getMinoccur()+", maxoccur: "+this.getMaxoccur()+", path: "+this.getPath()+", parent: "+this.getParent();
+		if(this.size != null){entityString += ", "+this.size.toString();}
+		
+		return entityString;
+	}
+	
 	/**
 	 * @return the id
 	 */
