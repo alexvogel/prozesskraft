@@ -11,6 +11,7 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Random;
@@ -23,6 +24,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.commons.io.FilenameUtils;
 import org.dozer.DozerBeanMapper;
 import org.xml.sax.SAXException;
 
@@ -38,38 +40,58 @@ public class Dir {
 
 	private String infilexml = null;
 	private String outfilexml = null;
-	private String basedir = null;
-	
+	private Path basepath = null;
+
+	private ArrayList<Dir> match = new ArrayList<Dir>();
+
 	private int runningId = 0;
+
+	public Dir thisObj = null;
 
 	public Dir()
 	{
 		Random generator = new Random();
 		generator.setSeed(System.currentTimeMillis());
 		id = generator.nextInt(100000000);
-		
+
 		minoccur = 0;
 		maxoccur = 99;
+
+		this.thisObj = this;
 	}
 
 	public String toString()
 	{
 		String entityString = "";
-		
+
 		entityString += "id="+this.getId()+", minoccur: "+this.getMinoccur()+", maxoccur: "+this.getMaxoccur()+", path: "+this.getPath();
-		
+
 		return entityString;
 	}
 
+	/**
+	 * every dir and file has to fit the given template
+	 * @return
+	 */
+	public boolean fitsTemplate(Dir templateDir)
+	{
+		boolean fit = false;
+		
+		
+		
+		
+		return fit;
+	}
+	
 	public void genFingerprint() throws NullPointerException, IOException
 	{
-		if(basedir == null)
+		if(basepath == null)
 		{
 			throw new NullPointerException();
 		}
-		
+
 		// den directory-baum durchgehen und fuer jeden eintrag ein entity erstellen
-		Files.walkFileTree(FileSystems.getDefault().getPath(this.getBasedir()), new FileVisitor<Path>()
+		Files.walkFileTree(this.getBasepath(), new FileVisitor<Path>()
 		{
 			// called after a directory visit is complete
 			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
@@ -82,24 +104,33 @@ public class Dir {
 			// called before a directory visit
 			public FileVisitResult preVisitDirectory(Path walkingDir, BasicFileAttributes attrs) throws IOException
 			{
-//				// wenn der parent == null, handelt es sich um "." Das soll ignoriert werden
-//				if(dir.getParent() == null)
-//				{
-//					return FileVisitResult.CONTINUE;
-//				}
-				
+				// relativen Pfad (zur Basis basepath) feststellen
 				String pathString = walkingDir.getParent() + "/"+walkingDir.getFileName();
-				System.out.println("before visit directory: "+pathString);
-
+				String relPathString = getBasepath().relativize(walkingDir).toString();
+				
 				// Dir erstellen
 				Dir dir = new Dir();
+
+				// wenn der relative path ein leerer string ist, ist this das directory
+				if(relPathString.equals(""))
+				{
+					System.out.println("THIS DIR IS ROOT: "+walkingDir.getFileName());
+					dir = thisObj;
+				}
+				else
+				{
+					addDir(dir);
+				}
+
+				System.err.println("before visit directory (abs): "+pathString);
+				System.err.println("before visit directory (rel): "+relPathString);
+
+				// die Daten setzen
 				dir.setId(runningId++);
 
-				dir.setPath(pathString);
+				dir.setPath(relPathString);
 				dir.setMinoccur(1);
 				dir.setMaxoccur(1);
-
-				addDir(dir);
 
 				System.out.println(dir.toString());
 				
@@ -109,17 +140,25 @@ public class Dir {
 			// called for each file visited. the basic file attributes of the file are also available
 			public FileVisitResult visitFile(Path walkingFile, BasicFileAttributes attrs) throws IOException
 			{
+				// relativen Pfad (zur Basis basepath) feststellen
 				String pathString = walkingFile.getParent() + "/"+walkingFile.getFileName();
-				System.out.println("visit file: "+pathString);
-				
+				String relPathString = getBasepath().relativize(walkingFile).toString();
+
+				System.err.println("visit file (abs): "+pathString);
+				System.err.println("visit file (rel): "+relPathString);
+
+				// new File erstellen
 				File file = new File();
 				file.setId(runningId++);
 
-				file.setPath(pathString);
-				file.setMinoccur(1);
-				file.setMaxoccur(1);
+				file.setPath(relPathString);
+				file.setMinOccur(1);
+				file.setMaxOccur(1);
 
-				file.setSize(attrs.size()+"B");
+				file.setExtension(FilenameUtils.getExtension(walkingFile.toString()));
+				file.setSize((float)attrs.size());
+				file.setSizeUnit("B");
+				file.setSizeTolerance(0F);
 				addFile(file);
 
 				System.out.println(file.toString());
@@ -135,7 +174,7 @@ public class Dir {
 			}
 
 		});
-		
+
 	}
 
 	public Dir readXml() throws JAXBException
@@ -263,9 +302,13 @@ public class Dir {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 
+	public void addMatch(Dir dir)
+	{
+		this.match.add(dir);
+	}
+	
 	public void addDir(Dir dir)
 	{
 		this.dir.add(dir);
@@ -391,15 +434,29 @@ public class Dir {
 	/**
 	 * @return the basedir
 	 */
-	public String getBasedir() {
-		return basedir;
+	public Path getBasepath() {
+		return basepath;
+	}
+
+	/**
+	 * @return the basedir
+	 */
+	public String getBasepathAsString() {
+		return basepath.toString();
 	}
 
 	/**
 	 * @param basedir the basedir to set
 	 */
-	public void setBasedir(String basedir) {
-		this.basedir = basedir;
+	public void setBasepath(String basedir) {
+		this.basepath = Paths.get(basedir);
+	}
+
+	/**
+	 * @param basedir the basedir to set
+	 */
+	public void setBasepath(Path basepath) {
+		this.basepath = basepath;
 	}
 
 	/**

@@ -10,25 +10,27 @@
    			<xs:element ref="dir" maxOccurs="unbounded"/>
      	</xs:sequence>
     	<xs:attribute name="id" use="required" type="xs:int"></xs:attribute>
-    	<xs:attribute name="minoccur" type="xs:int" use="required"></xs:attribute>
-    	<xs:attribute name="maxoccur" type="xs:int" use="required"></xs:attribute>
+    	<xs:attribute name="minOccur" type="xs:int" use="required"></xs:attribute>
+    	<xs:attribute name="maxOccur" type="xs:int" use="required"></xs:attribute>
      </xs:complexType>
   </xs:element>
   <xs:element name="file">
     <xs:complexType>
     	<xs:sequence>
     		<xs:element maxOccurs="1" ref="path" minOccurs="1" />
+    		<xs:element maxOccurs="1" ref="extension" minOccurs="1" />
     	</xs:sequence>
     	<xs:attribute name="id" use="required" type="xs:int"></xs:attribute>
-    	<xs:attribute name="minoccur" type="xs:int" use="required"></xs:attribute>
-    	<xs:attribute name="maxoccur" type="xs:int" use="required"></xs:attribute>
-    	<xs:attribute name="extension" type="xs:string" use="optional"></xs:attribute>
-    	<xs:attribute name="size" type="xs:string" use="optional"></xs:attribute>
-    	<xs:attribute name="sizetolerance" type="xs:float" use="optional"></xs:attribute>
+    	<xs:attribute name="minOccur" type="xs:int" use="required"></xs:attribute>
+    	<xs:attribute name="maxOccur" type="xs:int" use="required"></xs:attribute>
+    	<xs:attribute name="size" type="xs:float" use="optional"></xs:attribute>
+    	<xs:attribute name="sizeUnit" type="xs:string" use="optional"></xs:attribute>
+    	<xs:attribute name="sizeTolerance" type="xs:float" use="optional"></xs:attribute>
     	<xs:attribute name="md5sum" type="xs:string" use="optional"></xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="path" type="xs:string" />
+  <xs:element name="extension" type="xs:string" />
 
 
 

@@ -5,11 +5,12 @@ import java.util.Random;
 public class File {
 
 	private Integer id = null;
-	private int minoccur = 0;
-	private int maxoccur = 99;
+	private int minOccur = 0;
+	private int maxOccur = 0;
 	private String path = null;
-	private String size = null;
-	private Float sizetolerance = null;
+	private Float size = null;
+	private String sizeUnit = "B";
+	private Float sizeTolerance = 0F;
 	private String extension = null;
 
 	public File()
@@ -18,15 +19,15 @@ public class File {
 		generator.setSeed(System.currentTimeMillis());
 		id = generator.nextInt(100000000);
 		
-		minoccur = 0;
-		maxoccur = 99;
+		minOccur = 0;
+		maxOccur = 99999;
 	}
 
 	public String toString()
 	{
 		String entityString = "";
 		
-		entityString += "id="+this.getId()+", minoccur: "+this.getMinoccur()+", maxoccur: "+this.getMaxoccur()+", path: "+this.getPath()+", extension: "+this.getExtension()+", size: "+this.getSize()+", sizetolerance: "+this.getSizetolerance();
+		entityString += "id="+this.getId()+", minOccur: "+this.getMinOccur()+", maxOccur: "+this.getMaxOccur()+", path: "+this.getPath()+", extension: "+this.getExtension()+", size: "+this.getSize()+", sizetolerance: "+this.getSizeTolerance();
 		
 		return entityString;
 	}
@@ -48,29 +49,29 @@ public class File {
 	/**
 	 * @return the minoccur
 	 */
-	public int getMinoccur() {
-		return minoccur;
+	public int getMinOccur() {
+		return minOccur;
 	}
 
 	/**
-	 * @param minoccur the minoccur to set
+	 * @param minOccur the minOccur to set
 	 */
-	public void setMinoccur(int minoccur) {
-		this.minoccur = minoccur;
+	public void setMinOccur(int minOccur) {
+		this.minOccur = minOccur;
 	}
 
 	/**
-	 * @return the maxoccur
+	 * @return the maxOccur
 	 */
-	public int getMaxoccur() {
-		return maxoccur;
+	public int getMaxOccur() {
+		return maxOccur;
 	}
 
 	/**
-	 * @param maxoccur the maxoccur to set
+	 * @param maxOccur the maxOccur to set
 	 */
-	public void setMaxoccur(int maxoccur) {
-		this.maxoccur = maxoccur;
+	public void setMaxOccur(int maxOccur) {
+		this.maxOccur = maxOccur;
 	}
 
 	/**
@@ -90,29 +91,29 @@ public class File {
 	/**
 	 * @return the size
 	 */
-	public String getSize() {
+	public Float getSize() {
 		return size;
 	}
 
 	/**
 	 * @param size the size to set
 	 */
-	public void setSize(String size) {
+	public void setSize(Float size) {
 		this.size = size;
 	}
 
 	/**
-	 * @return the sizetolerance
+	 * @return the sizeTolerance
 	 */
-	public Float getSizetolerance() {
-		return sizetolerance;
+	public Float getSizeTolerance() {
+		return sizeTolerance;
 	}
 
 	/**
-	 * @param sizetolerance the sizetolerance to set
+	 * @param sizeTolerance the sizeTolerance to set
 	 */
-	public void setSizetolerance(Float sizetolerance) {
-		this.sizetolerance = sizetolerance;
+	public void setSizeTolerance(Float sizeTolerance) {
+		this.sizeTolerance = sizeTolerance;
 	}
 
 	/**
@@ -127,6 +128,20 @@ public class File {
 	 */
 	public void setExtension(String extension) {
 		this.extension = extension;
+	}
+
+	/**
+	 * @return the sizeUnit
+	 */
+	public String getSizeUnit() {
+		return sizeUnit;
+	}
+
+	/**
+	 * @param sizeUnit the sizeUnit to set
+	 */
+	public void setSizeUnit(String sizeUnit) {
+		this.sizeUnit = sizeUnit;
 	}
 
 }
