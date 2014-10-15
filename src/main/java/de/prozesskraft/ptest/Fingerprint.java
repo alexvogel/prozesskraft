@@ -218,13 +218,13 @@ public class Fingerprint
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
-		Batch batch = new Batch();
-		batch.setBasedir(path);
-		batch.setOutfilexml(output);
+		Dir dir = new Dir();
+		dir.setBasedir(path);
+		dir.setOutfilexml(output);
 
 		try
 		{
-			batch.genFingerprint();
+			dir.genFingerprint();
 		}
 		catch (NullPointerException e)
 		{
@@ -238,7 +238,7 @@ public class Fingerprint
 			exiter();
 		}
 
-		batch.writeXml();
+		dir.writeXml();
 		
 	}
 
