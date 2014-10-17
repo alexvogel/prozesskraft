@@ -32,7 +32,14 @@
     			</xs:restriction>
     		</xs:simpleType>
     	</xs:attribute>
-    	<xs:attribute name="sizeTolerance" type="xs:float" use="optional"></xs:attribute>
+    	<xs:attribute name="sizeTolerance" use="optional">
+    		<xs:simpleType>
+    			<xs:restriction base="xs:float">
+    				<xs:minInclusive value="0"></xs:minInclusive>
+    				<xs:maxInclusive value="1"></xs:maxInclusive>
+    			</xs:restriction>
+    		</xs:simpleType>
+    	</xs:attribute>
     </xs:complexType>
   </xs:element>
   <xs:element name="path" type="xs:string" />
