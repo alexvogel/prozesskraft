@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -13,7 +14,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import javax.xml.XMLConstants;
@@ -42,11 +46,17 @@ public class Dir {
 	private String outfilexml = null;
 	private Path basepath = null;
 
-	private ArrayList<Dir> match = new ArrayList<Dir>();
-
 	private int runningId = 0;
 
 	public Dir thisObj = null;
+
+	private Dir bestFit = null;
+	private Map<String, Boolean> bestChecks = new HashMap<String, Boolean>();
+	private Map<String, Boolean> actChecks = new HashMap<String, Boolean>();
+
+	// ist es ein template? , dann wird in match alle passenden ids aus dem pruefling gesammelt.
+	// ist es ein pruefling?, dann wird in match die id des passenden eintrages aus dem template eingetragen (in diesem fall kann es nur 1 stk sein)
+	private ArrayList<Dir> match = new ArrayList<Dir>();
 
 	public Dir()
 	{
@@ -70,19 +80,76 @@ public class Dir {
 	}
 
 	/**
-	 * every dir and file has to fit the given template
+	 * every dir and file of the template has to find the given occurance from the examinee
 	 * @return
 	 */
-	public boolean fitsTemplate(Dir templateDir)
+	public boolean checkDir(Dir examineeDir)
 	{
-		boolean fit = false;
-		
-		
-		
-		
-		return fit;
+		// loeschen bestehender match-eintraege in this
+		this.clearMatchRecursive();
+		examineeDir.clearMatchRecursive();
+
+		// alle im verzeichnis befindlichen verzeichnis mit vollstaendigen examineeDir abgleichen
+		for(Dir actDir : this.getDir())
+		{
+			actDir.match(examineeDir);
+		}
+
+		// alle im verzeichnis befindlichen files mit vollstaendigen examineeDir abgleichen
+		for(File actFile : this.getFile())
+		{
+			actFile.match(examineeDir);
+		}
+
+		return true;
+	}
+
+	/**
+	 * geht den vollstaendigen baum durch und prueft ob es zu this passende eintraege gibt
+	 * passende eintraege werden auf beiden seiten (template-baum <-> examinee-baum) vermerkt
+	 * es passt, wenn
+	 * 1) die pfad-angabe im examinee auf das pfad-pattern im template (this) matcht
+	 * @param examineeDir
+	 * @return allMatchingDirByPath
+	 */
+	public void match(Dir examineeDir)
+	{
+		// den pfad vom examinee gegen den template-pfad matchen
+		if(examineeDir.getPath().matches("^"+this.getPath()+"$"))
+		{
+			// passen beide vergleichspartner? Dann soll dies in beiden vermerkt werden
+			examineeDir.match.add(this);
+			this.addDir(examineeDir);
+		}
+
+		// auch fuer alle enthaltenen Dirs ausfuehren
+		for(Dir actDir : examineeDir.getDir())
+		{
+			this.match(actDir);
+		}
 	}
 	
+	/**
+	 * loescht die match-Eintraege auch aller enthaltener Dirs und Files
+	 */
+	private void clearMatchRecursive()
+	{
+		this.match.clear();
+		for(Dir actDir : this.getDir())
+		{
+			actDir.clearMatchRecursive();
+		}
+		for(File actFile : this.getFile())
+		{
+			actFile.getMatch().clear();
+		}
+	}
+	
+	/**
+	 * 
+	 * @throws NullPointerException
+	 * @throws IOException
+	 */
 	public void genFingerprint() throws NullPointerException, IOException
 	{
 		if(basepath == null)
@@ -155,10 +222,15 @@ public class Dir {
 				file.setMinOccur(1);
 				file.setMaxOccur(1);
 
-				file.setExtension(FilenameUtils.getExtension(walkingFile.toString()));
 				file.setSize((float)attrs.size());
-				file.setSizeUnit("B");
+				try {
+					file.setSizeUnit("B");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				file.setSizeTolerance(0F);
+
 				addFile(file);
 
 				System.out.println(file.toString());
@@ -240,7 +312,7 @@ public class Dir {
 //					mapping(de.caegroup.jaxb.process.Process.class, de.caegroup.process.Process.class, oneWay(), mapId("A"), mapNull(true));
 //				}
 //			};
-			
+
 //			System.out.println("processName1: "+this.getName());
 			DozerBeanMapper mapper = new DozerBeanMapper();
 //			destObject = mapper.map(xprocess, de.caegroup.process.Process.class);
@@ -285,16 +357,16 @@ public class Dir {
 		{
 			jaxbContext = JAXBContext.newInstance(de.prozesskraft.jaxb.ptest.Dir.class);
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-		
+
 			// die daten aus this in das jaxb objekt mappen
 			de.prozesskraft.jaxb.ptest.Dir xptest = new de.prozesskraft.jaxb.ptest.Dir();
 			DozerBeanMapper mapper = new DozerBeanMapper();
 //			mapper.map(xprocess, this);
 			mapper.map(this, xptest);
-			
+
 			// output pretty printed
 			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-			
+
 			jaxbMarshaller.marshal(xptest, file);
 		}
 		catch (JAXBException e)
