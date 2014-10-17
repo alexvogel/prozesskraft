@@ -219,7 +219,7 @@ public class Fingerprint
 		  die eigentliche business logic
 		----------------------------*/
 		Dir dir = new Dir();
-		dir.setBasedir(path);
+		dir.setBasepath(path);
 		dir.setOutfilexml(output);
 
 		try
@@ -238,6 +238,7 @@ public class Fingerprint
 			exiter();
 		}
 
+		System.out.println("writing to file: "+dir.getOutfilexml());
 		dir.writeXml();
 		
 	}
