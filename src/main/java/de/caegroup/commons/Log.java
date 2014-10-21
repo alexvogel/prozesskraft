@@ -2,6 +2,7 @@ package de.caegroup.commons;
 
 import java.io.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class Log
 implements Serializable, Comparable
@@ -13,10 +14,10 @@ implements Serializable, Comparable
 
 	static final long serialVersionUID = 1;
 
-	private String label = "";
+	private String label = null;
 	
 	private long time = System.currentTimeMillis();
-	private String level = "default";
+	private String level = null;
 	private String msg = "";
 
 	/*----------------------------
@@ -27,14 +28,14 @@ implements Serializable, Comparable
 
 	}
 
-	public Log(String label)
+	public Log(String msg)
 	{
-		this.label = label;
+		this.msg = msg;
 	}
 
-	public Log(String label, String msg)
+	public Log(String level, String msg)
 	{
-		this.label = label;
+		this.level = level;
 		this.msg = msg;
 	}
 
@@ -48,11 +49,44 @@ implements Serializable, Comparable
 	  methods
 	----------------------------*/
 
-	public void print()
+	public String sprint()
 	{
-		System.out.println("["+this.getTimestamp()+"]:"+this.getLevel()+":"+this.getMsg());
+		String myOutput = "["+this.getTimestamp()+"]";
+		
+		if(this.getLabel() != null)
+		{
+			myOutput += ":"+this.getLabel();
+		}
+		if(this.getLevel() != null)
+		{
+			myOutput += ":"+this.getLabel();
+		}
+		myOutput += ":"+this.getMsg();
+		
+		return myOutput;
 	}
 
+	public void print()
+	{
+		System.out.println(this.sprint());
+	}
+
+	/*----------------------------
+	 static  methods
+	----------------------------*/
+	static public String sprintWholeLog(ArrayList<Log> bigLog)
+	{
+		String logBook = "";
+		for(Log actLog : bigLog)
+		{
+			if(logBook.equals(""))
+			{
+				logBook += actLog.sprint();
+			}
+		}
+		return logBook;
+	}
+	
 	/*----------------------------
 	  methods getter & setter
 	----------------------------*/
@@ -126,5 +160,7 @@ implements Serializable, Comparable
 	{
 		return (int)(this.time - ((Log)logToCompare).getTime());
 	}
+
+	
 
 }
