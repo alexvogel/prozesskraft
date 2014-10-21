@@ -59,7 +59,7 @@ implements Serializable, Comparable
 		}
 		if(this.getLevel() != null)
 		{
-			myOutput += ":"+this.getLabel();
+			myOutput += ":"+this.getLevel();
 		}
 		myOutput += ":"+this.getMsg();
 		
