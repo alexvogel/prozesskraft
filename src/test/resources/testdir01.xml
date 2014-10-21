@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <dir id="0" minOccur="1" maxOccur="1">
     <path></path>
-    <file id="2" minOccur="1" maxOccur="1" size="7.0" sizeUnit="B" sizeTolerance="0.0">
-        <path>testdir/hello.txt</path>
+    <file id="1" minOccur="1" maxOccur="1" size="7.0" sizeUnit="B" sizeTolerance="0.0">
+        <path>hello.txt</path>
     </file>
-    <file id="3" minOccur="1" maxOccur="1" size="10.0" sizeUnit="B" sizeTolerance="0.0">
-        <path>testdir/lulu.txt</path>
+    <file id="2" minOccur="1" maxOccur="1" size="10.0" sizeUnit="B" sizeTolerance="0.0">
+        <path>lulu.txt</path>
     </file>
-    <file id="4" minOccur="1" maxOccur="1" size="614.0" sizeUnit="B" sizeTolerance="0.0">
-        <path>ptest.xml</path>
+    <file id="4" minOccur="1" maxOccur="1" size="14.0" sizeUnit="B" sizeTolerance="0.0">
+        <path>bezirkel/eintrag.t*</path>
     </file>
-    <dir id="1" minOccur="1" maxOccur="1">
-        <path>testdir</path>
+    <dir id="3" minOccur="1" maxOccur="1">
+        <path>bezirkel</path>
     </dir>
 </dir>

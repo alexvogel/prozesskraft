@@ -232,11 +232,13 @@ public class Compare
 		{
 			refDir.setBasepath(refPath.getCanonicalPath());
 			refDir.genFingerprint();
+			System.out.println("--ref is a directory");
 		}
 		// wenn es ein fingerprint ist, muss er eingelesen werden
 		else if(refPath.exists())
 		{
 			refDir.setInfilexml(refPath.getCanonicalPath());
+			System.out.println("--ref is a fingerprint");
 			try {
 				refDir.readXml();
 			} catch (JAXBException e) {
@@ -255,11 +257,13 @@ public class Compare
 		{
 			examDir.setBasepath(examPath.getCanonicalPath());
 			examDir.genFingerprint();
+			System.out.println("--exam is a directory");
 		}
 		// wenn es ein fingerprint ist, muss er eingelesen werden
 		else if(examPath.exists())
 		{
 			examDir.setInfilexml(examPath.getCanonicalPath());
+			System.out.println("--exam is a fingerprint");
 			try
 			{
 				examDir.readXml();
@@ -271,8 +275,10 @@ public class Compare
 			}
 		}
 
+		
 		// durchfuehren des vergleichs
 		boolean resultValue = refDir.checkDir(examDir);
+		
 		if(resultValue == true)
 		{
 			System.out.println("SUCCESS");
