@@ -50,32 +50,32 @@ public class File {
 			// den pfad vom examinee gegen den template-pfad matchen
 			if(actFile.getPath().matches("^"+this.getPath()+"$"))
 			{
-				actFile.log.add(new Log("debug", "path matched with (id="+this.getId()+", path="+this.getPath()));
-				this.log.add(new Log("debug", "path matched with (id="+actFile.getId()+", path="+actFile.getPath()));
+				actFile.log.add(new Log("debug", "(exam) file path ("+actFile.getPath()+") matched with (id="+this.getId()+", path="+this.getPath()+")"));
+				this.log.add(new Log("debug", "(ref) file path ("+this.getPath()+") matched with (id="+actFile.getId()+", path="+actFile.getPath()+")"));
 
 				// die groesse vergleichen
 				if(actFile.doesSizeMatch(this))
 				{
 					// passen beide vergleichspartner? Dann soll dies in beiden vermerkt werden
 					actFile.getMatchedFile().add(this);
-					actFile.log.add(new Log("debug", "size matched with (id="+this.getId()+", path="+this.getPath()));
+					actFile.log.add(new Log("debug", "(exam) file size ("+actFile.getSize()+actFile.getSizeUnit()+") matched with (id="+this.getId()+", path="+this.getPath()+", size="+this.getSize()+this.getSizeUnit()+")"));
 
 					this.getMatchedFile().add(actFile);
-					this.log.add(new Log("debug", "size matched with (id="+actFile.getId()+", path="+actFile.getPath()));
+					this.log.add(new Log("debug", "(ref) file size ("+this.getSize()+this.getSizeUnit()+") matched with (id="+actFile.getId()+", path="+actFile.getPath()+", size="+actFile.getSize()+actFile.getSizeUnit()+")"));
 				}
 				else
 				{
-					actFile.log.add(new Log("debug", "size did NOT match with (id="+this.getId()+", path="+this.getPath()));
-					this.log.add(new Log("debug", "size did NOT match with (id="+actFile.getId()+", path="+actFile.getPath()));
+					actFile.log.add(new Log("debug", "(exam) file size ("+actFile.getSize()+actFile.getSizeUnit()+") did NOT match with (id="+this.getId()+", path="+this.getPath()+", size="+this.getSize()+this.getSizeUnit()+")"));
+					this.log.add(new Log("debug", "(ref) file size ("+this.getSize()+this.getSizeUnit()+") did NOT match with (id="+actFile.getId()+", path="+actFile.getPath()+", size="+actFile.getSize()+actFile.getSizeUnit()+")"));
 				}
 			}
 			else
 			{
-				actFile.log.add(new Log("debug", "path did NOT match with (id="+this.getId()+", path="+this.getPath()));
-				this.log.add(new Log("debug", "path did NOT match with (id="+actFile.getId()+", path="+actFile.getPath()));
+				actFile.log.add(new Log("debug", "(exam) file path ("+actFile.getPath()+") did NOT match with (id="+this.getId()+", path="+this.getPath()+")"));
+				this.log.add(new Log("debug", "(ref) file path ("+this.getPath()+") did NOT match with (id="+actFile.getId()+", path="+actFile.getPath()+")"));
 			}
 		}
-		
+
 		// und fuer alle enthaltenen Dirs in examineeDir ebenfalls ausfuehren
 		for(Dir actDir : examineeDir.getDir())
 		{

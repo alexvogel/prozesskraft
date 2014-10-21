@@ -89,7 +89,7 @@ public class Dir {
 		this.clearMatchRecursive();
 		examineeDir.clearMatchRecursive();
 
-		// alle im verzeichnis befindlichen verzeichnis mit vollstaendigen examineeDir abgleichen
+		// alle im verzeichnis befindlichen verzeichnisse mit vollstaendigen examineeDir abgleichen
 		for(Dir actDir : this.getDir())
 		{
 			actDir.match(examineeDir);
@@ -100,10 +100,8 @@ public class Dir {
 		{
 			actFile.match(examineeDir);
 		}
-
-		// den abgleich auswerten
-		// 1) gibt es ein Dir | File im template, dessen match den minoccur unterschreitet?, dann false
-		return this.summary();
+		
+		return examineeDir.summary();
 	}
 
 	/**
@@ -111,40 +109,79 @@ public class Dir {
 	 * 1) gibt es ein Dir | File im template, dessen match den minoccur unterschreitet?
 	 * ...
 	 */
-	private boolean summary()
+	public boolean summary()
 	{
 		boolean result = true;
-		
+
 		for(Dir actDir : this.getDir())
 		{
-			if(actDir.getMatchedDir().size() < actDir.getMinOccur())
+			// die matchedDir auf der gegenseite durchgehen
+			// gibt es mehrere?, dann mit fehlermeldung abbrechen
+
+			if(actDir.getMatchedDir().size() > 1)
 			{
-				actDir.log.add(new Log("error", "directory (id="+actDir.getId()+", path="+actDir.getPath()+") needed to be there at least "+actDir.getMinOccur()+" time(s), but was only found "+actDir.getMatchedDir().size()+" time(s)"));
+				actDir.log.add(new Log("error", "directory (id="+actDir.getId()+", path="+actDir.getPath()+") fits "+actDir.getMatchedDir().size()+" path-patterns. improve pattern to reduce this to 1."));
 				result = false;
 			}
-			if(actDir.getMatchedDir().size() > actDir.getMaxOccur())
+			else if(actDir.getMatchedDir().size() < 1)
 			{
-				actDir.log.add(new Log("error", "directory (id="+actDir.getId()+", path="+actDir.getPath()+") needed to be there at maximum "+actDir.getMinOccur()+" time(s), but was found "+actDir.getMatchedDir().size()+" time(s)"));
+				actDir.log.add(new Log("error", "directory (id="+actDir.getId()+", path="+actDir.getPath()+") fits "+actDir.getMatchedDir().size()+" no path-patterns."));
 				result = false;
+			}
+
+			for(Dir actMatchedDir : actDir.getMatchedDir())
+			{
+				if(actMatchedDir.getMatchedDir().size() < actMatchedDir.getMinOccur())
+				{
+					actDir.log.add(new Log("error", "directory (id="+actDir.getId()+", path="+actDir.getPath()+") needed to be there at least "+actMatchedDir.getMinOccur()+" time(s), but was only found "+actMatchedDir.getMatchedDir().size()+" time(s)"));
+					result = false;
+				}
+				if(actMatchedDir.getMatchedDir().size() > actMatchedDir.getMaxOccur())
+				{
+					actDir.log.add(new Log("error", "directory (id="+actDir.getId()+", path="+actDir.getPath()+") needed to be there at maximum "+actMatchedDir.getMinOccur()+" time(s), but was found "+actMatchedDir.getMatchedDir().size()+" time(s)"));
+					result = false;
+				}
 			}
 			// ausgeben des gesamten loggings des aktuellen entity auf STDOUT
-			System.out.println("id="+actDir.getId()+", path="+actDir.getPath());
+//			System.out.println("id="+actDir.getId()+", path="+actDir.getPath());
 			System.out.println(Log.sprintWholeLog(actDir.log));
+			
+			// alle enthaltenen dirs auch ein summary ausgeben
+			if(! actDir.summary())
+			{
+				result = false;
+			}
 		}
+		
 		for(File actFile : this.getFile())
 		{
-			if(actFile.getMatchedFile().size() < actFile.getMinOccur())
+			if(actFile.getMatchedFile().size() > 1)
 			{
-				actFile.log.add(new Log("error", "file (id="+actFile.getId()+", path="+actFile.getPath()+") needed to be there at least "+actFile.getMinOccur()+" time(s), but was only found "+actFile.getMatchedFile().size()+" time(s)"));
+				actFile.log.add(new Log("error", "file (id="+actFile.getId()+", path="+actFile.getPath()+") fits "+actFile.getMatchedFile().size()+" path-patterns. improve pattern to reduce this to 1."));
 				result = false;
 			}
-			if(actFile.getMatchedFile().size() > actFile.getMaxOccur())
+			else if(actFile.getMatchedFile().size() < 1)
 			{
-				actFile.log.add(new Log("error", "file (id="+actFile.getId()+", path="+actFile.getPath()+") needed to be there at maximum "+actFile.getMinOccur()+" time(s), but was found "+actFile.getMatchedFile().size()+" time(s)"));
+				actFile.log.add(new Log("error", "file (id="+actFile.getId()+", path="+actFile.getPath()+") fits "+actFile.getMatchedFile().size()+" path-patterns."));
 				result = false;
+			}
+
+			
+			for(File actMatchedFile : actFile.getMatchedFile())
+			{
+				if(actMatchedFile.getMatchedFile().size() < actMatchedFile.getMinOccur())
+				{
+					actFile.log.add(new Log("error", "file (id="+actFile.getId()+", path="+actFile.getPath()+") needed to be there at least "+actMatchedFile.getMinOccur()+" time(s), but was only found "+actMatchedFile.getMatchedFile().size()+" time(s)"));
+					result = false;
+				}
+				if(actMatchedFile.getMatchedFile().size() > actMatchedFile.getMaxOccur())
+				{
+					actFile.log.add(new Log("error", "file (id="+actFile.getId()+", path="+actFile.getPath()+") needed to be there at maximum "+actMatchedFile.getMinOccur()+" time(s), but was found "+actMatchedFile.getMatchedFile().size()+" time(s)"));
+					result = false;
+				}
 			}
 			// ausgeben des gesamten loggings des aktuellen entity auf STDOUT
-			System.out.println("id="+actFile.getId()+", path="+actFile.getPath());
+//			System.out.println("id="+actFile.getId()+", path="+actFile.getPath());
 			System.out.println(Log.sprintWholeLog(actFile.log));
 		}
 		return result;
@@ -165,15 +202,15 @@ public class Dir {
 		{
 			// passen beide vergleichspartner? Dann soll dies in beiden vermerkt werden
 			examineeDir.getMatchedDir().add(this);
-			examineeDir.log.add(new Log("debug", "path matched with (id="+this.getId()+", path="+this.getPath()+")"));
+			examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") matched with dir (id="+this.getId()+", path="+this.getPath()+")"));
 
-			this.addDir(examineeDir);
-			this.log.add(new Log("debug", "path matched with (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
+			this.addMatchedDir(examineeDir);
+			this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") matched with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
 		}
 		else
 		{
-			examineeDir.log.add(new Log("debug", "path did NOT match with (id="+this.getId()+", path="+this.getPath()+")"));
-			this.log.add(new Log("debug", "path did NOT match with (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
+			examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") did NOT match with dir (id="+this.getId()+", path="+this.getPath()+")"));
+			this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") did NOT match with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
 		}
 
 		// auch fuer alle enthaltenen Dirs ausfuehren
