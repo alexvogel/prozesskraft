@@ -6,8 +6,8 @@
     <xs:complexType>
     	<xs:sequence>
     		<xs:element maxOccurs="1" ref="path" minOccurs="1" />
-   			<xs:element ref="file" maxOccurs="unbounded"/>
-   			<xs:element ref="dir" maxOccurs="unbounded"/>
+   			<xs:element ref="file" maxOccurs="unbounded" minOccurs="0"/>
+   			<xs:element ref="dir" maxOccurs="unbounded" minOccurs="0"/>
      	</xs:sequence>
     	<xs:attribute name="id" use="required" type="xs:int"></xs:attribute>
     	<xs:attribute name="minOccur" type="xs:int" use="required"></xs:attribute>

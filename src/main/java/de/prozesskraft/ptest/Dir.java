@@ -32,11 +32,13 @@ import org.apache.commons.io.FilenameUtils;
 import org.dozer.DozerBeanMapper;
 import org.xml.sax.SAXException;
 
+import de.caegroup.commons.Log;
+
 public class Dir {
 
 	private Integer id = null;
-	private int minoccur = 0;
-	private int maxoccur = 99;
+	private int minOccur = 0;
+	private int maxOccur = 99;
 	private String path = null;
 
 	private ArrayList<File> file = new ArrayList<File>();
@@ -50,13 +52,11 @@ public class Dir {
 
 	public Dir thisObj = null;
 
-	private Dir bestFit = null;
-	private Map<String, Boolean> bestChecks = new HashMap<String, Boolean>();
-	private Map<String, Boolean> actChecks = new HashMap<String, Boolean>();
-
 	// ist es ein template? , dann wird in match alle passenden ids aus dem pruefling gesammelt.
 	// ist es ein pruefling?, dann wird in match die id des passenden eintrages aus dem template eingetragen (in diesem fall kann es nur 1 stk sein)
-	private ArrayList<Dir> match = new ArrayList<Dir>();
+	private ArrayList<Dir> matchedDir = new ArrayList<Dir>();
+
+	private ArrayList<Log> log = new ArrayList<Log>();
 
 	public Dir()
 	{
@@ -64,8 +64,8 @@ public class Dir {
 		generator.setSeed(System.currentTimeMillis());
 		id = generator.nextInt(100000000);
 
-		minoccur = 0;
-		maxoccur = 99;
+		minOccur = 0;
+		maxOccur = 99;
 
 		this.thisObj = this;
 	}
@@ -74,7 +74,7 @@ public class Dir {
 	{
 		String entityString = "";
 
-		entityString += "id="+this.getId()+", minoccur: "+this.getMinoccur()+", maxoccur: "+this.getMaxoccur()+", path: "+this.getPath();
+		entityString += "id="+this.getId()+", minoccur: "+this.getMinOccur()+", maxoccur: "+this.getMaxOccur()+", path: "+this.getPath();
 
 		return entityString;
 	}
@@ -101,9 +101,55 @@ public class Dir {
 			actFile.match(examineeDir);
 		}
 
-		return true;
+		// den abgleich auswerten
+		// 1) gibt es ein Dir | File im template, dessen match den minoccur unterschreitet?, dann false
+		return this.summary();
 	}
 
+	/**
+	 * alle Dirs und Files durchgehen
+	 * 1) gibt es ein Dir | File im template, dessen match den minoccur unterschreitet?
+	 * ...
+	 */
+	private boolean summary()
+	{
+		boolean result = true;
+		
+		for(Dir actDir : this.getDir())
+		{
+			if(actDir.getMatchedDir().size() < actDir.getMinOccur())
+			{
+				actDir.log.add(new Log("error", "directory (id="+actDir.getId()+", path="+actDir.getPath()+") needed to be there at least "+actDir.getMinOccur()+" time(s), but was only found "+actDir.getMatchedDir().size()+" time(s)"));
+				result = false;
+			}
+			if(actDir.getMatchedDir().size() > actDir.getMaxOccur())
+			{
+				actDir.log.add(new Log("error", "directory (id="+actDir.getId()+", path="+actDir.getPath()+") needed to be there at maximum "+actDir.getMinOccur()+" time(s), but was found "+actDir.getMatchedDir().size()+" time(s)"));
+				result = false;
+			}
+			// ausgeben des gesamten loggings des aktuellen entity auf STDOUT
+			System.out.println("id="+actDir.getId()+", path="+actDir.getPath());
+			System.out.println(Log.sprintWholeLog(actDir.log));
+		}
+		for(File actFile : this.getFile())
+		{
+			if(actFile.getMatchedFile().size() < actFile.getMinOccur())
+			{
+				actFile.log.add(new Log("error", "file (id="+actFile.getId()+", path="+actFile.getPath()+") needed to be there at least "+actFile.getMinOccur()+" time(s), but was only found "+actFile.getMatchedFile().size()+" time(s)"));
+				result = false;
+			}
+			if(actFile.getMatchedFile().size() > actFile.getMaxOccur())
+			{
+				actFile.log.add(new Log("error", "file (id="+actFile.getId()+", path="+actFile.getPath()+") needed to be there at maximum "+actFile.getMinOccur()+" time(s), but was found "+actFile.getMatchedFile().size()+" time(s)"));
+				result = false;
+			}
+			// ausgeben des gesamten loggings des aktuellen entity auf STDOUT
+			System.out.println("id="+actFile.getId()+", path="+actFile.getPath());
+			System.out.println(Log.sprintWholeLog(actFile.log));
+		}
+		return result;
+	}
+	
 	/**
 	 * geht den vollstaendigen baum durch und prueft ob es zu this passende eintraege gibt
 	 * passende eintraege werden auf beiden seiten (template-baum <-> examinee-baum) vermerkt
@@ -118,8 +164,16 @@ public class Dir {
 		if(examineeDir.getPath().matches("^"+this.getPath()+"$"))
 		{
 			// passen beide vergleichspartner? Dann soll dies in beiden vermerkt werden
-			examineeDir.match.add(this);
+			examineeDir.getMatchedDir().add(this);
+			examineeDir.log.add(new Log("debug", "path matched with (id="+this.getId()+", path="+this.getPath()+")"));
+
 			this.addDir(examineeDir);
+			this.log.add(new Log("debug", "path matched with (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
+		}
+		else
+		{
+			examineeDir.log.add(new Log("debug", "path did NOT match with (id="+this.getId()+", path="+this.getPath()+")"));
+			this.log.add(new Log("debug", "path did NOT match with (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
 		}
 
 		// auch fuer alle enthaltenen Dirs ausfuehren
@@ -134,14 +188,14 @@ public class Dir {
 	 */
 	private void clearMatchRecursive()
 	{
-		this.match.clear();
+		this.getMatchedDir().clear();
 		for(Dir actDir : this.getDir())
 		{
 			actDir.clearMatchRecursive();
 		}
 		for(File actFile : this.getFile())
 		{
-			actFile.getMatch().clear();
+			actFile.getMatchedFile().clear();
 		}
 	}
 	
@@ -196,8 +250,8 @@ public class Dir {
 				dir.setId(runningId++);
 
 				dir.setPath(relPathString);
-				dir.setMinoccur(1);
-				dir.setMaxoccur(1);
+				dir.setMinOccur(1);
+				dir.setMaxOccur(1);
 
 				System.out.println(dir.toString());
 				
@@ -376,9 +430,9 @@ public class Dir {
 		}
 	}
 
-	public void addMatch(Dir dir)
+	public void addMatchedDir(Dir dir)
 	{
-		this.match.add(dir);
+		this.getMatchedDir().add(dir);
 	}
 	
 	public void addDir(Dir dir)
@@ -406,31 +460,31 @@ public class Dir {
 	}
 
 	/**
-	 * @return the minoccur
+	 * @return the minOccur
 	 */
-	public int getMinoccur() {
-		return minoccur;
+	public int getMinOccur() {
+		return minOccur;
 	}
 
 	/**
-	 * @param minoccur the minoccur to set
+	 * @param minOccur the minOccur to set
 	 */
-	public void setMinoccur(int minoccur) {
-		this.minoccur = minoccur;
+	public void setMinOccur(int minOccur) {
+		this.minOccur = minOccur;
 	}
 
 	/**
-	 * @return the maxoccur
+	 * @return the maxOccur
 	 */
-	public int getMaxoccur() {
-		return maxoccur;
+	public int getMaxOccur() {
+		return maxOccur;
 	}
 
 	/**
-	 * @param maxoccur the maxoccur to set
+	 * @param maxOccur the maxOccur to set
 	 */
-	public void setMaxoccur(int maxoccur) {
-		this.maxoccur = maxoccur;
+	public void setMaxOccur(int maxOccur) {
+		this.maxOccur = maxOccur;
 	}
 
 	/**
@@ -543,6 +597,20 @@ public class Dir {
 	 */
 	public void setRunningId(int runningId) {
 		this.runningId = runningId;
+	}
+
+	/**
+	 * @return the matchedDir
+	 */
+	public ArrayList<Dir> getMatchedDir() {
+		return matchedDir;
+	}
+
+	/**
+	 * @param matchedDir the matchedDir to set
+	 */
+	public void setMatchedDir(ArrayList<Dir> matchedDir) {
+		this.matchedDir = matchedDir;
 	}
 
 }

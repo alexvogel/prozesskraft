@@ -140,6 +140,11 @@
 			<artifactId>ini4j</artifactId>
 			<version>0.5.2</version>
 		</dependency>
+		<dependency>
+			<groupId>de.caegroup.commons</groupId>
+			<artifactId>avoge-commons</artifactId>
+			<version>0.2.0</version>
+		</dependency>
 <!-- diese dependencies sind fuer andere module start -->
 	    <dependency>
 			<groupId>commons-logging</groupId>

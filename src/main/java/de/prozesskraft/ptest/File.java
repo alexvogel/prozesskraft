@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import de.caegroup.commons.Log;
+
 public class File {
 
 	private Integer id = null;
@@ -16,13 +18,11 @@ public class File {
 	private Float sizeTolerance = 0F;
 	private String md5 = null;
 
-	private Dir bestFit = null;
-	private Map<String, Boolean> bestChecks = new HashMap<String, Boolean>();
-	private Map<String, Boolean> actChecks = new HashMap<String, Boolean>();
-
 	// ist es ein template? , dann wird in match alle passenden ids aus dem pruefling gesammelt.
 	// ist es ein pruefling?, dann wird in match die id des passenden eintrages aus dem template eingetragen (in diesem fall kann es nur 1 stk sein)
-	private ArrayList<File> match = new ArrayList<File>();
+	private ArrayList<File> matchedFile = new ArrayList<File>();
+
+	public ArrayList<Log> log = new ArrayList<Log>();
 
 	public File()
 	{
@@ -50,13 +50,29 @@ public class File {
 			// den pfad vom examinee gegen den template-pfad matchen
 			if(actFile.getPath().matches("^"+this.getPath()+"$"))
 			{
+				actFile.log.add(new Log("debug", "path matched with (id="+this.getId()+", path="+this.getPath()));
+				this.log.add(new Log("debug", "path matched with (id="+actFile.getId()+", path="+actFile.getPath()));
+
 				// die groesse vergleichen
 				if(actFile.doesSizeMatch(this))
 				{
 					// passen beide vergleichspartner? Dann soll dies in beiden vermerkt werden
-					actFile.match.add(this);
-					this.match.add(actFile);
+					actFile.getMatchedFile().add(this);
+					actFile.log.add(new Log("debug", "size matched with (id="+this.getId()+", path="+this.getPath()));
+
+					this.getMatchedFile().add(actFile);
+					this.log.add(new Log("debug", "size matched with (id="+actFile.getId()+", path="+actFile.getPath()));
 				}
+				else
+				{
+					actFile.log.add(new Log("debug", "size did NOT match with (id="+this.getId()+", path="+this.getPath()));
+					this.log.add(new Log("debug", "size did NOT match with (id="+actFile.getId()+", path="+actFile.getPath()));
+				}
+			}
+			else
+			{
+				actFile.log.add(new Log("debug", "path did NOT match with (id="+this.getId()+", path="+this.getPath()));
+				this.log.add(new Log("debug", "path did NOT match with (id="+actFile.getId()+", path="+actFile.getPath()));
 			}
 		}
 		
@@ -92,7 +108,7 @@ public class File {
 	{
 		String entityString = "";
 		
-		entityString += "id="+this.getId()+", minOccur: "+this.getMinOccur()+", maxOccur: "+this.getMaxOccur()+", path: "+this.getPath()+", size: "+this.getSize()+", sizetolerance: "+this.getSizeTolerance()+", md5: "+this.getMd5();
+		entityString += "id="+this.getId()+", minOccur: "+this.getMinOccur()+", maxOccur: "+this.getMaxOccur()+", path: "+this.getPath()+", size: "+this.getSize()+", sizetolerance: "+this.getSizeTolerance();
 		
 		return entityString;
 	}
@@ -245,59 +261,18 @@ public class File {
 	}
 
 	/**
-	 * @return the bestFit
+	 * @return the matchedFile
 	 */
-	public Dir getBestFit() {
-		return bestFit;
+	public ArrayList<File> getMatchedFile() {
+		return matchedFile;
 	}
 
 	/**
-	 * @param bestFit the bestFit to set
+	 * @param matchedFile the matchedFile to set
 	 */
-	public void setBestFit(Dir bestFit) {
-		this.bestFit = bestFit;
+	public void setMatchedFile(ArrayList<File> matchedFile) {
+		this.matchedFile = matchedFile;
 	}
 
-	/**
-	 * @return the bestChecks
-	 */
-	public Map<String, Boolean> getBestChecks() {
-		return bestChecks;
-	}
-
-	/**
-	 * @param bestChecks the bestChecks to set
-	 */
-	public void setBestChecks(Map<String, Boolean> bestChecks) {
-		this.bestChecks = bestChecks;
-	}
-
-	/**
-	 * @return the actChecks
-	 */
-	public Map<String, Boolean> getActChecks() {
-		return actChecks;
-	}
-
-	/**
-	 * @param actChecks the actChecks to set
-	 */
-	public void setActChecks(Map<String, Boolean> actChecks) {
-		this.actChecks = actChecks;
-	}
-
-	/**
-	 * @return the match
-	 */
-	public ArrayList<File> getMatch() {
-		return match;
-	}
-
-	/**
-	 * @param match the match to set
-	 */
-	public void setMatch(ArrayList<File> match) {
-		this.match = match;
-	}
 
 }
