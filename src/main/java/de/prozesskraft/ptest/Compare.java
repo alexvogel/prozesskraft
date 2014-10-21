@@ -68,7 +68,7 @@ public class Compare
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Compare.class) + "/" + "../etc/ptest-fingerprint.ini");
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Compare.class) + "/" + "../etc/ptest-compare.ini");
 
 		if (inifile.exists())
 		{
@@ -102,17 +102,23 @@ public class Compare
 		/*----------------------------
 		  create argument options
 		----------------------------*/
-		Option opath = OptionBuilder.withArgName("PATH")
+		Option oref = OptionBuilder.withArgName("PATH")
 				.hasArg()
-				.withDescription("[mandatory; default: .] the root path for the tree you want to make a fingerprint from.")
+				.withDescription("[mandatory] directory or fingerprint, that the --exam will be checked against")
 //				.isRequired()
-				.create("path");
+				.create("ref");
 		
-		Option ooutput = OptionBuilder.withArgName("FILE")
+		Option oexam = OptionBuilder.withArgName("PATH")
 				.hasArg()
-				.withDescription("[mandatory; default: fingerprint.xml] fingerprint file")
+				.withDescription("[mandatory] directory or fingerprint, that will be checked against --ref")
 //				.isRequired()
-				.create("output");
+				.create("exam");
+		
+		Option oresult = OptionBuilder.withArgName("FILE")
+				.hasArg()
+				.withDescription("[mandatory; default: result.txt] the result (success|failed) of the comparison will be printed to this file")
+//				.isRequired()
+				.create("result");
 		
 		/*----------------------------
 		  create options object
@@ -121,8 +127,9 @@ public class Compare
 		
 		options.addOption( ohelp );
 		options.addOption( ov );
-		options.addOption( opath );
-		options.addOption( ooutput );
+		options.addOption( oref );
+		options.addOption( oexam );
+		options.addOption( oresult );
 		
 		/*----------------------------
 		  create the parser
@@ -147,7 +154,7 @@ public class Compare
 		if ( commandline.hasOption("help"))
 		{
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("fingerprint", options);
+			formatter.printHelp("compare", options);
 			System.exit(0);
 		}
 		
@@ -163,33 +170,29 @@ public class Compare
 		/*----------------------------
 		  ueberpruefen ob eine schlechte kombination von parametern angegeben wurde
 		----------------------------*/
-		String path = "";
-		String output = "";
-		if ( !( commandline.hasOption("path")) )
+		boolean error = false;
+		String result = "";
+		if ( !( commandline.hasOption("ref")) )
 		{
-			System.err.println("setting default for -path=.");
-			path = ".";
+			System.err.println("option -ref is mandatory");
+			error = true;
 		}
-		else
+		if ( !( commandline.hasOption("exam")) )
 		{
-			path = commandline.getOptionValue("path");
-		}
-
-		if ( !( commandline.hasOption("output")) )
-		{
-			System.err.println("setting default for -output=fingerprint.xml");
-			output = "fingerprint.xml";
-		}
-		else
-		{
-			output = commandline.getOptionValue("output");
+			System.err.println("option -exam is mandatory");
+			error = true;
 		}
 		
-//		if ( !( commandline.hasOption("output")) )
-//		{
-//			System.err.println("option -output is mandatory.");
-//			exiter();
-//		}
+		if(error)
+		{
+			exiter();
+		}
+		
+		if ( !( commandline.hasOption("result")) )
+		{
+			System.err.println("setting default: -result=result.txt");
+			result = "result.txt";
+		}
 
 		/*----------------------------
 		  die lizenz ueberpruefen und ggf abbrechen
@@ -218,34 +221,72 @@ public class Compare
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
-		Dir dir = new Dir();
-		dir.setBasepath(path);
-		dir.setOutfilexml(output);
+		
+		// einlesen der referenzdaten
+		java.io.File refPath = new java.io.File(commandline.getOptionValue("ref"));
+		
+		Dir refDir = new Dir();
 
-		try
+		// wenn es ein directory ist, muss der fingerprint erzeugt werden
+		if(refPath.exists() && refPath.isDirectory())
 		{
-			dir.genFingerprint();
+			refDir.setBasepath(refPath.getCanonicalPath());
+			refDir.genFingerprint();
 		}
-		catch (NullPointerException e)
+		// wenn es ein fingerprint ist, muss er eingelesen werden
+		else if(refPath.exists())
 		{
-			System.err.println("file/dir does not exist "+path);
-			e.printStackTrace();
-			exiter();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			exiter();
+			refDir.setInfilexml(refPath.getCanonicalPath());
+			try {
+				refDir.readXml();
+			} catch (JAXBException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
-		System.out.println("writing to file: "+dir.getOutfilexml());
-		dir.writeXml();
+		// einlesen der prueflingsdaten
+		java.io.File examPath = new java.io.File(commandline.getOptionValue("exam"));
+
+		Dir examDir = new Dir();
+
+		// wenn es ein directory ist, muss der fingerprint erzeugt werden
+		if(examPath.exists() && examPath.isDirectory())
+		{
+			examDir.setBasepath(examPath.getCanonicalPath());
+			examDir.genFingerprint();
+		}
+		// wenn es ein fingerprint ist, muss er eingelesen werden
+		else if(examPath.exists())
+		{
+			examDir.setInfilexml(examPath.getCanonicalPath());
+			try
+			{
+				examDir.readXml();
+			}
+			catch (JAXBException e)
+			{
+				System.err.println("error while reading xml");
+				e.printStackTrace();
+			}
+		}
+
+		// durchfuehren des vergleichs
+		boolean resultValue = refDir.checkDir(examDir);
+		if(resultValue == true)
+		{
+			System.out.println("SUCCESS");
+		}
+		else
+		{
+			System.out.println("FAILED");
+		}
 		
 	}
 
 	private static void exiter()
 	{
-		System.out.println("try -help for help.");
+		System.err.println("try -help for help.");
 		System.exit(1);
 	}
 
