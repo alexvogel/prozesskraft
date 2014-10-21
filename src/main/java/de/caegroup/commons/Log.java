@@ -76,7 +76,7 @@ implements Serializable, Comparable
 	----------------------------*/
 	static public String sprintWholeLog(ArrayList<Log> bigLog)
 	{
-		String logBook = "";
+		String logBook = bigLog.size()+" entries in log";
 		for(Log actLog : bigLog)
 		{
 			if(logBook.equals(""))
