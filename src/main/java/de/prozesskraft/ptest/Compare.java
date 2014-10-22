@@ -275,11 +275,10 @@ public class Compare
 			}
 		}
 
-		
 		// durchfuehren des vergleichs
-		boolean resultValue = refDir.checkDir(examDir);
+		refDir.runCheck(examDir);
 		
-		if(resultValue == true)
+		if(examDir.isMatchSuccessfull())
 		{
 			System.out.println("SUCCESS");
 		}
@@ -287,6 +286,22 @@ public class Compare
 		{
 			System.out.println("FAILED");
 		}
+
+		// printen der csv-ergebnis-tabelle
+		for(String csvLine : examDir.getExamineeSummaryAsCsvWithHeader())
+		{
+			System.out.println(csvLine);
+		}
+		for(String csvLine : refDir.getReferenceSummaryAsCsv())
+		{
+			System.out.println(csvLine);
+		}
+		
+		// printen des loggings
+		System.out.println("------ logging of examinee --------");
+		System.out.println(examDir.getLogAsStringRecursive());
+		System.out.println("------ logging of reference --------");
+		System.out.println(refDir.getLogAsStringRecursive());
 		
 	}
 
