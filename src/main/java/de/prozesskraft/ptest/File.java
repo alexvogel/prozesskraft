@@ -24,6 +24,11 @@ public class File {
 
 	public ArrayList<Log> log = new ArrayList<Log>();
 
+	private boolean flagPathMatched = false;
+	private boolean flagSizeMatched = false;
+	private boolean flagOccuranceMatched = false;
+	private boolean flagFuzzyReference = false;
+
 	public File()
 	{
 		Random generator = new Random();
@@ -32,6 +37,215 @@ public class File {
 
 		minOccur = 0;
 		maxOccur = 99999;
+	}
+
+	/**
+	 * @return the whole log of this as a String
+	 */
+	public String getLogAsString()
+	{
+		return Log.sprintWholeLog(this.log);
+	}
+	
+	/**
+	 * erzeugt eine csv-zeile mit allen relevanten daten, nur wenn die occurance-angaben ueber- oder unterschritten werden
+	 * @return
+	 */
+	public String getReferenceSummaryAsCsvLine()
+	{
+		if(this.flagOccuranceMatched)
+		{
+			return null;
+		}
+		else
+		{
+			String csvLine = "ref";
+
+			csvLine += ";" + this.getId();
+
+			csvLine += ";" + "dir";
+			csvLine += ";" + this.getPath();
+
+			if(this.isMatchSuccessfull())
+			{
+				csvLine += ";" + "x";
+			}
+			else
+			{
+				csvLine += ";" + "o";
+			}
+
+			if(this.isFlagPathMatched())
+			{
+				csvLine += ";" + "x";
+			}
+			else
+			{
+				csvLine += ";" + "o";
+			}
+
+			// fuer size
+			csvLine += ";" + "-";
+			
+			if(this.isFlagOccuranceMatched())
+			{
+				csvLine += ";" + "x";
+			}
+			else
+			{
+				csvLine += ";" + "o";
+			}
+
+			if(!this.isFlagFuzzyReference())
+			{
+				csvLine += ";" + "x";
+			}
+			else
+			{
+				csvLine += ";" + "o";
+			}
+
+			String note = "";
+
+			if(this.getMatchedFile().size() < this.getMinOccur())
+			{
+				note = "error: matched files: "+this.getMatchedFile()+", but at least "+this.getMinOccur()+" matches are needed (minOccur)";
+			}
+			else if(this.getMatchedFile().size() > this.getMaxOccur())
+			{
+				note = "error: matched files: "+this.getMatchedFile()+", but at max "+this.getMinOccur()+" matches are allowed (maxOccur)";
+			}
+	
+			csvLine += ";" + note;
+			return csvLine;
+		}
+	}
+
+	/**
+	 * erzeugt eine csv-zeile mit allen relevanten daten
+	 * @return
+	 */
+	public String getExamineeSummaryAsCsvLine()
+	{
+		String csvLine = "exam";
+
+		csvLine += ";" + this.getId();
+		
+		csvLine += ";" + "file";
+		csvLine += ";" + this.getPath();
+		
+		if(this.isMatchSuccessfull())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
+		
+		if(this.isFlagPathMatched())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
+		
+		if(this.isFlagSizeMatched())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
+		
+		if(this.isFlagOccuranceMatched())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
+		
+		if(!this.isFlagFuzzyReference())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
+		
+		return csvLine;
+	}
+	
+	/**
+	 * gibt zurueck ob alle verglichenen eigenschaften zufriedenstellend zusammengepasst haben
+	 * @param
+	 */
+	public boolean isMatchSuccessfull()
+	{
+		if(this.flagPathMatched && this.flagSizeMatched && this.flagOccuranceMatched && !this.flagFuzzyReference)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * das reference file wird durchgegangen und festgestellt ob es einheiten gibt, deren minoccur unterschritten oder maxoccur ueberschritten wurde wurde
+	 */
+	public void detOccuranceReference()
+	{
+		if(this.getMatchedFile().size() < this.getMinOccur())
+		{
+			this.log.add(new Log("error", "(ref) this file has "+ this.getMatchedFile().size() +" matched Files. this is less than the minoccur "+this.getMinOccur()+" matches."));
+		}
+		else if(this.getMatchedFile().size() > this.getMaxOccur())
+		{
+			this.log.add(new Log("error", "(ref) this file has "+ this.getMatchedFile().size() +" matched Files. this is more than the maxoccur "+this.getMaxOccur()+" matches."));
+		}
+		else
+		{
+			this.setFlagOccuranceMatched(true);
+		}
+	}
+
+	/**
+	 * alle Dirs und Files durchgehen
+	 * 1) gibt es ein Dir | File im template, dessen match den minoccur unterschreitet?
+	 * ...
+	 */
+	public void detOccuranceExaminee()
+	{
+
+		// wenn das examinee-File nicht genau 1 match aufweist, so liegt eine unschaerfe im referenz-fingerprint vor
+		if(this.getMatchedFile().size() > 1)
+		{
+			this.setFlagFuzzyReference(true);
+			this.log.add(new Log("error", "(exam) this file has more than 1 matches. this indicates a fuzzyness in the patterns of the reference."));
+		}
+		else if(this.getMatchedFile().size() < 1)
+		{
+			this.log.add(new Log("debug", "(exam) this dir path has 0 matches. this is not a problem."));
+		}
+
+		// ermitteln ob es in reference-files entsprechend der ocurance-angaben gematched wurde
+		for(File actMatchedFile : this.getMatchedFile())
+		{
+			if((actMatchedFile.getMatchedFile().size() < actMatchedFile.getMinOccur()) || (actMatchedFile.getMatchedFile().size() > actMatchedFile.getMaxOccur()) )
+			{
+				this.log.add(new Log("debug", "(exam) this file path does not fit in the occurance-definition of the reference."));
+			}
+			else
+			{
+				this.flagOccuranceMatched = true;
+			}
+		}
+
 	}
 
 	/**
@@ -50,13 +264,16 @@ public class File {
 			// den pfad vom examinee gegen den template-pfad matchen
 			if(actFile.getPath().matches("^"+this.getPath()+"$"))
 			{
+				actFile.setFlagPathMatched(true);
 				actFile.log.add(new Log("debug", "(exam) file path ("+actFile.getPath()+") matched with (id="+this.getId()+", path="+this.getPath()+")"));
 				this.log.add(new Log("debug", "(ref) file path ("+this.getPath()+") matched with (id="+actFile.getId()+", path="+actFile.getPath()+")"));
 
 				// die groesse vergleichen
 				if(actFile.doesSizeMatch(this))
 				{
-					// passen beide vergleichspartner? Dann soll dies in beiden vermerkt werden
+					// vermerken, dass die groesse gepasst hat
+					actFile.setFlagSizeMatched(true);
+					// passen beide vergleichspartner? Dann soll das korrespondierende file abgelegt werden
 					actFile.getMatchedFile().add(this);
 					actFile.log.add(new Log("debug", "(exam) file size ("+actFile.getSize()+actFile.getSizeUnit()+") matched with (id="+this.getId()+", path="+this.getPath()+", size="+this.getSize()+this.getSizeUnit()+")"));
 
@@ -272,6 +489,62 @@ public class File {
 	 */
 	public void setMatchedFile(ArrayList<File> matchedFile) {
 		this.matchedFile = matchedFile;
+	}
+
+	/**
+	 * @return the flagPathMatched
+	 */
+	public boolean isFlagPathMatched() {
+		return flagPathMatched;
+	}
+
+	/**
+	 * @param flagPathMatched the flagPathMatched to set
+	 */
+	public void setFlagPathMatched(boolean flagPathMatched) {
+		this.flagPathMatched = flagPathMatched;
+	}
+
+	/**
+	 * @return the flagSizeMatched
+	 */
+	public boolean isFlagSizeMatched() {
+		return flagSizeMatched;
+	}
+
+	/**
+	 * @param flagSizeMatched the flagSizeMatched to set
+	 */
+	public void setFlagSizeMatched(boolean flagSizeMatched) {
+		this.flagSizeMatched = flagSizeMatched;
+	}
+
+	/**
+	 * @return the flagOccuranceMatched
+	 */
+	public boolean isFlagOccuranceMatched() {
+		return flagOccuranceMatched;
+	}
+
+	/**
+	 * @param flagOccuranceMatched the flagOccuranceMatched to set
+	 */
+	public void setFlagOccuranceMatched(boolean flagOccuranceMatched) {
+		this.flagOccuranceMatched = flagOccuranceMatched;
+	}
+
+	/**
+	 * @return the flagFuzzyReference
+	 */
+	public boolean isFlagFuzzyReference() {
+		return flagFuzzyReference;
+	}
+
+	/**
+	 * @param flagFuzzyReference the flagFuzzyReference to set
+	 */
+	public void setFlagFuzzyReference(boolean flagFuzzyReference) {
+		this.flagFuzzyReference = flagFuzzyReference;
 	}
 
 

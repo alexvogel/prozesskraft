@@ -52,6 +52,10 @@ public class Dir {
 
 	public Dir thisObj = null;
 
+	private boolean flagPathMatched = false;
+	private boolean flagOccuranceMatched = false;
+	private boolean flagFuzzyReference = false;
+	
 	// ist es ein template? , dann wird in match alle passenden ids aus dem pruefling gesammelt.
 	// ist es ein pruefling?, dann wird in match die id des passenden eintrages aus dem template eingetragen (in diesem fall kann es nur 1 stk sein)
 	private ArrayList<Dir> matchedDir = new ArrayList<Dir>();
@@ -80,28 +84,95 @@ public class Dir {
 	}
 
 	/**
-	 * every dir and file of the template has to find the given occurance from the examinee
-	 * @return
+	 * @return the whole log of this and all dependencies as a String
 	 */
-	public boolean checkDir(Dir examineeDir)
+	public String getLogAsStringRecursive()
 	{
-		// loeschen bestehender match-eintraege in this
-		this.clearMatchRecursive();
-		examineeDir.clearMatchRecursive();
-
-		// alle im verzeichnis befindlichen verzeichnisse mit vollstaendigen examineeDir abgleichen
-		for(Dir actDir : this.getDir())
-		{
-			actDir.match(examineeDir);
-		}
-
-		// alle im verzeichnis befindlichen files mit vollstaendigen examineeDir abgleichen
+		String fullLog = this.getLogAsString();
+		
 		for(File actFile : this.getFile())
 		{
-			actFile.match(examineeDir);
+			fullLog += actFile.getLogAsString();
 		}
 		
-		return examineeDir.summary();
+		for(Dir actDir : this.getDir())
+		{
+			fullLog += actDir.getLogAsString();
+		}
+		
+		return fullLog;
+	}
+
+	/**
+	 * @return the whole log of this as a String
+	 */
+	public String getLogAsString()
+	{
+		return Log.sprintWholeLog(this.log);
+	}
+
+	/**
+	 * erzeugt eine csv-zeile mit allen relevanten daten
+	 * @return
+	 */
+	private String getExamineeSummaryAsCsvLine()
+	{
+		String csvLine = "exam";
+
+		csvLine += ";" + this.getId();
+
+		csvLine += ";" + "dir";
+		csvLine += ";" + this.getPath();
+
+		if(this.isMatchSuccessfull())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
+
+		if(this.isFlagPathMatched())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
+
+		// fuer size
+		csvLine += ";" + "-";
+		
+		if(this.isFlagOccuranceMatched())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
+
+		if(!this.isFlagFuzzyReference())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
+
+		return csvLine;
+	}
+
+	public ArrayList<String> getExamineeSummaryAsCsvWithHeader()
+	{
+		ArrayList<String> csv = new ArrayList<String>();
+		csv.add("origin;id;type;path;result;path matched;sizeMatched;occurance matched;no fuzzyness;note");
+		csv.addAll(this.getExamineeSummaryAsCsv());
+
+		return csv;
 	}
 
 	/**
@@ -109,84 +180,221 @@ public class Dir {
 	 * 1) gibt es ein Dir | File im template, dessen match den minoccur unterschreitet?
 	 * ...
 	 */
-	public boolean summary()
+	public ArrayList<String> getExamineeSummaryAsCsv()
 	{
-		boolean result = true;
-
-		for(Dir actDir : this.getDir())
-		{
-			// die matchedDir auf der gegenseite durchgehen
-			// gibt es mehrere?, dann mit fehlermeldung abbrechen
-
-			if(actDir.getMatchedDir().size() > 1)
-			{
-				actDir.log.add(new Log("error", "directory (id="+actDir.getId()+", path="+actDir.getPath()+") fits "+actDir.getMatchedDir().size()+" path-patterns. improve pattern to reduce this to 1."));
-				result = false;
-			}
-			else if(actDir.getMatchedDir().size() < 1)
-			{
-				actDir.log.add(new Log("error", "directory (id="+actDir.getId()+", path="+actDir.getPath()+") fits "+actDir.getMatchedDir().size()+" no path-patterns."));
-				result = false;
-			}
-
-			for(Dir actMatchedDir : actDir.getMatchedDir())
-			{
-				if(actMatchedDir.getMatchedDir().size() < actMatchedDir.getMinOccur())
-				{
-					actDir.log.add(new Log("error", "directory (id="+actDir.getId()+", path="+actDir.getPath()+") needed to be there at least "+actMatchedDir.getMinOccur()+" time(s), but was only found "+actMatchedDir.getMatchedDir().size()+" time(s)"));
-					result = false;
-				}
-				if(actMatchedDir.getMatchedDir().size() > actMatchedDir.getMaxOccur())
-				{
-					actDir.log.add(new Log("error", "directory (id="+actDir.getId()+", path="+actDir.getPath()+") needed to be there at maximum "+actMatchedDir.getMinOccur()+" time(s), but was found "+actMatchedDir.getMatchedDir().size()+" time(s)"));
-					result = false;
-				}
-			}
-			// ausgeben des gesamten loggings des aktuellen entity auf STDOUT
-//			System.out.println("id="+actDir.getId()+", path="+actDir.getPath());
-			System.out.println(Log.sprintWholeLog(actDir.log));
-			
-			// alle enthaltenen dirs auch ein summary ausgeben
-			if(! actDir.summary())
-			{
-				result = false;
-			}
-		}
+		ArrayList<String> allResultsAsCsv = new ArrayList<String>();
 		
+		// 1) das directory
+		allResultsAsCsv.add(this.getExamineeSummaryAsCsvLine());
+		
+		// 2) alle darin enthaltenen files
 		for(File actFile : this.getFile())
 		{
-			if(actFile.getMatchedFile().size() > 1)
+			allResultsAsCsv.add(actFile.getExamineeSummaryAsCsvLine());
+		}
+		
+		// 2) alle darin enthaltenen directories
+		for(Dir actDir : this.getDir())
+		{
+			allResultsAsCsv.addAll(actDir.getExamineeSummaryAsCsv());
+		}
+
+		return allResultsAsCsv;
+	}
+
+	/**
+	 * erzeugt eine csv-zeile mit allen relevanten daten, nur wenn die occurance-angaben ueber- oder unterschritten werden
+	 * @return
+	 */
+	private String getReferenceSummaryAsCsvLine()
+	{
+		if(this.flagOccuranceMatched)
+		{
+			return null;
+		}
+		else
+		{
+			String csvLine = "ref";
+
+			csvLine += ";" + this.getId();
+
+			csvLine += ";" + "dir";
+			csvLine += ";" + this.getPath();
+
+			if(this.isMatchSuccessfull())
 			{
-				actFile.log.add(new Log("error", "file (id="+actFile.getId()+", path="+actFile.getPath()+") fits "+actFile.getMatchedFile().size()+" path-patterns. improve pattern to reduce this to 1."));
-				result = false;
+				csvLine += ";" + "x";
 			}
-			else if(actFile.getMatchedFile().size() < 1)
+			else
 			{
-				actFile.log.add(new Log("error", "file (id="+actFile.getId()+", path="+actFile.getPath()+") fits "+actFile.getMatchedFile().size()+" path-patterns."));
-				result = false;
+				csvLine += ";" + "o";
 			}
 
-			
-			for(File actMatchedFile : actFile.getMatchedFile())
+			if(this.isFlagPathMatched())
 			{
-				if(actMatchedFile.getMatchedFile().size() < actMatchedFile.getMinOccur())
-				{
-					actFile.log.add(new Log("error", "file (id="+actFile.getId()+", path="+actFile.getPath()+") needed to be there at least "+actMatchedFile.getMinOccur()+" time(s), but was only found "+actMatchedFile.getMatchedFile().size()+" time(s)"));
-					result = false;
-				}
-				if(actMatchedFile.getMatchedFile().size() > actMatchedFile.getMaxOccur())
-				{
-					actFile.log.add(new Log("error", "file (id="+actFile.getId()+", path="+actFile.getPath()+") needed to be there at maximum "+actMatchedFile.getMinOccur()+" time(s), but was found "+actMatchedFile.getMatchedFile().size()+" time(s)"));
-					result = false;
-				}
+				csvLine += ";" + "x";
 			}
-			// ausgeben des gesamten loggings des aktuellen entity auf STDOUT
-//			System.out.println("id="+actFile.getId()+", path="+actFile.getPath());
-			System.out.println(Log.sprintWholeLog(actFile.log));
+			else
+			{
+				csvLine += ";" + "o";
+			}
+
+			// fuer size
+			csvLine += ";" + "-";
+			
+			if(this.isFlagOccuranceMatched())
+			{
+				csvLine += ";" + "x";
+			}
+			else
+			{
+				csvLine += ";" + "o";
+			}
+
+			if(!this.isFlagFuzzyReference())
+			{
+				csvLine += ";" + "x";
+			}
+			else
+			{
+				csvLine += ";" + "o";
+			}
+
+			String note = "";
+
+			if(this.getMatchedDir().size() < this.getMinOccur())
+			{
+				note = "error: matched directories: "+this.getMatchedDir().size()+", but at least "+this.getMinOccur()+" matches are needed (minOccur)";
+			}
+			else if(this.getMatchedDir().size() > this.getMaxOccur())
+			{
+				note = "error: matched directories: "+this.getMatchedDir().size()+", but max "+this.getMinOccur()+" matches are allowed (maxOccur)";
+			}
+			
+			csvLine += ";" + note;
+			return csvLine;
 		}
-		return result;
+	}
+
+	/**
+	 * alle Dirs und Files durchgehen
+	 * 1) gibt es ein Dir | File im template, dessen match den minoccur unterschreitet?
+	 * ...
+	 */
+	public ArrayList<String> getReferenceSummaryAsCsv()
+	{
+		ArrayList<String> referenceSummaryAsCsv = new ArrayList<String>();
+
+		// 1) das directory
+		if(this.getReferenceSummaryAsCsvLine() != null)
+		{
+			referenceSummaryAsCsv.add(this.getReferenceSummaryAsCsvLine());
+		}
+		
+		// 2) alle darin enthaltenen files
+		for(File actFile : this.getFile())
+		{
+			if(actFile.getReferenceSummaryAsCsvLine() != null)
+			{
+				referenceSummaryAsCsv.add(actFile.getReferenceSummaryAsCsvLine());
+			}
+		}
+
+		// 2) alle darin enthaltenen directories
+		for(Dir actDir : this.getDir())
+		{
+			referenceSummaryAsCsv.addAll(actDir.getReferenceSummaryAsCsv());
+		}
+
+		return referenceSummaryAsCsv;
+	}
+
+	/**
+	 * gibt zurueck ob alle verglichenen eigenschaften zufriedenstellend zusammengepasst haben
+	 * @param
+	 */
+	public boolean isMatchSuccessfull()
+	{
+		if(this.flagPathMatched && this.flagOccuranceMatched && !this.flagFuzzyReference)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * das reference dir wird durchgegangen und festgestellt ob es einheiten gibt, deren minoccur unterschritten wurde
+	 */
+	private void detOccuranceReference()
+	{
+		if(this.getMatchedDir().size() < this.getMinOccur())
+		{
+			this.log.add(new Log("error", "(ref) this dir has "+ this.getMatchedDir().size() +" matched Dirs. this is less than the minoccur "+this.getMinOccur()+" matches."));
+		}
+		if(this.getMatchedDir().size() > this.getMaxOccur())
+		{
+			this.log.add(new Log("error", "(ref) this dir has "+ this.getMatchedDir().size() +" matched Dirs. this is more than the maxoccur "+this.getMaxOccur()+" matches."));
+		}
+		else
+		{
+			this.setFlagOccuranceMatched(true);
+		}
+
+		for(File actFile : this.getFile())
+		{
+			actFile.detOccuranceReference();
+		}
+		
+		for(Dir actDir : this.getDir())
+		{
+			actDir.detOccuranceReference();
+		}
 	}
 	
+	/**
+	 * das examinee dir wird durchgegangen und entsprechend der gematchten Einheiten in reference dir wird festgestellt ob die occurance matcht
+	 */
+	private void detOccuranceExaminee()
+	{
+
+		// wenn das examinee-Directory nicht genau 1 match aufweist, so liegt eine unschaerfe im referenz-fingerprint vor
+		if(this.getMatchedDir().size() > 1)
+		{
+			this.setFlagFuzzyReference(true);
+			this.log.add(new Log("error", "(exam) this dir has more than 1 matches. this indicates a fuzzyness in the pathpatterns of the reference."));
+		}
+		else if(this.getMatchedDir().size() < 1)
+		{
+			this.log.add(new Log("debug", "(exam) this dir path has 0 matches. this is not a problem"));
+		}
+
+		// ermitteln ob es im reference-directory entsprechend der ocurance-angaben gematched wurde
+		for(Dir actMatchedDir : this.getMatchedDir())
+		{
+			if( (actMatchedDir.getMatchedDir().size() < actMatchedDir.getMinOccur()) || (actMatchedDir.getMatchedDir().size() > actMatchedDir.getMaxOccur()) )
+			{
+				this.log.add(new Log("debug", "(exam) this dir path does not fit in the occurance-definition of the reference."));
+			}
+			else
+			{
+				this.flagOccuranceMatched = true;
+			}
+		}
+
+		// alle enthaltenen Files auch matchOccurance
+		for(File actFile : this.getFile())
+		{
+			actFile.detOccuranceExaminee();
+		}
+		
+		// fuer alle enthaltenen dirs auch die occurance matchen
+		for(Dir actDir : this.getDir())
+		{
+			actDir.detOccuranceExaminee();
+		}
+
+	}
+
 	/**
 	 * geht den vollstaendigen baum durch und prueft ob es zu this passende eintraege gibt
 	 * passende eintraege werden auf beiden seiten (template-baum <-> examinee-baum) vermerkt
@@ -195,31 +403,66 @@ public class Dir {
 	 * @param examineeDir
 	 * @return allMatchingDirByPath
 	 */
-	public void match(Dir examineeDir)
+	private void match(Dir examineeDir)
 	{
 		// den pfad vom examinee gegen den template-pfad matchen
-		if(examineeDir.getPath().matches("^"+this.getPath()+"$"))
+		if((!examineeDir.getMatchedDir().contains(this)))
 		{
-			// passen beide vergleichspartner? Dann soll dies in beiden vermerkt werden
-			examineeDir.getMatchedDir().add(this);
-			examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") matched with dir (id="+this.getId()+", path="+this.getPath()+")"));
-
-			this.addMatchedDir(examineeDir);
-			this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") matched with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
+			if( examineeDir.getPath().matches("^"+this.getPath()+"$")) 
+			{
+				// passen beide vergleichspartner? Dann soll das passende gegenstueck im jeweils anderen abgelegt werden
+				// und die flags fuer die checks gesetzt werden
+				examineeDir.getMatchedDir().add(this);
+				examineeDir.setFlagPathMatched(true);
+				examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") matched with dir (id="+this.getId()+", path="+this.getPath()+")"));
+	
+				this.addMatchedDir(examineeDir);
+				this.setFlagPathMatched(true);
+				this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") matched with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
+			}
+			else
+			{
+				examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") did NOT match with dir (id="+this.getId()+", path="+this.getPath()+")"));
+				this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") did NOT match with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
+			}
 		}
-		else
+			
+		// auch fuer alle in examineeDir enthaltenen Dirs ausfuehren
+		for(Dir actExamineeDir : examineeDir.getDir())
 		{
-			examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") did NOT match with dir (id="+this.getId()+", path="+this.getPath()+")"));
-			this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") did NOT match with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
+			this.match(actExamineeDir);
 		}
-
-		// auch fuer alle enthaltenen Dirs ausfuehren
-		for(Dir actDir : examineeDir.getDir())
+		
+		// das ganze auch fuer alle enthaltenen in this
+		for(Dir actDir : this.getDir())
 		{
-			this.match(actDir);
+			actDir.match(examineeDir);
 		}
+		
 	}
 	
+	/**
+	 * every dir and file of the template has to find the given occurance from the examinee
+	 * @return
+	 */
+	public void runCheck(Dir examineeDir)
+	{
+		// loeschen bestehender match-eintraege in this
+		this.clearMatchRecursive();
+		examineeDir.clearMatchRecursive();
+
+		this.match(examineeDir);
+		
+		// alle im verzeichnis befindlichen files mit vollstaendigen examineeDir abgleichen
+		for(File actFile : this.getFile())
+		{
+			actFile.match(examineeDir);
+		}
+
+		examineeDir.detOccuranceExaminee();
+		this.detOccuranceReference();
+	}
+
 	/**
 	 * loescht die match-Eintraege auch aller enthaltener Dirs und Files
 	 */
@@ -254,8 +497,8 @@ public class Dir {
 			// called after a directory visit is complete
 			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
 			{
-				String pathString = dir.getParent() + "/"+dir.getFileName();
-				System.out.println("after visit directory: "+pathString);
+//				String pathString = dir.getParent() + "/"+dir.getFileName();
+//				System.out.println("after visit directory: "+pathString);
 				return FileVisitResult.CONTINUE;
 			}
 
@@ -263,7 +506,7 @@ public class Dir {
 			public FileVisitResult preVisitDirectory(Path walkingDir, BasicFileAttributes attrs) throws IOException
 			{
 				// relativen Pfad (zur Basis basepath) feststellen
-				String pathString = walkingDir.getParent() + "/"+walkingDir.getFileName();
+//				String pathString = walkingDir.getParent() + "/"+walkingDir.getFileName();
 				String relPathString = getBasepath().relativize(walkingDir).toString();
 				
 				// Dir erstellen
@@ -272,7 +515,7 @@ public class Dir {
 				// wenn der relative path ein leerer string ist, ist this das directory
 				if(relPathString.equals(""))
 				{
-					System.out.println("THIS DIR IS ROOT: "+walkingDir.getFileName());
+//					System.out.println("THIS DIR IS ROOT: "+walkingDir.getFileName());
 					dir = thisObj;
 				}
 				else
@@ -280,8 +523,8 @@ public class Dir {
 					addDir(dir);
 				}
 
-				System.err.println("before visit directory (abs): "+pathString);
-				System.err.println("before visit directory (rel): "+relPathString);
+//				System.err.println("before visit directory (abs): "+pathString);
+//				System.err.println("before visit directory (rel): "+relPathString);
 
 				// die Daten setzen
 				dir.setId(runningId++);
@@ -290,7 +533,7 @@ public class Dir {
 				dir.setMinOccur(1);
 				dir.setMaxOccur(1);
 
-				System.out.println(dir.toString());
+//				System.out.println(dir.toString());
 				
 				return FileVisitResult.CONTINUE;
 			}
@@ -299,11 +542,11 @@ public class Dir {
 			public FileVisitResult visitFile(Path walkingFile, BasicFileAttributes attrs) throws IOException
 			{
 				// relativen Pfad (zur Basis basepath) feststellen
-				String pathString = walkingFile.getParent() + "/"+walkingFile.getFileName();
+//				String pathString = walkingFile.getParent() + "/"+walkingFile.getFileName();
 				String relPathString = getBasepath().relativize(walkingFile).toString();
 
-				System.err.println("visit file (abs): "+pathString);
-				System.err.println("visit file (rel): "+relPathString);
+//				System.err.println("visit file (abs): "+pathString);
+//				System.err.println("visit file (rel): "+relPathString);
 
 				// new File erstellen
 				File file = new File();
@@ -324,7 +567,7 @@ public class Dir {
 
 				addFile(file);
 
-				System.out.println(file.toString());
+//				System.out.println(file.toString());
 
 				return FileVisitResult.CONTINUE;
 			}
@@ -648,6 +891,48 @@ public class Dir {
 	 */
 	public void setMatchedDir(ArrayList<Dir> matchedDir) {
 		this.matchedDir = matchedDir;
+	}
+
+	/**
+	 * @return the flagPathMatched
+	 */
+	public boolean isFlagPathMatched() {
+		return flagPathMatched;
+	}
+
+	/**
+	 * @param flagPathMatched the flagPathMatched to set
+	 */
+	public void setFlagPathMatched(boolean flagPathMatched) {
+		this.flagPathMatched = flagPathMatched;
+	}
+
+	/**
+	 * @return the flagOccuranceMatched
+	 */
+	public boolean isFlagOccuranceMatched() {
+		return flagOccuranceMatched;
+	}
+
+	/**
+	 * @param flagOccuranceMatched the flagOccuranceMatched to set
+	 */
+	public void setFlagOccuranceMatched(boolean flagOccuranceMatched) {
+		this.flagOccuranceMatched = flagOccuranceMatched;
+	}
+
+	/**
+	 * @return the flagFuzzyReference
+	 */
+	public boolean isFlagFuzzyReference() {
+		return flagFuzzyReference;
+	}
+
+	/**
+	 * @param flagFuzzyReference the flagFuzzyReference to set
+	 */
+	public void setFlagFuzzyReference(boolean flagFuzzyReference) {
+		this.flagFuzzyReference = flagFuzzyReference;
 	}
 
 }
