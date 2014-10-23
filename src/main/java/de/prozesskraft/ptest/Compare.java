@@ -122,9 +122,9 @@ public class Compare
 		
 		Option osummary = OptionBuilder.withArgName("all|error|debug")
 				.hasArg()
-				.withDescription("[optional; default: result.txt] 'error' prints a summary reduced to failed matches. 'all' prints a full summary. 'debug' is like 'all' plus debug statements")
+				.withDescription("[optional] 'error' prints a summary reduced to failed matches. 'all' prints a full summary. 'debug' is like 'all' plus debug statements")
 //				.isRequired()
-				.create("result");
+				.create("summary");
 		
 		/*----------------------------
 		  create options object

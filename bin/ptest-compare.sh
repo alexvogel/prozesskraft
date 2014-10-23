@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.prozesskraft.ptest.Fingerprint"
+MAINCLASS="de.prozesskraft.ptest.Compare"
 BASEDIR=$(dirname $0)
 
 # wenn eine eigene javainstallation vorhanden ist, soll diese verwendet werden
