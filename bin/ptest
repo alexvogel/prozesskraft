@@ -421,6 +421,7 @@ if(@ARGV)
 		else
 		{
 			logit("fatal", "unknown subcommand ".$ARGV[0].". try -help.");
+			exit(1);
 		}
 	}
 }
