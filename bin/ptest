@@ -418,12 +418,13 @@ if(@ARGV)
 		{
 			$subcommand = shift @ARGV;
 		}
-		else
-		{
-			logit("fatal", "unknown subcommand ".$ARGV[0].". try -help.");
-			exit(1);
-		}
 	}
+}
+
+unless($subcommand)
+{
+	logit("fatal", "no subcommand. try -help for help.");
+	exit(1);
 }
 
 my $return = 0;
