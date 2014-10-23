@@ -120,6 +120,12 @@ public class Compare
 //				.isRequired()
 				.create("result");
 		
+		Option osummary = OptionBuilder.withArgName("all|error|debug")
+				.hasArg()
+				.withDescription("[optional; default: result.txt] 'error' prints a summary reduced to failed matches. 'all' prints a full summary. 'debug' is like 'all' plus debug statements")
+//				.isRequired()
+				.create("result");
+		
 		/*----------------------------
 		  create options object
 		----------------------------*/
@@ -130,6 +136,7 @@ public class Compare
 		options.addOption( oref );
 		options.addOption( oexam );
 		options.addOption( oresult );
+		options.addOption( osummary );
 		
 		/*----------------------------
 		  create the parser
@@ -157,7 +164,7 @@ public class Compare
 			formatter.printHelp("compare", options);
 			System.exit(0);
 		}
-		
+
 		else if ( commandline.hasOption("v"))
 		{
 			System.out.println("web:     "+web);
@@ -182,7 +189,7 @@ public class Compare
 			System.err.println("option -exam is mandatory");
 			error = true;
 		}
-		
+
 		if(error)
 		{
 			exiter();
@@ -232,13 +239,13 @@ public class Compare
 		{
 			refDir.setBasepath(refPath.getCanonicalPath());
 			refDir.genFingerprint();
-			System.out.println("--ref is a directory");
+			System.out.println("-ref is a directory");
 		}
 		// wenn es ein fingerprint ist, muss er eingelesen werden
 		else if(refPath.exists())
 		{
 			refDir.setInfilexml(refPath.getCanonicalPath());
-			System.out.println("--ref is a fingerprint");
+			System.out.println("-ref is a fingerprint");
 			try {
 				refDir.readXml();
 			} catch (JAXBException e) {
@@ -257,13 +264,13 @@ public class Compare
 		{
 			examDir.setBasepath(examPath.getCanonicalPath());
 			examDir.genFingerprint();
-			System.out.println("--exam is a directory");
+			System.out.println("-exam is a directory");
 		}
 		// wenn es ein fingerprint ist, muss er eingelesen werden
 		else if(examPath.exists())
 		{
 			examDir.setInfilexml(examPath.getCanonicalPath());
-			System.out.println("--exam is a fingerprint");
+			System.out.println("-exam is a fingerprint");
 			try
 			{
 				examDir.readXml();
@@ -278,7 +285,7 @@ public class Compare
 		// durchfuehren des vergleichs
 		refDir.runCheck(examDir);
 		
-		if(examDir.isMatchSuccessfull())
+		if(examDir.isMatchSuccessfullRecursive() && refDir.isMatchSuccessfullRecursive())
 		{
 			System.out.println("SUCCESS");
 		}
@@ -288,20 +295,35 @@ public class Compare
 		}
 
 		// printen der csv-ergebnis-tabelle
-		for(String csvLine : examDir.getExamineeSummaryAsCsvWithHeader())
+		if ( commandline.hasOption("summary"))
 		{
-			System.out.println(csvLine);
+			if (commandline.getOptionValue("summary").equals("error"))
+			{
+				System.out.println(examDir.sprintSummaryAsCsv("error"));
+				System.out.println(refDir.sprintSummaryAsCsv("error"));
+			}
+			else if(commandline.getOptionValue("summary").equals("all"))
+			{
+				System.out.println(examDir.sprintSummaryAsCsv("all"));
+				System.out.println(refDir.sprintSummaryAsCsv("all"));
+			}
+			else if(commandline.getOptionValue("summary").equals("debug"))
+			{
+				System.out.println(examDir.sprintSummaryAsCsv("all"));
+				System.out.println(refDir.sprintSummaryAsCsv("all"));
+				// printen des loggings
+				System.out.println("------ logging of examinee --------");
+				System.out.println(examDir.getLogAsStringRecursive());
+				System.out.println("------ logging of reference --------");
+				System.out.println(refDir.getLogAsStringRecursive());
+			}
+			else
+			{
+				System.err.println("for option -summary you only may use all|error");
+				exiter();
+			}
 		}
-		for(String csvLine : refDir.getReferenceSummaryAsCsv())
-		{
-			System.out.println(csvLine);
-		}
-		
-		// printen des loggings
-		System.out.println("------ logging of examinee --------");
-		System.out.println(examDir.getLogAsStringRecursive());
-		System.out.println("------ logging of reference --------");
-		System.out.println(refDir.getLogAsStringRecursive());
+
 		
 	}
 
