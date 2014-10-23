@@ -409,7 +409,7 @@ if ($error_anzahl + $error_patternchecks)
 #
 # place your business logic here.
 #
-my $subcommand = "fingerprint";
+my $subcommand;
 if(@ARGV)
 {
 	if($ARGV[0] !~ m/^-/)
@@ -605,6 +605,10 @@ sub getConfig
 	if (defined $CONF{$key})
 	{
 		return $CONF{$key};
+	}
+	else
+	{
+		return undef;
 	}
 }
 
