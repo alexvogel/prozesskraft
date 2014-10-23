@@ -68,7 +68,7 @@ my %optionsall;
 # hier koenne alle 'festen' optionen definiert werden
 my %OPTIONS_TABLE = (
 # definition der standardoptions
-				'h' => {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'gibt diesen hilfetext aus'},
+				'help' => {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'gibt diesen hilfetext aus'},
 				'doc'  => {'reihenfolge' => '8', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'falls eine dokumentation existiert, wird diese angezeigt'},
 				'log'  => {'reihenfolge' => '7', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'string', 'check'=>'', 'default' => '', 'text1' => '=FILE', 'text2' => 'statt auf STDERR koennen logging-ausgaben in eine datei umgeleitet werden'},
 
@@ -310,7 +310,7 @@ $helptext .= "author: info\@prozesskraft.de | version: $version | date: $date\n"
 #============================================================================
 # processcraft:calls:begin:auto:241142859987282060025963051819748651429
 #----------------------------------------------------------------------------
-if (${$OPT{'h'}})
+if (${$OPT{'help'}})
 {
 	print STDERR $helptext;
 	exit(0);
@@ -394,7 +394,7 @@ foreach my $key (sort keys %OPT)
 
 if ($error_anzahl + $error_patternchecks)
 {
-	logit('fatal', $error_anzahl + $error_patternchecks .' error(s) found in call. call -h for help. exit.');
+	logit('fatal', $error_anzahl + $error_patternchecks .' error(s) found in call. call -help for help. exit.');
 	exit(1);
 }
 #----------------------------------------------------------------------------
