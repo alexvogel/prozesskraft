@@ -250,7 +250,7 @@ my $helptext;
 
 $helptext .= "usage: $filename <subcommand> PARAMETER\n";
 $helptext .= "\n";
-$helptext .= "possible subcommands: list, gui, checkin, checkout, progress, init, cleandb\n";
+$helptext .= "possible subcommands: fingerprint, compare\n";
 $helptext .= "\n";
 $helptext .= "Parameter\n";
 
@@ -270,7 +270,7 @@ for(my $x=0; $x<11; $x++)
 			{
 				$helptext .= " (optional";
 			}
-	
+
 			# wenn der default==true und es sich um einen flag-parameter handelt
 			if ( (${$OPTHELP{$_}}{'default'} eq "1") && (${$OPTIONS_TABLE{$_}}{'definition'} eq "flag") )
 			{
@@ -409,7 +409,7 @@ if ($error_anzahl + $error_patternchecks)
 #
 # place your business logic here.
 #
-my $subcommand = "fingerprint";
+my $subcommand = "xx";
 if(@ARGV)
 {
 	if($ARGV[0] !~ m/^-/)
