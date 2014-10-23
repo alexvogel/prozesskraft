@@ -418,6 +418,10 @@ if(@ARGV)
 		{
 			$subcommand = shift @ARGV;
 		}
+		else
+		{
+			logit("fatal", "unknown subcommand ".$ARGV[0].". try -help.");
+		}
 	}
 }
 
