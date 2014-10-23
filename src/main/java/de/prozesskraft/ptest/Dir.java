@@ -55,6 +55,8 @@ public class Dir {
 	private boolean flagPathMatched = false;
 	private boolean flagOccuranceMatched = false;
 	private boolean flagFuzzyReference = false;
+
+	private String actRole = null;  // ref|exam
 	
 	// ist es ein template? , dann wird in match alle passenden ids aus dem pruefling gesammelt.
 	// ist es ein pruefling?, dann wird in match die id des passenden eintrages aus dem template eingetragen (in diesem fall kann es nur 1 stk sein)
@@ -112,11 +114,86 @@ public class Dir {
 	}
 
 	/**
+	 * erzeugt einen string mit der summary
+	 * @param scope
+	 * @return
+	 */
+	public String sprintSummaryAsCsv(String scope)
+	{
+		String summaryString = this.getCsvHeader() + "\n";
+
+		// wenn role == null
+		if(this.actRole == null)
+		{
+			return "there is no summary available. first you have to runCheck.";
+		}
+
+		// wenn role == exam
+		else if(this.actRole.equals("exam"))
+		{
+			ArrayList<String> allLines = this.getExamineeSummaryAsCsv(scope);
+			
+			// wenn kein inhalt und scope == error
+			if( (allLines.size() == 0) && (scope.equals("error")) )
+			{
+				summaryString += "(exam) no errors in result table";
+			}
+			// wenn kein inhalt und scope != error
+			else if(allLines.size() == 0)
+			{
+				summaryString += "(exam) no entries in result table";
+			}
+			// wenn mit inhalt
+			else
+			{
+				for(String actLine : allLines)
+				{
+					summaryString += actLine + "\n";
+				}
+			}
+			return summaryString;
+		}
+
+		// wenn role == ref
+		else if(this.actRole.equals("ref"))
+		{
+			ArrayList<String> allLines = this.getReferenceSummaryAsCsv(scope);
+			
+			// wenn kein inhalt und scope == error
+			if( (allLines.size() == 0) && (scope.equals("error")) )
+			{
+				summaryString += "(ref) no errors in result table";
+			}
+			// wenn kein inhalt und scope != error
+			else if(allLines.size() == 0)
+			{
+				summaryString += "(ref) no entries in result table";
+			}
+			// wenn mit inhalt
+			else
+			{
+				for(String actLine : allLines)
+				{
+					summaryString += actLine + "\n";
+				}
+			}
+			return summaryString;
+		}
+		
+		else
+		{
+			return "error: unknown role "+this.actRole;
+		}
+	}
+
+	/**
 	 * erzeugt eine csv-zeile mit allen relevanten daten
 	 * @return
 	 */
-	private String getExamineeSummaryAsCsvLine()
+	private String getExamineeSummaryAsCsvLine(String scope)
 	{
+		boolean error = false;
+		
 		String csvLine = "exam";
 
 		csvLine += ";" + this.getId();
@@ -131,6 +208,7 @@ public class Dir {
 		else
 		{
 			csvLine += ";" + "o";
+			error = true;
 		}
 
 		if(this.isFlagPathMatched())
@@ -163,16 +241,22 @@ public class Dir {
 			csvLine += ";" + "o";
 		}
 
+		if(scope.equals("error") && error)
+		{
+			return csvLine;
+		}
+		else if(scope.equals("error") && !error)
+		{
+			return null;
+		}
+
 		return csvLine;
+		
 	}
 
-	public ArrayList<String> getExamineeSummaryAsCsvWithHeader()
+	private String getCsvHeader()
 	{
-		ArrayList<String> csv = new ArrayList<String>();
-		csv.add("origin;id;type;path;result;path matched;sizeMatched;occurance matched;no fuzzyness;note");
-		csv.addAll(this.getExamineeSummaryAsCsv());
-
-		return csv;
+		return ("origin;id;type;path;result;path matched;sizeMatched;occurance matched;no fuzzyness;note");
 	}
 
 	/**
@@ -180,35 +264,46 @@ public class Dir {
 	 * 1) gibt es ein Dir | File im template, dessen match den minoccur unterschreitet?
 	 * ...
 	 */
-	public ArrayList<String> getExamineeSummaryAsCsv()
+	private ArrayList<String> getExamineeSummaryAsCsv(String scope)
 	{
 		ArrayList<String> allResultsAsCsv = new ArrayList<String>();
-		
+
 		// 1) das directory
-		allResultsAsCsv.add(this.getExamineeSummaryAsCsvLine());
-		
+		String lineThis = this.getExamineeSummaryAsCsvLine(scope);
+		if(lineThis != null)
+		{
+			allResultsAsCsv.add(lineThis);
+		}
+
 		// 2) alle darin enthaltenen files
 		for(File actFile : this.getFile())
 		{
-			allResultsAsCsv.add(actFile.getExamineeSummaryAsCsvLine());
+			String lineFile = actFile.getExamineeSummaryAsCsvLine(scope);
+			if(lineFile != null)
+			{
+				allResultsAsCsv.add(lineFile);
+			}
 		}
-		
+
 		// 2) alle darin enthaltenen directories
 		for(Dir actDir : this.getDir())
 		{
-			allResultsAsCsv.addAll(actDir.getExamineeSummaryAsCsv());
+			allResultsAsCsv.addAll(actDir.getExamineeSummaryAsCsv(scope));
 		}
 
 		return allResultsAsCsv;
 	}
 
 	/**
-	 * erzeugt eine csv-zeile mit allen relevanten daten, nur wenn die occurance-angaben ueber- oder unterschritten werden
+	 * es werden die ergenisse ausgegeben
+	 * @param der umfang der ausgabe all|error
+	 * scope=all: es wird die zeile ausgegeben unabhaengig ob die entity einen erfolgreichen match hat oder nicht
+	 * scope=error: es werden nur die zeilen ausgegeben, die einen erfolglosen match anzeigen
 	 * @return
 	 */
-	private String getReferenceSummaryAsCsvLine()
+	private String getReferenceSummaryAsCsvLine(String scope)
 	{
-		if(this.flagOccuranceMatched)
+		if(scope.equals("error") && this.flagOccuranceMatched)
 		{
 			return null;
 		}
@@ -281,45 +376,93 @@ public class Dir {
 	 * 1) gibt es ein Dir | File im template, dessen match den minoccur unterschreitet?
 	 * ...
 	 */
-	public ArrayList<String> getReferenceSummaryAsCsv()
+	private ArrayList<String> getReferenceSummaryAsCsv(String scope)
 	{
 		ArrayList<String> referenceSummaryAsCsv = new ArrayList<String>();
 
 		// 1) das directory
-		if(this.getReferenceSummaryAsCsvLine() != null)
+		if(this.getReferenceSummaryAsCsvLine(scope) != null)
 		{
-			referenceSummaryAsCsv.add(this.getReferenceSummaryAsCsvLine());
+			referenceSummaryAsCsv.add(this.getReferenceSummaryAsCsvLine(scope));
 		}
 		
 		// 2) alle darin enthaltenen files
 		for(File actFile : this.getFile())
 		{
-			if(actFile.getReferenceSummaryAsCsvLine() != null)
+			if(actFile.getReferenceSummaryAsCsvLine(scope) != null)
 			{
-				referenceSummaryAsCsv.add(actFile.getReferenceSummaryAsCsvLine());
+				referenceSummaryAsCsv.add(actFile.getReferenceSummaryAsCsvLine(scope));
 			}
 		}
 
 		// 2) alle darin enthaltenen directories
 		for(Dir actDir : this.getDir())
 		{
-			referenceSummaryAsCsv.addAll(actDir.getReferenceSummaryAsCsv());
+			referenceSummaryAsCsv.addAll(actDir.getReferenceSummaryAsCsv(scope));
 		}
 
 		return referenceSummaryAsCsv;
 	}
 
 	/**
+	 * gibt recursiv zurueck ob alle verglichenen eigenschaften zufriedenstellend zusammengepasst haben
+	 * @param
+	 */
+	public boolean isMatchSuccessfullRecursive()
+	{
+		boolean matchSuccess = true;
+		
+		if(!this.isMatchSuccessfull())
+		{
+			return false;
+		}
+		
+		// fuer alle files aufrufen
+		for(File actFile : this.getFile())
+		{
+			matchSuccess = actFile.isMatchSuccessfull();
+		}
+
+		// fuer alle unterverzeichnisse recursiv aufrufen
+		for(Dir actDir : this.getDir())
+		{
+			matchSuccess = actDir.isMatchSuccessfullRecursive();
+		}
+
+		return matchSuccess;
+	}
+
+	/**
 	 * gibt zurueck ob alle verglichenen eigenschaften zufriedenstellend zusammengepasst haben
 	 * @param
 	 */
-	public boolean isMatchSuccessfull()
+	private boolean isMatchSuccessfull()
 	{
 		if(this.flagPathMatched && this.flagOccuranceMatched && !this.flagFuzzyReference)
 		{
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * setzt den flagOccuranceMatched false|true
+	 */
+	private void detOccurance()
+	{
+		if(this.getActRole().equals("exam"))
+		{
+			detOccuranceExaminee();
+		}
+		else if(this.getActRole().equals("ref"))
+		{
+			detOccuranceReference();
+		}
+		else
+		{
+			System.err.println("actRole not known: "+this.getActRole());
+			System.exit(1);
+		}
 	}
 
 	/**
@@ -331,7 +474,7 @@ public class Dir {
 		{
 			this.log.add(new Log("error", "(ref) this dir has "+ this.getMatchedDir().size() +" matched Dirs. this is less than the minoccur "+this.getMinOccur()+" matches."));
 		}
-		if(this.getMatchedDir().size() > this.getMaxOccur())
+		else if(this.getMatchedDir().size() > this.getMaxOccur())
 		{
 			this.log.add(new Log("error", "(ref) this dir has "+ this.getMatchedDir().size() +" matched Dirs. this is more than the maxoccur "+this.getMaxOccur()+" matches."));
 		}
@@ -405,6 +548,9 @@ public class Dir {
 	 */
 	private void match(Dir examineeDir)
 	{
+		this.setActRole("ref");
+		examineeDir.setActRole("exam");
+		
 		// den pfad vom examinee gegen den template-pfad matchen
 		if((!examineeDir.getMatchedDir().contains(this)))
 		{
@@ -430,6 +576,7 @@ public class Dir {
 		// auch fuer alle in examineeDir enthaltenen Dirs ausfuehren
 		for(Dir actExamineeDir : examineeDir.getDir())
 		{
+			actExamineeDir.setActRole("exam");
 			this.match(actExamineeDir);
 		}
 		
@@ -438,7 +585,6 @@ public class Dir {
 		{
 			actDir.match(examineeDir);
 		}
-		
 	}
 	
 	/**
@@ -450,17 +596,17 @@ public class Dir {
 		// loeschen bestehender match-eintraege in this
 		this.clearMatchRecursive();
 		examineeDir.clearMatchRecursive();
-
-		this.match(examineeDir);
 		
+		this.match(examineeDir);
+
 		// alle im verzeichnis befindlichen files mit vollstaendigen examineeDir abgleichen
 		for(File actFile : this.getFile())
 		{
 			actFile.match(examineeDir);
 		}
 
-		examineeDir.detOccuranceExaminee();
-		this.detOccuranceReference();
+		examineeDir.detOccurance();
+		this.detOccurance();
 	}
 
 	/**
@@ -469,6 +615,12 @@ public class Dir {
 	private void clearMatchRecursive()
 	{
 		this.getMatchedDir().clear();
+		this.getLog().clear();
+		this.setFlagPathMatched(false);
+		this.setFlagOccuranceMatched(false);
+		this.setFlagFuzzyReference(false);
+		this.setActRole(null);
+
 		for(Dir actDir : this.getDir())
 		{
 			actDir.clearMatchRecursive();
@@ -476,9 +628,16 @@ public class Dir {
 		for(File actFile : this.getFile())
 		{
 			actFile.getMatchedFile().clear();
+			actFile.getLog().clear();
+			actFile.setFlagPathMatched(false);
+			actFile.setFlagPathMatched(false);
+			actFile.setFlagSizeMatched(false);
+			actFile.setFlagOccuranceMatched(false);
+			actFile.setFlagFuzzyReference(false);
+			actFile.setActRole(null);
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @throws NullPointerException
@@ -488,6 +647,7 @@ public class Dir {
 	{
 		if(basepath == null)
 		{
+			System.err.println("error: no basepath given. cannot generate a fingerprint without a basepath.");
 			throw new NullPointerException();
 		}
 
@@ -933,6 +1093,34 @@ public class Dir {
 	 */
 	public void setFlagFuzzyReference(boolean flagFuzzyReference) {
 		this.flagFuzzyReference = flagFuzzyReference;
+	}
+
+	/**
+	 * @return the log
+	 */
+	public ArrayList<Log> getLog() {
+		return log;
+	}
+
+	/**
+	 * @param log the log to set
+	 */
+	public void setLog(ArrayList<Log> log) {
+		this.log = log;
+	}
+
+	/**
+	 * @return the actRole
+	 */
+	public String getActRole() {
+		return actRole;
+	}
+
+	/**
+	 * @param actRole the actRole to set
+	 */
+	public void setActRole(String actRole) {
+		this.actRole = actRole;
 	}
 
 }

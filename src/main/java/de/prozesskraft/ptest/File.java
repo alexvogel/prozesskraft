@@ -29,6 +29,8 @@ public class File {
 	private boolean flagOccuranceMatched = false;
 	private boolean flagFuzzyReference = false;
 
+	private String actRole = null; // ref|exam
+
 	public File()
 	{
 		Random generator = new Random();
@@ -51,82 +53,99 @@ public class File {
 	 * erzeugt eine csv-zeile mit allen relevanten daten, nur wenn die occurance-angaben ueber- oder unterschritten werden
 	 * @return
 	 */
-	public String getReferenceSummaryAsCsvLine()
+	public String getReferenceSummaryAsCsvLine(String scope)
 	{
-		if(this.flagOccuranceMatched)
+		boolean error = false;
+		
+		String csvLine = "ref";
+
+		csvLine += ";" + this.getId();
+
+		csvLine += ";" + "dir";
+		csvLine += ";" + this.getPath();
+
+		// gesamtergebnis
+		if(this.isMatchSuccessfull())
 		{
-			return null;
+			csvLine += ";" + "x";
 		}
 		else
 		{
-			String csvLine = "ref";
+			csvLine += ";" + "o";
+			error = true;
+		}
 
-			csvLine += ";" + this.getId();
+		if(this.isFlagPathMatched())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
 
-			csvLine += ";" + "dir";
-			csvLine += ";" + this.getPath();
+		// fuer size
+		if(this.isFlagSizeMatched())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
 
-			if(this.isMatchSuccessfull())
-			{
-				csvLine += ";" + "x";
-			}
-			else
-			{
-				csvLine += ";" + "o";
-			}
+		if(this.isFlagOccuranceMatched())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
 
-			if(this.isFlagPathMatched())
-			{
-				csvLine += ";" + "x";
-			}
-			else
-			{
-				csvLine += ";" + "o";
-			}
+		if(!this.isFlagFuzzyReference())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
 
-			// fuer size
-			csvLine += ";" + "-";
-			
-			if(this.isFlagOccuranceMatched())
-			{
-				csvLine += ";" + "x";
-			}
-			else
-			{
-				csvLine += ";" + "o";
-			}
+		String note = "";
 
-			if(!this.isFlagFuzzyReference())
-			{
-				csvLine += ";" + "x";
-			}
-			else
-			{
-				csvLine += ";" + "o";
-			}
+		if(this.getMatchedFile().size() < this.getMinOccur())
+		{
+			note = "error: matched files: "+this.getMatchedFile().size()+", but at least "+this.getMinOccur()+" matches are needed (minOccur)";
+		}
+		else if(this.getMatchedFile().size() > this.getMaxOccur())
+		{
+			note = "error: matched files: "+this.getMatchedFile().size()+", but at max "+this.getMinOccur()+" matches are allowed (maxOccur)";
+		}
 
-			String note = "";
+		csvLine += ";" + note;
 
-			if(this.getMatchedFile().size() < this.getMinOccur())
-			{
-				note = "error: matched files: "+this.getMatchedFile()+", but at least "+this.getMinOccur()+" matches are needed (minOccur)";
-			}
-			else if(this.getMatchedFile().size() > this.getMaxOccur())
-			{
-				note = "error: matched files: "+this.getMatchedFile()+", but at max "+this.getMinOccur()+" matches are allowed (maxOccur)";
-			}
-	
-			csvLine += ";" + note;
+		// rueckgabe in abhaengigkeit von scope und error
+		if(scope.equals("error") && error)
+		{
 			return csvLine;
 		}
+		else if(scope.equals("error") && !error)
+		{
+			return null;
+		}
+
+		return csvLine;
 	}
 
 	/**
 	 * erzeugt eine csv-zeile mit allen relevanten daten
 	 * @return
 	 */
-	public String getExamineeSummaryAsCsvLine()
+	public String getExamineeSummaryAsCsvLine(String scope)
 	{
+		boolean error = false;
+		
 		String csvLine = "exam";
 
 		csvLine += ";" + this.getId();
@@ -141,6 +160,7 @@ public class File {
 		else
 		{
 			csvLine += ";" + "o";
+			error = true;
 		}
 		
 		if(this.isFlagPathMatched())
@@ -179,6 +199,16 @@ public class File {
 			csvLine += ";" + "o";
 		}
 		
+		// rueckgabe in abhaengigkeit von scope und error
+		if(scope.equals("error") && error)
+		{
+			return csvLine;
+		}
+		else if(scope.equals("error") && !error)
+		{
+			return null;
+		}
+
 		return csvLine;
 	}
 	
@@ -258,16 +288,21 @@ public class File {
 	 */
 	public void match(Dir examineeDir)
 	{
+		this.setActRole("ref");
+
 		// alle files im examineeDir durchgehen und ueberpruefen ob sie matchen
 		for(File actFile : examineeDir.getFile())
 		{
+			actFile.setActRole("exam");
+
 			// den pfad vom examinee gegen den template-pfad matchen
 			if(actFile.getPath().matches("^"+this.getPath()+"$"))
 			{
 				actFile.setFlagPathMatched(true);
 				actFile.log.add(new Log("debug", "(exam) file path ("+actFile.getPath()+") matched with (id="+this.getId()+", path="+this.getPath()+")"));
+				this.setFlagPathMatched(true);
 				this.log.add(new Log("debug", "(ref) file path ("+this.getPath()+") matched with (id="+actFile.getId()+", path="+actFile.getPath()+")"));
-
+				
 				// die groesse vergleichen
 				if(actFile.doesSizeMatch(this))
 				{
@@ -277,6 +312,7 @@ public class File {
 					actFile.getMatchedFile().add(this);
 					actFile.log.add(new Log("debug", "(exam) file size ("+actFile.getSize()+actFile.getSizeUnit()+") matched with (id="+this.getId()+", path="+this.getPath()+", size="+this.getSize()+this.getSizeUnit()+")"));
 
+					this.setFlagSizeMatched(true);
 					this.getMatchedFile().add(actFile);
 					this.log.add(new Log("debug", "(ref) file size ("+this.getSize()+this.getSizeUnit()+") matched with (id="+actFile.getId()+", path="+actFile.getPath()+", size="+actFile.getSize()+actFile.getSizeUnit()+")"));
 				}
@@ -293,11 +329,6 @@ public class File {
 			}
 		}
 
-		// und fuer alle enthaltenen Dirs in examineeDir ebenfalls ausfuehren
-		for(Dir actDir : examineeDir.getDir())
-		{
-			this.match(actDir);
-		}
 	}
 
 	/**
@@ -545,6 +576,34 @@ public class File {
 	 */
 	public void setFlagFuzzyReference(boolean flagFuzzyReference) {
 		this.flagFuzzyReference = flagFuzzyReference;
+	}
+
+	/**
+	 * @return the log
+	 */
+	public ArrayList<Log> getLog() {
+		return log;
+	}
+
+	/**
+	 * @param log the log to set
+	 */
+	public void setLog(ArrayList<Log> log) {
+		this.log = log;
+	}
+
+	/**
+	 * @return the actRole
+	 */
+	public String getActRole() {
+		return actRole;
+	}
+
+	/**
+	 * @param actRole the actRole to set
+	 */
+	public void setActRole(String actRole) {
+		this.actRole = actRole;
 	}
 
 

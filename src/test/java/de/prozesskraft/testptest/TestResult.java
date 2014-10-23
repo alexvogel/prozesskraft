@@ -38,12 +38,10 @@ public class TestResult {
 		fingerprint01.readXml();
 
 		testdir01.runCheck(fingerprint01);
-		assertEquals(true, fingerprint01.isMatchSuccessfull());
-		assertEquals(true, testdir01.isMatchSuccessfull());
+		assertEquals(true, fingerprint01.isMatchSuccessfullRecursive() && testdir01.isMatchSuccessfullRecursive());
 
 		fingerprint01.runCheck(testdir01);
-		assertEquals(true, testdir01.isMatchSuccessfull());
-		assertEquals(true, fingerprint01.isMatchSuccessfull());
+		assertEquals(true, testdir01.isMatchSuccessfullRecursive() && fingerprint01.isMatchSuccessfullRecursive());
 	}
 
 	@Test
@@ -57,11 +55,15 @@ public class TestResult {
 		fingerprint02.setInfilexml("src/test/resources/testdir02.xml");
 		fingerprint02.readXml();
 
+		
 		testdir01.runCheck(fingerprint02);
-		assertEquals(false, fingerprint02.isMatchSuccessfull());
+		System.out.println(fingerprint02.sprintSummaryAsCsv("error"));
+		System.out.println(testdir01.sprintSummaryAsCsv("error"));
+		
+		assertEquals(false, fingerprint02.isMatchSuccessfullRecursive() && testdir01.isMatchSuccessfullRecursive());
 
-		fingerprint02.runCheck(testdir01);
-		assertEquals(false, testdir01.isMatchSuccessfull());
+//		fingerprint02.runCheck(testdir01);
+//		assertEquals(false, testdir01.isMatchSuccessfull());
 	}
 
 
