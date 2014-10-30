@@ -652,7 +652,7 @@ foreach my $refh_stackline (@CONFIG)
 			#-------------------
 			# suchen und ersetzen des platzhalters fuer 'version' in allen files
 			print "info: action 'searchreplace'\n";
-			print "info: search and replace placeholder [version] and [date] in entry-point-file.\n";
+			print "info: search and replace placeholder [version] and [date] and [procname] and [installdir] and [home] in entry-point-file.\n";
 			find( sub { wanted($now_app, @filenames_from_parameter) }, "$TMPDIR");
 			
 			sub wanted
@@ -703,6 +703,10 @@ foreach my $refh_stackline (@CONFIG)
 								date	=> sub	{
 													print "replacing placeholder for 'date' with '$date_lastcommit'\n";
 													return $date_lastcommit;
+												},
+								procname	=> sub	{
+													print "replacing placeholder for 'procname' with '$now_app'\n";
+													return $now_app;
 												},
 								installdir => sub	{
 													print "replacing placeholder for 'installdir' with '$now_targetbulkappbranch'\n";
