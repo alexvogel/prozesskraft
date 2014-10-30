@@ -534,9 +534,10 @@ implements Serializable, Cloneable
 		
 //		System.out.println(" options : "+callitem.size());
 
+		int reihenfolge = 0;
 		for(Init actInit : this.getInit())
 		{
-
+			reihenfolge++;
 			// daten aus der init-definition
 			String name = actInit.getListname();
 			int minoccur = actInit.getMinoccur();
@@ -666,7 +667,7 @@ implements Serializable, Cloneable
 					text2 = text2.replaceAll("'", "\\\\'");
 				}
 				
-				script.addOption(name, minoccur, maxoccur, definition, check, def, text1, text2);
+				script.addOption(name, reihenfolge, minoccur, maxoccur, definition, check, def, text1, text2);
 			}
 //			System.out.println("addoption mit diesen parametern: "+name+minoccur+maxoccur+definition+check+def+text1+text2);
 		}
