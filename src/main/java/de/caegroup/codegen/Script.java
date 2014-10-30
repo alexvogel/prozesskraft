@@ -49,11 +49,12 @@ implements Serializable, Cloneable
 		this.option.add(option);
 	}
 	
-	public void addOption (String name, int minoccur, int maxoccur, String definition, String check, String def, String text1, String text2)
+	public void addOption (String name, int reihenfolge, int minoccur, int maxoccur, String definition, String check, String def, String text1, String text2)
 	{
 		Option option = new Option();
 
 		option.setName(name);
+		option.setReihenfolge(reihenfolge);
 		option.setMinoccur(minoccur);
 		option.setMaxoccur(maxoccur);
 		option.setDefinition(definition);
