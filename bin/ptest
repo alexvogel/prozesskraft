@@ -228,7 +228,7 @@ if (stat $conf_path)
 		if ((($CONF_ORG{$param} ne "") && (stat $bindir."/".$CONF_ORG{$param})))
 		{
 			$CONF{$param} = File::Spec->rel2abs($bindir."/".$CONF_ORG{$param});
-			logit("info", "parameter $param (value=" . $CONF_ORG{$param} .") expanding to (new_value=".$CONF{$param}.")");
+			logit("debug", "parameter $param (value=" . $CONF_ORG{$param} .") expanding to (new_value=".$CONF{$param}.")");
 		}
 		else
 		{
