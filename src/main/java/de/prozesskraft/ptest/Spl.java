@@ -66,7 +66,14 @@ public class Spl {
 		// zu einem string joinen  (trennzeichen=" ")
 		for(String actLine : allLines)
 		{
-			callAsString += " " + actLine;
+			if(callAsString.equals(""))
+			{
+				callAsString += actLine;
+			}
+			else
+			{
+				callAsString += " " + actLine;
+			}
 		}
 
 		return callAsString;
