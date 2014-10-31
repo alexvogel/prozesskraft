@@ -252,7 +252,7 @@ public class Launch
 
 		// das erste spl-objekt geben lassen
 		Spl actSpl =new Splset(spl).getSpl().get(0) ;
-		
+
 		// den call, result und altapp ueberschreiben
 		actSpl.setName("default");
 		
