@@ -71,6 +71,7 @@ my %OPTIONS_TABLE = (
 				'help' => {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'gibt diesen hilfetext aus'},
 				'doc'  => {'reihenfolge' => '8', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'text1' => '', 'text2' => 'falls eine dokumentation existiert, wird diese angezeigt'},
 				'log'  => {'reihenfolge' => '7', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'string', 'check'=>'', 'default' => '', 'text1' => '=FILE', 'text2' => 'statt auf STDERR koennen logging-ausgaben in eine datei umgeleitet werden'},
+				'd'  => {'reihenfolge' => '14', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'textfordefault' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},
 
 # definition der standardoptions
 				'hh' => {'reihenfolge' =>'10', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check' => '', 'default' => '', 'text1' => '', 'text2' => 'gibt den hilfetext des subcommands aus'},
@@ -492,15 +493,22 @@ sub logit
 		$dest = shift;
 	}
 	
+# wenn loglevel == debug, ABER --debug nicht gesetzt wurde, soll nicht geloggt werden
+		if ( ($level eq "debug") &! getOption("d") )
+		{
+			return;
+		}
+
 	my $timestamp = localtime(time);
 	
 	my $ausgabestring = '[' . $timestamp . ']:' . $level . ':' . $msg; 
 	
 	if (!($dest))
 	{
-		if (defined ${$OPT{'log'}})
+		my $logfile = &getOption("log");
+		if ($logfile)
 		{
-			system "echo \"$ausgabestring\" >> ${$OPT{'log'}}";
+			system "echo \"$ausgabestring\" >> $logfile";
 		}
 		else
 		{
