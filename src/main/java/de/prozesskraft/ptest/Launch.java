@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 
 import javax.xml.bind.JAXBException;
@@ -104,40 +105,40 @@ public class Launch
 		----------------------------*/
 		Option ospl = OptionBuilder.withArgName("DIR")
 				.hasArg()
-				.withDescription("[mandatory] directory with sample data and .call.*.txt files")
+				.withDescription("[mandatory] directory with sample input data")
 //				.isRequired()
 				.create("spl");
 
-		Option obasedir = OptionBuilder.withArgName("DIR")
+		Option oinstancedir = OptionBuilder.withArgName("DIR")
 				.hasArg()
-				.withDescription("[mandatory, default: .] base directory where the sample data is copied and the calls are performed")
+				.withDescription("[mandatory, default: .] directory where the test will be performed")
 //				.isRequired()
-				.create("basedir");
+				.create("instancedir");
 
-		Option ocall = OptionBuilder.withArgName("REGEX")
+		Option ocall = OptionBuilder.withArgName("FILE")
 				.hasArg()
-				.withDescription("[optional] use this filter to reduce the launch to certain calls (.call.<REGEX>.txt)")
+				.withDescription("[mandatory, default: random call in spl-directory] file with call-string")
 //				.isRequired()
 				.create("call");
 
-		Option oapp = OptionBuilder.withArgName("STRING")
+		Option oaltapp = OptionBuilder.withArgName("STRING")
 				.hasArg()
-				.withDescription("[optional] use this String instead of the first line of the .call-files.")
+				.withDescription("[optional] alternative app. this String replaces the first line of the .call-file.")
 //				.isRequired()
-				.create("app");
-		
+				.create("altapp");
+
 		/*----------------------------
 		  create options object
 		----------------------------*/
 		Options options = new Options();
-		
+
 		options.addOption( ohelp );
 		options.addOption( ov );
 		options.addOption( ospl );
-		options.addOption( obasedir );
+		options.addOption( oinstancedir );
 		options.addOption( ocall );
-		options.addOption( oapp );
-		
+		options.addOption( oaltapp );
+
 		/*----------------------------
 		  create the parser
 		----------------------------*/
@@ -177,22 +178,48 @@ public class Launch
 		  ueberpruefen ob eine schlechte kombination von parametern angegeben wurde
 		----------------------------*/
 		boolean error = false;
-		if ( !( commandline.hasOption("spl")) )
+		String spl = null;
+		String instancedir = null;
+		String call = null;
+		String altapp = null;
+
+		// spl initialisieren
+		if ( commandline.hasOption("spl") )
+		{
+			spl = commandline.getOptionValue("spl");
+		}
+		else
 		{
 			System.err.println("option -spl is mandatory");
 			error = true;
 		}
 
+		// instancedir initialisieren
+		if ( commandline.hasOption("instancedir") )
+		{
+			instancedir = commandline.getOptionValue("instancedir");
+		}
+		else
+		{
+			instancedir = System.getProperty("user.dir");
+		}
+
+		// call initialisieren
+		if ( commandline.hasOption("call") )
+		{
+			call = commandline.getOptionValue("call");
+		}
+
+		// altapp initialisieren
+		if ( commandline.hasOption("altapp") )
+		{
+			altapp = commandline.getOptionValue("altapp");
+		}
+		
+		// wenn fehler, dann exit
 		if(error)
 		{
 			exiter();
-		}
-
-		String basedir = "";
-		if ( !( commandline.hasOption("basedir")) )
-		{
-			System.err.println("setting default: -result=result.txt");
-			basedir = ".";
 		}
 
 		/*----------------------------
@@ -223,8 +250,110 @@ public class Launch
 		  die eigentliche business logic
 		----------------------------*/
 
-		// die files im spl-verzeichnis feststellen
-		// die .call-files im spl-verzeichnis feststellen
+		// das erste spl-objekt geben lassen
+		Spl actSpl =new Splset(spl).getSpl().get(0) ;
+		
+		// den call, result und altapp ueberschreiben
+		actSpl.setName("default");
+		
+		if(call != null)
+		{
+			actSpl.setCall(new java.io.File(call));
+		}
+		if(actSpl.getCall() == null)
+		{
+			System.err.println("error: no call information found");
+			System.exit(1);
+		}
+		
+		if(altapp != null)
+		{
+			actSpl.setAltapp(altapp);
+		}
+
+		actSpl.setResult(null);
+		
+		// das instancedir erstellen
+		java.io.File actSplInstanceDir = new java.io.File(commandline.getOptionValue("instancedir") + actSpl.getName());
+		actSplInstanceDir.mkdirs();
+		
+		// die beispieldaten in das instancedir kopieren
+		for(java.io.File actInputFile : actSpl.getInput())
+		{
+			// namen des targetfiles festlegen
+			java.io.File targetFile = new java.io.File(actSplInstanceDir.getCanonicalPath() + "/" + actInputFile.getName());
+			
+			// input file in das instancedir kopieren
+			Files.copy(actInputFile.toPath(), targetFile.toPath());
+		}
+
+		// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)
+		String AbsLogSyscallWrapper = actSplInstanceDir.getCanonicalPath()+"/.log";
+
+		try
+		{
+			// den Aufrufstring fuer die externe App (process syscall --version 0.6.0)) splitten
+			// beim aufruf muss das erste argument im path zu finden sein, sonst gibt die fehlermeldung 'no such file or directory'
+			ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(ini.get("apps", "process-syscall").split(" ")));
+
+			// die sonstigen argumente hinzufuegen
+			processSyscallWithArgs.add("-call");
+			processSyscallWithArgs.add(actSpl.getCallAsString());
+//			processSyscallWithArgs.add("\""+call+"\"");
+			processSyscallWithArgs.add("-stdout");
+			processSyscallWithArgs.add(instancedir + "/" + ".stdout.txt");
+			processSyscallWithArgs.add("-stderr");
+			processSyscallWithArgs.add(instancedir + "/" + ".stderr.txt");
+			processSyscallWithArgs.add("-pid");
+			processSyscallWithArgs.add(instancedir + "/" + ".pid");
+			processSyscallWithArgs.add("-mylog");
+			processSyscallWithArgs.add(AbsLogSyscallWrapper);
+			processSyscallWithArgs.add("-maxrun");
+			processSyscallWithArgs.add(""+3000);
+
+			// erstellen prozessbuilder
+			ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
+
+			// erweitern des PATHs um den prozesseigenen path
+//			Map<String,String> env = pb.environment();
+//			String path = env.get("PATH");
+//			log("debug", "$PATH="+path);
+//			path = this.parent.getAbsPath()+":"+path;
+//			env.put("PATH", path);
+//			log("info", "path: "+path);
+			
+			// setzen der aktuellen directory (in der syscall ausgefuehrt werden soll)
+			java.io.File directory = new java.io.File(instancedir);
+			System.err.println("info: setting execution directory to: "+directory.getCanonicalPath());
+			pb.directory(directory);
+
+			// zum debuggen ein paar ausgaben
+//			java.lang.Process p1 = Runtime.getRuntime().exec("date >> ~/tmp.debug.work.txt");
+//			p1.waitFor();
+//			java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
+//			p2.waitFor();
+//			java.lang.Process pro = Runtime.getRuntime().exec("nautilus");
+//			java.lang.Process superpro = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
+//			p3.waitFor();
+			
+			System.err.println("info: calling: " + pb.command());
+
+			// starten des prozesses
+			java.lang.Process sysproc = pb.start();
+
+//			alternativer aufruf
+//			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
+			
+//			log("info", "call executed. pid="+sysproc.hashCode());
+
+			// wait 2 seconds for becoming the pid-file visible
+			Thread.sleep(2000);
+		}
+		catch (Exception e2)
+		{
+			System.err.println("error: " + e2.getMessage());
+			System.exit(1);
+		}
 		
 	}
 
