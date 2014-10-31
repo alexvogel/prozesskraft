@@ -21,6 +21,15 @@ public class Splset {
 	public Splset(String inputDir)
 	{
 		this.inputDir = inputDir;
+		try {
+			this.genSpl();
+		} catch (NullPointerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -153,6 +162,21 @@ public class Splset {
 	 */
 	public void setInputDir(String inputDir) {
 		this.inputDir = inputDir;
+	}
+
+	/**
+	 * @return the spl
+	 */
+	public Spl getSpl(String name)
+	{
+		for(Spl actSpl : this.getSpl())
+		{
+			if(actSpl.getName().equals(name))
+			{
+				return actSpl;
+			}
+		}
+		return null;
 	}
 
 	/**

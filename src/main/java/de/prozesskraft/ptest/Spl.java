@@ -32,27 +32,43 @@ public class Spl {
 		// das call-file einlesen
 		List<String> allLines = Files.readAllLines(this.getCall().toPath(), Charset.defaultCharset());
 
+		// aus allen zeilen " *\\" entfernen
+		for(int id = 0; id < allLines.size(); id++)
+		{
+			allLines.set(id, allLines.get(id).replaceAll("\\s*\\\\$", ""));
+		}
+
 		// soll ein alternativer app-aufruf verwendet werden?
 		if(this.getAltapp() != null)
 		{
 			allLines.set(0, this.getAltapp());
 		}
-		
-		// alle lines zu einem string joinen
-		// dabei am ende des string eventuelle " *\\" entfernen
-		for(String actLine : allLines)
+		// wenn es sich beim ersten String in der Zeile um einen relativen pfad handelt (beginnt mit "..", soll der zu einem absoluten verlaengert werden
+		else if(allLines.get(0).matches("^\\s*\\.\\..*$"))
 		{
-			actLine.replaceAll(" *\\$", "");
+			String newPathToApp = this.getCall().getParentFile().getCanonicalPath() + "/" + allLines.get(0);
+
+			java.io.File appFile = new java.io.File(newPathToApp);
+			
+			if(appFile.isFile())
+			{
+				allLines.set(0, appFile.getCanonicalPath());
+			}
+			else
+			{
+				System.err.println("error: this is not a file: " + appFile.getCanonicalPath());
+				System.exit(1);
+			}
 		}
-		
+
 		String callAsString = "";
-		
+
 		// zu einem string joinen  (trennzeichen=" ")
 		for(String actLine : allLines)
 		{
-			callAsString += actLine;
+			callAsString += " " + actLine;
 		}
-		
+
 		return callAsString;
 	}
 
