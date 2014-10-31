@@ -274,7 +274,8 @@ public class Launch
 		actSpl.setResult(null);
 		
 		// das instancedir erstellen
-		java.io.File actSplInstanceDir = new java.io.File(commandline.getOptionValue("instancedir") + actSpl.getName());
+		java.io.File actSplInstanceDir = new java.io.File(commandline.getOptionValue("instancedir") + "/" + actSpl.getName());
+		System.err.println("info: creating directory " + actSplInstanceDir.getCanonicalPath());
 		actSplInstanceDir.mkdirs();
 		
 		// die beispieldaten in das instancedir kopieren
