@@ -608,7 +608,7 @@ implements Serializable, Cloneable
 							}
 							
 							// wenn ^[^\\+*?{}]+$  Muster ohne quantifier oder metazeichen gefunden wird bsplw. bei "node|element", soll das direkt als text1 verwendet werden
-							else if(actMatch.getPattern().matches("^\\^[^\\\\+*?{}]+\\$$"))
+							else if(actMatch.getPattern().matches("^\\^.*[^\\\\+*?{}].*\\$$"))
 							{
 								text1 = "=" + actMatch.getPattern().replace("^", "").replace("$", "");
 								definition = "string";
