@@ -290,7 +290,10 @@ public class Launch
 
 		// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)
 		String AbsLogSyscallWrapper = actSplInstanceDir.getCanonicalPath()+"/.log";
-
+		String AbsStdout = actSplInstanceDir.getCanonicalPath()+"/.stdout.txt";
+		String AbsStderr = actSplInstanceDir.getCanonicalPath()+"/.stderr.txt";
+		String AbsPid = actSplInstanceDir.getCanonicalPath()+"/.pid";
+		
 		try
 		{
 			// den Aufrufstring fuer die externe App (process syscall --version 0.6.0)) splitten
@@ -302,11 +305,11 @@ public class Launch
 			processSyscallWithArgs.add(actSpl.getCallAsString());
 //			processSyscallWithArgs.add("\""+call+"\"");
 			processSyscallWithArgs.add("-stdout");
-			processSyscallWithArgs.add(instancedir + "/" + ".stdout.txt");
+			processSyscallWithArgs.add(AbsStdout);
 			processSyscallWithArgs.add("-stderr");
-			processSyscallWithArgs.add(instancedir + "/" + ".stderr.txt");
+			processSyscallWithArgs.add(AbsStderr);
 			processSyscallWithArgs.add("-pid");
-			processSyscallWithArgs.add(instancedir + "/" + ".pid");
+			processSyscallWithArgs.add(AbsPid);
 			processSyscallWithArgs.add("-mylog");
 			processSyscallWithArgs.add(AbsLogSyscallWrapper);
 			processSyscallWithArgs.add("-maxrun");
