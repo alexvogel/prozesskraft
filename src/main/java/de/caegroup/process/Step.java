@@ -176,7 +176,7 @@ implements Serializable, Cloneable
 		{
 			String line = "\tmy @"+list.getName()+" = (";
 			
-			for(String item : list.getItem())
+			for(String item : list.getDefaultitem())
 			{
 				line += "\""+item+"\"";
 			}
