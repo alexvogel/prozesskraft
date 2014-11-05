@@ -209,6 +209,7 @@ public class Perlcode
 		Process p1 = new Process();
 		java.io.File outputDir = new java.io.File(commandline.getOptionValue("output"));
 		java.io.File outputDirBin = new java.io.File(commandline.getOptionValue("output") + "/bin");
+		java.io.File outputDirBin2 = new java.io.File(commandline.getOptionValue("output") + "/bin2");
 		java.io.File outputDirLib = new java.io.File(commandline.getOptionValue("output") + "/lib");
 		
 		if (outputDir.exists())
@@ -219,7 +220,6 @@ public class Perlcode
 		else
 		{
 			outputDir.mkdir();
-			outputDirBin.mkdir();
 		}
 		
 		p1.setInfilexml( commandline.getOptionValue("definition") );
@@ -237,17 +237,19 @@ public class Perlcode
 		// perlcode generieren fuer einen bestimmten step
 		if (commandline.hasOption("step"))
 		{
+			outputDirBin2.mkdir();
 			String stepname = commandline.getOptionValue("step");
-			writeStepAsPerlcode(p2, stepname, outputDirBin);
+			writeStepAsPerlcode(p2, stepname, outputDirBin2);
 		}
 		
 		// perlcode generieren fuer den gesamten process
 		else
 		{
+			outputDirBin.mkdir();
 			writeProcessAsPerlcode(p2, outputDirBin);
-			outputDirLib.mkdir();
-			
+
 			// copy all perllibs from the lib directory
+			outputDirLib.mkdir();
 			final Path source = Paths.get(WhereAmI.getInstallDirectoryAbsolutePath(Perlcode.class) + "/../perllib");
 			final Path target = Paths.get(outputDirLib.toURI());
 			
