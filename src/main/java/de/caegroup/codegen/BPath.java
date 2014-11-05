@@ -60,6 +60,7 @@ implements Serializable, Cloneable
 			content.add("my $installdir = $directories . \"/..\";");
 			content.add("my $etcdir = $installdir . \"/etc\";");
 			content.add("my $docdir = $installdir . \"/doc\";");
+			content.add("my $bin2dir = $installdir . \"/bin2\";");
 			content.add("my $bindir = $directories;");
 			content.add("");
 			content.add("# einbinden der avoge module");
