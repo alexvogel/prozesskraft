@@ -246,7 +246,8 @@ public class Perlcode
 		else
 		{
 			outputDirBin.mkdir();
-			writeProcessAsPerlcode(p2, outputDirBin);
+			outputDirBin2.mkdir();
+			writeProcessAsPerlcode(p2, outputDirBin, outputDirBin2);
 
 			// copy all perllibs from the lib directory
 			outputDirLib.mkdir();
@@ -263,16 +264,16 @@ public class Perlcode
 	 * @param outputDir
 	 * @throws IOException
 	 */
-	private static void writeProcessAsPerlcode(Process process, java.io.File outputDir) throws IOException
+	private static void writeProcessAsPerlcode(Process process, java.io.File outputDirProcess, java.io.File outputDirStep) throws IOException
 	{
 		System.err.println("generating perlcode for process "+process.getName());
-		writeFile.writeFile(new java.io.File(outputDir.getCanonicalPath()+"/"+process.getName()), process.getProcessAsPerlScript());
+		writeFile.writeFile(new java.io.File(outputDirProcess.getCanonicalPath()+"/"+process.getName()), process.getProcessAsPerlScript());
 		
 		for(Step actualStep : process.getStep())
 		{
 			if(! actualStep.getName().matches("^root$"))
 			{
-				writeStepAsPerlcode(process, actualStep.getName(), outputDir);
+				writeStepAsPerlcode(process, actualStep.getName(), outputDirStep);
 			}
 		}
 	}
