@@ -475,10 +475,10 @@ implements Serializable
 			int reihenfolge = 0;
 			for(Commit actCommitOfRootStep : rootStep.getCommit())
 			{
-				reihenfolge++;
 				// alle Variablen
 				for(Variable actVariable : actCommitOfRootStep.getVariable())
 				{
+					reihenfolge++;
 					// String name, int minoccur, int maxoccur, String definition, String check, String def, String text1, String text2)
 					String optionname = actVariable.getKey();
 					int minoccur = actVariable.getMinoccur();
@@ -536,6 +536,7 @@ implements Serializable
 				// und fuer alle Files
 				for(File actFile : actCommitOfRootStep.getFile())
 				{
+					reihenfolge++;
 					// String name, int minoccur, int maxoccur, String definition, String check, String def, String text1, String text2)
 					String optionname = actFile.getKey();
 					int minoccur = actFile.getMinoccur();
