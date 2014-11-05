@@ -472,8 +472,10 @@ implements Serializable
 		Step rootStep = this.getRootStep();
 		if(rootStep != null)
 		{
+			int reihenfolge = 0;
 			for(Commit actCommitOfRootStep : rootStep.getCommit())
 			{
+				reihenfolge++;
 				// alle Variablen
 				for(Variable actVariable : actCommitOfRootStep.getVariable())
 				{
@@ -528,7 +530,7 @@ implements Serializable
 					if (text2.equals("")) {text2 = "no description available";}
 					
 					// erzeugen der option im script
-					script.addOption (optionname, 5, minoccur, maxoccur, definition, check, def, text1, text2);
+					script.addOption (optionname, reihenfolge, minoccur, maxoccur, definition, check, def, text1, text2);
 				}
 				
 				// und fuer alle Files
