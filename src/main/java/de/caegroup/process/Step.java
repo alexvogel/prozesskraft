@@ -456,7 +456,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\t\t\t$STEPS_TABELLE{$_}{'status'} = 'cancelled';");
 					perlSnippet.add("\t\t\t\t}");
 					perlSnippet.add("\t\t\t}");
-					perlSnippet.add("\t\t&printHtmlOverview();");
+					perlSnippet.add("\t\t\t&printHtmlOverview();");
 					perlSnippet.add("\t\t\tsystem(\"pradar checkout -process "+this.getParent().getName()+" -id $id -exitcode \\\"fatal: (step="+this.getName()+") (commit="+actCommit.getName()+") (file="+actFile.getKey()+") not right amount of files: "+actFile.getMinoccur()+" <= rightAmountOfFiles <= "+actFile.getMaxoccur()+" (actualAmount=\" . scalar(@globbedFiles) . \"\\\"\");");
 					perlSnippet.add("\t\t\texit(1);");
 					perlSnippet.add("\t\t}");
