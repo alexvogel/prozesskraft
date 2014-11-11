@@ -373,6 +373,17 @@ implements Serializable, Cloneable
 						perlSnippet.add("\t\t\t&logit(\"info\", \"toroot: cp $globbedFile $pwd\");");
 						perlSnippet.add("\t\t\t\tcopy($globbedFile, $pwd);");
 					}
+					// wenn variable copyto=basedir ist, dann soll das auch in das angegebene verzeichnis kopiert werden
+					if(actCommit.getCopyto() != null)
+					{
+						if(actCommit.getCopyto().equalsIgnoreCase("basedir"))
+						{
+							perlSnippet.add("");
+							perlSnippet.add("\t\t\t\t# copyto = basedir");
+							perlSnippet.add("\t\t\t&logit(\"info\", \"copyto: cp $globbedFile $_basedir\");");
+							perlSnippet.add("\t\t\t\tcopy($globbedFile, $_basedir);");
+						}
+					}
 					perlSnippet.add("\t\t\t\twhile(<VARFILE>)");
 					perlSnippet.add("\t\t\t\t{");
 					perlSnippet.add("\t\t\t\t\tmy $zeile = $_;");
@@ -477,6 +488,17 @@ implements Serializable, Cloneable
 						perlSnippet.add("\t\t\tmy @outputRowForHtml = ($stepname, 'datei', '"+actFile.getKey()+"', \""+actFile.getDescription()+"\", \"<a href=\\\"\" . File::Spec->abs2rel($tmp) . \"\\\">$filename</a>\");");
 						perlSnippet.add("\t\t\tpush(@OUTPUT_TABELLE, \\@outputRowForHtml);");
 						perlSnippet.add("\t\t\t&printHtmlOverview();");
+					}
+					// wenn file copyto=basedir ist, dann soll das auch in das angegebene verzeichnis kopiert werden
+					if(actCommit.getCopyto() != null)
+					{
+						if(actCommit.getCopyto().equalsIgnoreCase("basedir"))
+						{
+							perlSnippet.add("");
+							perlSnippet.add("\t\t\t# copyto = basedir");
+							perlSnippet.add("\t\t\t&logit(\"info\", \"copyto: cp $tmp $_basedir\");");
+							perlSnippet.add("\t\t\tcopy($tmp, $_basedir);");
+						}
 					}
 					perlSnippet.add("\t\t}");
 					

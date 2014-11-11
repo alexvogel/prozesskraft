@@ -27,6 +27,7 @@ implements Serializable
 	private static final CopyOption REPLACE_EXISTING = null;
 	private String name = "";
 	private boolean toroot = false;
+	private String copyto = null;
 	private String loop = "";
 	private String loopvar = "";
 	private ArrayList<Variable> variable = new ArrayList<Variable>();
@@ -267,6 +268,21 @@ implements Serializable
 	public String getAbsdir()
 	{
 		return this.getParent().getAbsdir();
+	}
+
+	
+	/**
+	 * @return the copyto
+	 */
+	public String getCopyto() {
+		return copyto;
+	}
+
+	/**
+	 * @param copyto the copyto to set
+	 */
+	public void setCopyto(String copyto) {
+		this.copyto = copyto;
 	}
 
 	/*----------------------------
