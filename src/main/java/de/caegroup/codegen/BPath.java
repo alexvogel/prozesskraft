@@ -80,6 +80,9 @@ implements Serializable, Cloneable
 			content.add("my $conf_path2 = $etcdir . \"/\" . $filename.\".conf\";");
 			content.add("# path to documentation");
 			content.add("my $doc_path = $docdir . \"/\" . $filename.\".pdf\";");
+			content.add("");
+			content.add("# das aufrufverzeichnis (basedir)");
+			content.add("my $_basedir = cwd();");
 		}
 		
 		this.block.setOrigin("auto");
