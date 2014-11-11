@@ -290,7 +290,7 @@ implements Serializable, Cloneable
 		perlSnippet.add("\t&printHtmlOverview();");
 		perlSnippet.add("");
 
-		perlSnippet.add("\tmy $return = system(\"set -o pipefail; ($call 3>&1 1>&2 2>&3 | tee stderr.log 3>&1 1>&2 2>&3 | tee stdout.log)\");");
+		perlSnippet.add("\tmy $return = system(\"set -o pipefail; (($call | tee stdout.log) 3>&1 1>&2 2>&3 | tee stderr.log) 3>&1 1>&2 2>&3\");");
 		perlSnippet.add("");
 		perlSnippet.add("\t# aktualisieren der steptabelle im html");
 		perlSnippet.add("\t$STEPS_TABELLE{$steprank}{'status'} = \"exit=$return\";");
