@@ -277,32 +277,36 @@ public class Syscall {
 //			}
 //			
 			
-			// der prozess soll bis laengstens
-			try
-			{
-				sysproc.wait(Integer.parseInt(sMaxrun) * 60 *1000);
-			}
-			catch (IllegalMonitorStateException e)
-			{
-				System.out.println("------------------------------------------------------");
-				System.out.println("normal termination at "+new Date().toString());
-				System.out.println("exitvalue: "+sysproc.waitFor());
-			}
-			
-			System.out.println("------------------------------------------------------");
-			System.out.println("forced termination at "+new Date().toString());
-			System.out.println("exitvalue: "+sysproc.waitFor());
-
-			sysproc.destroy();
-
-//			sysproc.waitFor();
-			
-//			fw_stderr.write("EXITVALUE: "+sysproc_exitvalue);
+			int exitValue = sysproc.waitFor();
 			
 			fw_stdout.close();
 			fw_stderr.close();
+			
+			System.out.println("exitvalue: "+exitValue);
 
-			System.exit(sysproc.exitValue());
+			sysproc.destroy();
+
+			System.exit(exitValue);
+			
+// TODO: es soll noch implementiert werden, dass nach einer bestimmten anzahl von minuten (maxrun) mit gewalt abgebrochen wird
+			
+//			// der prozess soll bis laengstens
+//			try
+//			{
+//				sysproc.wait(Integer.parseInt(sMaxrun) * 60 *1000);
+//			}
+//			catch (IllegalMonitorStateException e)
+//			{
+//				System.out.println("------------------------------------------------------");
+//				System.out.println("normal termination at "+new Date().toString());
+//				System.out.println("exitvalue: "+sysproc.waitFor());
+//			}
+//			
+//			System.out.println("------------------------------------------------------");
+//			System.out.println("forced termination at "+new Date().toString());
+//			System.out.println("exitvalue: "+sysproc.waitFor());
+//
+//			sysproc.destroy();
 
 		}
 		catch (IOException e)
