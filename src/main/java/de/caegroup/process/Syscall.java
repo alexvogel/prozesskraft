@@ -190,7 +190,7 @@ public class Syscall {
 			writerLog.println("-stdout "+sStdout);
 			writerLog.println("-stderr "+sStderr);
 			writerLog.println("-pid "+sPid);
-			writerLog.println("-log "+sMylog);
+			writerLog.println("-mylog "+sMylog);
 			writerLog.println("-maxrun "+sMaxrun);
 			writerLog.println("------------------------------------------------------");
 			writerLog.println("start at         : "+ startDate.toString());
