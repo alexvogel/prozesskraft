@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.EnumSet;
 
 import javax.xml.bind.JAXBException;
@@ -352,6 +353,27 @@ public class Launch
 
 			// wait 2 seconds for becoming the pid-file visible
 			Thread.sleep(2000);
+			
+			// der prozess soll bis laengstens
+			try
+			{
+				sysproc.wait(3000 * 60 *1000);
+			}
+			catch (IllegalMonitorStateException e)
+			{
+				System.err.println("------------------------------------------------------");
+				System.err.println("normal termination at "+new Date().toString());
+				System.err.println("exitvalue: "+sysproc.waitFor());
+			}
+
+			System.err.println("------------------------------------------------------");
+			System.err.println("forced termination at "+new Date().toString());
+			System.err.println("exitvalue: "+sysproc.waitFor());
+
+			sysproc.destroy();
+
+			System.exit(sysproc.exitValue());
+			
 		}
 		catch (Exception e2)
 		{
