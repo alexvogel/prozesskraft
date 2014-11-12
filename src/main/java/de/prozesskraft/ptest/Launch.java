@@ -354,26 +354,24 @@ public class Launch
 			// wait 2 seconds for becoming the pid-file visible
 			Thread.sleep(2000);
 			
+			int exitValue = sysproc.waitFor();
+			
 			// der prozess soll bis laengstens
-			try
+			if(exitValue != 0)
 			{
-				sysproc.wait(3000 * 60 *1000);
+				System.err.println("error: call returned a value indicating an error: "+exitValue);
 			}
-			catch (IllegalMonitorStateException e)
+			else
 			{
-				System.err.println("------------------------------------------------------");
-				System.err.println("normal termination at "+new Date().toString());
-				System.err.println("exitvalue: "+sysproc.waitFor());
+				System.err.println("info: call returned value: "+exitValue);
 			}
-
-			System.err.println("------------------------------------------------------");
-			System.err.println("forced termination at "+new Date().toString());
-			System.err.println("exitvalue: "+sysproc.waitFor());
+			
+			System.err.println("info: "+new Date().toString());
+			System.err.println("info: bye");
 
 			sysproc.destroy();
 
 			System.exit(sysproc.exitValue());
-			
 		}
 		catch (Exception e2)
 		{
