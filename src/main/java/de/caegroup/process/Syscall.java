@@ -254,14 +254,14 @@ public class Syscall {
 			{
 				if (!(line_out == null))
 				{
-//					System.out.println(line_out);
+					System.out.println(line_out);
 					fw_stdout.write(line_out);
 					fw_stdout.write("\n");
 					fw_stdout.flush();
 				}
 				if (!(line_err == null))
 				{
-//					System.out.println(line_err);
+					System.out.println(line_err);
 					fw_stderr.write(line_err);
 					fw_stderr.write("\n");
 					fw_stderr.flush();
