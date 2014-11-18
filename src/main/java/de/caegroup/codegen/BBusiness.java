@@ -67,7 +67,7 @@ implements Serializable, Cloneable
 			content.add("	$year = $year+1900;");
 			content.add("	my $datum = $year.$month.$day;");
 			content.add("	my $moment = $hour.$min.$sec;");
-			content.add("	$instancedir = getcwd . '/"+this.parent.getName()+"_' . $version . '_' . $datum . '_' . $$);");
+			content.add("	$instancedir = getcwd . '/"+this.parent.getName()+"_' . $version . '_' . $datum . '_' . $$;");
 			content.add("	#-------------------");
 			content.add("}");
 			content.add("");
