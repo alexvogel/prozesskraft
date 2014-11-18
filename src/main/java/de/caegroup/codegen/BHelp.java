@@ -102,15 +102,15 @@ implements Serializable, Cloneable
 			content.add("	}");
 			content.add("}");
 
+			content.add("$helptext .= \"author : alexander.vogel\\@caegroup.de\\n\";");
+			content.add("$helptext .= \"date   : $date\\n\";");
+			content.add("");
 			content.add("if(&getOption('debug'))");
 			content.add("{");
-			content.add("	$helptext .= \"author: alexander.vogel\\@caegroup.de | version: $version | date: $date\\n\\n\";");
-			content.add("}");
-			content.add("else");
-			content.add("{");
-			content.add("	$helptext .= \"author: alexander.vogel\\@caegroup.de | date: $date\\n\\n\";");
+			content.add("	$helptext .= \"version: $version\\n\";");
 			content.add("}");
 			content.add("");
+			content.add("$helptext .= \"\\n\";");
 		}
 		
 		this.block.setOrigin("auto");
