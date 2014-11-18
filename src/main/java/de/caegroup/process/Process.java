@@ -438,8 +438,8 @@ implements Serializable
 
 		script.business.addCode("#-------------------");
 		script.business.addCode("# checkin pradar");
-		script.business.addCode("system(\"pradar checkin -process "+this.getName()+" -id $id -id2 "+this.getName()+" -resource \" . $instancedir . '/README.html' . \" -pversion $version\");");
-		script.business.addCode("system(\"pradar progress -process "+this.getName()+" -id $id -completed 0 -stepcount "+(this.getStep().size() - 1)+"\");");
+		script.business.addCode("#system(\"pradar checkin -process "+this.getName()+" -id $id -id2 "+this.getName()+" -resource \" . $instancedir . '/README.html' . \" -pversion $version\");");
+		script.business.addCode("#system(\"pradar progress -process "+this.getName()+" -id $id -completed 0 -stepcount "+(this.getStep().size() - 1)+"\");");
 		script.business.addCode("#-------------------");
 		
 		
@@ -593,7 +593,7 @@ implements Serializable
 
 		script.business.addCode("#-------------------");
 		script.business.addCode("# checkout pradar");
-		script.business.addCode("system(\"pradar checkout -process "+this.getName()+" -id $id -exitcode 0\");");
+		script.business.addCode("#system(\"pradar checkout -process "+this.getName()+" -id $id -exitcode 0\");");
 		script.business.addCode("#-------------------");
 		
 		// ist der prozess bis hier gelaufen, dann ist wohl alles i.o.
