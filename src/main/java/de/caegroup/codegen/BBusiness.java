@@ -47,10 +47,6 @@ implements Serializable, Cloneable
 			content.add("# dabei handelt es sich um module, die nicht zur core-distro gehoeren");
 			content.add("use HTML::Table;");
 			content.add("");
-			content.add("&expandPathInOptions();");
-			content.add("");
-			content.add("my %FILE = getTypedOptions(\"file\");");
-			content.add("my %VARIABLE = getTypedOptions(\"variable\");");
 			content.add("my $stepsCompleted = 0;");
 			content.add("my $id = 'noId';");
 			content.add("");
