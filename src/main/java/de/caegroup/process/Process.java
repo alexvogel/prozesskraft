@@ -438,7 +438,7 @@ implements Serializable
 
 		script.business.addCode("#-------------------");
 		script.business.addCode("# checkin pradar");
-		script.business.addCode("system(\"pradar checkin -process "+this.getName()+" -id $id -id2 "+this.getName()+" -resource \" . getOption('instancedir') . '/README.html' . \" -pversion $version\");");
+		script.business.addCode("system(\"pradar checkin -process "+this.getName()+" -id $id -id2 "+this.getName()+" -resource \" . $instancedir . '/README.html' . \" -pversion $version\");");
 		script.business.addCode("system(\"pradar progress -process "+this.getName()+" -id $id -completed 0 -stepcount "+(this.getStep().size() - 1)+"\");");
 		script.business.addCode("#-------------------");
 		
