@@ -120,7 +120,7 @@ public class Perlcode
 		
 		Option onolist = OptionBuilder.withArgName("")
 //				.hasArg()
-				.withDescription("[optional] usually it is possible to use an integrated comma-separeated list instead of using arguments multiple times. with this parameter the multiple use is forced and a list is not possible.")
+				.withDescription("[optional] with this parameter the multiple use of multi-optionis is forced. otherwise it is possible to use an integrated comma-separeated list.")
 //				.isRequired()
 				.create("nolist");
 		
