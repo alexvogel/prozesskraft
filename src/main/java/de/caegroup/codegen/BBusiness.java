@@ -75,15 +75,6 @@ implements Serializable, Cloneable
 			content.add("	$id = sprintf(\"%11-0o\", int(rand(99999999999)));");
 			content.add("}");
 			content.add("");
-			content.add("# ein instanzverzeichnis anlegen");
-			content.add("mkdir $instancedir;");
-			content.add("");
-			content.add("# das basisverzeichnis merken");
-			content.add("my $basedir = cwd();");
-			content.add("");
-			content.add("# und hinein wechseln");
-			content.add("chdir $instancedir;");
-			content.add("");
 			content.add("#-------------------");
 			content.add("# erstellen der tabelle");
 			content.add("my @INPUT_TABELLE;");

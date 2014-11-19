@@ -248,7 +248,11 @@ implements Serializable, Cloneable
 		code.add("	$html_table_backup->addRow('version', $version);");
 		code.add("	$html_table_backup->addRow(\"prozessverantwortlicher bei $PROCESS_CUSTOMERCOMPANY\", \"<a href=\\\"mailto:$PROCESS_CUSTOMERMAIL\\\">$PROCESS_CUSTOMERNAME</a>\");");
 		code.add("	(my $filenam, my $dirs, my $suf) = fileparse ($doc_path);");
-		code.add("	$html_table_backup->addRow('dokumentation', \"<a href=\\\"$doc_path\\\" target=\\\"_blank\\\">$filenam</a>\");");
+		code.add("	# wenn eine doku existiert, soll sie hier gelinkt werden");
+		code.add("	if(stat $doc_path)");
+		code.add("	{");
+		code.add("		$html_table_backup->addRow('dokumentation', \"<a href=\\\"$doc_path\\\" target=\\\"_blank\\\">$filenam</a>\");");
+		code.add("	}");
 		code.add("");
 		code.add("	$html_table_backup->addRow('installations directory', \"<a href=\\\"\" . Cwd::realpath($installdir) . \"\\\" target=\\\"_blank\\\">\" . Cwd::realpath($installdir) . \"</a>\");");
 		code.add("");
@@ -918,7 +922,7 @@ implements Serializable, Cloneable
 		code.add("		}");
 		code.add("	}");
 		code.add("	# wenn es eine variable ist, einfach uebernehmen");
-		code.add("	if( $type eq \"variable\" )");
+		code.add("	elsif( $type eq \"variable\" )");
 		code.add("	{");
 		code.add("		my @allValuesOfACertainOption;");
 		code.add("		if(getOption($option))");
@@ -927,7 +931,7 @@ implements Serializable, Cloneable
 		code.add("		}");
 		code.add("		foreach my $actValue (@allValuesOfACertainOption)");
 		code.add("		{");
-		code.add("			push(@$refh_HASH{'root'}, [$option, File::Spec->rel2abs($actValue)]);");
+		code.add("			push(@$refh_HASH{'root'}, [$option, $actValue]);");
 		code.add("		}");
 		code.add("	}");
 		code.add("	");
