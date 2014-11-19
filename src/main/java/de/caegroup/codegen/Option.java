@@ -21,6 +21,7 @@ implements Serializable, Cloneable
 	String def = ""; // default-value for this option
 	String text1 = "";
 	String text2 = "";
+	Boolean allowIntegratedListIfMultiOption = false;     // wenn maxoccur > 1, dann darf einem parameter eine kommaseparierte liste mitgegeben werden
 	
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 	/*----------------------------
@@ -39,7 +40,7 @@ implements Serializable, Cloneable
 	public ArrayList<String> getContent()
 	{
 		ArrayList<String> content = new ArrayList<String>();
-		content.add("				'" + this.name + "' => {'reihenfolge' =>'" + this.reihenfolge + "', 'minoccur' => '" + this.minoccur + "', 'maxoccur' => '" + this.maxoccur + "', 'definition' => '" + this.definition + "', 'check' => '" + this.check + "', 'default' => '" + this.def + "', 'text1' => '" + this.text1 + "', 'text2' => '" + this.text2 + "'},");
+		content.add("				'" + this.name + "' => {'reihenfolge' =>'" + this.reihenfolge + "', 'minoccur' => '" + this.minoccur + "', 'maxoccur' => '" + this.maxoccur + "', 'definition' => '" + this.definition + "', 'check' => '" + this.check + "', 'default' => '" + this.def + "', 'allowIntegratedListIfMultiOption' => '" + this.allowIntegratedListIfMultiOption.toString() + "', 'text1' => '" + this.text1 + "', 'text2' => '" + this.text2 + "'},");
 		return content;
 	}
 
@@ -120,4 +121,21 @@ implements Serializable, Cloneable
 	public void setText2(String text2) {
 		this.text2 = text2;
 	}
+
+	/**
+	 * @return the allowIntegratedListIfMultiOption
+	 */
+	public Boolean getAllowIntegratedListIfMultiOption() {
+		return allowIntegratedListIfMultiOption;
+	}
+
+	/**
+	 * @param allowIntegratedListIfMultiOption the allowIntegratedListIfMultiOption to set
+	 */
+	public void setAllowIntegratedListIfMultiOption(
+			Boolean allowIntegratedListIfMultiOption) {
+		this.allowIntegratedListIfMultiOption = allowIntegratedListIfMultiOption;
+	}
+	
+	
 }

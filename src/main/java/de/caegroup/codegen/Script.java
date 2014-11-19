@@ -49,7 +49,7 @@ implements Serializable, Cloneable
 		this.option.add(option);
 	}
 	
-	public void addOption (String name, int reihenfolge, int minoccur, int maxoccur, String definition, String check, String def, String text1, String text2)
+	public void addOption (String name, int reihenfolge, int minoccur, int maxoccur, String definition, String check, String def, String text1, String text2, Boolean allowIntegratedListIfMultiOption)
 	{
 		Option option = new Option();
 
@@ -62,6 +62,7 @@ implements Serializable, Cloneable
 		option.setDef(def);
 		option.setText1(text1);
 		option.setText2(text2);
+		option.setAllowIntegratedListIfMultiOption(allowIntegratedListIfMultiOption);
 		
 		this.option.add(option);
 		this.options.genCode(type);
