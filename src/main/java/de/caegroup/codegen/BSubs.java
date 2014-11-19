@@ -908,7 +908,7 @@ implements Serializable, Cloneable
 		code.add("		{");
 		code.add("			if(stat $actValue)");
 		code.add("			{");
-		code.add("				push(@$refh_HASH{'root'}, [$option, File::Spec->rel2abs($actValue);");
+		code.add("				push(@$refh_HASH{'root'}, [$option, File::Spec->rel2abs($actValue)]);");
 		code.add("			}");
 		code.add("			else");
 		code.add("			{");
@@ -927,7 +927,7 @@ implements Serializable, Cloneable
 		code.add("		}");
 		code.add("		foreach my $actValue (@allValuesOfACertainOption)");
 		code.add("		{");
-		code.add("			push(@$refh_HASH{'root'}, [$option, File::Spec->rel2abs($actValue);");
+		code.add("			push(@$refh_HASH{'root'}, [$option, File::Spec->rel2abs($actValue)]);");
 		code.add("		}");
 		code.add("	}");
 		code.add("	");

@@ -50,8 +50,6 @@ implements Serializable, Cloneable
 			content.add("my $stepsCompleted = 0;");
 			content.add("my $id = 'noId';");
 			content.add("");
-			content.add("addFilesEtc(\\%FILE);");
-			content.add("");
 			content.add("my $instancedir;");
 			content.add("{");
 			content.add("	#-------------------");
