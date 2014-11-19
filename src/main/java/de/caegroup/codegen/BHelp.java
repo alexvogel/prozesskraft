@@ -44,7 +44,7 @@ implements Serializable, Cloneable
 		{
 			content.add("my $helptext;");
 			content.add("");
-			content.add("$helptext .= \"usage: $filename PARAMETER\\n\";");
+			content.add("$helptext .= \"Usage: $filename PARAMETER\\n\";");
 			content.add("$helptext .= \"\\n\";");
 			content.add("$helptext .= \"Parameter\\n\";");
 			content.add("");
