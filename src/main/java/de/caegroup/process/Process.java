@@ -450,10 +450,12 @@ implements Serializable
 		script.business.addCode("# die folgenden hashes haben diese struktur: stepname => [ [optionname, value], [optionname, value]]");
 		script.business.addCode("# anlegen des files hashes (die uebergebenen optionen werden um den pfad erweitert)");
 		script.business.addCode("my %FILE;");
-		script.business.addCode("$FILE{'root'} = []");
+		script.business.addCode("$FILE{'root'} = [];");
+		script.business.addCode("# hinzufuegen aller files aus dem etc-verzeichnis");
+		script.business.addCode("&addFilesEtc(\\%FILE);");
 		script.business.addCode("# anlegen des variable hashes");
 		script.business.addCode("my %VARIABLE;");
-		script.business.addCode("$VARIABLE{'root'} = []");
+		script.business.addCode("$VARIABLE{'root'} = [];");
 		script.business.addCode("");
 		
 		// alle commit des root-steps durchegehn und die entsprechenden hashes befuellen mit den uebergebenen informationen
