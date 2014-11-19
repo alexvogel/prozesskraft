@@ -410,8 +410,10 @@ implements Serializable
 	/**
 	 * generates a perl script that resembles the process in scriptform
 	 */
-	public ArrayList<String> getProcessAsPerlScript()
+	public ArrayList<String> getProcessAsPerlScript(boolean nolist)
 	{
+		Boolean allowIntegratedListIfMultiOption = !nolist;
+		
 		Script script = new Script();
 		script.setType("process");
 		script.setName(this.getName());
@@ -441,6 +443,38 @@ implements Serializable
 		script.business.addCode("#system(\"pradar checkin -process "+this.getName()+" -id $id -id2 "+this.getName()+" -resource \" . $instancedir . '/README.html' . \" -pversion $version\");");
 		script.business.addCode("#system(\"pradar progress -process "+this.getName()+" -id $id -completed 0 -stepcount "+(this.getStep().size() - 1)+"\");");
 		script.business.addCode("#-------------------");
+		script.business.addCode("");
+		
+		// befuellen von %FILE und %VARIABLE
+		script.business.addCode("#-------------------");
+		script.business.addCode("# die folgenden hashes haben diese struktur: stepname => [ [optionname, value], [optionname, value]]");
+		script.business.addCode("# anlegen des files hashes (die uebergebenen optionen werden um den pfad erweitert)");
+		script.business.addCode("my %FILE;");
+		script.business.addCode("$FILE{'root'} = []");
+		script.business.addCode("# anlegen des variable hashes");
+		script.business.addCode("my %VARIABLE;");
+		script.business.addCode("$VARIABLE{'root'} = []");
+		script.business.addCode("");
+		
+		// alle commit des root-steps durchegehn und die entsprechenden hashes befuellen mit den uebergebenen informationen
+		for(Commit actCommit : this.getRootStep().getCommit())
+		{
+			// alle files
+			for(File actFile : actCommit.getFile())
+			{
+				script.business.addCode("# option "+actFile.getKey());
+				script.business.addCode("&importOptionToHash('file', \\%FILE, '"+ actFile.getKey() +"');");
+			}
+			// alle variablen
+			for(Variable actVariable : actCommit.getVariable())
+			{
+				script.business.addCode("# option "+actVariable.getKey());
+				script.business.addCode("&importOptionToHash('variable', \\%VARIABLE, '"+ actVariable.getKey() +"');");
+			}
+		}
+		script.business.addCode("#-------------------");
+		script.business.addCode("");
+
 		
 		
 		// anlegen der step-tabelle
@@ -485,7 +519,7 @@ implements Serializable
 					int maxoccur =  actVariable.getMaxoccur();
 					String definition = actVariable.getType();
 					String check = "";
-					
+
 					//integrieren des ersten tests 'matchPattern'
 					for(Test actTest : actVariable.getTest())
 					{
@@ -530,7 +564,7 @@ implements Serializable
 					if (text2.equals("")) {text2 = "no description available";}
 					
 					// erzeugen der option im script
-					script.addOption (optionname, reihenfolge, minoccur, maxoccur, definition, check, def, text1, text2);
+					script.addOption (optionname, reihenfolge, minoccur, maxoccur, definition, check, def, text1, text2, allowIntegratedListIfMultiOption);
 				}
 				
 				// und fuer alle Files
@@ -564,7 +598,7 @@ implements Serializable
 					if (text2.equals("")) {text2 = "no description available";}
 					
 					// erzeugen der option im script
-					script.addOption (optionname, reihenfolge, minoccur, maxoccur, definition, check, def, text1, text2);
+					script.addOption (optionname, reihenfolge, minoccur, maxoccur, definition, check, def, text1, text2, allowIntegratedListIfMultiOption);
 				}
 			}
 		}

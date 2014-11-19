@@ -548,8 +548,10 @@ implements Serializable, Cloneable
 	 * generates a stub of a standalone perlscript that represents this process-step once it is finished by a programmer
 	 * @return ArrayList<String> code
 	 */
-	public ArrayList<String> getStepAsPerlScript()
+	public ArrayList<String> getStepAsPerlScript(boolean nolist)
 	{
+		Boolean allowIntegratedListIfMultiOption = !nolist;
+		
 		Script script = new Script();
 		script.setType("step");
 		script.genContent();
@@ -689,7 +691,7 @@ implements Serializable, Cloneable
 					text2 = text2.replaceAll("'", "\\\\'");
 				}
 				
-				script.addOption(name, reihenfolge, minoccur, maxoccur, definition, check, def, text1, text2);
+				script.addOption(name, reihenfolge, minoccur, maxoccur, definition, check, def, text1, text2, allowIntegratedListIfMultiOption);
 			}
 //			System.out.println("addoption mit diesen parametern: "+name+minoccur+maxoccur+definition+check+def+text1+text2);
 		}
