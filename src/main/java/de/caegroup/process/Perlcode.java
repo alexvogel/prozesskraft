@@ -118,6 +118,12 @@ public class Perlcode
 //				.isRequired()
 				.create("definition");
 		
+		Option onolist = OptionBuilder.withArgName("")
+				.hasArg()
+				.withDescription("[optional] usually it is possible to use an integrated comma-separeated list instead of using arguments multiple times. with this parameter the multiple use is forced and a list is not possible.")
+//				.isRequired()
+				.create("nolist");
+		
 		/*----------------------------
 		  create options object
 		----------------------------*/
@@ -128,6 +134,7 @@ public class Perlcode
 		options.addOption( ostep );
 		options.addOption( ooutput );
 		options.addOption( odefinition );
+		options.addOption( onolist );
 		
 		/*----------------------------
 		  create the parser
@@ -137,7 +144,6 @@ public class Perlcode
 		{
 			// parse the command line arguments
 			commandline = parser.parse( options,  args );
-			
 		}
 		catch ( Exception exp )
 		{
@@ -211,6 +217,11 @@ public class Perlcode
 		java.io.File outputDirBin = new java.io.File(commandline.getOptionValue("output") + "/bin");
 		java.io.File outputDirBin2 = new java.io.File(commandline.getOptionValue("output") + "/bin2");
 		java.io.File outputDirLib = new java.io.File(commandline.getOptionValue("output") + "/lib");
+		boolean nolist = false;
+		if (commandline.hasOption("nolist"))
+		{
+			nolist = true;
+		}
 		
 		if (outputDir.exists())
 		{
@@ -239,7 +250,7 @@ public class Perlcode
 		{
 			outputDirBin2.mkdir();
 			String stepname = commandline.getOptionValue("step");
-			writeStepAsPerlcode(p2, stepname, outputDirBin2);
+			writeStepAsPerlcode(p2, stepname, outputDirBin2, nolist);
 		}
 		
 		// perlcode generieren fuer den gesamten process
@@ -247,7 +258,7 @@ public class Perlcode
 		{
 			outputDirBin.mkdir();
 			outputDirBin2.mkdir();
-			writeProcessAsPerlcode(p2, outputDirBin, outputDirBin2);
+			writeProcessAsPerlcode(p2, outputDirBin, outputDirBin2, nolist);
 
 			// copy all perllibs from the lib directory
 			outputDirLib.mkdir();
@@ -257,23 +268,23 @@ public class Perlcode
 			copyDirectoryTree.copyDirectoryTree(source, target);
 		}
 	}
-	
+
 	/**
 	 * writes a Process as Perlcode
 	 * @param process
 	 * @param outputDir
 	 * @throws IOException
 	 */
-	private static void writeProcessAsPerlcode(Process process, java.io.File outputDirProcess, java.io.File outputDirStep) throws IOException
+	private static void writeProcessAsPerlcode(Process process, java.io.File outputDirProcess, java.io.File outputDirStep, boolean nolist) throws IOException
 	{
 		System.err.println("generating perlcode for process "+process.getName());
-		writeFile.writeFile(new java.io.File(outputDirProcess.getCanonicalPath()+"/"+process.getName()), process.getProcessAsPerlScript());
+		writeFile.writeFile(new java.io.File(outputDirProcess.getCanonicalPath()+"/"+process.getName()), process.getProcessAsPerlScript(nolist));
 		
 		for(Step actualStep : process.getStep())
 		{
 			if(! actualStep.getName().matches("^root$"))
 			{
-				writeStepAsPerlcode(process, actualStep.getName(), outputDirStep);
+				writeStepAsPerlcode(process, actualStep.getName(), outputDirStep, nolist);
 			}
 		}
 	}
@@ -285,14 +296,14 @@ public class Perlcode
 	 * @param outputDir
 	 * @throws IOException
 	 */
-	private static void writeStepAsPerlcode(Process process, String stepname, java.io.File outputDir) throws IOException
+	private static void writeStepAsPerlcode(Process process, String stepname, java.io.File outputDir, boolean nolist) throws IOException
 	{
 		if (process.isStep(stepname))
 		{
 			// step ueber den namen heraussuchen
 			Step step = process.getStep(stepname);
 			System.err.println("generating perlcode for step "+stepname);
-			writeFile.writeFile(new java.io.File(outputDir.getCanonicalPath()+"/"+step.getWork().getCommand()), step.getStepAsPerlScript());
+			writeFile.writeFile(new java.io.File(outputDir.getCanonicalPath()+"/"+step.getWork().getCommand()), step.getStepAsPerlScript(nolist));
 		}
 		else
 		{
