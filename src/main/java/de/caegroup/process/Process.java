@@ -477,7 +477,17 @@ implements Serializable
 		script.business.addCode("#-------------------");
 		script.business.addCode("");
 
-		
+		script.business.addCode("#-------------------");
+		script.business.addCode("# ein instanzverzeichnis anlegen");
+		script.business.addCode("mkdir $instancedir;");
+		script.business.addCode("");
+		script.business.addCode("# das basisverzeichnis merken");
+		script.business.addCode("my $basedir = cwd();");
+		script.business.addCode("");
+		script.business.addCode("# und hinein wechseln");
+		script.business.addCode("chdir $instancedir;");
+		script.business.addCode("");
+		script.business.addCode("#-------------------");
 		
 		// anlegen der step-tabelle
 		script.business.addCode("#-------------------");
