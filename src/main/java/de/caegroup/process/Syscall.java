@@ -21,6 +21,7 @@ public class Syscall {
 	  structure
 	----------------------------*/
 	static CommandLine commandline;
+	static String web = "www.prozesskraft.de";
 	static String author = "alexander.vogel@caegroup.de";
 	static String version = "[% version %]";
 	static String date = "[% date %]";
@@ -121,9 +122,10 @@ public class Syscall {
 		
 		else if ( commandline.hasOption("v"))
 		{
-			System.out.println("web:     www.prozesskraft.de");
-			System.out.println("version: [% version %]");
-			System.out.println("date:    [% date %]");
+			System.out.println("web:     "+web);
+			System.out.println("author:  "+author);
+			System.out.println("version: "+version);
+			System.out.println("date:    "+date);
 			System.exit(0);
 		}
 		
@@ -249,8 +251,7 @@ public class Syscall {
 			String line_out = new String();
 			String line_err = new String();
 
-
-			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null))
+			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || ((line_out = br_stdout.readLine()) != null))
 			{
 				if (!(line_out == null))
 				{
