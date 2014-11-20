@@ -176,8 +176,8 @@ public class Syscall {
 			String sCall = commandline.getOptionValue("call");
 			String sMylog = commandline.getOptionValue("mylog");
 			String sPid = commandline.getOptionValue("pid");
-			String sStdout = commandline.getOptionValue("stdout");
-			String sStderr = commandline.getOptionValue("stderr");
+			final String sStdout = commandline.getOptionValue("stdout");
+			final String sStderr = commandline.getOptionValue("stderr");
 			String sMaxrun = commandline.getOptionValue("maxrun");
 
 			
@@ -242,31 +242,58 @@ public class Syscall {
 			}
 			writerPid.close();
 
-			// einfangen der stdout- und stderr
-			InputStream is_stdout = sysproc.getInputStream();
-			InputStream is_stderr = sysproc.getErrorStream();
-
-			// Send your InputStream to an InputStreamReader:
-			InputStreamReader isr_stdout = new InputStreamReader(is_stdout);
-			InputStreamReader isr_stderr = new InputStreamReader(is_stderr);
-
-			// That needs to go to a BufferedReader:
-			final BufferedReader br_stdout = new BufferedReader(isr_stdout);
-			final BufferedReader br_stderr = new BufferedReader(isr_stderr);
-
-			// Stringwriter
-			final StringWriter sw_stdout = new StringWriter();
-			final StringWriter sw_stderr = new StringWriter();
-			
-			// oeffnen der OutputStreams zu den Ausgabedateien
-			final FileWriter fw_stdout = new FileWriter(sStdout);
-			final FileWriter fw_stderr = new FileWriter(sStderr);
+//			// einfangen der stdout- und stderr
+//			InputStream is_stdout = sysproc.getInputStream();
+//			InputStream is_stderr = sysproc.getErrorStream();
+//
+//			// Send your InputStream to an InputStreamReader:
+//			InputStreamReader isr_stdout = new InputStreamReader(is_stdout);
+//			InputStreamReader isr_stderr = new InputStreamReader(is_stderr);
+//
+//			// That needs to go to a BufferedReader:
+//			BufferedReader br_stdout = new BufferedReader(isr_stdout);
+//			BufferedReader br_stderr = new BufferedReader(isr_stderr);
+//
+//			// Stringwriter
+//			StringWriter sw_stdout = new StringWriter();
+//			StringWriter sw_stderr = new StringWriter();
+//			
+//			// oeffnen der OutputStreams zu den Ausgabedateien
+//			FileWriter fw_stdout = new FileWriter(sStdout);
+//			FileWriter fw_stderr = new FileWriter(sStderr);
 
 			// neuen thread, der STDOUT in den writer kopiert
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						IOUtils.copy(sysproc.getInputStream(), sw_stdout);
+						// einfangen der stdout- und stderr
+						InputStream is_stdout = sysproc.getInputStream();
+						
+						// Send your InputStream to an InputStreamReader:
+						InputStreamReader isr_stdout = new InputStreamReader(is_stdout);
+						
+						// That needs to go to a BufferedReader:
+						BufferedReader br_stdout = new BufferedReader(isr_stdout);
+
+						// oeffnen der OutputStreams zu den Ausgabedateien
+						final FileWriter fw_stdout = new FileWriter(sStdout);
+						
+						String line_out = new String();
+
+						// schleife schreibt den aktuellen inhalt in das file
+						while (((line_out = br_stdout.readLine()) != null))
+						{
+							if (!(line_out == null))
+							{
+								System.out.println("OUT:"+line_out); // wird umgeleitet ins myLog
+								fw_stdout.write(line_out);
+								fw_stdout.write("\n");
+								fw_stdout.flush();
+							}
+						}
+						
+						fw_stdout.close();
+						
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -278,7 +305,34 @@ public class Syscall {
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						IOUtils.copy(sysproc.getErrorStream(), sw_stderr);
+						// einfangen der stderr
+						InputStream is_stderr = sysproc.getErrorStream();
+						
+						// Send your InputStream to an InputStreamReader:
+						InputStreamReader isr_stderr = new InputStreamReader(is_stderr);
+						
+						// That needs to go to a BufferedReader:
+						BufferedReader br_stderr = new BufferedReader(isr_stderr);
+
+						// oeffnen der OutputStreams zu den Ausgabedateien
+						final FileWriter fw_stderr = new FileWriter(sStderr);
+						
+						String line_err = new String();
+
+						// schleife schreibt den aktuellen inhalt in das file
+						while (((line_err = br_stderr.readLine()) != null))
+						{
+							if (!(line_err == null))
+							{
+								System.err.println("ERR:"+line_err); // wird umgeleitet ins myLog
+								fw_stderr.write(line_err);
+								fw_stderr.write("\n");
+								fw_stderr.flush();
+							}
+						}
+						
+						fw_stderr.close();
+						
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -286,26 +340,6 @@ public class Syscall {
 				}
 			}).start();
 			
-			String line_out = new String();
-			String line_err = new String();
-			
-//			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
-//			{
-//				if (!(line_out == null))
-//				{
-//					System.out.println("OUT:"+line_out); // wird umgeleitet ins myLog
-//					fw_stdout.write(line_out);
-//					fw_stdout.write("\n");
-//					fw_stdout.flush();
-//				}
-//				if (!(line_err == null))
-//				{
-//					System.err.println("ERR:"+line_err); // wird umgeleitet ins myLog
-//					fw_stderr.write(line_err);
-//					fw_stderr.write("\n");
-//					fw_stderr.flush();
-//				}
-//			}
 
 			
 //			int run = 0;
@@ -331,16 +365,16 @@ public class Syscall {
 
 			int exitValue = sysproc.waitFor();
 
-			fw_stdout.write(sw_stdout.toString());
-			fw_stdout.write("\n");
-			fw_stdout.flush();
-			
-			fw_stderr.write(sw_stderr.toString());
-			fw_stderr.write("\n");
-			fw_stderr.flush();
-			
-			fw_stdout.close();
-			fw_stderr.close();
+//			fw_stdout.write(sw_stdout.toString());
+//			fw_stdout.write("\n");
+//			fw_stdout.flush();
+//			
+//			fw_stderr.write(sw_stderr.toString());
+//			fw_stderr.write("\n");
+//			fw_stderr.flush();
+//			
+//			fw_stdout.close();
+//			fw_stderr.close();
 			
 			System.out.println("exitvalue: "+exitValue);
 
