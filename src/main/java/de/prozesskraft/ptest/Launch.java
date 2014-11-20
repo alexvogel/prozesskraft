@@ -350,7 +350,7 @@ public class Launch
 			// starten des prozesses
 			java.lang.Process sysproc = pb.start();
 
-			// einfangen der stdout- und stderr
+			// einfangen der stdout- und stderr des subprozesses
 			InputStream is_stdout = sysproc.getInputStream();
 			InputStream is_stderr = sysproc.getErrorStream();
 			
@@ -371,7 +371,7 @@ public class Launch
 			String line_err = new String();
 
 
-			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null))
+			while (((line_out = br_stdout.readLine()) != null) || ((line_err = br_stderr.readLine()) != null))
 			{
 				if (!(line_out == null))
 				{
@@ -392,7 +392,7 @@ public class Launch
 			}
 
 			int exitValue = sysproc.waitFor();
-			
+
 //			fw_stdout.close();
 //			fw_stderr.close();
 
