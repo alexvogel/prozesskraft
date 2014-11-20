@@ -252,18 +252,19 @@ public class Syscall {
 			String line_err = new String();
 
 //			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || ((line_out = br_stdout.readLine()) != null))
+			
 			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
 			{
 				if (!(line_out == null))
 				{
-					System.out.println(line_out);
+					System.out.println("stdout:"+line_out); // das geht ins myLog
 					fw_stdout.write(line_out);
 					fw_stdout.write("\n");
 					fw_stdout.flush();
 				}
 				if (!(line_err == null))
 				{
-					System.out.println(line_err);
+					System.out.println("stderr:"+line_err); // das geht ins myLog
 					fw_stderr.write(line_err);
 					fw_stderr.write("\n");
 					fw_stderr.flush();
