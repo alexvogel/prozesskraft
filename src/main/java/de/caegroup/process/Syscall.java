@@ -183,8 +183,8 @@ public class Syscall {
 			
 			// startzeit merken
 			Date startDate = new Date();
-			Date termDate = new Date(startDate.getTime() + Integer.parseInt(sMaxrun)*60*1000);
-						
+			final Date termDate = new Date(startDate.getTime() + Integer.parseInt(sMaxrun)*60*1000);
+
 			// Aufruf in das call -logfile schreiben
 			PrintWriter writerLog = new PrintWriter(sMylog);
 			writerLog.println("this program runs in directory:");
@@ -242,27 +242,7 @@ public class Syscall {
 			}
 			writerPid.close();
 
-//			// einfangen der stdout- und stderr
-//			InputStream is_stdout = sysproc.getInputStream();
-//			InputStream is_stderr = sysproc.getErrorStream();
-//
-//			// Send your InputStream to an InputStreamReader:
-//			InputStreamReader isr_stdout = new InputStreamReader(is_stdout);
-//			InputStreamReader isr_stderr = new InputStreamReader(is_stderr);
-//
-//			// That needs to go to a BufferedReader:
-//			BufferedReader br_stdout = new BufferedReader(isr_stdout);
-//			BufferedReader br_stderr = new BufferedReader(isr_stderr);
-//
-//			// Stringwriter
-//			StringWriter sw_stdout = new StringWriter();
-//			StringWriter sw_stderr = new StringWriter();
-//			
-//			// oeffnen der OutputStreams zu den Ausgabedateien
-//			FileWriter fw_stdout = new FileWriter(sStdout);
-//			FileWriter fw_stderr = new FileWriter(sStderr);
-
-			// neuen thread, der STDOUT in den writer kopiert
+			// neuen thread, der STDOUT behandelt
 			new Thread(new Runnable() {
 				public void run() {
 					try {
@@ -281,7 +261,7 @@ public class Syscall {
 						String line_out = new String();
 
 						// schleife schreibt den aktuellen inhalt in das file
-						while (((line_out = br_stdout.readLine()) != null))
+						while (((line_out = br_stdout.readLine()) != null) || (	new Date().after(termDate)))
 						{
 							if (!(line_out == null))
 							{
@@ -290,10 +270,20 @@ public class Syscall {
 								fw_stdout.write("\n");
 								fw_stdout.flush();
 							}
+							if (new Date().after(termDate))
+							{
+								System.out.println("------------------------------------------------------");
+								System.out.println("forced termination at "+new Date().toString());
+
+								fw_stdout.close();
+							}
 						}
-						
+
 						fw_stdout.close();
-						
+	
+						sysproc.destroy();
+						System.exit(9999);
+
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -301,7 +291,7 @@ public class Syscall {
 				}
 			}).start();
 			
-			// neuen thread, der STDERR in den writer kopiert
+			// neuen thread, der STDERR behandelt
 			new Thread(new Runnable() {
 				public void run() {
 					try {
@@ -329,8 +319,18 @@ public class Syscall {
 								fw_stderr.write("\n");
 								fw_stderr.flush();
 							}
+							if (new Date().after(termDate))
+							{
+								System.err.println("------------------------------------------------------");
+								System.err.println("forced termination at "+new Date().toString());
+
+								fw_stderr.close();
+
+								sysproc.destroy();
+								System.exit(9999);
+							}
 						}
-						
+
 						fw_stderr.close();
 						
 					} catch (IOException e) {
@@ -339,43 +339,9 @@ public class Syscall {
 					}
 				}
 			}).start();
-			
-
-			
-//			int run = 0;
-//			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
-//			{
-//				run++;
-//				System.out.println("run "+run);
-//				if (!(line_out == null))
-//				{
-//					System.out.println("OUT:"+line_out); // wird umgeleitet ins myLog
-//					fw_stdout.write(line_out);
-//					fw_stdout.write("\n");
-//					fw_stdout.flush();
-//				}
-//				if (!(line_err == null))
-//				{
-//					System.err.println("ERR:"+line_err); // wird umgeleitet ins myLog
-//					fw_stderr.write(line_err);
-//					fw_stderr.write("\n");
-//					fw_stderr.flush();
-//				}
-//			}
 
 			int exitValue = sysproc.waitFor();
 
-//			fw_stdout.write(sw_stdout.toString());
-//			fw_stdout.write("\n");
-//			fw_stdout.flush();
-//			
-//			fw_stderr.write(sw_stderr.toString());
-//			fw_stderr.write("\n");
-//			fw_stderr.flush();
-//			
-//			fw_stdout.close();
-//			fw_stderr.close();
-			
 			System.out.println("exitvalue: "+exitValue);
 
 			sysproc.destroy();
