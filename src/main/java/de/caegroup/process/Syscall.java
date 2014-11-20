@@ -350,17 +350,6 @@ public class Syscall {
 								fw_stderr.write("\n");
 								fw_stderr.flush();
 							}
-							if (new Date().after(termDate))
-							{
-								System.err.println("------------------------------------------------------");
-								System.err.println("forced termination at "+new Date().toString());
-								System.out.println("exitvalue: "+9999);
-
-								fw_stderr.close();
-
-								sysproc.destroy();
-								System.exit(9999);
-							}
 						}
 
 						fw_stderr.close();
