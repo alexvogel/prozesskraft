@@ -245,17 +245,20 @@ public class Syscall {
 			BufferedReader br_stderr = new BufferedReader(isr_stderr);
 
 			// oeffnen der OutputStreams zu den Ausgabedateien
-			final FileWriter fw_stdout = new FileWriter(sStdout);
+			FileWriter fw_stdout = new FileWriter(sStdout);
 			FileWriter fw_stderr = new FileWriter(sStderr);
 
 			// zeilenweise in die files schreiben
 			String line_out = new String();
 			String line_err = new String();
 
+			
+			final StringWriter writer = new StringWriter();
+
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						IOUtils.copy(sysproc.getInputStream(), fw_stdout);
+						IOUtils.copy(sysproc.getInputStream(), writer);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -285,8 +288,10 @@ public class Syscall {
 				}
 			}
 
-			final int exitValue = sysproc.waitFor();
+			int exitValue = sysproc.waitFor();
 
+			System.out.println(writer.toString());
+			
 			fw_stdout.close();
 			fw_stderr.close();
 			
