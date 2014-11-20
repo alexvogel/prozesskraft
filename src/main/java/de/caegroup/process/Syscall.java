@@ -230,11 +230,11 @@ public class Syscall {
 				writerPid.println(pid);
 			}
 			writerPid.close();
-			
+
 			// einfangen der stdout- und stderr
 			InputStream is_stdout = sysproc.getInputStream();
 			InputStream is_stderr = sysproc.getErrorStream();
-			
+
 			// Send your InputStream to an InputStreamReader:
 			InputStreamReader isr_stdout = new InputStreamReader(is_stdout);
 			InputStreamReader isr_stderr = new InputStreamReader(is_stderr);
@@ -242,29 +242,31 @@ public class Syscall {
 			// That needs to go to a BufferedReader:
 			BufferedReader br_stdout = new BufferedReader(isr_stdout);
 			BufferedReader br_stderr = new BufferedReader(isr_stderr);
-			
+
 			// oeffnen der OutputStreams zu den Ausgabedateien
 			FileWriter fw_stdout = new FileWriter(sStdout);
 			FileWriter fw_stderr = new FileWriter(sStderr);
-			
+
 			// zeilenweise in die files schreiben
 			String line_out = new String();
 			String line_err = new String();
 
 //			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || ((line_out = br_stdout.readLine()) != null))
-			
+			int run = 0;
 			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
 			{
+				run++;
+				System.out.println("run "+run);
 				if (!(line_out == null))
 				{
-					System.out.println("stdout:"+line_out); // das geht ins myLog
+					System.out.println("OUT:"+line_out); // wird umgeleitet ins myLog
 					fw_stdout.write(line_out);
 					fw_stdout.write("\n");
 					fw_stdout.flush();
 				}
 				if (!(line_err == null))
 				{
-					System.out.println("stderr:"+line_err); // das geht ins myLog
+					System.err.println("ERR:"+line_err); // wird umgeleitet ins myLog
 					fw_stderr.write(line_err);
 					fw_stderr.write("\n");
 					fw_stderr.flush();
