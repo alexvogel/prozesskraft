@@ -14,6 +14,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.apache.commons.io.IOUtils;
 
 public class Syscall {
 
@@ -207,7 +208,7 @@ public class Syscall {
 			System.setErr(logPrintStream);
 
 			// Aufruf taetigen
-			java.lang.Process sysproc = Runtime.getRuntime().exec(sCall);
+			final java.lang.Process sysproc = Runtime.getRuntime().exec(sCall);
 
 			// feststellen der Process-ID des laufenden JavaVM und in die PID-Datei schreiben
 			String pid = ManagementFactory.getRuntimeMXBean().getName();
@@ -244,13 +245,24 @@ public class Syscall {
 			BufferedReader br_stderr = new BufferedReader(isr_stderr);
 
 			// oeffnen der OutputStreams zu den Ausgabedateien
-			FileWriter fw_stdout = new FileWriter(sStdout);
+			final FileWriter fw_stdout = new FileWriter(sStdout);
 			FileWriter fw_stderr = new FileWriter(sStderr);
 
 			// zeilenweise in die files schreiben
 			String line_out = new String();
 			String line_err = new String();
 
+			new Thread(new Runnable() {
+				public void run() {
+					try {
+						IOUtils.copy(sysproc.getInputStream(), fw_stdout);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}).start();
+			
 //			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || ((line_out = br_stdout.readLine()) != null))
 			int run = 0;
 			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
@@ -273,7 +285,7 @@ public class Syscall {
 				}
 			}
 
-			int exitValue = sysproc.waitFor();
+			final int exitValue = sysproc.waitFor();
 
 			fw_stdout.close();
 			fw_stderr.close();
