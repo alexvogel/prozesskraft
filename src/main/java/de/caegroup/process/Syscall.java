@@ -215,7 +215,7 @@ public class Syscall {
 			ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
 
 			// errorstream nach out umleiten
-			pb.redirectErrorStream(true);
+//			pb.redirectErrorStream(true);
 
 			// Aufruf taetigen
 			java.lang.Process sysproc = pb.start();
@@ -263,8 +263,8 @@ public class Syscall {
 			String line_err = new String();
 
 			int run = 0;
-//			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
-			while ((line_out = br_stdout.readLine()) != null)
+			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
+//			while ((line_out = br_stdout.readLine()) != null)
 			{
 				run++;
 				System.out.println("run "+run);
