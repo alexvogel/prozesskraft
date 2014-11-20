@@ -269,32 +269,10 @@ public class Syscall {
 //				}
 //			}
 
-			BufferedReader br_stdout = new BufferedReader(new InputStreamReader(sysproc.getInputStream()));
-			BufferedReader br_stderr = new BufferedReader(new InputStreamReader(sysproc.getErrorStream()));
-			
-			// oeffnen der OutputStreams zu den Ausgabedateien
-			FileWriter fw_stdout = new FileWriter(sStdout);
-			FileWriter fw_stderr = new FileWriter(sStderr);
-
-			String line_out = new String();
-			String line_err = new String();
-
-			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || ((line_out = br_stdout.readLine()) != null))
-			{
-				if (!(line_out == null))
-				{
-
-				}
-				if (!(line_err == null))
-				{
-
-				}
-			}
-			
 			int exitValue = sysproc.waitFor();
-			
-			fw_stdout.close();
-			fw_stderr.close();
+
+//			fw_stdout.close();
+//			fw_stderr.close();
 			
 			System.out.println("exitvalue: "+exitValue);
 
