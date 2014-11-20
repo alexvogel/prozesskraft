@@ -254,28 +254,19 @@ public class Syscall {
 			final BufferedReader br_stdout = new BufferedReader(isr_stdout);
 			final BufferedReader br_stderr = new BufferedReader(isr_stderr);
 
+			// Stringwriter
+			final StringWriter sw_stdout = new StringWriter();
+			final StringWriter sw_stderr = new StringWriter();
+			
 			// oeffnen der OutputStreams zu den Ausgabedateien
 			final FileWriter fw_stdout = new FileWriter(sStdout);
 			final FileWriter fw_stderr = new FileWriter(sStderr);
 
-			// zeilenweise in die files schreiben
-//			String line_out = new String();
-//			String line_err = new String();
-
-			// neuen thread, der STDOUT des subprocess in eine datei umleitet
+			// neuen thread, der STDOUT in den writer kopiert
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						IOUtils.copy(sysproc.getInputStream(), fw_stdout);
-						String line_out = new String();
-						
-						while((line_out = br_stdout.readLine()) != null)
-						{
-							System.out.println("OUT:"+line_out); // wird umgeleitet ins myLog
-							fw_stdout.write(line_out);
-							fw_stdout.write("\n");
-							fw_stdout.flush();
-						}
+						IOUtils.copy(sysproc.getInputStream(), sw_stdout);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -283,26 +274,39 @@ public class Syscall {
 				}
 			}).start();
 			
-			// neuen thread, der STDERR des subprocess in eine datei umleitet
+			// neuen thread, der STDERR in den writer kopiert
 			new Thread(new Runnable() {
 				public void run() {
 					try {
-						IOUtils.copy(sysproc.getErrorStream(), fw_stderr);
-						String line_err = new String();
-						
-						while((line_err = br_stderr.readLine()) != null)
-						{
-							System.err.println("ERR:"+line_err); // wird umgeleitet ins myLog
-							fw_stderr.write(line_err);
-							fw_stderr.write("\n");
-							fw_stderr.flush();
-						}
+						IOUtils.copy(sysproc.getErrorStream(), sw_stderr);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			}).start();
+			
+			String line_out = new String();
+			String line_err = new String();
+			
+//			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
+//			{
+//				if (!(line_out == null))
+//				{
+//					System.out.println("OUT:"+line_out); // wird umgeleitet ins myLog
+//					fw_stdout.write(line_out);
+//					fw_stdout.write("\n");
+//					fw_stdout.flush();
+//				}
+//				if (!(line_err == null))
+//				{
+//					System.err.println("ERR:"+line_err); // wird umgeleitet ins myLog
+//					fw_stderr.write(line_err);
+//					fw_stderr.write("\n");
+//					fw_stderr.flush();
+//				}
+//			}
+
 			
 //			int run = 0;
 //			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
@@ -327,6 +331,14 @@ public class Syscall {
 
 			int exitValue = sysproc.waitFor();
 
+			fw_stdout.write(sw_stdout.toString());
+			fw_stdout.write("\n");
+			fw_stdout.flush();
+			
+			fw_stderr.write(sw_stderr.toString());
+			fw_stderr.write("\n");
+			fw_stderr.flush();
+			
 			fw_stdout.close();
 			fw_stderr.close();
 			
