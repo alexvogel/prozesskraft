@@ -252,7 +252,7 @@ public class Syscall {
 			String line_err = new String();
 
 //			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || ((line_out = br_stdout.readLine()) != null))
-			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_out = br_stdout.readLine()) != null))
+			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_out = br_stdout.readLine()) != null) || ((line_out = br_stderr.readLine()) != null))
 			{
 				if (!(line_out == null))
 				{
