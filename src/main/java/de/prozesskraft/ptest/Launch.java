@@ -352,7 +352,7 @@ public class Launch
 //			log("info", "call executed. pid="+sysproc.hashCode());
 
 			// wait 2 seconds for becoming the pid-file visible
-			Thread.sleep(2000);
+//			Thread.sleep(2000);
 			
 //			int exitValue = sysproc.waitFor();
 			
@@ -366,12 +366,12 @@ public class Launch
 //				System.err.println("info: call returned value: "+exitValue);
 //			}
 			
-			System.err.println("info: "+new Date().toString());
-			System.err.println("info: bye");
-
-			sysproc.destroy();
-
-			System.exit(sysproc.exitValue());
+//			System.err.println("info: "+new Date().toString());
+//			System.err.println("info: bye");
+//
+//			sysproc.destroy();
+//
+//			System.exit(sysproc.exitValue());
 		}
 		catch (Exception e2)
 		{
