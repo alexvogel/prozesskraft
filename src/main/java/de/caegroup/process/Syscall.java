@@ -218,7 +218,7 @@ public class Syscall {
 //			pb.redirectErrorStream(true);
 
 			// Aufruf taetigen
-			java.lang.Process sysproc = pb.start();
+			final java.lang.Process sysproc = pb.start();
 
 			// feststellen der Process-ID des laufenden JavaVM und in die PID-Datei schreiben
 			String pid = ManagementFactory.getRuntimeMXBean().getName();
@@ -251,38 +251,79 @@ public class Syscall {
 			InputStreamReader isr_stderr = new InputStreamReader(is_stderr);
 
 			// That needs to go to a BufferedReader:
-			BufferedReader br_stdout = new BufferedReader(isr_stdout);
-			BufferedReader br_stderr = new BufferedReader(isr_stderr);
+			final BufferedReader br_stdout = new BufferedReader(isr_stdout);
+			final BufferedReader br_stderr = new BufferedReader(isr_stderr);
 
 			// oeffnen der OutputStreams zu den Ausgabedateien
-			FileWriter fw_stdout = new FileWriter(sStdout);
-			FileWriter fw_stderr = new FileWriter(sStderr);
+			final FileWriter fw_stdout = new FileWriter(sStdout);
+			final FileWriter fw_stderr = new FileWriter(sStderr);
 
 			// zeilenweise in die files schreiben
-			String line_out = new String();
-			String line_err = new String();
+//			String line_out = new String();
+//			String line_err = new String();
 
-			int run = 0;
-			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
-//			while ((line_out = br_stdout.readLine()) != null)
-			{
-				run++;
-				System.out.println("run "+run);
-				if (!(line_out == null))
-				{
-					System.out.println("OUT:"+line_out); // wird umgeleitet ins myLog
-					fw_stdout.write(line_out);
-					fw_stdout.write("\n");
-					fw_stdout.flush();
+			// neuen thread, der STDOUT des subprocess in eine datei umleitet
+			new Thread(new Runnable() {
+				public void run() {
+					try {
+						IOUtils.copy(sysproc.getInputStream(), fw_stdout);
+						String line_out = new String();
+						
+						while((line_out = br_stdout.readLine()) != null)
+						{
+							System.out.println("OUT:"+line_out); // wird umgeleitet ins myLog
+							fw_stdout.write(line_out);
+							fw_stdout.write("\n");
+							fw_stdout.flush();
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-				if (!(line_err == null))
-				{
-					System.err.println("ERR:"+line_err); // wird umgeleitet ins myLog
-					fw_stderr.write(line_err);
-					fw_stderr.write("\n");
-					fw_stderr.flush();
+			}).start();
+			
+			// neuen thread, der STDERR des subprocess in eine datei umleitet
+			new Thread(new Runnable() {
+				public void run() {
+					try {
+						IOUtils.copy(sysproc.getErrorStream(), fw_stderr);
+						String line_err = new String();
+						
+						while((line_err = br_stderr.readLine()) != null)
+						{
+							System.err.println("ERR:"+line_err); // wird umgeleitet ins myLog
+							fw_stderr.write(line_err);
+							fw_stderr.write("\n");
+							fw_stderr.flush();
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			}
+			}).start();
+			
+//			int run = 0;
+//			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
+//			{
+//				run++;
+//				System.out.println("run "+run);
+//				if (!(line_out == null))
+//				{
+//					System.out.println("OUT:"+line_out); // wird umgeleitet ins myLog
+//					fw_stdout.write(line_out);
+//					fw_stdout.write("\n");
+//					fw_stdout.flush();
+//				}
+//				if (!(line_err == null))
+//				{
+//					System.err.println("ERR:"+line_err); // wird umgeleitet ins myLog
+//					fw_stderr.write(line_err);
+//					fw_stderr.write("\n");
+//					fw_stderr.flush();
+//				}
+//			}
 
 			int exitValue = sysproc.waitFor();
 
