@@ -352,19 +352,19 @@ public class Launch
 //			log("info", "call executed. pid="+sysproc.hashCode());
 
 			// wait 2 seconds for becoming the pid-file visible
-			Thread.sleep(20000);
+			Thread.sleep(2000);
 			
-			int exitValue = sysproc.waitFor();
+//			int exitValue = sysproc.waitFor();
 			
-			// der prozess soll bis laengstens
-			if(exitValue != 0)
-			{
-				System.err.println("error: call returned a value indicating an error: "+exitValue);
-			}
-			else
-			{
-				System.err.println("info: call returned value: "+exitValue);
-			}
+//			// der prozess soll bis laengstens
+//			if(exitValue != 0)
+//			{
+//				System.err.println("error: call returned a value indicating an error: "+exitValue);
+//			}
+//			else
+//			{
+//				System.err.println("info: call returned value: "+exitValue);
+//			}
 			
 			System.err.println("info: "+new Date().toString());
 			System.err.println("info: bye");
