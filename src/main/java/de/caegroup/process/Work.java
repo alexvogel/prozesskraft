@@ -390,7 +390,7 @@ implements Serializable
 			}
 
 			// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)
-			String AbsLogSyscallWrapper = new java.io.File(new java.io.File(this.getParent().getAbspid()).getParent()).getAbsolutePath()+"/log";
+			String AbsLogSyscallWrapper = new java.io.File(new java.io.File(this.getParent().getAbspid()).getParent()).getAbsolutePath()+"/.log";
 
 			try
 			{
