@@ -1,8 +1,12 @@
 package de.prozesskraft.ptest;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.FileAlreadyExistsException;
@@ -346,7 +350,58 @@ public class Launch
 			// starten des prozesses
 			java.lang.Process sysproc = pb.start();
 
-//			alternativer aufruf
+			// einfangen der stdout- und stderr
+			InputStream is_stdout = sysproc.getInputStream();
+			InputStream is_stderr = sysproc.getErrorStream();
+			
+			// Send your InputStream to an InputStreamReader:
+			InputStreamReader isr_stdout = new InputStreamReader(is_stdout);
+			InputStreamReader isr_stderr = new InputStreamReader(is_stderr);
+
+			// That needs to go to a BufferedReader:
+			BufferedReader br_stdout = new BufferedReader(isr_stdout);
+			BufferedReader br_stderr = new BufferedReader(isr_stderr);
+			
+//			// oeffnen der OutputStreams zu den Ausgabedateien
+//			FileWriter fw_stdout = new FileWriter(sStdout);
+//			FileWriter fw_stderr = new FileWriter(sStderr);
+			
+			// zeilenweise in die files schreiben
+			String line_out = new String();
+			String line_err = new String();
+
+
+			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null))
+			{
+				if (!(line_out == null))
+				{
+					System.out.println(line_out);
+//					fw_stdout.write(line_out);
+//					fw_stdout.write("\n");
+//					fw_stdout.flush();
+				}
+				if (!(line_err == null))
+				{
+					System.err.println(line_err);
+//					fw_stderr.write(line_err);
+//					fw_stderr.write("\n");
+//					fw_stderr.flush();
+				}
+			}
+
+			int exitValue = sysproc.waitFor();
+			
+//			fw_stdout.close();
+//			fw_stderr.close();
+
+			System.err.println("exitvalue: "+exitValue);
+
+			sysproc.destroy();
+
+			System.exit(exitValue);
+
+			
+			//			alternativer aufruf
 //			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
 			
 //			log("info", "call executed. pid="+sysproc.hashCode());
