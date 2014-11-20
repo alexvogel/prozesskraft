@@ -352,7 +352,7 @@ public class Launch
 //			log("info", "call executed. pid="+sysproc.hashCode());
 
 			// wait 2 seconds for becoming the pid-file visible
-			Thread.sleep(2000);
+			Thread.sleep(20000);
 			
 			int exitValue = sysproc.waitFor();
 			
