@@ -269,16 +269,16 @@ public class Syscall {
 //				}
 //			}
 
-			int exitValue = sysproc.waitFor();
+//			int exitValue = sysproc.waitFor();
 
 //			fw_stdout.close();
 //			fw_stderr.close();
 			
-			System.out.println("exitvalue: "+exitValue);
+//			System.out.println("exitvalue: "+exitValue);
 
-			sysproc.destroy();
+//			sysproc.destroy();
 
-			System.exit(exitValue);
+//			System.exit(exitValue);
 			
 // TODO: es soll noch implementiert werden, dass nach einer bestimmten anzahl von minuten (maxrun) mit gewalt abgebrochen wird
 			
@@ -311,13 +311,13 @@ public class Syscall {
 			System.out.println("IOException: Exception happened - here's what I know: ");
 			e.printStackTrace();
 		}
-		catch (InterruptedException e)
-		{
-			
-			// You need this for that waitFor() diddy.
-			System.out.println("InterruptedException: Something got interrupted, I guess: ");
-			e.printStackTrace();
-		}
+//		catch (InterruptedException e)
+//		{
+//			
+//			// You need this for that waitFor() diddy.
+//			System.out.println("InterruptedException: Something got interrupted, I guess: ");
+//			e.printStackTrace();
+//		}
 
 	}
 	
