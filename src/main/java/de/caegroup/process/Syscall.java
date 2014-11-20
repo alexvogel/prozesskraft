@@ -208,7 +208,9 @@ public class Syscall {
 			System.setErr(logPrintStream);
 
 			// Aufruf taetigen
-			final java.lang.Process sysproc = Runtime.getRuntime().exec(sCall);
+			ProcessBuilder builder = new ProcessBuilder(sCall);
+			builder.redirectErrorStream(true);
+			java.lang.Process sysproc = builder.start();
 
 			// feststellen der Process-ID des laufenden JavaVM und in die PID-Datei schreiben
 			String pid = ManagementFactory.getRuntimeMXBean().getName();
@@ -252,21 +254,6 @@ public class Syscall {
 			String line_out = new String();
 			String line_err = new String();
 
-			
-			final StringWriter writer = new StringWriter();
-
-			new Thread(new Runnable() {
-				public void run() {
-					try {
-						IOUtils.copy(sysproc.getInputStream(), writer);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}).start();
-			
-//			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || ((line_out = br_stdout.readLine()) != null))
 			int run = 0;
 			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
 			{
@@ -290,8 +277,6 @@ public class Syscall {
 
 			int exitValue = sysproc.waitFor();
 
-			System.out.println(writer.toString());
-			
 			fw_stdout.close();
 			fw_stderr.close();
 			
