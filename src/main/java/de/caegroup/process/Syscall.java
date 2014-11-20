@@ -231,54 +231,54 @@ public class Syscall {
 			}
 			writerPid.close();
 			
-//			// einfangen der stdout- und stderr
-//			InputStream is_stdout = sysproc.getInputStream();
-//			InputStream is_stderr = sysproc.getErrorStream();
-//			
-//			// Send your InputStream to an InputStreamReader:
-//			InputStreamReader isr_stdout = new InputStreamReader(is_stdout);
-//			InputStreamReader isr_stderr = new InputStreamReader(is_stderr);
-//
-//			// That needs to go to a BufferedReader:
-//			BufferedReader br_stdout = new BufferedReader(isr_stdout);
-//			BufferedReader br_stderr = new BufferedReader(isr_stderr);
-//			
-//			// oeffnen der OutputStreams zu den Ausgabedateien
-//			FileWriter fw_stdout = new FileWriter(sStdout);
-//			FileWriter fw_stderr = new FileWriter(sStderr);
-//			
-//			// zeilenweise in die files schreiben
-//			String line_out = new String();
-//			String line_err = new String();
-//
-//			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || ((line_out = br_stdout.readLine()) != null))
-//			{
-//				if (!(line_out == null))
-//				{
-//					System.out.println(line_out);
-//					fw_stdout.write(line_out);
-//					fw_stdout.write("\n");
-//					fw_stdout.flush();
-//				}
-//				if (!(line_err == null))
-//				{
-//					System.out.println(line_err);
-//					fw_stderr.write(line_err);
-//					fw_stderr.write("\n");
-//					fw_stderr.flush();
-//				}
-//			}
-
-//			int exitValue = sysproc.waitFor();
-
-//			fw_stdout.close();
-//			fw_stderr.close();
+			// einfangen der stdout- und stderr
+			InputStream is_stdout = sysproc.getInputStream();
+			InputStream is_stderr = sysproc.getErrorStream();
 			
-//			System.out.println("exitvalue: "+exitValue);
+			// Send your InputStream to an InputStreamReader:
+			InputStreamReader isr_stdout = new InputStreamReader(is_stdout);
+			InputStreamReader isr_stderr = new InputStreamReader(is_stderr);
 
-//			sysproc.destroy();
+			// That needs to go to a BufferedReader:
+			BufferedReader br_stdout = new BufferedReader(isr_stdout);
+			BufferedReader br_stderr = new BufferedReader(isr_stderr);
+			
+			// oeffnen der OutputStreams zu den Ausgabedateien
+			FileWriter fw_stdout = new FileWriter(sStdout);
+			FileWriter fw_stderr = new FileWriter(sStderr);
+			
+			// zeilenweise in die files schreiben
+			String line_out = new String();
+			String line_err = new String();
 
-//			System.exit(exitValue);
+			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || ((line_out = br_stdout.readLine()) != null))
+			{
+				if (!(line_out == null))
+				{
+					System.out.println(line_out);
+					fw_stdout.write(line_out);
+					fw_stdout.write("\n");
+					fw_stdout.flush();
+				}
+				if (!(line_err == null))
+				{
+					System.out.println(line_err);
+					fw_stderr.write(line_err);
+					fw_stderr.write("\n");
+					fw_stderr.flush();
+				}
+			}
+
+			int exitValue = sysproc.waitFor();
+
+			fw_stdout.close();
+			fw_stderr.close();
+			
+			System.out.println("exitvalue: "+exitValue);
+
+			sysproc.destroy();
+
+			System.exit(exitValue);
 			
 // TODO: es soll noch implementiert werden, dass nach einer bestimmten anzahl von minuten (maxrun) mit gewalt abgebrochen wird
 			
@@ -311,13 +311,13 @@ public class Syscall {
 			System.out.println("IOException: Exception happened - here's what I know: ");
 			e.printStackTrace();
 		}
-//		catch (InterruptedException e)
-//		{
-//			
-//			// You need this for that waitFor() diddy.
-//			System.out.println("InterruptedException: Something got interrupted, I guess: ");
-//			e.printStackTrace();
-//		}
+		catch (InterruptedException e)
+		{
+			
+			// You need this for that waitFor() diddy.
+			System.out.println("InterruptedException: Something got interrupted, I guess: ");
+			e.printStackTrace();
+		}
 
 	}
 	
