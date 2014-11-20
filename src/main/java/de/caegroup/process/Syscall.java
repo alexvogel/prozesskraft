@@ -178,7 +178,7 @@ public class Syscall {
 			String sPid = commandline.getOptionValue("pid");
 			final String sStdout = commandline.getOptionValue("stdout");
 			final String sStderr = commandline.getOptionValue("stderr");
-			String sMaxrun = commandline.getOptionValue("maxrun");
+			final String sMaxrun = commandline.getOptionValue("maxrun");
 
 			
 			// startzeit merken
@@ -242,10 +242,53 @@ public class Syscall {
 			}
 			writerPid.close();
 
-			// neuen thread, der STDOUT behandelt
+			// oeffnen der OutputStream zur STDOUT-Ausgabedatei
+			final FileWriter fw_stdout = new FileWriter(sStdout);
+			// oeffnen der OutputStream zur STDERR-Ausgabedatei
+			final FileWriter fw_stderr = new FileWriter(sStderr);
+			
+			
+			// einen timer thread erstellen, der die ganze sache nach einem bestimmten zeitraum abschiessen soll
+			new Thread(new Runnable() {
+				public void run() {
+					try
+					{
+						Thread.sleep(Integer.parseInt(sMaxrun)*60*1000);
+					}
+					catch (NumberFormatException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					try
+					{
+						fw_stdout.close();
+						fw_stderr.close();
+					}
+					catch (IOException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+					System.out.println("------------------------------------------------------");
+					System.out.println("forced termination at "+new Date().toString());
+					System.out.println("exitvalue: "+9999);
+
+					sysproc.destroy();
+					System.exit(9999);
+				}
+			}).start();
+					
+			// neuen thread, der STDOUT abfaengt und in eine datei schreibt
 			new Thread(new Runnable() {
 				public void run() {
 					try {
+						
 						// einfangen der stdout- und stderr
 						InputStream is_stdout = sysproc.getInputStream();
 						
@@ -255,13 +298,10 @@ public class Syscall {
 						// That needs to go to a BufferedReader:
 						BufferedReader br_stdout = new BufferedReader(isr_stdout);
 
-						// oeffnen der OutputStreams zu den Ausgabedateien
-						final FileWriter fw_stdout = new FileWriter(sStdout);
-						
 						String line_out = new String();
 
 						// schleife schreibt den aktuellen inhalt in das file
-						while (((line_out = br_stdout.readLine()) != null) || (	new Date().after(termDate)))
+						while (((line_out = br_stdout.readLine()) != null))
 						{
 							if (!(line_out == null))
 							{
@@ -270,20 +310,10 @@ public class Syscall {
 								fw_stdout.write("\n");
 								fw_stdout.flush();
 							}
-							if (new Date().after(termDate))
-							{
-								System.out.println("------------------------------------------------------");
-								System.out.println("forced termination at "+new Date().toString());
-
-								fw_stdout.close();
-							}
 						}
 
 						fw_stdout.close();
 	
-						sysproc.destroy();
-						System.exit(9999);
-
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -291,10 +321,11 @@ public class Syscall {
 				}
 			}).start();
 			
-			// neuen thread, der STDERR behandelt
+			// neuen thread, der STDERR abfaengt und in eine datei schreibt
 			new Thread(new Runnable() {
 				public void run() {
 					try {
+						
 						// einfangen der stderr
 						InputStream is_stderr = sysproc.getErrorStream();
 						
@@ -323,6 +354,7 @@ public class Syscall {
 							{
 								System.err.println("------------------------------------------------------");
 								System.err.println("forced termination at "+new Date().toString());
+								System.out.println("exitvalue: "+9999);
 
 								fw_stderr.close();
 
