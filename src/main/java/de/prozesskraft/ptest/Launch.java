@@ -376,6 +376,7 @@ public class Launch
 				if (!(line_out == null))
 				{
 					System.out.println(line_out);
+					System.out.flush();
 //					fw_stdout.write(line_out);
 //					fw_stdout.write("\n");
 //					fw_stdout.flush();
@@ -383,6 +384,7 @@ public class Launch
 				if (!(line_err == null))
 				{
 					System.err.println(line_err);
+					System.err.flush();
 //					fw_stderr.write(line_err);
 //					fw_stderr.write("\n");
 //					fw_stderr.flush();
