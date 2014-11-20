@@ -370,26 +370,21 @@ public class Launch
 			String line_out = new String();
 			String line_err = new String();
 
-
-			while (((line_out = br_stdout.readLine()) != null) || ((line_err = br_stderr.readLine()) != null))
-			{
-				if (!(line_out == null))
-				{
-					System.out.println(line_out);
-					System.out.flush();
-//					fw_stdout.write(line_out);
-//					fw_stdout.write("\n");
-//					fw_stdout.flush();
-				}
-				if (!(line_err == null))
-				{
-					System.err.println(line_err);
-					System.err.flush();
-//					fw_stderr.write(line_err);
-//					fw_stderr.write("\n");
-//					fw_stderr.flush();
-				}
-			}
+			while(br_stdout.readLine() != null){}
+			
+//			while (((line_out = br_stdout.readLine()) != null) || ((line_err = br_stderr.readLine()) != null))
+//			{
+//				if (!(line_out == null))
+//				{
+//					System.out.println(line_out);
+//					System.out.flush();
+//				}
+//				if (!(line_err == null))
+//				{
+//					System.err.println(line_err);
+//					System.err.flush();
+//				}
+//			}
 
 			int exitValue = sysproc.waitFor();
 
