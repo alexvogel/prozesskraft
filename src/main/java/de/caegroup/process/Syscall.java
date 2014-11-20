@@ -3,6 +3,8 @@ package de.caegroup.process;
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -207,10 +209,16 @@ public class Syscall {
 			System.setOut(logPrintStream);
 			System.setErr(logPrintStream);
 
+			ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(sCall.split(" ")));
+
+			// erstellen prozessbuilder
+			ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
+
+			// errorstream nach out umleiten
+			pb.redirectErrorStream(true);
+
 			// Aufruf taetigen
-			ProcessBuilder builder = new ProcessBuilder(sCall);
-			builder.redirectErrorStream(true);
-			java.lang.Process sysproc = builder.start();
+			java.lang.Process sysproc = pb.start();
 
 			// feststellen der Process-ID des laufenden JavaVM und in die PID-Datei schreiben
 			String pid = ManagementFactory.getRuntimeMXBean().getName();
@@ -255,7 +263,8 @@ public class Syscall {
 			String line_err = new String();
 
 			int run = 0;
-			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
+//			while ((((line_out = br_stdout.readLine()) != null) && ((line_err = br_stderr.readLine()) != null)) || ((line_err = br_stderr.readLine()) != null) || (line_out != null))
+			while ((line_out = br_stdout.readLine()) != null)
 			{
 				run++;
 				System.out.println("run "+run);
