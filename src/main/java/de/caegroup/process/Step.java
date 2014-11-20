@@ -1282,17 +1282,17 @@ implements Serializable, Cloneable
 
 	public String getAbsstdout()
 	{
-		return this.getAbsdir()+"/stdout.txt";
+		return this.getAbsdir()+"/.stdout.txt";
 	}
 	
 	public String getAbsstderr()
 	{
-		return this.getAbsdir()+"/stderr.txt";
+		return this.getAbsdir()+"/.stderr.txt";
 	}
 	
 	public String getAbspid()
 	{
-		return this.getAbsdir()+"/pid";
+		return this.getAbsdir()+"/.pid";
 	}
 
 	
