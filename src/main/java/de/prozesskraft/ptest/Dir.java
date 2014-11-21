@@ -64,6 +64,10 @@ public class Dir {
 
 	private ArrayList<Log> log = new ArrayList<Log>();
 
+	// merker fuer die file/dir walker
+	private Dir actDir = null;
+	private Dir lastDir = null;
+	
 	public Dir()
 	{
 		Random generator = new Random();
@@ -675,29 +679,34 @@ public class Dir {
 //				String pathString = walkingDir.getParent() + "/"+walkingDir.getFileName();
 				String relPathString = getBasepath().relativize(walkingDir).toString();
 				
-				// Dir erstellen
-				Dir dir = new Dir();
+				// das aktuelle verzeichnis in lastDir ablegen
+				if(actDir != null)
+				{
+					lastDir = actDir;
+				}
+				// und das gleich zu betretende verzeichnis als actDir merken
+				actDir = new Dir();
 
 				// wenn der relative path ein leerer string ist, ist this das directory
 				if(relPathString.equals(""))
 				{
 //					System.out.println("THIS DIR IS ROOT: "+walkingDir.getFileName());
-					dir = thisObj;
+					actDir = thisObj;
 				}
 				else
 				{
-					addDir(dir);
+					lastDir.addDir(actDir);
 				}
 
 //				System.err.println("before visit directory (abs): "+pathString);
 //				System.err.println("before visit directory (rel): "+relPathString);
 
 				// die Daten setzen
-				dir.setId(runningId++);
+				actDir.setId(runningId++);
 
-				dir.setPath(relPathString);
-				dir.setMinOccur(1);
-				dir.setMaxOccur(1);
+				actDir.setPath(relPathString);
+				actDir.setMinOccur(1);
+				actDir.setMaxOccur(1);
 
 //				System.out.println(dir.toString());
 				
@@ -731,7 +740,7 @@ public class Dir {
 				}
 				file.setSizeTolerance(0F);
 
-				addFile(file);
+				actDir.addFile(file);
 
 //				System.out.println(file.toString());
 
