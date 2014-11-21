@@ -37,7 +37,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="22"/>
 				</textElement>
-				<text><![CDATA[Prozessdokumentation]]></text>
+				<text><![CDATA[Prozessdefinition]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="bd29a8f2-1f4c-4ab4-97d4-40e535c3e0f0" x="370" y="110" width="80" height="25">
