@@ -264,13 +264,13 @@ public class Compare
 		{
 			examDir.setBasepath(examPath.getCanonicalPath());
 			examDir.genFingerprint();
-			System.out.println("-exam is a directory");
+			System.err.println("-exam is a directory");
 		}
 		// wenn es ein fingerprint ist, muss er eingelesen werden
 		else if(examPath.exists())
 		{
 			examDir.setInfilexml(examPath.getCanonicalPath());
-			System.out.println("-exam is a fingerprint");
+			System.err.println("-exam is a fingerprint");
 			try
 			{
 				examDir.readXml();
@@ -299,23 +299,23 @@ public class Compare
 		{
 			if (commandline.getOptionValue("summary").equals("error"))
 			{
-				System.out.println(examDir.sprintSummaryAsCsv("error"));
-				System.out.println(refDir.sprintSummaryAsCsv("error"));
+				System.err.println(examDir.sprintSummaryAsCsv("error"));
+				System.err.println(refDir.sprintSummaryAsCsv("error"));
 			}
 			else if(commandline.getOptionValue("summary").equals("all"))
 			{
-				System.out.println(examDir.sprintSummaryAsCsv("all"));
-				System.out.println(refDir.sprintSummaryAsCsv("all"));
+				System.err.println(examDir.sprintSummaryAsCsv("all"));
+				System.err.println(refDir.sprintSummaryAsCsv("all"));
 			}
 			else if(commandline.getOptionValue("summary").equals("debug"))
 			{
-				System.out.println(examDir.sprintSummaryAsCsv("all"));
-				System.out.println(refDir.sprintSummaryAsCsv("all"));
+				System.err.println(examDir.sprintSummaryAsCsv("all"));
+				System.err.println(refDir.sprintSummaryAsCsv("all"));
 				// printen des loggings
-				System.out.println("------ logging of examinee --------");
-				System.out.println(examDir.getLogAsStringRecursive());
-				System.out.println("------ logging of reference --------");
-				System.out.println(refDir.getLogAsStringRecursive());
+				System.err.println("------ logging of examinee --------");
+				System.err.println(examDir.getLogAsStringRecursive());
+				System.err.println("------ logging of reference --------");
+				System.err.println(refDir.getLogAsStringRecursive());
 			}
 			else
 			{
