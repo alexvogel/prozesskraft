@@ -256,7 +256,7 @@ public class Dir {
 
 	private String getCsvHeader()
 	{
-		return ("origin;id;type;path;result;path matched;sizeMatched;occurance matched;no fuzzyness;note");
+		return ("origin;id;type;path;result;pathMatched;sizeMatched;occuranceMatched;noFuzzyReference;note");
 	}
 
 	/**
