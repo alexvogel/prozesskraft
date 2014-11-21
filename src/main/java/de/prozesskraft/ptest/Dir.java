@@ -57,7 +57,7 @@ public class Dir {
 	private boolean flagFuzzyReference = false;
 
 	private String actRole = null;  // ref|exam
-	
+
 	// ist es ein template? , dann wird in match alle passenden ids aus dem pruefling gesammelt.
 	// ist es ein pruefling?, dann wird in match die id des passenden eintrages aus dem template eingetragen (in diesem fall kann es nur 1 stk sein)
 	private ArrayList<Dir> matchedDir = new ArrayList<Dir>();
@@ -420,13 +420,19 @@ public class Dir {
 		// fuer alle files aufrufen
 		for(File actFile : this.getFile())
 		{
-			matchSuccess = actFile.isMatchSuccessfull();
+			if(! actFile.isMatchSuccessfull())
+			{
+				return false;
+			}
 		}
 
 		// fuer alle unterverzeichnisse recursiv aufrufen
 		for(Dir actDir : this.getDir())
 		{
-			matchSuccess = actDir.isMatchSuccessfullRecursive();
+			if(! actDir.isMatchSuccessfullRecursive())
+			{
+				return false;
+			}
 		}
 
 		return matchSuccess;
