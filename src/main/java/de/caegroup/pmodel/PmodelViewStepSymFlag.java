@@ -22,6 +22,7 @@ public class PmodelViewStepSymFlag
 	private int grundgroesse = 15;
 	private ArrayList<String> wrappedDescription = new ArrayList<String>();
 	PFont fontCourier;
+	PFont fontCourierBold;
 	
 	public PmodelViewStepSymFlag(PmodelViewStepSym p, Step s)
 	{
@@ -30,50 +31,47 @@ public class PmodelViewStepSymFlag
 
 		wrappedDescription = wrapDescription(this.step.getDescription(), grundgroesse * 2);
 		
-    	this.fontCourier = this.parent.parent.loadFont("Courier-48.vlw");
+    	this.fontCourier = this.parent.parent.loadFont("Courier-20.vlw");
+       	this.fontCourierBold = this.parent.parent.loadFont("Courier-Bold-20.vlw");
 	}
 
 	public void display()
 	{
 		float zoom = (float)this.parent.getParent().einstellungen.getZoom()/100;
-		System.out.println("zoom: "+zoom);
+//		System.out.println("zoom: "+zoom);
 
 		float textgroesse = (grundgroesse) * zoom;
-		System.out.println("textgroesse: "+textgroesse);
+//		System.out.println("textgroesse: "+textgroesse);
 
 		float stiftstaerkeNormal = 1 * zoom;
-		System.out.println("stiftstaerkeNormal: "+stiftstaerkeNormal);
+//		System.out.println("stiftstaerkeNormal: "+stiftstaerkeNormal);
 
 		float puffer =  textgroesse/4 * zoom;
-		System.out.println("puffer: "+puffer);
+//		System.out.println("puffer: "+puffer);
 		
 		float zeilenHoehe =  textgroesse + puffer;
-		System.out.println("zeilenHoehe: "+zeilenHoehe);
-//		int flagHoehe = grundgroesse *  this.parent.getParent().einstellungen.getZoom()/100;
+//		System.out.println("zeilenHoehe: "+zeilenHoehe);
 
 		float flagHoehe = (wrappedDescription.size() + 1) * zeilenHoehe + puffer;
-		System.out.println("flagHoehe: "+flagHoehe);
+//		System.out.println("flagHoehe: "+flagHoehe);
 
-		float flagBreite = grundgroesse * 18 * zoom;
-		System.out.println("flagBreite: "+flagBreite);
+		float flagBreite = grundgroesse * 20 * zoom;
+//		System.out.println("flagBreite: "+flagBreite);
 
 		float flagPositionX = this.parent.parent.mouseX + flagBreite/2;
-		System.out.println("flagPositionX: "+flagPositionX);
-//		int flagPositionY = this.parent.parent.mouseY - (grundgroesse/2 * this.parent.getParent().einstellungen.getZoom()/100);
+//		System.out.println("flagPositionX: "+flagPositionX);
 
 		float flagPositionY = this.parent.parent.mouseY - flagHoehe / 2;
-		System.out.println("flagPositionY: "+flagPositionY);
+//		System.out.println("flagPositionY: "+flagPositionY);
 
 		float initSchreibPositionX = this.parent.parent.mouseX + (6 * zoom);
-		System.out.println("initSchreibPositionX: "+initSchreibPositionX);
+//		System.out.println("initSchreibPositionX: "+initSchreibPositionX);
 
 		float initSchreibPositionY = this.parent.parent.mouseY - flagHoehe;
-		System.out.println("initSchreibPositionY: "+initSchreibPositionY);
+//		System.out.println("initSchreibPositionY: "+initSchreibPositionY);
 
 		float flagEckRundung = 5 * zoom;
 
-		System.out.println("");
-		
 		int zeile = 1;
 
 		// weiss
@@ -84,10 +82,11 @@ public class PmodelViewStepSymFlag
 		this.parent.parent.rect(flagPositionX, flagPositionY, flagBreite, flagHoehe, flagEckRundung);
 
 		this.parent.parent.fill(100);
-		this.parent.parent.textFont(fontCourier, textgroesse);
+		this.parent.parent.textFont(fontCourierBold, textgroesse);
 
 		this.parent.parent.text(this.step.getName(), initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
 		
+		this.parent.parent.textFont(fontCourier, textgroesse);
 		for(String actZeile : this.wrappedDescription)
 		{
 			this.parent.parent.text(actZeile, initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
@@ -113,8 +112,18 @@ public class PmodelViewStepSymFlag
 		{
 			if( (wrappedDescription.get(wrappedDescription.size()-1).length() + actWort.length() ) < lineLengthCharacters)
 			{
-				wrappedDescription.set(wrappedDescription.size()-1, wrappedDescription.get(wrappedDescription.size()-1) + " " + actWort);
+				// wenns leer ist
+				if(wrappedDescription.get(wrappedDescription.size()-1).length() == 0)
+				{
+					wrappedDescription.set(wrappedDescription.size()-1, actWort);
+				}
+				// wenn schon was drinsteht
+				else
+				{
+					wrappedDescription.set(wrappedDescription.size()-1, wrappedDescription.get(wrappedDescription.size()-1) + " " + actWort);
+				}
 			}
+			// wenn das actWort nicht mehr in die vorangegangene zeile passt
 			else
 			{
 				wrappedDescription.add(actWort);

@@ -256,7 +256,7 @@ public class PmodelViewStepSym
 //			parent.text("S", this.getPosition1()-4, this.getPosition2()+5);
 //		}
 
-		if(this.isMouseOver())
+		if(!this.getStep().isRoot() && this.isMouseOver())
 		{
 			this.flag.display();
 		}
@@ -883,7 +883,6 @@ public class PmodelViewStepSym
 		if(distanceMouseStepcenter < this.getRadius() * this.parent.einstellungen.getZoom()/100 *this.parent.einstellungen.getSize()/100  * 0.5)
 		{
 			mouseOver = true;
-			System.out.println("step "+this.getName()+" distanceMouseStepcenter="+distanceMouseStepcenter+",  vergleichswert="+(this.getRadius() * this.parent.einstellungen.getZoom()/100 * 0.5));
 			return mouseOver;
 		}
 		return mouseOver;
