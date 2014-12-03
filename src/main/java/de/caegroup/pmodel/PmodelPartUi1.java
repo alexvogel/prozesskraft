@@ -218,8 +218,8 @@ public class PmodelPartUi1 extends ModelObject
 		loadIni();
 		checkLicense();
 
-		einstellungen.setRootpositionratiox((float)0.5);
-		einstellungen.setRootpositionratioy((float)0.1);
+//		einstellungen.setRootpositionratiox((float)0.5);
+//		einstellungen.setRootpositionratioy((float)0.1);
 		this.einstellungen.getProcess().setStepRanks();
 //		applet = new PmodelViewPage(this, einstellungen);
 		applet = new PmodelViewPage(einstellungen);

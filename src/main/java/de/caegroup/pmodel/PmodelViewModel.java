@@ -14,10 +14,10 @@ public class PmodelViewModel extends ModelObject
 
 	public int textsize = 10;
 	public int ranksize = 10;
-	public float rootpositionratiox = 0f;
-	public float rootpositionratioy = 0f;
+	public float rootpositionratiox = 0.25f;
+	public float rootpositionratioy = 0.1f;
 	public int gravx = 0;
-	public int gravy = 10;
+	public int gravy = 6;
 	private String markedStepName = "root";
 	private int refreshInterval = 10;
 	private boolean refreshNow = false;

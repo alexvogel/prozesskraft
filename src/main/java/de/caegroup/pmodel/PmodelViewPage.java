@@ -130,7 +130,7 @@ public class PmodelViewPage extends PApplet
 //    	this.dataPath("/data/prog/workspace/larry");
 //    	PFont font = this.loadFont("Univers45.vlw");
 //    	PFont font = this.loadFont("AndaleMono-36.vlw");
-    	PFont font = this.loadFont("TheSans-Plain-12.vlw");
+     	PFont font = this.loadFont("TheSans-Plain-12.vlw");
     	textFont(font, 12);
 //    	Image icon = Toolkit.getDefaultToolkit().getImage("/data/prog/workspace/larry/icon/process.png");
     	Image icon = Toolkit.getDefaultToolkit().getImage(PmodelViewPage.class.getClassLoader().getResource("process.png"));
@@ -358,7 +358,7 @@ public class PmodelViewPage extends PApplet
 
 		for(int l=0; l<this.stepcircles.size(); l++)
 		{
-			if (PApplet.dist(mouseX, mouseY, stepcircles.get(l).getDrawPosition1(), stepcircles.get(l).getDrawPosition2()) < stepcircles.get(l).getRadius())
+			if (PApplet.dist(mouseX, mouseY, stepcircles.get(l).getDrawPosition1(), stepcircles.get(l).getDrawPosition2()) < (stepcircles.get(l).getRadius() * this.einstellungen.getZoom()/100) * 0.9)
 			{
 //				if (this.stepcircle_clicked != null && this.stepcircle_clicked.equals(stepcircles.get(l))) {break;}
 				this.stepcircle_clicked = stepcircles.get(l);

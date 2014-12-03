@@ -6,6 +6,8 @@ import java.util.*;
 import java.lang.Math;
 
 import processing.core.PApplet;
+import processing.core.PFont;
+
 //import org.apache.solr.common.util.NamedList;
 
 import de.caegroup.process.Step;
@@ -46,8 +48,12 @@ public class PmodelViewStepSym
     // soll das symbol pumpbewegungen machen?
     private boolean pump = false;
    
-    private PmodelViewPage parent;
+    public PmodelViewPage parent;
     public Step step;
+    private PmodelViewStepSymFlag flag;
+    
+	PFont fontRank;
+
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -57,8 +63,12 @@ public class PmodelViewStepSym
 		this.step = s;
 		this.name = s.getName();
 
+    	this.fontRank = this.parent.loadFont("TheSans-Plain-12.vlw");
+		
+		this.flag = new PmodelViewStepSymFlag(this, this.step);
+
 		// festlegen der initialen position und rank
-		if (p.rootstepname.equals(this.name) && p.einstellungen.getRootReposition())
+		if (this.step.isRoot() && p.einstellungen.getRootReposition())
 		{
 			p.einstellungen.setRootReposition(false);
 			this.setPosition(p.einstellungen.getWidth()*this.parent.einstellungen.getRootpositionratiox(), p.einstellungen.getHeight()*this.parent.einstellungen.getRootpositionratioy(), 0);
@@ -224,6 +234,7 @@ public class PmodelViewStepSym
 		// schreibe die ranknummer in das symbol
 		parent.fill(this.getTextcolor1(), this.getTextcolor2(), this.getTextcolor3());
 		float neue_rankgroesse = (this.getRadius()/2)*this.parent.bezugsgroesse*parent.einstellungen.getRanksize()/10 *  this.parent.einstellungen.getZoom()/100;
+		this.parent.textFont(this.fontRank, 12);
 		parent.textSize(neue_rankgroesse);
 		if (!(rank.matches("0.1")))
 		{ 
@@ -245,6 +256,11 @@ public class PmodelViewStepSym
 //			parent.text("S", this.getPosition1()-4, this.getPosition2()+5);
 //		}
 
+		if(this.isMouseOver())
+		{
+			this.flag.display();
+		}
+		
 //		tickTimer("5217");
 //		makeTimeStamp("5217");
 		// reposition for next display
@@ -390,16 +406,16 @@ public class PmodelViewStepSym
 //		}
 		
 		// wenn es der root-step ist
-		if (p.rootstepname.equals(this.name))
+		if (this.step.isRoot())
 		{
-			// wenn er sich ausserhalb des sichtbaren bereichs befindet oder einfach so repositioniert werden soll
-			if(	(p.einstellungen.getRootReposition()) ||
-					((this.getPosition1() > (p.getWidth())) || (this.getPosition2() > p.getHeight() ) || (this.getPosition1() < 0) || (this.getPosition2() < 0))
-				)
-			{
-				this.parent.deltax = (int) ((p.getWidth() * this.parent.einstellungen.getRootpositionratiox()) - this.getPosition1());
-				this.parent.deltay = (int) ((p.getHeight() * this.parent.einstellungen.getRootpositionratioy()) - this.getPosition2());
-			}
+//			// wenn er sich ausserhalb des sichtbaren bereichs befindet oder einfach so repositioniert werden soll
+//			if(	(p.einstellungen.getRootReposition()) ||
+//					((this.getPosition1() > (p.getWidth())) || (this.getPosition2() > p.getHeight() ) || (this.getPosition1() < 0) || (this.getPosition2() < 0))
+//				)
+//			{
+//				this.parent.deltax = (int) ((p.getWidth() * this.parent.einstellungen.getRootpositionratiox()) - this.getPosition1());
+//				this.parent.deltay = (int) ((p.getHeight() * this.parent.einstellungen.getRootpositionratioy()) - this.getPosition2());
+//			}
 		}
 		
 		// wenn this NICHT der rootstep ist 
@@ -830,8 +846,49 @@ public class PmodelViewStepSym
 //		System.out.println("Anzahl aller fromsteps (inkl. der sonderbehandlung von 'root'): "+connectfrom.size());
 		return connectfrom;
 	}
-	
-	
+
+//	void drawFlag()
+//	{
+//		int grundgroesse = 100;
+//		int textgroesse = grundgroesse/7 *  this.getParent().einstellungen.getZoom()/100;
+//		int zeile = 1;
+//		int flagHoehe = grundgroesse *  this.getParent().einstellungen.getZoom()/100;
+//		int flagBreite = grundgroesse * 2 *  this.getParent().einstellungen.getZoom()/100;
+//		int flagPositionX = this.parent.mouseX + (grundgroesse * this.getParent().einstellungen.getZoom()/100);
+//		int flagPositionY = this.parent.mouseY - (grundgroesse/2 * this.getParent().einstellungen.getZoom()/100);
+//		int flagEckRundung = 5 * this.getParent().einstellungen.getZoom()/100;
+//
+//		// weiss
+//		this.parent.stroke(100);
+//		this.parent.fill(255);
+//		// dicke
+//		this.parent.strokeWeight(1 *  this.getParent().einstellungen.getZoom()/100);
+//		this.parent.rect(flagPositionX, flagPositionY, flagBreite, flagHoehe, flagEckRundung);
+//
+//		this.parent.fill(100);
+//		this.parent.textSize(textgroesse);
+//		this.parent.text(this.step.getName(), this.parent.mouseX + (6 * this.getParent().einstellungen.getZoom()/100), this.parent.mouseY - ((grundgroesse - textgroesse * zeile++) * this.getParent().einstellungen.getZoom()/100));
+////		text("id:       "+this.entity_nahe_maus.getId(), mouseX+6, mouseY-80);
+//		this.parent.text(wrapText(flagBreite / (textgroesse/2) ,"description:   "+this.step.getDescription()), this.parent.mouseX + (6 * this.getParent().einstellungen.getZoom()/100), this.parent.mouseY - ((grundgroesse - textgroesse * zeile++) * this.getParent().einstellungen.getZoom()/100));
+//
+//
+//		
+//		//		this.drawProgressRect(105 * this.getParent().einstellungen.getZoom()/100, this.parent.mouseX + (6 * this.getParent().einstellungen.getZoom()/100), this.parent.mouseY - ((grundgroesse - textgroesse * zeile++) * this.getParent().einstellungen.getZoom()/100));
+//	}
+
+	public boolean isMouseOver()
+	{
+		boolean mouseOver = false;
+		float distanceMouseStepcenter = PApplet.dist(this.parent.mouseX, this.parent.mouseY, this.getDrawPosition1(), this.getDrawPosition2());
+		if(distanceMouseStepcenter < this.getRadius() * this.parent.einstellungen.getZoom()/100 *this.parent.einstellungen.getSize()/100  * 0.5)
+		{
+			mouseOver = true;
+			System.out.println("step "+this.getName()+" distanceMouseStepcenter="+distanceMouseStepcenter+",  vergleichswert="+(this.getRadius() * this.parent.einstellungen.getZoom()/100 * 0.5));
+			return mouseOver;
+		}
+		return mouseOver;
+	}
+
 	/*----------------------------
 	methods set
 	----------------------------*/
