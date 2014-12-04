@@ -65,9 +65,8 @@ public class Dir {
 	private ArrayList<Log> log = new ArrayList<Log>();
 
 	// merker fuer die file/dir walker
-	private Dir actDir = null;
-	private Dir lastDir = null;
-	
+	private ArrayList<Dir> directoryPath = new ArrayList<Dir>();
+
 	public Dir()
 	{
 		Random generator = new Random();
@@ -571,7 +570,7 @@ public class Dir {
 				examineeDir.getMatchedDir().add(this);
 				examineeDir.setFlagPathMatched(true);
 				examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") matched with dir (id="+this.getId()+", path="+this.getPath()+")"));
-	
+
 				this.addMatchedDir(examineeDir);
 				this.setFlagPathMatched(true);
 				this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") matched with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
@@ -582,17 +581,25 @@ public class Dir {
 				this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") did NOT match with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
 			}
 		}
-			
+
 		// auch fuer alle in examineeDir enthaltenen Dirs ausfuehren
 		for(Dir actExamineeDir : examineeDir.getDir())
 		{
 			actExamineeDir.setActRole("exam");
 			this.match(actExamineeDir);
 		}
-		
+
+		// alle im verzeichnis befindlichen files mit vollstaendigen examineeDir abgleichen
+		for(File actFile : this.getFile())
+		{
+			this.log.add(new Log("debug", "match also for the file "+actFile.getPath()+" (exam Directory: "+examineeDir.getPath()));
+			actFile.match(examineeDir);
+		}
+
 		// das ganze auch fuer alle enthaltenen in this
 		for(Dir actDir : this.getDir())
 		{
+			this.log.add(new Log("debug", "match also for the subdir "+actDir.getPath()+" (exam Directory: "+examineeDir.getPath()));
 			actDir.match(examineeDir);
 		}
 	}
@@ -608,12 +615,6 @@ public class Dir {
 		examineeDir.clearMatchRecursive();
 		
 		this.match(examineeDir);
-
-		// alle im verzeichnis befindlichen files mit vollstaendigen examineeDir abgleichen
-		for(File actFile : this.getFile())
-		{
-			actFile.match(examineeDir);
-		}
 
 		examineeDir.detOccurance();
 		this.detOccurance();
@@ -655,6 +656,8 @@ public class Dir {
 	 */
 	public void genFingerprint() throws NullPointerException, IOException
 	{
+		directoryPath.clear();
+		
 		if(basepath == null)
 		{
 			System.err.println("error: no basepath given. cannot generate a fingerprint without a basepath.");
@@ -669,6 +672,8 @@ public class Dir {
 			{
 //				String pathString = dir.getParent() + "/"+dir.getFileName();
 //				System.out.println("after visit directory: "+pathString);
+				// das letzte directory aus dem pfad entfernen
+				directoryPath.remove(directoryPath.size()-1);
 				return FileVisitResult.CONTINUE;
 			}
 
@@ -679,34 +684,30 @@ public class Dir {
 //				String pathString = walkingDir.getParent() + "/"+walkingDir.getFileName();
 				String relPathString = getBasepath().relativize(walkingDir).toString();
 				
-				// das aktuelle verzeichnis in lastDir ablegen
-				if(actDir != null)
-				{
-					lastDir = actDir;
-				}
-				// und das gleich zu betretende verzeichnis als actDir merken
-				actDir = new Dir();
 
 				// wenn der relative path ein leerer string ist, ist this das directory
 				if(relPathString.equals(""))
 				{
 //					System.out.println("THIS DIR IS ROOT: "+walkingDir.getFileName());
-					actDir = thisObj;
+					directoryPath.add(thisObj);
 				}
 				else
 				{
-					lastDir.addDir(actDir);
+					// und das gleich zu betretende verzeichnis der besuchten directories hinzufuegen
+					Dir newDir = new Dir();
+					directoryPath.get(directoryPath.size()-1).addDir(newDir);	// das neue verz. dem letzten verzeichnis hinzufuegen
+					directoryPath.add(newDir); // das neue verzeichnis im path ablegen
 				}
 
 //				System.err.println("before visit directory (abs): "+pathString);
 //				System.err.println("before visit directory (rel): "+relPathString);
 
 				// die Daten setzen
-				actDir.setId(runningId++);
+				directoryPath.get(directoryPath.size()-1).setId(runningId++);
 
-				actDir.setPath(relPathString);
-				actDir.setMinOccur(1);
-				actDir.setMaxOccur(1);
+				directoryPath.get(directoryPath.size()-1).setPath(relPathString);
+				directoryPath.get(directoryPath.size()-1).setMinOccur(1);
+				directoryPath.get(directoryPath.size()-1).setMaxOccur(1);
 
 //				System.out.println(dir.toString());
 				
@@ -740,7 +741,7 @@ public class Dir {
 				}
 				file.setSizeTolerance(0F);
 
-				actDir.addFile(file);
+				directoryPath.get(directoryPath.size()-1).addFile(file);
 
 //				System.out.println(file.toString());
 
@@ -857,10 +858,9 @@ public class Dir {
 	 * @throws JAXBException 
 	 * 
 	 **/
-
 	public void writeXml()
 	{
-		java.io.File file = new java.io.File(this.outfilexml);
+
 		JAXBContext jaxbContext;
 		try
 		{
@@ -876,7 +876,16 @@ public class Dir {
 			// output pretty printed
 			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
-			jaxbMarshaller.marshal(xptest, file);
+			// wenn ein oufilexml existiert, dann ins file schreiben
+			if(this.outfilexml != null)
+			{
+				jaxbMarshaller.marshal(xptest, new java.io.File(this.outfilexml));
+			}
+			else
+			{
+				jaxbMarshaller.marshal(xptest, System.out);
+			}
+			
 		}
 		catch (JAXBException e)
 		{

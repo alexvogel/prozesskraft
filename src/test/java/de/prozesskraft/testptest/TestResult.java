@@ -34,13 +34,17 @@ public class TestResult {
 		testdir01.genFingerprint();
 
 		Dir fingerprint01 = new Dir();
-		fingerprint01.setInfilexml("src/test/resources/testdir01.xml");
+		fingerprint01.setInfilexml("src/test/resources/testdir01.fpr");
 		fingerprint01.readXml();
 
 		testdir01.runCheck(fingerprint01);
+		System.out.println(testdir01.sprintSummaryAsCsv("all"));
+		System.err.println(testdir01.getLogAsStringRecursive());
 		assertEquals(true, fingerprint01.isMatchSuccessfullRecursive() && testdir01.isMatchSuccessfullRecursive());
 
 		fingerprint01.runCheck(testdir01);
+		System.out.println(fingerprint01.sprintSummaryAsCsv("all"));
+		System.err.println(fingerprint01.getLogAsStringRecursive());
 		assertEquals(true, testdir01.isMatchSuccessfullRecursive() && fingerprint01.isMatchSuccessfullRecursive());
 	}
 
@@ -52,7 +56,7 @@ public class TestResult {
 		testdir01.genFingerprint();
 
 		Dir fingerprint02 = new Dir();
-		fingerprint02.setInfilexml("src/test/resources/testdir02.xml");
+		fingerprint02.setInfilexml("src/test/resources/testdir02.fpr");
 		fingerprint02.readXml();
 
 		

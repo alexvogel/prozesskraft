@@ -302,7 +302,7 @@ public class File {
 				actFile.log.add(new Log("debug", "(exam) file path ("+actFile.getPath()+") matched with (id="+this.getId()+", path="+this.getPath()+")"));
 				this.setFlagPathMatched(true);
 				this.log.add(new Log("debug", "(ref) file path ("+this.getPath()+") matched with (id="+actFile.getId()+", path="+actFile.getPath()+")"));
-				
+
 				// die groesse vergleichen
 				if(actFile.doesSizeMatch(this))
 				{
