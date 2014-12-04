@@ -300,23 +300,24 @@ public class Compare
 		{
 			if (commandline.getOptionValue("summary").equals("error"))
 			{
-				System.err.println(examDir.sprintSummaryAsCsv("error"));
+				System.err.println("the results of the reference are crucial for result FAILED|SUCCESS");
 				System.err.println(refDir.sprintSummaryAsCsv("error"));
+				System.err.println(examDir.sprintSummaryAsCsv("error"));
 			}
 			else if(commandline.getOptionValue("summary").equals("all"))
 			{
-				System.err.println(examDir.sprintSummaryAsCsv("all"));
 				System.err.println(refDir.sprintSummaryAsCsv("all"));
+				System.err.println(examDir.sprintSummaryAsCsv("all"));
 			}
 			else if(commandline.getOptionValue("summary").equals("debug"))
 			{
-				System.err.println(examDir.sprintSummaryAsCsv("all"));
 				System.err.println(refDir.sprintSummaryAsCsv("all"));
+				System.err.println(examDir.sprintSummaryAsCsv("all"));
 				// printen des loggings
-				System.err.println("------ logging of examinee --------");
-				System.err.println(examDir.getLogAsStringRecursive());
 				System.err.println("------ logging of reference --------");
 				System.err.println(refDir.getLogAsStringRecursive());
+				System.err.println("------ logging of examinee --------");
+				System.err.println(examDir.getLogAsStringRecursive());
 			}
 			else
 			{
