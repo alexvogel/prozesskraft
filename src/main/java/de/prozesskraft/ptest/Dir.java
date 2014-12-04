@@ -203,7 +203,7 @@ public class Dir {
 		csvLine += ";" + this.getId();
 
 		csvLine += ";" + "dir";
-		csvLine += ";" + this.getPath();
+		csvLine += ";" + this.getPathWithoutQuotes();
 
 		if(this.isMatchSuccessfull())
 		{
@@ -318,7 +318,7 @@ public class Dir {
 			csvLine += ";" + this.getId();
 
 			csvLine += ";" + "dir";
-			csvLine += ";" + this.getPath();
+			csvLine += ";" + this.getPathWithoutQuotes();
 
 			if(this.isMatchSuccessfull())
 			{
@@ -573,8 +573,8 @@ public class Dir {
 		// nur dann soll ueberprueft werden
 		if(examineeDir.getPathDepth() == this.getPathDepth())
 		{
-			examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") has the same PathDepth ("+examineeDir.getPathDepth()+"="+this.getPathDepth()+") like dir (id="+this.getId()+", path="+this.getPath()+")"));
-			this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") has the same pathDepth ("+this.getPathDepth()+"="+examineeDir.getPathDepth()+") like (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
+			examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPathWithoutQuotes()+") has the same PathDepth ("+examineeDir.getPathDepth()+"="+this.getPathDepth()+") like dir (id="+this.getId()+", path="+this.getPathWithoutQuotes()+")"));
+			this.log.add(new Log("debug", "(ref) this dir path ("+this.getPathWithoutQuotes()+") has the same pathDepth ("+this.getPathDepth()+"="+examineeDir.getPathDepth()+") like (id="+examineeDir.getId()+", path="+examineeDir.getPathWithoutQuotes()+")"));
 			if(!examineeDir.getMatchedDir().contains(this))
 			{
 				if( examineeDir.getPathWithoutQuotes().matches("^"+this.getPath()+"$")) 
@@ -583,16 +583,16 @@ public class Dir {
 					// und die flags fuer die checks gesetzt werden
 					examineeDir.getMatchedDir().add(this);
 					examineeDir.setFlagPathMatched(true);
-					examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") matched with dir (id="+this.getId()+", path="+this.getPath()+")"));
+					examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPathWithoutQuotes()+") matched with dir (id="+this.getId()+", path="+this.getPathWithoutQuotes()+")"));
 	
 					this.addMatchedDir(examineeDir);
 					this.setFlagPathMatched(true);
-					this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") matched with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
+					this.log.add(new Log("debug", "(ref) this dir path ("+this.getPathWithoutQuotes()+") matched with dir (id="+examineeDir.getId()+", path="+examineeDir.getPathWithoutQuotes()+")"));
 				}
 				else
 				{
 	//				examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") did NOT match with dir (id="+this.getId()+", path="+this.getPath()+")"));
-					this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") did NOT match with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
+					this.log.add(new Log("debug", "(ref) this dir path ("+this.getPathWithoutQuotes()+") did NOT match with dir (id="+examineeDir.getId()+", path="+examineeDir.getPathWithoutQuotes()+")"));
 				}
 				
 				// alle im verzeichnis befindlichen files mit vollstaendigen examineeDir abgleichen

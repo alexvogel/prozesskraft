@@ -62,7 +62,7 @@ public class File {
 		csvLine += ";" + this.getId();
 
 		csvLine += ";" + "file";
-		csvLine += ";" + this.getPath();
+		csvLine += ";" + this.getPathWithoutQuotes();
 
 		// gesamtergebnis
 		if(this.isMatchSuccessfull())
@@ -151,7 +151,7 @@ public class File {
 		csvLine += ";" + this.getId();
 		
 		csvLine += ";" + "file";
-		csvLine += ";" + this.getPath();
+		csvLine += ";" + this.getPathWithoutQuotes();
 		
 		if(this.isMatchSuccessfull())
 		{
@@ -312,9 +312,9 @@ public class File {
 					if(actFile.getPathWithoutQuotes().matches("^"+this.getPath()+"$"))
 					{
 						actFile.setFlagPathMatched(true);
-						actFile.log.add(new Log("debug", "(exam) file path ("+actFile.getPath()+") matched with (id="+this.getId()+", path="+this.getPath()+")"));
+						actFile.log.add(new Log("debug", "(exam) file path ("+actFile.getPathWithoutQuotes()+") matched with (id="+this.getId()+", path="+this.getPathWithoutQuotes()+")"));
 						this.setFlagPathMatched(true);
-						this.log.add(new Log("debug", "(ref) file path ("+this.getPath()+") matched with (id="+actFile.getId()+", path="+actFile.getPath()+")"));
+						this.log.add(new Log("debug", "(ref) file path ("+this.getPathWithoutQuotes()+") matched with (id="+actFile.getId()+", path="+actFile.getPathWithoutQuotes()+")"));
 		
 						// die groesse vergleichen
 						if(actFile.doesSizeMatch(this))
@@ -323,11 +323,11 @@ public class File {
 							actFile.setFlagSizeMatched(true);
 							// passen beide vergleichspartner? Dann soll das korrespondierende file abgelegt werden
 							actFile.getMatchedFile().add(this);
-							actFile.log.add(new Log("debug", "(exam) file size ("+actFile.getSize()+actFile.getSizeUnit()+") matched with (id="+this.getId()+", path="+this.getPath()+", size="+this.getSize()+this.getSizeUnit()+")"));
+							actFile.log.add(new Log("debug", "(exam) file size ("+actFile.getSize()+actFile.getSizeUnit()+") matched with (id="+this.getId()+", path="+this.getPathWithoutQuotes()+", size="+this.getSize()+this.getSizeUnit()+")"));
 		
 							this.setFlagSizeMatched(true);
 							this.getMatchedFile().add(actFile);
-							this.log.add(new Log("debug", "(ref) file size ("+this.getSize()+this.getSizeUnit()+") matched with (id="+actFile.getId()+", path="+actFile.getPath()+", size="+actFile.getSize()+actFile.getSizeUnit()+")"));
+							this.log.add(new Log("debug", "(ref) file size ("+this.getSize()+this.getSizeUnit()+") matched with (id="+actFile.getId()+", path="+actFile.getPathWithoutQuotes()+", size="+actFile.getSize()+actFile.getSizeUnit()+")"));
 						}
 						else
 						{
