@@ -560,50 +560,66 @@ public class Dir {
 		this.setActRole("ref");
 		examineeDir.setActRole("exam");
 		
-		// den pfad vom examinee gegen den template-pfad matchen
-		if((!examineeDir.getMatchedDir().contains(this)))
-		{
-			if( examineeDir.getPath().matches("^"+this.getPath()+"$")) 
-			{
-				// passen beide vergleichspartner? Dann soll das passende gegenstueck im jeweils anderen abgelegt werden
-				// und die flags fuer die checks gesetzt werden
-				examineeDir.getMatchedDir().add(this);
-				examineeDir.setFlagPathMatched(true);
-				examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") matched with dir (id="+this.getId()+", path="+this.getPath()+")"));
-
-				this.addMatchedDir(examineeDir);
-				this.setFlagPathMatched(true);
-				this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") matched with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
-			}
-			else
-			{
-//				examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") did NOT match with dir (id="+this.getId()+", path="+this.getPath()+")"));
-				this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") did NOT match with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
-			}
-		}
-
-		// auch fuer alle in examineeDir enthaltenen Dirs ausfuehren
-		for(Dir actExamineeDir : examineeDir.getDir())
-		{
-			actExamineeDir.setActRole("exam");
-			this.match(actExamineeDir);
-		}
-
-		// alle im verzeichnis befindlichen files mit vollstaendigen examineeDir abgleichen
-		for(File actFile : this.getFile())
-		{
-//			this.log.add(new Log("debug", "match also for the file "+actFile.getPath()+" (exam Directory: "+examineeDir.getPath()+")"));
-			actFile.match(examineeDir);
-		}
-
-		// das ganze auch fuer alle enthaltenen in this
+		// alle enthaltenen directories sollen ebenfalls gematched werden
 		for(Dir actDir : this.getDir())
 		{
 //			this.log.add(new Log("debug", "match also for the subdir "+actDir.getPath()+" (exam Directory: "+examineeDir.getPath()));
 			actDir.match(examineeDir);
 		}
-	}
+		
+		// wenn beide die gleiche pfadtiefe aufweisen und
+		// wenn das ref nicht schon als matchend vermerkt wurde
+		// nur dann soll ueberprueft werden
+		if(examineeDir.getPathDepth() == this.getPathDepth())
+		{
+			examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") has the same PathDepth ("+examineeDir.getPathDepth()+"="+this.getPathDepth()+") like dir (id="+this.getId()+", path="+this.getPath()+")"));
+			this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") has the same pathDepth ("+this.getPathDepth()+"="+examineeDir.getPathDepth()+") like (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
+			if(!examineeDir.getMatchedDir().contains(this))
+			{
+				if( examineeDir.getPath().matches("^"+this.getPath()+"$")) 
+				{
+					// passen beide vergleichspartner? Dann soll das passende gegenstueck im jeweils anderen abgelegt werden
+					// und die flags fuer die checks gesetzt werden
+					examineeDir.getMatchedDir().add(this);
+					examineeDir.setFlagPathMatched(true);
+					examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") matched with dir (id="+this.getId()+", path="+this.getPath()+")"));
 	
+					this.addMatchedDir(examineeDir);
+					this.setFlagPathMatched(true);
+					this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") matched with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
+				}
+				else
+				{
+	//				examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") did NOT match with dir (id="+this.getId()+", path="+this.getPath()+")"));
+					this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") did NOT match with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
+				}
+				
+				// alle im verzeichnis befindlichen files mit vollstaendigen examineeDir abgleichen
+				for(File actFile : this.getFile())
+				{
+//					this.log.add(new Log("debug", "match also for the file "+actFile.getPath()+" (exam Directory: "+examineeDir.getPath()+")"));
+					actFile.match(examineeDir);
+				}
+
+				// an dieser stelle kann abgebrochen werden,
+				// da darin liegende pfade eine hoehere pfadtiefe aufweisen als 'this'
+			}
+		}
+		
+		// wenn examinee eine geringere pfadtiefe aufweisst
+		// sollen alle darin befindlichen directories gematcht werden
+		else if(examineeDir.getPathDepth() < this.getPathDepth())
+		{
+			// auch fuer alle in examineeDir enthaltenen Dirs ausfuehren
+			for(Dir actExamineeDir : examineeDir.getDir())
+			{
+				actExamineeDir.setActRole("exam");
+				this.match(actExamineeDir);
+			}
+		}
+		
+	}
+
 	/**
 	 * every dir and file of the template has to find the given occurance from the examinee
 	 * @return
@@ -1147,4 +1163,24 @@ public class Dir {
 		this.actRole = actRole;
 	}
 
+	/**
+	 * liefert die Tiefe des Pfades zurueck
+	 * 0 bei pfaden wie "data"
+	 * 0 bei ""
+	 * 1 bei "data/special"
+	 * 2 bei "data/special/kitty"
+	 * @return
+	 */
+	public int getPathDepth()
+	{
+		if(this.getPath().equals(""))
+		{
+			return 0;
+		}
+		else
+		{
+			String[] splittedPath = this.getPath().split("/");
+			return(splittedPath.length);
+		}
+	}
 }
