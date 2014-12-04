@@ -676,7 +676,7 @@ public class Dir {
 	public void genFingerprint(float sizeToleranceDef) throws NullPointerException, IOException
 	{
 		directoryPath.clear();
-		this.sizeToleranceDefault = sizeToleranceDefault;
+		this.sizeToleranceDefault = sizeToleranceDef;
 		
 		if(basepath == null)
 		{
