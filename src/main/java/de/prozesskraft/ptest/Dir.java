@@ -68,6 +68,8 @@ public class Dir {
 	// merker fuer die file/dir walker
 	private ArrayList<Dir> directoryPath = new ArrayList<Dir>();
 
+	float sizeToleranceDefault = 0F;
+	
 	public Dir()
 	{
 		Random generator = new Random();
@@ -671,9 +673,10 @@ public class Dir {
 	 * @throws NullPointerException
 	 * @throws IOException
 	 */
-	public void genFingerprint() throws NullPointerException, IOException
+	public void genFingerprint(float sizeToleranceDef) throws NullPointerException, IOException
 	{
 		directoryPath.clear();
+		this.sizeToleranceDefault = sizeToleranceDefault;
 		
 		if(basepath == null)
 		{
@@ -751,7 +754,7 @@ public class Dir {
 
 				// der pfad wird bei vergleichen als pattern verwendet / bzw. kann vom user manuel zu einer pattern veraendert werden
 				// deshalb sollen besondere zeichen beim erstellen eines fingerprints escaped werden
-				String relPathStringWithEscapedMetaCaracters = relPathString.replaceAll("([\\\\\\.\\[\\{\\(\\*\\+\\?\\^\\$\\|])", "\\\\$1");
+//				String relPathStringWithEscapedMetaCaracters = relPathString.replaceAll("([\\\\\\.\\[\\{\\(\\*\\+\\?\\^\\$\\|])", "\\\\$1");
 				
 				file.setPath(Pattern.quote(relPathString));
 				file.setMinOccur(1);
@@ -764,7 +767,7 @@ public class Dir {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				file.setSizeTolerance(0F);
+				file.setSizeTolerance(sizeToleranceDefault);
 
 				directoryPath.get(directoryPath.size()-1).addFile(file);
 
