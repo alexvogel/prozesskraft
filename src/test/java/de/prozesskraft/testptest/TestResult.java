@@ -39,7 +39,10 @@ public class TestResult {
 
 		testdir01.runCheck(fingerprint01);
 		System.out.println(testdir01.sprintSummaryAsCsv("all"));
+		System.err.println("--- logging of the reference ---");
 		System.err.println(testdir01.getLogAsStringRecursive());
+		System.err.println("--- logging of the examinee ---");
+		System.err.println(fingerprint01.getLogAsStringRecursive());
 		assertEquals(true, fingerprint01.isMatchSuccessfullRecursive() && testdir01.isMatchSuccessfullRecursive());
 
 		fingerprint01.runCheck(testdir01);

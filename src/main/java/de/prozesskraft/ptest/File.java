@@ -61,7 +61,7 @@ public class File {
 
 		csvLine += ";" + this.getId();
 
-		csvLine += ";" + "dir";
+		csvLine += ";" + "file";
 		csvLine += ";" + this.getPath();
 
 		// gesamtergebnis
@@ -116,11 +116,11 @@ public class File {
 
 		if(this.getMatchedFile().size() < this.getMinOccur())
 		{
-			note = "error: matched files: "+this.getMatchedFile().size()+", but at least "+this.getMinOccur()+" matches are needed (minOccur)";
+			note = "error: occurance of matched files: at least "+this.getMinOccur()+" matches are needed (minOccur), but only "+this.getMatchedFile().size()+" files matched "+this.getMatchedFile().toString();
 		}
 		else if(this.getMatchedFile().size() > this.getMaxOccur())
 		{
-			note = "error: matched files: "+this.getMatchedFile().size()+", but at max "+this.getMinOccur()+" matches are allowed (maxOccur)";
+			note = "error: occurance of matched files: max "+this.getMaxOccur()+" matches are allowed (maxOccur), but "+this.getMatchedFile().size()+" files matched "+this.getMatchedFile().toString();
 		}
 
 		csvLine += ";" + note;
@@ -295,37 +295,41 @@ public class File {
 		{
 			actFile.setActRole("exam");
 
-			// den pfad vom examinee gegen den template-pfad matchen
-			if(actFile.getPath().matches("^"+this.getPath()+"$"))
+			// wenn this nicht schon als matchend erkannt wurde, soll matchueberpruefung stattfinden
+			if((!actFile.getMatchedFile().contains(this)))
 			{
-				actFile.setFlagPathMatched(true);
-				actFile.log.add(new Log("debug", "(exam) file path ("+actFile.getPath()+") matched with (id="+this.getId()+", path="+this.getPath()+")"));
-				this.setFlagPathMatched(true);
-				this.log.add(new Log("debug", "(ref) file path ("+this.getPath()+") matched with (id="+actFile.getId()+", path="+actFile.getPath()+")"));
-
-				// die groesse vergleichen
-				if(actFile.doesSizeMatch(this))
+			// den pfad vom examinee gegen den template-pfad matchen
+				if(actFile.getPath().matches("^"+this.getPath()+"$"))
 				{
-					// vermerken, dass die groesse gepasst hat
-					actFile.setFlagSizeMatched(true);
-					// passen beide vergleichspartner? Dann soll das korrespondierende file abgelegt werden
-					actFile.getMatchedFile().add(this);
-					actFile.log.add(new Log("debug", "(exam) file size ("+actFile.getSize()+actFile.getSizeUnit()+") matched with (id="+this.getId()+", path="+this.getPath()+", size="+this.getSize()+this.getSizeUnit()+")"));
-
-					this.setFlagSizeMatched(true);
-					this.getMatchedFile().add(actFile);
-					this.log.add(new Log("debug", "(ref) file size ("+this.getSize()+this.getSizeUnit()+") matched with (id="+actFile.getId()+", path="+actFile.getPath()+", size="+actFile.getSize()+actFile.getSizeUnit()+")"));
+					actFile.setFlagPathMatched(true);
+					actFile.log.add(new Log("debug", "(exam) file path ("+actFile.getPath()+") matched with (id="+this.getId()+", path="+this.getPath()+")"));
+					this.setFlagPathMatched(true);
+					this.log.add(new Log("debug", "(ref) file path ("+this.getPath()+") matched with (id="+actFile.getId()+", path="+actFile.getPath()+")"));
+	
+					// die groesse vergleichen
+					if(actFile.doesSizeMatch(this))
+					{
+						// vermerken, dass die groesse gepasst hat
+						actFile.setFlagSizeMatched(true);
+						// passen beide vergleichspartner? Dann soll das korrespondierende file abgelegt werden
+						actFile.getMatchedFile().add(this);
+						actFile.log.add(new Log("debug", "(exam) file size ("+actFile.getSize()+actFile.getSizeUnit()+") matched with (id="+this.getId()+", path="+this.getPath()+", size="+this.getSize()+this.getSizeUnit()+")"));
+	
+						this.setFlagSizeMatched(true);
+						this.getMatchedFile().add(actFile);
+						this.log.add(new Log("debug", "(ref) file size ("+this.getSize()+this.getSizeUnit()+") matched with (id="+actFile.getId()+", path="+actFile.getPath()+", size="+actFile.getSize()+actFile.getSizeUnit()+")"));
+					}
+					else
+					{
+	//					actFile.log.add(new Log("debug", "(exam) file size ("+actFile.getSize()+actFile.getSizeUnit()+") did NOT match with (id="+this.getId()+", path="+this.getPath()+", size="+this.getSize()+this.getSizeUnit()+")"));
+	//					this.log.add(new Log("debug", "(ref) file size ("+this.getSize()+this.getSizeUnit()+") did NOT match with (id="+actFile.getId()+", path="+actFile.getPath()+", size="+actFile.getSize()+actFile.getSizeUnit()+")"));
+					}
 				}
 				else
 				{
-					actFile.log.add(new Log("debug", "(exam) file size ("+actFile.getSize()+actFile.getSizeUnit()+") did NOT match with (id="+this.getId()+", path="+this.getPath()+", size="+this.getSize()+this.getSizeUnit()+")"));
-					this.log.add(new Log("debug", "(ref) file size ("+this.getSize()+this.getSizeUnit()+") did NOT match with (id="+actFile.getId()+", path="+actFile.getPath()+", size="+actFile.getSize()+actFile.getSizeUnit()+")"));
+	//				actFile.log.add(new Log("debug", "(exam) file path ("+actFile.getPath()+") did NOT match with (id="+this.getId()+", path="+this.getPath()+")"));
+	//				this.log.add(new Log("debug", "(ref) file path ("+this.getPath()+") did NOT match with (id="+actFile.getId()+", path="+actFile.getPath()+")"));
 				}
-			}
-			else
-			{
-				actFile.log.add(new Log("debug", "(exam) file path ("+actFile.getPath()+") did NOT match with (id="+this.getId()+", path="+this.getPath()+")"));
-				this.log.add(new Log("debug", "(ref) file path ("+this.getPath()+") did NOT match with (id="+actFile.getId()+", path="+actFile.getPath()+")"));
 			}
 		}
 

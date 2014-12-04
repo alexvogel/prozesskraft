@@ -362,11 +362,11 @@ public class Dir {
 
 			if(this.getMatchedDir().size() < this.getMinOccur())
 			{
-				note = "error: matched directories: "+this.getMatchedDir().size()+", but at least "+this.getMinOccur()+" matches are needed (minOccur)";
+				note = "error: occurance of matched directories: at least "+this.getMinOccur()+" matches are needed (minOccur), but only "+this.getMatchedDir().size()+" directories matched "+this.getMatchedDir().toString();
 			}
 			else if(this.getMatchedDir().size() > this.getMaxOccur())
 			{
-				note = "error: matched directories: "+this.getMatchedDir().size()+", but max "+this.getMinOccur()+" matches are allowed (maxOccur)";
+				note = "error: occurance of matched directories: max "+this.getMaxOccur()+" matches are allowed (maxOccur), but "+this.getMatchedDir().size()+" directories matched "+this.getMatchedDir().toString();
 			}
 			
 			csvLine += ";" + note;
@@ -577,7 +577,7 @@ public class Dir {
 			}
 			else
 			{
-				examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") did NOT match with dir (id="+this.getId()+", path="+this.getPath()+")"));
+//				examineeDir.log.add(new Log("debug", "(exam) this dir path ("+examineeDir.getPath()+") did NOT match with dir (id="+this.getId()+", path="+this.getPath()+")"));
 				this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") did NOT match with dir (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
 			}
 		}
@@ -592,14 +592,14 @@ public class Dir {
 		// alle im verzeichnis befindlichen files mit vollstaendigen examineeDir abgleichen
 		for(File actFile : this.getFile())
 		{
-			this.log.add(new Log("debug", "match also for the file "+actFile.getPath()+" (exam Directory: "+examineeDir.getPath()));
+//			this.log.add(new Log("debug", "match also for the file "+actFile.getPath()+" (exam Directory: "+examineeDir.getPath()+")"));
 			actFile.match(examineeDir);
 		}
 
 		// das ganze auch fuer alle enthaltenen in this
 		for(Dir actDir : this.getDir())
 		{
-			this.log.add(new Log("debug", "match also for the subdir "+actDir.getPath()+" (exam Directory: "+examineeDir.getPath()));
+//			this.log.add(new Log("debug", "match also for the subdir "+actDir.getPath()+" (exam Directory: "+examineeDir.getPath()));
 			actDir.match(examineeDir);
 		}
 	}
