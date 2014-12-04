@@ -12,10 +12,10 @@ if [ -f $BASEDIR/../java/latest/bin/java ];
 		ERRORSTRING=$(echo $AUSGABE | grep -P '^Error' -o)
 		if [ "$ERRORSTRING" == "Error" ];
 			then
-				echo using the own - very local - java \(64-bit\)
+				echo using the own - very local - java \(64-bit\) >&2
 				$BASEDIR/../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib64/*:$BASEDIR/*" $MAINCLASS "$@"
 			else
-				echo using the own - very local - java \(32-bit\)
+				echo using the own - very local - java \(32-bit\) >&2
 				$BASEDIR/../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib32/*:$BASEDIR/*" $MAINCLASS "$@"
 		fi
 
@@ -27,10 +27,10 @@ elif [ -f $BASEDIR/../../../java/latest/bin/java ];
 		ERRORSTRING=$(echo $AUSGABE | grep -P '^Error' -o)
 		if [ "$ERRORSTRING" == "Error" ];
 			then
-				echo using local java \(64-bit\)
+				echo using local java \(64-bit\) >&2
 				$BASEDIR/../../../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib64/*:$BASEDIR/*" $MAINCLASS "$@"
 			else
-				echo using local java \(32-bit\)
+				echo using local java \(32-bit\) >&2
 				$BASEDIR/../../../java/latest/bin/java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib32/*:$BASEDIR/*" $MAINCLASS "$@"
 		fi
 
@@ -41,10 +41,10 @@ elif [ -f $BASEDIR/../../../java/latest/bin/java ];
 		ERRORSTRING=$(echo $AUSGABE | grep -P '^Error' -o)
 		if [ "$ERRORSTRING" == "Error" ];
 			then
-				echo using central java \(64-bit\)
+				echo using central java \(64-bit\) >&2
 				java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib64/*:$BASEDIR/*" $MAINCLASS "$@"
 			else
-				echo using central java \(32-bit\)
+				echo using central java \(32-bit\) >&2
 				java -cp "$BASEDIR/../lib/*:$BASEDIR/../lib32/*:$BASEDIR/*" $MAINCLASS "$@"
 		fi
 		
