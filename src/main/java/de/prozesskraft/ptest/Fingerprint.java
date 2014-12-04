@@ -108,6 +108,12 @@ public class Fingerprint
 //				.isRequired()
 				.create("path");
 		
+		Option osizetol = OptionBuilder.withArgName("FLOAT")
+				.hasArg()
+				.withDescription("[mandatory; default: 0.0] the sizeTolerance of all file entries will be set to this value. [0 < 1]")
+//				.isRequired()
+				.create("sizetol");
+		
 		Option ooutput = OptionBuilder.withArgName("FILE")
 				.hasArg()
 				.withDescription("[mandatory; default: fingerprint.xml] fingerprint file")
@@ -122,6 +128,7 @@ public class Fingerprint
 		options.addOption( ohelp );
 		options.addOption( ov );
 		options.addOption( opath );
+		options.addOption( osizetol );
 		options.addOption( ooutput );
 		
 		/*----------------------------
@@ -150,7 +157,7 @@ public class Fingerprint
 			formatter.printHelp("fingerprint", options);
 			System.exit(0);
 		}
-		
+
 		else if ( commandline.hasOption("v"))
 		{
 			System.out.println("web:     "+web);
@@ -164,6 +171,8 @@ public class Fingerprint
 		  ueberpruefen ob eine schlechte kombination von parametern angegeben wurde
 		----------------------------*/
 		String path = "";
+		String sizetol = "";
+		Float sizetolFloat = null;
 		String output = "";
 		if ( !( commandline.hasOption("path")) )
 		{
@@ -173,6 +182,23 @@ public class Fingerprint
 		else
 		{
 			path = commandline.getOptionValue("path");
+		}
+
+		if ( !( commandline.hasOption("sizetol")) )
+		{
+			System.err.println("setting default for -sizetol=0.0");
+			sizetol = "0";
+			sizetolFloat = 0F;
+		}
+		else
+		{
+			sizetol = commandline.getOptionValue("sizetol");
+			sizetolFloat = Float.parseFloat(sizetol);
+			
+			if((sizetolFloat > 1) || (sizetolFloat < 0))
+			{
+				System.err.println("use only values >0 and <1 for -sizetol");
+			}
 		}
 
 		if ( !( commandline.hasOption("output")) )
@@ -224,7 +250,7 @@ public class Fingerprint
 
 		try
 		{
-			dir.genFingerprint();
+			dir.genFingerprint(sizetolFloat);
 		}
 		catch (NullPointerException e)
 		{
