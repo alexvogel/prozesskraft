@@ -721,7 +721,11 @@ public class Dir {
 				// die Daten setzen
 				directoryPath.get(directoryPath.size()-1).setId(runningId++);
 
-				directoryPath.get(directoryPath.size()-1).setPath(relPathString);
+				// der pfad wird bei vergleichen als pattern verwendet / bzw. kann vom user manuel zu einer pattern veraendert werden
+				// deshalb sollen besondere zeichen beim erstellen eines fingerprints escaped werden
+				String relPathStringWithEscapedMetaCaracters = relPathString.replaceAll("([\\\\\\.\\[\\{\\(\\*\\+\\?\\^\\$\\|])", "\\\\$1");
+
+				directoryPath.get(directoryPath.size()-1).setPath(relPathStringWithEscapedMetaCaracters);
 				directoryPath.get(directoryPath.size()-1).setMinOccur(1);
 				directoryPath.get(directoryPath.size()-1).setMaxOccur(1);
 
@@ -744,7 +748,11 @@ public class Dir {
 				File file = new File();
 				file.setId(runningId++);
 
-				file.setPath(relPathString);
+				// der pfad wird bei vergleichen als pattern verwendet / bzw. kann vom user manuel zu einer pattern veraendert werden
+				// deshalb sollen besondere zeichen beim erstellen eines fingerprints escaped werden
+				String relPathStringWithEscapedMetaCaracters = relPathString.replaceAll("([\\\\\\.\\[\\{\\(\\*\\+\\?\\^\\$\\|])", "\\\\$1");
+				
+				file.setPath(relPathStringWithEscapedMetaCaracters);
 				file.setMinOccur(1);
 				file.setMaxOccur(1);
 
