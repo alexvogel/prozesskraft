@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -576,7 +577,7 @@ public class Dir {
 			this.log.add(new Log("debug", "(ref) this dir path ("+this.getPath()+") has the same pathDepth ("+this.getPathDepth()+"="+examineeDir.getPathDepth()+") like (id="+examineeDir.getId()+", path="+examineeDir.getPath()+")"));
 			if(!examineeDir.getMatchedDir().contains(this))
 			{
-				if( examineeDir.getPath().matches("^"+this.getPath()+"$")) 
+				if( examineeDir.getPathWithoutQuotes().matches("^"+this.getPath()+"$")) 
 				{
 					// passen beide vergleichspartner? Dann soll das passende gegenstueck im jeweils anderen abgelegt werden
 					// und die flags fuer die checks gesetzt werden
@@ -723,9 +724,9 @@ public class Dir {
 
 				// der pfad wird bei vergleichen als pattern verwendet / bzw. kann vom user manuel zu einer pattern veraendert werden
 				// deshalb sollen besondere zeichen beim erstellen eines fingerprints escaped werden
-				String relPathStringWithEscapedMetaCaracters = relPathString.replaceAll("([\\\\\\.\\[\\{\\(\\*\\+\\?\\^\\$\\|])", "\\\\$1");
+//				String relPathStringWithEscapedMetaCaracters = relPathString.replaceAll("([\\\\\\.\\[\\{\\(\\*\\+\\?\\^\\$\\|])", "\\\\$1");
 
-				directoryPath.get(directoryPath.size()-1).setPath(relPathStringWithEscapedMetaCaracters);
+				directoryPath.get(directoryPath.size()-1).setPath(Pattern.quote(relPathString));
 				directoryPath.get(directoryPath.size()-1).setMinOccur(1);
 				directoryPath.get(directoryPath.size()-1).setMaxOccur(1);
 
@@ -752,7 +753,7 @@ public class Dir {
 				// deshalb sollen besondere zeichen beim erstellen eines fingerprints escaped werden
 				String relPathStringWithEscapedMetaCaracters = relPathString.replaceAll("([\\\\\\.\\[\\{\\(\\*\\+\\?\\^\\$\\|])", "\\\\$1");
 				
-				file.setPath(relPathStringWithEscapedMetaCaracters);
+				file.setPath(Pattern.quote(relPathString));
 				file.setMinOccur(1);
 				file.setMaxOccur(1);
 
@@ -976,6 +977,14 @@ public class Dir {
 	}
 
 	/**
+	 * @return the pathWithoutQuotes
+	 */
+	public String getPathWithoutQuotes()
+	{
+		return path.replaceAll("^\\\\Q|\\\\E$", "");
+	}
+
+	/**
 	 * @return the path
 	 */
 	public String getPath() {
@@ -1181,7 +1190,7 @@ public class Dir {
 	 */
 	public int getPathDepth()
 	{
-		if(this.getPath().equals(""))
+		if(this.getPath().equals("\\Q\\E"))
 		{
 			return 0;
 		}

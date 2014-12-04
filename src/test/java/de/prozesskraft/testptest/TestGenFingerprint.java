@@ -33,7 +33,7 @@ public class TestGenFingerprint {
 		testdir01.setBasepath("src/test/resources/testdir01");
 		testdir01.genFingerprint();
 
-//		testdir01.setOutfilexml("src/test/resources/testdir01.fpr");
+		testdir01.setOutfilexml("src/test/resources/testdir01.fpr");
 		testdir01.writeXml();
 	}
 
@@ -44,7 +44,7 @@ public class TestGenFingerprint {
 		testdir02.setBasepath("src/test/resources/testdir02");
 		testdir02.genFingerprint();
 
-//		testdir02.setOutfilexml("src/test/resources/testdir02.fpr");
+		testdir02.setOutfilexml("src/test/resources/testdir02.fpr");
 		testdir02.writeXml();
 	}
 }

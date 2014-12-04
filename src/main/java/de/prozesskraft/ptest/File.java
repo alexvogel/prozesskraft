@@ -309,7 +309,7 @@ public class File {
 				if((!actFile.getMatchedFile().contains(this)))
 				{
 				// den pfad vom examinee gegen den template-pfad matchen
-					if(actFile.getPath().matches("^"+this.getPath()+"$"))
+					if(actFile.getPathWithoutQuotes().matches("^"+this.getPath()+"$"))
 					{
 						actFile.setFlagPathMatched(true);
 						actFile.log.add(new Log("debug", "(exam) file path ("+actFile.getPath()+") matched with (id="+this.getId()+", path="+this.getPath()+")"));
@@ -415,6 +415,14 @@ public class File {
 	 */
 	public void setMaxOccur(int maxOccur) {
 		this.maxOccur = maxOccur;
+	}
+
+	/**
+	 * @return the pathWithoutQuotes
+	 */
+	public String getPathWithoutQuotes()
+	{
+		return path.replaceAll("^\\\\Q|\\\\E$", "");
 	}
 
 	/**
