@@ -198,6 +198,7 @@ public class Fingerprint
 			if((sizetolFloat > 1) || (sizetolFloat < 0))
 			{
 				System.err.println("use only values >0 and <1 for -sizetol");
+				System.exit(1);
 			}
 		}
 
