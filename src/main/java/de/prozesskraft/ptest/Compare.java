@@ -285,7 +285,8 @@ public class Compare
 		// durchfuehren des vergleichs
 		refDir.runCheck(examDir);
 		
-		if(examDir.isMatchSuccessfullRecursive() && refDir.isMatchSuccessfullRecursive())
+//		if(examDir.isMatchSuccessfullRecursive() && refDir.isMatchSuccessfullRecursive())
+		if(refDir.isMatchSuccessfullRecursive())
 		{
 			System.out.println("SUCCESS");
 		}
