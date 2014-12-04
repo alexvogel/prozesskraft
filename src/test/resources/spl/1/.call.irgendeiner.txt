@@ -1,5 +1,0 @@
-../../../../main/java/de/prozesskraft/ptest/Spl.java \
---inc file1 \
---inc file2 \
---inc file3 \
---scheiss true
