@@ -362,7 +362,11 @@ public class File {
 		{
 			result = true;
 		}
-
+		else
+		{
+			this.log.add(new Log("debug", "sizeTolerance="+this.getSizeTolerance()+" | "+lowerBound+" < x < "+upperBound));
+		}
+		
 		return result;
 	}
 	
