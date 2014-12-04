@@ -167,10 +167,10 @@ public class Compare
 
 		else if ( commandline.hasOption("v"))
 		{
-			System.out.println("web:     "+web);
-			System.out.println("author: "+author);
-			System.out.println("version:"+version);
-			System.out.println("date:     "+date);
+			System.err.println("web:     "+web);
+			System.err.println("author: "+author);
+			System.err.println("version:"+version);
+			System.err.println("date:     "+date);
 			System.exit(0);
 		}
 
@@ -239,13 +239,13 @@ public class Compare
 		{
 			refDir.setBasepath(refPath.getCanonicalPath());
 			refDir.genFingerprint();
-			System.out.println("-ref is a directory");
+			System.err.println("-ref is a directory");
 		}
 		// wenn es ein fingerprint ist, muss er eingelesen werden
 		else if(refPath.exists())
 		{
 			refDir.setInfilexml(refPath.getCanonicalPath());
-			System.out.println("-ref is a fingerprint");
+			System.err.println("-ref is a fingerprint");
 			try {
 				refDir.readXml();
 			} catch (JAXBException e) {
