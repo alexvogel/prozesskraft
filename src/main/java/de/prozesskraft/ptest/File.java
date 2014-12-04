@@ -317,7 +317,7 @@ public class File {
 						this.log.add(new Log("debug", "(ref) file path ("+this.getPathWithoutQuotes()+") matched with (id="+actFile.getId()+", path="+actFile.getPathWithoutQuotes()+")"));
 		
 						// die groesse vergleichen
-						if(actFile.doesSizeMatch(this))
+						if(this.doesSizeMatch(actFile))
 						{
 							// vermerken, dass die groesse gepasst hat
 							actFile.setFlagSizeMatched(true);
