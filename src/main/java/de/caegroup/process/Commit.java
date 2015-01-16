@@ -699,6 +699,14 @@ implements Serializable
 		{
 			// und jetzt der konventionelle commit
 
+			this.log("info", "commit standard entries");
+
+			// das stepdir als variable ablegen
+			Variable var = new Variable();
+			var.setKey("_dir");
+			var.setValue(this.getAbsdir());
+			this.addVariable(var);
+
 			// wenn das zu committende objekt ein File ist...
 			for(File actualFile : this.getFile())
 			{

@@ -747,7 +747,11 @@ implements Serializable, Cloneable
 				}
 			}
 
-			// initialisieren
+			/**
+			 *  wenn root, dann
+			 *  1) spezieller commit fuer root
+			 *  2) konventioneller commit
+			 */
 			if(this.getName().equals(this.getParent().getRootstepname()))
 			{
 				this.rootCommit();
@@ -898,12 +902,12 @@ implements Serializable, Cloneable
 //			rootStandardCommit.log("info", "committed dir "+actCommitVarfile.getAbsolutePath());
 //		}
 
-		this.log("info", "commit standard entries");
-		// das stepdir als variable ablegen
-		Variable var = new Variable();
-		var.setKey("_dir");
-		var.setValue(this.getAbsdir());
-		this.addVariable(var);
+//		this.log("info", "commit standard entries");
+//		// das stepdir als variable ablegen
+//		Variable var = new Variable();
+//		var.setKey("_dir");
+//		var.setValue(this.getAbsdir());
+//		this.addVariable(var);
 
 		this.log("info", "special commit of step 'root' ended");
 	}
