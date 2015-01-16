@@ -73,7 +73,7 @@ implements Serializable, Cloneable
 			content.add("# wenn kein dokufile vorhanden ist, wird auch diese option nicht angelegt");
 			content.add("if (stat $doc_path)");
 			content.add("{");
-			content.add("	$OPTIONS_TABLE{'doc'} = {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'text1' => '', 'text2' => \"shows documentation\n(\".Cwd::realpath(File::Spec->rel2abs($doc_path)).\")\"};");
+			content.add("	$OPTIONS_TABLE{'doc'} = {'reihenfolge' => '9', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'text1' => '', 'text2' => \"shows documentation\"},");
 			content.add("}");
 			content.add("# wenn kein config-file vorhanden ist, wird auch diese option nicht angelegt");
 			content.add("if (stat $conf_path1)");
