@@ -116,14 +116,7 @@ implements Serializable
 		description = "without description";
 		status = "waiting";
 
-		Random generator = new Random();
-		generator.setSeed(System.currentTimeMillis());
-		int randomInt = generator.nextInt(100000000);
-
-		// assemble a random name for instanceDir
-		Calendar now = Calendar.getInstance();
-		DecimalFormat df2 = new DecimalFormat("00");
-		this.idRumpf = now.get(Calendar.YEAR) + df2.format(now.get(Calendar.MONTH)+1) + df2.format(now.get(Calendar.DAY_OF_MONTH)) + "_" + randomInt;
+		this.genRandomId();
 	}
 	/*----------------------------
 	  methods
@@ -1839,6 +1832,21 @@ implements Serializable
 		this.baseDir = baseDir;
 	}
 
+	/**
+	 * @return the id
+	 */
+	public void genRandomId()
+	{
+		Random generator = new Random();
+		generator.setSeed(System.currentTimeMillis());
+		int randomInt = generator.nextInt(100000000);
+
+		// assemble a random name for instanceDir
+		Calendar now = Calendar.getInstance();
+		DecimalFormat df2 = new DecimalFormat("00");
+		this.idRumpf = now.get(Calendar.YEAR) + df2.format(now.get(Calendar.MONTH)+1) + df2.format(now.get(Calendar.DAY_OF_MONTH)) + "_" + randomInt;
+	}
+	
 	/**
 	 * @return the id
 	 */
