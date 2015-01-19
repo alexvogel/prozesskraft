@@ -1231,7 +1231,8 @@ public class PrampPartUi1 extends ModelObject
 				}
 				
 				this.process.setBaseDir(this.einstellungen.getBaseDirectory());
-
+				this.process.genRandomId();
+				
 				if (this.process.makeRootdir())
 				{
 					log ("info", "all tests passed. performing commit.");
