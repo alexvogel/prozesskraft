@@ -48,6 +48,10 @@ public class Spl {
 		{
 			String newPathToApp = this.getCall().getParentFile().getCanonicalPath() + "/" + allLines.get(0);
 
+			System.err.println("debug: this is the call: " + this.getCall().getCanonicalPath());
+			System.err.println("debug: this is the dir of call: " + this.getCall().getParentFile().getCanonicalPath());
+			System.err.println("debug: this is the new Path to App: " + newPathToApp);
+			
 			java.io.File appFile = new java.io.File(newPathToApp);
 			
 			if(appFile.isFile())
