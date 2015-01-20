@@ -145,7 +145,7 @@ $helptext .= " --cleanbranch		[optional] prior to install all content in target 
 $helptext .= " --cleanapp			[optional] prior to build all branches of the processed app will be deleted.\n";
 $helptext .= " --pack				[optional] delivers the installation directory as a *.tar.gz file\n";
 $helptext .= " --batch              [optional] direct execution of all relevant buildinstances without possibility to abort.\n";
-$helptext .= " --setdefault      [optional] creates a file 'version.<appname> with the version string inside\n";
+$helptext .= " --setdefault=VERSION   [optional] creates a file 'version.<appname> with the version string inside\n";
 $helptext .= " --log                [optional, default: ~/.builder/builder.log] this logfile will be used.\n";
 $helptext .= "\n";
 $helptext .= "Example 1:\n";
