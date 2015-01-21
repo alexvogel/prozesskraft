@@ -9,7 +9,9 @@ import java.nio.file.StandardCopyOption.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SerializationUtils;
@@ -701,11 +703,17 @@ implements Serializable
 
 			this.log("info", "commit standard entries");
 
-			// das stepdir als variable ablegen
-			Variable var = new Variable();
-			var.setKey("_dir");
-			var.setValue(this.getAbsdir());
-			this.addVariable(var);
+			ArrayList<String> existKeysInVariables = this.getParent().getVariableKeys();
+			// das stepdir als variable "_dir" ablegen, falls noch nicht vorhanden
+			if(!existKeysInVariables.contains("_dir"))
+			{
+				Variable var = new Variable();
+				var.setKey("_dir");
+				var.setValue(this.getAbsdir());
+				this.addVariable(var);
+			}
+
+			this.log("info", "commit standard entries finished");
 
 			// wenn das zu committende objekt ein File ist...
 			for(File actualFile : this.getFile())

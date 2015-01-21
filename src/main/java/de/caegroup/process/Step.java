@@ -1671,6 +1671,22 @@ implements Serializable, Cloneable
 	{
 		this.file = file;
 	}
+	
+	/**
+	 * returns all existent keys of all Variables stored in this step
+	 * duplicates are possible
+	 * @return
+	 */
+	public ArrayList<String> getVariableKeys()
+	{
+		ArrayList<String> existKeysInVariables = new ArrayList<String>();
+		for(Variable actVariable : this.getVariable())
+		{
+			existKeysInVariables.add(actVariable.getKey());
+		}
+
+		return existKeysInVariables;
+	}
 		
 	public ArrayList<Variable> getVariable()
 	{
