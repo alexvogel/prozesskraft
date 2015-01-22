@@ -247,10 +247,9 @@ public class Syscall {
 			// oeffnen der OutputStream zur STDERR-Ausgabedatei
 			final FileWriter fw_stderr = new FileWriter(sStderr);
 			
-			// InputStream erstellen
+			// InputStream erstellen (wichtig, sonst bleiben scripte, die eingaben ueber stdin erwarten haengen)
 			InputStream is = sysproc.getInputStream();
 			System.out.println("InputStream erstellt");
-			is.close();
 			
 			// einen timer thread erstellen, der die ganze sache nach einem bestimmten zeitraum abschiessen soll
 			new Thread(new Runnable() {
