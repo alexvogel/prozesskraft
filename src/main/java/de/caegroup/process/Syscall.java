@@ -364,6 +364,30 @@ public class Syscall {
 				}
 			}).start();
 
+			// neuen thread, der STDIN abfaengt und flusht
+			new Thread(new Runnable() {
+				public void run() {
+					try {
+						
+						// einfangen des stdin
+						OutputStream os_stdin = sysproc.getOutputStream();
+
+						// Send your OutputStream to an OutputStreamWriter:
+						OutputStreamWriter osw_stdin = new OutputStreamWriter(os_stdin);
+						
+						// That needs to go to a BufferedWriter:
+						BufferedWriter bw_stdin = new BufferedWriter(osw_stdin);
+
+						bw_stdin.flush();
+						bw_stdin.close();
+
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}).start();
+
 			int exitValue = sysproc.waitFor();
 
 			System.out.println("exitvalue: "+exitValue);
