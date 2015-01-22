@@ -216,7 +216,7 @@ public class Syscall {
 
 			// errorstream nach out umleiten
 //			pb.redirectErrorStream(true);
-
+			
 			// Aufruf taetigen
 			final java.lang.Process sysproc = pb.start();
 
@@ -247,6 +247,9 @@ public class Syscall {
 			// oeffnen der OutputStream zur STDERR-Ausgabedatei
 			final FileWriter fw_stderr = new FileWriter(sStderr);
 			
+			// InputStream erstellen
+			InputStream is = sysproc.getInputStream();
+			is.close();
 			
 			// einen timer thread erstellen, der die ganze sache nach einem bestimmten zeitraum abschiessen soll
 			new Thread(new Runnable() {
