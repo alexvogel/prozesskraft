@@ -249,6 +249,7 @@ public class Syscall {
 			
 			// InputStream erstellen
 			InputStream is = sysproc.getInputStream();
+			System.out.println("InputStream erstellt");
 			is.close();
 			
 			// einen timer thread erstellen, der die ganze sache nach einem bestimmten zeitraum abschiessen soll
