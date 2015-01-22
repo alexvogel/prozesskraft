@@ -249,7 +249,7 @@ public class Syscall {
 			
 			// InputStream erstellen (wichtig, sonst bleiben scripte, die eingaben ueber stdin erwarten haengen)
 			InputStream is = sysproc.getInputStream();
-			System.out.println("InputStream erstellt");
+			System.out.println("InputStream erstellt2");
 			
 			// einen timer thread erstellen, der die ganze sache nach einem bestimmten zeitraum abschiessen soll
 			new Thread(new Runnable() {
