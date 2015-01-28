@@ -7,39 +7,14 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="process">
-    <xs:complexType>
-    	<xs:sequence>
-    		<xs:element maxOccurs="unbounded" ref="step" />
-    	</xs:sequence>
-    	<xs:attribute name="initCommitDir" type="xs:string"></xs:attribute>
-    	<xs:attribute name="initCommitVarfile" type="xs:string"></xs:attribute>
-    	<xs:attribute name="architectMail" use="required"
-    		type="EmailType" />
-    	<xs:attribute name="architectName" type="xs:string"></xs:attribute>
-    	<xs:attribute name="architectCompany" type="xs:string"></xs:attribute>
-    	<xs:attribute name="customerMail" type="xs:string"></xs:attribute>
-    	<xs:attribute name="customerName" type="xs:string"></xs:attribute>
-    	<xs:attribute name="customerCompany" type="xs:string"></xs:attribute>
-    	<xs:attribute name="description" use="required"
-    		type="xs:string" />
-    	<xs:attribute name="name" use="required" type="xs:string" />
-    	<xs:attribute name="path" use="required" type="xs:string" />
-    	<xs:attribute name="modelVersion" use="required"
-    		type="xs:string" />
-    	<xs:attribute name="version" use="required" type="xs:string" />
-    	<xs:attribute name="wrapper" use="required" type="xs:boolean" />
-    </xs:complexType>
-  </xs:element>
+  <xs:element name="process" type="process"></xs:element>
   <xs:element name="step">
     <xs:complexType>
     	<xs:sequence>
     		<xs:element maxOccurs="unbounded" ref="list" minOccurs="0" />
     		<xs:element maxOccurs="unbounded" ref="init" minOccurs="0" />
     		<xs:element ref="work" minOccurs="0" maxOccurs="1" />
-    		<xs:element name="process" type="processType" maxOccurs="1"
-    			minOccurs="0">
-    		</xs:element>
+    		<xs:element name="process" maxOccurs="1" 	minOccurs="0"/>
     		<xs:element maxOccurs="unbounded" ref="commit"
     			minOccurs="1" />
     	</xs:sequence>
@@ -217,8 +192,27 @@
   </xs:simpleType>
 
 
+	<xs:complexType name="process">
+		<xs:sequence>
+			<xs:element maxOccurs="unbounded" ref="step" />
+		</xs:sequence>
+		<xs:attribute name="initCommitDir" type="xs:string"></xs:attribute>
+		<xs:attribute name="initCommitVarfile" type="xs:string"></xs:attribute>
+		<xs:attribute name="architectMail" use="required" type="EmailType" />
+		<xs:attribute name="architectName" type="xs:string"></xs:attribute>
+		<xs:attribute name="architectCompany" type="xs:string"></xs:attribute>
+		<xs:attribute name="customerMail" type="xs:string"></xs:attribute>
+		<xs:attribute name="customerName" type="xs:string"></xs:attribute>
+		<xs:attribute name="customerCompany" type="xs:string"></xs:attribute>
+		<xs:attribute name="description" use="required" type="xs:string" />
+		<xs:attribute name="name" use="required" type="xs:string" />
+		<xs:attribute name="path" use="required" type="xs:string" />
+		<xs:attribute name="modelVersion" use="required" type="xs:string" />
+		<xs:attribute name="version" use="required" type="xs:string" />
+		<xs:attribute name="wrapper" use="required" type="xs:boolean" />
+	</xs:complexType>
 
 
 
-    <xs:complexType name="processType"></xs:complexType>
+
 </xs:schema>
