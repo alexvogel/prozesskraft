@@ -37,10 +37,13 @@
     		<xs:element maxOccurs="unbounded" ref="list" minOccurs="0" />
     		<xs:element maxOccurs="unbounded" ref="init" minOccurs="0" />
     		<xs:element ref="work" minOccurs="0" maxOccurs="1" />
+    		<xs:element name="process" type="processType" maxOccurs="1"
+    			minOccurs="0">
+    		</xs:element>
     		<xs:element maxOccurs="unbounded" ref="commit"
     			minOccurs="1" />
     	</xs:sequence>
-            <xs:attribute name="name" use="required">
+    	<xs:attribute name="name" use="required">
     		<xs:simpleType>
     			<xs:restriction base="xs:string">
     				<xs:minLength value="1"></xs:minLength>
@@ -216,4 +219,6 @@
 
 
 
+
+    <xs:complexType name="processType"></xs:complexType>
 </xs:schema>
