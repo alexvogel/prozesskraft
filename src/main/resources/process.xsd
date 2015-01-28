@@ -7,39 +7,8 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  <xs:element name="process" type="process"></xs:element>
-  <xs:element name="step">
-    <xs:complexType>
-    	<xs:sequence>
-    		<xs:element maxOccurs="unbounded" ref="list" minOccurs="0" />
-    		<xs:element maxOccurs="unbounded" ref="init" minOccurs="0" />
-    		<xs:element ref="work" minOccurs="0" maxOccurs="1" />
-    		<xs:element ref="process" maxOccurs="1" 	minOccurs="0"/>
-    		<xs:element maxOccurs="unbounded" ref="commit"
-    			minOccurs="1" />
-    	</xs:sequence>
-    	<xs:attribute name="name" use="required">
-    		<xs:simpleType>
-    			<xs:restriction base="xs:string">
-    				<xs:minLength value="1"></xs:minLength>
-    				<xs:maxLength value="50"></xs:maxLength>
-    				<xs:whiteSpace value="collapse"></xs:whiteSpace>
-    			</xs:restriction>
-    		</xs:simpleType>
-    	</xs:attribute>
-            <xs:attribute name="clip" type="xs:string" use="optional"></xs:attribute>
-            <xs:attribute name="loop" type="xs:string"></xs:attribute>
-    	<xs:attribute name="loopvar" type="xs:string"></xs:attribute>
-    	<xs:attribute name="description" use="optional">
-    		<xs:simpleType>
-    			<xs:restriction base="xs:string">
-    				<xs:minLength value="0"></xs:minLength>
-    			</xs:restriction>
-    		</xs:simpleType>
-    	</xs:attribute>
-            <xs:attribute name="type" use="required" type="SteptypeType" />
-    </xs:complexType>
-  </xs:element>
+  <xs:element name="process" type="process"/>
+  <xs:element name="step" type="step"/>
   <xs:element name="init">
     <xs:complexType>
     	<xs:sequence>
@@ -212,6 +181,35 @@
 		<xs:attribute name="wrapper" use="required" type="xs:boolean" />
 	</xs:complexType>
 
+	<xs:complexType name="step">
+		<xs:sequence>
+			<xs:element maxOccurs="unbounded" ref="list" minOccurs="0" />
+			<xs:element maxOccurs="unbounded" ref="init" minOccurs="0" />
+			<xs:element ref="work" minOccurs="0" maxOccurs="1" />
+			<xs:element ref="process" maxOccurs="1" 	minOccurs="0"/>
+			<xs:element maxOccurs="unbounded" ref="commit" minOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="name" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:minLength value="1"></xs:minLength>
+					<xs:maxLength value="50"></xs:maxLength>
+					<xs:whiteSpace value="collapse"></xs:whiteSpace>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="clip" type="xs:string" use="optional"></xs:attribute>
+		<xs:attribute name="loop" type="xs:string"></xs:attribute>
+		<xs:attribute name="loopvar" type="xs:string"></xs:attribute>
+		<xs:attribute name="description" use="optional">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:minLength value="0"></xs:minLength>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="type" use="required" type="SteptypeType" />
+	</xs:complexType>
 
 
 
