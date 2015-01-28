@@ -641,18 +641,22 @@ implements Serializable
 					try {
 						while ((line = in.readLine()) != null)
 						{
-							Variable newVariable = master.clone();
-							
-							// entfernen einen evtl. vorhandenen newlines
-							line = line.replaceAll("(\\r|\\n)", "");
-							log("debug", "extracting value '"+line+"' from file "+fileToExtractFrom.getAbsolutePath());
-
-							newVariable.setValue(line);
-							extractedVariables.add(newVariable);
-
-							if(onlyFirstLine)
+							// wenn zeile mit nicht '#' beginnt, soll diese als variable betrachtet werden
+							if(!line.matches("^#"))
 							{
-								break;
+								Variable newVariable = master.clone();
+
+								// entfernen einen evtl. vorhandenen newlines
+								line = line.replaceAll("(\\r|\\n)", "");
+								log("debug", "extracting value '"+line+"' from file "+fileToExtractFrom.getAbsolutePath());
+	
+								newVariable.setValue(line);
+								extractedVariables.add(newVariable);
+	
+								if(onlyFirstLine)
+								{
+									break;
+								}
 							}
 						}
 					}

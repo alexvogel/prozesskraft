@@ -894,13 +894,29 @@ implements Serializable, Cloneable
 			}
 		}
 
-//		//ueber alle commitvarfiles iterieren
-//		this.log("info", "commit all initCommitVarfiles");
-//		for(java.io.File actCommitVarfile : this.getParent().getInitCommitVarfiles2())
-//		{
-//			rootStandardCommit.commitVarfile(actCommitVarfile);
-//			rootStandardCommit.log("info", "committed dir "+actCommitVarfile.getAbsolutePath());
-//		}
+		//ueber alle commitvarfiles iterieren
+		this.log("info", "commit all initCommitVarfiles");
+		
+		// einen commit fuer die initCommits anlegen
+		Commit commit = new Commit(this.getParent().getRootStep());
+		commit.setName("initCommitVarFiles");
+		
+		// ueber alle initCommitVarfiles iterieren, fuer jedes eine variable mit dem pfad als glob erstellen und dem commit hinzufuegen
+		for(java.io.File actCommitVarfile : this.getParent().getInitCommitVarfiles2())
+		{
+			Variable variable = new Variable();
+			variable.setKey(actCommitVarfile.getName());
+			try {
+				variable.setGlob(actCommitVarfile.getCanonicalPath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			commit.addVariable(variable);
+		}
+		
+		// commits durchfuehren
 
 //		this.log("info", "commit standard entries");
 //		// das stepdir als variable ablegen
