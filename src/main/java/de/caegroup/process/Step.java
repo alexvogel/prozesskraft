@@ -1047,7 +1047,7 @@ implements Serializable, Cloneable
 			String listnameMitEvtlIndex = m.group(1);
 
 			// extrahieren des listnamens
-			Pattern patternListnameWithIndex = Pattern.compile("^(\\w+\\)(\\[(.+)\\])?$");
+			Pattern patternListnameWithIndex = Pattern.compile("^(\\w+)(\\[(.+)\\])?$");
 			Matcher matcherListnameWithIndex = patternListnameWithIndex.matcher(listnameMitEvtlIndex);
 		
 			if(matcherListnameWithIndex.find())
