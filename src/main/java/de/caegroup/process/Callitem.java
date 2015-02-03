@@ -107,10 +107,10 @@ implements Serializable
 					clonedCallitem.setLoopvar(actItem);
 					log("debug", "par="+this.getPar()+" | del="+this.getDel()+" | val="+this.getVal() + " | actItem="+actItem);
 					// loopvarcallitems ersetzen
-					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
-					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
-					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
-					// loopvarwork ersetzen
+					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarcallitem\\}", clonedCallitem.getLoopvar()));
+					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarcallitem\\}", clonedCallitem.getLoopvar()));
+					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", clonedCallitem.getLoopvar()));
+					// loopvarstep ersetzen
 					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
 					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
 					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));

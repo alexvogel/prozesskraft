@@ -1049,7 +1049,7 @@ implements Serializable, Cloneable
 			// extrahieren des listnamens
 			Pattern patternListnameWithIndex = Pattern.compile("^(\\w+)(\\[(.+)\\])?$");
 			Matcher matcherListnameWithIndex = patternListnameWithIndex.matcher(listnameMitEvtlIndex);
-		
+
 			if(matcherListnameWithIndex.find())
 			{
 				// feststellen ob wir uns schon auf der tiefsten ebene befinden
@@ -1082,17 +1082,23 @@ implements Serializable, Cloneable
 					this.log("error", "list '"+listname+"' not found in step '"+this.getName()+"' but needed for resolving.");
 //					System.exit(1);
 				}
-
-				// den platzhalter durch das item ersetzen
-				try
+				else
 				{
-					return list.getItem().get(index);
-				}
-				catch(IndexOutOfBoundsException e)
-				{
-					this.log("fatal", "cannot deliver item nr "+index+" from list '"+list.getName()+"'");
-					this.log("fatal", e.getMessage());
-//					System.exit(1);
+					// den platzhalter durch das item ersetzen
+					try
+					{
+//						System.err.println("stringToResolve="+stringToResolve);
+//						System.err.println("zuErsetzenderBereich="+m.group(0));
+//						System.err.println("itemCount="+list.getItem().size());
+//						System.err.println("ersetzendesItem="+list.getItem().get(index));
+						return stringToResolve.replace(m.group(0), list.getItem().get(index));
+					}
+					catch(IndexOutOfBoundsException e)
+					{
+						this.log("fatal", "cannot deliver item nr "+index+" from list '"+list.getName()+"'");
+						this.log("fatal", e.getMessage());
+	//					System.exit(1);
+					}
 				}
 			}
 			return stringToResolve;

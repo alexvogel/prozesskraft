@@ -99,9 +99,9 @@
     			maxOccurs="unbounded" />
     	</xs:choice>
     	<xs:attribute name="name" use="optional" type="xs:string" />
-    	<xs:attribute name="toroot" use="optional" type="xs:boolean" />
-    	<xs:attribute name="copyto" use="optional" type="xs:string"></xs:attribute>
-    	<xs:attribute name="loop" type="xs:string"></xs:attribute>
+    	<xs:attribute name="toroot" use="required" type="xs:boolean" />
+    	<xs:attribute name="copyto" use="optional" type="xs:string"/>
+    	<xs:attribute name="loop" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="file">

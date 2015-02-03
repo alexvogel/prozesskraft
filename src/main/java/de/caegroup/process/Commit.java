@@ -28,7 +28,7 @@ implements Serializable
 	static final long serialVersionUID = 1;
 	private static final CopyOption REPLACE_EXISTING = null;
 	private String name = "";
-	private boolean toroot = false;
+	private Boolean toroot = false;
 	private String copyto = null;
 	private String loop = "";
 	private String loopvar = "";
@@ -145,6 +145,11 @@ implements Serializable
 	}
 
 	public boolean getToroot()
+	{
+		return this.toroot;
+	}
+
+	public boolean isToroot()
 	{
 		return this.toroot;
 	}

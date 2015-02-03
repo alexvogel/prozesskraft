@@ -39,7 +39,7 @@ public class TestCallitem {
 		
 		String resolvedString = callitem1.resolveString("eiapupaja{$HallO}eijoas");
 		
-		assertEquals(resolvedString, "eiapupajaICHBINGROSSeijoas");
+		assertEquals("eiapupajaICHBINGROSSeijoas", resolvedString);
 	}
 
 }
