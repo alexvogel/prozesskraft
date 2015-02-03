@@ -1072,7 +1072,7 @@ implements Serializable, Cloneable
 						// wenn inhalt nicht parsable, dann muss resolved werden
 						this.log("fatal", "cannot resolve substring '"+matcherListnameWithIndex.group(3)+"' of full string '"+stringToResolve+"'");
 						this.log("fatal", e.getMessage());
-						System.exit(1);
+//						System.exit(1);
 					}
 				}
 
@@ -1080,7 +1080,7 @@ implements Serializable, Cloneable
 				if (list == null)
 				{
 					this.log("error", "list '"+listname+"' not found in step '"+this.getName()+"' but needed for resolving.");
-					System.exit(1);
+//					System.exit(1);
 				}
 
 				// den platzhalter durch das item ersetzen
@@ -1092,7 +1092,7 @@ implements Serializable, Cloneable
 				{
 					this.log("fatal", "cannot deliver item nr "+index+" from list '"+list.getName()+"'");
 					this.log("fatal", e.getMessage());
-					System.exit(1);
+//					System.exit(1);
 				}
 			}
 			return stringToResolve;
