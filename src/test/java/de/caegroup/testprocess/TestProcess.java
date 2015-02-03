@@ -266,7 +266,7 @@ public class TestProcess {
 
 		for(Callitem actCallitem : process.getStep("beulen").getWork().getCallitem())
 		{
-			for(Callitem actResolvedCallitem : actCallitem.resolveCallitem())
+			for(Callitem actResolvedCallitem : actCallitem.resolve())
 			{
 				System.out.println("resolved callitem with sequence="+actResolvedCallitem.getSequence() + " | par=" + actResolvedCallitem.getPar()+ " | del=" + actResolvedCallitem.getDel()+ " | val=" + actResolvedCallitem.getVal());
 			}

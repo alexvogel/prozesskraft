@@ -184,4 +184,13 @@ implements Serializable
 		this.defaultitem = defaultitem;
 	}
 	
+	/**
+	 * @param
+	 * @return size of itemlist
+	 */
+	public int size()
+	{
+		return this.item.size();
+	}
+	
 }

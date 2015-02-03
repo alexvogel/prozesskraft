@@ -22,6 +22,7 @@ implements Serializable
 	private String del = "";
 	private String val = "";
 	private String loop = null;
+	private String loopvar = null;
 // loopvar = {$loopvarcallitem}
 	
 	private String status = "";	// waiting/initializing/working/committing/ finished/broken/cancelled
@@ -66,22 +67,22 @@ implements Serializable
 	}
 	
 	/**
-	 * resolveCallitem
+	 * resolve
 	 * returns an ArrayList of Callitems with
 	 * 1) looped by loop and resolved placeholder 'loopvarcallitem'
 	 * 2) resolved par, del, val for all other placeholder
 	 * @return ArrayList<Callitem>
 	 */
-	public ArrayList<Callitem> resolveCallitem()
+	public ArrayList<Callitem> resolve()
 	{
 		ArrayList<Callitem> loopedThisToCallitems = new ArrayList<Callitem>();
 		
 		// wenn kein loop vorhanden, direkt die felder resolven
 		if(this.getLoop() == null)
 		{
-			this.setPar(this.getRespar());
-			this.setDel(this.getResdel());
-			this.setVal(this.getResval());
+			this.setPar(this.getParent().getParent().resolveString(this.getPar()));
+			this.setDel(this.getParent().getParent().resolveString(this.getDel()));
+			this.setVal(this.getParent().getParent().resolveString(this.getVal()));
 			loopedThisToCallitems.add(this);
 		}
 
@@ -103,17 +104,23 @@ implements Serializable
 					// loopen
 					Callitem clonedCallitem = this.clone();
 					clonedCallitem.setLoop(null);
+					clonedCallitem.setLoopvar(actItem);
 					log("debug", "par="+this.getPar()+" | del="+this.getDel()+" | val="+this.getVal() + " | actItem="+actItem);
+					// loopvarcallitems ersetzen
 					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
 					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
 					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", actItem));
-					
+					// loopvarwork ersetzen
+					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
+					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
+					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
+
 					this.log("debug", "val="+this.getVal());
-					
-					// placeholder, die auf listen referenzieren ersetzen
-					clonedCallitem.setPar(clonedCallitem.getRespar());
-					clonedCallitem.setDel(clonedCallitem.getResdel());
-					clonedCallitem.setVal(clonedCallitem.getResval());
+
+					// placeholder, die auf steplisten referenzieren ersetzen
+					clonedCallitem.setPar(this.getParent().getParent().resolveString(clonedCallitem.getPar()));
+					clonedCallitem.setDel(this.getParent().getParent().resolveString(clonedCallitem.getDel()));
+					clonedCallitem.setVal(this.getParent().getParent().resolveString(clonedCallitem.getVal()));
 					
 					loopedThisToCallitems.add(clonedCallitem);
 				}
@@ -123,50 +130,60 @@ implements Serializable
 	}
 
 	/**
-	 * resolve
-	 * returns the string with resolved placeholders (only the ones for lists (not for loopvarcallitem))
-	 * @return String
+	 * aufloesen eines strings und aller darin verschachtelter verweise auf listitems
+	 * @param stringToResolve
+	 * @return
 	 */
-	public String resolve(String stringToResolve)
+	public String resolveString(String stringToResolve)
 	{
-		String resolvedString = null;
-
-		String patt = "\\{\\$(.+)\\}";
-		Pattern r = Pattern.compile(patt);
-		Matcher m = r.matcher(stringToResolve);
-
-		if (m.find())
-		{
-			String listname = m.group(1);
-//			System.out.println("placeholder: "+listname);
-			// die liste ermitteln, die den Namen traegt wie das gematchte substring
-			List list = this.parent.parent.getList(listname);
-
-			if (list == null)
-			{
-				log("error", "list '"+listname+"' not found in step '"+this.parent.parent.getName()+"' but needed for resolving.");
-				System.out.println("list '"+listname+"' not found in step '"+this.parent.parent.getName()+"' but needed for resolving.");
-			}
-			
-			// das muster soll durch den ersten eintrag in der list ersetzt werden
-			if(list.itemCount() > 0)
-			{
-				resolvedString = m.replaceAll(list.getItem().get(0));
-				log("info", "resolved '{$"+listname+"}' to '"+resolvedString+"'");
-			}
-			else
-			{
-				resolvedString = m.replaceAll("");
-				log("error", "resolved '{$"+listname+"}' to '', because list "+list.getName()+" is empty. (perhaps init.minoccur == 0 and you use it in a callitem without loop="+list.getName()+")");
-			}
-		}
-		else
-		{
-			resolvedString = stringToResolve;
-		}
-		return resolvedString;
+		return this.getParent().getParent().resolveString(stringToResolve);
 	}
 	
+//	/**
+//	 * resolve
+//	 * returns the string with resolved placeholders (only the ones for lists (not for loopvarcallitem))
+//	 * @return String
+//	 */
+//	public String resolve(String stringToResolve, String loopvarcallitem)
+//	{
+//		String resolvedString = null;
+//
+//		String patt = "(\\{\\$(.+)\\})";
+//		Pattern r = Pattern.compile(patt);
+//		Matcher m = r.matcher(stringToResolve);
+//
+//		while(m.find())
+//		{
+//			String listname = m.group(1);
+////			System.out.println("placeholder: "+listname);
+//			// die liste ermitteln, die den Namen traegt wie das gematchte substring
+//			List list = this.parent.parent.getList(listname);
+//
+//			if (list == null)
+//			{
+//				log("error", "list '"+listname+"' not found in step '"+this.parent.parent.getName()+"' but needed for resolving.");
+//				System.out.println("list '"+listname+"' not found in step '"+this.parent.parent.getName()+"' but needed for resolving.");
+//			}
+//			
+//			// das muster soll durch den ersten eintrag in der list ersetzt werden
+//			if(list.itemCount() > 0)
+//			{
+//				resolvedString = m.replaceAll(list.getItem().get(0));
+//				log("info", "resolved '{$"+listname+"}' to '"+resolvedString+"'");
+//			}
+//			else
+//			{
+//				resolvedString = m.replaceAll("");
+//				log("error", "resolved '{$"+listname+"}' to '', because list "+list.getName()+" is empty. (perhaps init.minoccur == 0 and you use it in a callitem without loop="+list.getName()+")");
+//			}
+//		}
+//		else
+//		{
+//			resolvedString = stringToResolve;
+//		}
+//		return resolvedString;
+//	}
+//	
 	/*----------------------------
 	  methods misc
 	----------------------------*/
@@ -208,21 +225,6 @@ implements Serializable
 		return this.status;
 	}
 
-	public String getRespar()
-	{
-		return resolve(this.getPar());
-	}
-
-	public String getResdel()
-	{
-		return resolve(this.getDel());
-	}
-
-	public String getResval()
-	{
-		return resolve(this.getVal());
-	}
-	
 	public String getLoop()
 	{
 		return this.loop;
@@ -269,6 +271,25 @@ implements Serializable
 	public void setParent(Work work)
 	{
 		this.parent = work;
+	}
+
+	public Work getParent()
+	{
+		return this.parent;
+	}
+
+	/**
+	 * @return the loopvar
+	 */
+	public String getLoopvar() {
+		return loopvar;
+	}
+
+	/**
+	 * @param loopvar the loopvar to set
+	 */
+	public void setLoopvar(String loopvar) {
+		this.loopvar = loopvar;
 	}
 
 

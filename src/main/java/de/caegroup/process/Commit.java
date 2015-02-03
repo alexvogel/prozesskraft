@@ -109,6 +109,28 @@ implements Serializable
 		this.getLog().clear();
 	}
 	
+	/**
+	 * resolve
+	 * resolves all the entries in the attributes
+	 */
+	public void resolve()
+	{
+		// den eintrag im attribut 'interpreter' resolven
+		this.setCopyto(this.getCopyto().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
+		this.setCopyto(this.getCopyto().replaceAll("\\{\\$loopvarcommit\\}", this.getLoopvar()));
+		this.setCopyto(this.getParent().resolveString(this.getCopyto()));
+	}
+
+	/**
+	 * aufloesen eines strings und aller darin verschachtelter verweise auf listitems
+	 * @param stringToResolve
+	 * @return
+	 */
+	public String resolveString(String stringToResolve)
+	{
+		return this.getParent().resolveString(stringToResolve);
+	}
+
 	/*----------------------------
 	  methods getter/setter
 	----------------------------*/

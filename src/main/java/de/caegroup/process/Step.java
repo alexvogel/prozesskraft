@@ -11,6 +11,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import static java.nio.file.FileVisitResult.*;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.caegroup.codegen.Script;
 import de.caegroup.process.Commit;
@@ -800,14 +802,31 @@ implements Serializable, Cloneable
 
 	public void fan() throws CloneNotSupportedException
 	{
-
+		// lokale liste zur zwischenspeicherung der items
+		List looplist = new List();
+		
+		// den eintrag in loop in eine loopliste ueberfuehren
+		// ist da die index-funktion?
+		Pattern p = Pattern.compile("^index\\((.+)\\)");
+		Matcher m = p.matcher(this.loop);
+		if(m.matches())
+		{
+			String listname = m.group(0);
+			looplist.addItem(this.getIndexesOfListItems(listname));
+		}
+		// loop enthaelt keine funktion, sondern direkt den namen einer liste
+		else
+		{
+			looplist.addItem(this.getListItems(this.loop));
+		}
+		
 		// wenn die loopliste mindestens 1 wert enthaelt, ueber dioe liste iterieren und fuer jeden wert den aktuellen step clonen
-		if (this.getListItems(this.loop).size() > 0)
+		if (looplist.size() > 0)
 		{
 			// cloner erstellen fuer einen deep-copy
 			Cloner cloner = new Cloner();
 			int x = 1;
-			for(String loopVariable : this.getListItems(this.loop))
+			for(String loopVariable : looplist.getItem())
 			{
 				// einen neuen step erzeugen (klon von this)
 				Step newstep = cloner.deepClone(this);
@@ -1000,37 +1019,88 @@ implements Serializable, Cloneable
 	}
 
 	/**
+	 * resolve
+	 * resolves all the entries in the attributes
+	 */
+	public void resolve()
+	{
+		// den eintrag im attribut 'description' resolven
+		this.setDescription(this.getDescription().replaceAll("\\{\\$loopvarstep\\}", this.getLoopvar()));
+		this.setDescription(this.resolveString(this.getDescription()));
+	}
+
+	/**
 	 * resolves all the placeholders and gives back the resolved string
 	 */
 	public String resolveString(String stringToResolve)
 	{
 		log("debug", "resolving string "+stringToResolve);
-		String resolvedString = stringToResolve;
-		if(!stringToResolve.matches("\\{\\$.+\\}"))
+
+//		String resolvedString = stringToResolve;
+
+		Pattern p = Pattern.compile("\\{\\$(.+)\\}");
+		Matcher m = p.matcher(stringToResolve);
+
+		if(m.find())
 		{
-			log("debug", "nothing to resolve in string "+stringToResolve);
+			// extrahieren des listnamen incl. evtl. index aus dem match
+			String listnameMitEvtlIndex = m.group(1);
+
+			// extrahieren des listnamens
+			Pattern patternListnameWithIndex = Pattern.compile("^(\\w+\\)([(.+)\\])?$");
+			Matcher matcherListnameWithIndex = patternListnameWithIndex.matcher(listnameMitEvtlIndex);
+		
+			if(matcherListnameWithIndex.find())
+			{
+				// feststellen ob wir uns schon auf der tiefsten ebene befinden
+				String listname = matcherListnameWithIndex.group(1);
+				Integer index = null;
+				// gibts keinen index, dann ist der index = 0
+				if(matcherListnameWithIndex.group(3)==null)
+				{
+					index = 0;
+				}
+				else
+				{
+					try
+					{
+						// versuchen den index zu parsen, falls es ein index ist
+						index = Integer.parseInt(this.resolveString(matcherListnameWithIndex.group(3)));
+					}
+					catch(NumberFormatException e)
+					{
+						// wenn inhalt nicht parsable, dann muss resolved werden
+						this.log("fatal", "cannot resolve substring '"+matcherListnameWithIndex.group(3)+"' of full string '"+stringToResolve+"'");
+						this.log("fatal", e.getMessage());
+						System.exit(1);
+					}
+				}
+
+				List list = this.getList(listname);
+				if (list == null)
+				{
+					this.log("error", "list '"+listname+"' not found in step '"+this.getName()+"' but needed for resolving.");
+					System.exit(1);
+				}
+
+				// den platzhalter durch das item ersetzen
+				try
+				{
+					return list.getItem().get(index);
+				}
+				catch(IndexOutOfBoundsException e)
+				{
+					this.log("fatal", "cannot deliver item nr "+index+" from list '"+list.getName()+"'");
+					this.log("fatal", e.getMessage());
+					System.exit(1);
+				}
+			}
 			return stringToResolve;
 		}
-
-		for(List actList : this.getList())
+		else
 		{
-			log("debug", "resolving every placeholder that could be linked to list: "+actList.getName());
-			if(actList.getItem().size() > 0)
-			{
-				resolvedString = resolvedString.replaceAll("\\{\\$"+actList.getName()+"\\}", actList.getItem().get(0));
-			}
-			else
-			{
-				log("debug", "no items in list: "+actList.getName());
-			}
+			return stringToResolve;
 		}
-		
-		if(resolvedString.matches("\\{\\$.+\\}"))
-		{
-			log("error", "could not resolve some field(s). resolved String still contains fields: "+resolvedString);
-		}
-		
-		return resolvedString;
 	}
 
 	/**
@@ -1636,6 +1706,30 @@ implements Serializable, Cloneable
 		if(this.getList(listname) != null)
 		{
 			return this.getList(listname).getItem();
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * 
+	 * @param listname
+	 * @return
+	 */
+	public ArrayList<String> getIndexesOfListItems(String listname)
+	{
+		ArrayList<String> indexesOfListItems = new ArrayList<String>();
+		if(this.getList(listname) != null)
+		{
+			ArrayList<String> allItemsOfList = this.getList(listname).getItem();
+			for(String actItem : allItemsOfList)
+				{
+					indexesOfListItems.add(""+allItemsOfList.indexOf(actItem));
+				}
+			
+			return indexesOfListItems;
 		}
 		else
 		{

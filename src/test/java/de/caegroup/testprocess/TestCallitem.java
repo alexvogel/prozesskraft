@@ -37,7 +37,7 @@ public class TestCallitem {
 		step1.setWork(work1);
 		
 		
-		String resolvedString = callitem1.resolve("eiapupaja{$HallO}eijoas");
+		String resolvedString = callitem1.resolveString("eiapupaja{$HallO}eijoas");
 		
 		assertEquals(resolvedString, "eiapupajaICHBINGROSSeijoas");
 	}

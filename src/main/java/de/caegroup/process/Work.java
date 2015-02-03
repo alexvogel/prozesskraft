@@ -24,7 +24,7 @@ implements Serializable
 	private String logfile = "";
 	private ArrayList<Callitem> callitem = new ArrayList<Callitem>();
 	private ArrayList<Exit> exit = new ArrayList<Exit>();
-	private String loop = null;
+//	private String loop = null; // kein loop in element 'work' -> dazu ist das element 'step' da!!
 
 	private ArrayList<Log> log = new ArrayList<Log>();
 
@@ -85,6 +85,43 @@ implements Serializable
 		}
 	}
 	
+	/**
+	 * resolve
+	 * resolves all the entries in the attributes
+	 */
+	public void resolve()
+	{
+		// den eintrag im attribut 'interpreter' resolven
+		this.setInterpreter(this.getInterpreter().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
+		this.setInterpreter(this.getParent().resolveString(this.getInterpreter()));
+		
+		// den eintrag im attribut 'command' resolven
+		this.setCommand(this.getCommand().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
+		this.setCommand(this.getParent().resolveString(this.getCommand()));
+		
+		// den eintrag im attribut 'description' resolven
+		this.setDescription(this.getDescription().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
+		this.setDescription(this.getParent().resolveString(this.getDescription()));
+		
+		// den eintrag im attribut 'name' resolven
+		this.setName(this.getName().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
+		this.setName(this.getParent().resolveString(this.getName()));
+		
+		// den eintrag im attribut 'logfile' resolven
+		this.setLogfile(this.getLogfile().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
+		this.setLogfile(this.getParent().resolveString(this.getLogfile()));
+	}
+
+	/**
+	 * aufloesen eines strings und aller darin verschachtelter verweise auf listitems
+	 * @param stringToResolve
+	 * @return
+	 */
+	public String resolveString(String stringToResolve)
+	{
+		return this.getParent().resolveString(stringToResolve);
+	}
+	
 	/*----------------------------
 	  methods virtual get
 	----------------------------*/
@@ -99,7 +136,7 @@ implements Serializable
 		// resolven aller callitems
 		for(Callitem actCallitem : this.getCallitemssorted())
 		{
-			for(Callitem actResolvedCallitem : actCallitem.resolveCallitem())
+			for(Callitem actResolvedCallitem : actCallitem.resolve())
 			{
 				call += " ";
 				call += actResolvedCallitem.getPar();
@@ -216,11 +253,6 @@ implements Serializable
 		return this.exit;
 	}
 	
-	public String getLoop()
-	{
-		return this.loop;
-	}
-	
 	public String getStatus()
 	{
 		return this.status;
@@ -288,11 +320,6 @@ implements Serializable
 		this.logfile = logfile;
 	}
 
-	public void setLoop(String loop)
-	{
-		this.loop = loop;
-	}
-	
 	public void setStatus(String status)
 	{
 		this.status = status;
@@ -348,6 +375,8 @@ implements Serializable
 	{
 		this.setStatus("working");
 
+		this.resolve();
+		
 		// wenn schritt schon gestartet wurde
 		if (this.isPidfileexistent())
 		{
