@@ -82,9 +82,21 @@ public class Startinstance
 		
 		Option odefinition = OptionBuilder.withArgName("FILE")
 				.hasArg()
-				.withDescription("[mandatory] definition file of process you want to start an instance from.")
+				.withDescription("[optional] definition file of the process you want to start an instance from.")
 //				.isRequired()
 				.create("definition");
+		
+		Option opname = OptionBuilder.withArgName("STRING")
+				.hasArg()
+				.withDescription("[optional] name of the process you want to start an instance from (mandatory if you omit -definition)")
+//				.isRequired()
+				.create("pname");
+		
+		Option opversion = OptionBuilder.withArgName("STRING")
+				.hasArg()
+				.withDescription("[optional] version of the process you want to start an instance from (mandatory if you omit -definition)")
+//				.isRequired()
+				.create("pversion");
 		
 		Option ofile = OptionBuilder.withArgName("FILE")
 				.hasArg()
@@ -107,6 +119,8 @@ public class Startinstance
 		options.addOption( ov );
 		options.addOption( obasedir );
 		options.addOption( odefinition );
+		options.addOption( opname );
+		options.addOption( opversion );
 		options.addOption( ofile );
 		options.addOption( ovariable );
 		
@@ -127,7 +141,7 @@ public class Startinstance
 			formatter.printHelp("startinstance", options);
 			System.exit(0);
 		}
-		
+
 		if ( commandline.hasOption("v"))
 		{
 			System.out.println("author:  alexander.vogel@caegroup.de");
@@ -138,9 +152,27 @@ public class Startinstance
 		/*----------------------------
 		  ueberpruefen ob eine schlechte kombination von parametern angegeben wurde
 		----------------------------*/
-		if ( !( commandline.hasOption("definition")) )
+		if ( !( commandline.hasOption("definition")) && (!(commandline.hasOption("pname")) || !(commandline.hasOption("pversion"))  ) )
 		{
-			System.out.println("option -definition is mandatory.");
+			System.err.println("option -definition or the options -pname & -pversion are mandatory");
+			exiter();
+		}
+
+		if ( (!(commandline.hasOption("pname")) && (commandline.hasOption("pversion"))  ) )
+		{
+			System.err.println("option -pversion must not used without -pname.");
+			exiter();
+		}
+
+		if ( (commandline.hasOption("pname") && (!(commandline.hasOption("pversion")))  ) )
+		{
+			System.err.println("option -pname must not used without -pversion.");
+			exiter();
+		}
+
+		if ( (commandline.hasOption("definition") && ((commandline.hasOption("pversion")) || (commandline.hasOption("pname")) )  ) )
+		{
+			System.err.println("you must not use option -definition with -pversion or -pname");
 			exiter();
 		}
 
@@ -153,9 +185,9 @@ public class Startinstance
 		allPortAtHost.add(ini.get("license-server", "license-server-1"));
 		allPortAtHost.add(ini.get("license-server", "license-server-2"));
 		allPortAtHost.add(ini.get("license-server", "license-server-3"));
-		
+
 		MyLicense lic = new MyLicense(allPortAtHost, "1", "user-edition", "0.1");
-		
+
 		// lizenz-logging ausgeben
 		for(String actLine : (ArrayList<String>) lic.getLog())
 		{
@@ -173,14 +205,37 @@ public class Startinstance
 		----------------------------*/
 
 		Process p1 = new Process();
-			
-		p1.setInfilexml( commandline.getOptionValue("definition") );
+		String pathToDefinition = "";
+		
+		if(commandline.hasOption("definition"))
+		{
+			pathToDefinition = commandline.getOptionValue("definition");
+		}
+		else if(commandline.hasOption("pname") &&commandline.hasOption("pversion") )
+		{
+			pathToDefinition.replaceAll("/+$", "");
+			pathToDefinition = ini.get("process", "domain-installation-directory") + "/" + commandline.getOptionValue("pname") + "/" + commandline.getOptionValue("pversion") + "/process.xml";
+		}
+		else
+		{
+			System.err.println("option -definition or the options -pname & -pversion are mandatory");
+			exiter();
+		}
+		
+		// check ob das ermittelte oder uebergebene xml-file ueberhaupt existiert
+		java.io.File xmlDefinition = new java.io.File(pathToDefinition);
+		if( !(xmlDefinition.exists()) || !(xmlDefinition.isFile()) )
+		{
+			System.err.println("process definition does not exist: "+pathToDefinition);
+			exiter();
+		}
+		
+		p1.setInfilexml( xmlDefinition.getCanonicalPath() );
 		Process p2;
 		try
 		{
 			p2 = p1.readXml();
 
-		
 			// step, an den die commits gehen, soll 'root' sein.
 			Step step = p2.getStep(p2.getRootstepname());
 			
@@ -195,13 +250,37 @@ public class Startinstance
 			// committen von files (ueber einen glob)
 			if (commandline.hasOption("commitfile"))
 			{
-				de.caegroup.process.File file = new de.caegroup.process.File();
-				file.setGlob(commandline.getOptionValue("commitfile"));
-				file.setKey("default");
 
-				commit.addFile(file);
+				if (commandline.getOptionValue("commitfile").matches(".+=.+"))
+					{
+						String keyValue = commandline.getOptionValue("commitfile");
+						String[] parts = keyValue.split("=");
+						de.caegroup.process.File file = new de.caegroup.process.File();
+
+						if(parts.length == 1)
+						{
+							file.setKey("default");
+							file.setGlob("parts[0]");
+						}
+						else if(parts.length == 2)
+						{
+							file.setKey("parts[0]");
+							file.setGlob("parts[1]");
+						}
+						else
+						{
+							System.err.println("error in option -commitvariable");
+							exiter();
+						}
+						step.addFile(file);
+					}
+					else
+					{
+						System.err.println("-commitfile "+commandline.getOptionValue("commitfile")+" does not match pattern \"NAME=VALUE\".");
+						exiter();
+					}
 			}
-			
+
 			if (commandline.hasOption("commitvariable"))
 			{
 				if (commandline.getOptionValue("commitvariable").matches(".+=.+"))
@@ -209,15 +288,21 @@ public class Startinstance
 					String keyValue = commandline.getOptionValue("commitvariable");
 					String[] parts = keyValue.split("=");
 					Variable variable = new Variable();
-					variable.setKey(parts[0]);
 
-					if(parts.length < 2)
+					if(parts.length == 1)
 					{
-						variable.setValue("default");
+						variable.setKey("default");
+						variable.setValue("parts[0]");
+					}
+					else if(parts.length == 2)
+					{
+						variable.setKey(parts[0]);
+						variable.setValue(parts[1]);
 					}
 					else
 					{
-						variable.setValue(parts[1]);
+						System.err.println("error in option -commitvariable");
+						exiter();
 					}
 					step.addVariable(variable);
 				}
