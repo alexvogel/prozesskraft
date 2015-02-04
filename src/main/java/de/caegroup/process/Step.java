@@ -741,12 +741,7 @@ implements Serializable, Cloneable
 			// wenn alle fromsteps den status 'finished' haben wird evtl. zuerst 'gefanned'
 			else if (this.loop!=null && !(this.loop.equals("")))
 			{
-				try {
-					this.fan();
-				} catch (CloneNotSupportedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				this.fan();
 			}
 
 			/**
@@ -800,7 +795,7 @@ implements Serializable, Cloneable
 
 	}
 
-	public void fan() throws CloneNotSupportedException
+	public void fan()
 	{
 		// lokale liste zur zwischenspeicherung der items
 		List looplist = new List();
@@ -811,7 +806,7 @@ implements Serializable, Cloneable
 		Matcher m = p.matcher(this.loop);
 		if(m.matches())
 		{
-			String listname = m.group(0);
+			String listname = m.group(1);
 			looplist.addItem(this.getIndexesOfListItems(listname));
 		}
 		// loop enthaelt keine funktion, sondern direkt den namen einer liste
@@ -1036,6 +1031,7 @@ implements Serializable, Cloneable
 	{
 		log("debug", "resolving string "+stringToResolve);
 
+		stringToResolve = stringToResolve.replaceAll("\\{\\$loopvarstep\\}", this.getLoopvar());
 //		String resolvedString = stringToResolve;
 
 		Pattern p = Pattern.compile("\\{\\$(.+)\\}");
@@ -1049,11 +1045,12 @@ implements Serializable, Cloneable
 			// extrahieren des listnamens
 			Pattern patternListnameWithIndex = Pattern.compile("^(\\w+)(\\[(.+)\\])?$");
 			Matcher matcherListnameWithIndex = patternListnameWithIndex.matcher(listnameMitEvtlIndex);
-
+			
 			if(matcherListnameWithIndex.find())
 			{
 				// feststellen ob wir uns schon auf der tiefsten ebene befinden
 				String listname = matcherListnameWithIndex.group(1);
+
 				Integer index = null;
 				// gibts keinen index, dann ist der index = 0
 				if(matcherListnameWithIndex.group(3)==null)
@@ -1084,6 +1081,7 @@ implements Serializable, Cloneable
 				}
 				else
 				{
+
 					// den platzhalter durch das item ersetzen
 					try
 					{

@@ -39,6 +39,7 @@ implements Serializable
 
 	public List(Step step, String listname)
 	{
+		step.addList(this);
 		this.parent = step;
 		this.name = listname;
 	}
