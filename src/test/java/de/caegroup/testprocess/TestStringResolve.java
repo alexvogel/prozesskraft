@@ -79,14 +79,14 @@ public class TestStringResolve {
 //		System.out.println(process.getStep("appshake").getList("spl").getName());
 //		System.out.println(process.getStep("appshake"));
 		
-		for(Step actStep : process.getStep())
-		{
-			System.out.println("----");
-			System.out.println("stepname: "+actStep.getName());
-			System.out.println("loopvarstep: "+actStep.getLoopvar());
-			System.out.println("unresolvter string: {$spl[{$loopvarstep}]}");
-			System.out.println("fertig resolvter string: "+actStep.resolveString("{$spl[{$loopvarstep}]}"));
-		}
+//		for(Step actStep : process.getStep())
+//		{
+//			System.out.println("----");
+//			System.out.println("stepname: "+actStep.getName());
+//			System.out.println("loopvarstep: "+actStep.getLoopvar());
+//			System.out.println("unresolvter string: {$spl[{$loopvarstep}]}");
+//			System.out.println("fertig resolvter string: "+actStep.resolveString("{$spl[{$loopvarstep}]}"));
+//		}
 		
 		assertEquals(nameDatenFuerTest.get(0), process.getStep("appshake@1").resolveString("{$name}"));
 		assertEquals(nameDatenFuerTest.get(0), process.getStep("appshake@1").resolveString("{$name[0]}"));
