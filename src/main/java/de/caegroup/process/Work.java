@@ -376,7 +376,7 @@ implements Serializable
 		this.setStatus("working");
 
 		this.resolve();
-		
+
 		// wenn schritt schon gestartet wurde
 		if (this.isPidfileexistent())
 		{

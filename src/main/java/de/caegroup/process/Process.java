@@ -1016,7 +1016,7 @@ implements Serializable
 	 * gehe alle steps durch und versuche zu initialisieren, arbeiten, committen
 	 * @return
 	 */
-	public void doIt(String aufrufProcessSyscall)
+	public void doIt(String aufrufProcessSyscall, String aufrufProcessStartinstance)
 	{
 		if(this.run)
 		{
@@ -1030,7 +1030,7 @@ implements Serializable
 				// alle steps, die nicht aus gutem grund beendet sind, sollen angeschoben werden
 				if(!(actStep.getStatus().equals("finished"))  ||  !(actStep.getStatus().equals("cancelled")) ||  !(actStep.getStatus().equals("error")))
 				{
-					actStep.doIt(aufrufProcessSyscall);
+					actStep.doIt(aufrufProcessSyscall, aufrufProcessStartinstance);
 				}
 			}
 		}

@@ -40,6 +40,7 @@ implements Serializable, Cloneable
 
 	private ArrayList<Init> init = new ArrayList<Init>();
 	private Work work = null;
+	private Subprocess subprocess = null;
 	private ArrayList<Commit> commit = new ArrayList<Commit>();
 	private String loop = null;
 	private String loopvar = null;
@@ -722,7 +723,7 @@ implements Serializable, Cloneable
 	/**
 	 * tue was auch immer als naechstes getan werden muss
 	 */
-	public void doIt(String aufrufProcessSyscall)
+	public void doIt(String aufrufProcessSyscall, String aufrufProcessStartinstance)
 	{
 		if(this.getStatus().equals("finished"))
 		{
@@ -763,7 +764,14 @@ implements Serializable, Cloneable
 
 		if(this.getStatus().equals("initialized"))
 		{
-			this.work(aufrufProcessSyscall);
+			if(this.getType().equals("automatic") && (this.getWork() != null))
+			{
+				this.work(aufrufProcessSyscall);
+			}
+			else if(this.getType().equals("process") && (this.getSubprocess() != null))
+			{
+				this.subprocess(aufrufProcessSyscall, aufrufProcessStartinstance);
+			}
 		}
 
 		else if(this.getStatus().equals("working"))
@@ -855,6 +863,16 @@ implements Serializable, Cloneable
 	{
 		// work ausfuehren
 		this.getWork().doIt(aufrufProcessSyscall);
+	}
+
+	/**
+	 * subprocess!
+	 * @param aufrufProcessSyscall
+	 */
+	public void subprocess(String aufrufProcessSyscall, String aufrufProcessStartinstance)
+	{
+		// work ausfuehren
+		this.getSubprocess().doIt(aufrufProcessSyscall, aufrufProcessStartinstance);
 	}
 
 	/**
@@ -2027,6 +2045,20 @@ implements Serializable, Cloneable
 		}
 		
 		return result;
+	}
+
+	/**
+	 * @return the subprocess
+	 */
+	public Subprocess getSubprocess() {
+		return subprocess;
+	}
+
+	/**
+	 * @param subprocess the subprocess to set
+	 */
+	public void setSubprocess(Subprocess subprocess) {
+		this.subprocess = subprocess;
 	}
 	
 }

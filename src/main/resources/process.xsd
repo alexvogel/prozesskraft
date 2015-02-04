@@ -68,10 +68,11 @@
     	<xs:attribute name="command" use="required" />
     	<xs:attribute name="description" use="required" />
     	<xs:attribute name="name" use="required" />
-    	<xs:attribute name="logfile" type="xs:string"></xs:attribute>
+    	<xs:attribute name="logfile" type="xs:string"/>
+    	<xs:attribute name="maxrun" type="xs:int"/>
     </xs:complexType>
 
-	<xs:complexType name="callitem">
+    <xs:complexType name="callitem">
 		<xs:attribute name="loop" type="xs:string" use="optional" />
 		<xs:attribute name="del" type="xs:string" use="optional"/>
 		<xs:attribute name="par" type="xs:string" use="required"/>
@@ -84,15 +85,16 @@
 		<xs:attribute name="msg" type="xs:string"></xs:attribute>
 	</xs:complexType>
 
-    <xs:complexType name="subprocess">
-    	<xs:sequence>
-    		<xs:element minOccurs="1" maxOccurs="1" ref="step" />
-    	</xs:sequence>
-		<xs:attribute name="name" type="xs:string"></xs:attribute>
-		<xs:attribute name="version" type="xs:string"></xs:attribute>
-    </xs:complexType>
+	<xs:complexType name="subprocess">
+		<xs:sequence>
+			<xs:element minOccurs="1" maxOccurs="1" ref="step" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="version" type="xs:string"/>
+		<xs:attribute name="maxrun" type="xs:int"/>
+	</xs:complexType>
 
-    <xs:complexType name="commit">
+	<xs:complexType name="commit">
     	<xs:choice minOccurs="0">
     		<xs:element ref="file" minOccurs="0" maxOccurs="unbounded" />
     		<xs:element ref="variable" minOccurs="0"
