@@ -391,7 +391,7 @@ public class Manager
 					}
 				}
 				// prozess laufen lassen
-				p3.doIt(ini.get("apps", "process-syscall"));
+				p3.doIt(ini.get("apps", "process-syscall"), ini.get("apps", "process-startinstance"));
 	
 				// austeigen wenn status==error
 				if(p3.getStatus().equals("error"))
