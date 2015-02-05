@@ -199,7 +199,7 @@ public class PmodelViewStepSym
 //			System.out.println("symbol: quadrat mit x");
 		}
 		
-		else if ( this.step.getType().equals("automatic") && !(this.step.isAmultistep()) )
+		else if ( (this.step.getType().equals("automatic") || this.step.getType().equals("process") ) && !(this.step.isAmultistep()) )
 		{
 			symbol_circle(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, 0, 0, true, pump);
 //			System.out.println("symbol: kreis");
@@ -210,7 +210,7 @@ public class PmodelViewStepSym
 //			System.out.println("symbol: quadrat");
 		}
 		
-		else if ( this.step.getType().equals("automatic") && this.step.isAmultistep() )
+		else if ( (this.step.getType().equals("automatic") || this.step.getType().equals("process") ) && this.step.isAmultistep() )
 		{
 			symbol_multistep(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, "circle");
 //			System.out.println("symbol: multi-kreis");
