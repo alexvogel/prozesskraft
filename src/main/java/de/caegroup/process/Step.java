@@ -932,6 +932,7 @@ implements Serializable, Cloneable
 		this.log("info", "commit all initCommitVarfiles");
 		
 		// einen commit fuer die initCommits anlegen
+		this.log("debug", "creating a commit 'initCommitVarFiles' and adding to step "+this.getParent().getRootStep().getName());
 		Commit commit = new Commit(this.getParent().getRootStep());
 		commit.setName("initCommitVarFiles");
 		
@@ -947,9 +948,13 @@ implements Serializable, Cloneable
 				e.printStackTrace();
 			}
 
+			this.log("debug", "adding a variable with glob '"+variable.getGlob()+"' to commit 'initCommitVarFiles'");
 			commit.addVariable(variable);
 		}
 		
+		this.log("debug", "performing commit 'initCommitVarFiles'");
+		commit.doIt();
+
 		// commits durchfuehren
 
 //		this.log("info", "commit standard entries");
