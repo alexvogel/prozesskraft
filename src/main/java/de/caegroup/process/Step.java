@@ -977,7 +977,7 @@ implements Serializable, Cloneable
 //		var.setValue(this.getAbsdir());
 //		this.addVariable(var);
 
-		this.log("info", "special commit of step 'root' ended");
+		this.log("info", "special commit of step 'root' ended.");
 	}
 
 	public boolean areAllCommitsSuccessfull()
