@@ -815,6 +815,8 @@ implements Serializable, Cloneable
 		if(m.matches())
 		{
 			String listname = m.group(1);
+			this.log("debug", "listname in index(*) is "+listname);
+			System.err.println("step-"+this.getName()+": listname in loop=index(<listname>) is "+listname);
 			looplist.addItem(this.getIndexesOfListItems(listname));
 		}
 		// loop enthaelt keine funktion, sondern direkt den namen einer liste
