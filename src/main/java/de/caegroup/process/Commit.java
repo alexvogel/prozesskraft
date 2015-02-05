@@ -735,19 +735,6 @@ implements Serializable
 		{
 			// und jetzt der konventionelle commit
 
-			this.log("info", "commit standard entries");
-
-			ArrayList<String> existKeysInVariables = this.getParent().getVariableKeys();
-			// das stepdir als variable "_dir" ablegen, falls noch nicht vorhanden
-			if(!existKeysInVariables.contains("_dir"))
-			{
-				Variable var = new Variable();
-				var.setKey("_dir");
-				var.setValue(this.getAbsdir());
-				this.addVariable(var);
-			}
-
-			this.log("info", "commit standard entries finished");
 
 			// wenn das zu committende objekt ein File ist...
 			for(File actualFile : this.getFile())

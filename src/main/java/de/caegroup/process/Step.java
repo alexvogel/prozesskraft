@@ -883,9 +883,24 @@ implements Serializable, Cloneable
 	public void commit()
 	{
 
+		this.log("info", "commit standard entries");
+
+		ArrayList<String> existKeysInVariables = this.getVariableKeys();
+		// das stepdir als variable "_dir" ablegen, falls noch nicht vorhanden
+		if(!existKeysInVariables.contains("_dir"))
+		{
+			Variable var = new Variable();
+			var.setKey("_dir");
+			var.setValue(this.getAbsdir());
+			this.addVariable(var);
+		}
+
+		this.log("info", "commit standard entries finished");
+
 		// alle commits durchfuehren
 		for(Commit actCommit : this.getCommit())
 		{
+			this.log("debug", "performing commit "+actCommit.getName());
 			actCommit.doIt();
 		}
 	}
@@ -930,7 +945,7 @@ implements Serializable, Cloneable
 
 		//ueber alle commitvarfiles iterieren
 		this.log("info", "commit all initCommitVarfiles");
-		
+
 		// einen commit fuer die initCommits anlegen
 		this.log("debug", "creating a commit 'initCommitVarFiles' and adding to step "+this.getParent().getRootStep().getName());
 		Commit commit = new Commit(this.getParent().getRootStep());
@@ -951,9 +966,7 @@ implements Serializable, Cloneable
 			this.log("debug", "adding a variable with glob '"+variable.getGlob()+"' to commit 'initCommitVarFiles'");
 			commit.addVariable(variable);
 		}
-		
-		this.log("debug", "performing commit 'initCommitVarFiles'");
-		commit.doIt();
+
 
 		// commits durchfuehren
 
