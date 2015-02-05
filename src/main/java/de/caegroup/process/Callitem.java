@@ -80,10 +80,19 @@ implements Serializable
 		// wenn kein loop vorhanden, direkt die felder resolven
 		if(this.getLoop() == null)
 		{
-			this.setPar(this.getParent().getParent().resolveString(this.getPar()));
-			this.setDel(this.getParent().getParent().resolveString(this.getDel()));
-			this.setVal(this.getParent().getParent().resolveString(this.getVal()));
-			loopedThisToCallitems.add(this);
+			if(this.getPar() != null)
+			{
+				this.setPar(this.getParent().getParent().resolveString(this.getPar()));
+			}
+			if(this.getDel() != null)
+			{
+				this.setDel(this.getParent().getParent().resolveString(this.getDel()));
+			}
+			if(this.getVal() != null)
+			{
+				this.setVal(this.getParent().getParent().resolveString(this.getVal()));
+				loopedThisToCallitems.add(this);
+			}
 		}
 
 		else
@@ -106,15 +115,23 @@ implements Serializable
 					clonedCallitem.setLoop(null);
 					clonedCallitem.setLoopvar(actItem);
 					log("debug", "par="+this.getPar()+" | del="+this.getDel()+" | val="+this.getVal() + " | actItem="+actItem);
-					// loopvarcallitems ersetzen
-					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarcallitem\\}", clonedCallitem.getLoopvar()));
-					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarcallitem\\}", clonedCallitem.getLoopvar()));
-					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", clonedCallitem.getLoopvar()));
-					// loopvarstep ersetzen
-					clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
-					clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
-					clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
-
+					// loopvarcallitems und loopvarstep ersetzen
+					if(this.getPar() != null)
+					{
+						clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarcallitem\\}", clonedCallitem.getLoopvar()));
+						clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
+					}
+					if(this.getDel() != null)
+					{
+						clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarcallitem\\}", clonedCallitem.getLoopvar()));
+						clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
+					}
+					if(this.getVal() != null)
+					{
+						clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
+						clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", clonedCallitem.getLoopvar()));
+					}
+					
 					this.log("debug", "val="+this.getVal());
 
 					// placeholder, die auf steplisten referenzieren ersetzen

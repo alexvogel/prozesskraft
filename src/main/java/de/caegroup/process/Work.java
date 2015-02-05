@@ -92,24 +92,39 @@ implements Serializable
 	public void resolve()
 	{
 		// den eintrag im attribut 'interpreter' resolven
-		this.setInterpreter(this.getInterpreter().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
-		this.setInterpreter(this.getParent().resolveString(this.getInterpreter()));
-		
+		if(this.getInterpreter()!=null)
+		{
+			this.setInterpreter(this.getInterpreter().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
+			this.setInterpreter(this.getParent().resolveString(this.getInterpreter()));
+		}
+
 		// den eintrag im attribut 'command' resolven
-		this.setCommand(this.getCommand().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
-		this.setCommand(this.getParent().resolveString(this.getCommand()));
+		if(this.getCommand()!=null)
+		{
+			this.setCommand(this.getCommand().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
+			this.setCommand(this.getParent().resolveString(this.getCommand()));
+		}
 		
 		// den eintrag im attribut 'description' resolven
-		this.setDescription(this.getDescription().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
-		this.setDescription(this.getParent().resolveString(this.getDescription()));
+		if(this.getDescription()!=null)
+		{
+			this.setDescription(this.getDescription().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
+			this.setDescription(this.getParent().resolveString(this.getDescription()));
+		}
 		
 		// den eintrag im attribut 'name' resolven
-		this.setName(this.getName().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
-		this.setName(this.getParent().resolveString(this.getName()));
+		if(this.getName()!=null)
+		{
+			this.setName(this.getName().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
+			this.setName(this.getParent().resolveString(this.getName()));
+		}
 		
 		// den eintrag im attribut 'logfile' resolven
-		this.setLogfile(this.getLogfile().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
-		this.setLogfile(this.getParent().resolveString(this.getLogfile()));
+		if(this.getLogfile()!=null)
+		{
+			this.setLogfile(this.getLogfile().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
+			this.setLogfile(this.getParent().resolveString(this.getLogfile()));
+		}
 	}
 
 	/**

@@ -116,9 +116,12 @@ implements Serializable
 	public void resolve()
 	{
 		// den eintrag im attribut 'interpreter' resolven
-		this.setCopyto(this.getCopyto().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
-		this.setCopyto(this.getCopyto().replaceAll("\\{\\$loopvarcommit\\}", this.getLoopvar()));
-		this.setCopyto(this.getParent().resolveString(this.getCopyto()));
+		if(this.getCopyto() != null)
+		{
+			this.setCopyto(this.getCopyto().replaceAll("\\{\\$loopvarstep\\}", this.getParent().getLoopvar()));
+			this.setCopyto(this.getCopyto().replaceAll("\\{\\$loopvarcommit\\}", this.getLoopvar()));
+			this.setCopyto(this.getParent().resolveString(this.getCopyto()));
+		}
 	}
 
 	/**

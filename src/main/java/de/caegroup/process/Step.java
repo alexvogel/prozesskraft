@@ -1038,8 +1038,11 @@ implements Serializable, Cloneable
 	public void resolve()
 	{
 		// den eintrag im attribut 'description' resolven
-		this.setDescription(this.getDescription().replaceAll("\\{\\$loopvarstep\\}", this.getLoopvar()));
-		this.setDescription(this.resolveString(this.getDescription()));
+		if(this.getDescription() != null)
+		{
+			this.setDescription(this.getDescription().replaceAll("\\{\\$loopvarstep\\}", this.getLoopvar()));
+			this.setDescription(this.resolveString(this.getDescription()));
+		}
 	}
 
 	/**
