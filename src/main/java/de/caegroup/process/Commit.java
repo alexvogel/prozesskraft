@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.CopyOption;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.StandardCopyOption.*;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ implements Serializable
 	public Commit(Step s)
 	{
 		parent = s;
+		s.addCommit(this);
 	}
 
 	
@@ -539,28 +541,46 @@ implements Serializable
 	public void commitVariable(Variable master)
 	{
 		log("info", "want to commit the variable(s) (key=" +master.getKey()+")");
-		System.out.println("info: want to commit the variable(s) (key=" +master.getKey()+")");
+//		System.out.println("info: want to commit the variable(s) (key=" +master.getKey()+")");
 
 		ArrayList<Variable> variablesToCommit = new ArrayList<Variable>();
 
 		// wenn die variable bereits einen value hat, dann muss dies nicht ueber globbing ermittelt werden
 		if((master.getValue()!=null) && (!master.getValue().equals("")))
 		{
+			log("info", "(value=" +master.getValue()+")");
 			variablesToCommit.add(master);
 		}
 
 		// ansonsten muss mit dem glob festgestellt werden welche files gemeint sind
 		else if((master.getValue()==null) && (!master.getGlob().equals("")))
 		{
-			// das Verzeichnis des Steps
-			java.io.File stepDir = new java.io.File(this.getAbsdir());
-			
-			// alle eintraege des Verzeichnisses
-			java.io.File[] allEntriesOfDirectory = stepDir.listFiles();
-			log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath() + " " + Arrays.toString(allEntriesOfDirectory));
+			log("debug", "variable does define a glob instead of a value. so the content of file(s) "+master.getGlob()+" have to be interpreted as a variables.");
 
-			// nur die files des verzeichnisses
+			// ist der glob relativ? Dann muss er um das stepdir erweitert werden
+			if(!(master.getGlob().matches("^/.+$")))
+			{
+				master.setGlob(this.getAbsdir()+"/"+master.getGlob());
+				log("debug", "glob is relative - expanding with stepdir "+this.getAbsdir()+"/"+master.getGlob());
+			}
+
+			// das Verzeichnis des globs feststellen
+			java.io.File dirOfGlob = null;
+			java.io.File glob = new java.io.File(master.getGlob());
+			
+			// directory festlegen
+			if(glob.isDirectory())
+			{
+				dirOfGlob = glob;
+			}
+			else
+			{
+				dirOfGlob = glob.getParentFile();
+			}
+
+			// alle eintraege des Verzeichnisses
 			ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
+			java.io.File[] allEntriesOfDirectory = dirOfGlob.listFiles();
 			for(java.io.File actFile : allEntriesOfDirectory)
 			{
 				if(!actFile.isDirectory())
@@ -568,29 +588,16 @@ implements Serializable
 					allFilesOfDirectory.add(actFile);
 				}
 			}
-			// interpolieren aller files in einen String fuer die logging ausgabe
-			String allFiles = "[";
-			for(java.io.File actFile : allFilesOfDirectory)
-			{
-				allFiles += actFile.getAbsolutePath() +", ";
-			}
-			allFiles = allFiles.substring(0, allFiles.length()-3);
-			allFiles += "]";
-			
-			log("info", allFilesOfDirectory.size()+" files in directory "+stepDir.getAbsolutePath() + " " + allFiles);
-			
-			// nur die files auf die der glob passt
-			// dem glob aus dem modell soll das stepverzeichnis voran gestellt werden
-			String resolvedGlob = this.parent.resolveString(master.getGlob());
+			log("debug", allFilesOfDirectory.size()+" files in directory "+dirOfGlob);
 
-			log("info", "globbing: "+this.getAbsdir()+"/"+resolvedGlob);
-			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+this.getAbsdir()+"/"+resolvedGlob);
-			ArrayList<java.io.File> allFilesThatGlob = new ArrayList<java.io.File>();
-			for(java.io.File actFile :allFilesOfDirectory)
+			// alle eintraege des verzeichnisses, auf die der glob matched
+			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+master.getGlob());
+			ArrayList<java.io.File> allFilesOfDirectoryThatGlob = new ArrayList<java.io.File>();
+			for(java.io.File actFile : allFilesOfDirectory)
 			{
 				if(matcher.matches(actFile.toPath()))
 				{
-					allFilesThatGlob.add(actFile);
+					allFilesOfDirectoryThatGlob.add(actFile);
 					log("info", "glob matches: "+actFile.getAbsolutePath());
 				}
 				else
@@ -598,15 +605,24 @@ implements Serializable
 					log("info", "glob NOT matches: "+actFile.getAbsolutePath());
 				}
 			}
-	
-			// variablen aus den files generieren und jedes mal die vorliegende variable clonen
-			for(java.io.File actFile : allFilesThatGlob)
+			// interpolieren aller files in einen String fuer die logging ausgabe
+			String allFiles = "[";
+			for(java.io.File actFile : allFilesOfDirectoryThatGlob)
 			{
-				variablesToCommit.addAll(extractVariables(master, actFile, true));
+				allFiles += actFile.getAbsolutePath() +", ";
+			}
+			allFiles = allFiles.substring(0, allFiles.length()-3);
+			allFiles += "]";
+
+			log("debug", "and "+allFilesOfDirectoryThatGlob.size()+" of this file(s) match glob (files: "+allFiles+")");
+
+			// variablen aus den files generieren und jedes mal die vorliegende variable clonen
+			for(java.io.File actFile : allFilesOfDirectoryThatGlob)
+			{
+				variablesToCommit.addAll(extractVariables(master, actFile, false));
 			}
 		}
 
-		
 		// ueberpruefen ob Anzahl der ermittelten Variablen mit minoccur und maxoccur zusammen passt
 		if(variablesToCommit.size() < master.getMinoccur())
 		{
@@ -672,7 +688,7 @@ implements Serializable
 						while ((line = in.readLine()) != null)
 						{
 							// wenn zeile mit nicht '#' beginnt, soll diese als variable betrachtet werden
-							if(!line.matches("^#"))
+							if(!line.matches("^#.+$"))
 							{
 								Variable newVariable = master.clone();
 

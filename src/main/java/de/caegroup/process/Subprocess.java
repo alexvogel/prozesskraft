@@ -343,7 +343,7 @@ implements Serializable
 		this.step = step;
 	}
 	
-	private ArrayList<Log> getLog()
+	public ArrayList<Log> getLog()
 	{
 		return this.log;
 	}
@@ -375,4 +375,5 @@ implements Serializable
 	public void setParent(Step parent) {
 		this.parent = parent;
 	}
+	
 }

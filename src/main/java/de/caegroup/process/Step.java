@@ -746,15 +746,13 @@ implements Serializable, Cloneable
 			}
 
 			/**
-			 *  wenn root, dann
-			 *  1) spezieller commit fuer root
-			 *  2) konventioneller commit
+			 *  wenn root, dann committen
 			 */
-			if(this.getName().equals(this.getParent().getRootstepname()))
+			if(this.isRoot())
 			{
-				this.rootCommit();
 				this.commit();
 			}
+			// wenn nicht root, dann initialisieren
 			else
 			{
 //				this.mkdir(this.getAbsdir());
@@ -897,6 +895,12 @@ implements Serializable, Cloneable
 
 		this.log("info", "commit standard entries finished");
 
+		// wenn der step der rootstep ist, dann soll ein spezielles commit durchgefuehrt werden
+		if(this.isRoot())
+		{
+			this.rootCommit();
+		}
+
 		// alle commits durchfuehren
 		for(Commit actCommit : this.getCommit())
 		{
@@ -911,14 +915,13 @@ implements Serializable, Cloneable
 	{
 		this.log("info", "special commit, because this step is root");
 
-		//ueber alle initCommitDirs verzeichnisse iterieren und alle dateien commiten
-		this.log("info", "commit all initCommitDirs (getInitCommitDir()): "+this.getParent().getInitCommitDir());
-		this.log("info", "commit all initCommitDirs (getInitCommitDirs().size()): "+this.getParent().getInitCommitDirs().size());
-		for(String actFullPath : this.getParent().getInitCommitDirs())
-		{
-			this.log("info", "commit this initCommitDir [full path] (interpolieren von getInitCommitDirs()): "+actFullPath);
-		}
-
+		// einen commit fuer die initCommitDir anlegen
+		this.log("debug", "creating a commit 'rootCommit' and adding to step "+this.getParent().getRootStep().getName());
+		Commit rootCommit = new Commit(this.getParent().getRootStep());
+		rootCommit.setName("rootCommit");
+		
+		//ueber alle commitdir iterieren
+		this.log("info", "start resolving all entries of initCommitDir and adding to the "+rootCommit.getName());
 		for(java.io.File actInitCommitDir : this.getParent().getInitCommitDirs2())
 		{
 			if(actInitCommitDir.isDirectory())
@@ -936,21 +939,17 @@ implements Serializable, Cloneable
 						File file = new File();
 						// als schluessel soll der verzeichnisnamen mit fuehrendem "_" verwendet werden
 						file.setKey("_"+actInitCommitDir.getName());
-						file.setRealposition(actFile.getAbsolutePath());
-						this.addFile(file);
+						file.setGlob(actFile.getAbsolutePath());
+						rootCommit.addFile(file);
 					}
 				}
 			}
 		}
+		this.log("info", "end resolving all entries of initCommitDir and adding to the "+rootCommit.getName());
 
-		//ueber alle commitvarfiles iterieren
-		this.log("info", "commit all initCommitVarfiles");
+		//ueber alle commitdir iterieren
+		this.log("info", "resolving all entries of initCommitVarfile and adding to the "+rootCommit.getName());
 
-		// einen commit fuer die initCommits anlegen
-		this.log("debug", "creating a commit 'initCommitVarFiles' and adding to step "+this.getParent().getRootStep().getName());
-		Commit commit = new Commit(this.getParent().getRootStep());
-		commit.setName("initCommitVarFiles");
-		
 		// ueber alle initCommitVarfiles iterieren, fuer jedes eine variable mit dem pfad als glob erstellen und dem commit hinzufuegen
 		for(java.io.File actCommitVarfile : this.getParent().getInitCommitVarfiles2())
 		{
@@ -963,9 +962,10 @@ implements Serializable, Cloneable
 				e.printStackTrace();
 			}
 
-			this.log("debug", "adding a variable with glob '"+variable.getGlob()+"' to commit 'initCommitVarFiles'");
-			commit.addVariable(variable);
+			this.log("debug", "adding a variable with glob '"+variable.getGlob()+"' to commit '"+rootCommit.getName()+"'");
+			rootCommit.addVariable(variable);
 		}
+		this.log("info", "end resolving all entries of initCommitVarfile and adding to the "+rootCommit.getName());
 
 
 		// commits durchfuehren
@@ -1900,6 +1900,12 @@ implements Serializable, Cloneable
 		if(!(this.work == null))
 		{
 			logRecursive.addAll(work.getLogRecursive());
+		}
+
+		// die logs des Subprocess in die Sammlung uebernehmen
+		if(!(this.subprocess == null))
+		{
+			logRecursive.addAll(subprocess.getLog());
 		}
 
 		// die logs aller Commits in die Sammlung uebernehmen

@@ -53,6 +53,11 @@ implements Serializable, Comparable
 		System.out.println("["+this.getTimestamp()+"]:"+this.getLevel()+":"+this.getMsg());
 	}
 
+	public String sprint()
+	{
+		return "["+this.getTimestamp()+"]:"+this.getLevel()+":"+this.getMsg();
+	}
+
 	/*----------------------------
 	  methods getter & setter
 	----------------------------*/

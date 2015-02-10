@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.Before;
 
 import de.caegroup.process.Commit;
+import de.caegroup.process.Log;
 import de.caegroup.process.Param;
 import de.caegroup.process.Process;
 import de.caegroup.process.Step;
@@ -36,18 +37,31 @@ public class TestRootCommit {
 	}
 
 	@Test
-	public void testResolving()
+	public void testRootCommit()
 	{
 		Step rootStep = process.getRootStep();
-		
+
 		// zuerst existieren keine listen im rootStep
 		assertEquals(0, rootStep.getList().size());
-		
+
 		// rootCommit durchfuehren
-		process.getRootStep().rootCommit();
+		rootStep.commit();
+
+		for(Log actLog : rootStep.getLogRecursive())
+		{
+			System.err.println(actLog.sprint());
+		}
+
+		// jetzt muss 1 commit existieren (der automatisch angelegte 'rootCommit')
+		assertEquals(1, rootStep.getCommit().size());
+
+		for(Variable actVariable : rootStep.getVariable())
+		{
+			System.err.println(actVariable.getKey() + "=" + actVariable.getValue());
+		}
 		
-		// jetzt muessten 4 listen existieren
-		assertEquals(4, rootStep.getList().size());
-		
+		// jetzt muessten 13 variablen existieren (3*name, 3*spl, 3*call, 3*result, _dir)
+		assertEquals(13, rootStep.getVariable().size());
+
 	}
 }
