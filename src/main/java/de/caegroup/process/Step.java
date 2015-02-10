@@ -739,12 +739,6 @@ implements Serializable, Cloneable
 				return;
 			}
 
-			// wenn alle fromsteps den status 'finished' haben wird evtl. zuerst 'gefanned'
-			else if (this.getStatus().equals("initialized") && this.loop!=null && !(this.loop.equals("")))
-			{
-				this.fan();
-			}
-
 			/**
 			 *  wenn root, dann committen
 			 */
@@ -758,6 +752,12 @@ implements Serializable, Cloneable
 //				this.mkdir(this.getAbsdir());
 				this.initialize();
 			}
+		}
+
+		// wenn alle fromsteps den status 'finished' haben wird evtl. zuerst 'gefanned'
+		else if (this.getStatus().equals("initialized") && this.loop!=null && !(this.loop.equals("")))
+		{
+			this.fan();
 		}
 
 		if(this.getStatus().equals("initialized"))
