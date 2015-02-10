@@ -214,12 +214,12 @@ implements Serializable
 		java.io.File pidfile = new java.io.File(this.getParent().getAbspid());
 		if (pidfile.canRead())
 		{
-			System.out.println("PIDFILE GEFUNDEN: "+pidfile.getAbsolutePath());
+			log("debug", "pidfile found: "+pidfile.getAbsolutePath());
 			return true;
 		}
 		else
 		{
-			System.out.println("PIDFILE NICHT GEFUNDEN: "+pidfile.getAbsolutePath());
+			log("debug", "pidfile NOT found: "+pidfile.getAbsolutePath());
 			return false;
 		}
 	}

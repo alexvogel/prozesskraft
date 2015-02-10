@@ -760,7 +760,7 @@ implements Serializable, Cloneable
 			this.fan();
 		}
 
-		if(this.getStatus().equals("initialized"))
+		else if(this.getStatus().equals("initialized") && (this.loop==null || this.loop.equals("")))
 		{
 			if(this.getType().equals("automatic") && (this.getWork() != null))
 			{
