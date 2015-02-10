@@ -84,6 +84,8 @@ implements Serializable
 //	private NamedList<Step> steps = new NamedList<Step>();
 	private ArrayList<Step> step = new ArrayList<Step>();
 //	private ArrayList<Init> inits = new ArrayList<Init>();
+	public ArrayList<Step> stepStorageForAdd = new ArrayList<Step>();
+	public ArrayList<Step> stepStorageForRemove = new ArrayList<Step>();
 	
 	public boolean run = false;
 	private String status = new String();	// waiting/working/finished/broken/paused
@@ -191,6 +193,7 @@ implements Serializable
 		{
 			if (stepnames[i] == step.getName())
 			{
+				log("error", "stepname '"+stepnames[i]+"' already in use. step not added.");
 				System.err.println("stepname '"+stepnames[i]+"' already in use. step not added.");
 				return false;
 			}
@@ -1033,6 +1036,21 @@ implements Serializable
 					actStep.doIt(aufrufProcessSyscall, aufrufProcessStartinstance);
 				}
 			}
+			
+			// sollen steps aus dem prozess rausfliegen
+			for(Step actStep : this.stepStorageForRemove)
+			{
+				this.step.remove(actStep);
+				this.stepStorageForRemove.remove(actStep);
+			}
+			
+			// sollen steps dem prozess hinzugefuegt werden?
+			for(Step actStep : this.stepStorageForAdd)
+			{
+				this.step.add(actStep);
+				this.stepStorageForAdd.remove(actStep);
+			}
+			
 		}
 		
 	}
