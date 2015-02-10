@@ -740,7 +740,7 @@ implements Serializable, Cloneable
 			}
 
 			// wenn alle fromsteps den status 'finished' haben wird evtl. zuerst 'gefanned'
-			else if (this.loop!=null && !(this.loop.equals("")))
+			else if (this.getStatus().equals("initialized") && this.loop!=null && !(this.loop.equals("")))
 			{
 				this.fan();
 			}
