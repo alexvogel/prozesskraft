@@ -84,8 +84,8 @@ implements Serializable
 //	private NamedList<Step> steps = new NamedList<Step>();
 	private ArrayList<Step> step = new ArrayList<Step>();
 //	private ArrayList<Init> inits = new ArrayList<Init>();
-	public ArrayList<Step> stepStorageForAdd = new ArrayList<Step>();
-	public ArrayList<Step> stepStorageForRemove = new ArrayList<Step>();
+//	public ArrayList<Step> stepStorageForAdd = new ArrayList<Step>();
+//	public ArrayList<Step> stepStorageForRemove = new ArrayList<Step>();
 	
 	public boolean run = false;
 	private String status = new String();	// waiting/working/finished/broken/paused
@@ -1028,7 +1028,7 @@ implements Serializable
 				this.run = false;
 			}
 			
-			for(Step actStep : this.getStep())
+			for(Step actStep : this.getStep().toArray(new Step[this.getStep().size()]))
 			{
 				// alle steps, die nicht aus gutem grund beendet sind, sollen angeschoben werden
 				if(!(actStep.getStatus().equals("finished"))  ||  !(actStep.getStatus().equals("cancelled")) ||  !(actStep.getStatus().equals("error")))
@@ -1037,19 +1037,19 @@ implements Serializable
 				}
 			}
 			
-			// sollen steps aus dem prozess rausfliegen
-			for(Step actStep : this.stepStorageForRemove)
-			{
-				this.step.remove(actStep);
-				this.stepStorageForRemove.remove(actStep);
-			}
-			
-			// sollen steps dem prozess hinzugefuegt werden?
-			for(Step actStep : this.stepStorageForAdd)
-			{
-				this.step.add(actStep);
-				this.stepStorageForAdd.remove(actStep);
-			}
+//			// sollen steps aus dem prozess rausfliegen
+//			for(Step actStep : this.stepStorageForRemove)
+//			{
+//				this.step.remove(actStep);
+//				this.stepStorageForRemove.remove(actStep);
+//			}
+//			
+//			// sollen steps dem prozess hinzugefuegt werden?
+//			for(Step actStep : this.stepStorageForAdd)
+//			{
+//				this.step.add(actStep);
+//				this.stepStorageForAdd.remove(actStep);
+//			}
 			
 		}
 		

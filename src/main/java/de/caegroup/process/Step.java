@@ -845,12 +845,12 @@ implements Serializable, Cloneable
 				newstep.addList(listLoop);
 
 				// den neuen step (klon von this) dem prozess hinzufuegen
-				this.parent.stepStorageForAdd.add(newstep);
+				this.parent.getStep().add(newstep);
 				x++;
 			}
 			
 			// den urspruenglichen step (this) aus dem prozess entfernen
-			this.parent.stepStorageForRemove.add(this);
+			this.parent.getStep().remove(this);
 		}
 
 //		System.out.println("anzahl der Steps im Prozess nach dem fanning: "+this.parent.getSteps().size());
