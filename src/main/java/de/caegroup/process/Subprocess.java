@@ -33,21 +33,26 @@ implements Serializable
 	----------------------------*/
 	public Subprocess()
 	{
-
+		this.parent = new Step();
 	}
 
-	public Subprocess(String name, String version)
-	{
-		this.name = name;
-		this.version = version;
-	}
+//	public Subprocess(Step parent)
+//	{
+//		this.parent = parent;
+//	}
 
-	public Subprocess(String name, String version, Step step)
-	{
-		this.name = name;
-		this.version = version;
-		this.step = step;
-	}
+//	public Subprocess(String name, String version)
+//	{
+//		this.name = name;
+//		this.version = version;
+//	}
+
+//	public Subprocess(String name, String version, Step step)
+//	{
+//		this.name = name;
+//		this.version = version;
+//		this.step = step;
+//	}
 
 	/*----------------------------
 	  methods

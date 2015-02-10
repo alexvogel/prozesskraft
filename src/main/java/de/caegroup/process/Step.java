@@ -1049,6 +1049,10 @@ implements Serializable, Cloneable
 			this.getWork().setParent(this);
 			this.getWork().affiliate();
 		}
+		if(this.getSubprocess() != null)
+		{
+			this.getSubprocess().setParent(this);
+		}
 	}
 
 	/**
