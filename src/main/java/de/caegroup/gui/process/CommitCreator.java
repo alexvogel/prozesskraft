@@ -114,7 +114,7 @@ public class CommitCreator
 		step.getVariable().clear();
 		step.getFile().clear();
 		step.log("debug", "CommitCreator: work on all commits");
-		step.rootCommit();
+		step.commit();
 		for (CommitGui actualCommitGui : commitGui)
 		{
 			actualCommitGui.commit(step);

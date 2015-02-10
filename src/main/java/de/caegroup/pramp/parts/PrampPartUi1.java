@@ -1277,9 +1277,6 @@ public class PrampPartUi1 extends ModelObject
 					process.setOutfilebinary(process.getRootdir()+"/process.pmb");
 					process.setInfilebinary(process.getRootdir()+"/process.pmb");
 
-					process.getRootStep().commit();
-					log("info", "performing commit for step 'root'");
-					
 					process.writeBinary();
 					log ("info", "writing binary instance file to disk "+process.getOutfilebinary());
 					
