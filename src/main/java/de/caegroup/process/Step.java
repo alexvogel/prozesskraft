@@ -1074,6 +1074,8 @@ implements Serializable, Cloneable
 	 */
 	public String resolveString(String stringToResolve)
 	{
+		if(stringToResolve == null) {return "null";}
+		
 		log("debug", "resolving string "+stringToResolve);
 
 		stringToResolve = stringToResolve.replaceAll("\\{\\$loopvarstep\\}", this.getLoopvar());

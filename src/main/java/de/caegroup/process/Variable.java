@@ -196,12 +196,12 @@ implements Serializable
 
 	public String getGlob()
 	{
-		return this.glob;
+		return this.getParent().resolveString(this.glob);
 	}
 
 	public String getValue()
 	{
-		return this.getParent().resolveString(this.value);
+		return this.value;
 	}
 
 	public String getDescription()
