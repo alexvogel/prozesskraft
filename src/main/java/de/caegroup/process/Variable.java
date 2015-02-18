@@ -201,7 +201,7 @@ implements Serializable
 
 	public String getValue()
 	{
-		return this.value;
+		return this.getParent().resolveString(this.value);
 	}
 
 	public String getDescription()

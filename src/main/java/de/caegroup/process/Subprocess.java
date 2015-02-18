@@ -284,7 +284,16 @@ implements Serializable
 
 		this.log("debug", "there are "+this.getStep().getCommit().size()+" commit(s) in this 'subprocess'");
 
-		// resolven aller callitems
+		if(this.getStep().getLoopvar() != null)
+		{
+			this.log("debug", "loopvar of parentstep is: "+this.getStep().getLoopvar());
+		}
+		else
+		{
+			this.log("debug", "loopvar of parentstep is: null");
+		}
+
+		// resolven aller commits des subprocesses und ueberfuehren in die entsprechenden commitparameter des aufrufs von 'startinstance'
 		for(Commit actCommit : this.getStep().getCommit())
 		{
 			for(File actFile : actCommit.getFile())
@@ -300,7 +309,7 @@ implements Serializable
 				this.log("debug", "constructing call b): "+call);
 			}
 		}
-		
+
 		this.log("debug", "constructing call");
 		return call;
 	}
@@ -347,7 +356,7 @@ implements Serializable
 	{
 		this.step = step;
 	}
-	
+
 	public ArrayList<Log> getLog()
 	{
 		return this.log;
