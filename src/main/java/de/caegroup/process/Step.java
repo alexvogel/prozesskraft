@@ -1062,7 +1062,7 @@ implements Serializable, Cloneable
 	public void resolve()
 	{
 		// den eintrag im attribut 'description' resolven
-		if(this.getDescription() != null)
+		if(this.getDescription() != null && this.getLoopvar() != null)
 		{
 			this.setDescription(this.getDescription().replaceAll("\\{\\$loopvarstep\\}", this.getLoopvar()));
 			this.setDescription(this.resolveString(this.getDescription()));
@@ -1078,7 +1078,10 @@ implements Serializable, Cloneable
 		
 		log("debug", "resolving string "+stringToResolve);
 
-		stringToResolve = stringToResolve.replaceAll("\\{\\$loopvarstep\\}", this.getLoopvar());
+		if(this.getLoopvar() != null)
+		{
+			stringToResolve = stringToResolve.replaceAll("\\{\\$loopvarstep\\}", this.getLoopvar());
+		}
 //		String resolvedString = stringToResolve;
 
 		Pattern p = Pattern.compile("\\{\\$(.+)\\}");
