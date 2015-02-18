@@ -99,7 +99,7 @@ public class SIInsightCreator
 		{
 			this.createControls(composite);
 		}
-		
+
 	}
 	
 	/**
@@ -134,13 +134,20 @@ public class SIInsightCreator
 		compositeInfo.setLayout(gridLayout_Info);
 
 		Label labelName = new Label(compositeInfo, SWT.NONE);
-
-		System.out.println("stepObject: "+step.toString());
-
 		labelName.setText("step: "+step.getName());
 
 		Label labelStatus = new Label(compositeInfo, SWT.NONE);
 		labelStatus.setText("status: "+step.getStatus());
+
+		Label labelLoopvar = new Label(compositeInfo, SWT.NONE);
+		if(step.getLoopvar() != null)
+		{
+			labelLoopvar.setText("loopvar: "+step.getLoopvar());
+		}
+		else
+		{
+			labelLoopvar.setText("loopvar: <null>");
+		}
 
 		// oben-rechts sind buttons angeordnet
 		Composite compositeAction = new Composite(compositeInfoAction, SWT.NONE);
