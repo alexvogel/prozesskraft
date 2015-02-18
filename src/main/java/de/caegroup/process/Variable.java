@@ -28,6 +28,8 @@ implements Serializable
 	
 	private String status = "";	// waiting/finished/error
 
+	private Step parent = null;
+	
 	private ArrayList<Log> log = new ArrayList<Log>();
 
 
@@ -36,19 +38,20 @@ implements Serializable
 	----------------------------*/
 	public Variable()
 	{
-
+		this.parent = new Step();
+		log("info", "variable created with an unknown parent");
 	}
 
-	public Variable(String key)
-	{
-		this.key = key;
-	}
-
-	public Variable(String key, String value)
-	{
-		this.key = key;
-		this.value = value;
-	}
+//	public Variable(String key)
+//	{
+//		this.key = key;
+//	}
+//
+//	public Variable(String key, String value)
+//	{
+//		this.key = key;
+//		this.value = value;
+//	}
 
 	/*----------------------------
 	  methods
@@ -198,7 +201,7 @@ implements Serializable
 
 	public String getValue()
 	{
-		return this.value;
+		return this.getParent().resolveString(this.value);
 	}
 
 	public String getDescription()
@@ -321,6 +324,20 @@ implements Serializable
 	{
 		log("info", "setting status to '"+status+"'");
 		this.status = status;
+	}
+
+	/**
+	 * @return the parent
+	 */
+	public Step getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(Step parent) {
+		this.parent = parent;
 	}
 
 

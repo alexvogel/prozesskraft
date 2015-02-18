@@ -284,7 +284,7 @@ implements Serializable, Cloneable
 
 	public String getGlob()
 	{
-		return this.glob;
+		return this.getParent().resolveString(this.glob);
 	}
 
 	public String getFilename()

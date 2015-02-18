@@ -871,7 +871,7 @@ implements Serializable, Cloneable
 	 */
 	public void subprocess(String aufrufProcessSyscall, String aufrufProcessStartinstance)
 	{
-		// work ausfuehren
+		// subprocess ausfuehren
 		this.getSubprocess().doIt(aufrufProcessSyscall, aufrufProcessStartinstance);
 	}
 
@@ -1309,6 +1309,7 @@ implements Serializable, Cloneable
 
 	public void addVariable(Variable variable)
 	{
+		variable.setParent(this);
 		this.log("debug", "adding Variable (key="+variable.getKey()+", value="+variable.getValue()+")");
 		this.variable.add(variable);
 	}
