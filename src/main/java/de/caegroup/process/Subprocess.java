@@ -282,17 +282,23 @@ implements Serializable
 		String call = processStartinstance;
 		this.log("debug", "constructing call a): "+call);
 
+		// debug logging
 		this.log("debug", "there are "+this.getStep().getCommit().size()+" commit(s) in this 'subprocess'");
 
-		if(this.getStep().getLoopvar() != null)
+		// debug logging
+		if(this.getParent().getLoopvar() != null)
 		{
-			this.log("debug", "loopvar of parentstep is: "+this.getStep().getLoopvar());
+			this.log("debug", "loopvar of parentstep is: "+this.getParent().getLoopvar());
 		}
 		else
 		{
 			this.log("debug", "loopvar of parentstep is: null");
 		}
 
+		// resolven aller commits des subprocesses und ueberfuehren in die entsprechenden commitparameter des aufrufs von 'startinstance'
+		// den loopvar fuer step von parent uebernehmen
+		this.getStep().setLoopvar(this.getParent().getLoopvar());
+		
 		// resolven aller commits des subprocesses und ueberfuehren in die entsprechenden commitparameter des aufrufs von 'startinstance'
 		for(Commit actCommit : this.getStep().getCommit())
 		{
