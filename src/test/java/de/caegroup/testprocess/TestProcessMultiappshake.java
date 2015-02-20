@@ -61,6 +61,7 @@ public class TestProcessMultiappshake {
 		// testen des subprocesses im step 'appshake'
 		Subprocess subprocess = process.getStep("appshake").getSubprocess();
 		
+		assertEquals("Admin", subprocess.getDomain());
 		assertEquals("appshake", subprocess.getName());
 		assertEquals("0.0.1", subprocess.getVersion());
 		assertEquals("root", subprocess.getStep().getName());

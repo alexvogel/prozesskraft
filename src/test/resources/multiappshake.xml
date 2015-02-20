@@ -23,7 +23,7 @@
 		<init fromobjecttype="variable" listname="result" returnfield="value" fromstep="root" insertrule="append" minoccur="1" maxoccur="9999">
 			<match field="key" pattern="result"/>
 		</init>
-		<subprocess name="appshake" version="0.0.1">
+		<subprocess domain="Admin" name="appshake" version="0.0.1">
 			<step name="root">
 				<commit name="Beispieldatenverzeichnis" toroot="true">
 					<variable key="spl" value="{$spl[$loopvarstep]}"/>
