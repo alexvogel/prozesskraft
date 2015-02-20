@@ -149,11 +149,11 @@ implements Serializable
 			java.io.File domainDir = new java.io.File(domainInstallationDirectory + "/" + this.getDomain());
 			if(domainDir.exists() && domainDir.isDirectory())
 			{
-				log("debug", "domain-installation-directory exists: "+domainInstallationDirectory);
+				log("debug", "domain-installation-directory exists: "+domainDir);
 			}
 			else
 			{
-				log("error", "domain-installation-directory does NOT exist: "+domainInstallationDirectory);
+				log("error", "domain-installation-directory does NOT exist: "+domainDir);
 				this.setStatus("error");
 				return;
 			}
