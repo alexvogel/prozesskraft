@@ -869,12 +869,12 @@ implements Serializable, Cloneable
 	 * subprocess!
 	 * @param aufrufProcessSyscall
 	 */
-	public void subprocess(String aufrufProcessSyscall, String aufrufProcessStartinstance, String domainInstallationDirectory)
+	public void subprocess(String aufrufProcessSyscall, String aufrufProcessManager, String domainInstallationDirectory)
 	{
 		// subprocess ausfuehren
 		try
 		{
-			this.getSubprocess().doIt(aufrufProcessSyscall, aufrufProcessStartinstance, domainInstallationDirectory);
+			this.getSubprocess().doIt(aufrufProcessSyscall, aufrufProcessManager, domainInstallationDirectory);
 		}
 		catch (IOException e)
 		{

@@ -99,7 +99,7 @@ implements Serializable
 	 * @param String loglevel, String logmessage
 	 * @throws IOException 
 	 */
-	public void doIt(String processSyscall, String processStartinstance, String domainInstallationDirectory) throws IOException
+	public void doIt(String processSyscall, String aufrufProcessManager, String domainInstallationDirectory) throws IOException
 	{
 		this.setStatus("working");
 
