@@ -232,7 +232,7 @@ implements Serializable
 
 				// die sonstigen argumente hinzufuegen
 				processSyscallWithArgs.add("-call");
-				processSyscallWithArgs.add(processSyscall);
+				processSyscallWithArgs.add(aufrufProcessManager + " -instance " + processInstance);
 //				processSyscallWithArgs.add("\""+processSyscall+"\"");
 				processSyscallWithArgs.add("-stdout");
 				processSyscallWithArgs.add(this.getParent().getAbsstdout());
