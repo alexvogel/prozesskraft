@@ -296,8 +296,10 @@ implements Serializable
 		}
 
 		// resolven aller commits des subprocesses und ueberfuehren in die entsprechenden commitparameter des aufrufs von 'startinstance'
-		// den loopvar fuer step von parent uebernehmen
+		// den loopvar fuer step(root des subprocess) von parent(processstep der den subprocess enthaelt) uebernehmen
 		this.getStep().setLoopvar(this.getParent().getLoopvar());
+		// alle listen fuer step(root des subprocess) von parent(processstep der den subprocess enthaelt) uebernehmen
+		this.getStep().setList(this.getParent().getList());
 		
 		// resolven aller commits des subprocesses und ueberfuehren in die entsprechenden commitparameter des aufrufs von 'startinstance'
 		for(Commit actCommit : this.getStep().getCommit())
