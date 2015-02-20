@@ -146,7 +146,7 @@ implements Serializable
 			}
 
 			// check ob es das domain verzeichnis ueberhaupt gibt
-			java.io.File domainDir = new java.io.File(domainInstallationDirectory);
+			java.io.File domainDir = new java.io.File(domainInstallationDirectory + "/" + this.getDomain());
 			if(domainDir.exists() && domainDir.isDirectory())
 			{
 				log("debug", "domain-installation-directory exists: "+domainInstallationDirectory);
@@ -159,7 +159,7 @@ implements Serializable
 			}
 			
 			// check ob es das process verzeichnis ueberhaupt gibt
-			java.io.File processDir = new java.io.File(domainInstallationDirectory + "/" + this.getName());
+			java.io.File processDir = new java.io.File(domainInstallationDirectory + "/" + this.getDomain() + "/" + this.getName());
 			if(processDir.exists() && processDir.isDirectory())
 			{
 				log("debug", "process-installation-directory exists: "+processDir);
@@ -172,7 +172,7 @@ implements Serializable
 			}
 			
 			// check ob es das process-versions verzeichnis ueberhaupt gibt
-			java.io.File versionDir = new java.io.File(domainInstallationDirectory + "/" + this.getName() + "/" + this.getVersion());
+			java.io.File versionDir = new java.io.File(domainInstallationDirectory + "/" + this.getDomain() + "/" + this.getName() + "/" + this.getVersion());
 			if(versionDir.exists() && versionDir.isDirectory())
 			{
 				log("debug", "processversion-installation-directory exists: "+versionDir);
@@ -185,7 +185,7 @@ implements Serializable
 			}
 			
 			// check ob es das process.xml ueberhaupt gibt
-			java.io.File processDef = new java.io.File(domainInstallationDirectory + "/" + this.getName() + "/" + this.getVersion() + "/process.xml");
+			java.io.File processDef = new java.io.File(domainInstallationDirectory + "/" + this.getDomain() + "/" + this.getName() + "/" + this.getVersion() + "/process.xml");
 			if(processDef.exists() && !processDef.isDirectory())
 			{
 				log("debug", "process.xml exists: "+processDef);
