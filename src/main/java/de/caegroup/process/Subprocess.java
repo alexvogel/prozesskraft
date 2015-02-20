@@ -6,6 +6,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.commons.lang3.SerializationUtils;
 
 public class Subprocess
@@ -16,6 +18,7 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
+	private String domain = "unknown";
 	private String name = "unnamed";
 	private String version = "noversion";
 	private int maxrun = 100;
@@ -94,8 +97,9 @@ implements Serializable
 	 * 3) if it is not running anymore, the 
 	 * 
 	 * @param String loglevel, String logmessage
+	 * @throws IOException 
 	 */
-	public void doIt(String processSyscall, String processStartinstance)
+	public void doIt(String processSyscall, String processStartinstance, String domainInstallationDirectory) throws IOException
 	{
 		this.setStatus("working");
 
@@ -125,22 +129,97 @@ implements Serializable
 		else 
 		{
 			// den aufruf erstellen
-			log("info", "subprocess not lauched yet");
+			log("info", "subprocess not created yet");
 
-			String call = this.getCall(processStartinstance);
-			log("info", "generating call: "+call);
-
-			// step-directory anlegen, falls es noch nicht existiert
-			// falls es ein wrapper-process ist, gibt es das directory warsch. schon
-			if(!(new java.io.File(this.getParent().getAbsdir()).exists()))
+			// das stepverzeichnis
+			java.io.File stepDir = new java.io.File(this.getParent().getAbsdir());
+			
+			// step-directory (=neuerProzess-Directory) anlegen, falls es noch nicht existiert
+			if(!(stepDir.exists()))
 			{
-				log("info", "creating step directory "+this.getParent().getAbsdir());
-				if(!this.getParent().mkdir(this.getParent().getAbsdir()))
+				log("info", "creating step directory "+stepDir.getCanonicalPath());
+				if(!this.getParent().mkdir(stepDir.getCanonicalPath()))
 				{
-					log("error", "could not create directory: "+this.getParent().getAbsdir());
+					log("error", "could not create directory: "+stepDir.getCanonicalPath());
 					this.setStatus("error");
 				}
 			}
+
+			// check ob es das domain verzeichnis ueberhaupt gibt
+			java.io.File domainDir = new java.io.File(domainInstallationDirectory);
+			if(domainDir.exists() && domainDir.isDirectory())
+			{
+				log("debug", "domain-installation-directory exists: "+domainInstallationDirectory);
+			}
+			else
+			{
+				log("error", "domain-installation-directory does NOT exist: "+domainInstallationDirectory);
+				this.setStatus("error");
+				return;
+			}
+			
+			// check ob es das process verzeichnis ueberhaupt gibt
+			java.io.File processDir = new java.io.File(domainInstallationDirectory + "/" + this.getName());
+			if(processDir.exists() && processDir.isDirectory())
+			{
+				log("debug", "process-installation-directory exists: "+processDir);
+			}
+			else
+			{
+				log("error", "process-installation-directory does not exist: "+processDir);
+				this.setStatus("error");
+				return;
+			}
+			
+			// check ob es das process-versions verzeichnis ueberhaupt gibt
+			java.io.File versionDir = new java.io.File(domainInstallationDirectory + "/" + this.getName() + "/" + this.getVersion());
+			if(versionDir.exists() && versionDir.isDirectory())
+			{
+				log("debug", "processversion-installation-directory exists: "+versionDir);
+			}
+			else
+			{
+				log("error", "processversion-installation-directory does not exist: "+versionDir);
+				this.setStatus("error");
+				return;
+			}
+			
+			// check ob es das process.xml ueberhaupt gibt
+			java.io.File processDef = new java.io.File(domainInstallationDirectory + "/" + this.getName() + "/" + this.getVersion() + "/process.xml");
+			if(processDef.exists() && !processDef.isDirectory())
+			{
+				log("debug", "process.xml exists: "+processDef);
+			}
+			else
+			{
+				log("error", "process.xml does not exist: "+processDef);
+				this.setStatus("error");
+				return;
+			}
+			
+			log("info", "creating process");
+			// einen neuen Process erstellen und den rootStep aus subprocess ruebernehmen
+			de.caegroup.process.Process newProcess = new Process();
+			newProcess.setInfilexml(processDef.getCanonicalPath());
+			de.caegroup.process.Process newProcess2 = new Process();
+			try
+			{
+				newProcess2 = newProcess.readXml();
+			}
+			catch (JAXBException e)
+			{
+				e.printStackTrace();
+				log("fatal", e.getMessage());
+			}
+			newProcess2.addStep(this.getStep());
+			
+			// dem root-Step des neuenProcesses, die listen aus parent-Step des Parent-Prozesses uebergeben (damit resolving mit platzhaltern funktioniert)
+			newProcess2.getRootStep().setList(this.getParent().getList());
+			
+			// und ins step-verzeichnis das binaere file schreiben
+			String processInstance = stepDir.getCanonicalPath() + "/process.pmb";
+			newProcess2.setOutfilebinary(processInstance);
+			newProcess2.writeBinary();
 
 			// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)
 			String AbsLogSyscallWrapper = new java.io.File(new java.io.File(this.getParent().getAbspid()).getParent()).getAbsolutePath()+"/.log";
@@ -153,8 +232,8 @@ implements Serializable
 
 				// die sonstigen argumente hinzufuegen
 				processSyscallWithArgs.add("-call");
-				processSyscallWithArgs.add(call);
-//				processSyscallWithArgs.add("\""+call+"\"");
+				processSyscallWithArgs.add(processSyscall);
+//				processSyscallWithArgs.add("\""+processSyscall+"\"");
 				processSyscallWithArgs.add("-stdout");
 				processSyscallWithArgs.add(this.getParent().getAbsstdout());
 				processSyscallWithArgs.add("-stderr");
@@ -276,51 +355,51 @@ implements Serializable
 		return pid;
 	}
 
-	public String getCall(String processStartinstance)
-	{
-//		this.parent.log("debug", "constructing call");
-		String call = processStartinstance;
-		this.log("debug", "constructing call a): "+call);
-
-		// debug logging
-		this.log("debug", "there are "+this.getStep().getCommit().size()+" commit(s) in this 'subprocess'");
-
-		// debug logging
-		if(this.getParent().getLoopvar() != null)
-		{
-			this.log("debug", "loopvar of parentstep is: "+this.getParent().getLoopvar());
-		}
-		else
-		{
-			this.log("debug", "loopvar of parentstep is: null");
-		}
-
-		// resolven aller commits des subprocesses und ueberfuehren in die entsprechenden commitparameter des aufrufs von 'startinstance'
-		// den loopvar fuer step(root des subprocess) von parent(processstep der den subprocess enthaelt) uebernehmen
-		this.getStep().setLoopvar(this.getParent().getLoopvar());
-		// alle listen fuer step(root des subprocess) von parent(processstep der den subprocess enthaelt) uebernehmen
-		this.getStep().setList(this.getParent().getList());
-		
-		// resolven aller commits des subprocesses und ueberfuehren in die entsprechenden commitparameter des aufrufs von 'startinstance'
-		for(Commit actCommit : this.getStep().getCommit())
-		{
-			for(File actFile : actCommit.getFile())
-			{
-				call += " ";
-				call += "-commitfile "+actFile.getKey() + "=" + actFile.getGlob();
-				this.log("debug", "constructing call b): "+call);
-			}
-			for(Variable actVariable : actCommit.getVariable())
-			{
-				call += " ";
-				call += "-commitvariable " + actVariable.getKey() + "=" + actVariable.getValue();
-				this.log("debug", "constructing call b): "+call);
-			}
-		}
-
-		this.log("debug", "constructing call");
-		return call;
-	}
+//	public String getCall(String processStartinstance)
+//	{
+////		this.parent.log("debug", "constructing call");
+//		String call = processStartinstance;
+//		this.log("debug", "constructing call a): "+call);
+//
+//		// debug logging
+//		this.log("debug", "there are "+this.getStep().getCommit().size()+" commit(s) in this 'subprocess'");
+//
+//		// debug logging
+//		if(this.getParent().getLoopvar() != null)
+//		{
+//			this.log("debug", "loopvar of parentstep is: "+this.getParent().getLoopvar());
+//		}
+//		else
+//		{
+//			this.log("debug", "loopvar of parentstep is: null");
+//		}
+//
+//		// resolven aller commits des subprocesses und ueberfuehren in die entsprechenden commitparameter des aufrufs von 'startinstance'
+//		// den loopvar fuer step(root des subprocess) von parent(processstep der den subprocess enthaelt) uebernehmen
+//		this.getStep().setLoopvar(this.getParent().getLoopvar());
+//		// alle listen fuer step(root des subprocess) von parent(processstep der den subprocess enthaelt) uebernehmen
+//		this.getStep().setList(this.getParent().getList());
+//		
+//		// resolven aller commits des subprocesses und ueberfuehren in die entsprechenden commitparameter des aufrufs von 'startinstance'
+//		for(Commit actCommit : this.getStep().getCommit())
+//		{
+//			for(File actFile : actCommit.getFile())
+//			{
+//				call += " ";
+//				call += "-commitfile "+actFile.getKey() + "=" + actFile.getGlob();
+//				this.log("debug", "constructing call b): "+call);
+//			}
+//			for(Variable actVariable : actCommit.getVariable())
+//			{
+//				call += " ";
+//				call += "-commitvariable " + actVariable.getKey() + "=" + actVariable.getValue();
+//				this.log("debug", "constructing call b): "+call);
+//			}
+//		}
+//
+//		this.log("debug", "constructing call");
+//		return call;
+//	}
 
 	/*----------------------------
 	  methods get
@@ -396,6 +475,20 @@ implements Serializable
 	 */
 	public void setParent(Step parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * @return the domain
+	 */
+	public String getDomain() {
+		return domain;
+	}
+
+	/**
+	 * @param domain the domain to set
+	 */
+	public void setDomain(String domain) {
+		this.domain = domain;
 	}
 	
 }

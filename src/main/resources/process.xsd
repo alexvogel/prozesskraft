@@ -89,9 +89,10 @@
 		<xs:sequence>
 			<xs:element minOccurs="1" maxOccurs="1" ref="step" />
 		</xs:sequence>
-		<xs:attribute name="name" type="xs:string"/>
-		<xs:attribute name="version" type="xs:string"/>
-		<xs:attribute name="maxrun" type="xs:int"/>
+		<xs:attribute name="domain" type="xs:string"/>
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="version" type="xs:string" />
+		<xs:attribute name="maxrun" type="xs:int" />
 	</xs:complexType>
 
 	<xs:complexType name="commit">

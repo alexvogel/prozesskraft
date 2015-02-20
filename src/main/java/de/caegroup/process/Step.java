@@ -723,7 +723,7 @@ implements Serializable, Cloneable
 	/**
 	 * tue was auch immer als naechstes getan werden muss
 	 */
-	public void doIt(String aufrufProcessSyscall, String aufrufProcessStartinstance)
+	public void doIt(String aufrufProcessSyscall, String aufrufProcessStartinstance, String domainInstallationDirectory)
 	{
 		if(this.getStatus().equals("finished"))
 		{
@@ -768,7 +768,7 @@ implements Serializable, Cloneable
 			}
 			else if(this.getType().equals("process") && (this.getSubprocess() != null))
 			{
-				this.subprocess(aufrufProcessSyscall, aufrufProcessStartinstance);
+				this.subprocess(aufrufProcessSyscall, aufrufProcessStartinstance, domainInstallationDirectory);
 			}
 		}
 
@@ -869,10 +869,19 @@ implements Serializable, Cloneable
 	 * subprocess!
 	 * @param aufrufProcessSyscall
 	 */
-	public void subprocess(String aufrufProcessSyscall, String aufrufProcessStartinstance)
+	public void subprocess(String aufrufProcessSyscall, String aufrufProcessStartinstance, String domainInstallationDirectory)
 	{
 		// subprocess ausfuehren
-		this.getSubprocess().doIt(aufrufProcessSyscall, aufrufProcessStartinstance);
+		try
+		{
+			this.getSubprocess().doIt(aufrufProcessSyscall, aufrufProcessStartinstance, domainInstallationDirectory);
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			log("fatal", e.getMessage());
+		}
 	}
 
 	/**
