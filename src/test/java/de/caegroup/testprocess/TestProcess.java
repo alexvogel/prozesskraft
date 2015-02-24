@@ -104,7 +104,7 @@ public class TestProcess {
 	@Test
 	public void testReadXml()
 	{
-		String pathToXml = "src/test/resources/beulen.xml";
+		String pathToXml = "src/test/resources/definitions/Exterior/beulen/0.1.0/process.xml";
 		process.setInfilexml(pathToXml);
 		java.io.File file = new java.io.File(pathToXml);
 
@@ -199,7 +199,7 @@ public class TestProcess {
 	@Test
 	public void resolveCall()
 	{
-		String pathToXml = "src/test/resources/beulen.xml";
+		String pathToXml = "src/test/resources/definitions/Exterior/beulen/0.1.0/process.xml";
 		process.setInfilexml(pathToXml);
 		java.io.File file = new java.io.File(pathToXml);
 

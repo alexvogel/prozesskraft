@@ -26,13 +26,13 @@
 		<subprocess domain="Admin" name="appshake" version="0.0.1">
 			<step name="root">
 				<commit name="Beispieldatenverzeichnis" toroot="true">
-					<variable key="spl" value="{$spl[$loopvarstep]}"/>
+					<variable key="spl" value="{$spl[{$loopvarstep}]}"/>
 				</commit>
 				<commit name="callFile" toroot="true">
-					<file key="call" glob="{$call[$loopvarstep]}"/>
+					<file key="call" glob="{$call[{$loopvarstep}]}"/>
 				</commit>
 				<commit name="resultFile" toroot="true">
-					<file key="result" glob="{$result[$loopvarstep]}"/>
+					<file key="result" glob="{$result[{$loopvarstep}]}"/>
 				</commit>
 			</step>
 		</subprocess>

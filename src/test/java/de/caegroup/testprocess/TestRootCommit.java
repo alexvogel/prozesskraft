@@ -28,7 +28,7 @@ public class TestRootCommit {
 	@Before
 	public void setUp()
 	{
-		process.setInfilexml("src/test/resources/multiappshake.xml");
+		process.setInfilexml("src/test/resources/definitions/Admin/multiappshake/0.0.1/process.xml");
 		process.setInitCommitVarfile("etc/name:etc/spl:etc/call:etc/result");
 
 		Step rootStep = new Step("root");

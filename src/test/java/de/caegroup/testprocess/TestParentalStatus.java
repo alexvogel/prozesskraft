@@ -27,7 +27,7 @@ public class TestParentalStatus {
 	@Before
 	public void setUp()
 	{
-		process.setInfilexml("src/test/resources/beulen.xml");
+		process.setInfilexml("src/test/resources/definitions/Exterior/beulen/0.1.0/process.xml");
 		try
 		{
 			process.readXml();

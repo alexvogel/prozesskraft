@@ -1085,11 +1085,14 @@ implements Serializable, Cloneable
 	{
 		if(stringToResolve == null) {return null;}
 		
-		log("debug", "resolving string "+stringToResolve);
+		log("debug", "1: resolving string "+stringToResolve);
 
+		
 		if(this.getLoopvar() != null)
 		{
+			log("debug", "loopvar of actual step is: "+this.getLoopvar());
 			stringToResolve = stringToResolve.replaceAll("\\{\\$loopvarstep\\}", this.getLoopvar());
+			log("debug", "2: resolving string "+stringToResolve);
 		}
 //		String resolvedString = stringToResolve;
 
@@ -1107,8 +1110,10 @@ implements Serializable, Cloneable
 			
 			if(matcherListnameWithIndex.find())
 			{
+				log("debug", "found an indexed listname");
 				// feststellen ob wir uns schon auf der tiefsten ebene befinden
 				String listname = matcherListnameWithIndex.group(1);
+				log("debug", "listname="+listname);
 
 				Integer index = null;
 				// gibts keinen index, dann ist der index = 0
@@ -1131,6 +1136,8 @@ implements Serializable, Cloneable
 //						System.exit(1);
 					}
 				}
+
+				log("debug", "index="+index);
 
 				List list = this.getList(listname);
 				if (list == null)

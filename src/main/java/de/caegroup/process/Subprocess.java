@@ -145,82 +145,15 @@ implements Serializable
 				}
 			}
 
-			// check ob es das domain verzeichnis ueberhaupt gibt
-			java.io.File domainDir = new java.io.File(domainInstallationDirectory + "/" + this.getDomain());
-			if(domainDir.exists() && domainDir.isDirectory())
-			{
-				log("debug", "domain-installation-directory exists: "+domainDir);
-			}
-			else
-			{
-				log("error", "domain-installation-directory does NOT exist: "+domainDir);
-				this.setStatus("error");
-				return;
-			}
-			
-			// check ob es das process verzeichnis ueberhaupt gibt
-			java.io.File processDir = new java.io.File(domainInstallationDirectory + "/" + this.getDomain() + "/" + this.getName());
-			if(processDir.exists() && processDir.isDirectory())
-			{
-				log("debug", "process-installation-directory exists: "+processDir);
-			}
-			else
-			{
-				log("error", "process-installation-directory does not exist: "+processDir);
-				this.setStatus("error");
-				return;
-			}
-			
-			// check ob es das process-versions verzeichnis ueberhaupt gibt
-			java.io.File versionDir = new java.io.File(domainInstallationDirectory + "/" + this.getDomain() + "/" + this.getName() + "/" + this.getVersion());
-			if(versionDir.exists() && versionDir.isDirectory())
-			{
-				log("debug", "processversion-installation-directory exists: "+versionDir);
-			}
-			else
-			{
-				log("error", "processversion-installation-directory does not exist: "+versionDir);
-				this.setStatus("error");
-				return;
-			}
-			
-			// check ob es das process.xml ueberhaupt gibt
-			java.io.File processDef = new java.io.File(domainInstallationDirectory + "/" + this.getDomain() + "/" + this.getName() + "/" + this.getVersion() + "/process.xml");
-			if(processDef.exists() && !processDef.isDirectory())
-			{
-				log("debug", "process.xml exists: "+processDef);
-			}
-			else
-			{
-				log("error", "process.xml does not exist: "+processDef);
-				this.setStatus("error");
-				return;
-			}
-			
-			log("info", "creating process");
-			// einen neuen Process erstellen und den rootStep aus subprocess ruebernehmen
-			de.caegroup.process.Process newProcess = new Process();
-			newProcess.setInfilexml(processDef.getCanonicalPath());
-			de.caegroup.process.Process newProcess2 = new Process();
-			try
-			{
-				newProcess2 = newProcess.readXml();
-			}
-			catch (JAXBException e)
-			{
-				e.printStackTrace();
-				log("fatal", e.getMessage());
-			}
-			newProcess2.addStep(this.getStep());
-			
-			// dem root-Step des neuenProcesses, die listen aus parent-Step des Parent-Prozesses uebergeben (damit resolving mit platzhaltern funktioniert)
-			newProcess2.getRootStep().setList(this.getParent().getList());
-			
+			// aus der hinterlegten Definition einen Prozess erzeugen
+			Process newProcess = this.genProcess(domainInstallationDirectory);
+
 			// und ins step-verzeichnis das binaere file schreiben
 			String processInstance = stepDir.getCanonicalPath() + "/process.pmb";
-			newProcess2.setOutfilebinary(processInstance);
-			newProcess2.writeBinary();
+			newProcess.setOutfilebinary(processInstance);
 
+			newProcess.writeBinary();
+			
 			// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)
 			String AbsLogSyscallWrapper = new java.io.File(new java.io.File(this.getParent().getAbspid()).getParent()).getAbsolutePath()+"/.log";
 
@@ -290,6 +223,7 @@ implements Serializable
 				log("error", e2.getMessage());
 				this.setStatus("error");
 			}
+			
 		}
 	}
 
@@ -355,6 +289,99 @@ implements Serializable
 		return pid;
 	}
 
+	public Process genProcess(String domainInstallationDirectory)
+	{
+		// check ob es das domain verzeichnis ueberhaupt gibt
+		java.io.File domainDir = new java.io.File(domainInstallationDirectory + "/" + this.getDomain());
+		if(domainDir.exists() && domainDir.isDirectory())
+		{
+			log("debug", "domain-installation-directory exists: "+domainDir);
+		}
+		else
+		{
+			log("error", "domain-installation-directory does NOT exist: "+domainDir);
+			this.setStatus("error");
+			return null;
+		}
+		
+		// check ob es das process verzeichnis ueberhaupt gibt
+		java.io.File processDir = new java.io.File(domainInstallationDirectory + "/" + this.getDomain() + "/" + this.getName());
+		if(processDir.exists() && processDir.isDirectory())
+		{
+			log("debug", "process-installation-directory exists: "+processDir);
+		}
+		else
+		{
+			log("error", "process-installation-directory does not exist: "+processDir);
+			this.setStatus("error");
+			return null;
+		}
+		
+		// check ob es das process-versions verzeichnis ueberhaupt gibt
+		java.io.File versionDir = new java.io.File(domainInstallationDirectory + "/" + this.getDomain() + "/" + this.getName() + "/" + this.getVersion());
+		if(versionDir.exists() && versionDir.isDirectory())
+		{
+			log("debug", "processversion-installation-directory exists: "+versionDir);
+		}
+		else
+		{
+			log("error", "processversion-installation-directory does not exist: "+versionDir);
+			this.setStatus("error");
+			return null;
+		}
+		
+		// check ob es das process.xml ueberhaupt gibt
+		java.io.File processDef = new java.io.File(domainInstallationDirectory + "/" + this.getDomain() + "/" + this.getName() + "/" + this.getVersion() + "/process.xml");
+		if(processDef.exists() && !processDef.isDirectory())
+		{
+			log("debug", "process.xml exists: "+processDef);
+		}
+		else
+		{
+			log("error", "process.xml does not exist: "+processDef);
+			this.setStatus("error");
+			return null;
+		}
+		
+		log("info", "creating process");
+		// einen neuen Process erstellen und den rootStep aus subprocess ruebernehmen
+		de.caegroup.process.Process newProcess = new Process();
+		try {
+			newProcess.setInfilexml(processDef.getCanonicalPath());
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			log("error", e1.getMessage());
+		}
+		de.caegroup.process.Process newProcess2 = new Process();
+		try
+		{
+			newProcess2 = newProcess.readXml();
+		}
+		catch (JAXBException e)
+		{
+			e.printStackTrace();
+			log("fatal", e.getMessage());
+		}
+
+		// dem root-Step des neuenProcesses, die listen aus parent-Step des Parent-Prozesses uebergeben (damit resolving mit platzhaltern funktioniert)
+		newProcess2.getRootStep().setList(this.getParent().getList());
+		
+		// die loopvar des parentsteps auf den rootStep des neuenProzesses ueberschreiben, damit das resolving funktioniert
+		newProcess2.getRootStep().setLoopvar(this.getParent().getLoopvar());
+		
+		// alle commits aus subprocess in die des neuenProzesses ueberschreiben inkl. aller noch nicht resolvter eintraege
+		newProcess2.getRootStep().setCommit(this.getStep().getCommit());
+		
+		// dem root-Step des neuenProzesses alle commits ausfuehren
+		newProcess2.getRootStep().commit();
+
+		// alle listen wieder loeschen
+//		newProcess2.getRootStep().getList().clear();
+
+		return newProcess2;
+	}
+	
 //	public String getCall(String processStartinstance)
 //	{
 ////		this.parent.log("debug", "constructing call");

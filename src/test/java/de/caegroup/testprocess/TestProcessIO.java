@@ -23,7 +23,7 @@ import de.caegroup.process.Callitem;
 public class TestProcessIO {
 
 	Process process;
-	String inFileXml = "src/test/resources/beulen.xml";
+	String inFileXml = "src/test/resources/definitions/Exterior/beulen/0.1.0/process.xml";
 	String outFileXml = "src/test/resources/beulen_out.xml";
 	String inFileBinary = "src/test/resources/beulen.pmb";
 	String outFileBinary = "src/test/resources/beulen.pmb";

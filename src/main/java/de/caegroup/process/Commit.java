@@ -404,14 +404,14 @@ implements Serializable
 	public void commitFile(File master)
 	{
 		log("info", "want to commit the file(s) (key=" +master.getKey()+")");
-		System.out.println("info: want to commit the file(s) (key=" +master.getKey()+")");
+//		System.out.println("info: want to commit the file(s) (key=" +master.getKey()+")");
 
 		ArrayList<File> filesToCommit = new ArrayList<File>();
 
 		// wenn das file bereits einen absdir hat und das file existiert, dann muss dies nicht ueber globbing ermittelt werden
 		if(new java.io.File(master.getAbsfilename()).exists())
 		{
-			System.out.println("info: file has already a absfilename, so no need to glob");
+			log("debug", "file has already a absfilename, so no need to glob");
 			filesToCommit.add(master);
 		}
 
@@ -419,60 +419,81 @@ implements Serializable
 		// das Verzeichnis des Steps
 		else if((master.getGlob()!=null) && (!master.getGlob().equals("")))
 		{
-			System.out.println("info: file does not have a absfilename, so i need to glob it");
+			log("info", "file does not have a absfilename, so i need to glob it");
+
+			// resolven des globeintrages
+			log("info", "resolving glob '"+master.getGlob()+"' to '"+this.getParent().resolveString(master.getGlob())+"'");
+//			log("info", "resolving glob '"+master.getGlob()+"' to '");
+			String resolvedGlob = this.getParent().resolveString(master.getGlob());
+
+			// ist der glob relativ?, dann den pfad um das stepdir erweitern
 			java.io.File stepDir = new java.io.File(this.getAbsdir());
-
-			// alle eintraege des Verzeichnisses
-			java.io.File[] allEntriesOfDirectory = stepDir.listFiles();
-			log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath() + " " + Arrays.toString(allEntriesOfDirectory));
-
-			// nur die files des verzeichnisses
-			ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
-			for(java.io.File actFile : allEntriesOfDirectory)
+			if(!(resolvedGlob.matches("^/.+$")))
 			{
-				if(!actFile.isDirectory())
-				{
-					allFilesOfDirectory.add(actFile);
+				try {
+					resolvedGlob = stepDir.getCanonicalPath() +"/"+ resolvedGlob;
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					log("error", e.getMessage());
 				}
 			}
-			// interpolieren aller files in einen String fuer die logging ausgabe
-			String allFiles = "[";
-			for(java.io.File actFile : allFilesOfDirectory)
-			{
-				allFiles += actFile.getAbsolutePath() +", ";
-			}
-			allFiles = allFiles.substring(0, allFiles.length()-3);
-			allFiles += "]";
 			
-			log("info", allFilesOfDirectory.size()+" files in directory "+stepDir.getAbsolutePath() + " " + allFiles);
-
-			// nur die files auf die der glob passt
-			// dem glob aus dem modell soll das stepverzeichnis voran gestellt werden
-			String resolvedGlob = this.parent.resolveString(master.getGlob());
-
-			log("info", "globbing: "+this.getAbsdir()+"/"+resolvedGlob);
-			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+this.getAbsdir()+"/"+resolvedGlob);
-			ArrayList<java.io.File> allFilesThatGlob = new ArrayList<java.io.File>();
-			for(java.io.File actFile :allFilesOfDirectory)
+			// alle eintraege des Verzeichnisses (parent des globs)
+			java.io.File[] allEntriesOfDirectory = new java.io.File(resolvedGlob).getParentFile().listFiles();
+			if(allEntriesOfDirectory == null)
 			{
-				if(matcher.matches(actFile.toPath()))
-				{
-					allFilesThatGlob.add(actFile);
-					log("info", "glob matches: "+actFile.getAbsolutePath());
-				}
-				else
-				{
-					log("info", "glob NOT matches: "+actFile.getAbsolutePath());
-				}
+				log("info", "step-directory is empty: "+stepDir.getAbsolutePath());
 			}
-	
-			// files aus den java.io.files generieren und jedes mal das vorliegende file clonen
-			for(java.io.File actFile : allFilesThatGlob)
+			else
 			{
-				File clonedFile = master.clone();
-				clonedFile.setGlob("");
-				clonedFile.setRealposition(actFile.getAbsolutePath());
-				filesToCommit.add(clonedFile);
+				log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath() + " " + Arrays.toString(allEntriesOfDirectory));
+	
+				// nur die files des verzeichnisses
+				ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
+				for(java.io.File actFile : allEntriesOfDirectory)
+				{
+					if(!actFile.isDirectory())
+					{
+						allFilesOfDirectory.add(actFile);
+					}
+				}
+				// interpolieren aller files in einen String fuer die logging ausgabe
+				String allFiles = "[";
+				for(java.io.File actFile : allFilesOfDirectory)
+				{
+					allFiles += actFile.getAbsolutePath() +", ";
+				}
+				allFiles = allFiles.substring(0, allFiles.length()-3);
+				allFiles += "]";
+				
+				log("info", allFilesOfDirectory.size()+" files in directory "+stepDir.getAbsolutePath() + " " + allFiles);
+
+				// nur die files auf die der glob passt
+				log("info", "globbing: "+resolvedGlob);
+				PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+resolvedGlob);
+				ArrayList<java.io.File> allFilesThatGlob = new ArrayList<java.io.File>();
+				for(java.io.File actFile :allFilesOfDirectory)
+				{
+					if(matcher.matches(actFile.toPath()))
+					{
+						allFilesThatGlob.add(actFile);
+						log("info", "glob matches: "+actFile.getAbsolutePath());
+					}
+					else
+					{
+						log("info", "glob NOT matches: "+actFile.getAbsolutePath());
+					}
+				}
+	
+				// files aus den java.io.files generieren und jedes mal das vorliegende file clonen
+				for(java.io.File actFile : allFilesThatGlob)
+				{
+					File clonedFile = master.clone();
+					clonedFile.setGlob("");
+					clonedFile.setRealposition(actFile.getAbsolutePath());
+					filesToCommit.add(clonedFile);
+				}
 			}
 		}
 
@@ -548,7 +569,8 @@ implements Serializable
 		// wenn die variable bereits einen value hat, dann muss dies nicht ueber globbing ermittelt werden
 		if((master.getValue()!=null) && (!master.getValue().equals("")))
 		{
-			log("info", "(value=" +master.getValue()+")");
+			master.setValue(this.getParent().resolveString(master.getValue()));
+			log("info", "(value=" +this.getParent().resolveString(master.getValue())+")");
 			variablesToCommit.add(master);
 		}
 
