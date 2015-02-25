@@ -109,6 +109,7 @@ implements Serializable
 	public int cloneDescendant = 1;
 	public int clonePerformed = 0;
 	
+	private boolean subprocess = false;
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -1455,11 +1456,19 @@ implements Serializable
 	/**
 	 * @return
 	 * returns the canonical path of rootdir.
-	 * if rootdir is not set so far, a random rootdir will be set like "./<processname>_<processversion>_<randominteger>"
+	 * if rootdir is not set so far, a random rootdir will be set like "<basedir>/<processname>_<processversion>_<randominteger>"
+	 * if process is a subprocess, then rootdir == basedir
 	 */
 	public String getRootdir()
 	{
+		if(this.isSubprocess())
+		{
+			return this.getBaseDir();
+		}
+		else
+		{
 			return this.getBaseDir()+"/"+this.getName()+"_v"+this.getVersion()+"_"+this.getId();
+		}
 	}
 
 	/**
@@ -2098,5 +2107,19 @@ implements Serializable
 		}
 		
 		return result;
+	}
+
+	/**
+	 * @return the subprocess
+	 */
+	public boolean isSubprocess() {
+		return subprocess;
+	}
+
+	/**
+	 * @param subprocess the subprocess to set
+	 */
+	public void setSubprocess(boolean subprocess) {
+		this.subprocess = subprocess;
 	}
 }

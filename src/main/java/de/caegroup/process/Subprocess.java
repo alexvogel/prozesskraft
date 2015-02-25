@@ -383,6 +383,9 @@ implements Serializable
 		// das Basedirectory des neuen prozesses soll das stepdir des parentsteps sein
 		newProcess2.setBaseDir(this.getParent().getAbsdir());
 		
+		// der neue Process ist ein Subprocess (das hat auswirkungen auf die pfade fuer die daten
+		newProcess2.setSubprocess(true);
+		
 		// dem root-Step des neuenProzesses alle commits ausfuehren
 //		newProcess2.getRootStep().commit();
 
