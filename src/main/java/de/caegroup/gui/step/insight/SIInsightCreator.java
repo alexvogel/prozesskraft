@@ -329,18 +329,49 @@ public class SIInsightCreator
 			
 			else
 			{
-				String call = father.getIni().get("apps", "filebrowser") + " " + stepDir.getAbsolutePath(); 
-				father.log("info", "calling: "+call);
-				
-				try
+				// ist der step ein unterprozess, so soll der prozess in einem eigenen pmodelfenster geoeffnet werden
+				if(step.getType().equals("process"))
 				{
-					java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+					java.io.File processBinaryFile = new java.io.File(step.getAbsdir() + "/process.pmb");
+					
+					if(processBinaryFile.exists())
+					{
+						// Aufruf taetigen
+						try
+						{
+							String aufruf = father.getIni().get("apps", "pmodel-gui")+" -instance "+processBinaryFile.getCanonicalPath();
+							father.log("info", "opening subprocess of step "+step.getName()+" with call: "+aufruf);
+							java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+						}
+						catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					else
+					{
+						father.log("info", "no process.pmb file present for subprocess of step "+step.getName());
+					}
 				}
-				catch (IOException e)
+				// ist step kein unterprozess
+				else
 				{
-					father.log("error", e.getMessage());
+					String call = father.getIni().get("apps", "filebrowser") + " " + stepDir.getAbsolutePath(); 
+					father.log("info", "calling: "+call);
+					
+					try
+					{
+						java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+					}
+					catch (IOException e)
+					{
+						father.log("error", e.getMessage());
+					}
 				}
 			}
+				
+				
 
 		}
 	};
