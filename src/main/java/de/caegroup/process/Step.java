@@ -1668,6 +1668,40 @@ implements Serializable, Cloneable
 			}
 		}
 
+		// Subprocess untersuchen, falls vorhanden
+		if(this.subprocess != null)
+		{
+			// ist der status 'error' vorhanden? prozess=error
+			if(this.subprocess.getStatus().equals("error"))
+			{
+				status = "error";
+//				this.log("debug", "actual status is: "+status);
+				return status;
+			}
+	
+			// wenn schluessel working vorhanden ist, dann gilt 'working'
+			else if( this.subprocess.getStatus().equals("working")  )
+			{
+				status = "working";
+//				this.log("debug", "actual status is: "+status);
+				return status;
+			}
+
+			// wenn schluessel waiting vorhanden ist, dann gilt 'waiting'
+			else if(  this.subprocess.getStatus().equals("waiting") && statusAllInits.isEmpty())
+			{
+				status = "waiting";
+//				this.log("debug", "actual status is: "+status);
+				return status;
+			}
+
+			// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
+			else if(  this.subprocess.getStatus().equals("finished") )
+			{
+				status = "worked";
+			}
+		}
+
 		// Die Commits untersuchen
 		ArrayList<String> statusAllCommits = new ArrayList<String>(); //waiting/initializing/finished/error
 

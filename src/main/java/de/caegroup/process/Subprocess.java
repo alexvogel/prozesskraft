@@ -227,7 +227,7 @@ implements Serializable
 				log("error", e2.getMessage());
 				this.setStatus("error");
 			}
-			
+			this.setStatus("working");
 		}
 	}
 
