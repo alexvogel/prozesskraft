@@ -439,15 +439,38 @@ implements Serializable
 				}
 			}
 			
-			// alle eintraege des Verzeichnisses (parent des globs)
-			java.io.File[] allEntriesOfDirectory = new java.io.File(resolvedGlob).getParentFile().listFiles();
+			// verzeichnis des globs feststellen (entweder dass stepdir oder der pfadanteil des absoluten globs)
+			java.io.File dirOfGlob = new java.io.File(resolvedGlob).getParentFile();
+			try
+			{
+				log("debug", "directory to glob for files: "+dirOfGlob.getCanonicalPath());
+			}
+			catch (IOException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				log("error", e1.getMessage());
+			}
+			
+			// alle eintraege des glob-directories feststellen
+			java.io.File[] allEntriesOfDirectory = dirOfGlob.listFiles();
 			if(allEntriesOfDirectory == null)
 			{
-				log("info", "step-directory is empty: "+stepDir.getAbsolutePath());
+				try {
+					log("info", "glob-directory is empty: "+dirOfGlob.getCanonicalPath());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			else
 			{
-				log("info", allEntriesOfDirectory.length+" entries in directory "+stepDir.getAbsolutePath() + " " + Arrays.toString(allEntriesOfDirectory));
+				try {
+					log("info", allEntriesOfDirectory.length+" entries in glob-directory "+dirOfGlob.getCanonicalPath() + " " + Arrays.toString(allEntriesOfDirectory));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	
 				// nur die files des verzeichnisses
 				ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
@@ -478,11 +501,11 @@ implements Serializable
 					if(matcher.matches(actFile.toPath()))
 					{
 						allFilesThatGlob.add(actFile);
-						log("info", "glob matches: "+actFile.getAbsolutePath());
+						log("info", "glob DOES match: "+actFile.getAbsolutePath());
 					}
 					else
 					{
-						log("info", "glob NOT matches: "+actFile.getAbsolutePath());
+						log("info", "glob DOES NOT match: "+actFile.getAbsolutePath());
 					}
 				}
 	
@@ -496,8 +519,6 @@ implements Serializable
 				}
 			}
 		}
-
-		System.out.println("jetzt liegen die files vor (mit oder ohne glob)");
 
 		// DIE ERMITTELTEN FILES EVTL. KOPIEREN UND UEBERPRUEFEN
 

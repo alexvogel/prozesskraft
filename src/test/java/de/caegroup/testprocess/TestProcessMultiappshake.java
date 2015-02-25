@@ -87,12 +87,12 @@ public class TestProcessMultiappshake {
 		
 		List callList = new List();
 		callList.setName("call");
-		callList.addItem("/irgendein/pfad/auf/das/call/file");
+		callList.addItem("/data/prog/workspaces/workspace_privat/process-core/src/test/resources/call.1.txt");
 		step.addList(callList);
 		
 		List resultList = new List();
 		resultList.setName("result");
-		resultList.addItem("/irgendein/pfad/auf/das/result/file");
+		resultList.addItem("/data/prog/workspaces/workspace_privat/process-core/src/test/resources/result.1.fpr");
 		step.addList(resultList);
 		
 		step.setLoopvar("0");
@@ -111,6 +111,13 @@ public class TestProcessMultiappshake {
 		
 		// 3 commits aus dem rootStep des Subprocesses + 1 automatisch erzeugter commit aus standardRootCommit fuer standardeintraege wie "_dir" etc.
 		assertEquals(4, childProcess.getRootStep().getCommit().size());
+		
+		// ueberpruefen ob die 3 commits, die aus dem subprocess von multiappshake kamen auch zu entsprechenden variablen und files im prozess appshake gefuehrt haben
+		// in summe 2 files (call+result)
+		assertEquals(2, childProcess.getRootStep().getFile().size());
+		// in summe 2 variable (spl, _dir)
+		assertEquals(2, childProcess.getRootStep().getVariable().size());
+		
 		
 		for(Log actLog : childProcess.getRootStep().getLog())
 		{

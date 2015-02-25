@@ -1847,6 +1847,24 @@ implements Serializable, Cloneable
 	{
 		return this.file;
 	}
+	
+	/**
+	 * returns all Files that have a certain key
+	 * @param key
+	 * @return
+	 */
+	public ArrayList<File> getFile(String key)
+	{
+		ArrayList<File> fileOfCertainKey = new ArrayList<File>();
+		for(File actFile : this.file)
+		{
+			if(actFile.getKey().equals(key))
+			{
+				fileOfCertainKey.add(actFile);
+			}
+		}
+		return fileOfCertainKey;
+	}
 		
 	public void setFile(ArrayList<File> file)
 	{
@@ -1873,7 +1891,25 @@ implements Serializable, Cloneable
 	{
 		return this.variable;
 	}
-		
+
+	/**
+	 * returns all Variables that have a certain key
+	 * @param key
+	 * @return
+	 */
+	public ArrayList<Variable> getVariable(String key)
+	{
+		ArrayList<Variable> variableOfCertainKey = new ArrayList<Variable>();
+		for(Variable actVariable : this.variable)
+		{
+			if(actVariable.getKey().equals(key))
+			{
+				variableOfCertainKey.add(actVariable);
+			}
+		}
+		return variableOfCertainKey;
+	}
+
 	public void setVariable(ArrayList<Variable> variable)
 	{
 		this.variable = variable;
