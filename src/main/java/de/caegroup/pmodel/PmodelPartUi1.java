@@ -151,7 +151,7 @@ public class PmodelPartUi1 extends ModelObject
 		checkLicense();
 		createControls(composite);
 		this.einstellungen.getProcess().setStepRanks();
-		applet = new PmodelViewPage(einstellungen);
+		applet = new PmodelViewPage(this, einstellungen);
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class PmodelPartUi1 extends ModelObject
 		loadIni();
 		checkLicense();
 		this.einstellungen.getProcess().setStepRanks();
-		applet = new PmodelViewPage(einstellungen);
+		applet = new PmodelViewPage(this, einstellungen);
 		createControls(composite);
 	}
 
@@ -222,7 +222,7 @@ public class PmodelPartUi1 extends ModelObject
 //		einstellungen.setRootpositionratioy((float)0.1);
 		this.einstellungen.getProcess().setStepRanks();
 //		applet = new PmodelViewPage(this, einstellungen);
-		applet = new PmodelViewPage(einstellungen);
+		applet = new PmodelViewPage(this, einstellungen);
 		createControls(composite);
 	}
 
@@ -1155,5 +1155,12 @@ public class PmodelPartUi1 extends ModelObject
 			}
 		});
 		System.exit(0);
+	}
+
+	/**
+	 * @param ini the ini to set
+	 */
+	public void setIni(Ini ini) {
+		this.ini = ini;
 	}
 }

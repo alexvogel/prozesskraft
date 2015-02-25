@@ -14,9 +14,11 @@ import java.io.IOException;
 
 
 
+
 //import java.io.InputStream;
 //
 import javax.xml.bind.JAXBException;
+
 
 
 
@@ -44,6 +46,7 @@ public class PmodelViewPage extends PApplet
 	  structure
 	----------------------------*/
 	public PmodelViewModel einstellungen;
+	private PmodelPartUi1 father = null;
 	int textSize_gemerkt = 15;
 	Calendar now = Calendar.getInstance();
 	long startTimeMillis = System.currentTimeMillis();
@@ -112,8 +115,9 @@ public class PmodelViewPage extends PApplet
 //		this.parent = parent;
 //	}
 	
-	public PmodelViewPage(PmodelViewModel einstellungen)
+	public PmodelViewPage(PmodelPartUi1 father, PmodelViewModel einstellungen)
 	{
+		this.father = father;
 		this.einstellungen = einstellungen;
 	}
 	
@@ -392,33 +396,64 @@ public class PmodelViewPage extends PApplet
 				// wenn es ein doppelklick ist
 				if ( ( Calendar.getInstance().getTimeInMillis() - this.mousepressedlasttime.getTimeInMillis() )  < this.doubleclickperiod )
 				{
-//						System.out.println("timeperiod "+(Calendar.getInstance().getTimeInMillis() - this.mousepressedlasttime.getTimeInMillis()));
-					// feststellen des stdout/stderr des steps
-					String stdout = this.stepcircle_clicked.step.getAbsstdout();
-					String stderr = this.stepcircle_clicked.step.getAbsstderr();
 					
-					java.io.File stdoutfile = new java.io.File(stdout);
-					java.io.File stderrfile = new java.io.File(stderr);
-					
-					String neditstring = new String();
-					
-					if (stdoutfile.exists())
+					// ist der step ein unterprozess, so soll der prozess in einem eigenen pmodelfenster geoeffnet werden
+					if(stepcircle_clicked.getStep().getType().equals("process"))
 					{
-						neditstring = neditstring+" "+stdout;
+						Step step = stepcircle_clicked.getStep();
+						java.io.File processBinaryFile = new java.io.File(step.getAbsdir() + "/process.pmb");
+						
+						if(processBinaryFile.exists())
+						{
+							// Aufruf taetigen
+							try
+							{
+								String aufruf = this.getFather().getIni().get("apps", "pmodel-gui")+" -instance "+processBinaryFile.getCanonicalPath();
+								this.getFather().log("info", "opening subprocess of step "+step.getName()+" with call: "+aufruf);
+								java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+							}
+							catch (IOException e)
+							{
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						else
+						{
+							this.getFather().log("info", "no process.pmb file present for subprocess of step "+step.getName());
+						}
 					}
-					
-					if (stderrfile.exists())
+						
+					else
 					{
-						neditstring = neditstring+" "+stderr;
-					}
-					
-					if (!(neditstring.isEmpty()))
-					// Aufruf taetigen
-					try {
-						java.lang.Process sysproc = Runtime.getRuntime().exec("nedit "+neditstring);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+	//					System.out.println("timeperiod "+(Calendar.getInstance().getTimeInMillis() - this.mousepressedlasttime.getTimeInMillis()));
+						// feststellen des stdout/stderr des steps
+						String stdout = this.stepcircle_clicked.step.getAbsstdout();
+						String stderr = this.stepcircle_clicked.step.getAbsstderr();
+						
+						java.io.File stdoutfile = new java.io.File(stdout);
+						java.io.File stderrfile = new java.io.File(stderr);
+						
+						String neditstring = new String();
+						
+						if (stdoutfile.exists())
+						{
+							neditstring = neditstring+" "+stdout;
+						}
+						
+						if (stderrfile.exists())
+						{
+							neditstring = neditstring+" "+stderr;
+						}
+						
+						if (!(neditstring.isEmpty()))
+						// Aufruf taetigen
+						try {
+							java.lang.Process sysproc = Runtime.getRuntime().exec("nedit "+neditstring);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 //					break;
@@ -753,6 +788,20 @@ public class PmodelViewPage extends PApplet
 	public void setRootpositionratiox(float rootpositionratiox)
 	{
 		this.einstellungen.setRootpositionratiox(rootpositionratiox);
+	}
+
+	/**
+	 * @return the father
+	 */
+	public PmodelPartUi1 getFather() {
+		return father;
+	}
+
+	/**
+	 * @param father the father to set
+	 */
+	public void setFather(PmodelPartUi1 father) {
+		this.father = father;
 	}
 	
 }
