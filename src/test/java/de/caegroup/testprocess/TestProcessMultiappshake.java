@@ -46,7 +46,7 @@ public class TestProcessMultiappshake {
 
 	@Test
 	public void testReadXml()
-	{
+	{		
 		// testen der process-attribute, die durch das mapping gesetzt werden
 		assertEquals(true, new java.io.File(pathToXml).isFile());
 		assertEquals("multiappshake", process.getName());
@@ -99,6 +99,15 @@ public class TestProcessMultiappshake {
 		
 		//
 		Process childProcess = step.getSubprocess().genProcess("src/test/resources/definitions");
+		childProcess.setBaseDir("/tmp");
+		childProcess.getRootStep().commit();
+//		for(Log actLog : step.getSubprocess().getLog())
+//		{
+//			actLog.print();
+//		}
+		
+		
+		
 		assertEquals("appshake", childProcess.getName());
 		
 		// 4 listen aus multiappshake wurden in den childProcess 'appshake' uebertragen
@@ -118,19 +127,28 @@ public class TestProcessMultiappshake {
 		// in summe 2 variable (spl, _dir)
 		assertEquals(2, childProcess.getRootStep().getVariable().size());
 		
+		// 1 variable mit key=spl
+		assertEquals(1, childProcess.getRootStep().getVariable("spl").size());
+		assertEquals("/irgendein/pfad/auf/das/spl/directory", childProcess.getRootStep().getVariable("spl").get(0).getValue());
+		// 1 file mit key=call
+		assertEquals(1, childProcess.getRootStep().getFile("call").size());
+		assertEquals(childProcess.getRootStep().getAbsdir()+"/"+childProcess.getRootStep().getFile("call").get(0).getFilename(), childProcess.getRootStep().getFile("call").get(0).getAbsfilename());
+		// 1 file mit key=result
+		assertEquals(1, childProcess.getRootStep().getFile("result").size());
+		assertEquals(childProcess.getRootStep().getAbsdir()+"/"+childProcess.getRootStep().getFile("result").get(0).getFilename(), childProcess.getRootStep().getFile("result").get(0).getAbsfilename());
 		
-		for(Log actLog : childProcess.getRootStep().getLog())
-		{
-			actLog.print();
-		}
-		System.out.println("-----");
-		for(Commit actCommit : childProcess.getRootStep().getCommit())
-		{
-			for(Log actLog : actCommit.getLog())
-			{
-				actLog.print();
-			}
-			System.out.println("-----");
-		}
+//		for(Log actLog : childProcess.getRootStep().getLog())
+//		{
+//			actLog.print();
+//		}
+//		System.out.println("-----");
+//		for(Commit actCommit : childProcess.getRootStep().getCommit())
+//		{
+//			for(Log actLog : actCommit.getLog())
+//			{
+//				actLog.print();
+//			}
+//			System.out.println("-----");
+//		}
 	}
 }

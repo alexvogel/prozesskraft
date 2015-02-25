@@ -148,6 +148,10 @@ implements Serializable
 			// aus der hinterlegten Definition einen Prozess erzeugen
 			Process newProcess = this.genProcess(domainInstallationDirectory);
 
+			// die commits durchfuehren. erst jetzt werden die files in das stepeigene verzeichnis kopiert und die
+			// entsprechenden pfadangaben im file-objekt angepasst
+			newProcess.getRootStep().commit();
+			
 			// und ins step-verzeichnis das binaere file schreiben
 			String processInstance = stepDir.getCanonicalPath() + "/process.pmb";
 			newProcess.setOutfilebinary(processInstance);
@@ -346,14 +350,17 @@ implements Serializable
 		log("info", "creating process");
 		// einen neuen Process erstellen und den rootStep aus subprocess ruebernehmen
 		de.caegroup.process.Process newProcess = new Process();
-		try {
+		try
+		{
 			newProcess.setInfilexml(processDef.getCanonicalPath());
-		} catch (IOException e1) {
+		}
+		catch (IOException e1)
+		{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			log("error", e1.getMessage());
 		}
-		de.caegroup.process.Process newProcess2 = new Process();
+		de.caegroup.process.Process newProcess2 = null;
 		try
 		{
 			newProcess2 = newProcess.readXml();
@@ -374,7 +381,7 @@ implements Serializable
 		newProcess2.getRootStep().setCommit(this.getStep().getCommit());
 		
 		// dem root-Step des neuenProzesses alle commits ausfuehren
-		newProcess2.getRootStep().commit();
+//		newProcess2.getRootStep().commit();
 
 		// alle listen wieder loeschen
 //		newProcess2.getRootStep().getList().clear();
