@@ -241,8 +241,8 @@ public class PmodelViewPage extends PApplet
 		// alle steps durchgehen und nur stepcircles erzeugen, wenn es noch keinen mit dem gleichen Namen gibt wie einen Step
 		try
 		{
-//			ArrayList<Step> copyOfSteps =  this.einstellungen.getProcess().getStep();
-			for(Step actualStep : this.einstellungen.getProcess().getStep())
+			ArrayList<Step> copyOfSteps =  this.einstellungen.getProcess().getStep();
+			for(Step actualStep : copyOfSteps)
 			{
 				// wenn es noch keinen stepcircle mit diesem namen gibt, dann einen erzeugen und hinzufuegen zur page
 				if (!(this.hasStepcircle(actualStep.getName())))
