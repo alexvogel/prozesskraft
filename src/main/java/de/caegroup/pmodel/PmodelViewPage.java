@@ -239,25 +239,33 @@ public class PmodelViewPage extends PApplet
 	private void draw_stepcircles()
 	{
 		// alle steps durchgehen und nur stepcircles erzeugen, wenn es noch keinen mit dem gleichen Namen gibt wie einen Step
-		for(Step actualStep : this.einstellungen.getProcess().getSteps2())
+		try
 		{
-			// wenn es noch keinen stepcircle mit diesem namen gibt, dann einen erzeugen und hinzufuegen zur page
-			if (!(this.hasStepcircle(actualStep.getName())))
+			for(Step actualStep : this.einstellungen.getProcess().getSteps2())
 			{
-//				System.out.println("Es muss ein stepcircle erzeugt werden fuer step "+actualStep.getName());
-//				makeTimeStamp("1");
-				this.addStepcircle(new PmodelViewStepSym(this, actualStep));
-//				makeTimeStamp("2");
+				// wenn es noch keinen stepcircle mit diesem namen gibt, dann einen erzeugen und hinzufuegen zur page
+				if (!(this.hasStepcircle(actualStep.getName())))
+				{
+	//				System.out.println("Es muss ein stepcircle erzeugt werden fuer step "+actualStep.getName());
+	//				makeTimeStamp("1");
+					this.addStepcircle(new PmodelViewStepSym(this, actualStep));
+	//				makeTimeStamp("2");
+				}
+				else
+				{
+					// den stepcircle feststellen, der diesen step bereits repraesentiert
+					// das step-object darin ablegen (es koennte sein, dass es sich geaendert hat)
+					PmodelViewStepSym oldstepcircle = this.getStepcircle(actualStep.getName());
+					// und den step setzen (damit die daten aktualisiert werden)
+					oldstepcircle.setStep(actualStep);
+					oldstepcircle.setNochvorhanden(true);
+				}
 			}
-			else
-			{
-				// den stepcircle feststellen, der diesen step bereits repraesentiert
-				// das step-object darin ablegen (es koennte sein, dass es sich geaendert hat)
-				PmodelViewStepSym oldstepcircle = this.getStepcircle(actualStep.getName());
-				// und den step setzen (damit die daten aktualisiert werden)
-				oldstepcircle.setStep(actualStep);
-				oldstepcircle.setNochvorhanden(true);
-			}
+		}
+		// falls während des durchgehens der steps, die liste veraendert wird (hinzufuegen oder loeschen von steps), soll die sache nicht gleich abstuerzen
+		catch(Exception e)
+		{
+			e.printStackTrace();;
 		}
 	}
 	
@@ -313,15 +321,22 @@ public class PmodelViewPage extends PApplet
 	 */
 	private void expungeStepconnectors()
 	{
-		ArrayList<PmodelViewStepCon> cleanedStepconnectors = new ArrayList<PmodelViewStepCon>();
-		for(PmodelViewStepCon actualStepconnector : this.getStepconnectors())
+		try
 		{
-			if ( (this.einstellungen.getProcess().getStep(actualStepconnector.getStepcirclefrom().getName()) != null) && (this.einstellungen.getProcess().getStep(actualStepconnector.getStepcircleto().getName()) != null) )
+			ArrayList<PmodelViewStepCon> cleanedStepconnectors = new ArrayList<PmodelViewStepCon>();
+			for(PmodelViewStepCon actualStepconnector : this.getStepconnectors())
 			{
-				cleanedStepconnectors.add(actualStepconnector);
+				if ( (this.einstellungen.getProcess().getStep(actualStepconnector.getStepcirclefrom().getName()) != null) && (this.einstellungen.getProcess().getStep(actualStepconnector.getStepcircleto().getName()) != null) )
+				{
+					cleanedStepconnectors.add(actualStepconnector);
+				}
 			}
+			this.stepconnectors = cleanedStepconnectors;
 		}
-		this.stepconnectors = cleanedStepconnectors;
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -330,15 +345,22 @@ public class PmodelViewPage extends PApplet
 	 */
 	private void expungeStepcircles()
 	{
-		ArrayList<PmodelViewStepSym> cleanedStepcircles = new ArrayList<PmodelViewStepSym>();
-		for(PmodelViewStepSym actualStepcircle : this.getStepcircles())
+		try
 		{
-			if ( this.einstellungen.getProcess().getStep(actualStepcircle.getName()) != null )
+			ArrayList<PmodelViewStepSym> cleanedStepcircles = new ArrayList<PmodelViewStepSym>();
+			for(PmodelViewStepSym actualStepcircle : this.getStepcircles())
 			{
-				cleanedStepcircles.add(actualStepcircle);
+				if ( this.einstellungen.getProcess().getStep(actualStepcircle.getName()) != null )
+				{
+					cleanedStepcircles.add(actualStepcircle);
+				}
 			}
+			this.stepcircles = cleanedStepcircles;
 		}
-		this.stepcircles = cleanedStepcircles;
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	private void markAllstepcirclestodelete()
