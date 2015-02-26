@@ -65,7 +65,7 @@ public class TestCommit {
 		
 		// commit durchfuehren
 		commit.doIt();
-		commit.printLog();
+//		commit.printLog();
 		
 		// die stati abfragen
 		assertEquals("finished", commit.getStatus());
