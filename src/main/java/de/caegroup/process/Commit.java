@@ -565,7 +565,7 @@ implements Serializable
 			log("debug", "adding "+filesToCommit.size()+" file(s) to step "+this.getParent().getName());
 			this.getParent().addFile(filesToCommit);
 			// soll auch 'toroot' committed werden?
-			if(this.getToroot())
+			if(this.getToroot() && !this.getParent().isRoot())
 			{
 				log("debug", "adding "+filesToCommit.size()+" file(s) to rootStep");
 				this.getParent().getParent().getRootStep().addFile(filesToCommit);
@@ -716,7 +716,7 @@ implements Serializable
 		{
 			this.getParent().addVariable(variablesToCommit);
 			// soll auch 'toroot' committed werden?
-			if(this.getToroot())
+			if(this.getToroot() && !this.getParent().isRoot())
 			{
 				log("debug", "adding "+variablesToCommit.size()+" file(s) to rootStep");
 				this.getParent().getParent().getRootStep().addVariable(variablesToCommit);
