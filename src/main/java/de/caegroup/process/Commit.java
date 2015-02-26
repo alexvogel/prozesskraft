@@ -290,6 +290,7 @@ implements Serializable
 			return status;
 		}
 
+		System.err.println("status of commit "+this.getName()+": "+status);
 		return status;
 	}
 
@@ -558,12 +559,7 @@ implements Serializable
 		{
 			this.getParent().addFile(filesToCommit);
 
-			// den status aller files, die committed wurden sollen auf finished setzen
-			for(File actFile : filesToCommit)
-			{
-				actFile.setStatus("finished");
-			}
-			// unden master zur Sicherheit auch noch (obwohl er bishweilen nicht mehr gebraucht wird)
+			// und den master auf finished setzen, denn dieser ist in this abgelegt und wird beim ermitteln des status abgefragt
 			master.setStatus("finished");
 		}
 	}
