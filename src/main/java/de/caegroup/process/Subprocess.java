@@ -101,7 +101,6 @@ implements Serializable
 	 */
 	public void doIt(String processSyscall, String aufrufProcessManager, String domainInstallationDirectory) throws IOException
 	{
-		this.setStatus("working");
 
 //		this.resolve();
 
@@ -116,12 +115,13 @@ implements Serializable
 			{
 				log("info", "subprocess still running. pid="+pid);
 //				System.out.println("PROCESS-STEP LAEUFT NOCH: "+pid);
+				this.setStatus("working");
 			}
 			else
 			{
 				log("info", "subprocess already finished. pid="+pid);
 				log("info", "setting status to 'finished'");
-				this.setStatus("finished");
+				this.setStatus("worked");
 			}
 		}
 
