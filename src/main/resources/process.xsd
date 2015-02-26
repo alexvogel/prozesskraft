@@ -125,9 +125,9 @@
     			ref="choice" />
     		<xs:element ref="test" minOccurs="0" maxOccurs="unbounded" />
     	</xs:sequence>
-    	<xs:attribute name="key" use="required" type="xs:NCName" />
+    	<xs:attribute name="key" use="required" type="xs:string" />
     	<xs:attribute name="value" use="optional" type="xs:string"/>
-    	<xs:attribute name="glob" type="xs:string" use="optional"></xs:attribute>
+    	<xs:attribute name="glob" type="xs:string" use="optional"/>
     	<xs:attribute name="maxoccur" type="xs:integer" use="optional" />
     	<xs:attribute name="minoccur" type="xs:integer" use="optional" />
     	<xs:attribute name="type" type="xs:string" use="optional" />
