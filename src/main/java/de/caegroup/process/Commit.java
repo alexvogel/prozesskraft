@@ -718,8 +718,29 @@ implements Serializable
 			// soll auch 'toroot' committed werden?
 			if(this.getToroot() && !this.getParent().isRoot())
 			{
+				Step rootStep = this.getParent().getParent().getRootStep();
 				log("debug", "adding "+variablesToCommit.size()+" file(s) to rootStep");
-				this.getParent().getParent().getRootStep().addVariable(variablesToCommit);
+				rootStep.addVariable(variablesToCommit);
+				
+				//  variable in root auch in eine textdatei schreiben
+				for(Variable actVar : variablesToCommit)
+				{
+					FileWriter writer;
+					try
+					{
+						writer = new FileWriter(rootStep.getAbsdir() + "/variable."+actVar.getKey());
+						writer.write(actVar.getValue()+"\n");
+						writer.close();
+					}
+					catch (IOException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						log("error", e.getMessage());
+						master.setStatus("error");
+						return;
+					}
+				}
 			}
 			master.setStatus("finished");
 		}
