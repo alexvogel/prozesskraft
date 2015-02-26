@@ -136,6 +136,14 @@ implements Serializable
 		return this.getParent().resolveString(stringToResolve);
 	}
 
+	public void printLog()
+	{
+		for(Log actLog : this.getLog())
+		{
+			actLog.print();
+		}
+	}
+	
 	/*----------------------------
 	  methods getter/setter
 	----------------------------*/
@@ -443,37 +451,32 @@ implements Serializable
 			}
 			
 			// verzeichnis des globs feststellen (entweder dass stepdir oder der pfadanteil des absoluten globs)
-			java.io.File dirOfGlob = new java.io.File(resolvedGlob).getParentFile();
+			java.io.File dirOfGlob = null;
 			try
 			{
-				log("debug", "directory to glob for files: "+dirOfGlob.getCanonicalPath());
+				dirOfGlob = new java.io.File(resolvedGlob).getParentFile().getCanonicalFile();
+				java.io.File fileResolvedGlob = new java.io.File(resolvedGlob);
+				// evtl. wurden nicht vorhandene obsolete pfadbestandteile entfernt, deshalb soll der resolvedGlob aktualisiert werden
+				resolvedGlob = dirOfGlob.getAbsolutePath() + "/" + fileResolvedGlob.getName() ;
 			}
-			catch (IOException e1)
+			catch (IOException e2)
 			{
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				log("error", e1.getMessage());
+				e2.printStackTrace();
 			}
+
+			// logging
+			log("debug", "directory to glob for files: "+dirOfGlob.getAbsolutePath());
 			
 			// alle eintraege des glob-directories feststellen
 			java.io.File[] allEntriesOfDirectory = dirOfGlob.listFiles();
 			if(allEntriesOfDirectory == null)
 			{
-				try {
-					log("info", "glob-directory is empty: "+dirOfGlob.getCanonicalPath());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				log("info", "glob-directory is empty: "+dirOfGlob.getAbsolutePath());
 			}
 			else
 			{
-				try {
-					log("info", allEntriesOfDirectory.length+" entries in glob-directory "+dirOfGlob.getCanonicalPath() + " " + Arrays.toString(allEntriesOfDirectory));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				log("info", allEntriesOfDirectory.length+" entries in glob-directory "+dirOfGlob.getAbsolutePath() + " " + Arrays.toString(allEntriesOfDirectory));
 	
 				// nur die files des verzeichnisses
 				ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
@@ -493,7 +496,7 @@ implements Serializable
 				allFiles = allFiles.substring(0, allFiles.length()-3);
 				allFiles += "]";
 				
-				log("info", allFilesOfDirectory.size()+" files in directory "+stepDir.getAbsolutePath() + " " + allFiles);
+				log("info", allFilesOfDirectory.size()+" files in directory "+dirOfGlob.getAbsolutePath() + " " + allFiles);
 
 				// nur die files auf die der glob passt
 				log("info", "globbing: "+resolvedGlob);
@@ -504,11 +507,11 @@ implements Serializable
 					if(matcher.matches(actFile.toPath()))
 					{
 						allFilesThatGlob.add(actFile);
-						log("info", "glob DOES match: "+actFile.getAbsolutePath());
+						log("debug", "glob DOES match: "+actFile.getAbsolutePath());
 					}
 					else
 					{
-						log("info", "glob DOES NOT match: "+actFile.getAbsolutePath());
+						log("debug", "glob DOES NOT match: "+actFile.getAbsolutePath());
 					}
 				}
 	
@@ -547,11 +550,11 @@ implements Serializable
 			actFile.performAllTests();
 			if(actFile.doAllTestsPass())
 			{
-				log("info", "all tests passed successfully ("+actFile.getAllTestsFeedback()+")");
+				log("info", "file "+actFile.getKey()+": all tests passed successfully ("+actFile.getAllTestsFeedback()+")");
 			}
 			else
 			{
-				log("error", "tests failed ("+actFile.getAllTestsFeedback()+")");
+				log("error", "file "+actFile.getKey()+": tests failed ("+actFile.getAllTestsFeedback()+")");
 				master.setStatus("error");
 			}
 		}
@@ -559,6 +562,7 @@ implements Serializable
 		// wenn alles gut gegangen ist bisher, dann committen
 		if(! master.getStatus().equals("error"))
 		{
+			log("debug", "adding "+filesToCommit.size()+" file(s) to step "+this.getParent().getName());
 			this.getParent().addFile(filesToCommit);
 
 			// und den master auf finished setzen, denn dieser ist in this abgelegt und wird beim ermitteln des status abgefragt

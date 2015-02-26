@@ -1291,6 +1291,7 @@ implements Serializable, Cloneable
 	public void addCommit(Commit commit)
 	{
 		this.commit.add(commit);
+		commit.setParent(this);
 		this.log("debug", "adding Commit "+commit.getName());
 	}
 
