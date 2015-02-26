@@ -1700,9 +1700,10 @@ implements Serializable, Cloneable
 			}
 
 			// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
-			else if(  this.subprocess.getStatus().equals("finished") )
+			else if(  this.subprocess.getStatus().equals("worked") )
 			{
 				status = "worked";
+				return status;
 			}
 		}
 
