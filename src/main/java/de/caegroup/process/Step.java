@@ -772,9 +772,13 @@ implements Serializable, Cloneable
 			}
 		}
 
-		else if(this.getStatus().equals("working"))
+		else if(this.getStatus().equals("working") && this.getType().equals("automatic"))
 		{
 			this.work(aufrufProcessSyscall);
+		}
+		else if(this.getStatus().equals("working") && this.getType().equals("process"))
+		{
+			this.subprocess(aufrufProcessSyscall, aufrufProcessStartinstance, domainInstallationDirectory);
 		}
 
 		if(this.getStatus().equals("worked"))
