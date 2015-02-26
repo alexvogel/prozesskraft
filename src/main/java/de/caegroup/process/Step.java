@@ -842,9 +842,6 @@ implements Serializable, Cloneable
 				newstep.setName(newstep.getName()+"@"+x);
 				newstep.log("info", "this step '"+newstep.getName()+"' was fanned out from step '"+this.getName()+"'");
 
-				// damit die inits und commits und works ... auch als parent den geklonten step eingetragen haben und nicht mehr den alten
-				newstep.affiliate();
-				
 				// eine liste mit dem namen 'loop' anlegen und darin die loopvar speichern
 				List listLoop = new List();
 				listLoop.setName("loopvar");
@@ -1707,7 +1704,6 @@ implements Serializable, Cloneable
 			else if(  this.subprocess.getStatus().equals("finished") )
 			{
 				status = "worked";
-				return status;
 			}
 		}
 
