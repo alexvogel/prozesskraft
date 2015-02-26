@@ -191,7 +191,6 @@ implements Serializable
 	----------------------------*/
 	public String getKey()
 	{
-		System.err.println("variable.getKey()");
 		return this.getParent().resolveString(this.key);
 	}
 
