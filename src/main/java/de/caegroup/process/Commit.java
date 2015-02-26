@@ -271,12 +271,12 @@ implements Serializable
 		for(File actFile : this.getFile())
 		{
 			statusAllFilesVariables.add(actFile.getStatus());
-			System.err.println("status of commit "+this.getName()+": file "+actFile.getKey()+": "+actFile.getStatus());
+//			System.err.println("status of commit "+this.getName()+": file "+actFile.getKey()+": "+actFile.getStatus());
 		}
 		for(Variable actVariable : this.getVariable())
 		{
 			statusAllFilesVariables.add(actVariable.getStatus());
-			System.err.println("status of commit "+this.getName()+": variable "+actVariable.getKey()+": "+actVariable.getStatus());
+//			System.err.println("status of commit "+this.getName()+": variable "+actVariable.getKey()+": "+actVariable.getStatus());
 		}
 
 		// ist der status 'error' vorhanden? prozess=error
@@ -300,7 +300,7 @@ implements Serializable
 			return status;
 		}
 
-		System.err.println("actual status of commit "+this.getName()+": "+status);
+//		System.err.println("actual status of commit "+this.getName()+": "+status);
 		return status;
 	}
 
