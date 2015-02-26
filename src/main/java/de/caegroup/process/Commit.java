@@ -564,7 +564,12 @@ implements Serializable
 		{
 			log("debug", "adding "+filesToCommit.size()+" file(s) to step "+this.getParent().getName());
 			this.getParent().addFile(filesToCommit);
-
+			// soll auch 'toroot' committed werden?
+			if(this.getToroot())
+			{
+				log("debug", "adding "+filesToCommit.size()+" file(s) to rootStep");
+				this.getParent().getParent().getRootStep().addFile(filesToCommit);
+			}
 			// und den master auf finished setzen, denn dieser ist in this abgelegt und wird beim ermitteln des status abgefragt
 			master.setStatus("finished");
 		}
@@ -710,6 +715,12 @@ implements Serializable
 		if(! master.getStatus().equals("error"))
 		{
 			this.getParent().addVariable(variablesToCommit);
+			// soll auch 'toroot' committed werden?
+			if(this.getToroot())
+			{
+				log("debug", "adding "+variablesToCommit.size()+" file(s) to rootStep");
+				this.getParent().getParent().getRootStep().addVariable(variablesToCommit);
+			}
 			master.setStatus("finished");
 		}
 	}
