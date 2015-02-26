@@ -120,8 +120,8 @@ implements Serializable
 			else
 			{
 				log("info", "subprocess already finished. pid="+pid);
-				log("info", "setting status to 'worked'");
-				this.setStatus("worked");
+				log("info", "setting status to 'finished'");
+				this.setStatus("finished");
 			}
 		}
 

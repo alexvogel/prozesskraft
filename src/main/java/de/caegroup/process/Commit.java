@@ -557,6 +557,13 @@ implements Serializable
 		if(! master.getStatus().equals("error"))
 		{
 			this.getParent().addFile(filesToCommit);
+
+			// den status aller files, die committed wurden sollen auf finished setzen
+			for(File actFile : filesToCommit)
+			{
+				actFile.setStatus("finished");
+			}
+			// unden master zur Sicherheit auch noch (obwohl er bishweilen nicht mehr gebraucht wird)
 			master.setStatus("finished");
 		}
 	}

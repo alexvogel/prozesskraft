@@ -1700,7 +1700,7 @@ implements Serializable, Cloneable
 			}
 
 			// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
-			else if(  this.subprocess.getStatus().equals("worked") )
+			else if(  this.subprocess.getStatus().equals("finished") )
 			{
 				status = "worked";
 				return status;
@@ -1732,7 +1732,7 @@ implements Serializable, Cloneable
 		}
 
 		// wenn schluessel waiting vorhanden ist, dann gilt 'waiting'
-		else if(  statusAllCommits.contains("waiting")  && statusAllInits.isEmpty()  &&  this.work == null)
+		else if(  statusAllCommits.contains("waiting")  && statusAllInits.isEmpty()  &&  (this.work == null && this.subprocess ==null))
 		{
 			status = "waiting";
 //			this.log("debug", "actual status is: "+status);
