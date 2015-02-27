@@ -1268,7 +1268,9 @@ public class PrampPartUi1 extends ModelObject
 						log("error", "problems with reading user-ini file: "+this.userIniFile);
 					}
 
-					// user input an den Prozess committen
+					// user input an den Prozess committen, vorher alle files und variables aus dem rootstep loeschen
+					this.process.getRootStep().getFile().clear();
+					this.process.getRootStep().getVariable().clear();
 					this.commitCreatorOld.get(getActualCommitRootName()).commitAll();
 
 //					System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
