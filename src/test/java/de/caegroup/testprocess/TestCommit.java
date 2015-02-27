@@ -25,10 +25,6 @@ import de.caegroup.process.Callitem;
 public class TestCommit {
 
 	Process process = new Process();
-	Step step = null;
-	Commit commit = null;
-	File file = null;
-	File file2 = null;
 	
 	@Before
 	public void setUp()
@@ -45,15 +41,15 @@ public class TestCommit {
 		// damit rootdirectory == basedir ist
 		process.setSubprocess(true);
 		
-		step = new Step();
+		Step step = new Step();
 		step.setName("root");
 		process.addStep(step);
 		
-		commit = new Commit();
+		Commit commit = new Commit();
 		commit.setName("ergebnisse");
 		step.addCommit(commit);
 		
-		file = new File();
+		File file = new File();
 		file.setMinoccur(1);
 		file.setKey("irgendEinFile");
 		file.setGlob("call.1.txt");
@@ -85,13 +81,14 @@ public class TestCommit {
 		// damit rootdirectory == basedir ist
 		process.setSubprocess(true);
 		
-		step = new Step();
+		Step step = new Step();
 		step.setName("root");
 		step.setLoopvar("0");
 		process.addStep(step);
-		
-		commit = new Commit();
+
+		Commit commit = new Commit();
 		commit.setName("ergebnisse");
+		commit.setToroot(true);
 		step.addCommit(commit);
 		
 		List listFile = new List();
@@ -99,7 +96,18 @@ public class TestCommit {
 		listFile.addItem("nocheinFile");
 		step.addList(listFile);
 
-		file = new File();
+		List listVar = new List();
+		listVar.setName("variablesTuTu");
+		listVar.addItem("ergebnis");
+		step.addList(listVar);
+
+		Variable variable = new Variable();
+		variable.setMinoccur(1);
+		variable.setKey("{$variablesTuTu[{$loopvarstep}]}");
+		variable.setValue("superB");
+		commit.addVariable(variable);
+
+		File file = new File();
 		file.setMinoccur(1);
 		file.setKey("{$files[{$loopvarstep}]}");
 		file.setGlob("call.1.txt");
@@ -109,7 +117,7 @@ public class TestCommit {
 		assertEquals("unknown", commit.getStatus());
 		assertEquals("unknown", step.getStatus());
 		assertEquals(0, step.getFile().size());
-		
+
 		// commit durchfuehren
 		commit.doIt();
 		System.out.println("testCommit2");
@@ -118,8 +126,12 @@ public class TestCommit {
 		// die stati abfragen
 		assertEquals("finished", commit.getStatus());
 		assertEquals("finished", step.getStatus());
+
+		// was an file/variable im step angekommen ist
 		assertEquals(1, step.getFile().size());
+		assertEquals(1, step.getVariable().size());
 		assertEquals("nocheinFile", step.getFile().get(0).getKey());
+
 	}
 	
 }

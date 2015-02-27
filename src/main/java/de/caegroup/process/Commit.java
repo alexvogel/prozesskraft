@@ -563,12 +563,26 @@ implements Serializable
 		if(! master.getStatus().equals("error"))
 		{
 			log("debug", "adding "+filesToCommit.size()+" file(s) to step "+this.getParent().getName());
-			this.getParent().addFile(filesToCommit);
+
+			// jede variable einzeln dem step hinzufuegen und sofort danach den 'key' und 'value' resolven
+			for(File actFile : filesToCommit)
+			{
+				log("debug", "committen des files in den step "+this.getParent().getName());
+				this.getParent().addFile(actFile);
+				log("debug", "dauerhaftes resolven des gerade committeten files von key "+actFile.getKey()+"->"+this.getParent().resolveString(actFile.getKey()));
+				actFile.setKey(this.getParent().resolveString(actFile.getKey()));
+				log("debug", "file: ("+actFile.getKey()+"=>"+actFile.getAbsfilename()+")");
+			}
+			
 			// soll auch 'toroot' committed werden?
 			if(this.getToroot() && !this.getParent().isRoot())
 			{
 				log("debug", "adding "+filesToCommit.size()+" file(s) to rootStep");
 				this.getParent().getParent().getRootStep().addFile(filesToCommit);
+			}
+			else if(this.getToroot() && this.getParent().isRoot())
+			{
+				log("debug", "commit enthaelt toroot=true aber aktueller step ist bereits der rootStep -> verzicht auf erneutes commit to root");
 			}
 			// und den master auf finished setzen, denn dieser ist in this abgelegt und wird beim ermitteln des status abgefragt
 			master.setStatus("finished");
@@ -714,8 +728,21 @@ implements Serializable
 		// wenn alles gut gegangen ist bisher, dann committen
 		if(! master.getStatus().equals("error"))
 		{
-			this.getParent().addVariable(variablesToCommit);
-			// soll auch 'toroot' committed werden?
+			log("debug", "adding "+variablesToCommit.size()+" variable(s) to step "+this.getParent().getName());
+			
+			// jede variable einzeln dem step hinzufuegen und sofort danach den 'key' und 'value' resolven
+			for(Variable actVar : variablesToCommit)
+			{
+				log("debug", "committen der variable in den step "+this.getParent().getName());
+				this.getParent().addVariable(actVar);
+				log("debug", "dauerhaftes resolven des gerade committeten variable von key "+actVar.getKey()+"->"+this.getParent().resolveString(actVar.getKey()));
+				actVar.setKey(this.getParent().resolveString(actVar.getKey()));
+				log("debug", "dauerhaftes resolven des gerade committeten variable von value "+actVar.getValue()+"->"+this.getParent().resolveString(actVar.getValue()));
+				actVar.setValue(this.getParent().resolveString(actVar.getValue()));
+				log("debug", "variable: ("+actVar.getKey()+"=>"+actVar.getValue()+")");
+			}
+			
+			// soll auch 'toroot' committed werden? Dann alle Vriablen dem RootStep hinzufuegen (mit bereits resolvten Key/Value-Eintraegen)
 			if(this.getToroot() && !this.getParent().isRoot())
 			{
 				Step rootStep = this.getParent().getParent().getRootStep();
@@ -741,6 +768,10 @@ implements Serializable
 						return;
 					}
 				}
+			}
+			else if(this.getToroot() && this.getParent().isRoot())
+			{
+				log("debug", "commit enthaelt toroot=true aber aktueller step ist bereits der rootStep -> verzicht auf erneutes commit to root");
 			}
 			master.setStatus("finished");
 		}

@@ -191,7 +191,7 @@ implements Serializable
 	----------------------------*/
 	public String getKey()
 	{
-		return this.getParent().resolveString(this.key);
+		return this.key;
 	}
 
 	public String getGlob()
