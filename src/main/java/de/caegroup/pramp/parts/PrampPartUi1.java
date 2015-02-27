@@ -1272,8 +1272,10 @@ public class PrampPartUi1 extends ModelObject
 					
 					// user input an den Prozess committen
 					log("debug", "1) Anzahl der Variables in Step root: "+this.process.getRootStep().getVariable().size());
-					this.commitCreatorOld.get(getActualCommitRootName()).commitAll();
+					this.process.getRootStep().getVariable().clear();
 					log("debug", "2) Anzahl der Variables in Step root: "+this.process.getRootStep().getVariable().size());
+					this.commitCreatorOld.get(getActualCommitRootName()).commitAll();
+					log("debug", "3) Anzahl der Variables in Step root: "+this.process.getRootStep().getVariable().size());
 
 //					System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
 //					System.out.println("Id des Prozesses: "+process.getRandomId());
