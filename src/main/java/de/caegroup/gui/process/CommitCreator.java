@@ -122,17 +122,14 @@ public class CommitCreator
 		
 		// alle files/variablen aller commits des aktuellen steps sollen auf 'finished' gesetzt werden
 
-		System.err.println("alle commits werden durchlaufen");
 		for(Commit actCommit : step.getCommit())
 		{
-			System.err.println("    commit: "+actCommit.getName());
 			for(File actFile : actCommit.getFile())
 			{
 				actFile.setStatus("finished");
 			}
 			for(Variable actVariable : actCommit.getVariable())
 			{
-				System.err.println("        variable: "+actVariable.getKey());
 				actVariable.setStatus("finished");
 			}
 		}
