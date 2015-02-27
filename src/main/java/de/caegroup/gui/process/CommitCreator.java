@@ -115,11 +115,8 @@ public class CommitCreator
 		step.getFile().clear();
 		step.log("debug", "CommitCreator: work on all commits");
 		step.commit();
-		int zaehler = 0;
 		for (CommitGui actualCommitGui : commitGui)
 		{
-			zaehler ++;
-			System.err.println("zaehlerstand: "+zaehler);
 			actualCommitGui.commit(step);
 		}
 		
@@ -130,8 +127,11 @@ public class CommitCreator
 			{
 				actFile.setStatus("finished");
 			}
+			int zaehler = 0;
 			for(Variable actVariable : actCommit.getVariable())
 			{
+				zaehler++;
+				System.err.println("zaehlerstand: "+zaehler);
 				actVariable.setStatus("finished");
 			}
 		}
