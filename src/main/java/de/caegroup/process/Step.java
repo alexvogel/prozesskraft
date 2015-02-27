@@ -929,8 +929,9 @@ implements Serializable, Cloneable
 		this.log("info", "special commit, because this step is root");
 
 		// einen commit fuer die initCommitDir anlegen
+		this.removeCommit("rootCommit");
 		this.log("debug", "creating a commit 'rootCommit' and adding to step "+this.getParent().getRootStep().getName());
-		Commit rootCommit = new Commit(this.getParent().getRootStep());
+		Commit rootCommit = new Commit(this);
 		rootCommit.setName("rootCommit");
 		
 		//ueber alle commitdir iterieren
@@ -1307,6 +1308,20 @@ implements Serializable, Cloneable
 		}
 		this.setCommit(commitsWithoutTheRemovedOne);
 		this.log("debug", "removing Commit "+commit.getName());
+	}
+
+	public void removeCommit(String commitName)
+	{
+		ArrayList<Commit> commitsWithoutTheRemovedOne = new ArrayList<Commit>();
+		for(Commit actCommit : this.getCommit())
+		{
+			if(!(actCommit.getName().equals(commitName)))
+			{
+				commitsWithoutTheRemovedOne.add(actCommit);
+			}
+		}
+		this.setCommit(commitsWithoutTheRemovedOne);
+		this.log("debug", "removing Commit "+commitName);
 	}
 
 	/**
