@@ -28,10 +28,18 @@ public class TestCommit {
 	Step step = null;
 	Commit commit = null;
 	File file = null;
+	File file2 = null;
 	
 	@Before
 	public void setUp()
 	{
+
+	}
+
+	@Test
+	public void testCommit()
+	{
+		
 		// damit kein extra verzeichnis fuer prozess und step angelegt wird und das zu committende file reinkopiert wird
 		process.setBaseDir("src/test/resources");
 		// damit rootdirectory == basedir ist
@@ -51,12 +59,6 @@ public class TestCommit {
 		file.setGlob("call.1.txt");
 		commit.addFile(file);
 
-	}
-
-	@Test
-	public void testCommit()
-	{
-		
 		// die stati abfragen
 		assertEquals("unknown", commit.getStatus());
 		assertEquals("unknown", step.getStatus());
@@ -73,4 +75,51 @@ public class TestCommit {
 		assertEquals(1, step.getFile().size());
 		assertEquals("irgendEinFile", step.getFile().get(0).getKey());
 	}
+	
+	@Test
+	public void testCommit2()
+	{
+		
+		// damit kein extra verzeichnis fuer prozess und step angelegt wird und das zu committende file reinkopiert wird
+		process.setBaseDir("src/test/resources");
+		// damit rootdirectory == basedir ist
+		process.setSubprocess(true);
+		
+		step = new Step();
+		step.setName("root");
+		step.setLoopvar("0");
+		process.addStep(step);
+		
+		commit = new Commit();
+		commit.setName("ergebnisse");
+		step.addCommit(commit);
+		
+		List listFile = new List();
+		listFile.setName("files");
+		listFile.addItem("nocheinFile");
+		step.addList(listFile);
+
+		file = new File();
+		file.setMinoccur(1);
+		file.setKey("{$files[{$loopvarstep}]}");
+		file.setGlob("call.1.txt");
+		commit.addFile(file);
+
+		// die stati abfragen
+		assertEquals("unknown", commit.getStatus());
+		assertEquals("unknown", step.getStatus());
+		assertEquals(0, step.getFile().size());
+		
+		// commit durchfuehren
+		commit.doIt();
+		System.out.println("testCommit2");
+		commit.printLog();
+		
+		// die stati abfragen
+		assertEquals("finished", commit.getStatus());
+		assertEquals("finished", step.getStatus());
+		assertEquals(1, step.getFile().size());
+		assertEquals("nocheinFile", step.getFile().get(0).getKey());
+	}
+	
 }

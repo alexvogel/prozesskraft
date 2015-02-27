@@ -279,7 +279,7 @@ implements Serializable, Cloneable
 	
 	public String getKey()
 	{
-		return this.key;
+		return this.getParent().resolveString(this.key);
 	}
 
 	public String getGlob()
