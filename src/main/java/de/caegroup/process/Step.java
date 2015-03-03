@@ -855,6 +855,9 @@ implements Serializable, Cloneable
 			
 			// den urspruenglichen step (this) aus dem prozess entfernen
 			this.parent.getStep().remove(this);
+			
+			// die ranks neu setzen
+			this.parent.setStepRanks();
 		}
 
 //		System.out.println("anzahl der Steps im Prozess nach dem fanning: "+this.parent.getSteps().size());
