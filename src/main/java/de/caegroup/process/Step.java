@@ -1279,7 +1279,15 @@ implements Serializable, Cloneable
 			actInit.reset();
 		}
 
-		this.getWork().reset();
+		if(this.getWork() != null)
+		{
+			this.getWork().reset();
+		}
+
+		if(this.getSubprocess() != null)
+		{
+			this.getSubprocess().reset();
+		}
 
 		// commits reseten
 		for(Commit actCommit : this.getCommit())

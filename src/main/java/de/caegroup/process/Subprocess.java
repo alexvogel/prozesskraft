@@ -77,7 +77,7 @@ implements Serializable
 	public void reset()
 	{
 		this.getLog().clear();
-//		this.setStatus("");
+		this.setStatus("");
 	}
 	
 
