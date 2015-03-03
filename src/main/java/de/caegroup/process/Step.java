@@ -43,6 +43,7 @@ implements Serializable, Cloneable
 	private Subprocess subprocess = null;
 	private ArrayList<Commit> commit = new ArrayList<Commit>();
 	private String loop = null;
+	private String loopOld = null;
 	private String loopvar = null;
 
 	private Process parent = null;
@@ -60,7 +61,7 @@ implements Serializable, Cloneable
 	private ArrayList<Log> log = new ArrayList<Log>();
 	private String rank = "";
 	private int reset = 0;
-			
+	
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 	/*----------------------------
 	  constructors
@@ -838,7 +839,10 @@ implements Serializable, Cloneable
 				// einen neuen step erzeugen (klon von this)
 				Step newstep = cloner.deepClone(this);
 				newstep.setLoopvar(loopVariable);
+				// den loop fuer einen evtl. spaeteren reset merken
+				newstep.setLoopOld(newstep.getLoop());
 				newstep.setLoop(null);
+
 				newstep.setName(newstep.getName()+"@"+x);
 				newstep.log("info", "this step '"+newstep.getName()+"' was fanned out from step '"+this.getName()+"'");
 
@@ -1181,6 +1185,48 @@ implements Serializable, Cloneable
 		}
 	}
 
+	/**
+	 * resets the step because it is dependent from another step that has been resetete
+	 * this means that fanned-out steps has to be reduced to their former multistep
+	 * 
+	 * 1) has another sibling already resetted, then simply delete this
+	 * 2) reset all loopdata, name and make a usual reset
+	 */
+	public void resetBecauseOfDependency()
+	{
+		// enthaelt der Namen ein '@' so handelt es sich um einen multistep
+		// gibt es im prozess einen step, der genauso heisst wie this ohne '@', so hat bereits ein reset stattgefunden und dieser step kann aus prozess entfernt werden
+		if(this.getName().matches("^.*@.*$"))
+		{
+			Pattern p = Pattern.compile("^([^@]+).+$");
+			Matcher m = p.matcher(this.getName());
+			
+			String oldName = m.group(1);
+			
+			// wenn es schon einen gibt mit dem urspruenglichen namen
+			if(this.getParent().getStep(oldName) != null)
+			{
+				// es gibt bereits wieder einen step mit Namen 'vor dem fan'
+				// raus mit this
+				this.getParent().removeStep(this);
+			}
+			// wenn es noch keinen gibt mit dem urspruenglichen namen,
+			// dann die loopdaten, stepnamen auf alte werte setzen und den ueblichen reset durchfuehren
+			else
+			{
+				this.setLoop(this.getLoopOld());
+				this.setLoopOld(null);
+				this.setLoopvar(null);
+				this.setName(oldName);
+				this.reset();
+			}
+		}
+		else
+		{
+			this.reset();
+		}
+	}
+	
 	/**
 	 * resets the step
 	 * 1) clear log
@@ -2207,6 +2253,20 @@ implements Serializable, Cloneable
 	 */
 	public void setSubprocess(Subprocess subprocess) {
 		this.subprocess = subprocess;
+	}
+
+	/**
+	 * @return the loopOld
+	 */
+	public String getLoopOld() {
+		return loopOld;
+	}
+
+	/**
+	 * @param loopOld the loopOld to set
+	 */
+	public void setLoopOld(String loopOld) {
+		this.loopOld = loopOld;
 	}
 	
 }

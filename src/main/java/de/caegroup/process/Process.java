@@ -152,7 +152,7 @@ implements Serializable
 		for(Step actStep : stepsToReset)
 		{
 			log("warn", "reset step (because of dependency): "+actStep.getName());
-			actStep.reset();
+			actStep.resetBecauseOfDependency();
 		}
 		
 		// erst dann den urspruenglichen step reseten
@@ -195,7 +195,7 @@ implements Serializable
 			if (stepnames[i] == step.getName())
 			{
 				log("error", "stepname '"+stepnames[i]+"' already in use. step not added.");
-				System.err.println("stepname '"+stepnames[i]+"' already in use. step not added.");
+//				System.err.println("stepname '"+stepnames[i]+"' already in use. step not added.");
 				return false;
 			}
 		}
