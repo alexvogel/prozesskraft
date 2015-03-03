@@ -81,9 +81,18 @@ public class PmodelViewStepSym
 			String rank = this.step.getRank();
 			System.err.println("step "+this.step.getName()+": rank: "+rank);
 			String[] rankStringArray = rank.split("\\.");
-			int level = Integer.parseInt(rankStringArray[0]);
-			int posi = Integer.parseInt(rankStringArray[1]);
-			
+			int level = 0;
+			int posi = 0;
+			try
+			{
+				Integer.parseInt(rankStringArray[0]);
+				Integer.parseInt(rankStringArray[1]);
+			}
+			catch (Exception e)
+			{
+				System.err.println("warn: cannot determine rank of step "+this.step.getName());
+			}
+
 //			float initx = p.getWidth()*this.parent.einstellungen.getRootpositionratiox() + (posi * (p.getWidth()/10));
 //			float initx = (posi * (p.getWidth()/10));
 			
