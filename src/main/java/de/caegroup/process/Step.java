@@ -1335,13 +1335,13 @@ implements Serializable, Cloneable
 		this.reset++;
 	}
 
-	/**
-	 * resets the this step and all dependent steps
-	 */
-	public void resetIncDependent()
-	{
-		this.getParent().resetStep(this.getName());
-	}
+//	/**
+//	 * resets the this step and all dependent steps
+//	 */
+//	public void resetIncDependent()
+//	{
+//		this.getParent().resetStep(this.getName());
+//	}
 	/*----------------------------
 	  methods add / remove
 	----------------------------*/
