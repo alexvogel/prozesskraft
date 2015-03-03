@@ -246,6 +246,7 @@ public class PmodelViewPage extends PApplet
 //			ArrayList<Step> copyOfSteps =  this.einstellungen.getProcess().getStep();
 			for(Step actualStep : this.einstellungen.getProcess().getStep())
 			{
+				System.err.println("drawing stepcircle: "+actualStep.getName());
 				// wenn es noch keinen stepcircle mit diesem namen gibt, dann einen erzeugen und hinzufuegen zur page
 				if (!(this.hasStepcircle(actualStep.getName())))
 				{
