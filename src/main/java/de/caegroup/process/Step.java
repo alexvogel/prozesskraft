@@ -1198,10 +1198,15 @@ implements Serializable, Cloneable
 		// gibt es im prozess einen step, der genauso heisst wie this ohne '@', so hat bereits ein reset stattgefunden und dieser step kann aus prozess entfernt werden
 		if(this.getName().matches("^.*@.*$"))
 		{
-			Pattern p = Pattern.compile("^([^@]+).+$");
+			Pattern p = Pattern.compile("^([^@]+)@+$");
 			Matcher m = p.matcher(this.getName());
 			
-			String oldName = m.group(1);
+			String oldName = "";
+			
+			if(m.find())
+			{
+				oldName = m.group(1);
+			}
 			
 			// wenn es schon einen gibt mit dem urspruenglichen namen
 			if(this.getParent().getStep(oldName) != null)
