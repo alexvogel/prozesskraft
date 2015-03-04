@@ -152,7 +152,6 @@ implements Serializable
 		for(Step actStep : stepsToReset)
 		{
 			log("warn", "reset step (because of dependency): "+actStep.getName());
-			System.err.println("warn: reset step (because of dependency): "+actStep.getName());
 			actStep.resetBecauseOfDependency();
 		}
 		
@@ -1699,7 +1698,7 @@ implements Serializable
 		{
 			for(Init actInit : actStep.getInit())
 			{
-				if(actInit.getFromstep().equals(stepname))
+				if(actInit.getFromstep().matches("^"+stepname+"(@.+)?$"))
 				{
 					allDependentSteps.add(actStep);
 				}
