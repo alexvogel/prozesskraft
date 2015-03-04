@@ -1198,13 +1198,13 @@ implements Serializable, Cloneable
 //		System.err.println("resetBecauseOfDependency");
 		// enthaelt der Namen ein '@' so handelt es sich um einen multistep
 		// gibt es im prozess einen step, der genauso heisst wie this ohne '@', so hat bereits ein reset stattgefunden und dieser step kann aus prozess entfernt werden
-		if(this.getName().matches("^.*@.*$"))
+		if(this.getName().matches("^[^@]+@.+$"))
 		{
 //			System.err.println("resetBecauseOfDependency: enthaelt ein @");
-			Pattern p = Pattern.compile("^([^@]+)@+$");
+			Pattern p = Pattern.compile("^([^@]+)@.+$");
 			Matcher m = p.matcher(this.getName());
 			
-			String oldName = "";
+			String oldName = "unknown";
 			
 			if(m.find())
 			{
