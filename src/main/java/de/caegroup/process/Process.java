@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -1691,6 +1693,23 @@ implements Serializable
 	 */
 	public ArrayList<Step> getStepDependent(String stepname)
 	{
+		String stumpfStepname = stepname;
+		// falls der stepnamen ein multistep ist muss erst der stumpf des namens festgestellt werden
+		if(stepname.matches("^[^@]+@.+$"))
+		{
+//			System.err.println("resetBecauseOfDependency: enthaelt ein @");
+			Pattern p = Pattern.compile("^([^@]+)@.+$");
+			Matcher m = p.matcher(stepname);
+			
+			if(m.find())
+			{
+//				System.err.println("resetBecauseOfDependency: enthaelt ein @ alter namen ist "+m.group(1));
+				stumpfStepname = m.group(1);
+			}
+		}
+		
+//		System.err.println("stumpfnamen: "+stumpfStepname);
+		
 		ArrayList<Step> allDependentSteps = new ArrayList<Step>();
 		
 		// feststellen aller abhaengigen Steps von dem einen genannten Step
@@ -1698,8 +1717,9 @@ implements Serializable
 		{
 			for(Init actInit : actStep.getInit())
 			{
-				if(actInit.getFromstep().matches("^"+stepname+"(@.+)?$"))
+				if(actInit.getFromstep().equals(stumpfStepname))
 				{
+					// den tatsaechlichen step (inkl. evtl. @-extension) der gefundenen-liste hinzufuegen
 					allDependentSteps.add(actStep);
 				}
 			}
@@ -1713,14 +1733,30 @@ implements Serializable
 			// fuer alle bisher bekannten abhaengigen Steps
 			for(Step actDependentStep : allDependentSteps)
 			{
+				String actDependentStepStumpfName = actDependentStep.getName();
+				// evtl. den Namen auf den stumpf reduzieren
+				if(actDependentStep.getName().matches("^.*@.*$"))
+				{
+//					System.err.println("resetBecauseOfDependency: enthaelt ein @");
+					Pattern p = Pattern.compile("^([^@]+)@+$");
+					Matcher m = p.matcher(actDependentStep.getName());
+					
+					if(m.find())
+					{
+//						System.err.println("resetBecauseOfDependency: enthaelt ein @ alter namen ist "+m.group(1));
+						actDependentStepStumpfName = m.group(1);
+					}
+				}
+
 				// alle Steps durchgehen
 				for(Step actStep : this.getStep())
 				{
+					
 					// alle Inits durchgehen
 					for(Init actInit : actStep.getInit())
 					{
 						// wenn ein Init einen Fromstepverweis hat, der einem bekannten abhaengigen Step entspricht
-						if(actInit.getFromstep().equals(actDependentStep.getName()))
+						if(actInit.getFromstep().equals(actDependentStepStumpfName))
 						{
 							// und dieser noch nicht in der abhaengigen liste drin ist
 							if(!allDependentSteps.contains(actStep))
