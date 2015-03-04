@@ -1,6 +1,7 @@
 package de.caegroup.process;
 
 import java.io.*;
+import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -1220,11 +1221,11 @@ implements Serializable, Cloneable
 			// dann die loopdaten, stepnamen auf alte werte setzen und den ueblichen reset durchfuehren
 			else
 			{
+				this.reset();
 				this.setLoop(this.getLoopOld());
 				this.setLoopOld(null);
 				this.setLoopvar(null);
 				this.setName(oldName);
-				this.reset();
 			}
 		}
 		else
@@ -1244,96 +1245,120 @@ implements Serializable, Cloneable
 	 */
 	public void reset()
 	{
-		// root kann nicht resettet werden!
-		if(this.getName().equals(this.getParent().getRootstepname()))
+		// root reset ist ausschließlich die daten innerhalb des rootdirs loeschen
+		if(this.isRoot())
 		{
-			return;
-		}
-
-		// log leeren
-		this.getLog().clear();
-
-		// alle listen loeschen, die keine defaultitems enthalten
-		// listen mit defaultitems leeren.
-		ArrayList<List> toPreserve = new ArrayList<List>();
-		log("debug", "listCount before reset-bla: "+this.getList().size());
-		for(List actList : this.getList())
-		{
-			if(!actList.getDefaultitem().isEmpty())
+			// delete stepdirectory
+			Path dir = Paths.get(this.getAbsdir());
+//			Path pathProcessFile = Paths.get(this.getAbsdir()+"/process.pmb");
+			try
 			{
-				log("debug", "list: "+actList.getName()+": amount defaultitems: "+actList.getDefaultitem().size());
-				actList.clear();
-				toPreserve.add(actList);
-			}
-			else
-			{
-				log("debug", "list: "+actList.getName()+": no defaultitems");
-			}
-		}
-		this.setList(toPreserve);
-		log("debug", "listCount after reset-bla: "+this.getList().size());
-
-		// variablen leeren
-		this.getVariable().clear();
-
-		// files leeren
-		this.getFile().clear();
-
-		// inits reseten
-		for(Init actInit : this.getInit())
-		{
-			actInit.reset();
-		}
-
-		if(this.getWork() != null)
-		{
-			this.getWork().reset();
-		}
-
-		if(this.getSubprocess() != null)
-		{
-			this.getSubprocess().reset();
-		}
-
-		// commits reseten
-		for(Commit actCommit : this.getCommit())
-		{
-			actCommit.reset();
-		}
-		
-		// delete stepdirectory
-		Path dir = Paths.get(this.getAbsdir());
-		try
-		{
-			Files.walkFileTree(dir, new SimpleFileVisitor<Path>()
-					{
-						public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
+				Files.walkFileTree(dir, new SimpleFileVisitor<Path>()
 						{
-							Files.delete(file);
-							return CONTINUE;
-						}
-						
-						public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
-						{
-							if(exc == null)
+							public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
 							{
-								Files.delete(dir);
+								if(!(file.endsWith("process.pmb")))
+								{
+									Files.delete(file);
+								}
 								return CONTINUE;
 							}
-							else
+						}
+						);
+			}
+			catch (Exception e)
+			{
+				log("warn", e.getMessage()+"\n"+"problems with deleting old step directory or parts of it: "+this.getAbsdir()+"\n"+Arrays.toString(e.getStackTrace()));
+			}
+			return;
+		}
+		else
+		{
+			// log leeren
+			this.getLog().clear();
+	
+			// alle listen loeschen, die keine defaultitems enthalten
+			// listen mit defaultitems leeren.
+			ArrayList<List> toPreserve = new ArrayList<List>();
+			log("debug", "listCount before reset-bla: "+this.getList().size());
+			for(List actList : this.getList())
+			{
+				if(!actList.getDefaultitem().isEmpty())
+				{
+					log("debug", "list: "+actList.getName()+": amount defaultitems: "+actList.getDefaultitem().size());
+					actList.clear();
+					toPreserve.add(actList);
+				}
+				else
+				{
+					log("debug", "list: "+actList.getName()+": no defaultitems");
+				}
+			}
+			this.setList(toPreserve);
+			log("debug", "listCount after reset-bla: "+this.getList().size());
+	
+			// variablen leeren
+			this.getVariable().clear();
+	
+			// files leeren
+			this.getFile().clear();
+	
+			// inits reseten
+			for(Init actInit : this.getInit())
+			{
+				actInit.reset();
+			}
+	
+			if(this.getWork() != null)
+			{
+				this.getWork().reset();
+			}
+	
+			if(this.getSubprocess() != null)
+			{
+				this.getSubprocess().reset();
+			}
+	
+			// commits reseten
+			for(Commit actCommit : this.getCommit())
+			{
+				actCommit.reset();
+			}
+			
+			// delete stepdirectory
+			Path dir = Paths.get(this.getAbsdir());
+			try
+			{
+				Files.walkFileTree(dir, new SimpleFileVisitor<Path>()
+						{
+							public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
 							{
-								throw exc;
+								Files.delete(file);
+								return CONTINUE;
+							}
+							
+							public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
+							{
+								if(exc == null)
+								{
+									Files.delete(dir);
+									return CONTINUE;
+								}
+								else
+								{
+									throw exc;
+								}
 							}
 						}
-					}
-					);
-		}
-		catch (Exception e)
-		{
-			log("warn", e.getMessage()+"\n"+"problems with deleting old step directory or parts of it: "+this.getAbsdir()+"\n"+Arrays.toString(e.getStackTrace()));
-		}
+						);
+			}
+			catch (Exception e)
+			{
+				log("warn", e.getMessage()+"\n"+"problems with deleting old step directory or parts of it: "+this.getAbsdir()+"\n"+Arrays.toString(e.getStackTrace()));
+			}
 
-		this.reset++;
+			this.reset++;
+		}
 	}
 
 //	/**
