@@ -1213,6 +1213,7 @@ implements Serializable, Cloneable
 			{
 				// es gibt bereits wieder einen step mit Namen 'vor dem fan'
 				// raus mit this
+				this.reset();
 				this.getParent().removeStep(this);
 			}
 			// wenn es noch keinen gibt mit dem urspruenglichen namen,
