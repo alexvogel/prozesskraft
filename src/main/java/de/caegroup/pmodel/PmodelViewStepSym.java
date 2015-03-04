@@ -79,7 +79,7 @@ public class PmodelViewStepSym
 		else
 		{
 			String rank = this.step.getRank();
-			System.err.println("step "+this.step.getName()+": rank: "+rank);
+//			System.err.println("step "+this.step.getName()+": rank: "+rank);
 			String[] rankStringArray = rank.split("\\.");
 			int level = 0;
 			int posi = 0;

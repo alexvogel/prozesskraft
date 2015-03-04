@@ -414,7 +414,7 @@ public class SIInsightCreator
 		MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
 		confirmation.setText("please confirm");
 		String message = "";
-		if(step.getName().equals(step.getParent().getRootstepname()))
+		if(step.isRoot())
 		{
 			message += "WARNING\n";
 			message += "you are about to reset all steps of this instance.\n";
