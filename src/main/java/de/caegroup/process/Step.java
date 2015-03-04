@@ -1195,10 +1195,12 @@ implements Serializable, Cloneable
 	 */
 	public void resetBecauseOfDependency()
 	{
+		System.err.println("resetBecauseOfDependency");
 		// enthaelt der Namen ein '@' so handelt es sich um einen multistep
 		// gibt es im prozess einen step, der genauso heisst wie this ohne '@', so hat bereits ein reset stattgefunden und dieser step kann aus prozess entfernt werden
 		if(this.getName().matches("^.*@.*$"))
 		{
+			System.err.println("resetBecauseOfDependency: enthaelt ein @");
 			Pattern p = Pattern.compile("^([^@]+)@+$");
 			Matcher m = p.matcher(this.getName());
 			
@@ -1206,12 +1208,14 @@ implements Serializable, Cloneable
 			
 			if(m.find())
 			{
+				System.err.println("resetBecauseOfDependency: enthaelt ein @ alter namen ist "+m.group(1));
 				oldName = m.group(1);
 			}
 			
 			// wenn es schon einen gibt mit dem urspruenglichen namen
 			if(this.getParent().getStep(oldName) != null)
 			{
+				System.err.println("resetBecauseOfDependency: enthaelt ein @ alter namen ist "+m.group(1)+" Und den gibt es schon im prozess");
 				// es gibt bereits wieder einen step mit Namen 'vor dem fan'
 				// raus mit this
 				this.reset();
@@ -1221,6 +1225,7 @@ implements Serializable, Cloneable
 			// dann die loopdaten, stepnamen auf alte werte setzen und den ueblichen reset durchfuehren
 			else
 			{
+				System.err.println("resetBecauseOfDependency: enthaelt ein @ alter namen ist "+m.group(1)+" Und den gibt es NICHT im prozess");
 				this.reset();
 				this.setLoop(this.getLoopOld());
 				this.setLoopOld(null);
@@ -1230,6 +1235,7 @@ implements Serializable, Cloneable
 		}
 		else
 		{
+			System.err.println("resetBecauseOfDependency: wird normal resettet: "+this.getName());
 			this.reset();
 		}
 	}
