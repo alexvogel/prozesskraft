@@ -587,11 +587,18 @@ public class PmodelPartUi1 extends ModelObject
 		log("info", "refreshing data.");
 		// process frisch einlesen
 		
+		// wenn das pmb-file nicht existiert, dann soll nichts gemacht werden
+		if(!(new java.io.File(this.einstellungen.process.getInfilebinary()).exists()))
+		{
+			log("error", "process binary file does not exist: "+this.einstellungen.process.getInfilebinary());
+			return;
+		}
+		
 		// binary in ein neues Process-Object einlesen
 		Process p = this.einstellungen.getProcess().readBinary();
 		
 		int zaehler = 0;
-		while(p == null)
+		while(p == null && zaehler < 5)
 		{
 			log("error", "problems while reading process object. trying once again.");
 			try
@@ -604,10 +611,12 @@ public class PmodelPartUi1 extends ModelObject
 			}
 			p = this.einstellungen.getProcess().readBinary();
 			zaehler ++;
-			if (zaehler > 5)
-			{
-				System.out.println("several errors occured while reading process object.");
-			}
+		}
+		
+		if(p == null)
+		{
+			log("error", "cannot read the process binary file: "+this.einstellungen.getProcess().getInfilebinary());
+			return;
 		}
 		
 		// wenn das neu eingelesene Object 'gut' ist, wird es uebernommen
@@ -646,6 +655,13 @@ public class PmodelPartUi1 extends ModelObject
 	
 	public void managerActivate()
 	{
+		// wenn das pmb-file nicht existiert, dann soll nichts gemacht werden
+		if(!(new java.io.File(this.einstellungen.process.getInfilebinary()).exists()))
+		{
+			log("error", "process binary file does not exist: "+this.einstellungen.process.getInfilebinary());
+			return;
+		}
+		
 		String aufruf = ini.get("apps", "process-manager")+" -instance "+this.einstellungen.process.getInfilebinary();
 		try
 		{
@@ -680,6 +696,13 @@ public class PmodelPartUi1 extends ModelObject
 	
 	public void managerDeactivate()
 	{
+		// wenn das pmb-file nicht existiert, dann soll nichts gemacht werden
+		if(!(new java.io.File(this.einstellungen.process.getInfilebinary()).exists()))
+		{
+			log("error", "process binary file does not exist: "+this.einstellungen.process.getInfilebinary());
+			return;
+		}
+		
 		String aufruf =  ini.get("apps", "process-manager")+" -stop -instance "+this.einstellungen.process.getInfilebinary();
 		try
 		{

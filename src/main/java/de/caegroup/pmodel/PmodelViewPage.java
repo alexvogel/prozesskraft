@@ -246,7 +246,7 @@ public class PmodelViewPage extends PApplet
 //			ArrayList<Step> copyOfSteps =  this.einstellungen.getProcess().getStep();
 			for(Step actualStep : this.einstellungen.getProcess().getStep())
 			{
-				System.err.println("drawing stepcircle: "+actualStep.getName());
+//				System.err.println("drawing stepcircle: "+actualStep.getName());
 				// wenn es noch keinen stepcircle mit diesem namen gibt, dann einen erzeugen und hinzufuegen zur page
 				if (!(this.hasStepcircle(actualStep.getName())))
 				{
@@ -380,7 +380,7 @@ public class PmodelViewPage extends PApplet
 	{
 		mouse_pressed_x = mouseX;
 		mouse_pressed_y = mouseY;
-		System.out.println("mouseX: "+mouseX);
+//		System.out.println("mouseX: "+mouseX);
 
 		for(int l=0; l<this.stepcircles.size(); l++)
 		{
