@@ -152,6 +152,7 @@ implements Serializable
 		for(Step actStep : stepsToReset)
 		{
 			log("warn", "reset step (because of dependency): "+actStep.getName());
+			System.err.println("warn: reset step (because of dependency): "+actStep.getName());
 			actStep.resetBecauseOfDependency();
 		}
 		
