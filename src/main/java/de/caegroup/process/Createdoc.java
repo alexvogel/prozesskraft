@@ -385,7 +385,10 @@ public class Createdoc
 		{
 			
 			// root ueberspringen
-			if (actualStep.getName().equals(process.getRootstepname()));
+			if (actualStep.isRoot())
+			{
+				break;
+			}
 			
 			String stepImagePath = randomPathPng+"/step_"+actualStep.getName()+"_Topology.png";
 			
