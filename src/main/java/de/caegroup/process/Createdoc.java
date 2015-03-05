@@ -1134,25 +1134,48 @@ public class Createdoc
 				report.setParameter("stepRank", stepRank);
 				report.setParameter("stepDescription", actualStep.getDescription());
 				
-				// zusammensetzen des scriptaufrufs
-				String interpreter = "";
-				
-				if (actualStep.getWork().getInterpreter() != null)
+				String aufruf = "";
+				if(actualStep.getWork() != null)
 				{
-					interpreter = actualStep.getWork().getInterpreter();
-				}
-				
-				String aufruf = interpreter+" "+actualStep.getWork().getCommand();
-				for(Callitem actualCallitem : actualStep.getWork().getCallitem())
-				{
-					aufruf += " "+actualCallitem.getPar();
-					if( !(actualCallitem.getDel() == null) )
+					// zusammensetzen des scriptaufrufs
+					String interpreter = "";
+					
+					if (actualStep.getWork().getInterpreter() != null)
 					{
-						aufruf += actualCallitem.getDel();
+						interpreter = actualStep.getWork().getInterpreter();
 					}
-					if( !(actualCallitem.getVal() == null) )
+					
+					aufruf = interpreter+" "+actualStep.getWork().getCommand();
+					for(Callitem actualCallitem : actualStep.getWork().getCallitem())
 					{
-						aufruf += actualCallitem.getVal();
+						aufruf += " "+actualCallitem.getPar();
+						if( !(actualCallitem.getDel() == null) )
+						{
+							aufruf += actualCallitem.getDel();
+						}
+						if( !(actualCallitem.getVal() == null) )
+						{
+							aufruf += actualCallitem.getVal();
+						}
+					}
+				}
+				else if(actualStep.getSubprocess() != null)
+				{
+					aufruf = ini.get("apps", "process-startinstance");
+					aufruf += " --pdomain "+actualStep.getSubprocess().getDomain();
+					aufruf += " --pname "+actualStep.getSubprocess().getName();
+					aufruf += " --pversion "+actualStep.getSubprocess().getVersion();
+					
+					for(Commit actCommit : actualStep.getSubprocess().getStep().getCommit())
+					{
+						for(de.caegroup.process.File actFile : actCommit.getFile())
+						{
+							aufruf += " --commitfile "+actFile.getGlob();
+						}
+						for(Variable actVariable : actCommit.getVariable())
+						{
+							aufruf += " --commitvariable "+actVariable.getKey()+"="+actVariable.getValue();
+						}
 					}
 				}
 				report.setParameter("stepWorkCall", aufruf);
