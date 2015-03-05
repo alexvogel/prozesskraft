@@ -806,6 +806,7 @@ foreach my $refh_stackline (@CONFIG)
 				push(@param, "--targetuser=".$now_targetuser);			# wird nur fuer das richtige filtern des stacks benoetigt
 				push(@param, "--log=".$TMPDIR."/builder_".$appToMerge.".log");
 				push(@param, "--redirecttargetdir=".$TMPDIR);
+				push(@param, "--config=".$config);
 				push(@param, "--batch");
 				
 				print "info: installing app $appToMerge (because of merge)\n";
