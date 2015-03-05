@@ -1528,6 +1528,8 @@ public class Createdoc
 //////////////////////////////////////////
 	/**
 	 * merge the pptx
+	 * Dieses mergePptx funktioniert nicht!
+	 * Evtl. muss eine Lizenz von plutext.com fuer MergePptx gekauft werden
 	 */
 	private static void mergePptx(Map<String,String> pptxRankFiles, String output)
 	{
