@@ -6,3 +6,4 @@ deploy.pl
 .gitignore
 .project
 .classpath
+config
