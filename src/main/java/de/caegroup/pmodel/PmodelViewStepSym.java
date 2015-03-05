@@ -366,12 +366,12 @@ public class PmodelViewStepSym
 			double pumpScalierung = 0.96 + (0.04 * Math.sin(System.currentTimeMillis()/100));
 			
 			parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung * (float)pumpScalierung, this.getRadius() * scalierung * (float)pumpScalierung);
-			parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung * (float)pumpScalierung, this.getRadius() * scalierung * (float)pumpScalierung * 0.9f);
+			parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung * (float)pumpScalierung * 0.85f, this.getRadius() * scalierung * (float)pumpScalierung * 0.85f);
 		}
 		else
 		{
 			parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung, this.getRadius() * scalierung);
-			parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung, this.getRadius() * scalierung * 0.9f);
+			parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung * 0.85f, this.getRadius() * scalierung * 0.85f);
 		}
 	}
 
