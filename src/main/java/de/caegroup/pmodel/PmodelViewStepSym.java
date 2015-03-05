@@ -194,7 +194,7 @@ public class PmodelViewStepSym
 //		makeTimeStamp("5214");
 		
 		// feststellen ob symbol pumpen soll
-		if (this.step.getStatus().matches("initialized|working|worked|committing|committed|fanning|fanned"))
+		if (this.step.getStatus().matches("initialized|working|worked|committing|committed|fanning|fanned") && this.step.getParent().getStatus().matches("^working$|^rolling$"))
 		{
 			this.pump = true;
 		}
@@ -209,9 +209,14 @@ public class PmodelViewStepSym
 //			System.out.println("symbol: quadrat mit x");
 		}
 		
-		else if ( (this.step.getType().equals("automatic") || this.step.getType().equals("process") ) && !(this.step.isAmultistep()) )
+		else if ( this.step.getType().equals("automatic") && !(this.step.isAmultistep()) )
 		{
 			symbol_circle(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, 0, 0, true, pump);
+//			System.out.println("symbol: kreis");
+		}
+		else if ( this.step.getType().equals("process") && !(this.step.isAmultistep()) )
+		{
+			symbol_circledouble(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, 0, 0, true, pump);
 //			System.out.println("symbol: kreis");
 		}
 		else if ( this.step.getType().equals("manual") && !(this.step.isAmultistep()) )
@@ -220,9 +225,15 @@ public class PmodelViewStepSym
 //			System.out.println("symbol: quadrat");
 		}
 		
-		else if ( (this.step.getType().equals("automatic") || this.step.getType().equals("process") ) && this.step.isAmultistep() )
+		else if ( this.step.getType().equals("automatic") && this.step.isAmultistep() )
 		{
 			symbol_multistep(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, "circle");
+//			System.out.println("symbol: multi-kreis");
+		}
+
+		else if ( this.step.getType().equals("process")  && this.step.isAmultistep() )
+		{
+			symbol_multistep(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, "circledouble");
 //			System.out.println("symbol: multi-kreis");
 		}
 
@@ -337,6 +348,33 @@ public class PmodelViewStepSym
 		}
 	}
 	
+	private void symbol_circledouble(float scalierung, float x_offset, float y_offset, boolean fill, boolean pump)
+	{
+		if (fill)
+		{
+			parent.fill(this.getColor1(), this.getColor2(), this.getColor3());
+		}
+		else
+		{
+			parent.fill(255, 255, 255); // weiss
+		}
+		parent.strokeWeight(this.getStrokethickness());
+		parent.stroke(getStrokecolor1(), getStrokecolor2(), getStrokecolor3());
+		
+		if(pump)
+		{
+			double pumpScalierung = 0.96 + (0.04 * Math.sin(System.currentTimeMillis()/100));
+			
+			parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung * (float)pumpScalierung, this.getRadius() * scalierung * (float)pumpScalierung);
+			parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung * (float)pumpScalierung, this.getRadius() * scalierung * (float)pumpScalierung * 0.9f);
+		}
+		else
+		{
+			parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung, this.getRadius() * scalierung);
+			parent.ellipse(this.getDrawPosition1() + x_offset, this.getDrawPosition2() + y_offset, this.getRadius() * scalierung, this.getRadius() * scalierung * 0.9f);
+		}
+	}
+
 	private void symbol_quadrat(float scalierung, float x_offset, float y_offset, boolean fill)
 	{
 		if (fill)
@@ -377,6 +415,10 @@ public class PmodelViewStepSym
 		{
 			symbol_circle(scalierung, 0, 0, false, this.pump);
 		}
+		else if (type.equals("circledouble"))
+		{
+			symbol_circledouble(scalierung, 0, 0, false, this.pump);
+		}
 		else if (type.equals("quadrat"))
 		{
 			symbol_quadrat(scalierung, 0, 0, false);
@@ -392,6 +434,10 @@ public class PmodelViewStepSym
 			if (type.equals("circle"))
 			{
 				symbol_circle(verkl_faktor, (float)x_offset, (float)y_offset, true, this.pump);
+			}
+			else if (type.equals("circledouble"))
+			{
+				symbol_circledouble(verkl_faktor, (float)x_offset, (float)y_offset, true, this.pump);
 			}
 			else if (type.equals("quadrat"))
 			{
