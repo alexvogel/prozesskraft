@@ -1340,15 +1340,20 @@ public class Createdoc
 				report.setParameter("stepRank", stepRank);
 				
 				// logfile ermitteln
-				if (actualStep.getWork().getLogfile() == null || actualStep.getWork().getLogfile().equals(""))
+				String logfile ="-";
+				if(actualStep.getWork() != null)
 				{
-					report.setParameter("stepWorkLogfile", "-");
+					if (actualStep.getWork().getLogfile() == null || actualStep.getWork().getLogfile().equals(""))
+					{
+						report.setParameter("stepWorkLogfile", actualStep.getWork().getLogfile());
+					}
 				}
-				else
+				else if(actualStep.getSubprocess() != null)
 				{
-					report.setParameter("stepWorkLogfile", actualStep.getWork().getLogfile());
+					logfile = ".log";
 				}
-
+				report.setParameter("stepWorkLogfile", logfile);
+				
 				// zusammensetzen der return/exitcode informationen
 				String exitInfo = "exit 0 = kein fehler aufgetreten";
 				exitInfo += "\nexit >0 = ein fehler ist aufgetreten.";
