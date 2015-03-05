@@ -76,6 +76,7 @@ my $cleanapp;
 my $cleanbranch;
 my $genstack;
 my $pack;
+my $config;
 my $setdefault;
 my $log = $ENV{'HOME'}."/.builder/builder.log";
 my $result = GetOptions(
@@ -95,6 +96,7 @@ my $result = GetOptions(
                         "cleanapp"   => \$cleanapp,
                         "cleanbranch"=> \$cleanbranch,
                         "pack"=> \$pack,
+                        "config=s" => \$config,
                         "setdefault=s"=> \$setdefault,
                         "genstack"=> \$genstack,
                         "log=s"=> \$log,
@@ -142,8 +144,9 @@ $helptext .= " --targetuser=STRING  [optional, filters stack] processes only the
 $helptext .= " --ybranches=INT      [optional, overrides stack] installs the youngest <INT> branches (plus 'master' and all '*beta' younger than the <INT> youngest branches).\n";
 $helptext .= " --branch=PATTERN     [optional, overrides --ybranches] installs the matching branch.\n";
 $helptext .= " --cleanbranch		[optional] prior to install all content in target directory of the processed branch of the processed app will be deleted. this value overrides the value in configfile\n";
-$helptext .= " --cleanapp			[optional] prior to build all branches of the processed app will be deleted.\n";
-$helptext .= " --pack				[optional] delivers the installation directory as a *.tar.gz file\n";
+$helptext .= " --cleanapp		[optional] prior to build all branches of the processed app will be deleted.\n";
+$helptext .= " --pack			[optional] delivers the installation directory as a *.tar.gz file\n";
+$helptext .= " --config		[optional] integrates an alternative configuration e.g. bmw\n";
 $helptext .= " --batch              [optional] direct execution of all relevant buildinstances without possibility to abort.\n";
 $helptext .= " --setdefault=VERSION   [optional] creates a file 'version.<appname> with the version string inside\n";
 $helptext .= " --log                [optional, default: ~/.builder/builder.log] this logfile will be used.\n";
@@ -443,6 +446,7 @@ foreach my $refh_stackline (@CONFIG)
 	# ausgabe der parameter aus conf und abgeleiterer params
 	print "info: ----- start these parameters (from stackline and user) -----\n";
 	print "info: app = $now_app\n";
+	print "info: config = $config\n";
 	print "info: repodir = $now_repodir\n";
 	print "info: targetdir = $now_targetdir\n";
 	print "info: targetbulk = $now_targetbulk\n";
@@ -629,6 +633,18 @@ foreach my $refh_stackline (@CONFIG)
 		my $date_lastcommit = "unknown";
 		$date_lastcommit = $1;
 		print "info: determined date is: $date_lastcommit\n";
+		#-------------------
+
+		#-------------------
+		# wird ein spezielles config gewuenscht, sollen diese files in die hauptdaten ueberspielt werden
+		if($config)
+		{
+			print STDERR "info: repodir = $now_repodir\n";
+			print STDERR "info: targetdir = $now_targetdir\n";
+			print STDERR "info: targetbulk = $now_targetbulk\n";
+			print STDERR "info: targetbulkapp = $now_targetbulkapp\n";
+			exit(1);
+		}
 		#-------------------
 
 		#-------------------
