@@ -650,8 +650,9 @@ foreach my $refh_stackline (@CONFIG)
 			}
 			else
 			{
-				print "error: no special config $config found in $TMPDIR/config/$config";
-				exit(1);
+				print "warn: no special config $config found in $TMPDIR/config/$config";
+				# kein exit bei nicht vorhandenem config, weil --config womoeglich fuer nachgelagerte builder aufrufe gedacht ist (action(merge))
+#				exit(1);
 			}
 		}
 		#-------------------
