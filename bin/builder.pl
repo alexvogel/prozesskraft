@@ -639,11 +639,20 @@ foreach my $refh_stackline (@CONFIG)
 		# wird ein spezielles config gewuenscht, sollen diese files in die hauptdaten ueberspielt werden
 		if($config)
 		{
-			print STDERR "info: repodir = $now_repodir\n";
-			print STDERR "info: targetdir = $now_targetdir\n";
-			print STDERR "info: targetbulk = $now_targetbulk\n";
-			print STDERR "info: targetbulkapp = $now_targetbulkapp\n";
-			exit(1);
+			print "a special is needed because of --config $config\n";
+			if(-d $TMPDIR."/config/$config")
+			{
+				print "special config $config found in $TMPDIR/config/$config";
+				print "syncing the config files to main-data\n";
+				print "rsync -avz $TMPDIR/config/$config/ $TMPDIR\n";
+				system "rsync -avz $TMPDIR/config/$config/ $TMPDIR";
+				print "special config finished";
+			}
+			else
+			{
+				print "error: no special config $config found in $TMPDIR/config/$config";
+				exit(1);
+			}
 		}
 		#-------------------
 
