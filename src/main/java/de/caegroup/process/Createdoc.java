@@ -385,14 +385,12 @@ public class Createdoc
 		{
 			
 			// root ueberspringen
-			if (actualStep.isRoot())
-			{
-				break;
-			}
+//			if (actualStep.isRoot());
 			
 			String stepImagePath = randomPathPng+"/step_"+actualStep.getName()+"_Topology.png";
 			
 			// Farbe des Steps auf finished (gruen) aendern
+			page.einstellungen.getProcess().getRootStep().setStatusOverwrite("waiting");
 			actualStep.setStatusOverwrite("finished");
 			
 			// etwas warten, bis die farbe bezeichnet wurde
