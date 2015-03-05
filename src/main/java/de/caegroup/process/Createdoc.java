@@ -1561,15 +1561,18 @@ public class Createdoc
 				System.err.println("creating slidePart "+"/ppt/slides/"+actualKey);
 				
 				RelationshipsPart slidePartRel = slidePart.getRelationshipsPart();
-//				slidePartRel.setPartName(new PartName("/ppt/slides/_rel/"+actualKey+".rel"));
+
+//----
+				slidePartRel.setPartName(new PartName("/ppt/slides/_rel/"+actualKey+".rel"));
 				
 //				RelationshipsPart slidePartRel = new RelationshipsPart(slidePart.getPartName());
-//				slidePartRel.addPart(slidePart, "slide", ctm)
+//				slidePartRel.addPart(slidePart, "slide", ctm);
 				
-//				pp.addTargetPart(slidePartRel);
-//				pp.addTargetPart(slidePart);
+				pp.addTargetPart(slidePartRel);
+				pp.addTargetPart(slidePart);
+//----
 				
-				pp.addSlide(slidePart);
+//				pp.addSlide(slidePart);
 				
 			}
 			
