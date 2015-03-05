@@ -1357,9 +1357,12 @@ public class Createdoc
 				// zusammensetzen der return/exitcode informationen
 				String exitInfo = "exit 0 = kein fehler aufgetreten";
 				exitInfo += "\nexit >0 = ein fehler ist aufgetreten.";
-				for(Exit actualExit : actualStep.getWork().getExit())
+				if(actualStep.getWork() != null)
 				{
-					exitInfo += "\nexit "+actualExit.getValue()+" = "+actualExit.getMsg();
+					for(Exit actualExit : actualStep.getWork().getExit())
+					{
+						exitInfo += "\nexit "+actualExit.getValue()+" = "+actualExit.getMsg();
+					}
 				}
 				report.setParameter("stepWorkExit", exitInfo);
 				
