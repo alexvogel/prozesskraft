@@ -1558,6 +1558,7 @@ public class Createdoc
 				
 				
 				slidePart.setPartName(new PartName("/ppt/slides/"+actualKey));
+				System.err.println("creating slidePart "+"/ppt/slides/"+actualKey);
 				
 				RelationshipsPart slidePartRel = slidePart.getRelationshipsPart();
 //				slidePartRel.setPartName(new PartName("/ppt/slides/_rel/"+actualKey+".rel"));
