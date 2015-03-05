@@ -1563,59 +1563,29 @@ public class Createdoc
 				RelationshipsPart slidePartRel = slidePart.getRelationshipsPart();
 
 //----
-				slidePartRel.setPartName(new PartName("/ppt/slides/_rel/"+actualKey+".rel"));
-				
+//				slidePartRel.setPartName(new PartName("/ppt/slides/_rel/"+actualKey+".rel"));
+//				
 //				RelationshipsPart slidePartRel = new RelationshipsPart(slidePart.getPartName());
 //				slidePartRel.addPart(slidePart, "slide", ctm);
-				
-				pp.addTargetPart(slidePartRel);
-				pp.addTargetPart(slidePart);
+//				
+//				pp.addTargetPart(slidePartRel);
+//				pp.addTargetPart(slidePart);
 //----
 				
-//				pp.addSlide(slidePart);
+				pp.addSlide(slidePart);
 				
 			}
 			
 			System.out.println("slide added");
 			targetPackage.save(targetFile);
 			
-//			PDDocument document = new PDDocument();
-//			for(String actualKey : listKey)
-//			{
-//
-//				PDDocument part = PDDocument.load(pdfRankFiles.get(actualKey));
-//				System.out.println("merging "+pdfRankFiles.get(actualKey));
-//				ArrayList<PDPage> list = (ArrayList<PDPage>)part.getDocumentCatalog().getAllPages();
-//				for(PDPage page : list)
-//				{
-//					document.addPage(page);
-//				}
-//				
-//			}
-//			try
-//			{
-//				System.out.println("writing "+output);
-//				document.save(output);
-//			} catch (COSVisitorException e)
-//			{
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
 		}
-//		catch (IOException e)
-//		{
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		catch (InvalidFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Docx4JException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-//		} catch (JAXBException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
 		} catch (Pptx4jException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
