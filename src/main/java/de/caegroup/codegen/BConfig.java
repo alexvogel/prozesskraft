@@ -57,9 +57,14 @@ implements Serializable, Cloneable
 			content.add("	logit(\"debug\", \"config-file found: $conf_path2\");");
 			content.add("	%CONF_ORG = &getvars($conf_path2);");
 			content.add("}");
+			content.add("elsif (stat $conf_path3)");
+			content.add("{");
+			content.add("	logit(\"debug\", \"config-file found: $conf_path3\");");
+			content.add("	%CONF_ORG = &getvars($conf_path3);");
+			content.add("}");
 			content.add("else");
 			content.add("{");
-			content.add("	logit(\"debug\", \"no config found in both possible locations (location1: $conf_path1) (location2: $conf_path2). builtin config-read capabilities cannot be used\");");
+			content.add("	logit(\"debug\", \"no config found in both possible locations (location1: $conf_path1) (location2: $conf_path2) (location3: $conf_path3). builtin config-read capabilities cannot be used\");");
 			content.add("}");
 			content.add("");
 			content.add("# setzen der vom user uebergebenen configparameter und damit ueberschreiben der bestehenden mit dem gleichen namen");

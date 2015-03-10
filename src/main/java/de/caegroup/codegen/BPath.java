@@ -78,6 +78,11 @@ implements Serializable, Cloneable
 			content.add("# path to configurationfile");
 			content.add("my $conf_path1 = $directories . \"/\" . $filename.\".conf\";");
 			content.add("my $conf_path2 = $etcdir . \"/\" . $filename.\".conf\";");
+			content.add("");
+			content.add("my $baseFilename = $filename;");
+			content.add("$baseFilename =~ s/\\..+$//; # entfernen der extension");
+			content.add("my $conf_path3 = $etcdir . \"/\" . $baseFilename.\".conf\";");
+			content.add("");
 			content.add("# path to documentation");
 			content.add("my $doc_path = $docdir . \"/\" . $filename.\".pdf\";");
 			content.add("");

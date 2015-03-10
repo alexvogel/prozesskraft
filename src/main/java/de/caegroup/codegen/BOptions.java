@@ -48,8 +48,8 @@ implements Serializable, Cloneable
 			
 			content.add("# 1 < reihenfolge <= 15");
 			content.add("# definition der standardoptions");
-			content.add("				'help' => {'reihenfolge' => '13', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'prints this helptext'},");
-			content.add("				'debug'  => {'reihenfolge' => '14', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
+			content.add("				'help' => {'reihenfolge' => '13', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'1', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'prints this helptext'},");
+			content.add("				'debug'  => {'reihenfolge' => '14', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'1', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
 			
 			content.add("");
 			content.add("# definition der speziellen options");
@@ -289,8 +289,8 @@ implements Serializable, Cloneable
 			
 			content.add("# 1 < reihenfolge <= 15");
 			content.add("# definition der standardoptions");
-			content.add("				'help' => {'reihenfolge' => '13', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'prints this helptext'},");
-			content.add("				'debug'  => {'reihenfolge' => '14', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
+			content.add("				'help' => {'reihenfolge' => '13', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'1', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'prints this helptext'},");
+			content.add("				'debug'  => {'reihenfolge' => '14', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'1', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
 			
 			content.add("");
 			content.add("# definition der speziellen options");
