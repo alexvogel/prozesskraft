@@ -74,6 +74,11 @@ implements Serializable
 			result = this.testVariableMoreThan(variableToTest, this.getParameterList());
 		}
 		
+		else if (this.name.equals("isA"))
+		{
+			result = this.testVariableIsA(variableToTest, this.getParameterList());
+		}
+		
 		else
 		{
 			result = false;
@@ -84,8 +89,8 @@ implements Serializable
 	}
 	
 	/**
-	 * tests the variable
-	 * @param variableToTest
+	 * tests the file
+	 * @param fileToTest
 	 * @return boolean testResult
 	 */
 	public void performTest(File fileToTest)
@@ -363,6 +368,50 @@ implements Serializable
 		else
 		{
 			setTestFeedback("value '"+testVariable.getValue()+"' is > "+grenzwert_integer);
+		}
+
+		return result;
+	}
+	
+	/**
+	 * tests whether the Variable Value is of a certain type
+	 * @param Variable testVariable, ArrayList<String> pattern
+	 * @return boolean testResult
+	 */
+	private boolean testVariableIsA(Variable testVariable, ArrayList<String> param)
+	{
+		boolean result = true;
+
+		if (param.size() != 1)
+		{
+			setTestFeedback("error in test definition for variables. test isA needs exact 1 param.");
+			result = false;
+			return result;
+		}
+
+		String type = param.get(0);
+
+		if (type.matches("^string|STRING$"))
+		{
+			if(!testVariable.getValue().matches("^\\w+$"))
+			setTestFeedback("value '"+testVariable.getValue()+"' is not a string (= does not match /^\\w+$/)");
+			result = false;
+		}
+		else if(type.matches("^integer|INTEGER$"))
+		{
+			if(!testVariable.getValue().matches("^\\d+$"))
+			setTestFeedback("value '"+testVariable.getValue()+"' is not an integer (= does not match /^\\d+$/)");
+			result = false;
+		}
+		else if(type.matches("^float|FLOAT$"))
+		{
+			if(!testVariable.getValue().matches("^[+-]?[0-9]*\\.?[0-9]+([eE][+-]?[0-9]+)?$"))
+			setTestFeedback("value '"+testVariable.getValue()+"' is not a float (= does not match /^[+-]?[0-9]*\\.?[0-9]+([eE][+-]?[0-9]+)?$/)");
+			result = false;
+		}
+		else
+		{
+			setTestFeedback("for test 'isA' you only may use parameter string, integer or float");
 		}
 
 		return result;
