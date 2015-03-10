@@ -394,20 +394,26 @@ implements Serializable
 		if (type.matches("^string|STRING$"))
 		{
 			if(!testVariable.getValue().matches("^\\w+$"))
-			setTestFeedback("value '"+testVariable.getValue()+"' is not a string (= does not match /^\\w+$/)");
-			result = false;
+			{
+				setTestFeedback("value '"+testVariable.getValue()+"' is not a string (= does not match /^\\w+$/)");
+				result = false;
+			}
 		}
 		else if(type.matches("^integer|INTEGER$"))
 		{
 			if(!testVariable.getValue().matches("^\\d+$"))
-			setTestFeedback("value '"+testVariable.getValue()+"' is not an integer (= does not match /^\\d+$/)");
-			result = false;
+			{
+				setTestFeedback("value '"+testVariable.getValue()+"' is not an integer (= does not match /^\\d+$/)");
+				result = false;
+			}
 		}
 		else if(type.matches("^float|FLOAT$"))
 		{
 			if(!testVariable.getValue().matches("^[+-]?[0-9]*\\.?[0-9]+([eE][+-]?[0-9]+)?$"))
-			setTestFeedback("value '"+testVariable.getValue()+"' is not a float (= does not match /^[+-]?[0-9]*\\.?[0-9]+([eE][+-]?[0-9]+)?$/)");
-			result = false;
+			{
+				setTestFeedback("value '"+testVariable.getValue()+"' is not a float (= does not match /^[+-]?[0-9]*\\.?[0-9]+([eE][+-]?[0-9]+)?$/)");
+				result = false;
+			}
 		}
 		else
 		{
