@@ -68,15 +68,19 @@ import com.license4j.License;
 import com.license4j.LicenseValidator;
 
 import de.caegroup.commons.*;
+import de.caegroup.pramp.testrun.Testrun;
 import de.caegroup.process.Log;
 import de.caegroup.process.Process;
 
 public class PrampPartUi1 extends ModelObject
 //public class PrampPartUi1
 {
+	private static Shell shell = null;
+	
 	static CommandLine line;
 	private DataBindingContext bindingContextProcesses;
 	private Button button_start = null;
+	private Button button_testrun = null;
 	private Button button_doc = null;
 //	private Text text_logging = null;
 	private StyledText text_logging = null;
@@ -262,6 +266,12 @@ public class PrampPartUi1 extends ModelObject
 		button_doc.setToolTipText("show documentation");;
 		button_doc.addSelectionListener(listener_showdoc_button);
 		
+		button_testrun = new Button(grpFunction, SWT.NONE);
+		button_testrun.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		button_testrun.setText("testrun");
+		button_testrun.setToolTipText("starts an instance of selected process with a sample dataset");;
+		button_testrun.addSelectionListener(listener_testrun_button);
+		
 		button_start = new Button(grpFunction, SWT.NONE);
 		button_start.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		button_start.setText("start");
@@ -326,7 +336,7 @@ public class PrampPartUi1 extends ModelObject
 		// Datenbindung Versions-Combo
 		initDataBindingsVersions();
 		// Datenbindung Domains-Combo-Selection
-		initDataBindingsProcess();
+		initDataBindingsDomain();
 		// Datenbindung Processes-Combo-Selection
 		initDataBindingsProcess();
 		// Datenbindung Versions-Combo-Selection
@@ -510,6 +520,18 @@ public class PrampPartUi1 extends ModelObject
 	};
 	
 	/**
+	 * listener for Selections in of button 'testrun'
+	 */
+	SelectionAdapter listener_testrun_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+//			System.out.println("button start wurde gedrueckt");
+			testrun();
+		}
+	};
+	
+	/**
 	 * pramp-button oeffnet die anwendung pradar-gui
 	 **/
 	SelectionAdapter listener_pradar_button = new SelectionAdapter()
@@ -553,7 +575,7 @@ public class PrampPartUi1 extends ModelObject
 	{
 		DataBindingContext bindingContextDomain = new DataBindingContext();
 		//
-		IObservableValue targetObservableDomain = WidgetProperties.text().observe(combo_processes);
+		IObservableValue targetObservableDomain = WidgetProperties.text().observe(combo_domains);
 		IObservableValue modelObservableDomain = BeanProperties.value("domain").observe(einstellungen);
 		bindingContextDomain.bindValue(targetObservableDomain, modelObservableDomain, null, null);
 		//
@@ -1178,6 +1200,31 @@ public class PrampPartUi1 extends ModelObject
 	}
 	
 	/**
+	 * shows a selection of sample data and starts one of it
+	 */
+	private void testrun()
+	{
+		java.io.File splDir = new java.io.File(this.domainMainDir+"/"+this.einstellungen.getDomain()+"/"+this.einstellungen.getProcess()+"/"+this.einstellungen.getVersion()+"/spl");
+		
+		if(splDir.exists())
+		{
+			if(splDir.isDirectory())
+			{
+				this.log("info", "showing available testruns of selected process");
+				new Testrun(shell, splDir.getAbsolutePath());
+			}
+			else
+			{
+				this.log("error", "expected a directory: "+splDir.getAbsolutePath());
+			}
+		}
+		else
+		{
+			this.log("error", "no sample data exists for selected process: "+splDir.getAbsolutePath());
+		}
+	}
+
+	/**
 	 * commit all the defined data to the process
 	 */
 	private boolean startInstance()
@@ -1679,7 +1726,7 @@ public class PrampPartUi1 extends ModelObject
 			{
 				try
 				{
-					Shell shell = new Shell(display);
+					shell = new Shell(display);
 					shell.setText("pramp-gui "+"v[% version %]");
 
 					// set an icon
