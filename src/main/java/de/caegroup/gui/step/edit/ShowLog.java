@@ -38,7 +38,7 @@ import org.eclipse.swt.layout.FormLayout;
 public class ShowLog
 {
 	private Object father;
-	public Shell shell = new Shell(Display.getCurrent());
+	public Shell shell = null;
 	private Display display = Display.getCurrent();
 	
 	boolean keyOk = true;
@@ -47,7 +47,7 @@ public class ShowLog
 	private Log log = null;
 	private Text textKey = null;
 	private Text textValue = null;
-	
+	private Shell parentShell = null;
 	
 	
 	/**
@@ -57,6 +57,7 @@ public class ShowLog
 	{
 		this.log = new Log();
 		
+		shell = new Shell(Display.getCurrent());
 		shell.setText("log");
 //		shell.setSize(600, 225);
 		shell.setLayout(new GridLayout(1, false));
@@ -68,10 +69,14 @@ public class ShowLog
 		
 	}
 
-	public ShowLog(Object father, Log log)
+	public ShowLog(Object father, Shell shell, Log log)
 	{
 		this.father = father;
 		this.log = log;
+		
+		this.parentShell = shell;
+		
+		this.shell = new Shell(parentShell);
 		
 		try
 		{
