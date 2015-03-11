@@ -101,7 +101,7 @@ public class SIDebugGui
 			IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
 			
 			Log log = (Log) thisselection.getFirstElement();
-			ShowLog shower = new ShowLog(This, parent.getShell(), log);
+			ShowLog shower = new ShowLog(This, log);
 		}
 	};
 
