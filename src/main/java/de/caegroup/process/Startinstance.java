@@ -323,6 +323,9 @@ public class Startinstance
 			commit.doIt();
 			
 			p2.makeRootdir();
+			
+			p2.setOutfilebinary(p2.getRootdir());
+
 			System.err.println("info: writing process instance "+p2.getOutfilebinary());
 			
 			p2.writeBinary();
