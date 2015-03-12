@@ -90,7 +90,7 @@ public class PrampPartUi1 extends ModelObject
 //	private Combo combo_hosts = null;
 	private String domainMainDir = null;
 	private String processDefinitionPath = null;
-	private Process process = null;
+	public Process process = null;
 	private String iniFile = null;
 	private Ini ini = null;
 	private String userIniFile = null;
@@ -117,7 +117,7 @@ public class PrampPartUi1 extends ModelObject
 	
 	int logLineCount = 0;
 	
-	PrampViewModel einstellungen = new PrampViewModel();
+	public PrampViewModel einstellungen = new PrampViewModel();
 
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
@@ -1211,7 +1211,7 @@ public class PrampPartUi1 extends ModelObject
 			if(splDir.isDirectory())
 			{
 				this.log("info", "showing available testruns of selected process");
-				new Testrun(shell, splDir.getAbsolutePath());
+				new Testrun(this, shell, splDir.getAbsolutePath());
 			}
 			else
 			{
@@ -1491,7 +1491,7 @@ public class PrampPartUi1 extends ModelObject
 		this.iniFile = file.getAbsolutePath();
 	}
 
-	String getIni ()
+	public String getIniAsString ()
 	{
 		return this.iniFile;
 	}
@@ -1499,6 +1499,11 @@ public class PrampPartUi1 extends ModelObject
 	File getIniAsFile ()
 	{
 		return new File(this.iniFile);
+	}
+	
+	public Ini getIni()
+	{
+		return this.ini;
 	}
 	
 	void setUserIni ()

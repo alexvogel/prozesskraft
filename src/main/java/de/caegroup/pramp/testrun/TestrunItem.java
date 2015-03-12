@@ -1,6 +1,12 @@
 package de.caegroup.pramp.testrun;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -20,8 +26,8 @@ public class TestrunItem {
 	private String name = "unnamed";
 	private File callFile = null;
 	private CTabFolder tabfolder = null;
-	private String comment = "myComment";
-	private String call = "myCall";
+	private String comment = "-";
+	private String call = "-";
 
 	public TestrunItem(Testrun father, String name, File callFile, CTabFolder tabfolder)
 	{
@@ -30,6 +36,9 @@ public class TestrunItem {
 		this.callFile = callFile;
 		this.tabfolder = tabfolder;
 
+		// die Daten aus dem spl-call-file ermitteln
+		this.detDataFromCallFile();
+		
 		CTabItem tabItem_testcase = new CTabItem(this.tabfolder, SWT.NONE);
 		tabItem_testcase.setText(this.name);
 		tabItem_testcase.setToolTipText("testrun: "+this.callFile.getAbsolutePath());
@@ -37,14 +46,72 @@ public class TestrunItem {
 		Composite composite = new Composite(this.tabfolder, SWT.FILL | SWT.BORDER);
 
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		tabItem_testcase.setControl(composite);
+		
 		createControls(composite);
 
 	}
 	
 	/**
+	 * extract data from call-file
+	 */
+	private void detDataFromCallFile()
+	{
+		// die datei in eine ArrayList einlesen
+		ArrayList<String> lines = new ArrayList<String>();
+		try
+		{
+			FileReader fileReader = new FileReader(this.callFile);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			
+			String line = null;
+			
+			while((line = bufferedReader.readLine()) != null)
+			{
+				lines.add(line);
+			}
+			bufferedReader.close();
+			fileReader.close();
+		}
+		catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// den inhalt der datei in die strings comment / call einfuellen
+		String newComment = "";
+		String newCall = "";
+		for(String actLine : lines)
+		{
+			if(actLine.matches("^#"))
+			{
+				newComment += actLine;
+			}
+			else
+			{
+				newCall += actLine+"\n";
+			}
+		}
+		
+		// wenn inhalt gelesen wurde, dann in die zentralen variablen kopieren
+		if(newComment.length()>1)
+		{
+			this.comment = newComment;
+		}
+		if(newCall.length()>1)
+		{
+			this.call = newCall.substring(0, newCall.length()-2);
+		}
+	}
+	
+	/**
 	 * Create contents of the view part.
 	 */
-	public void createControls(Composite composite)
+	private void createControls(Composite composite)
 	{
 		composite.setLayout(new GridLayout(1, false));
 
@@ -63,7 +130,7 @@ public class TestrunItem {
 		comment.setText("comment");
 		comment.setToolTipText("a small description");
 		
-		Text commentText = new Text(compositeEntries, SWT.READ_ONLY);
+		Text commentText = new Text(compositeEntries, SWT.WRAP | SWT.READ_ONLY | SWT.MULTI);
 		commentText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		commentText.setText(this.comment);
 
@@ -73,7 +140,7 @@ public class TestrunItem {
 		call.setText("call");
 		call.setToolTipText("full call");
 		
-		Text callText = new Text(compositeEntries, SWT.READ_ONLY);
+		Text callText = new Text(compositeEntries, SWT.WRAP | SWT.READ_ONLY | SWT.MULTI);
 		callText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		callText.setText(this.call);
 
@@ -102,6 +169,71 @@ public class TestrunItem {
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
+			
+			father.getFather().process.setBaseDir(father.getFather().einstellungen.getBaseDirectory());
+			father.getFather().process.genRandomId();
+			father.getFather().process.makeRootdir();
+			
+			String instanceDir = father.getFather().process.getRootdir();
+
+			String syscall = father.getFather().getIni().get("apps", "process-syscall");
+			
+			try
+			{
+				// den Aufrufstring fuer die externe App (process syscall --version 0.6.0)) splitten
+				// beim aufruf muss das erste argument im path zu finden sein, sonst gibt die fehlermeldung 'no such file or directory'
+				ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(syscall.split(" ")));
+
+				// die sonstigen argumente hinzufuegen
+				processSyscallWithArgs.add("-call");
+				processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+father.getSplDir()+" -call "+callFile+" -instancedir "+instanceDir);
+				processSyscallWithArgs.add("-stdout");
+				processSyscallWithArgs.add(instanceDir+"/.stdout.txt");
+				processSyscallWithArgs.add("-stderr");
+				processSyscallWithArgs.add(instanceDir+"/.stderr.txt");
+				processSyscallWithArgs.add("-pid");
+				processSyscallWithArgs.add(instanceDir+"/.pid");
+				processSyscallWithArgs.add("-mylog");
+				processSyscallWithArgs.add(instanceDir+"/.log");
+				processSyscallWithArgs.add("-maxrun");
+				// 2 Tage
+				processSyscallWithArgs.add("2880");
+
+				// erstellen prozessbuilder
+				ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
+
+				// erweitern des PATHs um den prozesseigenen path
+//				Map<String,String> env = pb.environment();
+//				String path = env.get("PATH");
+//				log("debug", "$PATH="+path);
+//				path = this.parent.getAbsPath()+":"+path;
+//				env.put("PATH", path);
+//				log("info", "path: "+path);
+				
+				// setzen der aktuellen directory
+				java.io.File directory = new java.io.File(instanceDir);
+				father.getFather().log("info", "setting execution directory to: "+directory.getAbsolutePath());
+				pb.directory(directory);
+
+				// zum debuggen ein paar ausgaben
+//				java.lang.Process p1 = Runtime.getRuntime().exec("date >> ~/tmp.debug.work.txt");
+//				p1.waitFor();
+//				java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
+//				p2.waitFor();
+//				java.lang.Process pro = Runtime.getRuntime().exec("nautilus");
+//				java.lang.Process superpro = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
+//				p3.waitFor();
+				
+				father.getFather().log("info", "calling: " + pb.command());
+
+				// starten des prozesses
+				java.lang.Process sysproc = pb.start();
+				
+			}
+			catch (Exception e)
+			{
+				father.getFather().log("error", e.getMessage());
+			}
 			getFather().shell.dispose();
 		}
 	};
