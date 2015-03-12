@@ -132,6 +132,12 @@ public class Launch
 //				.isRequired()
 				.create("altapp");
 
+		Option oaddopt = OptionBuilder.withArgName("STRING")
+				.hasArg()
+				.withDescription("[optional] add an option to the call.")
+//				.isRequired()
+				.create("addopt");
+
 		/*----------------------------
 		  create options object
 		----------------------------*/
@@ -143,6 +149,7 @@ public class Launch
 		options.addOption( oinstancedir );
 		options.addOption( ocall );
 		options.addOption( oaltapp );
+		options.addOption( oaddopt );
 
 		/*----------------------------
 		  create the parser
@@ -187,6 +194,7 @@ public class Launch
 		String instancedir = null;
 		String call = null;
 		String altapp = null;
+		ArrayList<String> addopt = new ArrayList<String>();
 
 		// spl initialisieren
 		if ( commandline.hasOption("spl") )
@@ -219,6 +227,15 @@ public class Launch
 		if ( commandline.hasOption("altapp") )
 		{
 			altapp = commandline.getOptionValue("altapp");
+		}
+		
+		// addopt initialisieren
+		if ( commandline.hasOption("addopt") )
+		{
+			for(String actString : commandline.getOptionValues("addopt"))
+			{
+				addopt.add(actString);
+			}
 		}
 		
 		// wenn fehler, dann exit
@@ -276,6 +293,11 @@ public class Launch
 			actSpl.setAltapp(altapp);
 		}
 
+		if(addopt.size() > 0)
+		{
+			actSpl.setAddopt(addopt);
+		}
+		
 		actSpl.setResult(null);
 		
 		// das instancedir erstellen
