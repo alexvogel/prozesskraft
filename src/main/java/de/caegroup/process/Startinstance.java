@@ -86,6 +86,12 @@ public class Startinstance
 //				.isRequired()
 				.create("definition");
 		
+		Option opdomain = OptionBuilder.withArgName("STRING")
+				.hasArg()
+				.withDescription("[optional] domain of the process (mandatory if you omit -definition)")
+//				.isRequired()
+				.create("pdomain");
+		
 		Option opname = OptionBuilder.withArgName("STRING")
 				.hasArg()
 				.withDescription("[optional] name of the process you want to start an instance from (mandatory if you omit -definition)")
@@ -152,27 +158,15 @@ public class Startinstance
 		/*----------------------------
 		  ueberpruefen ob eine schlechte kombination von parametern angegeben wurde
 		----------------------------*/
-		if ( !( commandline.hasOption("definition")) && (!(commandline.hasOption("pname")) || !(commandline.hasOption("pversion"))  ) )
+		if ( !( commandline.hasOption("definition")) && (!(commandline.hasOption("pname")) || !(commandline.hasOption("pversion")) || !(commandline.hasOption("pdomain"))  ) )
 		{
-			System.err.println("option -definition or the options -pname & -pversion are mandatory");
+			System.err.println("option -definition or the options -pname & -pversion & -pdomain are mandatory");
 			exiter();
 		}
 
-		if ( (!(commandline.hasOption("pname")) && (commandline.hasOption("pversion"))  ) )
+		if ( (commandline.hasOption("definition") && ((commandline.hasOption("pversion")) || (commandline.hasOption("pname")) || (commandline.hasOption("pdomain")) )  ) )
 		{
-			System.err.println("option -pversion must not used without -pname.");
-			exiter();
-		}
-
-		if ( (commandline.hasOption("pname") && (!(commandline.hasOption("pversion")))  ) )
-		{
-			System.err.println("option -pname must not used without -pversion.");
-			exiter();
-		}
-
-		if ( (commandline.hasOption("definition") && ((commandline.hasOption("pversion")) || (commandline.hasOption("pname")) )  ) )
-		{
-			System.err.println("you must not use option -definition with -pversion or -pname");
+			System.err.println("you must not use option -definition with -pversion or -pname or -pdomain");
 			exiter();
 		}
 
@@ -214,7 +208,7 @@ public class Startinstance
 		else if(commandline.hasOption("pname") &&commandline.hasOption("pversion") )
 		{
 			pathToDefinition.replaceAll("/+$", "");
-			pathToDefinition = ini.get("process", "domain-installation-directory") + "/" + commandline.getOptionValue("pname") + "/" + commandline.getOptionValue("pversion") + "/process.xml";
+			pathToDefinition = ini.get("process", "domain-installation-directory") + "/" + commandline.getOptionValue("pdomain") + "/" + commandline.getOptionValue("pname") + "/" + commandline.getOptionValue("pversion") + "/process.xml";
 		}
 		else
 		{
