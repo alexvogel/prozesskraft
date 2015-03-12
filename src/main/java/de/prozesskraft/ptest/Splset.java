@@ -54,7 +54,7 @@ public class Splset {
 		final ArrayList<java.io.File> input = new ArrayList<java.io.File>();
 		final Map<String,java.io.File> call = new HashMap<String,java.io.File>();
 		final Map<String,java.io.File> result = new HashMap<String,java.io.File>();
-		
+
 		// den directory-baum durchgehen und fuer jeden eintrag ein entity erstellen
 		Files.walkFileTree(Paths.get(this.getInputDir()), new FileVisitor<Path>()
 		{
@@ -78,7 +78,7 @@ public class Splset {
 //				String relPathString = getBasepath().relativize(walkingFile).toString();
 
 				boolean isCallerOrResult = false;
-				
+
 				// ist es ein ".call*"?, dann entsprechend merken
 				Matcher matcherCall = patternCall.matcher(walkingFile.getFileName().toString());
 				if(matcherCall.matches())
