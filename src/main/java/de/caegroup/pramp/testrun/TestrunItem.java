@@ -241,7 +241,7 @@ public class TestrunItem {
 				// falls pmodel gestartet werden soll
 				if(schalterPmodelLaunch.equals("true"))
 				{
-					String pmodelCall = father.getFather().getIni().get("apps", "pmodel-gui") + " -instance " + instanceDir + "/process.pmb";
+					String pmodelCall = father.getFather().getIni().get("apps", "pmodel") + " -instance " + instanceDir + "/process.pmb";
 					ArrayList<String> pmodelCallAsArray = new ArrayList<String>(Arrays.asList(pmodelCall.split(" ")));
 					ProcessBuilder pb2 = new ProcessBuilder(pmodelCallAsArray);
 					pb2.directory(new java.io.File(instanceDir));
