@@ -247,7 +247,7 @@ public class TestrunItem {
 					pb2.directory(new java.io.File(instanceDir));
 					father.getFather().log("info", "calling: " + pb2.command());
 					// starten des pmodel
-					java.lang.Process sysproc2 = pb.start();
+					java.lang.Process sysproc2 = pb2.start();
 				}
 				
 			}
