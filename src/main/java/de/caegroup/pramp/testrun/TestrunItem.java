@@ -170,14 +170,19 @@ public class TestrunItem {
 		public void widgetSelected(SelectionEvent event)
 		{
 
-			father.getFather().process.setBaseDir(father.getFather().einstellungen.getBaseDirectory());
-			father.getFather().process.genRandomId();
-			father.getFather().process.makeRootdir();
+//			father.getFather().process.setBaseDir(father.getFather().einstellungen.getBaseDirectory());
+//			father.getFather().process.genRandomId();
+//			father.getFather().process.makeRootdir();
+
+			de.caegroup.process.Process dummyProcess = new de.caegroup.process.Process();
+			dummyProcess.setName("testrun-"+name);
+			dummyProcess.setBaseDir(father.getFather().einstellungen.getBaseDirectory());
+			dummyProcess.makeRootdir();
 
 			String schalterPmodelLaunch = father.getFather().getIni().get("start", "pmodel");
 			String schalterManagerLaunch = father.getFather().getIni().get("start", "process-manager");
 
-			String instanceDir = father.getFather().process.getRootdir();
+			String instanceDir = dummyProcess.getRootdir();
 			String syscall = father.getFather().getIni().get("apps", "process-syscall");
 
 			try
