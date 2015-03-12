@@ -43,28 +43,40 @@ public class Spl {
 		{
 			allLines.set(0, this.getAltapp());
 		}
-		// wenn es sich beim ersten String in der Zeile um einen relativen pfad handelt (beginnt mit "..", soll der zu einem absoluten verlaengert werden
-		else if(allLines.get(0).matches("^\\s*\\.\\..*$"))
+		// alle einzel strings in erster Zeile sollen ueberprueft werden ob es sich dabei um eine relative pfadangabe handelt und zu einem absoluten pfad gewandelt werden
+		else
 		{
-			String newPathToApp = this.getCall().getParentFile().getCanonicalPath() + "/" + allLines.get(0);
+			// splitten an whitespace
+			String[] firstLine = allLines.get(0).split("\\s+");
+			
+			ArrayList<String> firstLineExpanded = new ArrayList<String>();
+			// alle einzelstrings durchegehen und pfadangaben erweitern
+			for(String actString : firstLine)
+			{
+				java.io.File testFile = new java.io.File(this.getCall().getParentFile().getCanonicalPath()+"/"+actString);
 
-			System.err.println("debug: this is the call: " + this.getCall().getCanonicalPath());
-			System.err.println("debug: this is the dir of call: " + this.getCall().getParentFile().getCanonicalPath());
-			System.err.println("debug: this is the new Path to App: " + newPathToApp);
-			
-			java.io.File appFile = new java.io.File(newPathToApp);
-			
-			if(appFile.isFile())
-			{
-				allLines.set(0, appFile.getCanonicalPath());
+				// wenn es ein file/directory mit dem expandeten path gibt, soll dieser (statt dem bisherigen relativen Pfad) verwendet werden
+				if(testFile.exists())
+				{
+					firstLineExpanded.add(testFile.getCanonicalPath());
+				}
+				else
+				{
+					firstLineExpanded.add(actString);
+				}
 			}
-			else
+			
+			// wieder zu einem string joinen
+			String firstLineExpandedJoined = "";
+			for(String actString : firstLineExpanded)
 			{
-				System.err.println("error: this is not a file: " + appFile.getCanonicalPath());
-				System.exit(1);
+				firstLineExpandedJoined += " " + actString;
 			}
+			
+			// und wieder als erste zeile setzen
+			allLines.set(0, firstLineExpandedJoined);
 		}
-
+		
 		String callAsString = "";
 
 		// zu einem string joinen  (trennzeichen=" ")
