@@ -18,7 +18,7 @@ implements Serializable
 	static final long serialVersionUID = 1;
 	private String name = "unnamed";
 	private String description = "no description";
-	private int maxrun = 5;
+	private int maxrun = 5; // minuten
 	private String interpreter = "";
 	private String command = "";
 	private String logfile = "";
