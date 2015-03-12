@@ -197,16 +197,16 @@ public class TestrunItem {
 					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+father.getSplDir()+" -call "+callFile+" -instancedir "+instanceDir + " -addopt '-nostart'");
 				}
 				processSyscallWithArgs.add("-stdout");
-				processSyscallWithArgs.add(instanceDir+"/.stdout.txt");
+				processSyscallWithArgs.add(instanceDir+"/.stdout.ptest-launch.txt");
 				processSyscallWithArgs.add("-stderr");
-				processSyscallWithArgs.add(instanceDir+"/.stderr.txt");
+				processSyscallWithArgs.add(instanceDir+"/.stderr.ptest-launch.txt");
 				processSyscallWithArgs.add("-pid");
-				processSyscallWithArgs.add(instanceDir+"/.pid");
+				processSyscallWithArgs.add(instanceDir+"/.pid.ptest-launch");
 				processSyscallWithArgs.add("-mylog");
-				processSyscallWithArgs.add(instanceDir+"/.log");
+				processSyscallWithArgs.add(instanceDir+"/.log.ptest-launch");
 				processSyscallWithArgs.add("-maxrun");
-				// 2 Tage
-				processSyscallWithArgs.add("2880");
+				// ~2 Tage
+				processSyscallWithArgs.add("3000");
 
 				// erstellen prozessbuilder
 				ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
