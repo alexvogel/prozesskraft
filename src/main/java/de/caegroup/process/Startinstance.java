@@ -252,66 +252,69 @@ public class Startinstance
 			// committen von files (ueber einen glob)
 			if (commandline.hasOption("commitfile"))
 			{
+				for(String actOptionCommitfile : commandline.getOptionValues("commitfile"))
+				{
+					if (actOptionCommitfile.matches(".+=.+"))
+						{
+							String[] parts = actOptionCommitfile.split("=");
+							de.caegroup.process.File file = new de.caegroup.process.File();
+	
+							if(parts.length == 1)
+							{
+								file.setKey("default");
+								file.setGlob(parts[0]);
+							}
+							else if(parts.length == 2)
+							{
+								file.setKey(parts[0]);
+								file.setGlob(parts[1]);
+							}
+							else
+							{
+								System.err.println("error in option -commitfile");
+								exiter();
+							}
+							step.addFile(file);
+						}
+						else
+						{
+							System.err.println("-commitfile "+actOptionCommitfile+" does not match pattern \"NAME=VALUE\".");
+							exiter();
+						}
+				}
+			}
 
-				if (commandline.getOptionValue("commitfile").matches(".+=.+"))
+			if (commandline.hasOption("commitvariable"))
+			{
+				for(String actOptionCommitvariable : commandline.getOptionValues("commitvariable"))
+				{
+					if (actOptionCommitvariable.matches(".+=.+"))
 					{
-						String keyValue = commandline.getOptionValue("commitfile");
-						String[] parts = keyValue.split("=");
-						de.caegroup.process.File file = new de.caegroup.process.File();
-
+						String[] parts = actOptionCommitvariable.split("=");
+						Variable variable = new Variable();
+	
 						if(parts.length == 1)
 						{
-							file.setKey("default");
-							file.setGlob("parts[0]");
+							variable.setKey("default");
+							variable.setValue(parts[0]);
 						}
 						else if(parts.length == 2)
 						{
-							file.setKey("parts[0]");
-							file.setGlob("parts[1]");
+							variable.setKey(parts[0]);
+							variable.setValue(parts[1]);
 						}
 						else
 						{
 							System.err.println("error in option -commitvariable");
 							exiter();
 						}
-						step.addFile(file);
+						step.addVariable(variable);
 					}
 					else
 					{
-						System.err.println("-commitfile "+commandline.getOptionValue("commitfile")+" does not match pattern \"NAME=VALUE\".");
+						System.err.println("-commitvariable "+actOptionCommitvariable+" does not match pattern \"NAME=VALUE\".");
 						exiter();
 					}
-			}
-
-			if (commandline.hasOption("commitvariable"))
-			{
-				if (commandline.getOptionValue("commitvariable").matches(".+=.+"))
-				{
-					String keyValue = commandline.getOptionValue("commitvariable");
-					String[] parts = keyValue.split("=");
-					Variable variable = new Variable();
-
-					if(parts.length == 1)
-					{
-						variable.setKey("default");
-						variable.setValue("parts[0]");
-					}
-					else if(parts.length == 2)
-					{
-						variable.setKey(parts[0]);
-						variable.setValue(parts[1]);
-					}
-					else
-					{
-						System.err.println("error in option -commitvariable");
-						exiter();
-					}
-					step.addVariable(variable);
-				}
-				else
-				{
-					System.err.println("-commitvariable "+commandline.getOptionValue("commitvariable")+" does not match pattern \"NAME=VALUE\".");
-					exiter();
 				}
 			}
 			
