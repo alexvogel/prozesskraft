@@ -174,8 +174,10 @@ public class TestrunItem {
 			father.getFather().process.genRandomId();
 			father.getFather().process.makeRootdir();
 			
+			String schalterPmodelLaunch = father.getFather().getIni().get("start", "pmodel");
+			String schalterManagerLaunch = father.getFather().getIni().get("start", "process-manager");
+			
 			String instanceDir = father.getFather().process.getRootdir();
-
 			String syscall = father.getFather().getIni().get("apps", "process-syscall");
 			
 			try
@@ -186,7 +188,14 @@ public class TestrunItem {
 
 				// die sonstigen argumente hinzufuegen
 				processSyscallWithArgs.add("-call");
-				processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+father.getSplDir()+" -call "+callFile+" -instancedir "+instanceDir);
+				if(schalterManagerLaunch.equals("true"))
+				{
+					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+father.getSplDir()+" -call "+callFile+" -instancedir "+instanceDir);
+				}
+				else
+				{
+					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+father.getSplDir()+" -call "+callFile+" -instancedir "+instanceDir+" -nostart");
+				}
 				processSyscallWithArgs.add("-stdout");
 				processSyscallWithArgs.add(instanceDir+"/.stdout.txt");
 				processSyscallWithArgs.add("-stderr");
@@ -228,6 +237,18 @@ public class TestrunItem {
 
 				// starten des prozesses
 				java.lang.Process sysproc = pb.start();
+				
+				// falls pmodel gestartet werden soll
+				if(schalterPmodelLaunch.equals("true"))
+				{
+					String pmodelCall = father.getFather().getIni().get("apps", "pmodel-gui") + " -instance " + instanceDir + "/process.pmb";
+					ArrayList<String> pmodelCallAsArray = new ArrayList<String>(Arrays.asList(pmodelCall.split(" ")));
+					ProcessBuilder pb2 = new ProcessBuilder(pmodelCallAsArray);
+					pb2.directory(new java.io.File(instanceDir));
+					father.getFather().log("info", "calling: " + pb2.command());
+					// starten des pmodel
+					java.lang.Process sysproc2 = pb.start();
+				}
 				
 			}
 			catch (Exception e)
