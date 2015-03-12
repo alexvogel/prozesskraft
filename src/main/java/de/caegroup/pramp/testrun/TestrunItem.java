@@ -194,7 +194,7 @@ public class TestrunItem {
 				}
 				else
 				{
-					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+father.getSplDir()+" -call "+callFile+" -instancedir "+instanceDir + " -addoption '-nostart'");
+					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+father.getSplDir()+" -call "+callFile+" -instancedir "+instanceDir + " -addopt '-nostart'");
 				}
 				processSyscallWithArgs.add("-stdout");
 				processSyscallWithArgs.add(instanceDir+"/.stdout.txt");
