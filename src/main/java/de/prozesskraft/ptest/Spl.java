@@ -13,6 +13,7 @@ public class Spl {
 	private java.io.File result = null;
 	private ArrayList<java.io.File> input = new ArrayList<java.io.File>();
 	private String altapp = null;
+	private ArrayList<String> addopt = new ArrayList<String>();
 
 	public Spl()
 	{
@@ -97,6 +98,15 @@ public class Spl {
 				callAsString += " " + actLine;
 			}
 		}
+		
+		// die zusaetzlich angegebenen options auch hinzujoinen
+		if(this.getAddopt().size()>0)
+		{
+			for(String actString : this.getAddopt())
+			{
+				callAsString += " " + actString;
+			}
+		}
 
 		return callAsString;
 	}
@@ -171,5 +181,18 @@ public class Spl {
 		this.altapp = altapp;
 	}
 
-	
+	/**
+	 * @return the addopt
+	 */
+	public ArrayList<String> getAddopt() {
+		return addopt;
+	}
+
+	/**
+	 * @param addopt the addopt to set
+	 */
+	public void setAddopt(ArrayList<String> addopt) {
+		this.addopt = addopt;
+	}
+
 }
