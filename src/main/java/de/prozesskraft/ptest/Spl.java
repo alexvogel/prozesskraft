@@ -79,7 +79,7 @@ public class Spl {
 				firstLineExpandedJoined += " " + actString;
 			}
 			// das fuehrende blank loeschen
-			firstLineExpandedJoined.replaceFirst("\\s+", "");
+			firstLineExpandedJoined = firstLineExpandedJoined.replaceFirst("^\\s+", "");
 			System.err.println("debug: first line after expandation: '"+firstLineExpandedJoined+"'");
 
 			// und wieder als erste zeile setzen
