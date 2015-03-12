@@ -323,10 +323,8 @@ public class Startinstance
 			commit.doIt();
 			
 			p2.makeRootdir();
-			System.out.println("info: writing process instance "+p2.getOutfilebinary());
+			System.err.println("info: writing process instance "+p2.getOutfilebinary());
 			
-			System.out.println("info: starting processmanager for instance "+p2.getOutfilebinary());
-
 			p2.writeBinary();
 
 			try
@@ -342,10 +340,8 @@ public class Startinstance
 			// starten nur, falls es nicht abgewaehlt wurde
 			if( ! commandline.hasOption("nostart"))
 			{
-				System.err.println("launching process with process-manager");
-				
+				System.err.println("info: starting processmanager for instance "+p2.getOutfilebinary());
 				String aufrufString = ini.get("apps", "process-manager") + " -instance "+p2.getOutfilebinary();
-			
 				System.err.println("calling: "+aufrufString);
 	
 				ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(aufrufString.split(" ")));
