@@ -322,12 +322,15 @@ public class Startinstance
 
 			commit.doIt();
 			
+			// root-verzeichnis erstellen
 			p2.makeRootdir();
 			
-			p2.setOutfilebinary(p2.getRootdir());
+			// den pfad fuers binary setzen
+			p2.setOutfilebinary(p2.getRootdir() + "/process.pmb");
 
 			System.err.println("info: writing process instance "+p2.getOutfilebinary());
 			
+			// binary schreiben
 			p2.writeBinary();
 
 			try
