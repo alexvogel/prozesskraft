@@ -307,7 +307,7 @@ public class Syscall {
 						{
 							if (!(line_out == null))
 							{
-								System.out.println("OUT:"+line_out); // wird umgeleitet ins myLog
+								System.out.println("STDOUT:"+line_out); // wird umgeleitet ins myLog
 								fw_stdout.write(line_out);
 								fw_stdout.write("\n");
 								fw_stdout.flush();
@@ -347,7 +347,7 @@ public class Syscall {
 						{
 							if (!(line_err == null))
 							{
-								System.err.println("ERR:"+line_err); // wird umgeleitet ins myLog
+								System.err.println("STDERR:"+line_err); // wird umgeleitet ins myLog
 								fw_stderr.write(line_err);
 								fw_stderr.write("\n");
 								fw_stderr.flush();
