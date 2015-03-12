@@ -3,6 +3,7 @@ package de.caegroup.process;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
@@ -86,6 +87,12 @@ public class Startinstance
 //				.isRequired()
 				.create("definition");
 		
+		Option onostart = OptionBuilder.withArgName("")
+//				.hasArg()
+				.withDescription("[optional] oppresses the start of the instance. (only create the process-instance)")
+//				.isRequired()
+				.create("nostart");
+		
 		Option opdomain = OptionBuilder.withArgName("STRING")
 				.hasArg()
 				.withDescription("[optional] domain of the process (mandatory if you omit -definition)")
@@ -125,6 +132,7 @@ public class Startinstance
 		options.addOption( ov );
 		options.addOption( obasedir );
 		options.addOption( odefinition );
+		options.addOption( onostart );
 		options.addOption( opname );
 		options.addOption( opversion );
 		options.addOption( ofile );
@@ -330,19 +338,29 @@ public class Startinstance
 				e.printStackTrace();
 			}
 //			Runtime.getRuntime().exec("process-manager -help");
-	
-			System.out.println("AUFRUF: process manager -instance "+p2.getOutfilebinary());
-			String[] args_for_syscall = {"process manager", "-instance", p2.getOutfilebinary()};
-			ProcessBuilder pb = new ProcessBuilder(args_for_syscall);
-	
-			//		ProcessBuilder pb = new ProcessBuilder("processmanager -instance "+p2.getOutfilebinary());
-	//		Map<String,String> env = pb.environment();
-	//		String path = env.get("PATH");
-	//		System.out.println("PATH: "+path);
-	//		
-			java.lang.Process p = pb.start();
-			System.out.println("PROCESS: "+p.hashCode());
 
+			// starten nur, falls es nicht abgewaehlt wurde
+			if( ! commandline.hasOption("nostart"))
+			{
+				System.err.println("launching process with process-manager");
+				
+				String aufrufString = ini.get("apps", "process-manager") + " -instance "+p2.getOutfilebinary();
+			
+				System.err.println("calling: "+aufrufString);
+	
+				ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(aufrufString.split(" ")));
+				
+				ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
+
+				//		ProcessBuilder pb = new ProcessBuilder("processmanager -instance "+p2.getOutfilebinary());
+		//		Map<String,String> env = pb.environment();
+		//		String path = env.get("PATH");
+		//		System.out.println("PATH: "+path);
+		//		
+				java.lang.Process p = pb.start();
+				System.err.println("pid: "+p.hashCode());
+			}
+				
 		} catch (JAXBException e1)
 		{
 			// TODO Auto-generated catch block
