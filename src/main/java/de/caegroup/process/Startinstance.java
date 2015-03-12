@@ -205,14 +205,14 @@ public class Startinstance
 		{
 			pathToDefinition = commandline.getOptionValue("definition");
 		}
-		else if(commandline.hasOption("pname") &&commandline.hasOption("pversion") )
+		else if(commandline.hasOption("pname") && commandline.hasOption("pversion") && commandline.hasOption("pdomain") )
 		{
 			pathToDefinition.replaceAll("/+$", "");
 			pathToDefinition = ini.get("process", "domain-installation-directory") + "/" + commandline.getOptionValue("pdomain") + "/" + commandline.getOptionValue("pname") + "/" + commandline.getOptionValue("pversion") + "/process.xml";
 		}
 		else
 		{
-			System.err.println("option -definition or the options -pname & -pversion are mandatory");
+			System.err.println("option -definition or the options -pname & -pversion & -pdomain are mandatory");
 			exiter();
 		}
 		
