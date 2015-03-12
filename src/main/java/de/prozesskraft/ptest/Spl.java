@@ -55,14 +55,19 @@ public class Spl {
 			{
 				java.io.File testFile = new java.io.File(this.getCall().getParentFile().getCanonicalPath()+"/"+actString);
 
+				System.err.println("debug: string of first line before: "+actString);
+				
 				// wenn es ein file/directory mit dem expandeten path gibt, soll dieser (statt dem bisherigen relativen Pfad) verwendet werden
 				if(testFile.exists())
 				{
 					firstLineExpanded.add(testFile.getCanonicalPath());
+					System.err.println("debug: string of first line after: "+testFile.getCanonicalPath());
+
 				}
 				else
 				{
 					firstLineExpanded.add(actString);
+					System.err.println("debug: string of first line after: "+actString);
 				}
 			}
 			
@@ -72,6 +77,7 @@ public class Spl {
 			{
 				firstLineExpandedJoined += " " + actString;
 			}
+			System.err.println("debug: first line after expandation: "+firstLineExpandedJoined);
 			
 			// und wieder als erste zeile setzen
 			allLines.set(0, firstLineExpandedJoined);
