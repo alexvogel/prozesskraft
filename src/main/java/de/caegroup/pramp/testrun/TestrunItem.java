@@ -248,7 +248,7 @@ public class TestrunItem {
 				if(schalterPmodelLaunch.equals("true"))
 				{
 					// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist wird mit einem glob auf der shell gearbeitet
-					String pmodelCall = father.getFather().getIni().get("apps", "pmodel") + " -instance " + instanceDir +"/" + dummyProcess.getRootdir() + "/process.pmb";
+					String pmodelCall = father.getFather().getIni().get("apps", "pmodel") + " -instance " + instanceDir +"/" + father.getFather().process.getName() + "_v" +father.getFather().process.getVersion() +"*" + "/process.pmb";
 					ArrayList<String> pmodelCallAsArray = new ArrayList<String>(Arrays.asList(pmodelCall.split(" ")));
 					ProcessBuilder pb2 = new ProcessBuilder(pmodelCallAsArray);
 					pb2.directory(new java.io.File(instanceDir));
