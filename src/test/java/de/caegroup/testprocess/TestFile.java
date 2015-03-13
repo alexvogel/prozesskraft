@@ -8,6 +8,7 @@ import org.junit.Before;
 import de.caegroup.process.Callitem;
 import de.caegroup.process.File;
 import de.caegroup.process.List;
+import de.caegroup.process.Log;
 import de.caegroup.process.Step;
 import de.caegroup.process.Work;
 
@@ -18,15 +19,19 @@ public class TestFile {
 	@Before
 	public void setUp()
 	{
-		Step step = new Step("hello");
+		Step step = new Step("root");
 		step.setLoopvar("1");
+
+		process.setBaseDir(System.getProperty("user.dir")+"/src/test/resources");
+		// damit rootdir = basedir gesehen wird
+		process.setSubprocess(true);
 		process.addStep(step);
 		
 		// definieren einer liste mit einem eintrag
 		List listSpl = new List();
 		listSpl.setName("spl");
 		listSpl.addItem("mama");
-		listSpl.addItem("papa");
+		listSpl.addItem("call.1.txt");
 		step.addList(listSpl);
 		
 		// definieren eines Files mit einem glob in dem sich platzhalter befinden
@@ -34,15 +39,17 @@ public class TestFile {
 		file.setKey("testschluessel");
 		file.setGlob("{$spl[{$loopvarstep}]}");
 		step.addFile(file);
+		
+//		for(Log actLog : file.getLog())
+//		{
+//			actLog.print();
+//		}
 	}
 
 	@Test
 	public void testResolveGlob()
 	{
-		String resolvedGlobString = process.getStep("hello").getFile().get(0).getGlob();
-		
-		System.err.println("resolvedGlob: "+resolvedGlobString);
-		assertEquals("papa", resolvedGlobString);
+		assertEquals("call.1.txt", process.getStep("root").getFile().get(0).getFilename());
 	}
 
 }

@@ -171,20 +171,33 @@ implements Serializable, Cloneable
 		String glob = this.getGlob();
 		if(!glob.equals(""))
 		{
-			this.log("debug","trying to glob "+glob);
-			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+glob);
-			for(String actFilename : new java.io.File(dir).list())
+			this.log("debug","trying to glob for "+glob+" in directory "+dir);
+			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+dir+"/"+glob);
+			java.io.File dirFile = new java.io.File(dir);
+			if(dirFile.exists() && dirFile.isDirectory())
 			{
-				Path path = FileSystems.getDefault().getPath(dir, actFilename);
-				// wenn ein file dem glob-matcher entspricht, soll this geklont werden, glob resettet und realpath auf dieses gefundene file gesetzt werden 
-				if(matcher.matches(path))
+				this.log("debug","directory exists "+dir);
+				for(String actFilename : new java.io.File(dir).list())
 				{
-					this.log("debug","glob successfull for file "+dir+"/"+actFilename);
-					File newFile = this.clone();
-					newFile.setGlob("");
-					newFile.setRealposition(dir + "/" + actFilename);
-					globbedFile.add(newFile);
+					Path path = FileSystems.getDefault().getPath(dir, actFilename);
+					// wenn ein file dem glob-matcher entspricht, soll this geklont werden, glob resettet und realpath auf dieses gefundene file gesetzt werden 
+					if(matcher.matches(path))
+					{
+						this.log("debug","glob successfull for file "+dir+"/"+actFilename);
+						File newFile = this.clone();
+						newFile.setGlob("");
+						newFile.setRealposition(dir + "/" + actFilename);
+						globbedFile.add(newFile);
+					}
+					else
+					{
+						this.log("debug","glob NOT successfull for file "+dir+"/"+actFilename);
+					}
 				}
+			}
+			else
+			{
+				this.log("error","cannot glob for file because directory does not exist: "+dir);
 			}
 		}
 		else
