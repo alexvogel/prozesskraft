@@ -312,7 +312,14 @@ public class Launch
 			java.io.File targetFile = new java.io.File(actSplInstanceDir.getCanonicalPath() + "/" + actInputFile.getName());
 			
 			// input file in das instancedir kopieren
-			Files.copy(actInputFile.toPath(), targetFile.toPath());
+			try
+			{
+				Files.copy(actInputFile.toPath(), targetFile.toPath());
+			}
+			catch (FileAlreadyExistsException e)
+			{
+				System.err.println(e.getMessage());
+			}
 		}
 
 		// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)
