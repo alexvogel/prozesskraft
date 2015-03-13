@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.Before;
 
 import de.caegroup.process.Callitem;
+import de.caegroup.process.Commit;
 import de.caegroup.process.File;
 import de.caegroup.process.List;
 import de.caegroup.process.Log;
@@ -22,9 +23,6 @@ public class TestFile {
 		Step step = new Step("root");
 		step.setLoopvar("1");
 
-		process.setBaseDir(System.getProperty("user.dir")+"/src/test/resources");
-		// damit rootdir = basedir gesehen wird
-		process.setSubprocess(true);
 		process.addStep(step);
 		
 		// definieren einer liste mit einem eintrag
@@ -38,8 +36,13 @@ public class TestFile {
 		File file = new File();
 		file.setKey("testschluessel");
 		file.setGlob("{$spl[{$loopvarstep}]}");
-		step.addFile(file);
+		file.setGlobdir(System.getProperty("user.dir")+"/src/test/resources");
+
+		Commit commit = new Commit(step);
+		commit.addFile(file);
 		
+		commit.doIt();
+
 //		for(Log actLog : file.getLog())
 //		{
 //			actLog.print();
