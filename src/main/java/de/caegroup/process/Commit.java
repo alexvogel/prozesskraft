@@ -692,7 +692,6 @@ implements Serializable
 			{
 				allFiles += actFile.getAbsolutePath() +", ";
 			}
-			allFiles = allFiles.substring(0, allFiles.length()-3);
 			allFiles += "]";
 
 			log("debug", "and "+allFilesOfDirectoryThatGlob.size()+" of this file(s) match glob (files: "+allFiles+")");
