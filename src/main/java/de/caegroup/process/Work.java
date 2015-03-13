@@ -143,7 +143,22 @@ implements Serializable
 	public String getCall()
 	{
 //		this.parent.log("debug", "constructing call");
-		String call = this.command;
+		String call = null;
+		
+		// wenn command im prozess-eigenen bin-verzeichnis zu finden ist, soll das command auf absoluten pfad erweitert werden
+		java.io.File binDir = new java.io.File(this.getParent().getParent().getInfilexml()).getParentFile();
+		
+		java.io.File evtlVorhScript = new java.io.File(binDir.getAbsolutePath() + "/" + this.command);
+		if(evtlVorhScript.exists() && !evtlVorhScript.isDirectory())
+		{
+			call = evtlVorhScript.getAbsolutePath();
+			this.log("debug", "using the process-owned command: "+call);
+		}
+		else
+		{
+			call = this.command;
+		}
+		
 		this.log("debug", "constructing call a): "+call);
 
 		this.log("debug", "there are "+this.getCallitem().size()+" unresolved callitems in this 'work'");
