@@ -87,7 +87,7 @@ public class TestrunItem {
 		String newCall = "";
 		for(String actLine : lines)
 		{
-			if(actLine.matches("^#"))
+			if(actLine.matches("^#.+$"))
 			{
 				newComment += actLine;
 			}
