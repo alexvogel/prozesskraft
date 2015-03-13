@@ -441,8 +441,18 @@ implements Serializable
 			java.io.File stepDir = new java.io.File(this.getAbsdir());
 			if(!(resolvedGlob.matches("^/.+$")))
 			{
-				try {
-					resolvedGlob = stepDir.getCanonicalPath() +"/"+ resolvedGlob;
+				try
+				{
+					// wenn globDir == null ist, soll im stepDir geglobbed werden
+					if(master.getGlobdir() == null)
+					{
+						resolvedGlob = stepDir.getCanonicalPath() +"/"+ resolvedGlob;
+					}
+					// ansonsten in dem explicit angegebenen globdir
+					else
+					{
+						resolvedGlob = master.getGlobdir() +"/"+ resolvedGlob;
+					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

@@ -1427,14 +1427,9 @@ implements Serializable, Cloneable
 		file.setParent(this);
 		
 		// falls das file ueber ein glob definiert ist, soll dieser aufgeloest und das file entsprechend des globs geclont werden
-		ArrayList<File> globbedFile = file.glob(this.getAbsdir());
-		
-		for(File actFile : globbedFile)
-		{
-			actFile.copyIfNeeded();
-			this.log("debug", "adding File (key="+actFile.getKey()+", glob="+actFile.getGlob()+", filename="+actFile.getFilename()+", path="+actFile.getRealposition()+")");
-			this.file.add(actFile);
-		}
+		file.copyIfNeeded();
+		this.log("debug", "adding File (key="+file.getKey()+", glob="+file.getGlob()+", filename="+file.getFilename()+", path="+file.getRealposition()+")");
+		this.file.add(file);
 	}
 
 	/**
