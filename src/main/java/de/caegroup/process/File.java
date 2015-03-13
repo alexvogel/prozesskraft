@@ -1,6 +1,9 @@
 package de.caegroup.process;
 
 import java.io.*;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 //import java.util.*;
 //import org.apache.solr.common.util.NamedList;
 import java.util.ArrayList;
@@ -162,6 +165,43 @@ implements Serializable, Cloneable
 		return success;
 	}
 	
+	public ArrayList<File> glob(String dir)
+	{
+		ArrayList<File> globbedFile = new ArrayList<File>();
+		String glob = this.getGlob();
+		if(!glob.equals(""))
+		{
+			this.log("debug","trying to glob "+glob);
+			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+glob);
+			for(String actFilename : new java.io.File(dir).list())
+			{
+				Path path = FileSystems.getDefault().getPath(dir, actFilename);
+				// wenn ein file dem glob-matcher entspricht, soll this geklont werden, glob resettet und realpath auf dieses gefundene file gesetzt werden 
+				if(matcher.matches(path))
+				{
+					this.log("debug","glob successfull for file "+dir+"/"+actFilename);
+					File newFile = this.clone();
+					newFile.setGlob("");
+					newFile.setRealposition(dir + "/" + actFilename);
+					globbedFile.add(newFile);
+				}
+			}
+		}
+		else
+		{
+			if(new java.io.File(this.getRealposition()).exists())
+			{
+				globbedFile.add(this);
+			}
+			else
+			{
+				this.log("error","file does not exist in "+this.getRealposition());
+			}
+		}
+		
+		return globbedFile;
+	}
+
 	public void performAllTests()
 	{
 //		System.out.println("performing "+this.test.size()+" file tests");
