@@ -176,6 +176,7 @@ public class TestrunItem {
 
 			de.caegroup.process.Process dummyProcess = new de.caegroup.process.Process();
 			dummyProcess.setName("testrun-"+name);
+			dummyProcess.setVersion("Intern");
 			dummyProcess.setBaseDir(father.getFather().einstellungen.getBaseDirectory());
 			dummyProcess.makeRootdir();
 
@@ -246,7 +247,8 @@ public class TestrunItem {
 				// falls pmodel gestartet werden soll
 				if(schalterPmodelLaunch.equals("true"))
 				{
-					String pmodelCall = father.getFather().getIni().get("apps", "pmodel") + " -instance " + instanceDir + "/process.pmb";
+					// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist wird mit einem glob auf der shell gearbeitet
+					String pmodelCall = father.getFather().getIni().get("apps", "pmodel") + " -instance " + instanceDir +"/" + dummyProcess.getName() + "_" + dummyProcess.getVersion() +"*"+ "/process.pmb";
 					ArrayList<String> pmodelCallAsArray = new ArrayList<String>(Arrays.asList(pmodelCall.split(" ")));
 					ProcessBuilder pb2 = new ProcessBuilder(pmodelCallAsArray);
 					pb2.directory(new java.io.File(instanceDir));
