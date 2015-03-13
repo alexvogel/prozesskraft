@@ -248,7 +248,8 @@ public class TestrunItem {
 				if(schalterPmodelLaunch.equals("true"))
 				{
 					// a bisserl schlafen bis process-startinstance das unterverzeichnis mit process.pmb angelegt hat
-					Thread.sleep(1000);
+					father.getFather().log("info", "sleeping 2 seconds - waiting for the process.pmb of executed testrun to become available on disk");
+					Thread.sleep(2000);
 					
 					// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist (das wird mit process-startinstance erstellt) muss das erst herausgefunden werden
 					// das rootDir von ptest-launch ist das basedir des prozesses, der mit startinstance angeschoben wird
