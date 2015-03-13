@@ -270,6 +270,9 @@ public class Startinstance
 								System.err.println("error in option -commitfile");
 								exiter();
 							}
+							
+							// setzen des globdir (weil nicht stepdir)
+							file.setGlobdir(p2.getBaseDir());
 							commit.addFile(file);
 						}
 						else
