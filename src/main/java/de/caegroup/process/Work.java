@@ -147,8 +147,10 @@ implements Serializable
 		
 		// wenn command im prozess-eigenen bin-verzeichnis zu finden ist, soll das command auf absoluten pfad erweitert werden
 		java.io.File binDir = new java.io.File(this.getParent().getParent().getInfilexml()).getParentFile();
+		this.log("debug", "bin-directory for process-owned commands exists: "+binDir.getAbsolutePath());
 		
 		java.io.File evtlVorhScript = new java.io.File(binDir.getAbsolutePath() + "/" + this.command);
+		this.log("debug", "looking for the command in process-owned bin: "+evtlVorhScript.getAbsolutePath());
 		if(evtlVorhScript.exists() && !evtlVorhScript.isDirectory())
 		{
 			call = evtlVorhScript.getAbsolutePath();
@@ -157,6 +159,7 @@ implements Serializable
 		else
 		{
 			call = this.command;
+			this.log("debug", "command not found in process-owned bin-directory - will use command as a global command (must exist in $PATH of underlying shell): "+call);
 		}
 		
 		this.log("debug", "constructing call a): "+call);
