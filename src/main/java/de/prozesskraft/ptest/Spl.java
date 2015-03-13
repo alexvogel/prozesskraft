@@ -91,13 +91,17 @@ public class Spl {
 		// zu einem string joinen  (trennzeichen=" ")
 		for(String actLine : allLines)
 		{
-			if(callAsString.equals(""))
+			// wenn zeile kein commentar
+			if(!actLine.matches("^\\s*#.+$"))
 			{
-				callAsString += actLine;
-			}
-			else
-			{
-				callAsString += " " + actLine;
+				if(callAsString.equals(""))
+				{
+					callAsString += actLine;
+				}
+				else
+				{
+					callAsString += " " + actLine;
+				}
 			}
 		}
 		
