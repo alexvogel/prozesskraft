@@ -89,7 +89,7 @@ public class TestrunItem {
 		{
 			if(actLine.matches("^#.+$"))
 			{
-				newComment += actLine;
+				newComment += actLine+"\n";
 			}
 			else
 			{
@@ -100,7 +100,7 @@ public class TestrunItem {
 		// wenn inhalt gelesen wurde, dann in die zentralen variablen kopieren
 		if(newComment.length()>1)
 		{
-			this.comment = newComment;
+			this.comment = newComment.substring(0, newComment.length()-2);;
 		}
 		if(newCall.length()>1)
 		{
