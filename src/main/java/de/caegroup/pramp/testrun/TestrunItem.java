@@ -281,6 +281,10 @@ public class TestrunItem {
 					else if(allFoundProcessBinaries.size() > 0)
 					{
 						father.getFather().log("error", "cannot open pmodel-gui because more than 1 process.pmb found in subdirectories of "+baseDirOfStartinstance);
+						for(java.io.File actFile : allFoundProcessBinaries)
+						{
+							father.getFather().log("debug", "this is a process.pmb: "+actFile.getCanonicalPath());
+						}
 					}
 					else
 					{
