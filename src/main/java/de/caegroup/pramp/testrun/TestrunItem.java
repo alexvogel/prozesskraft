@@ -259,6 +259,7 @@ public class TestrunItem {
 						{
 							for(java.io.File actFileFile : actFile.listFiles())
 							{
+								System.err.println("seeing file: (name="+actFileFile.getName()+") "+actFileFile.getCanonicalPath());
 								if(actFileFile.getName().equals("process.pmb"))
 								{
 									allFoundProcessBinaries.add(actFileFile);
@@ -269,7 +270,7 @@ public class TestrunItem {
 					
 					if(allFoundProcessBinaries.size() == 0)
 					{
-						father.getFather().log("error", "cannot open pmodel-gui because no process.pmb found in subdirectories of "+baseDirOfStartinstance);
+						father.getFather().log("error", "cannot open pmodel-gui because NO process.pmb found in subdirectories of "+baseDirOfStartinstance);
 					}
 					else if(allFoundProcessBinaries.size() > 0)
 					{
