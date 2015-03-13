@@ -248,24 +248,24 @@ public class TestrunItem {
 				if(schalterPmodelLaunch.equals("true"))
 				{
 					// a bisserl schlafen bis process-startinstance das unterverzeichnis mit process.pmb angelegt hat
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 					
 					// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist (das wird mit process-startinstance erstellt) muss das erst herausgefunden werden
 					// das rootDir von ptest-launch ist das basedir des prozesses, der mit startinstance angeschoben wird
 					java.io.File baseDirOfStartinstance = new java.io.File(dummyProcess.getRootdir());
-					System.err.println("considering as basedirectory: "+baseDirOfStartinstance.getCanonicalPath());
+//					System.err.println("considering as basedirectory: "+baseDirOfStartinstance.getCanonicalPath());
 					
 					ArrayList<File> allFoundProcessBinaries = new ArrayList<File>();
 					// alle process.pmb in unterverzeichnissen finden
 					for(java.io.File actFile : baseDirOfStartinstance.listFiles())
 					{
-						System.err.println("seeing entry: "+actFile.getCanonicalPath());
+//						System.err.println("seeing entry: "+actFile.getCanonicalPath());
 						if(actFile.isDirectory())
 						{
-							System.err.println("its a directory - going in...");
+//							System.err.println("its a directory - going in...");
 							for(java.io.File actFileFile : actFile.listFiles())
 							{
-								System.err.println("seeing file: (name="+actFileFile.getName()+") "+actFileFile.getCanonicalPath());
+//								System.err.println("seeing file: (name="+actFileFile.getName()+") "+actFileFile.getCanonicalPath());
 								if(actFileFile.getName().equals("process.pmb"))
 								{
 									allFoundProcessBinaries.add(actFileFile);
