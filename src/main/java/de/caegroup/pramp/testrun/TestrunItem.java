@@ -247,14 +247,44 @@ public class TestrunItem {
 				// falls pmodel gestartet werden soll
 				if(schalterPmodelLaunch.equals("true"))
 				{
-					// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist wird mit einem glob auf der shell gearbeitet
-					String pmodelCall = father.getFather().getIni().get("apps", "pmodel") + " -instance " + instanceDir +"/" + father.getFather().process.getName() + "_v" +father.getFather().process.getVersion() +"*" + "/process.pmb";
-					ArrayList<String> pmodelCallAsArray = new ArrayList<String>(Arrays.asList(pmodelCall.split(" ")));
-					ProcessBuilder pb2 = new ProcessBuilder(pmodelCallAsArray);
-					pb2.directory(new java.io.File(instanceDir));
-					father.getFather().log("info", "calling: " + pb2.command());
-					// starten des pmodel
-					java.lang.Process sysproc2 = pb2.start();
+					// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist (das wird mit process-startinstance erstellt) muss das erst herausgefunden werden
+					// das rootDir von ptest-launch ist das basedir des prozesses, der mit startinstance angeschoben wird
+					java.io.File baseDirOfStartinstance = new java.io.File(dummyProcess.getRootdir());
+					
+					ArrayList<File> allFoundProcessBinaries = new ArrayList<File>();
+					// alle process.pmb in unterverzeichnissen finden
+					for(java.io.File actFile : baseDirOfStartinstance.listFiles())
+					{
+						if(actFile.isDirectory())
+						{
+							for(java.io.File actFileFile : actFile.listFiles())
+							{
+								if(actFileFile.getName().equals("process.pmb"))
+								{
+									allFoundProcessBinaries.add(actFileFile);
+								}
+							}
+						}
+					}
+					
+					if(allFoundProcessBinaries.size() == 0)
+					{
+						father.getFather().log("error", "cannot open pmodel-gui because no process.pmb found in subdirectories of "+baseDirOfStartinstance);
+					}
+					else if(allFoundProcessBinaries.size() > 0)
+					{
+						father.getFather().log("error", "cannot open pmodel-gui because more than 1 process.pmb found in subdirectories of "+baseDirOfStartinstance);
+					}
+					else
+					{
+						String pmodelCall = father.getFather().getIni().get("apps", "pmodel") + " -instance " + allFoundProcessBinaries.get(0).getCanonicalPath();
+						ArrayList<String> pmodelCallAsArray = new ArrayList<String>(Arrays.asList(pmodelCall.split(" ")));
+						ProcessBuilder pb2 = new ProcessBuilder(pmodelCallAsArray);
+						pb2.directory(new java.io.File(instanceDir));
+						father.getFather().log("info", "calling: " + pb2.command());
+						// starten des pmodel
+						java.lang.Process sysproc2 = pb2.start();
+					}
 				}
 				
 			}
