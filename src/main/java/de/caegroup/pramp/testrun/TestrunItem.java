@@ -250,6 +250,7 @@ public class TestrunItem {
 					// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist (das wird mit process-startinstance erstellt) muss das erst herausgefunden werden
 					// das rootDir von ptest-launch ist das basedir des prozesses, der mit startinstance angeschoben wird
 					java.io.File baseDirOfStartinstance = new java.io.File(dummyProcess.getRootdir());
+					System.err.println("considering as basedirectory: "+baseDirOfStartinstance.getCanonicalPath());
 					
 					ArrayList<File> allFoundProcessBinaries = new ArrayList<File>();
 					// alle process.pmb in unterverzeichnissen finden
