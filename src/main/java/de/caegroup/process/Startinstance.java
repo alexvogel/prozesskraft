@@ -242,12 +242,8 @@ public class Startinstance
 			Step step = p2.getStep(p2.getRootstepname());
 			
 			// den Commit 'by-process-commitit' heraussuchen oder einen neuen Commit dieses Namens erstellen
-			Commit commit = step.getCommit("by-hand");
-			if(commit == null)
-			{
-				commit = new Commit(step);
-				commit.setName("by-process-commitit");
-			}
+			Commit commit = commit = new Commit(step);
+			commit.setName("by-process-startinstance");
 
 			// committen von files (ueber einen glob)
 			if (commandline.hasOption("commitfile"))
@@ -258,7 +254,7 @@ public class Startinstance
 						{
 							String[] parts = actOptionCommitfile.split("=");
 							de.caegroup.process.File file = new de.caegroup.process.File();
-	
+
 							if(parts.length == 1)
 							{
 								file.setKey("default");
@@ -274,7 +270,7 @@ public class Startinstance
 								System.err.println("error in option -commitfile");
 								exiter();
 							}
-							step.addFile(file);
+							commit.addFile(file);
 						}
 						else
 						{
@@ -308,7 +304,7 @@ public class Startinstance
 							System.err.println("error in option -commitvariable");
 							exiter();
 						}
-						step.addVariable(variable);
+						commit.addVariable(variable);
 					}
 					else
 					{
