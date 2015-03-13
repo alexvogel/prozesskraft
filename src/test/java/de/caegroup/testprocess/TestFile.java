@@ -23,6 +23,9 @@ public class TestFile {
 		Step step = new Step("root");
 		step.setLoopvar("1");
 
+		process.setBaseDir(System.getProperty("user.dir")+"/src/test/resources");
+		// damit rootdir = basedir gesehen wird
+		process.setSubprocess(true);
 		process.addStep(step);
 		
 		// definieren einer liste mit einem eintrag
