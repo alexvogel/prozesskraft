@@ -169,6 +169,7 @@ implements Serializable, Cloneable
 	{
 		ArrayList<File> globbedFile = new ArrayList<File>();
 		String glob = this.getGlob();
+		this.log("debug","glob for "+glob);
 		if(!glob.equals(""))
 		{
 			this.log("debug","trying to glob for "+glob+" in directory "+dir);
