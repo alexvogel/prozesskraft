@@ -282,12 +282,12 @@ implements Serializable
 					{
 						if (!actualFile.match(actualMatch))
 						{
-							log("debug", "variable "+actualFile.getKey()+" from step "+this.getParent().getName()+" does NOT match '"+actualMatch.getPattern()+"' in field '"+actualMatch.getField()+"'");
+							log("debug", "file "+actualFile.getKey()+" from step "+this.getParent().getName()+" does NOT match '"+actualMatch.getPattern()+"' in field '"+actualMatch.getField()+"'");
 							matchPositive = false;
 						}
 						else
 						{
-							log("debug", "variable "+actualFile.getKey()+" from step "+this.getParent().getName()+" does match '"+actualMatch.getPattern()+"' in field '"+actualMatch.getField()+"'");
+							log("debug", "file "+actualFile.getKey()+" from step "+this.getParent().getName()+" does match '"+actualMatch.getPattern()+"' in field '"+actualMatch.getField()+"'");
 						}
 					}
 					// wenn alle matches passen, soll es zum ergebnis kollektiv hinzugefuegt werden
