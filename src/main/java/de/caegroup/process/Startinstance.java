@@ -274,6 +274,8 @@ public class Startinstance
 							// setzen des globdir (weil nicht stepdir)
 							file.setGlobdir(p2.getBaseDir());
 							commit.addFile(file);
+
+							System.err.println("committing variable "+file.getKey()+"="+file.getGlob());
 						}
 						else
 						{
@@ -308,15 +310,17 @@ public class Startinstance
 							exiter();
 						}
 						commit.addVariable(variable);
+						System.err.println("committing variable "+variable.getKey()+"="+variable.getValue());
 					}
 					else
 					{
 						System.err.println("-commitvariable "+actOptionCommitvariable+" does not match pattern \"NAME=VALUE\".");
 						exiter();
 					}
+					
 				}
 			}
-			
+
 			if (commandline.hasOption("basedir"))
 			{
 				p2.setBaseDir(commandline.getOptionValue("basedir"));
