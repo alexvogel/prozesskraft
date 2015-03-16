@@ -242,8 +242,8 @@ public class Startinstance
 			Step stepRoot = p2.getStep(p2.getRootstepname());
 			
 			// den Commit 'by-process-commitit' heraussuchen oder einen neuen Commit dieses Namens erstellen
-			Commit commit = new Commit(stepRoot);
-			commit.setName("by-process-startinstance");
+//			Commit commit = new Commit(stepRoot);
+//			commit.setName("by-process-startinstance");
 
 			// committen von files (ueber einen glob)
 			if (commandline.hasOption("commitfile"))
@@ -253,17 +253,17 @@ public class Startinstance
 					if (actOptionCommitfile.matches(".+=.+"))
 						{
 							String[] parts = actOptionCommitfile.split("=");
-							de.caegroup.process.File file = new de.caegroup.process.File();
+							de.caegroup.process.File userFile = new de.caegroup.process.File();
 
 							if(parts.length == 1)
 							{
-								file.setKey("default");
-								file.setGlob(parts[0]);
+								userFile.setKey("default");
+								userFile.setGlob(parts[0]);
 							}
 							else if(parts.length == 2)
 							{
-								file.setKey(parts[0]);
-								file.setGlob(parts[1]);
+								userFile.setKey(parts[0]);
+								userFile.setGlob(parts[1]);
 							}
 							else
 							{
@@ -271,11 +271,28 @@ public class Startinstance
 								exiter();
 							}
 							
-							// setzen des globdir (weil nicht stepdir)
-							file.setGlobdir(p2.getBaseDir());
-							commit.addFile(file);
+//							// setzen des globdir (weil nicht stepdir)
+//							file.setGlobdir(p2.getBaseDir());
 
-							System.err.println("committing variable "+file.getKey()+"="+file.getGlob());
+							// die auf der kommandozeile uebergebenen Informationen sollen in die vorhandenen commits im rootStep gemappt werden
+							// alle vorhandenen commits in step root durchgehen und dem passenden file zuordnen
+							for(Commit actCommit : stepRoot.getCommit())
+							{
+								// alle files des aktuellen commits
+								for(de.caegroup.process.File actFile : actCommit.getFile())
+								{
+									if(actFile.getKey().equals(userFile.getKey()))
+									{
+										actFile.setGlob(userFile.getGlob());
+										actFile.setGlobdir(p2.getBaseDir());
+										System.err.println("entering file into commit "+actCommit.getName()+" ("+actFile.getKey()+"="+actFile.getGlob()+")");
+										break;
+									}
+								}
+							}
+							
+//							commit.addFile(file);
+
 						}
 						else
 						{
@@ -292,25 +309,43 @@ public class Startinstance
 					if (actOptionCommitvariable.matches(".+=.+"))
 					{
 						String[] parts = actOptionCommitvariable.split("=");
-						Variable variable = new Variable();
+						Variable userVariable = new Variable();
 	
 						if(parts.length == 1)
 						{
-							variable.setKey("default");
-							variable.setValue(parts[0]);
+							userVariable.setKey("default");
+							userVariable.setValue(parts[0]);
 						}
 						else if(parts.length == 2)
 						{
-							variable.setKey(parts[0]);
-							variable.setValue(parts[1]);
+							userVariable.setKey(parts[0]);
+							userVariable.setValue(parts[1]);
 						}
 						else
 						{
 							System.err.println("error in option -commitvariable");
 							exiter();
 						}
-						commit.addVariable(variable);
-						System.err.println("committing variable "+variable.getKey()+"="+variable.getValue());
+//						commit.addVariable(variable);
+
+						// die auf der kommandozeile uebergebenen Informationen sollen in die vorhandenen commits im rootStep gemappt werden
+						// alle vorhandenen commits in step root durchgehen und dem passenden file zuordnen
+						for(Commit actCommit : stepRoot.getCommit())
+						{
+							// alle files des aktuellen commits
+							for(de.caegroup.process.Variable actVariable : actCommit.getVariable())
+							{
+								if(actVariable.getKey().equals(userVariable.getKey()))
+								{
+									actVariable.setValue(userVariable.getGlob());
+									System.err.println("entering variable into commit "+actCommit.getName()+": ("+actVariable.getKey()+"="+actVariable.getValue()+")");
+									break;
+								}
+							}
+						}
+						
+						System.err.println("committing variable "+userVariable.getKey()+"="+userVariable.getValue());
+
 					}
 					else
 					{
