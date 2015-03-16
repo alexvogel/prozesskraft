@@ -337,7 +337,7 @@ public class Startinstance
 							{
 								if(actVariable.getKey().equals(userVariable.getKey()))
 								{
-									actVariable.setValue(userVariable.getGlob());
+									actVariable.setValue(userVariable.getValue());
 									System.err.println("entering variable into commit "+actCommit.getName()+": ("+actVariable.getKey()+"="+actVariable.getValue()+")");
 									break;
 								}
