@@ -88,7 +88,7 @@ public class Spl {
 					}
 					// das fuehrende blank loeschen
 					firstLineExpandedJoined = firstLineExpandedJoined.replaceFirst("^\\s+", "");
-					System.err.println("debug: first line after expandation: '"+firstLineExpandedJoined+"'");
+					System.err.println("debug: first line after expansion: '"+firstLineExpandedJoined+"'");
 					
 					allLinesModified.add(firstLineExpandedJoined);
 					
