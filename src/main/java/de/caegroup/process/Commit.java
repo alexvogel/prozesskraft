@@ -197,6 +197,24 @@ implements Serializable
 		return this.variable;
 	}
 
+	/**
+	 * es werden alle Variables zurueckgegeben, die einen bestimmten schluessel haben
+	 * @param key
+	 * @return
+	 */
+	public ArrayList<Variable> getVariable(String key)
+	{
+		ArrayList<Variable> VariableWithCertainKey = new ArrayList<Variable>();
+		for(Variable actVariable : this.variable)
+		{
+			if(actVariable.getKey().equals(key))
+			{
+				VariableWithCertainKey.add(actVariable);
+			}
+		}
+		return VariableWithCertainKey;
+	}
+
 	public void setVariable(ArrayList<Variable> variable)
 	{
 		this.variable = variable;
@@ -205,6 +223,24 @@ implements Serializable
 	public ArrayList<File> getFile()
 	{
 		return this.file;
+	}
+
+	/**
+	 * es werden alle Files zurueckgegeben, die einen bestimmten schluessel haben
+	 * @param key
+	 * @return
+	 */
+	public ArrayList<File> getFile(String key)
+	{
+		ArrayList<File> FileWithCertainKey = new ArrayList<File>();
+		for(File actFile : this.file)
+		{
+			if(actFile.getKey().equals(key))
+			{
+				FileWithCertainKey.add(actFile);
+			}
+		}
+		return FileWithCertainKey;
 	}
 
 	public void setFile(ArrayList<File> file)
