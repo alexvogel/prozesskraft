@@ -271,9 +271,6 @@ public class Startinstance
 								exiter();
 							}
 							
-//							// setzen des globdir (weil nicht stepdir)
-//							file.setGlobdir(p2.getBaseDir());
-
 							// die auf der kommandozeile uebergebenen Informationen sollen in die vorhandenen commits im rootStep gemappt werden
 							// alle vorhandenen commits in step root durchgehen und dem passenden file zuordnen
 							for(Commit actCommit : stepRoot.getCommit())
@@ -283,16 +280,36 @@ public class Startinstance
 								{
 									if(actFile.getKey().equals(userFile.getKey()))
 									{
-										actFile.setGlob(userFile.getGlob());
-										actFile.setGlobdir(p2.getBaseDir());
-										System.err.println("entering file into commit "+actCommit.getName()+" ("+actFile.getKey()+"="+actFile.getGlob()+")");
-										break;
+										// wenn actFile schon ein valider eintrag ist, dann soll ein klon befuellt werden
+										if( actFile.getGlob() != null)
+										{
+											// wenn die maximale erlaubte anzahl noch nicht erreicht ist
+											if( actCommit.getFile(actFile.getKey()).size() < actFile.getMaxoccur() )
+											{
+												de.caegroup.process.File newFile = actFile.clone();
+												newFile.setGlob(userFile.getGlob());
+												newFile.setGlobdir(p2.getBaseDir());
+												System.err.println("entering file into commit "+actCommit.getName()+" ("+newFile.getKey()+"="+newFile.getGlob()+")");
+												actCommit.addFile(newFile);
+												break;
+											}
+											else
+											{
+												System.err.println("fatal: you only may commit "+actFile.getMaxoccur()+" " + actFile.getKey()+"-files into commit "+actCommit.getName());
+												exiter();
+											}
+										}
+										// ansonsten das bereits vorhandene file im commit mit den daten befuellen
+										else
+										{
+											actFile.setGlob(userFile.getGlob());
+											actFile.setGlobdir(p2.getBaseDir());
+											System.err.println("entering file into commit "+actCommit.getName()+" ("+actFile.getKey()+"="+actFile.getGlob()+")");
+											break;
+										}
 									}
 								}
 							}
-							
-//							commit.addFile(file);
-
 						}
 						else
 						{
@@ -337,15 +354,34 @@ public class Startinstance
 							{
 								if(actVariable.getKey().equals(userVariable.getKey()))
 								{
-									actVariable.setValue(userVariable.getValue());
-									System.err.println("entering variable into commit "+actCommit.getName()+": ("+actVariable.getKey()+"="+actVariable.getValue()+")");
-									break;
+									// wenn actFile schon ein valider eintrag ist, dann soll ein klon befuellt werden
+									if( actVariable.getGlob() != null)
+									{
+										// wenn die maximale erlaubte anzahl noch nicht erreicht ist
+										if( actCommit.getVariable(actVariable.getKey()).size() < actVariable.getMaxoccur() )
+										{
+											de.caegroup.process.Variable newVariable = actVariable.clone();
+											newVariable.setValue(userVariable.getValue());
+											System.err.println("entering variable into commit "+actCommit.getName()+": ("+newVariable.getKey()+"="+newVariable.getValue()+")");
+											actCommit.addVariable(newVariable);
+											break;
+										}
+										else
+										{
+											System.err.println("fatal: you only may commit "+actVariable.getMaxoccur()+" " + actVariable.getKey()+"-variable(s) into commit "+actCommit.getName());
+											exiter();
+										}
+									}
+									// ansonsten das bereits vorhandene file im commit mit den daten befuellen
+									else
+									{
+										actVariable.setValue(userVariable.getValue());
+										System.err.println("entering variable into commit "+actCommit.getName()+": ("+actVariable.getKey()+"="+actVariable.getValue()+")");
+										break;
+									}
 								}
 							}
 						}
-						
-						System.err.println("committing variable "+userVariable.getKey()+"="+userVariable.getValue());
-
 					}
 					else
 					{
