@@ -959,8 +959,8 @@ implements Serializable, Cloneable
 					else
 					{
 						File file = new File();
-						// als schluessel soll der verzeichnisnamen mit fuehrendem "_" verwendet werden
-						file.setKey("_"+actInitCommitDir.getName());
+						// als schluessel soll der filenamen verwendet werden
+						file.setKey(actFile.getName());
 						file.setGlob(actFile.getAbsolutePath());
 						rootCommit.addFile(file);
 					}
