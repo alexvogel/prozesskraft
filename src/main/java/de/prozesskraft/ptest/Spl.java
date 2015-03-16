@@ -53,7 +53,7 @@ public class Spl {
 			for(String actLine : allLines)
 			{
 				// wenn es sich um die erste zeile handelt, dann sollen pfade expandiert werden
-				if( (!firstLineSeen) && (!actLine.matches("^\\s?*#.*$")) )
+				if( (!firstLineSeen) && (!actLine.matches("^\\s*#.*$")) )
 				{
 					// splitten an whitespace
 					String[] firstLine = actLine.split("\\s+");
