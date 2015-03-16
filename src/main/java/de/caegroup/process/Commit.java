@@ -633,8 +633,9 @@ implements Serializable
 			variablesToCommit.add(master);
 		}
 
+
 		// ansonsten muss mit dem glob festgestellt werden welche files gemeint sind
-		else if((master.getValue()==null) && ( master.getGlob()!=null || (!master.getGlob().equals(""))) )
+		else if((master.getValue()==null) && ( master.getGlob()!=null && (!master.getGlob().equals(""))) )
 		{
 			log("debug", "variable does define a glob instead of a value. so the content of file(s) "+master.getGlob()+" have to be interpreted as a variables.");
 
