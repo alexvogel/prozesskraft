@@ -242,7 +242,7 @@ public class Startinstance
 			Step stepRoot = p2.getStep(p2.getRootstepname());
 			
 			// den Commit 'by-process-commitit' heraussuchen oder einen neuen Commit dieses Namens erstellen
-			Commit commit = commit = new Commit(stepRoot);
+			Commit commit = new Commit(stepRoot);
 			commit.setName("by-process-startinstance");
 
 			// committen von files (ueber einen glob)
