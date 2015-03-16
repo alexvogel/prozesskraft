@@ -47,43 +47,60 @@ public class Spl {
 		// alle einzel strings in erster Zeile sollen ueberprueft werden ob es sich dabei um eine relative pfadangabe handelt und zu einem absoluten pfad gewandelt werden
 		else
 		{
-			// splitten an whitespace
-			String[] firstLine = allLines.get(0).split("\\s+");
-			
-			ArrayList<String> firstLineExpanded = new ArrayList<String>();
-			// alle einzelstrings durchegehen und pfadangaben erweitern
-			for(String actString : firstLine)
+			ArrayList<String> allLinesModified = new ArrayList<String>();
+			// die erste nicht-kommentarzeile extrahieren und relative pfade expanden
+			boolean firstLineSeen = false;
+			for(String actLine : allLines)
 			{
-				java.io.File testFile = new java.io.File(this.getCall().getParentFile().getCanonicalPath()+"/"+actString);
-
-				System.err.println("debug: string of first line before: "+actString);
-				
-				// wenn es ein file/directory mit dem expandeten path gibt, soll dieser (statt dem bisherigen relativen Pfad) verwendet werden
-				if(testFile.exists())
+				// wenn es sich um die erste zeile handelt, dann sollen pfade expandiert werden
+				if( (!firstLineSeen) && (!actLine.matches("^\\s*#.*$")) )
 				{
-					firstLineExpanded.add(testFile.getCanonicalPath());
-					System.err.println("debug: string of first line after: "+testFile.getCanonicalPath());
+					// splitten an whitespace
+					String[] firstLine = actLine.split("\\s+");
+					
+					ArrayList<String> firstLineExpanded = new ArrayList<String>();
+					// alle einzelstrings durchegehen und pfadangaben erweitern
+					for(String actString : firstLine)
+					{
+						java.io.File testFile = new java.io.File(this.getCall().getParentFile().getCanonicalPath()+"/"+actString);
 
+						System.err.println("debug: string of first line before: "+actString);
+
+						// wenn es ein file/directory mit dem expandeten path gibt, soll dieser (statt dem bisherigen relativen Pfad) verwendet werden
+						if(testFile.exists())
+						{
+							firstLineExpanded.add(testFile.getCanonicalPath());
+							System.err.println("debug: string of first line after: "+testFile.getCanonicalPath());
+
+						}
+						else
+						{
+							firstLineExpanded.add(actString);
+							System.err.println("debug: string of first line after: "+actString);
+						}
+					}
+					
+					// wieder zu einem string joinen
+					String firstLineExpandedJoined = "";
+					for(String actString : firstLineExpanded)
+					{
+						firstLineExpandedJoined += " " + actString;
+					}
+					// das fuehrende blank loeschen
+					firstLineExpandedJoined = firstLineExpandedJoined.replaceFirst("^\\s+", "");
+					System.err.println("debug: first line after expandation: '"+firstLineExpandedJoined+"'");
+					
+					allLinesModified.add(firstLineExpandedJoined);
+					
+					// vermerken, dass die erste zeile bereits besucht wurde
+					firstLineSeen = true;
 				}
 				else
 				{
-					firstLineExpanded.add(actString);
-					System.err.println("debug: string of first line after: "+actString);
+					allLinesModified.add(actLine);
 				}
 			}
-			
-			// wieder zu einem string joinen
-			String firstLineExpandedJoined = "";
-			for(String actString : firstLineExpanded)
-			{
-				firstLineExpandedJoined += " " + actString;
-			}
-			// das fuehrende blank loeschen
-			firstLineExpandedJoined = firstLineExpandedJoined.replaceFirst("^\\s+", "");
-			System.err.println("debug: first line after expandation: '"+firstLineExpandedJoined+"'");
-
-			// und wieder als erste zeile setzen
-			allLines.set(0, firstLineExpandedJoined);
+			allLines = allLinesModified;
 		}
 		
 		String callAsString = "";
