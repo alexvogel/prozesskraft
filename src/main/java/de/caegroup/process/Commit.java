@@ -626,13 +626,13 @@ implements Serializable
 		ArrayList<Variable> variablesToCommit = new ArrayList<Variable>();
 
 		// wenn die variable bereits einen value hat, dann muss dies nicht ueber globbing ermittelt werden
+		log("info", "(value=" +master.getValue()+")");
 		if((master.getValue()!=null) && (!master.getValue().equals("")))
 		{
 			master.setValue(this.getParent().resolveString(master.getValue()));
 			log("info", "(value=" +this.getParent().resolveString(master.getValue())+")");
 			variablesToCommit.add(master);
 		}
-
 
 		// ansonsten muss mit dem glob festgestellt werden welche files gemeint sind
 		else if((master.getValue()==null) && ( master.getGlob()!=null && (!master.getGlob().equals(""))) )
