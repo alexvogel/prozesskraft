@@ -239,10 +239,10 @@ public class Startinstance
 			p2 = p1.readXml();
 
 			// step, an den die commits gehen, soll 'root' sein.
-			Step step = p2.getStep(p2.getRootstepname());
+			Step stepRoot = p2.getStep(p2.getRootstepname());
 			
 			// den Commit 'by-process-commitit' heraussuchen oder einen neuen Commit dieses Namens erstellen
-			Commit commit = commit = new Commit(step);
+			Commit commit = commit = new Commit(stepRoot);
 			commit.setName("by-process-startinstance");
 
 			// committen von files (ueber einen glob)
@@ -322,7 +322,8 @@ public class Startinstance
 				p2.setBaseDir(commandline.getOptionValue("basedir"));
 			}
 
-			commit.doIt();
+//			commit.doIt();
+			stepRoot.commit();
 			
 			// root-verzeichnis erstellen
 			p2.makeRootdir();
