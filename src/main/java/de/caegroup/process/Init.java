@@ -456,7 +456,7 @@ implements Serializable
 					this.setStatus("error");
 				}
 
-				log("debug", "list '"+list.getName()+"' finally contains "+list.getItem().size()+" item(s).");
+				log("debug", "list '"+list.getName()+"' contains now "+list.getItem().size()+" item(s).");
 			}
 		}
 		this.setStatus("finished");
