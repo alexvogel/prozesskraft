@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SerializationUtils;
@@ -682,10 +684,10 @@ implements Serializable
 				log("debug", "glob is relative - expanding with stepdir "+this.getAbsdir()+"/"+master.getGlob());
 			}
 
-			// das Verzeichnis des globs feststellen
+			// das Verzeichnis des globs feststellen (der glob selber koennte auch ein dir sein, aber das spielt vorerst keine rolle)
 			java.io.File dirOfGlob = null;
 			java.io.File glob = new java.io.File(master.getGlob());
-			
+
 			// directory festlegen
 			if(glob.isDirectory())
 			{
@@ -710,12 +712,12 @@ implements Serializable
 
 			// alle eintraege des verzeichnisses, auf die der glob matched
 			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+master.getGlob());
-			ArrayList<java.io.File> allFilesOfDirectoryThatGlob = new ArrayList<java.io.File>();
+			ArrayList<java.io.File> allEntitiesThatGlob = new ArrayList<java.io.File>();
 			for(java.io.File actFile : allFilesOfDirectory)
 			{
 				if(matcher.matches(actFile.toPath()))
 				{
-					allFilesOfDirectoryThatGlob.add(actFile);
+					allEntitiesThatGlob.add(actFile);
 					log("info", "glob matches: "+actFile.getAbsolutePath());
 				}
 				else
@@ -723,20 +725,55 @@ implements Serializable
 					log("info", "glob NOT matches: "+actFile.getAbsolutePath());
 				}
 			}
+			
+			// die geglobbten eintraege, die directories sind durch deren enthaltene files ersetzen
+			ArrayList<java.io.File> allFilesThatContainVariables = allEntitiesThatGlob;
+			boolean enthaeltNochDirs = true;
+			
+			// solange aufloesen bis nur noch files vorhanden sind
+			while(enthaeltNochDirs)
+			{
+				ArrayList<java.io.File> tmp = new ArrayList<java.io.File>();
+				for(java.io.File actFile : allFilesThatContainVariables)
+				{
+					// wenn es ein file ist, wird es uebernommen
+					if(actFile.isFile())
+					{
+						tmp.add(actFile);
+					}
+					// wenn es ein directory ist, wird dessen inhalt uebernommen
+					else
+					{
+						tmp.addAll(Arrays.asList(actFile.listFiles()));
+					}
+				}
+				allFilesThatContainVariables = tmp;
+				
+				// sind noch directories vorhanden, die aufgeloest werden muessen?
+				enthaeltNochDirs = false;
+				for(java.io.File actFile : allFilesThatContainVariables)
+				{
+					if(actFile.isDirectory())
+					{
+						enthaeltNochDirs = true;
+					}
+				}
+			}
+
 			// interpolieren aller files in einen String fuer die logging ausgabe
 			String allFiles = "[";
-			for(java.io.File actFile : allFilesOfDirectoryThatGlob)
+			for(java.io.File actFile : allFilesThatContainVariables)
 			{
 				allFiles += actFile.getAbsolutePath() +", ";
 			}
 			allFiles += "]";
 
-			log("debug", "and "+allFilesOfDirectoryThatGlob.size()+" of this file(s) match glob (files: "+allFiles+")");
+			log("debug", "and "+allFilesThatContainVariables.size()+" of this file(s) match glob (files: "+allFiles+")");
 
 			// variablen aus den files generieren und jedes mal die vorliegende variable clonen
-			for(java.io.File actFile : allFilesOfDirectoryThatGlob)
+			for(java.io.File actFile : allFilesThatContainVariables)
 			{
-				variablesToCommit.addAll(extractVariables(master, actFile, false));
+				variablesToCommit.addAll(extractVariables(master, actFile));
 			}
 		}
 
@@ -824,79 +861,156 @@ implements Serializable
 	}
 
 	/**
-	 * 1) Das File wird eingelesen, wenn groesse < 100kB
-	 * 2a) Wenn boolean==false, dann soll jede zeile als jeweils 1 Value interpretiert werden
-	 * 2b) Wenn boolean==true, dann soll nur die erste Zeile als 1 Variable interpretiert werden (alle weiteren Zeilen werden ignoriert)
-	 * 3) Ein clone der Variable wird mit einem Value bestueckt und als Teiol der ArrayList zurueck gegeben.
+	 * Eine Variable wird aus einem File extrahiert
+	 * 
+	 * 1) ist ein file mit dem namen 'variables' vorhanden, soll der inhalt nach key=value definitionen durchgegangen werden (#=kommentar, leerzeilen ignorieren, value < 100kB)
+	 *	2) bei files mit dem namens muster variable.<key> wird jede zeile vollstaendig als eigene variable interpretiert mit value=zeileninhalt (#=kommentar, leerzeilen ignorieren, value < 100kB)
+     *
+	 * Ein clone der Variable wird mit einem Value bestueckt und als Teil der ArrayList zurueck gegeben.
 	 *
 	 * @param Variable, java.io.File, boolean
 	 * @throws IOException 
 	*/
-	public ArrayList<Variable> extractVariables(Variable master, java.io.File fileToExtractFrom, boolean onlyFirstLine)
+	public ArrayList<Variable> extractVariables(Variable master, java.io.File fileToExtractFrom)
 	{
 		ArrayList<Variable> extractedVariables = new ArrayList<Variable>();
-		try
+
+		// ueber den filenamen feststellen welche extraktionsmethode angewendet werden soll
+		// methode 1)
+		if(fileToExtractFrom.getName().matches("^variables$"))
 		{
-			// wenn das file nicht zu gross ist (<100kB)
-			if (fileToExtractFrom.length() < 102400.)
+			BufferedReader in = null;
+			try
 			{
-				BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(fileToExtractFrom)));
-
-				try
+				in = new BufferedReader(new InputStreamReader(new FileInputStream(fileToExtractFrom)));
+				String line = null;
+				int lineNr = 0;
+				while ((line = in.readLine()) != null)
 				{
-					String line = null;
-					try {
-						while ((line = in.readLine()) != null)
-						{
-							// wenn zeile mit nicht '#' beginnt, soll diese als variable betrachtet werden
-							if(!line.matches("^#.+$"))
-							{
-								Variable newVariable = master.clone();
+					lineNr++;
+					// wenn zeile nicht mit '#' beginnt oder leer ist, oder nur whitespaces enthaelt, soll diese als variable betrachtet werden
+					if( !line.matches("^#.+$") || !line.matches("^\\s+$") )
+					{
+						// entfernen von evtl. vorhandenen newlines
+						line = line.replaceAll("(\\r|\\n)", "");
+						
+						log("debug", "extracting variable from file '"+fileToExtractFrom.getAbsolutePath()+"' line-nr "+lineNr);
 
-								// entfernen einen evtl. vorhandenen newlines
-								line = line.replaceAll("(\\r|\\n)", "");
-								log("debug", "extracting value '"+line+"' from file "+fileToExtractFrom.getAbsolutePath());
-	
-								newVariable.setValue(line);
-								extractedVariables.add(newVariable);
-	
-								if(onlyFirstLine)
-								{
-									break;
-								}
-							}
+						// am ersten '=' zerlegen
+						String[] keyValue = line.split("=", 1);
+
+						String key = "";
+						String value = "";
+						if(keyValue.length == 1)
+						{
+							key = keyValue[0];
+							value = keyValue[0];
+						}
+						else if(keyValue.length > 1)
+						{
+							key = keyValue[0];
+							value = keyValue[1];
+						}
+
+						// zeile zu lang?
+						if(key.length() > 102400 || value.length() > 102400)
+						{
+							log("error", "cannot import as variable. line nr "+lineNr+" contains to much data (key or value >100kB).");
+						}
+						else
+						{
+							Variable newVariable = master.clone();
+							newVariable.setGlob(null);
+							newVariable.setKey(key);
+							newVariable.setValue(value);
+							extractedVariables.add(newVariable);
 						}
 					}
-					catch (IOException e)
-					{
-						this.log("error", e.getMessage());
-						master.setStatus("error");
-					}
 				}
-				finally
-				{
-					try {
-						in.close();
-					}
-					catch (IOException e)
-					{
-						this.log("error", "IOException");
-						master.setStatus("error");
-						e.printStackTrace();
-					}
+			}
+			catch (IOException e)
+			{
+				this.log("error", e.getMessage());
+				master.setStatus("error");
+			}
+			finally
+			{
+				try {
+					in.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					this.log("error", e.getMessage());
+					master.setStatus("error");
 				}
+			}
+
+		}
+		// methode 2)
+		else if(fileToExtractFrom.getName().matches("^variable\\..+$"))
+		{
+			// den key aus dem filenamen extrahieren (variable.<key>)
+			Pattern p = Pattern.compile("^variable\\.(.+)$", Pattern.CASE_INSENSITIVE);
+			Matcher m = p.matcher(fileToExtractFrom.getName());
+			
+			String key = "";
+
+			if(m.find())
+			{
+				key = m.group(1);
 			}
 			else
 			{
-				this.log("info", "file is to big (>100kB) to commit content as variables: "+fileToExtractFrom.getAbsolutePath());
+				key = "default";
+			}
+			
+			BufferedReader in = null;
+			try
+			{
+				in = new BufferedReader(new InputStreamReader(new FileInputStream(fileToExtractFrom)));
+				String line = null;
+				int lineNr = 0;
+				while ((line = in.readLine()) != null)
+				{
+					lineNr++;
+					// wenn zeile mit nicht '#' beginnt oder leer ist, oder nur whitespaces enthaelt, soll diese als variable betrachtet werden
+					if( !line.matches("^#.+$") || !line.matches("^\\s+$") )
+					{
+						// entfernen einen evtl. vorhandenen newlines
+						line = line.replaceAll("(\\r|\\n)", "");
+						
+						log("debug", "extracting value '"+line+"' from file "+fileToExtractFrom.getAbsolutePath());
+
+						// zeile zu lang?
+						if(line.length() > 102400)
+						{
+							log("error", "cannot import as variable. line nr "+lineNr+" contains to much data (>100kB).");
+						}
+						else
+						{
+							Variable newVariable = master.clone();
+							newVariable.setGlob(null);
+							newVariable.setKey(key);
+							newVariable.setValue(line);
+							extractedVariables.add(newVariable);
+						}
+					}
+				}
+			}
+			catch (IOException e)
+			{
+				this.log("error", e.getMessage());
 				master.setStatus("error");
 			}
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-			this.log("info", "variables not committed (cannot read file): "+fileToExtractFrom.getAbsolutePath());
-			master.setStatus("error");
+			finally
+			{
+				try {
+					in.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					this.log("error", e.getMessage());
+					master.setStatus("error");
+				}
+			}
 		}
 		
 		return extractedVariables;

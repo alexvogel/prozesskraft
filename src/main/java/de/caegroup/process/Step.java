@@ -971,7 +971,7 @@ implements Serializable, Cloneable
 		//ueber alle commitdir iterieren
 		this.log("info", "resolving all entries of initCommitVarfile and adding to the "+rootCommit.getName());
 
-		// ueber alle initCommitVarfiles iterieren, fuer jedes eine variable mit dem pfad als glob erstellen und dem commit hinzufuegen
+		// ueber alle initCommitVarfiles iterieren, den inhalt durchgehen und jede zeile, die nicht leer und kein kommentar (#) ist, als variable importieren 
 		for(java.io.File actCommitVarfile : this.getParent().getInitCommitVarfiles2())
 		{
 			Variable variable = new Variable();
