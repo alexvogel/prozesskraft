@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- <root> -->
-<process name="multiappshake" modelVersion="0.3" version="0.0.1" description="startet apps und prozesse mit beispieldaten. am ende werden die tatsaechlich erzeugten daten mit den erwarteten daten (fingerprint) verglichen. das ergebnis wird in einem kurzbericht zusammengefasst" architectMail="alexander.vogel@caegroup.de" architectName="Alexander Vogel" architectCompany="caegroup Ingenieure" customerMail="alexander.vogel@caegroup.de" customerName="Alexander Vogel" customerCompany="caegroup Ingenieure" path="irgendeinpath" initCommitVarfile="etc/name:etc/spl:etc/call:etc/result" wrapper="false">
+<process name="multiappshake" modelVersion="0.3" version="0.0.1" description="startet apps und prozesse mit beispieldaten. am ende werden die tatsaechlich erzeugten daten mit den erwarteten daten (fingerprint) verglichen. das ergebnis wird in einem kurzbericht zusammengefasst" architectMail="alexander.vogel@caegroup.de" architectName="Alexander Vogel" architectCompany="caegroup Ingenieure" customerMail="alexander.vogel@caegroup.de" customerName="Alexander Vogel" customerCompany="caegroup Ingenieure" path="irgendeinpath" initCommitVariable="etc/name:etc/spl:etc/call:etc/result" wrapper="false">
 	<step name="root" type="automatic">
 		<commit name="Variable" toroot="true">
 			<variable key="mailto" minoccur="1" maxoccur="5" type="string" free="true" description="Empfaenger des Testlauf-Ergebnisses">

@@ -935,21 +935,21 @@ implements Serializable, Cloneable
 	{
 		this.log("info", "special commit, because this step is root");
 
-		// einen commit fuer die initCommitDir anlegen
+		// einen commit fuer die initCommitFile und initCommitVariable anlegen
 		this.removeCommit("rootCommit");
 		this.log("debug", "creating a commit 'rootCommit' and adding to step "+this.getParent().getRootStep().getName());
 		Commit rootCommit = new Commit(this);
 		rootCommit.setName("rootCommit");
 		
-		//ueber alle commitdir iterieren
-		this.log("info", "start resolving all entries of initCommitDir and adding to the "+rootCommit.getName());
-		for(java.io.File actInitCommitDir : this.getParent().getInitCommitDirs2())
+		//ueber alle commitFile iterieren
+		this.log("info", "start resolving all entries of initCommitFile and adding to the "+rootCommit.getName());
+		for(java.io.File actInitCommitFile : this.getParent().getInitCommitFiles2())
 		{
-			if(actInitCommitDir.isDirectory())
+			if(actInitCommitFile.isDirectory())
 			{
-				log("info", "committing all files in directory: "+actInitCommitDir.getAbsolutePath());
+				log("info", "committing all files in directory: "+actInitCommitFile.getAbsolutePath());
 				
-				for(java.io.File actFile : actInitCommitDir.listFiles())
+				for(java.io.File actFile : actInitCommitFile.listFiles())
 				{
 					if(actFile.isDirectory())
 					{
@@ -966,27 +966,31 @@ implements Serializable, Cloneable
 				}
 			}
 		}
-		this.log("info", "end resolving all entries of initCommitDir and adding to the "+rootCommit.getName());
+		this.log("info", "end resolving all entries of initCommitFile and adding to the "+rootCommit.getName());
 
-		//ueber alle commitdir iterieren
-		this.log("info", "resolving all entries of initCommitVarfile and adding to the "+rootCommit.getName());
+		//ueber alle CommitVariable iterieren
+		this.log("info", "resolving all entries of initCommitVariable and adding to the "+rootCommit.getName());
 
-		// ueber alle initCommitVarfiles iterieren, den inhalt durchgehen und jede zeile, die nicht leer und kein kommentar (#) ist, als variable importieren 
-		for(java.io.File actCommitVarfile : this.getParent().getInitCommitVarfiles2())
+		// alle CommitVariable committen (darf ein directory-pfad oder ein filepfad oder ein glob sein 
+		for(java.io.File actCommitVariable : this.getParent().getInitCommitVariables2())
 		{
 			Variable variable = new Variable();
-			variable.setKey(actCommitVarfile.getName());
-			try {
-				variable.setGlob(actCommitVarfile.getCanonicalPath());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			
+			variable.setKey("toBeDetermined");
+			
+			if(new java.io.File(actCommitVariable.getAbsolutePath()).isDirectory())
+			{
+				variable.setGlob(actCommitVariable.getAbsolutePath() + "/*");
+			}
+			else
+			{
+				variable.setGlob(actCommitVariable.getAbsolutePath());
 			}
 
-			this.log("debug", "adding a variable with glob '"+variable.getGlob()+"' to commit '"+rootCommit.getName()+"'");
+			this.log("debug", "adding a variable to commit '"+rootCommit.getName()+"' with glob '"+variable.getGlob()+"'" );
 			rootCommit.addVariable(variable);
 		}
-		this.log("info", "end resolving all entries of initCommitVarfile and adding to the "+rootCommit.getName());
+		this.log("info", "end resolving all entries of initCommitVariable and adding to the "+rootCommit.getName());
 
 
 		// commits durchfuehren

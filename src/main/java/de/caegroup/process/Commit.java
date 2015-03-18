@@ -675,7 +675,7 @@ implements Serializable
 		// ansonsten muss mit dem glob festgestellt werden welche files gemeint sind
 		else if((master.getValue()==null) && ( master.getGlob()!=null && (!master.getGlob().equals(""))) )
 		{
-			log("debug", "variable does define a glob instead of a value. so the content of file(s) "+master.getGlob()+" have to be interpreted as a variables.");
+			log("debug", "variable does define a glob instead of a value. so the content of files / directories "+master.getGlob()+" have to be interpreted as a variables.");
 
 			// ist der glob relativ? Dann muss er um das stepdir erweitert werden
 			if(!(master.getGlob().matches("^/.+$")))
@@ -686,17 +686,22 @@ implements Serializable
 
 			// das Verzeichnis des globs feststellen (der glob selber koennte auch ein dir sein, aber das spielt vorerst keine rolle)
 			java.io.File dirOfGlob = null;
-			java.io.File glob = new java.io.File(master.getGlob());
+
+			String glob = master.getGlob();
+			String globParent = master.getGlob().replaceFirst("/[^/]+$", "");
 
 			// directory festlegen
-			if(glob.isDirectory())
+			if(new java.io.File(glob).isDirectory())
 			{
-				dirOfGlob = glob;
+				dirOfGlob = new java.io.File(glob);
 			}
-			else
+			else if(new java.io.File(globParent).isDirectory())
 			{
-				dirOfGlob = glob.getParentFile();
+				dirOfGlob = new java.io.File(globParent);
 			}
+
+			System.err.println("dir of glob "+dirOfGlob);
+			System.err.println("glob "+glob);
 
 			// alle eintraege des Verzeichnisses
 			ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();
@@ -889,7 +894,7 @@ implements Serializable
 				{
 					lineNr++;
 					// wenn zeile nicht mit '#' beginnt oder leer ist, oder nur whitespaces enthaelt, soll diese als variable betrachtet werden
-					if( !line.matches("^#.+$") || !line.matches("^\\s+$") )
+					if( !line.matches("^#.+$") && !line.matches("^\\s+$") )
 					{
 						// entfernen von evtl. vorhandenen newlines
 						line = line.replaceAll("(\\r|\\n)", "");
@@ -973,7 +978,7 @@ implements Serializable
 				{
 					lineNr++;
 					// wenn zeile mit nicht '#' beginnt oder leer ist, oder nur whitespaces enthaelt, soll diese als variable betrachtet werden
-					if( !line.matches("^#.+$") || !line.matches("^\\s+$") )
+					if( !line.matches("^#.+$") && !line.matches("^\\s+$") )
 					{
 						// entfernen einen evtl. vorhandenen newlines
 						line = line.replaceAll("(\\r|\\n)", "");

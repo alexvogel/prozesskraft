@@ -164,8 +164,8 @@
 		<xs:sequence>
 			<xs:element maxOccurs="unbounded" ref="step" />
 		</xs:sequence>
-		<xs:attribute name="initCommitDir" type="xs:string"></xs:attribute>
-		<xs:attribute name="initCommitVarfile" type="xs:string"></xs:attribute>
+		<xs:attribute name="initCommitFile" type="xs:string"></xs:attribute>
+		<xs:attribute name="initCommitVariable" type="xs:string"></xs:attribute>
 		<xs:attribute name="architectMail" use="required" type="EmailType" />
 		<xs:attribute name="architectName" type="xs:string"></xs:attribute>
 		<xs:attribute name="architectCompany" type="xs:string"></xs:attribute>
