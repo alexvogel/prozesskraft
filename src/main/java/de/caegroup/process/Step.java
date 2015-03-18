@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 import de.caegroup.codegen.Script;
 import de.caegroup.process.Commit;
 
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -820,7 +819,7 @@ implements Serializable, Cloneable
 		{
 			String listname = m.group(1);
 			this.log("debug", "listname in index(*) is "+listname);
-			System.err.println("step-"+this.getName()+": listname in loop=index(<listname>) is "+listname);
+//			System.err.println("step-"+this.getName()+": listname in loop=index(<listname>) is "+listname);
 			looplist.addItem(this.getIndexesOfListItems(listname));
 		}
 		// loop enthaelt keine funktion, sondern direkt den namen einer liste
@@ -1096,11 +1095,13 @@ implements Serializable, Cloneable
 	 */
 	public String resolveString(String stringToResolve)
 	{
-		if(stringToResolve == null) {return null;}
+		boolean fehler = false;
+		String fehlerGrund = "";
 		
+		if(stringToResolve == null) {return null;}
+
 		log("debug", "1: resolving string "+stringToResolve);
 
-		
 		if(this.getLoopvar() != null)
 		{
 			log("debug", "loopvar of actual step is: "+this.getLoopvar());
@@ -1109,81 +1110,80 @@ implements Serializable, Cloneable
 		}
 //		String resolvedString = stringToResolve;
 
-		Pattern p = Pattern.compile("\\{\\$(.+)\\}");
+		Pattern p = Pattern.compile("\\{\\$([^${}\\[\\]]+)(\\[([^${}]+)\\])?\\}");
 		Matcher m = p.matcher(stringToResolve);
 
-		if(m.find())
+		// group 0 = {$x[5]}
+		// group 1 = x
+		// group 2 = [5] ODER null
+		// group 3 = 5 ODER null
+		
+		while(m.find())
 		{
 			// extrahieren des listnamen incl. evtl. index aus dem match
-			String listnameMitEvtlIndex = m.group(1);
+//			System.err.println("full string: "+stringToResolve);
+//			System.err.println("group 0: "+m.group(0));
+//			System.err.println("group 1: "+m.group(1));
+//			System.err.println("group 2: "+m.group(2));
+//			System.err.println("group 3: "+m.group(3));
 
-			// extrahieren des listnamens
-			Pattern patternListnameWithIndex = Pattern.compile("^(\\w+)(\\[(.+)\\])?$");
-			Matcher matcherListnameWithIndex = patternListnameWithIndex.matcher(listnameMitEvtlIndex);
+			String vollstaendigerMatch = m.group(0);
+			String listname = m.group(1);
+			Integer index = null;
 			
-			if(matcherListnameWithIndex.find())
+			// default index = 0
+			if(m.group(3) != null)
 			{
-				log("debug", "found an indexed listname");
-				// feststellen ob wir uns schon auf der tiefsten ebene befinden
-				String listname = matcherListnameWithIndex.group(1);
-				log("debug", "listname="+listname);
+				index = Integer.parseInt(this.resolveString(m.group(3)));
+			}
+			else
+			{
+				index = 0;
+			}
 
-				Integer index = null;
-				// gibts keinen index, dann ist der index = 0
-				if(matcherListnameWithIndex.group(3)==null)
+			log("debug", "index="+index);
+//			System.err.println("index ist: "+index);
+
+			List list = this.getList(listname);
+			if (list != null)
+			{
+				// den platzhalter durch das item ersetzen
+				try
 				{
-					index = 0;
+					stringToResolve = stringToResolve.replace(m.group(0), list.getItem().get(index));
 				}
-				else
+				catch(IndexOutOfBoundsException e)
 				{
-					try
-					{
-						// versuchen den index zu parsen, falls es ein index ist
-						index = Integer.parseInt(this.resolveString(matcherListnameWithIndex.group(3)));
-					}
-					catch(NumberFormatException e)
-					{
-						// wenn inhalt nicht parsable, dann muss resolved werden
-						this.log("fatal", "cannot resolve substring '"+matcherListnameWithIndex.group(3)+"' of full string '"+stringToResolve+"'");
-						this.log("fatal", e.getMessage());
-//						System.exit(1);
-					}
-				}
-
-				log("debug", "index="+index);
-
-				List list = this.getList(listname);
-				if (list == null)
-				{
-					this.log("error", "list '"+listname+"' not found in step '"+this.getName()+"' but needed for resolving.");
+					this.log("fatal", "cannot deliver item nr "+index+" from list '"+list.getName()+"'");
+					this.log("fatal", e.getMessage());
+					fehler = true;
+					fehlerGrund = "cannot deliver item nr "+index+" from list '"+list.getName()+"'";
 //					System.exit(1);
 				}
-				else
-				{
-
-					// den platzhalter durch das item ersetzen
-					try
-					{
-//						System.err.println("stringToResolve="+stringToResolve);
-//						System.err.println("zuErsetzenderBereich="+m.group(0));
-//						System.err.println("itemCount="+list.getItem().size());
-//						System.err.println("ersetzendesItem="+list.getItem().get(index));
-						return stringToResolve.replace(m.group(0), list.getItem().get(index));
-					}
-					catch(IndexOutOfBoundsException e)
-					{
-						this.log("fatal", "cannot deliver item nr "+index+" from list '"+list.getName()+"'");
-						this.log("fatal", e.getMessage());
-	//					System.exit(1);
-					}
-				}
 			}
-			return stringToResolve;
+			else
+			{
+				this.log("error", "list '"+listname+"' not found in step '"+this.getName()+"' but needed for resolving.");
+				fehler = true;
+				fehlerGrund = "list '"+listname+"' not found in step '"+this.getName()+"' but needed for resolving.";
+//				System.exit(1);
+			}
+//			System.err.println("fehler? "+fehler);
+//			System.err.println("fehlerGrund? "+fehlerGrund);
 		}
-		else
-		{
-			return stringToResolve;
-		}
+		
+		return stringToResolve;
+		
+//		// wenn fehlerfrei und noch unaufgeloeste eintrage, dann soll weiter resolved werden
+//		if( !fehler && stringToResolve.matches("^.*\\{\\$.+\\}.*$") )
+//		{
+//			return this.resolveString(stringToResolve);
+//		}
+//		// wenn fehler oder nichts mehr zu resolven, dann zurueckgeben
+//		else
+//		{
+//			return stringToResolve;
+//		}
 	}
 
 	/**

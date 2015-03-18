@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.Before;
 
 import de.caegroup.process.Commit;
+import de.caegroup.process.Log;
 import de.caegroup.process.Param;
 import de.caegroup.process.Process;
 import de.caegroup.process.Step;
@@ -87,12 +88,14 @@ public class TestStringResolve {
 //			System.out.println("unresolvter string: {$spl[{$loopvarstep}]}");
 //			System.out.println("fertig resolvter string: "+actStep.resolveString("{$spl[{$loopvarstep}]}"));
 //		}
-		
+
+		assertEquals("bla_cb2nvh_makesimpackbset_cb2nvh_makeadamssetdload.inp", process.getStep("appshake@1").resolveString("bla_{$name}_{$name[2]}.inp"));
+
 		assertEquals(nameDatenFuerTest.get(0), process.getStep("appshake@1").resolveString("{$name}"));
 		assertEquals(nameDatenFuerTest.get(0), process.getStep("appshake@1").resolveString("{$name[0]}"));
 		assertEquals(nameDatenFuerTest.get(1), process.getStep("appshake@1").resolveString("{$name[1]}"));
 		assertEquals(nameDatenFuerTest.get(2), process.getStep("appshake@1").resolveString("{$name[2]}"));
-
+		
 		assertEquals(splDatenFuerTest.get(0), process.getStep("appshake@1").resolveString("{$spl}"));
 		assertEquals(splDatenFuerTest.get(0), process.getStep("appshake@1").resolveString("{$spl[0]}"));
 		assertEquals(splDatenFuerTest.get(1), process.getStep("appshake@1").resolveString("{$spl[1]}"));
