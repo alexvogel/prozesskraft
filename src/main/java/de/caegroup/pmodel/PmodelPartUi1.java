@@ -1100,18 +1100,21 @@ public class PmodelPartUi1 extends ModelObject
 		
 		if ( line.hasOption("v"))
 		{
-			System.out.println("author:  [% email %]");
-			System.out.println("version: [% version %]");
-			System.out.println("date:    [% date %]");
+			System.err.println("author:  [% email %]");
+			System.err.println("version: [% version %]");
+			System.err.println("date:    [% date %]");
 			System.exit(0);
 		}
 		
+		/*----------------------------
+		  other things
+		----------------------------*/
 		if (!( line.hasOption("definition")) && !( line.hasOption("instance")))
 		{
-			System.out.println("either -definition or -instance needed. call -help for help.");
+			System.err.println("either -definition or -instance needed.");
+			System.err.println("either -definition or -instance needed. call -help for help.");
 			System.exit(0);
 		}
-		
 
 		// gui
 		final Display display = new Display();
@@ -1141,12 +1144,12 @@ public class PmodelPartUi1 extends ModelObject
 					gl_composite.marginHeight = 0;
 					if (line.hasOption("definition"))
 					{
-						System.out.println("definition is "+line.getOptionValue("definition"));
+						System.err.println("definition is "+line.getOptionValue("definition"));
 						new PmodelPartUi1(composite, line.getOptionValue("definition"));
 					}
 					else if (line.hasOption("instance"))
 					{
-						System.out.println("instance is "+line.getOptionValue("instance"));
+						System.err.println("instance is "+line.getOptionValue("instance"));
 						new PmodelPartUi1(composite, line.getOptionValue("instance"));
 					}
 					
