@@ -902,7 +902,7 @@ implements Serializable
 						log("debug", "extracting variable from file '"+fileToExtractFrom.getAbsolutePath()+"' line-nr "+lineNr);
 
 						// am ersten '=' zerlegen
-						String[] keyValue = line.split("=", 1);
+						String[] keyValue = line.split("=", 2);
 
 						String key = "";
 						String value = "";
