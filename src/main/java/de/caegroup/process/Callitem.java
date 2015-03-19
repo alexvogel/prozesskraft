@@ -81,19 +81,10 @@ implements Serializable
 		// wenn kein loop vorhanden, direkt die felder resolven
 		if(this.getLoop() == null)
 		{
-			if(this.getPar() != null)
-			{
-				this.setPar(this.getParent().getParent().resolveString(this.getPar()));
-			}
-			if(this.getDel() != null)
-			{
-				this.setDel(this.getParent().getParent().resolveString(this.getDel()));
-			}
-			if(this.getVal() != null)
-			{
-				this.setVal(this.getParent().getParent().resolveString(this.getVal()));
-				loopedThisToCallitems.add(this);
-			}
+			this.setPar(this.getParent().getParent().resolveString(this.getPar()));
+			this.setDel(this.getParent().getParent().resolveString(this.getDel()));
+			this.setVal(this.getParent().getParent().resolveString(this.getVal()));
+			loopedThisToCallitems.add(this);
 		}
 
 		else
