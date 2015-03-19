@@ -971,13 +971,13 @@ implements Serializable, Cloneable
 		//ueber alle CommitVariable iterieren
 		this.log("info", "resolving all entries of initCommitVariable and adding to the "+rootCommit.getName());
 
-		// alle CommitVariable committen (darf ein directory-pfad oder ein filepfad oder ein glob sein 
+		// alle CommitVariable committen (darf ein directory-pfad oder ein filepfad oder ein glob sein
 		for(java.io.File actCommitVariable : this.getParent().getInitCommitVariables2())
 		{
 			Variable variable = new Variable();
-			
+
 			variable.setKey("toBeDetermined");
-			
+
 			if(new java.io.File(actCommitVariable.getAbsolutePath()).isDirectory())
 			{
 				variable.setGlob(actCommitVariable.getAbsolutePath() + "/*");

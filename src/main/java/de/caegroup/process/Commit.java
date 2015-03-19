@@ -700,8 +700,8 @@ implements Serializable
 				dirOfGlob = new java.io.File(globParent);
 			}
 
-			System.err.println("dir of glob "+dirOfGlob);
-			System.err.println("glob "+glob);
+//			System.err.println("dir of glob "+dirOfGlob);
+//			System.err.println("glob "+glob);
 
 			// alle eintraege des Verzeichnisses
 			ArrayList<java.io.File> allFilesOfDirectory = new ArrayList<java.io.File>();

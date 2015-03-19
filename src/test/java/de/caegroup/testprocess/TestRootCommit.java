@@ -32,7 +32,7 @@ public class TestRootCommit {
 	}
 
 	@Test
-	public void testRootCommit()
+	public void testRootCommitInitCommitVariable()
 	{
 		process.setInfilexml("src/test/resources/definitions/Admin/multiappshake/0.0.1/process.xml");
 
@@ -46,18 +46,18 @@ public class TestRootCommit {
 		// rootCommit durchfuehren
 		rootStep.commit();
 
-		for(Log actLog : rootStep.getLogRecursive())
-		{
-			System.err.println(actLog.sprint());
-		}
+//		for(Log actLog : rootStep.getLogRecursive())
+//		{
+//			System.err.println(actLog.sprint());
+//		}
 
 		// jetzt muss 1 commit existieren (der automatisch angelegte 'rootCommit')
 		assertEquals(1, rootStep.getCommit().size());
 
-		for(Variable actVariable : rootStep.getVariable())
-		{
-			System.err.println(actVariable.getKey() + "=" + actVariable.getValue());
-		}
+//		for(Variable actVariable : rootStep.getVariable())
+//		{
+//			System.err.println(actVariable.getKey() + "=" + actVariable.getValue());
+//		}
 		
 		// jetzt muessten 13 variablen existieren (3*name, 3*spl, 3*call, 3*result, _dir)
 		assertEquals(13, rootStep.getVariable().size());
@@ -65,16 +65,52 @@ public class TestRootCommit {
 	}
 	
 	@Test
-	public void testRootCommit2()
+	public void testRootCommitInitCommitVariable2()
 	{
 		process.setInfilexml("src/test/resources/definitions/Admin/multiappshake/0.0.1/process.xml");
 
 		Step rootStep = new Step("root");
 		process.addStep(rootStep);
 
-		process.setInitCommitVariable("etc");
+		process.setInitCommitVariable("etc:etc/nochEinOrdnerMitVariablen");
 
-		System.err.println("Infiledirectory: "+process.getInfilexml());
+//		System.err.println("Infiledirectory: "+process.getInfilexml());
+		
+		// zuerst existieren keine listen im rootStep
+		assertEquals(0, rootStep.getList().size());
+
+		// rootCommit durchfuehren
+		rootStep.commit();
+
+//		for(Log actLog : rootStep.getLogRecursive())
+//		{
+//			System.err.println(actLog.sprint());
+//		}
+
+		// jetzt muss 1 commit existieren (der automatisch angelegte 'rootCommit')
+		assertEquals(1, rootStep.getCommit().size());
+
+//		for(Variable actVariable : rootStep.getVariable())
+//		{
+//			System.err.println(actVariable.getKey() + "=" + actVariable.getValue());
+//		}
+		
+		// jetzt muessten 13 variablen existieren (3*name, 3*spl, 3*call, 3*result, _dir, 2*variables)
+		assertEquals(19, rootStep.getVariable().size());
+
+	}
+
+	@Test
+	public void testRootCommitInitCommitFile()
+	{
+		process.setInfilexml("src/test/resources/definitions/Admin/multiappshake/0.0.1/process.xml");
+
+		Step rootStep = new Step("root");
+		process.addStep(rootStep);
+
+		process.setInitCommitFile("files");
+
+//		System.err.println("Infiledirectory: "+process.getInfilexml());
 		
 		// zuerst existieren keine listen im rootStep
 		assertEquals(0, rootStep.getList().size());
@@ -90,13 +126,13 @@ public class TestRootCommit {
 		// jetzt muss 1 commit existieren (der automatisch angelegte 'rootCommit')
 		assertEquals(1, rootStep.getCommit().size());
 
-		for(Variable actVariable : rootStep.getVariable())
+		for(de.caegroup.process.File actFile : rootStep.getFile())
 		{
-			System.err.println(actVariable.getKey() + "=" + actVariable.getValue());
+//			System.err.println("FILE" + actFile.getKey() + "=" + actFile.getFilename());
 		}
 		
-		// jetzt muessten 13 variablen existieren (3*name, 3*spl, 3*call, 3*result, _dir, 2*variables)
-		assertEquals(16, rootStep.getVariable().size());
+		// jetzt muessten 2 files existieren
+		assertEquals(2, rootStep.getFile().size());
 
 	}
 
