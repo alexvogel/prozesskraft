@@ -107,6 +107,12 @@ public class TestCommit {
 		variable.setValue("superB");
 		commit.addVariable(variable);
 
+		Variable variable2 = new Variable();
+		variable2.setMinoccur(1);
+		variable2.setKey("{root:$variablesTuTu[{$loopvarstep}]}");
+		variable2.setValue("superB");
+		commit.addVariable(variable2);
+
 		File file = new File();
 		file.setMinoccur(1);
 		file.setKey("{$files[{$loopvarstep}]}");
@@ -120,7 +126,7 @@ public class TestCommit {
 
 		// commit durchfuehren
 		commit.doIt();
-		System.out.println("testCommit2");
+		System.err.println("testCommit2");
 		commit.printLog();
 		
 		// die stati abfragen
@@ -129,9 +135,14 @@ public class TestCommit {
 
 		// was an file/variable im step angekommen ist
 		assertEquals(1, step.getFile().size());
-		assertEquals(1, step.getVariable().size());
+		assertEquals(2, step.getVariable().size());
 		assertEquals("nocheinFile", step.getFile().get(0).getKey());
 
+		// beide variablen sollen den gleichen key.
+		assertEquals(step.getVariable().get(0).getKey(), step.getVariable().get(1).getKey());
+		System.err.println("variable 1: "+step.getVariable().get(0).getKey());
+		System.err.println("variable 2; "+step.getVariable().get(1).getKey());
+		
 	}
 	
 }
