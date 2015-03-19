@@ -81,9 +81,32 @@ implements Serializable
 		// wenn kein loop vorhanden, direkt die felder resolven
 		if(this.getLoop() == null)
 		{
-			this.setPar(this.getParent().getParent().resolveString(this.getPar()));
-			this.setDel(this.getParent().getParent().resolveString(this.getDel()));
-			this.setVal(this.getParent().getParent().resolveString(this.getVal()));
+			if(this.getPar() != null)
+			{
+				this.setPar(this.getParent().getParent().resolveString(this.getPar()));
+			}
+			else
+			{
+				this.setPar("");
+			}
+			
+			if(this.getDel() != null)
+			{
+				this.setDel(this.getParent().getParent().resolveString(this.getDel()));
+			}
+			else
+			{
+				this.setDel("");
+			}
+			
+			if(this.getDel() != null)
+			{
+				this.setVal(this.getParent().getParent().resolveString(this.getVal()));
+			}
+			else
+			{
+				this.setVal("");
+			}
 			loopedThisToCallitems.add(this);
 		}
 
@@ -113,15 +136,29 @@ implements Serializable
 						clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarcallitem\\}", clonedCallitem.getLoopvar()));
 						clonedCallitem.setPar(this.getPar().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
 					}
+					else
+					{
+						clonedCallitem.setPar("");
+					}
+
 					if(this.getDel() != null)
 					{
 						clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarcallitem\\}", clonedCallitem.getLoopvar()));
 						clonedCallitem.setDel(this.getDel().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
 					}
+					else
+					{
+						clonedCallitem.setDel("");
+					}
+
 					if(this.getVal() != null)
 					{
 						clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarstep\\}", clonedCallitem.getParent().getParent().getLoopvar()));
 						clonedCallitem.setVal(this.getVal().replaceAll("\\{\\$loopvarcallitem\\}", clonedCallitem.getLoopvar()));
+					}
+					else
+					{
+						clonedCallitem.setVal("");
 					}
 					
 					this.log("debug", "val="+this.getVal());
