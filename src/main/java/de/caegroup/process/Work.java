@@ -42,6 +42,7 @@ implements Serializable
 	public Work(Step step)
 	{
 		this.parent = step;
+		step.setWork(this);
 	}
 
 	/*----------------------------
@@ -54,22 +55,21 @@ implements Serializable
 
 	}
 
+	public void addCallitem(ArrayList<Callitem> callitems)
+	{
+		for(Callitem actCallitem : callitems)
+		{
+			this.addCallitem(actCallitem);
+		}
+	}
+
 	/**
 	 * removeCallitem
 	 * remove a certain callitem from this
 	 */
 	public void removeCallitem(Callitem callitem)
 	{
-		ArrayList<Callitem> cleanedCallitem = new ArrayList<Callitem>();
-		for(Callitem actCallitem : this.getCallitem())
-		{
-			if(!(actCallitem.equals(callitem)))
-			{
-				cleanedCallitem.add(actCallitem);
-			}
-		}
-
-		this.callitem = cleanedCallitem;
+		this.callitem.remove(callitem);
 	}
 
 	/**
@@ -177,8 +177,19 @@ implements Serializable
 		// resolven aller callitems
 		for(Callitem actCallitem : this.getCallitemssorted())
 		{
-			for(Callitem actResolvedCallitem : actCallitem.resolve())
+			// da sich die callitems beim resolven veraendern (mehr oder weniger werden, etc.) muss der aktuelle callitem aus work entfernt werden
+			this.removeCallitem(actCallitem);
+			
+			// wg evtl. loops entstehen beim resolven eines callitems evtl. mehr oder weniger callitems
+			ArrayList<Callitem> actCallitemResolved = actCallitem.resolve();
+			
+			// die resolvten Callitems werden dem aktuellen work wieder hinzugefuegt
+			this.addCallitem(actCallitemResolved);
+			
+			log("debug", "the xml-callitem sequence " + actCallitem.getSequence() + " has been resolved to " +actCallitemResolved.size() +" callitems");
+			for(Callitem actResolvedCallitem : actCallitemResolved)
 			{
+				log("debug", "resolved callitem " + actCallitem.getSequence() + ": " + actResolvedCallitem.getPar() + actResolvedCallitem.getDel() + actResolvedCallitem.getVal());
 				call += " ";
 				call += actResolvedCallitem.getPar();
 				call += actResolvedCallitem.getDel();

@@ -48,4 +48,46 @@ public class TestCallitem {
 		assertEquals("eiapupajaICHBINGROSSeijoas", resolvedString);
 	}
 
+	@Test
+	public void testConstructCall()
+	{
+		de.caegroup.process.Process process = new de.caegroup.process.Process();
+		process.setInfilexml("/irgendetwas");
+		
+		Step step1 = new Step(process);
+		step1.setName("ich_bin_ein_step");
+		
+		Work work = new Work(step1);
+		
+		work.setCommand("animator");
+		
+		Callitem item1 = new Callitem(work);
+		item1.setSequence(1);
+		item1.setPar("--version");
+		item1.setDel(" ");
+		item1.setVal("6.7");
+		
+		Callitem item2 = new Callitem(work);
+		item2.setSequence(2);
+		item2.setPar("-FG");
+		
+		Callitem item3 = new Callitem(work);
+		item3.setSequence(3);
+		item3.setPar("-b");
+
+		Callitem item4 = new Callitem(work);
+		item4.setSequence(4);
+		item4.setPar("-s");
+		item4.setDel(" ");
+		item4.setVal("genview.ses");
+
+		
+		assertEquals("animator --version 6.7 -FG -b -s genview.ses", work.getCall());
+		
+//		for(Log actLog : step1.getLogRecursive())
+//		{
+//			actLog.print();
+//		}
+
+	}
 }
