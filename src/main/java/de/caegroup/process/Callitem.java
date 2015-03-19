@@ -99,7 +99,7 @@ implements Serializable
 				this.setDel("");
 			}
 			
-			if(this.getDel() != null)
+			if(this.getVal() != null)
 			{
 				this.setVal(this.getParent().getParent().resolveString(this.getVal()));
 			}
