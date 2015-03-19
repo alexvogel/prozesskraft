@@ -96,7 +96,7 @@ public class TestRootCommit {
 		}
 		
 		// jetzt muessten 13 variablen existieren (3*name, 3*spl, 3*call, 3*result, _dir, 2*variables)
-		assertEquals(15, rootStep.getVariable().size());
+		assertEquals(16, rootStep.getVariable().size());
 
 	}
 

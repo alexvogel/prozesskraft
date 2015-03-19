@@ -894,7 +894,7 @@ implements Serializable
 				{
 					lineNr++;
 					// wenn zeile nicht mit '#' beginnt oder leer ist, oder nur whitespaces enthaelt, soll diese als variable betrachtet werden
-					if( !line.matches("^#.+$") && !line.matches("^\\s+$") )
+					if( !line.matches("^#.+$") && !line.matches("^\\s*$") )
 					{
 						// entfernen von evtl. vorhandenen newlines
 						line = line.replaceAll("(\\r|\\n)", "");
@@ -978,7 +978,7 @@ implements Serializable
 				{
 					lineNr++;
 					// wenn zeile mit nicht '#' beginnt oder leer ist, oder nur whitespaces enthaelt, soll diese als variable betrachtet werden
-					if( !line.matches("^#.+$") && !line.matches("^\\s+$") )
+					if( !line.matches("^#.+$") && !line.matches("^\\s*$") )
 					{
 						// entfernen einen evtl. vorhandenen newlines
 						line = line.replaceAll("(\\r|\\n)", "");
