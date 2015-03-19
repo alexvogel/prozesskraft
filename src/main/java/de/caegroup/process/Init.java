@@ -59,6 +59,18 @@ implements Serializable
 		this.setStatus("waiting");
 	}
 	
+	/**
+	 * sets the parent of all dependents to this instance
+	 */
+	public void affiliate()
+	{
+		for(Match actualMatch : this.getMatch())
+		{
+			actualMatch.setParent(this);
+		}
+	}
+
+
 	/*----------------------------
 	  methods get
 	----------------------------*/

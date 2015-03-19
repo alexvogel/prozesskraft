@@ -1060,6 +1060,7 @@ implements Serializable, Cloneable
 		for(Init actualInit : this.getInit())
 		{
 			actualInit.setParent(this);
+			actualInit.affiliate();
 		}
 		for(Commit actualCommit : this.getCommit())
 		{
@@ -1099,11 +1100,19 @@ implements Serializable, Cloneable
 	 */
 	public String resolveString(String stringToResolve)
 	{
+		// ist der string null? return null
+		if(stringToResolve == null) {return null;}
+
+		// wenn kein $-Zeichen im string enthalten ist, wird er direkt zurueckgegeben
+		if(!stringToResolve.contains("$"))
+		{
+			log("debug", "nothing to resolve in string '" + stringToResolve + "'");
+			return stringToResolve;
+		}
+
 		boolean fehler = false;
 		String fehlerGrund = "";
 		
-		if(stringToResolve == null) {return null;}
-
 		log("debug", "1: resolving string "+stringToResolve);
 
 		if(this.getLoopvar() != null)
@@ -1114,13 +1123,14 @@ implements Serializable, Cloneable
 		}
 //		String resolvedString = stringToResolve;
 
-		Pattern p = Pattern.compile("\\{\\$([^${}\\[\\]]+)(\\[([^${}]+)\\])?\\}");
+		Pattern p = Pattern.compile("\\{(\\w+)?:?\\$([^${}\\[\\]]+)(\\[([^${}]+)\\])?\\}");
 		Matcher m = p.matcher(stringToResolve);
 
-		// group 0 = {$x[5]}
-		// group 1 = x
-		// group 2 = [5] ODER null
-		// group 3 = 5 ODER null
+		// group 0 = {root:$x[5]}
+		// group 1 = root ODER null
+		// group 2 = x
+		// group 3 = [5] ODER null
+		// group 4 = 5 ODER null
 		
 		while(m.find())
 		{
@@ -1130,15 +1140,17 @@ implements Serializable, Cloneable
 //			System.err.println("group 1: "+m.group(1));
 //			System.err.println("group 2: "+m.group(2));
 //			System.err.println("group 3: "+m.group(3));
+//			System.err.println("group 4: "+m.group(4));
 
 			String vollstaendigerMatch = m.group(0);
-			String listname = m.group(1);
+			String stepname = m.group(1);
+			String listname = m.group(2);
 			Integer index = null;
 			
 			// default index = 0
-			if(m.group(3) != null)
+			if(m.group(4) != null)
 			{
-				index = Integer.parseInt(this.resolveString(m.group(3)));
+				index = Integer.parseInt(this.resolveString(m.group(4)));
 			}
 			else
 			{
@@ -1148,7 +1160,34 @@ implements Serializable, Cloneable
 			log("debug", "index="+index);
 //			System.err.println("index ist: "+index);
 
-			List list = this.getList(listname);
+			// die liste raussuchen, die angefordert wurde
+			List list = null;
+			if(stepname != null)
+			{
+				Step step = this.getParent().getStep(stepname);
+				if(step == null)
+				{
+					log("error", "step "+stepname+" not found in process ");
+					fehler = true;
+					fehlerGrund = "step "+stepname+" not found in process ";
+					return stringToResolve;
+				}
+				list = this.getParent().getStep(stepname).getList(listname);
+				
+				if(list == null)
+				{
+					log("error", "list "+listname+"(in step "+stepname+") not found");
+					fehler = true;
+					fehlerGrund = "list "+listname+"(in step "+stepname+") not found";
+					return stringToResolve;
+				}
+			}
+			// wenn stepnamen == null ist, gehen wir nicht ueber den umweg prozess
+			else
+			{
+				list = this.getList(listname);
+			}
+			// wenn wir hier sind, hat bislang alles geklappt
 			if (list != null)
 			{
 				// den platzhalter durch das item ersetzen
@@ -1174,6 +1213,11 @@ implements Serializable, Cloneable
 			}
 //			System.err.println("fehler? "+fehler);
 //			System.err.println("fehlerGrund? "+fehlerGrund);
+		}
+		
+		if(fehler)
+		{
+			System.err.println(fehlerGrund);
 		}
 		
 		return stringToResolve;

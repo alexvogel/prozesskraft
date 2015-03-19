@@ -13,8 +13,11 @@ implements Serializable
 	----------------------------*/
 
 	static final long serialVersionUID = 1;
-	private String field = new String();
-	private String pattern = new String();
+	
+	private Init parent = new Init();
+	
+	private String field = "";
+	private String pattern = "";
 
 	private ArrayList<Log> log = new ArrayList<Log>();
 
@@ -23,7 +26,12 @@ implements Serializable
 	----------------------------*/
 	public Match()
 	{
+	}
 
+	public Match(Init parent)
+	{
+		this.parent = parent;
+		this.parent.addMatch(this);
 	}
 
 
@@ -37,7 +45,7 @@ implements Serializable
 
 	public String getPattern()
 	{
-		return this.pattern;
+		return this.getParent().getParent().resolveString(this.pattern);
 	}
 
 	public ArrayList<Log> getLog()
@@ -68,6 +76,22 @@ implements Serializable
 	public void log(String loglevel, String logmessage)
 	{
 		this.log.add(new Log("match-"+this.getField(), loglevel, logmessage));
+	}
+
+
+	/**
+	 * @return the parent
+	 */
+	public Init getParent() {
+		return parent;
+	}
+
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(Init parent) {
+		this.parent = parent;
 	}
 	
 

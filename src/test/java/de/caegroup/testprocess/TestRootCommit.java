@@ -46,18 +46,18 @@ public class TestRootCommit {
 		// rootCommit durchfuehren
 		rootStep.commit();
 
-//		for(Log actLog : rootStep.getLogRecursive())
-//		{
-//			System.err.println(actLog.sprint());
-//		}
+		for(Log actLog : rootStep.getLogRecursive())
+		{
+			System.err.println(actLog.sprint());
+		}
 
 		// jetzt muss 1 commit existieren (der automatisch angelegte 'rootCommit')
 		assertEquals(1, rootStep.getCommit().size());
 
-//		for(Variable actVariable : rootStep.getVariable())
-//		{
-//			System.err.println(actVariable.getKey() + "=" + actVariable.getValue());
-//		}
+		for(Variable actVariable : rootStep.getVariable())
+		{
+			System.err.println(actVariable.getKey() + "=" + actVariable.getValue());
+		}
 		
 		// jetzt muessten 13 variablen existieren (3*name, 3*spl, 3*call, 3*result, _dir)
 		assertEquals(13, rootStep.getVariable().size());
@@ -104,7 +104,8 @@ public class TestRootCommit {
 	public void testRootCommitInitCommitFile()
 	{
 		process.setInfilexml("src/test/resources/definitions/Admin/multiappshake/0.0.1/process.xml");
-
+		process.setBaseDir("/tmp");
+		
 		Step rootStep = new Step("root");
 		process.addStep(rootStep);
 

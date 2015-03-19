@@ -305,12 +305,9 @@ implements Serializable
 				init.setMinoccur(actVariable.getMinoccur());
 				init.setMaxoccur(actVariable.getMaxoccur());
 				
-				Match match = new Match();
+				Match match = new Match(init);
 				match.setField("key");
 				match.setPattern(actVariable.getKey());
-				
-				// den match zum neuen init hinzufuegen
-				init.addMatch(match);
 				
 				// den init dem wrapStep hinzufuegen
 				wrapperProcess.getStep(this.getName()).addInit(init);
@@ -330,12 +327,12 @@ implements Serializable
 				init.setMinoccur(actFile.getMinoccur());
 				init.setMaxoccur(actFile.getMaxoccur());
 				
-				Match match = new Match();
+				Match match = new Match(init);
 				match.setField("key");
 				match.setPattern(actFile.getKey());
 				
 				// den match zum neuen init hinzufuegen
-				init.addMatch(match);
+//				init.addMatch(match);
 				
 				// den init dem wrapStep hinzufuegen
 				wrapperProcess.getStep(this.getName()).addInit(init);
@@ -355,12 +352,9 @@ implements Serializable
 		init.setMinoccur(1);
 		init.setMaxoccur(1);
 		
-		Match match = new Match();
+		Match match = new Match(init);
 		match.setField("key");
 		match.setPattern("dir");
-		
-		// den match zum neuen init hinzufuegen
-		init.addMatch(match);
 		
 		// den init dem wrapStep hinzufuegen
 		wrapperProcess.getStep(this.getName()).addInit(init);

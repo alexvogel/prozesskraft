@@ -7,6 +7,7 @@ import org.junit.Before;
 
 import de.caegroup.process.Callitem;
 import de.caegroup.process.List;
+import de.caegroup.process.Log;
 import de.caegroup.process.Step;
 import de.caegroup.process.Work;
 
@@ -38,6 +39,11 @@ public class TestCallitem {
 		
 		
 		String resolvedString = callitem1.resolveString("eiapupaja{$HallO}eijoas");
+		
+		for(Log actLog : step1.getLog())
+		{
+			actLog.print();
+		}
 		
 		assertEquals("eiapupajaICHBINGROSSeijoas", resolvedString);
 	}
