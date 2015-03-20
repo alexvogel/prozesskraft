@@ -254,7 +254,6 @@ public class Startinstance
 						{
 							String[] parts = actOptionCommitfile.split("=");
 							de.caegroup.process.File userFile = new de.caegroup.process.File();
-//							userFile.setCategory("processInput");
 
 							if(parts.length == 1)
 							{
@@ -289,7 +288,7 @@ public class Startinstance
 											{
 												de.caegroup.process.File newFile = actFile.clone();
 												newFile.setGlob(userFile.getGlob());
-												newFile.setGlobdir(p2.getBaseDir());
+//												newFile.setGlobdir(p2.getBaseDir());
 												System.err.println("entering file into commit "+actCommit.getName()+" ("+newFile.getKey()+"="+newFile.getGlob()+")");
 												actCommit.addFile(newFile);
 												break;
