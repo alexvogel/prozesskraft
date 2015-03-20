@@ -254,6 +254,7 @@ public class Startinstance
 						{
 							String[] parts = actOptionCommitfile.split("=");
 							de.caegroup.process.File userFile = new de.caegroup.process.File();
+							userFile.setCategory("processInput");
 
 							if(parts.length == 1)
 							{
