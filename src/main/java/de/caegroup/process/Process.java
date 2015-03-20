@@ -1842,9 +1842,9 @@ implements Serializable
 		
 		for(Step actualStep : this.getStep())
 		{
-			System.err.println("amount of steps in total: "+this.getStep().size());
-			System.err.println("name of actualStep "+actualStep.getName() + " | checking if " + stepname +" does match the actal step");
-			if ( (actualStep.getName().equals(stepname)) || (actualStep.getName().matches("^"+stepname+"@.+$")) )
+//			System.err.println("amount of steps in total: "+this.getStep().size());
+//			System.err.println("name of actualStep "+actualStep.getName() + " | checking if " + stepname +" does match the actal step");
+			if ( (actualStep.getName().matches("^"+stepname+"(@.+)?$")) )
 			{
 				steps.add(actualStep);
 			}
