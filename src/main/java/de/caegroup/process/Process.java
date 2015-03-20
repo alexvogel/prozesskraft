@@ -1834,10 +1834,15 @@ implements Serializable
 	{
 		ArrayList<Step> steps = new ArrayList<Step>();
 		
+		if(stepname == null)
+		{
+			return steps;
+		}
+		
 		for(Step actualStep : this.getStep())
 		{
 //			System.out.println("looking for "+stepname+" => "+actualStep.getName()+" does not match.");
-			if ( (actualStep.getName().equals(stepname)) || (actualStep.getName().matches("^"+stepname+"@.+")) )
+			if ( (actualStep.getName().equals(stepname)) || (actualStep.getName().matches("^"+stepname+"@.+$")) )
 			{
 				steps.add(actualStep);
 			}
