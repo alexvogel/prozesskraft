@@ -1429,8 +1429,15 @@ implements Serializable, Cloneable
 	----------------------------*/
 	public void addInit(Init init)
 	{
-		this.init.add(init);
-		this.log("debug", "adding Init "+init.getListname());
+		if(this.getName().matches(init.getFromstep()))
+		{
+			this.log("error", "cannot add Init "+init.getListname()+" to step "+this.getName()+" because the fromstep entry matches the stepname.");
+		}
+		else
+		{
+			this.log("debug", "adding Init "+init.getListname());
+			this.init.add(init);
+		}
 	}
 
 	public void addCommit(Commit commit)
