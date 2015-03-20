@@ -184,17 +184,7 @@ implements Serializable
 
 	public void setFromstep(String fromstep)
 	{
-		
-		if(fromstep.equals(this.getParent().getName()))
-		{
-			log("fatal", "init "+this.getListname()+": fromstep cannot be the parent step");
-			System.err.println("fatal: init "+this.getListname()+": fromstep cannot be the parent step");
-			System.exit(2);
-		}
-		else
-		{
-			this.fromstep = fromstep;
-		}
+		this.fromstep = fromstep;
 	}
 
 	public void setInsertrule(String insertrule)

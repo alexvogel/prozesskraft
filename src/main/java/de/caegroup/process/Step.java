@@ -1429,15 +1429,8 @@ implements Serializable, Cloneable
 	----------------------------*/
 	public void addInit(Init init)
 	{
-		if(this.getName().matches(init.getFromstep()))
-		{
-			this.log("error", "cannot add Init "+init.getListname()+" to step "+this.getName()+" because the fromstep entry matches the stepname.");
-		}
-		else
-		{
-			this.log("debug", "adding Init "+init.getListname());
-			this.init.add(init);
-		}
+		this.log("debug", "adding Init "+init.getListname());
+		this.init.add(init);
 	}
 
 	public void addCommit(Commit commit)
@@ -1570,7 +1563,7 @@ implements Serializable, Cloneable
 		}
 		
 		// der eigene level ist um 1 hoeher als der hoechste aller fromstep-level (auser beim rootstep)
-		if (!(this.parent.getRootstepname().equals(this.getName())))
+		if (!this.isRoot()) 
 		{
 			level++;
 		}
@@ -2040,7 +2033,8 @@ implements Serializable, Cloneable
 			// nur die noch nicht als fromstep erkannten steps der suchliste hinzufuegen
 			for(Step actualStep : steps)
 			{
-				if (!(fromsteps.contains(actualStep)))
+				// wenn die sammelliste den actualStep noch nicht enthaelt und er auch nicht this ist, dann hinzufuegen 
+				if (!(fromsteps.contains(actualStep)) && actualStep != this)
 				{
 					fromsteps.add(actualStep);
 				}
