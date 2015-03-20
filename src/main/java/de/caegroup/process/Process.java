@@ -1841,7 +1841,7 @@ implements Serializable
 		
 		for(Step actualStep : this.getStep())
 		{
-//			System.out.println("looking for "+stepname+" => "+actualStep.getName()+" does not match.");
+			System.err.println("name of actialStep "+actualStep.getName() + " | checking if " + stepname +" does match the actal step");
 			if ( (actualStep.getName().equals(stepname)) || (actualStep.getName().matches("^"+stepname+"@.+$")) )
 			{
 				steps.add(actualStep);
