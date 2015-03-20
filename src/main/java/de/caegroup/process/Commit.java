@@ -629,15 +629,35 @@ implements Serializable
 				log("debug", "file: ("+actFile.getKey()+"=>"+actFile.getAbsfilename()+")");
 			}
 			
-			// falls toRoot != null, soll die category aller zu committenden files auf denselben wert gesetzt werden
-			if(this.isToroot())
+			// falls toRoot != null, soll bei den variablen die category auf denselben wert gesetzt werden
+			for(File actFile : filesToCommit)
 			{
-				for(File actFile : filesToCommit)
+				// im rootstep soll alles nach processInput
+				if(this.getParent().isRoot())
 				{
-					actFile.setCategory(this.getToroot());
+					if(this.isToroot())
+					{
+						actFile.setCategory("processInput"+"/"+this.getToroot());
+					}
+					else
+					{
+						actFile.setCategory("processInput");
+					}
+				}
+				// bei anderen steps soll bei toRoot ins Verzeichnis processOutput geschickt werden
+				else
+				{
+					if(this.isToroot())
+					{
+						actFile.setCategory("processOutput"+"/"+this.getToroot());
+					}
+					else
+					{
+						actFile.setCategory("processOutput");
+					}
 				}
 			}
-				
+			
 			// soll auch 'toroot' committed werden?
 			if(this.isToroot() && !this.getParent().isRoot())
 			{
@@ -847,11 +867,31 @@ implements Serializable
 			}
 			
 			// falls toRoot != null, soll bei den variablen die category auf denselben wert gesetzt werden
-			if(this.isToroot())
+			for(Variable actVar : variablesToCommit)
 			{
-				for(Variable actVar : variablesToCommit)
+				// im rootstep soll alles nach processInput
+				if(this.getParent().isRoot())
 				{
-					actVar.setCategory(this.getToroot());
+					if(this.isToroot())
+					{
+						actVar.setCategory("processInput"+"/"+this.getToroot());
+					}
+					else
+					{
+						actVar.setCategory("processInput");
+					}
+				}
+				// bei anderen steps soll bei toRoot ins Verzeichnis processOutput geschickt werden
+				else
+				{
+					if(this.isToroot())
+					{
+						actVar.setCategory("processOutput"+"/"+this.getToroot());
+					}
+					else
+					{
+						actVar.setCategory("processOutput");
+					}
 				}
 			}
 			
@@ -868,7 +908,7 @@ implements Serializable
 					FileWriter writer;
 					try
 					{
-						writer = new FileWriter(rootStep.getAbsdir() + "/" + this.getToroot() + "/variable."+actVar.getKey());
+						writer = new FileWriter(rootStep.getAbsdir() + "/" + actVar.getCategory() + "/variable."+actVar.getKey());
 						writer.write(actVar.getValue()+"\n");
 						writer.close();
 					}

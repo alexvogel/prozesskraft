@@ -132,10 +132,10 @@ public class TestProcessMultiappshake {
 		assertEquals("/irgendein/pfad/auf/das/spl/directory", childProcess.getRootStep().getVariable("spl").get(0).getValue());
 		// 1 file mit key=call
 		assertEquals(1, childProcess.getRootStep().getFile("call").size());
-		assertEquals(childProcess.getRootStep().getAbsdir()+"/"+childProcess.getRootStep().getFile("call").get(0).getFilename(), childProcess.getRootStep().getFile("call").get(0).getAbsfilename());
+		assertEquals(childProcess.getRootStep().getAbsdir()+"/processInput/"+childProcess.getRootStep().getFile("call").get(0).getFilename(), childProcess.getRootStep().getFile("call").get(0).getAbsfilename());
 		// 1 file mit key=result
 		assertEquals(1, childProcess.getRootStep().getFile("result").size());
-		assertEquals(childProcess.getRootStep().getAbsdir()+"/"+childProcess.getRootStep().getFile("result").get(0).getFilename(), childProcess.getRootStep().getFile("result").get(0).getAbsfilename());
+		assertEquals(childProcess.getRootStep().getAbsdir()+"/processInput/"+childProcess.getRootStep().getFile("result").get(0).getFilename(), childProcess.getRootStep().getFile("result").get(0).getAbsfilename());
 		
 //		for(Log actLog : childProcess.getRootStep().getLog())
 //		{
