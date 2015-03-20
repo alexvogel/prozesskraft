@@ -959,6 +959,7 @@ implements Serializable, Cloneable
 					{
 						File file = new File();
 						// als schluessel soll der filenamen verwendet werden
+						file.setCategory("processInput");
 						file.setKey(actFile.getName());
 						file.setGlob(actFile.getAbsolutePath());
 						rootCommit.addFile(file);
@@ -977,6 +978,7 @@ implements Serializable, Cloneable
 			Variable variable = new Variable();
 
 			variable.setKey("toBeDetermined");
+			variable.setCategory("processInput");
 
 			if(new java.io.File(actCommitVariable.getAbsolutePath()).isDirectory())
 			{
