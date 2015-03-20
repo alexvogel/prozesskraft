@@ -635,14 +635,7 @@ implements Serializable
 				// im rootstep soll alles nach processInput
 				if(this.getParent().isRoot())
 				{
-					if(this.isToroot())
-					{
-						actFile.setCategory("processInput"+"/"+this.getToroot());
-					}
-					else
-					{
-						actFile.setCategory("processInput");
-					}
+					actFile.setCategory("processInput");
 				}
 				// bei anderen steps soll bei toRoot ins Verzeichnis processOutput geschickt werden
 				else
@@ -872,14 +865,7 @@ implements Serializable
 				// im rootstep soll alles nach processInput
 				if(this.getParent().isRoot())
 				{
-					if(this.isToroot())
-					{
-						actVar.setCategory("processInput"+"/"+this.getToroot());
-					}
-					else
-					{
-						actVar.setCategory("processInput");
-					}
+					actVar.setCategory("processInput");
 				}
 				// bei anderen steps soll bei toRoot ins Verzeichnis processOutput geschickt werden
 				else
