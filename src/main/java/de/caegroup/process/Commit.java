@@ -31,7 +31,7 @@ implements Serializable
 	static final long serialVersionUID = 1;
 	private static final CopyOption REPLACE_EXISTING = null;
 	private String name = "";
-	private Boolean toroot = false;
+	private String toroot = null;
 	private String copyto = null;
 	private String loop = "";
 	private String loopvar = "";
@@ -159,17 +159,24 @@ implements Serializable
 		this.name = name;
 	}
 
-	public boolean getToroot()
+	public String getToroot()
 	{
 		return this.toroot;
 	}
 
 	public boolean isToroot()
 	{
-		return this.toroot;
+		if(this.toroot == null)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 
-	public void setToroot(boolean toroot)
+	public void setToroot(String toroot)
 	{
 		this.toroot = toroot;
 	}
@@ -622,15 +629,24 @@ implements Serializable
 				log("debug", "file: ("+actFile.getKey()+"=>"+actFile.getAbsfilename()+")");
 			}
 			
+			// falls toRoot != null, soll die category aller zu committenden files auf denselben wert gesetzt werden
+			if(this.isToroot())
+			{
+				for(File actFile : filesToCommit)
+				{
+					actFile.setCategory(this.getToroot());
+				}
+			}
+				
 			// soll auch 'toroot' committed werden?
-			if(this.getToroot() && !this.getParent().isRoot())
+			if(this.isToroot() && !this.getParent().isRoot())
 			{
 				log("debug", "adding "+filesToCommit.size()+" file(s) to rootStep");
 				this.getParent().getParent().getRootStep().addFile(filesToCommit);
 			}
-			else if(this.getToroot() && this.getParent().isRoot())
+			else if(this.isToroot() && this.getParent().isRoot())
 			{
-				log("debug", "commit enthaelt toroot=true aber aktueller step ist bereits der rootStep -> verzicht auf erneutes commit to root");
+				log("debug", "commit enthaelt toroot aber aktueller step ist bereits der rootStep -> verzicht auf erneutes commit to root");
 			}
 			// und den master auf finished setzen, denn dieser ist in this abgelegt und wird beim ermitteln des status abgefragt
 			master.setStatus("finished");
@@ -830,20 +846,29 @@ implements Serializable
 				log("debug", "variable: ("+actVar.getKey()+"=>"+actVar.getValue()+")");
 			}
 			
-			// soll auch 'toroot' committed werden? Dann alle Vriablen dem RootStep hinzufuegen (mit bereits resolvten Key/Value-Eintraegen)
-			if(this.getToroot() && !this.getParent().isRoot())
+			// falls toRoot != null, soll bei den variablen die category auf denselben wert gesetzt werden
+			if(this.isToroot())
+			{
+				for(Variable actVar : variablesToCommit)
+				{
+					actVar.setCategory(this.getToroot());
+				}
+			}
+			
+			// soll auch 'toroot' committed werden? Dann alle Variablen dem RootStep hinzufuegen (mit bereits resolvten Key/Value-Eintraegen)
+			if(this.isToroot() && !this.getParent().isRoot())
 			{
 				Step rootStep = this.getParent().getParent().getRootStep();
 				log("debug", "adding "+variablesToCommit.size()+" file(s) to rootStep");
 				rootStep.addVariable(variablesToCommit);
-				
+
 				//  variable in root auch in eine textdatei schreiben
 				for(Variable actVar : variablesToCommit)
 				{
 					FileWriter writer;
 					try
 					{
-						writer = new FileWriter(rootStep.getAbsdir() + "/variable."+actVar.getKey());
+						writer = new FileWriter(rootStep.getAbsdir() + "/" + this.getToroot() + "/variable."+actVar.getKey());
 						writer.write(actVar.getValue()+"\n");
 						writer.close();
 					}
@@ -857,7 +882,7 @@ implements Serializable
 					}
 				}
 			}
-			else if(this.getToroot() && this.getParent().isRoot())
+			else if(this.isToroot() && this.getParent().isRoot())
 			{
 				log("debug", "commit enthaelt toroot=true aber aktueller step ist bereits der rootStep -> verzicht auf erneutes commit to root");
 			}

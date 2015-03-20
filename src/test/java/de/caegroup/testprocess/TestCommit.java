@@ -88,7 +88,7 @@ public class TestCommit {
 
 		Commit commit = new Commit();
 		commit.setName("ergebnisse");
-		commit.setToroot(true);
+		commit.setToroot("pp");
 		step.addCommit(commit);
 		
 		List listFile = new List();

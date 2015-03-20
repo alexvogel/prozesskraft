@@ -370,7 +370,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\tif(open(VARFILE, '<'.$globbedFile))");
 					perlSnippet.add("\t\t\t{");
 					// wenn variable toroot=true ist, dann soll auch in das root-verzeichnis kopiert werden (und auch in %FILE{'root}
-					if(actCommit.getToroot())
+					if(actCommit.isToroot())
 					{
 						perlSnippet.add("");
 						perlSnippet.add("\t\t\t\t# toroot = true");
@@ -404,7 +404,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\tpush (@{$VARIABLE{'"+this.getName()+"'}}, [\""+actVariable.getKey()+"\", $tmp]);");
 					perlSnippet.add("\t\t\t&logit(\"info\", \""+actVariable.getKey()+"=$tmp\");");
 					// wenn variable toroot=true ist, dann soll auch in das root-verzeichnis kopiert werden (und auch in %FILE{'root}
-					if(actCommit.getToroot())
+					if(actCommit.isToroot())
 					{
 						perlSnippet.add("");
 						perlSnippet.add("\t\t\t# toroot = true");
@@ -479,7 +479,7 @@ implements Serializable, Cloneable
 					perlSnippet.add("\t\t\tpush (@{$FILE{'"+this.getName()+"'}}, [\""+actFile.getKey()+"\", $tmp]);");
 					perlSnippet.add("\t\t\t&logit(\"info\", \""+actFile.getKey()+"=$tmp\");");
 					// wenn file toroot=true ist, dann soll auch in das root-verzeichnis kopiert werden (und auch in %FILE{'root}
-					if(actCommit.getToroot())
+					if(actCommit.isToroot())
 					{
 						perlSnippet.add("");
 						perlSnippet.add("\t\t\t# toroot = true");

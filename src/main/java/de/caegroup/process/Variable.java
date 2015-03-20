@@ -26,6 +26,7 @@ implements Serializable
 	private String type = "string"; // string|float|integer|flag
 	private boolean free = true;
 	
+	private String category = null;
 	private String status = "";	// waiting/finished/error
 
 	private Step parent = null;
@@ -338,6 +339,20 @@ implements Serializable
 	 */
 	public void setParent(Step parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * @return the category
+	 */
+	public String getCategory() {
+		return category;
+	}
+
+	/**
+	 * @param category the category to set
+	 */
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 

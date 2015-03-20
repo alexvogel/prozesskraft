@@ -137,8 +137,9 @@ public class TestProcess {
 		assertEquals(2, stepRoot.getCommit().size());
 
 		Commit commit1 = stepRoot.getCommit("parameter");
+		commit1.setToroot("lulu");
 		// testen der commit-elemente des steps root
-		assertEquals(true, commit1.getToroot());
+		assertEquals("lulu", commit1.getToroot());
 
 		Variable variable1 = commit1.getVariable().get(0);
 		// testen der elemente des commits

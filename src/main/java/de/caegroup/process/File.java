@@ -30,6 +30,7 @@ implements Serializable, Cloneable
 	private int minoccur = 0;
 	private int maxoccur = 999999;
 
+	private String category = null;
 	private String status = "";	// waiting/finished/error
 
 	private Step parent = null;
@@ -359,7 +360,14 @@ implements Serializable, Cloneable
 
 	public String getAbsfilename()
 	{
-		return this.getParent().getAbsdir() + "/" + this.getFilename();
+		if(category != null)
+		{
+			return this.getParent().getAbsdir() + "/" + this.category +"/"+ this.getFilename();
+		}
+		else
+		{
+			return this.getParent().getAbsdir() + "/" + this.getFilename();
+		}
 	}
 
 	public int getMinoccur()
@@ -564,6 +572,20 @@ implements Serializable, Cloneable
 	 */
 	public void setGlobdir(String globdir) {
 		this.globdir = globdir;
+	}
+
+	/**
+	 * @return the category
+	 */
+	public String getCategory() {
+		return category;
+	}
+
+	/**
+	 * @param category the category to set
+	 */
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 }
