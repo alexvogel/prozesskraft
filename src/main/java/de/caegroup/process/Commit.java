@@ -619,23 +619,20 @@ implements Serializable
 		{
 			log("debug", "adding "+filesToCommit.size()+" file(s) to step "+this.getParent().getName());
 
-			// jede variable einzeln dem step hinzufuegen und sofort danach den 'key' und 'value' resolven
-			for(File actFile : filesToCommit)
-			{
-				log("debug", "committen des files in den step "+this.getParent().getName());
-				this.getParent().addFile(actFile);
-				log("debug", "dauerhaftes resolven des gerade committeten files von key "+actFile.getKey()+"->"+this.getParent().resolveString(actFile.getKey()));
-				actFile.setKey(this.getParent().resolveString(actFile.getKey()));
-				log("debug", "file: ("+actFile.getKey()+"=>"+actFile.getAbsfilename()+")");
-			}
-			
 			// falls toRoot != null, soll bei den variablen die category auf denselben wert gesetzt werden
 			for(File actFile : filesToCommit)
 			{
 				// im rootstep soll alles nach processInput
 				if(this.getParent().isRoot())
 				{
-					actFile.setCategory("processInput");
+					if(this.isToroot())
+					{
+						actFile.setCategory("processInput"+"/"+this.getToroot());
+					}
+					else
+					{
+						actFile.setCategory("processInput");
+					}
 				}
 				// bei anderen steps soll bei toRoot ins Verzeichnis processOutput geschickt werden
 				else
@@ -649,6 +646,16 @@ implements Serializable
 						actFile.setCategory("processOutput");
 					}
 				}
+			}
+			
+			// jedes file einzeln dem step hinzufuegen und sofort danach den 'key' und 'value' resolven
+			for(File actFile : filesToCommit)
+			{
+				log("debug", "committen des files in den step "+this.getParent().getName());
+				this.getParent().addFile(actFile);
+				log("debug", "dauerhaftes resolven des gerade committeten files von key "+actFile.getKey()+"->"+this.getParent().resolveString(actFile.getKey()));
+				actFile.setKey(this.getParent().resolveString(actFile.getKey()));
+				log("debug", "file: ("+actFile.getKey()+"=>"+actFile.getAbsfilename()+")");
 			}
 			
 			// soll auch 'toroot' committed werden?
