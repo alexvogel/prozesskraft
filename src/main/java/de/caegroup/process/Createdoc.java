@@ -805,7 +805,7 @@ public class Createdoc
 				{
 
 					// nur die, die toroot=true ( und spaeter auch tosdm=true)
-					if(actualCommit.isToroot())
+					if(actualCommit.isTorootPresent())
 					{
 						// ueber alle files iterieren
 						for(de.caegroup.process.File actualFile : actualCommit.getFile())
@@ -1381,7 +1381,7 @@ public class Createdoc
 						HashMap<String,Object> row = new HashMap<String,Object>();
 					
 						// Spalte 'destination'
-						if (actualCommit.isToroot())
+						if (actualCommit.isTorootPresent())
 						{
 							row.put("destination", "user/cb2");
 						}
@@ -1415,7 +1415,7 @@ public class Createdoc
 						HashMap<String,Object> row = new HashMap<String,Object>();
 						
 						// Spalte 'destination'
-						if (actualCommit.isToroot())
+						if (actualCommit.isTorootPresent())
 						{
 							row.put("destination", "user/cb2");
 						}
