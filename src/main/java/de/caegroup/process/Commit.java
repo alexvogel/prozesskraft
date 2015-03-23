@@ -178,7 +178,6 @@ implements Serializable
 
 	public void setToroot(String toroot)
 	{
-		System.err.println("aufruf von setToroot mit wert "+toroot);
 		this.toroot = toroot;
 	}
 

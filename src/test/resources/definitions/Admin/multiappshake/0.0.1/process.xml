@@ -25,18 +25,18 @@
 		</init>
 		<subprocess domain="Admin" name="appshake" version="0.0.1">
 			<step name="root">
-				<commit name="Beispieldatenverzeichnis" toroot="true">
+				<commit name="Beispieldatenverzeichnis">
 					<variable key="spl" value="{$spl[{$loopvarstep}]}"/>
 				</commit>
-				<commit name="callFile" toroot="true">
+				<commit name="callFile">
 					<file key="call" glob="{$call[{$loopvarstep}]}"/>
 				</commit>
-				<commit name="resultFile" toroot="true">
+				<commit name="resultFile">
 					<file key="result" glob="{$result[{$loopvarstep}]}"/>
 				</commit>
 			</step>
 		</subprocess>
-		<commit name="loggingOfTestRun" toroot="true">
+		<commit name="loggingOfTestRun">
 			<file key="testlog" minoccur="1" maxoccur="1" description="logfile des ptest-launch-laufes. enthaelt stdout+stderr der zu testenden applikation" glob=".log">
 				<test name="doesExist" description="tests whether file does exist">
 				</test>
@@ -46,14 +46,14 @@
 				</test>
 			</file>
 		</commit>
-		<commit name="gesamtErgebnis" toroot="true">
+		<commit name="gesamtErgebnis">
 			<variable key="ergebnis" minoccur="1" maxoccur="1" free="false" description="Diese Variable indiziert (SUCCESS|FAILED) ob die Referenzdaten (Fingerprint) mit den frisch erzeugten Daten uebereinstimmen" glob=".stdout.txt">
 				<test name="matchPattern" description="testing if given value is one the possible choices.">
 					<param id="1">SUCCESS|FAILED</param>
 				</test>
 			</variable>
 		</commit>
-		<commit name="fehlerZusammenfassung" toroot="true">
+		<commit name="fehlerZusammenfassung">
 			<file key="fingerprintvergleich" minoccur="1" maxoccur="1" description="fehlertabellen der ref/exam vergleiche. wird benoetigt um ursache fuer ein FAILED zu ermitteln" glob=".stderr.txt">
 				<test name="doesExist" description="tests whether file does exist">
 				</test>
@@ -85,7 +85,7 @@
 			<callitem sequence="2" loop="testlog" par="-a" del=" " val="{$loopvarcallitem}"/>
 			<callitem sequence="4" loop="mailto" par="-c" del=" " val="{$loopvarcallitem}"/>
 		</work>
-		<commit name="dummyCommit" toroot="false">
+		<commit name="dummyCommit">
 			<variable key="dummyKey" minoccur="1" maxoccur="1" description="bla" value="dummyValue">
 			</variable>
 		</commit>
