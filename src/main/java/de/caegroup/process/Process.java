@@ -735,6 +735,7 @@ implements Serializable
 		try
 		{
 			de.caegroup.jaxb.process.Process xprocess = (de.caegroup.jaxb.process.Process) um.unmarshal(new java.io.File(this.getInfilexml()));
+
 //			System.out.println("xprocess variable1 free = "+xprocess.getStep().get(0).getCommit().get(0).getVariable().get(0).isFree());
 //			BeanMappingBuilder builder = new BeanMappingBuilder()
 //			{
@@ -747,11 +748,17 @@ implements Serializable
 //			System.out.println("processName1: "+this.getName());
 			DozerBeanMapper mapper = new DozerBeanMapper();
 //			destObject = mapper.map(xprocess, de.caegroup.process.Process.class);
+
+//			ArrayList<String> myMappingFiles = new ArrayList<String>();
+//			myMappingFiles.add("dozermapping.xml");
+//			mapper.setMappingFiles(myMappingFiles);
+
 			mapper.map(xprocess, this);
 //			System.out.println("processName2: "+this.getName());
 
 			// setzen der parenteintraege aller steps
 			this.affiliate();
+
 			// die jaxb-klassen mit den domain-klassen mappen
 //			System.out.println("processName3: "+this.getName());
 			

@@ -15,14 +15,7 @@
 			<xs:element ref="subprocess" maxOccurs="1" minOccurs="0"/>
 			<xs:element maxOccurs="unbounded" ref="commit" minOccurs="1" />
 		</xs:sequence>
-		<xs:attribute name="name" use="required">
-			<xs:simpleType>
-				<xs:restriction base="xs:string">
-					<xs:minLength value="1"></xs:minLength>
-					<xs:maxLength value="50"></xs:maxLength>
-					<xs:whiteSpace value="collapse"></xs:whiteSpace>
-				</xs:restriction>
-			</xs:simpleType>
+		<xs:attribute name="name" use="required" type="xs:string">
 		</xs:attribute>
 		<xs:attribute name="clip" type="xs:string" use="optional"/>
 		<xs:attribute name="loop" type="xs:string" use="optional"/>
@@ -102,7 +95,7 @@
     			maxOccurs="unbounded" />
     	</xs:choice>
     	<xs:attribute name="name" use="optional" type="xs:string" />
-    	<xs:attribute name="toroot" use="optional" type="xs:string" />
+    	<xs:attribute name="toroot" use="optional" type="xs:string"/>
     	<xs:attribute name="copyto" use="optional" type="xs:string"/>
     	<xs:attribute name="loop" type="xs:string"/>
     </xs:complexType>

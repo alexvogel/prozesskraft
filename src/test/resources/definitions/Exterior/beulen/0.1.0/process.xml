@@ -2,7 +2,7 @@
 <!-- <root> -->
 <process name="beulen" modelVersion="0.2" version="0.1.0" description="Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert." architectMail="alexander.vogel@caegroup.de" architectName="Alexander Vogel" architectCompany="caegroup Ingenieure" customerMail="jaohn.doe@bmw.de" customerName="John Doe" customerCompany="BMW AG" path="irgendeinpath" wrapper="false">
 	<step name="root" type="automatic">
-		<commit name="parameter">
+		<commit name="parameter" toroot="myOmy">
 			<variable key="matdb" value="no" minoccur="1" maxoccur="1" free="false" description="choose a centrally maintained material database or 'no' if material definitions are provided with abaqus includes" >
 				<choice>no</choice>
 				<choice>lin</choice>
@@ -58,7 +58,7 @@
 <!-- 				<choice>false</choice> -->
 			</variable>
 		</commit>
-		<commit name="abaqus model">
+		<commit name="abaqus model" toroot="bla">
 			<file key="inc" minoccur="1" description="abaqus include file without history data" >
 				<test name="doesExist" description="tests whether file does exist">
 				</test>
@@ -103,7 +103,7 @@
 			<callitem sequence="6" par="--parttype" del="=" val="{$parttype}"/>
 			<callitem sequence="7" loop="inc" par="--inc" del="=" val="{$loopvarcallitem}"/>
 		</work>
-		<commit name="name9" toroot="true">
+		<commit name="name9" toroot="pp">
 			<variable key="plstrain" value="" minoccur="0" maxoccur="1" free="false">
 				<choice>true</choice>
 				<choice>false</choice>

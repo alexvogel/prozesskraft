@@ -56,6 +56,7 @@ public class TestProcessIO {
 	public void testPersistanceBinary()
 	{
 		process.writeBinary();
+//		process.writeXml();
 		Process p2 = process.readBinary();
 		assertEquals("hullahupp", p2.getName());
 		assertEquals(inFileXml, p2.getInfilexml());

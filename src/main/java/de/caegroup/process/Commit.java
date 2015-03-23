@@ -164,7 +164,7 @@ implements Serializable
 		return this.toroot;
 	}
 
-	public boolean isToroot()
+	public boolean isTorootPresent()
 	{
 		if(this.toroot == null)
 		{
@@ -178,6 +178,7 @@ implements Serializable
 
 	public void setToroot(String toroot)
 	{
+		System.err.println("aufruf von setToroot mit wert "+toroot);
 		this.toroot = toroot;
 	}
 
@@ -630,7 +631,7 @@ implements Serializable
 				// wenn commit im root-Step ist, soll die category des files auf processInput gesetzt werden
 				if(this.getParent().isRoot())
 				{
-					if(this.isToroot())
+					if(this.isTorootPresent())
 					{
 						actFile.setCategory("processInput"+"/"+this.getToroot());
 					}
@@ -651,7 +652,7 @@ implements Serializable
 				if(!this.getParent().isRoot())
 				{
 					log("debug", "step of this commit is not root. is there a toRoot entry in actual commit?");
-					if(this.isToroot())
+					if(this.isTorootPresent())
 					{
 						log("debug", "yes there is a toRoot entry in actual commit");
 						File clonedFileToRoot = actFile.clone();
@@ -876,7 +877,7 @@ implements Serializable
 				// bei anderen steps soll bei toRoot ins Verzeichnis processOutput geschickt werden
 				else
 				{
-					if(this.isToroot())
+					if(this.isTorootPresent())
 					{
 						actVar.setCategory("processOutput"+"/"+this.getToroot());
 					}
@@ -888,7 +889,7 @@ implements Serializable
 			}
 			
 			// soll auch 'toroot' committed werden? Dann alle Variablen dem RootStep hinzufuegen (mit bereits resolvten Key/Value-Eintraegen)
-			if(this.isToroot() && !this.getParent().isRoot())
+			if(this.isTorootPresent() && !this.getParent().isRoot())
 			{
 				Step rootStep = this.getParent().getParent().getRootStep();
 				log("debug", "adding "+variablesToCommit.size()+" file(s) to rootStep");
@@ -914,7 +915,7 @@ implements Serializable
 					}
 				}
 			}
-			else if(this.isToroot() && this.getParent().isRoot())
+			else if(this.isTorootPresent() && this.getParent().isRoot())
 			{
 				log("debug", "commit enthaelt toroot=true aber aktueller step ist bereits der rootStep -> verzicht auf erneutes commit to root");
 			}
