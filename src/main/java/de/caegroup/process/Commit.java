@@ -622,7 +622,12 @@ implements Serializable
 			// falls toRoot != null, soll bei den variablen die category auf denselben wert gesetzt werden
 			for(File actFile : filesToCommit)
 			{
-				// im rootstep soll alles nach processInput
+			}
+			
+			// jedes file einzeln dem step hinzufuegen und sofort danach den 'key' und 'value' resolven
+			for(File actFile : filesToCommit)
+			{
+				// wenn commit im root-Step ist, soll die category des files auf processInput gesetzt werden
 				if(this.getParent().isRoot())
 				{
 					if(this.isToroot())
@@ -634,40 +639,28 @@ implements Serializable
 						actFile.setCategory("processInput");
 					}
 				}
-				// bei anderen steps soll bei toRoot ins Verzeichnis processOutput geschickt werden
-				else
-				{
-					if(this.isToroot())
-					{
-						actFile.setCategory("processOutput"+"/"+this.getToroot());
-					}
-					else
-					{
-						actFile.setCategory("processOutput");
-					}
-				}
-			}
-			
-			// jedes file einzeln dem step hinzufuegen und sofort danach den 'key' und 'value' resolven
-			for(File actFile : filesToCommit)
-			{
+				
+				// committen
 				log("debug", "committen des files in den step "+this.getParent().getName());
 				this.getParent().addFile(actFile);
 				log("debug", "dauerhaftes resolven des gerade committeten files von key "+actFile.getKey()+"->"+this.getParent().resolveString(actFile.getKey()));
 				actFile.setKey(this.getParent().resolveString(actFile.getKey()));
 				log("debug", "file: ("+actFile.getKey()+"=>"+actFile.getAbsfilename()+")");
+
+				// soll auch 'toroot' committed werden? dann soll das file geklont und root committed werden mit entsprechend angegebener category
+				if(!this.getParent().isRoot())
+				{
+					if(this.isToroot())
+					{
+						File clonedFileToRoot = actFile.clone();
+						clonedFileToRoot.setCategory("processOutput"+"/"+this.getToroot());
+						log("debug", "adding file to root-Step because commit contains toRoot-instruction");
+						this.getParent().getParent().getRootStep().addFile(clonedFileToRoot);
+					}
+				}
+			
 			}
 			
-			// soll auch 'toroot' committed werden?
-			if(this.isToroot() && !this.getParent().isRoot())
-			{
-				log("debug", "adding "+filesToCommit.size()+" file(s) to rootStep");
-				this.getParent().getParent().getRootStep().addFile(filesToCommit);
-			}
-			else if(this.isToroot() && this.getParent().isRoot())
-			{
-				log("debug", "commit enthaelt toroot aber aktueller step ist bereits der rootStep -> verzicht auf erneutes commit to root");
-			}
 			// und den master auf finished setzen, denn dieser ist in this abgelegt und wird beim ermitteln des status abgefragt
 			master.setStatus("finished");
 		}
