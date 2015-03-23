@@ -217,6 +217,11 @@ public class Syscall {
 			// errorstream nach out umleiten
 //			pb.redirectErrorStream(true);
 			
+			// bevor der prozess gestartet wird, soll eine dummy-pid eingetragen werden
+			PrintWriter writerDummyPid = new PrintWriter(sPid);
+			writerDummyPid.println("dummyPID");
+			writerDummyPid.close();
+			
 			// Aufruf taetigen
 			final java.lang.Process sysproc = pb.start();
 
