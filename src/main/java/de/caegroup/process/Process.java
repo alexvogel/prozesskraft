@@ -1234,9 +1234,21 @@ implements Serializable
 		ArrayList<java.io.File> paths = new ArrayList<java.io.File>();
 		for(String path : this.getPaths())
 		{
-			java.io.File dir = new java.io.File(new java.io.File(this.getInfilexml()).getParent()+"/"+path);
+			String fullPath = null;
+			// wenn absoluter path, dann unveraendert uebernehmen
+			if(path.matches("^/.+"))
+			{
+				fullPath = path;
+			}
+			else
+			{
+				fullPath = new java.io.File(this.getInfilexml()).getParent()+"/"+path;
+			}
 			
-			if (dir.exists())
+			// ein File erstellen
+			java.io.File dir = new java.io.File(fullPath);
+			
+			if (dir.exists() && dir.isDirectory())
 			{
 				paths.add(dir.getAbsoluteFile());
 			}

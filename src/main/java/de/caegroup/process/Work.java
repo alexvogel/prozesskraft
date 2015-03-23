@@ -147,27 +147,28 @@ implements Serializable
 		
 		
 		// wenn command im prozess-eigenen bin-verzeichnis zu finden ist, soll das command auf absoluten pfad erweitert werden
-		java.io.File binDir = new java.io.File(new java.io.File(this.getParent().getParent().getInfilexml()).getParentFile().getAbsolutePath() + "/bin");
-		if(binDir.exists() && binDir.isDirectory())
+		java.io.File definitionDir = new java.io.File(new java.io.File(this.getParent().getParent().getInfilexml()).getParentFile().getAbsolutePath());
+		
+		// alle directories durchgehen, die im prozessPath angegeben sind
+		for(java.io.File actPathFile : this.getParent().getParent().getPaths2())
 		{
-			this.log("debug", "bin-directory for process-owned commands DOES exist: "+binDir.getAbsolutePath());
-		}
-		else
-		{
-			this.log("debug", "bin-directory for process-owned commands DOES NOT exist: "+binDir.getAbsolutePath());
-		}
-
-		java.io.File evtlVorhScript = new java.io.File(binDir.getAbsolutePath() + "/" + this.command);
-		this.log("debug", "looking for the command in process-owned bin: "+evtlVorhScript.getAbsolutePath());
-		if(evtlVorhScript.exists() && !evtlVorhScript.isDirectory())
-		{
-			call = evtlVorhScript.getAbsolutePath();
-			this.log("debug", "using the process-owned command: "+call);
-		}
-		else
-		{
-			call = this.command;
-			this.log("debug", "command not found in process-owned bin-directory - will use command as a global command (must exist in $PATH of underlying shell): "+call);
+			// fuer jedes file in einem pathdirectory ueberpruefen ob es das gesuchte script ist
+			// falls es mehrere pfade gibt, sollen alle durchgegangen werden. der letzte match ist ausschlaggebend
+			for(java.io.File evtlScript : actPathFile.listFiles())
+			{
+				if(evtlScript.getName().equals(this.command))
+				{
+					call = evtlScript.getAbsolutePath();
+					this.log("debug", "using the process-owned command: "+call);
+				}
+			}
+			
+			// falls nicht in prozesseigenem path, dann davon ausgehen, dass im systemeigenen path vorhanden ist
+			if(call == null)
+			{
+				call = this.command;
+				this.log("debug", "command not found in process-owned bin-directory - will use command as a global command (must exist in $PATH of underlying shell): "+call);
+			}
 		}
 		
 		this.log("debug", "constructing call a): "+call);
