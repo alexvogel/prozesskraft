@@ -650,12 +650,18 @@ implements Serializable
 				// soll auch 'toroot' committed werden? dann soll das file geklont und root committed werden mit entsprechend angegebener category
 				if(!this.getParent().isRoot())
 				{
+					log("debug", "step of this commit is not root. is there a toRoot entry in actual commit?");
 					if(this.isToroot())
 					{
+						log("debug", "yes there is a toRoot entry in actual commit");
 						File clonedFileToRoot = actFile.clone();
 						clonedFileToRoot.setCategory("processOutput"+"/"+this.getToroot());
 						log("debug", "adding file to root-Step because commit contains toRoot-instruction");
 						this.getParent().getParent().getRootStep().addFile(clonedFileToRoot);
+					}
+					else
+					{
+						log("debug", "no there is NO toRoot entry in actual commit");
 					}
 				}
 			
