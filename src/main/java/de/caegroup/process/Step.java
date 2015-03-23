@@ -1764,7 +1764,7 @@ implements Serializable, Cloneable
 		
 		// bevor unter-objekte nach ihrem status befragt werden, soll festgestellt werden ob aktueller step gecancelled werden soll
 		List cancelList = this.getList("_cancel");
-		if(cancelList.itemCount() > 0)
+		if(cancelList != null && cancelList.itemCount() > 0)
 		{
 			return "canceled";
 		}
