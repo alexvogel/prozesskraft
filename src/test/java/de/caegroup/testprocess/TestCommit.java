@@ -37,9 +37,9 @@ public class TestCommit {
 	{
 		
 		// damit kein extra verzeichnis fuer prozess und step angelegt wird und das zu committende file reinkopiert wird
-		process.setBaseDir("src/test/resources");
+		process.setBaseDir("/tmp");
 		// damit rootdirectory == basedir ist
-		process.setSubprocess(true);
+//		process.setSubprocess(true);
 		
 		Step step = new Step();
 		step.setName("root");
@@ -53,6 +53,7 @@ public class TestCommit {
 		file.setMinoccur(1);
 		file.setKey("irgendEinFile");
 		file.setGlob("call.1.txt");
+		file.setGlobdir("src/test/resources");
 		commit.addFile(file);
 
 		// die stati abfragen
