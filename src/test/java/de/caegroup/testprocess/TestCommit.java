@@ -77,19 +77,18 @@ public class TestCommit {
 	{
 		
 		// damit kein extra verzeichnis fuer prozess und step angelegt wird und das zu committende file reinkopiert wird
-		process.setBaseDir("src/test/resources");
+		process.setBaseDir("/tmp");
 		// damit rootdirectory == basedir ist
-		process.setSubprocess(true);
+//		process.setSubprocess(true);
 		
 		Step step = new Step();
 		step.setName("root");
 		step.setLoopvar("0");
 		process.addStep(step);
 
-		Commit commit = new Commit();
+		Commit commit = new Commit(step);
 		commit.setName("ergebnisse");
 		commit.setToroot("pp");
-		step.addCommit(commit);
 		
 		List listFile = new List();
 		listFile.setName("files");
@@ -117,6 +116,7 @@ public class TestCommit {
 		file.setMinoccur(1);
 		file.setKey("{$files[{$loopvarstep}]}");
 		file.setGlob("call.1.txt");
+		file.setGlobdir("src/test/resources");
 		commit.addFile(file);
 
 		// die stati abfragen
@@ -145,4 +145,59 @@ public class TestCommit {
 		
 	}
 	
+	@Test
+	public void testCommit3()
+	{
+		
+		// damit kein extra verzeichnis fuer prozess und step angelegt wird und das zu committende file reinkopiert wird
+		process.setBaseDir("/tmp");
+		
+		Step stepRoot = new Step();
+		stepRoot.setName("root");
+		stepRoot.setLoopvar("0");
+		process.addStep(stepRoot);
+
+		Step stepAlpha = new Step();
+		stepAlpha.setName("alpha");
+		stepAlpha.setLoopvar("0");
+		process.addStep(stepAlpha);
+
+		Commit commit = new Commit(stepAlpha);
+		commit.setName("ergebnisse");
+		commit.setToroot("pp");
+		
+		File file = new File();
+		file.setMinoccur(1);
+		file.setKey("irgendEinFile");
+		file.setGlob("call.1.txt");
+		file.setGlobdir("src/test/resources");
+		commit.addFile(file);
+
+		// die stati abfragen
+		assertEquals("unknown", commit.getStatus());
+		assertEquals("unknown", stepAlpha.getStatus());
+		assertEquals(0, stepAlpha.getFile().size());
+
+		// commit durchfuehren
+		commit.doIt();
+		System.err.println("testCommit3");
+		commit.printLog();
+		
+		// die stati abfragen
+		assertEquals("finished", commit.getStatus());
+		assertEquals("finished", stepAlpha.getStatus());
+
+		// was an file/variable im step angekommen ist
+		assertEquals(1, stepAlpha.getFile().size());
+		assertEquals("irgendEinFile", stepAlpha.getFile().get(0).getKey());
+		
+		// was an file/variable im step Root angekommen ist
+		assertEquals(1, stepRoot.getFile().size());
+		assertEquals("irgendEinFile", stepRoot.getFile().get(0).getKey());
+
+		assertTrue(stepRoot.getFile().get(0).getAbsfilename().matches(".+/processOutput/pp/call.1.txt"));
+		assertTrue(stepAlpha.getFile().get(0).getAbsfilename().matches(".+/dir4step_alpha/call.1.txt"));
+		
+	}
+
 }

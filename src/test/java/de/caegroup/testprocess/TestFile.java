@@ -23,7 +23,8 @@ public class TestFile {
 		Step step = new Step("root");
 		step.setLoopvar("1");
 
-		process.setBaseDir(System.getProperty("user.dir")+"/src/test/resources");
+	//	process.setBaseDir(System.getProperty("user.dir")+"/src/test/resources");
+		process.setBaseDir("/tmp/testBase");
 		// damit rootdir = basedir gesehen wird
 		process.setSubprocess(true);
 		process.addStep(step);
