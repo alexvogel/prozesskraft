@@ -1762,6 +1762,13 @@ implements Serializable, Cloneable
 		
 		String status = "unknown";
 		
+		// bevor unter-objekte nach ihrem status befragt werden, soll festgestellt werden ob aktueller step gecancelled werden soll
+		List cancelList = this.getList("_cancel");
+		if(cancelList.itemCount() > 0)
+		{
+			return "canceled";
+		}
+
 		// Die Inits untersuchen
 		ArrayList<String> statusAllInits = new ArrayList<String>(); //waiting/initializing/finished/error
 		
