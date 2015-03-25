@@ -247,39 +247,58 @@ public class TestrunItem {
 				// falls pmodel gestartet werden soll
 				if(schalterPmodelLaunch.equals("true"))
 				{
+					int maxWait = 10;
+					int actualWait = 0;
 					// a bisserl schlafen bis process-startinstance das unterverzeichnis mit process.pmb angelegt hat
 					father.getFather().log("info", "sleeping 2 seconds - waiting for the process.pmb of executed testrun to become available on disk");
 					Thread.sleep(2000);
+					actualWait += 2;
 					
 					// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist (das wird mit process-startinstance erstellt) muss das erst herausgefunden werden
 					// das rootDir von ptest-launch ist das basedir des prozesses, der mit startinstance angeschoben wird
 					java.io.File baseDirOfStartinstance = new java.io.File(dummyProcess.getRootdir());
-//					System.err.println("considering as basedirectory: "+baseDirOfStartinstance.getCanonicalPath());
-					
+
 					ArrayList<File> allFoundProcessBinaries = new ArrayList<File>();
-					// alle process.pmb in unterverzeichnissen finden
-					for(java.io.File actFile : baseDirOfStartinstance.listFiles())
+					
+					boolean processBinaryNichtVorhanden = true;
+					
+					while(processBinaryNichtVorhanden && (actualWait<maxWait))
 					{
-//						System.err.println("seeing entry: "+actFile.getCanonicalPath());
-						if(actFile.isDirectory())
+						
+						// loeschen evtl. eintraege
+						allFoundProcessBinaries.clear();
+						
+						// alle process.pmb in unterverzeichnissen finden
+						for(java.io.File actFile : baseDirOfStartinstance.listFiles())
 						{
-//							System.err.println("its a directory - going in...");
-							for(java.io.File actFileFile : actFile.listFiles())
+	//						System.err.println("seeing entry: "+actFile.getCanonicalPath());
+							if(actFile.isDirectory())
 							{
-//								System.err.println("seeing file: (name="+actFileFile.getName()+") "+actFileFile.getCanonicalPath());
-								if(actFileFile.getName().equals("process.pmb"))
+	//							System.err.println("its a directory - going in...");
+								for(java.io.File actFileFile : actFile.listFiles())
 								{
-									allFoundProcessBinaries.add(actFileFile);
+	//								System.err.println("seeing file: (name="+actFileFile.getName()+") "+actFileFile.getCanonicalPath());
+									if(actFileFile.getName().equals("process.pmb"))
+									{
+										allFoundProcessBinaries.add(actFileFile);
+									}
 								}
 							}
 						}
+						
+						if(allFoundProcessBinaries.size() == 0)
+						{
+							father.getFather().log("warn", "process-binary still not found.");
+							Thread.sleep(1000);
+						}
+						else
+						{
+							processBinaryNichtVorhanden = false;
+						}
+						
 					}
 					
-					if(allFoundProcessBinaries.size() == 0)
-					{
-						father.getFather().log("error", "cannot open pmodel-gui because NO process.pmb found in subdirectories of "+baseDirOfStartinstance);
-					}
-					else if(allFoundProcessBinaries.size() > 1)
+					if(allFoundProcessBinaries.size() > 1)
 					{
 						father.getFather().log("error", "cannot open pmodel-gui because more than 1 process.pmb found in subdirectories of "+baseDirOfStartinstance);
 						for(java.io.File actFile : allFoundProcessBinaries)
