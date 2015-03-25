@@ -1136,12 +1136,12 @@ implements Serializable, Cloneable
 		while(m.find())
 		{
 			// extrahieren des listnamen incl. evtl. index aus dem match
-//			System.err.println("full string: "+stringToResolve);
-//			System.err.println("group 0: "+m.group(0));
-//			System.err.println("group 1: "+m.group(1));
-//			System.err.println("group 2: "+m.group(2));
-//			System.err.println("group 3: "+m.group(3));
-//			System.err.println("group 4: "+m.group(4));
+			System.err.println("full string: "+stringToResolve);
+			System.err.println("group 0: "+m.group(0));
+			System.err.println("group 1: "+m.group(1));
+			System.err.println("group 2: "+m.group(2));
+			System.err.println("group 3: "+m.group(3));
+			System.err.println("group 4: "+m.group(4));
 
 			String vollstaendigerMatch = m.group(0);
 			String stepname = m.group(1);
@@ -1159,7 +1159,7 @@ implements Serializable, Cloneable
 			}
 
 			log("debug", "index="+index);
-//			System.err.println("index ist: "+index);
+			System.err.println("index ist: "+index);
 
 			// die liste raussuchen, die angefordert wurde
 			List list = null;
@@ -1169,6 +1169,7 @@ implements Serializable, Cloneable
 				if(step == null)
 				{
 					log("error", "step "+stepname+" not found in process ");
+					System.err.println("error: step "+stepname+" not found in process ");
 					fehler = true;
 					fehlerGrund = "step "+stepname+" not found in process ";
 					return stringToResolve;
@@ -1178,6 +1179,7 @@ implements Serializable, Cloneable
 				if(list == null)
 				{
 					log("error", "list "+listname+"(in step "+stepname+") not found");
+					System.err.println("error: list "+listname+"(in step "+stepname+") not found");
 					fehler = true;
 					fehlerGrund = "list "+listname+"(in step "+stepname+") not found";
 					return stringToResolve;
@@ -1199,7 +1201,9 @@ implements Serializable, Cloneable
 				catch(IndexOutOfBoundsException e)
 				{
 					this.log("fatal", "cannot deliver item nr "+index+" from list '"+list.getName()+"'");
+					System.err.println("fatal: cannot deliver item nr "+index+" from list '"+list.getName()+"'");
 					this.log("fatal", e.getMessage());
+					System.err.println("fatal: "+ e.getMessage());
 					fehler = true;
 					fehlerGrund = "cannot deliver item nr "+index+" from list '"+list.getName()+"'";
 //					System.exit(1);
@@ -1208,6 +1212,7 @@ implements Serializable, Cloneable
 			else
 			{
 				this.log("error", "list '"+listname+"' not found in step '"+this.getName()+"' but needed for resolving.");
+				System.err.println("error: list '"+listname+"' not found in step '"+this.getName()+"' but needed for resolving.");
 				fehler = true;
 				fehlerGrund = "list '"+listname+"' not found in step '"+this.getName()+"' but needed for resolving.";
 //				System.exit(1);

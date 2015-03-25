@@ -32,6 +32,12 @@ public class TestStringResolve {
 	@Before
 	public void setUp()
 	{
+		Step stepRoot = new Step("root");
+		process.addStep(stepRoot);
+		List listRoot = new List();
+		listRoot.setName("irgendEinListennamen");
+		listRoot.addItem("ersterEintrag-bla");
+		stepRoot.addList(listRoot);
 		
 		Step step1 = new Step("appshake");
 		step1.setLoop("index(name)");
@@ -110,5 +116,12 @@ public class TestStringResolve {
 		assertEquals(resultDatenFuerTest.get(0), process.getStep("appshake@1").resolveString("{$result[0]}"));
 		assertEquals(resultDatenFuerTest.get(1), process.getStep("appshake@1").resolveString("{$result[1]}"));
 		assertEquals(resultDatenFuerTest.get(2), process.getStep("appshake@1").resolveString("{$result[2]}"));
+	}
+	
+	@Test
+	public void testResolving2()
+	{
+
+		assertEquals("ersterEintrag-bla", process.getStep("appshake@1").resolveString("{root:$irgendEinListennamen}"));
 	}
 }
