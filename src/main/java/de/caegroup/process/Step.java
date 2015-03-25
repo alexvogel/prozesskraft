@@ -703,22 +703,21 @@ implements Serializable, Cloneable
 		return script.getAll();
 	}
 	
-	public boolean areFromstepsfinished()
+	public boolean areFromstepsFinishedOrCanceled()
 	{
-		boolean allfinished = true;
+		boolean allfinishedOrCanceled = true;
 		// alle fromsteps feststellen
-		Iterator<Step> iterfromstep = this.getFromsteps().iterator();
-		while (iterfromstep.hasNext())
+		
+		for(Step actFromstep : this.getFromsteps())
 		{
-			Step fromstep = iterfromstep.next();
 			// wenn nur einer nicht 'finished' ist, den status auf 'false'
-			if (!(fromstep.getStatus().matches("finished")))
+			if (!(actFromstep.getStatus().matches("finished")) || !(actFromstep.getStatus().matches("canceled")) )
 			{
-				allfinished = false;
-				return allfinished;
+				allfinishedOrCanceled = false;
+				return allfinishedOrCanceled;
 			}
 		}
-		return allfinished;
+		return allfinishedOrCanceled;
 	}
 	
 	/**
@@ -734,9 +733,9 @@ implements Serializable, Cloneable
 		else if(this.getStatus().equals("waiting") || this.getStatus().equals("fanned"))
 		{
 			// wenn nicht alle fromsteps den status 'finished' haben, wird nichts initialisiert
-			if (!(this.areFromstepsfinished()))
+			if (!(this.areFromstepsFinishedOrCanceled()))
 			{
-				log("debug", "predecessor step(s) not finished. initialization postponed.");
+				log("debug", "predecessor step(s) not finished or canceled. initialization postponed.");
 				return;
 			}
 

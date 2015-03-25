@@ -279,6 +279,12 @@ implements Serializable
 		{
 			log("debug", "looking for field '"+this.getReturnfield()+"' from a "+this.getFromobjecttype()+" of step '"+actualFromstep.getName()+"'");
 
+			// wenn fromStep gecanceled ist eine logmeldung absetzen
+			if(actualFromstep.getStatus().equals("canceled"))
+			{
+				log("warn", "predecessor step "+actualFromstep.getName()+" has status 'canceled'");
+			}
+
 			// wenn es ein file ist
 			if (this.getFromobjecttype().equals("file"))
 			{
