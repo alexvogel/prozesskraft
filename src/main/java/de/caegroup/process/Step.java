@@ -711,7 +711,7 @@ implements Serializable, Cloneable
 		for(Step actFromstep : this.getFromsteps())
 		{
 			// wenn nur einer nicht 'finished' ist, den status auf 'false'
-			if (!(actFromstep.getStatus().matches("finished")) || !(actFromstep.getStatus().matches("canceled")) )
+			if (!(actFromstep.getStatus().matches("finished|canceled")))
 			{
 				allfinishedOrCanceled = false;
 				return allfinishedOrCanceled;
