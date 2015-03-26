@@ -15,12 +15,12 @@ import java.util.regex.Pattern;
 
 public class Splset {
 
-	String inputDir = null;
+	String splDir = null;
 	ArrayList<Spl> spl = new ArrayList<Spl>();
 
 	public Splset(String inputDir)
 	{
-		this.inputDir = inputDir;
+		this.splDir = inputDir;
 		try {
 			this.genSpl();
 		} catch (NullPointerException e) {
@@ -40,7 +40,7 @@ public class Splset {
 	 */
 	private void genSpl() throws NullPointerException, IOException
 	{
-		if(this.inputDir == null)
+		if(this.splDir == null)
 		{
 			System.err.println("error: no inputDir given. cannot identify entries without an inputDir.");
 			throw new NullPointerException();
@@ -56,7 +56,7 @@ public class Splset {
 		final Map<String,java.io.File> result = new HashMap<String,java.io.File>();
 
 		// den directory-baum durchgehen und fuer jeden eintrag ein entity erstellen
-		Files.walkFileTree(Paths.get(this.getInputDir()), new FileVisitor<Path>()
+		Files.walkFileTree(Paths.get(this.getSplDir()), new FileVisitor<Path>()
 		{
 			// called after a directory visit is complete
 			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
@@ -122,7 +122,7 @@ public class Splset {
 		// den Spl this zuweisen
 		for(String actCallName : call.keySet())
 		{
-			Spl newSpl = new Spl();
+			Spl newSpl = new Spl(this.getSplDir());
 			newSpl.setName(actCallName);
 			newSpl.setCall(call.get(actCallName));
 			
@@ -142,7 +142,7 @@ public class Splset {
 		// falls kein erzeugt wurde (weil kein call-file vorhanden, soll trotzdem ein spl nur mit input-files erstellt werden)
 		if(spl.size() == 0)
 		{
-			Spl newSpl = new Spl();
+			Spl newSpl = new Spl(this.getSplDir());
 			newSpl.setInput(input);
 			this.getSpl().add(newSpl);
 		}
@@ -153,15 +153,15 @@ public class Splset {
 	/**
 	 * @return the inputDir
 	 */
-	public String getInputDir() {
-		return inputDir;
+	public String getSplDir() {
+		return splDir;
 	}
 
 	/**
 	 * @param inputDir the inputDir to set
 	 */
-	public void setInputDir(String inputDir) {
-		this.inputDir = inputDir;
+	public void setSplDir(String inputDir) {
+		this.splDir = inputDir;
 	}
 
 	/**

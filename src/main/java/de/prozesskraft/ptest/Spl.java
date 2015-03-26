@@ -9,15 +9,16 @@ import java.util.List;
 public class Spl {
 
 	private String name = "unnamed";
+	private String splDir = null;
 	private java.io.File call = null;
 	private java.io.File result = null;
 	private ArrayList<java.io.File> input = new ArrayList<java.io.File>();
 	private String altapp = null;
 	private ArrayList<String> addopt = new ArrayList<String>();
 
-	public Spl()
+	public Spl(String splDir)
 	{
-
+		this.splDir = splDir;
 	}
 
 	/**
@@ -216,6 +217,20 @@ public class Spl {
 	 */
 	public void setAddopt(ArrayList<String> addopt) {
 		this.addopt = addopt;
+	}
+
+	/**
+	 * @return the splDir
+	 */
+	public String getSplDir() {
+		return splDir;
+	}
+
+	/**
+	 * @param splDir the splDir to set
+	 */
+	public void setSplDir(String splDir) {
+		this.splDir = splDir;
 	}
 
 }
