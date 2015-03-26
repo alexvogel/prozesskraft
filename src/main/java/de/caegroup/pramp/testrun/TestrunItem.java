@@ -289,7 +289,8 @@ public class TestrunItem {
 						if(allFoundProcessBinaries.size() == 0)
 						{
 							father.getFather().log("warn", "process-binary still not found.");
-							Thread.sleep(1000);
+							Thread.sleep(2000);
+							actualWait += 2;
 						}
 						else
 						{
