@@ -111,17 +111,29 @@ public class Startinstance
 //				.isRequired()
 				.create("pversion");
 		
-		Option ofile = OptionBuilder.withArgName("FILE")
+		Option ocommitfile = OptionBuilder.withArgName("KEY=FILE; FILE")
 				.hasArg()
-				.withDescription("[optional] this file will be committed as file.")
+				.withDescription("[optional] this file will be committed as file. omit KEY= if KEY==FILENAME.")
 //				.isRequired()
 				.create("commitfile");
-		
-		Option ovariable = OptionBuilder.withArgName("NAME=VALUE")
+
+		Option ocommitvariable = OptionBuilder.withArgName("KEY=VALUE; VALUE")
 				.hasArg()
-				.withDescription("[optional] this string will be committed as a variable.")
+				.withDescription("[optional] this string will be committed as a variable. omit KEY= if KEY==VALUE")
 //				.isRequired()
 				.create("commitvariable");
+
+		Option ocommitfiledummy = OptionBuilder.withArgName("KEY=FILE; FILE")
+				.hasArg()
+				.withDescription("[optional] use this parameter like --commitfile. the file will not be checked against the process interface and therefore allows to commit files which are not expected by the process definition. use this parameter only for test purposes e.g. to commit dummy output files for accelerated tests of complex processes or the like.")
+//				.isRequired()
+				.create("commitfiledummy");
+
+		Option ocommitvariabledummy = OptionBuilder.withArgName("KEY=VALUE; VALUE")
+				.hasArg()
+				.withDescription("[optional] use this parameter like --commitvariable. the variable will not be checked against the process interface and therefore allows to commit variables which are not expected by the process definition. use this parameter only for test purposes e.g. to commit dummy output variables for accelerated tests of complex processes or the like.")
+//				.isRequired()
+				.create("commitvariabledummy");
 
 		/*----------------------------
 		  create options object
@@ -135,8 +147,10 @@ public class Startinstance
 		options.addOption( onostart );
 		options.addOption( opname );
 		options.addOption( opversion );
-		options.addOption( ofile );
-		options.addOption( ovariable );
+		options.addOption( ocommitfile );
+		options.addOption( ocommitvariable );
+		options.addOption( ocommitfiledummy );
+		options.addOption( ocommitvariabledummy );
 		
 		/*----------------------------
 		  create the parser
@@ -233,93 +247,120 @@ public class Startinstance
 		}
 		
 		p1.setInfilexml( xmlDefinition.getCanonicalPath() );
-		Process p2;
+		Process p2 = null;
+
 		try
 		{
 			p2 = p1.readXml();
+		}
+		catch (JAXBException e1)
+		{
+			System.err.println(e1.getMessage());
+		}
 
-			// step, an den die commits gehen, soll 'root' sein.
-			Step stepRoot = p2.getStep(p2.getRootstepname());
+		// step, an den die commits gehen, soll 'root' sein.
+		Step stepRoot = p2.getStep(p2.getRootstepname());
 			
-			// den Commit 'by-process-commitit' heraussuchen oder einen neuen Commit dieses Namens erstellen
-//			Commit commit = new Commit(stepRoot);
-//			commit.setName("by-process-startinstance");
-
-			// committen von files (ueber einen glob)
-			if (commandline.hasOption("commitfile"))
+		// committen von files (ueber einen glob)
+		if (commandline.hasOption("commitfile"))
+		{
+			for(String actOptionCommitfile : commandline.getOptionValues("commitfile"))
 			{
-				for(String actOptionCommitfile : commandline.getOptionValues("commitfile"))
-				{
-					if (actOptionCommitfile.matches(".+=.+"))
-						{
-							String[] parts = actOptionCommitfile.split("=");
-							de.caegroup.process.File userFile = new de.caegroup.process.File();
+				String[] parts = actOptionCommitfile.split("=");
+				de.caegroup.process.File userFile = new de.caegroup.process.File();
 
-							if(parts.length == 1)
+				if(parts.length == 1)
+				{
+					userFile.setKey(new java.io.File(parts[0]).getName());
+					userFile.setGlob(parts[0]);
+				}
+				else if(parts.length == 2)
+				{
+					userFile.setKey(parts[0]);
+					userFile.setGlob(parts[1]);
+				}
+				else
+				{
+					System.err.println("error in option -commitfile "+actOptionCommitfile);
+					exiter();
+				}
+				
+				// die auf der kommandozeile uebergebenen Informationen sollen in die vorhandenen commits im rootStep gemappt werden
+				// alle vorhandenen commits in step root durchgehen und dem passenden file zuordnen
+				for(Commit actCommit : stepRoot.getCommit())
+				{
+					// alle files des aktuellen commits
+					for(de.caegroup.process.File actFile : actCommit.getFile())
+					{
+						if(actFile.getKey().equals(userFile.getKey()))
+						{
+							// wenn actFile schon ein valider eintrag ist, dann soll ein klon befuellt werden
+							if( actFile.getGlob() != null)
 							{
-								userFile.setKey("default");
-								userFile.setGlob(parts[0]);
-							}
-							else if(parts.length == 2)
-							{
-								userFile.setKey(parts[0]);
-								userFile.setGlob(parts[1]);
-							}
-							else
-							{
-								System.err.println("error in option -commitfile");
-								exiter();
-							}
-							
-							// die auf der kommandozeile uebergebenen Informationen sollen in die vorhandenen commits im rootStep gemappt werden
-							// alle vorhandenen commits in step root durchgehen und dem passenden file zuordnen
-							for(Commit actCommit : stepRoot.getCommit())
-							{
-								// alle files des aktuellen commits
-								for(de.caegroup.process.File actFile : actCommit.getFile())
+								// wenn die maximale erlaubte anzahl noch nicht erreicht ist
+								if( actCommit.getFile(actFile.getKey()).size() < actFile.getMaxoccur() )
 								{
-									if(actFile.getKey().equals(userFile.getKey()))
-									{
-										// wenn actFile schon ein valider eintrag ist, dann soll ein klon befuellt werden
-										if( actFile.getGlob() != null)
-										{
-											// wenn die maximale erlaubte anzahl noch nicht erreicht ist
-											if( actCommit.getFile(actFile.getKey()).size() < actFile.getMaxoccur() )
-											{
-												de.caegroup.process.File newFile = actFile.clone();
-												newFile.setGlob(userFile.getGlob());
-//												newFile.setGlobdir(p2.getBaseDir());
-												System.err.println("entering file into commit "+actCommit.getName()+" ("+newFile.getKey()+"="+newFile.getGlob()+")");
-												actCommit.addFile(newFile);
-												break;
-											}
-											else
-											{
-												System.err.println("fatal: you only may commit "+actFile.getMaxoccur()+" " + actFile.getKey()+"-files into commit "+actCommit.getName());
-												exiter();
-											}
-										}
-										// ansonsten das bereits vorhandene file im commit mit den daten befuellen
-										else
-										{
-											actFile.setGlob(userFile.getGlob());
-											actFile.setGlobdir(p2.getBaseDir());
-											System.err.println("entering file into commit "+actCommit.getName()+" ("+actFile.getKey()+"="+actFile.getGlob()+")");
-											break;
-										}
-									}
+									de.caegroup.process.File newFile = actFile.clone();
+									newFile.setGlob(userFile.getGlob());
+									System.err.println("entering file into commit "+actCommit.getName()+" ("+newFile.getKey()+"="+newFile.getGlob()+")");
+									actCommit.addFile(newFile);
+									break;
+								}
+								else
+								{
+									System.err.println("fatal: you only may commit "+actFile.getMaxoccur()+" " + actFile.getKey()+"-files into commit "+actCommit.getName());
+									exiter();
 								}
 							}
+							// ansonsten das bereits vorhandene file im commit mit den daten befuellen
+							else
+							{
+								actFile.setGlob(userFile.getGlob());
+								actFile.setGlobdir(p2.getBaseDir());
+								System.err.println("entering file into commit "+actCommit.getName()+" ("+actFile.getKey()+"="+actFile.getGlob()+")");
+								break;
+							}
 						}
-						else
-						{
-							System.err.println("-commitfile "+actOptionCommitfile+" does not match pattern \"NAME=VALUE\".");
-							exiter();
-						}
+					}
 				}
 			}
+		}
 
-			if (commandline.hasOption("commitvariable"))
+		// committen von files (ueber einen glob)
+		if (commandline.hasOption("commitfiledummy"))
+		{
+			// diese files werden nicht in bestehende commits der prozessdefinition eingetragen, sondern in ein spezielles commit
+			Commit commitFiledummy = new Commit();
+			commitFiledummy.setName("fileDummy");
+			stepRoot.addCommit(commitFiledummy);
+
+			for(String actOptionCommitfiledummy : commandline.getOptionValues("commitfiledummy"))
+			{
+				String[] parts = actOptionCommitfiledummy.split("=");
+				de.caegroup.process.File userFile = new de.caegroup.process.File();
+				commitFiledummy.addFile(userFile);
+
+				if(parts.length == 1)
+				{
+					userFile.setKey(new java.io.File(parts[0]).getName());
+					userFile.setGlob(parts[0]);
+				}
+				else if(parts.length == 2)
+				{
+					userFile.setKey(parts[0]);
+					userFile.setGlob(parts[1]);
+				}
+				else
+				{
+					System.err.println("error in option -commitfiledummy "+actOptionCommitfiledummy);
+					exiter();
+				}
+
+				System.err.println("entering (dummy-)file into commit "+commitFiledummy.getName()+" ("+userFile.getKey()+"="+userFile.getGlob()+")");
+			}
+		}
+
+		if (commandline.hasOption("commitvariable"))
 			{
 				for(String actOptionCommitvariable : commandline.getOptionValues("commitvariable"))
 				{
@@ -392,60 +433,88 @@ public class Startinstance
 				}
 			}
 
-			if (commandline.hasOption("basedir"))
+		if (commandline.hasOption("commitvariabledummy"))
+		{
+			// diese files werden nicht in bestehende commits der prozessdefinition eingetragen, sondern in ein spezielles commit
+			Commit commitVariabledummy = new Commit();
+			commitVariabledummy.setName("variableDummy");
+			stepRoot.addCommit(commitVariabledummy);
+
+			for(String actOptionCommitvariabledummy : commandline.getOptionValues("commitvariabledummy"))
 			{
-				p2.setBaseDir(commandline.getOptionValue("basedir"));
+				String[] parts = actOptionCommitvariabledummy.split("=");
+				Variable userVariable = new Variable();
+				commitVariabledummy.addVariable(userVariable);
+
+				if(parts.length == 1)
+				{
+					userVariable.setKey(parts[0]);
+					userVariable.setValue(parts[0]);
+				}
+				else if(parts.length == 2)
+				{
+					userVariable.setKey(parts[0]);
+					userVariable.setValue(parts[1]);
+				}
+				else
+				{
+					System.err.println("error in option -commitvariabledummy");
+					exiter();
+				}
+
+				System.err.println("entering variable into commit "+commitVariabledummy.getName()+": ("+userVariable.getKey()+"="+userVariable.getValue()+")");
 			}
+		}
+
+		if (commandline.hasOption("basedir"))
+		{
+			p2.setBaseDir(commandline.getOptionValue("basedir"));
+		}
 
 //			commit.doIt();
-			stepRoot.commit();
-			
-			// root-verzeichnis erstellen
-			p2.makeRootdir();
-			
-			// den pfad fuers binary setzen
-			p2.setOutfilebinary(p2.getRootdir() + "/process.pmb");
+		stepRoot.commit();
+		
+		// root-verzeichnis erstellen
+		p2.makeRootdir();
+		
+		// den pfad fuers binary setzen
+		p2.setOutfilebinary(p2.getRootdir() + "/process.pmb");
 
-			System.err.println("info: writing process instance "+p2.getOutfilebinary());
-			
-			// binary schreiben
-			p2.writeBinary();
+		System.err.println("info: writing process instance "+p2.getOutfilebinary());
+		
+		// binary schreiben
+		p2.writeBinary();
 
-			try
-			{
-				Thread.sleep(1500, 0);
-			} catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try
+		{
+			Thread.sleep(1500, 0);
+		} catch (InterruptedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 //			Runtime.getRuntime().exec("process-manager -help");
 
-			// starten nur, falls es nicht abgewaehlt wurde
-			if( ! commandline.hasOption("nostart"))
-			{
-				System.err.println("info: starting processmanager for instance "+p2.getOutfilebinary());
-				String aufrufString = ini.get("apps", "process-manager") + " -instance "+p2.getOutfilebinary();
-				System.err.println("calling: "+aufrufString);
-	
-				ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(aufrufString.split(" ")));
-				
-				ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
+		// starten nur, falls es nicht abgewaehlt wurde
+		if( ! commandline.hasOption("nostart"))
+		{
+			System.err.println("info: starting processmanager for instance "+p2.getOutfilebinary());
+			String aufrufString = ini.get("apps", "process-manager") + " -instance "+p2.getOutfilebinary();
+			System.err.println("calling: "+aufrufString);
+
+			ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(aufrufString.split(" ")));
+			
+			ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
 
 				//		ProcessBuilder pb = new ProcessBuilder("processmanager -instance "+p2.getOutfilebinary());
 		//		Map<String,String> env = pb.environment();
 		//		String path = env.get("PATH");
 		//		System.out.println("PATH: "+path);
 		//		
-				java.lang.Process p = pb.start();
-				System.err.println("pid: "+p.hashCode());
-			}
-				
-		} catch (JAXBException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			java.lang.Process p = pb.start();
+			System.err.println("pid: "+p.hashCode());
 		}
+			
 	}
 	
 	private static void exiter()
