@@ -305,12 +305,24 @@ public class Launch
 		java.io.File actSplInstanceDir = new java.io.File(instancedir);
 		System.err.println("info: creating directory " + actSplInstanceDir.getCanonicalPath());
 		actSplInstanceDir.mkdirs();
-		
+
 		// die beispieldaten in das instancedir kopieren
+		// dabei sollen unterverzeichnisse erhalten bleiben
 		for(java.io.File actInputFile : actSpl.getInput())
 		{
-			// namen des targetfiles festlegen
-			java.io.File targetFile = new java.io.File(actSplInstanceDir.getCanonicalPath() + "/" + actInputFile.getName());
+			// namen des targetfiles festlegen / dabei sollen unterverzeichnisse, die relativ zum quellverzeichnis existieren erhalten bleiben
+			Path pathOfSpl = Paths.get(actSpl.getSplDir());
+			Path pathOfActInputFile = Paths.get(actInputFile.getAbsolutePath());
+			
+			Path pathOfActInputFileRelativeToSpl = pathOfSpl.relativize(pathOfActInputFile);
+			
+			java.io.File targetFile = new java.io.File(actSplInstanceDir.getCanonicalPath() + "/" + pathOfActInputFileRelativeToSpl);
+			
+			// erstellen des verzeichnisses, falls notwendig
+			if(! targetFile.getParentFile().exists() )
+			{
+				System.err.println("info: creating target directory "+targetFile.getParent());
+			}
 			
 			// input file in das instancedir kopieren
 			try
