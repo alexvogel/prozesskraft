@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -299,7 +300,7 @@ public class Launch
 		}
 		
 		actSpl.setResult(null);
-		
+
 		// das instancedir erstellen
 		java.io.File actSplInstanceDir = new java.io.File(instancedir);
 		System.err.println("info: creating directory " + actSplInstanceDir.getCanonicalPath());
@@ -314,7 +315,10 @@ public class Launch
 			// input file in das instancedir kopieren
 			try
 			{
+				System.err.println("info: copy sample file to instance directory: "+actInputFile.getAbsolutePath() +" => " +targetFile.getAbsolutePath());
+				System.err.println("debug: start copy at: " + new Timestamp(System.currentTimeMillis()));
 				Files.copy(actInputFile.toPath(), targetFile.toPath());
+				System.err.println("debug: end copy at: " + new Timestamp(System.currentTimeMillis()));
 			}
 			catch (FileAlreadyExistsException e)
 			{
