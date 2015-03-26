@@ -306,37 +306,8 @@ public class Launch
 		System.err.println("info: creating directory " + actSplInstanceDir.getCanonicalPath());
 		actSplInstanceDir.mkdirs();
 
-		// die beispieldaten in das instancedir kopieren
-		// dabei sollen unterverzeichnisse erhalten bleiben
-		for(java.io.File actInputFile : actSpl.getInput())
-		{
-			// namen des targetfiles festlegen / dabei sollen unterverzeichnisse, die relativ zum quellverzeichnis existieren erhalten bleiben
-			Path pathOfSpl = Paths.get(actSpl.getSplDir());
-			Path pathOfActInputFile = Paths.get(actInputFile.getAbsolutePath());
-			
-			Path pathOfActInputFileRelativeToSpl = pathOfSpl.relativize(pathOfActInputFile);
-			
-			java.io.File targetFile = new java.io.File(actSplInstanceDir.getCanonicalPath() + "/" + pathOfActInputFileRelativeToSpl);
-			
-			// erstellen des verzeichnisses, falls notwendig
-			if(! targetFile.getParentFile().exists() )
-			{
-				System.err.println("info: creating target directory "+targetFile.getParent());
-			}
-			
-			// input file in das instancedir kopieren
-			try
-			{
-				System.err.println("info: copy sample file to instance directory: "+actInputFile.getAbsolutePath() +" => " +targetFile.getAbsolutePath());
-				System.err.println("debug: start copy at: " + new Timestamp(System.currentTimeMillis()));
-				Files.copy(actInputFile.toPath(), targetFile.toPath());
-				System.err.println("debug: end copy at: " + new Timestamp(System.currentTimeMillis()));
-			}
-			catch (FileAlreadyExistsException e)
-			{
-				System.err.println(e.getMessage());
-			}
-		}
+		// Inputdaten in das InstanceDir exportieren
+		actSpl.exportInput(actSplInstanceDir);
 
 		// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)
 		String AbsLogSyscallWrapper = actSplInstanceDir.getCanonicalPath()+"/.log";
