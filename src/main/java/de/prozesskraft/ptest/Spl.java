@@ -2,21 +2,25 @@ package de.prozesskraft.ptest;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Spl {
 
 	private String name = "unnamed";
-	private String splDir = null;
+	private java.io.File splDir = null;
 	private java.io.File call = null;
 	private java.io.File result = null;
 	private ArrayList<java.io.File> input = new ArrayList<java.io.File>();
 	private String altapp = null;
 	private ArrayList<String> addopt = new ArrayList<String>();
 
-	public Spl(String splDir)
+	public Spl(java.io.File splDir)
 	{
 		this.splDir = splDir;
 	}
@@ -143,6 +147,59 @@ public class Spl {
 	}
 
 	/**
+	 * exportiert alle inputfiles in ein verzeichnis
+	 * unterverzeichnisse werden beruecksichtigt und bleiben erhalten
+	 * zielverzeichnis muss existieren
+	 */
+	public void exportInput(java.io.File target)
+	{
+		if(target.exists())
+		{
+			// namen des targetfiles festlegen / dabei sollen unterverzeichnisse, die relativ zum quellverzeichnis existieren erhalten bleiben
+			// abspath basisverzeichnis
+			Path pathOfSpl = Paths.get(this.getSplDir().getAbsolutePath());
+			
+			for(java.io.File actInputFile : this.getInput())
+			{
+//				System.err.println("info: bearbeite file " + actInputFile.getAbsolutePath());
+				// abspfad file source
+				Path pathOfActInputFile = Paths.get(actInputFile.getAbsolutePath());
+				
+				// relpfad file source
+				Path pathOfActInputFileRelativeToSpl = pathOfSpl.relativize(pathOfActInputFile);
+				
+				// abspfad target (mit erhaltenen unterverzeichnissen)
+				java.io.File targetFile = new java.io.File(target.getAbsolutePath() + "/" + pathOfActInputFileRelativeToSpl);
+				
+				// erstellen der unterverzeichnisse, falls notwendig
+				if(! targetFile.getParentFile().exists())
+				{
+//					System.err.println("info: creating target directory "+targetFile.getParent());
+					targetFile.getParentFile().mkdirs();
+				}
+				
+				// input file in das instancedir kopieren
+				try
+				{
+//					System.err.println("info: copy sample file to instance directory: "+actInputFile.getAbsolutePath() +" => " +targetFile.getAbsolutePath());
+//					System.err.println("debug: start copy at: " + new Timestamp(System.currentTimeMillis()));
+					
+					Files.copy(actInputFile.toPath(), targetFile.toPath());
+//					System.err.println("debug: end copy at: " + new Timestamp(System.currentTimeMillis()));
+				}
+				catch (FileAlreadyExistsException e)
+				{
+					System.err.println(e.getMessage());
+				}
+				catch (IOException e)
+				{
+					System.err.println(e.getMessage());
+				}
+			}
+		}
+	}
+	
+	/**
 	 * @param call the call to set
 	 */
 	public void setCall(java.io.File call) {
@@ -222,14 +279,14 @@ public class Spl {
 	/**
 	 * @return the splDir
 	 */
-	public String getSplDir() {
+	public java.io.File getSplDir() {
 		return splDir;
 	}
 
 	/**
 	 * @param splDir the splDir to set
 	 */
-	public void setSplDir(String splDir) {
+	public void setSplDir(java.io.File splDir) {
 		this.splDir = splDir;
 	}
 

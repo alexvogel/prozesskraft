@@ -15,18 +15,25 @@ import java.util.regex.Pattern;
 
 public class Splset {
 
-	String splDir = null;
+	java.io.File splDir = null;
 	ArrayList<Spl> spl = new ArrayList<Spl>();
 
-	public Splset(String inputDir)
+	// das splDir ist direkt das verzeichnis in dem die beispieldaten liegen und ueblicherweise (jedoch nicht zwingend) auch .call und .result
+	public Splset(String splDir)
 	{
-		this.splDir = inputDir;
-		try {
+		this.splDir = new java.io.File(splDir);
+		
+		try
+		{
 			this.genSpl();
-		} catch (NullPointerException e) {
+		}
+		catch (NullPointerException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+		catch (IOException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -56,7 +63,7 @@ public class Splset {
 		final Map<String,java.io.File> result = new HashMap<String,java.io.File>();
 
 		// den directory-baum durchgehen und fuer jeden eintrag ein entity erstellen
-		Files.walkFileTree(Paths.get(this.getSplDir()), new FileVisitor<Path>()
+		Files.walkFileTree(Paths.get(this.getSplDir().getCanonicalPath()), new FileVisitor<Path>()
 		{
 			// called after a directory visit is complete
 			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
@@ -153,14 +160,14 @@ public class Splset {
 	/**
 	 * @return the inputDir
 	 */
-	public String getSplDir() {
+	public java.io.File getSplDir() {
 		return splDir;
 	}
 
 	/**
 	 * @param inputDir the inputDir to set
 	 */
-	public void setSplDir(String inputDir) {
+	public void setSplDir(java.io.File inputDir) {
 		this.splDir = inputDir;
 	}
 
