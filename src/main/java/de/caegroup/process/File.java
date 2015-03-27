@@ -605,4 +605,18 @@ implements Serializable, Cloneable
 		this.category = category;
 	}
 
+	/**
+	 * @return the preservePosition
+	 */
+	public boolean isPreservePosition() {
+		return preservePosition;
+	}
+
+	/**
+	 * @param preservePosition the preservePosition to set
+	 */
+	public void setPreservePosition(boolean preservePosition) {
+		this.preservePosition = preservePosition;
+	}
+
 }

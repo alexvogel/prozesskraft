@@ -961,6 +961,8 @@ implements Serializable, Cloneable
 						file.setCategory("processInput");
 						file.setKey(actFile.getName());
 						file.setGlob(actFile.getAbsolutePath());
+						// das file soll nicht in den step importiert werden
+						file.setPreservePosition(true);
 						rootCommit.addFile(file);
 					}
 				}
