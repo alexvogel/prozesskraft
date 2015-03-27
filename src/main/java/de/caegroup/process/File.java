@@ -31,6 +31,7 @@ implements Serializable, Cloneable
 	private int maxoccur = 999999;
 
 	private String category = null;
+	private boolean preservePosition = false;
 	private String status = "";	// waiting/finished/error
 
 	private Step parent = null;
@@ -360,13 +361,29 @@ implements Serializable, Cloneable
 
 	public String getAbsfilename()
 	{
-		if(category != null)
+		// wenn das file in den step integriert werden soll (defaultverhalten)
+		if(!this.preservePosition)
 		{
-			return this.getParent().getAbsdir() + "/" + this.category +"/"+ this.getFilename();
+			if(category != null)
+			{
+				return this.getParent().getAbsdir() + "/" + this.category +"/"+ this.getFilename();
+			}
+			else
+			{
+				return this.getParent().getAbsdir() + "/" + this.getFilename();
+			}
 		}
+		// wenn das file an seiner urspruenglichen position belassen werden soll (bei zentral in prozessdefinition hinterlegten daten der fall)
 		else
 		{
-			return this.getParent().getAbsdir() + "/" + this.getFilename();
+			if(this.getRealposition() != null)
+			{
+				return this.getRealposition();
+			}
+			else
+			{
+				return null;
+			}
 		}
 	}
 
