@@ -86,6 +86,7 @@ implements Serializable
 
 			if(clonedCallitem.getPar() != null)
 			{
+				log("debug", "resolving " + clonedCallitem.getPar() + " => " + clonedCallitem.getParent().getParent().resolveString(clonedCallitem.getPar()) );
 				clonedCallitem.setPar(clonedCallitem.getParent().getParent().resolveString(clonedCallitem.getPar()));
 			}
 			else
@@ -95,6 +96,7 @@ implements Serializable
 			
 			if(clonedCallitem.getDel() != null)
 			{
+				log("debug", "resolving " + clonedCallitem.getDel() + " => " + clonedCallitem.getParent().getParent().resolveString(clonedCallitem.getDel()) );
 				clonedCallitem.setDel(clonedCallitem.getParent().getParent().resolveString(clonedCallitem.getDel()));
 			}
 			else
@@ -104,6 +106,7 @@ implements Serializable
 			
 			if(clonedCallitem.getVal() != null)
 			{
+				log("debug", "resolving " + clonedCallitem.getVal() + " => " + clonedCallitem.getParent().getParent().resolveString(clonedCallitem.getVal()) );
 				clonedCallitem.setVal(clonedCallitem.getParent().getParent().resolveString(clonedCallitem.getVal()));
 			}
 			else
