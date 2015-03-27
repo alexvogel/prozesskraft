@@ -191,7 +191,7 @@ implements Serializable
 			for(Callitem actResolvedCallitem : actCallitemResolved)
 			{
 				log("debug", "resolved callitem " + actCallitem.getSequence() + ": " + actResolvedCallitem.getPar() + actResolvedCallitem.getDel() + actResolvedCallitem.getVal());
-				log("debug", "step of resolved callitem is: "+actResolvedCallitem.getParent().getParent().toString());
+	//			log("debug", "step of resolved callitem is: "+actResolvedCallitem.getParent().getParent().toString());
 				call += " ";
 				call += actResolvedCallitem.getPar();
 				call += actResolvedCallitem.getDel();

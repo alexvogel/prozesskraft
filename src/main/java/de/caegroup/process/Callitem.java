@@ -81,33 +81,36 @@ implements Serializable
 		// wenn kein loop vorhanden, direkt die felder resolven
 		if(this.getLoop() == null)
 		{
-			if(this.getPar() != null)
+			// das resolven an einem klon vornehmen, damit aenderungen nicht permanent sind
+			Callitem clonedCallitem = this.clone();
+
+			if(clonedCallitem.getPar() != null)
 			{
-				this.setPar(this.getParent().getParent().resolveString(this.getPar()));
+				clonedCallitem.setPar(clonedCallitem.getParent().getParent().resolveString(clonedCallitem.getPar()));
 			}
 			else
 			{
-				this.setPar("");
+				clonedCallitem.setPar("");
 			}
 			
-			if(this.getDel() != null)
+			if(clonedCallitem.getDel() != null)
 			{
-				this.setDel(this.getParent().getParent().resolveString(this.getDel()));
+				clonedCallitem.setDel(clonedCallitem.getParent().getParent().resolveString(clonedCallitem.getDel()));
 			}
 			else
 			{
-				this.setDel("");
+				clonedCallitem.setDel("");
 			}
 			
-			if(this.getVal() != null)
+			if(clonedCallitem.getVal() != null)
 			{
-				this.setVal(this.getParent().getParent().resolveString(this.getVal()));
+				clonedCallitem.setVal(clonedCallitem.getParent().getParent().resolveString(clonedCallitem.getVal()));
 			}
 			else
 			{
-				this.setVal("");
+				clonedCallitem.setVal("");
 			}
-			loopedThisToCallitems.add(this);
+			loopedThisToCallitems.add(clonedCallitem);
 		}
 
 		else
