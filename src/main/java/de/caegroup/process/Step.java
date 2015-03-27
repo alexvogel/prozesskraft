@@ -1582,7 +1582,7 @@ implements Serializable, Cloneable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("step-"+this.getName(), loglevel, logmessage));
+		this.log.add(new Log("step-"+this.getName()+"-"+this.toString(), loglevel, logmessage));
 	}
 
 	/*----------------------------
