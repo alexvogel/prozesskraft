@@ -2173,13 +2173,13 @@ implements Serializable, Cloneable
 		}
 
 		// die logs des Work in die Sammlung uebernehmen
-		if(!(this.work == null))
+		if( this.work != null )
 		{
 			logRecursive.addAll(work.getLogRecursive());
 		}
 
 		// die logs des Subprocess in die Sammlung uebernehmen
-		if(!(this.subprocess == null))
+		if( this.subprocess != null )
 		{
 			logRecursive.addAll(subprocess.getLog());
 		}
