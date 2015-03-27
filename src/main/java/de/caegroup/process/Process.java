@@ -1733,7 +1733,10 @@ implements Serializable
 				if(actInit.getFromstep().equals(stumpfStepname))
 				{
 					// den tatsaechlichen step (inkl. evtl. @-extension) der gefundenen-liste hinzufuegen
-					allDependentSteps.add(actStep);
+					if(!allDependentSteps.contains(actStep))
+					{
+						allDependentSteps.add(actStep);
+					}
 				}
 			}
 		}
@@ -1789,8 +1792,15 @@ implements Serializable
 			// sonst ja und weitersuchen
 			else
 			{
-				allDependentSteps.addAll(newDependentSteps);
-				aenderungImLetztenLauf = true;
+				// nur hinzufuegen falls noch nicht enthalten
+				for(Step actNewDependantStep : newDependentSteps)
+				{
+					if(!allDependentSteps.contains(actNewDependantStep))
+					{
+						allDependentSteps.add(actNewDependantStep);
+						aenderungImLetztenLauf = true;
+					}
+				}
 			}
 		}
 		
