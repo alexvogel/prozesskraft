@@ -51,8 +51,10 @@ implements Serializable
 	public void addCallitem(Callitem callitem)
 	{
 		callitem.setParent(this);
-		this.callitem.add(callitem);
-
+		if(!this.callitem.contains(callitem))
+		{
+			this.callitem.add(callitem);
+		}
 	}
 
 	public void addCallitem(ArrayList<Callitem> callitems)

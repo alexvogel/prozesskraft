@@ -36,6 +36,7 @@ implements Serializable
 	public Callitem()
 	{
 		this.parent = new Work();
+		this.parent.addCallitem(this);
 	}
 
 	public Callitem(Work work)
