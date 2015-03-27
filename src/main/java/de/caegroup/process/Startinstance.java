@@ -302,7 +302,7 @@ public class Startinstance
 								{
 									de.caegroup.process.File newFile = actFile.clone();
 									newFile.setGlob(userFile.getGlob());
-									System.err.println("entering file into commit "+actCommit.getName()+" ("+newFile.getKey()+"="+newFile.getGlob()+")");
+									System.err.println("entering file into commit '"+actCommit.getName()+"' ("+newFile.getKey()+"="+newFile.getGlob()+")");
 									actCommit.addFile(newFile);
 									break;
 								}
@@ -317,7 +317,7 @@ public class Startinstance
 							{
 								actFile.setGlob(userFile.getGlob());
 								actFile.setGlobdir(p2.getBaseDir());
-								System.err.println("entering file into commit "+actCommit.getName()+" ("+actFile.getKey()+"="+actFile.getGlob()+")");
+								System.err.println("entering file into commit '"+actCommit.getName()+"' ("+actFile.getKey()+"="+actFile.getGlob()+")");
 								break;
 							}
 						}
@@ -355,8 +355,8 @@ public class Startinstance
 					System.err.println("error in option -commitfiledummy "+actOptionCommitfiledummy);
 					exiter();
 				}
-
-				System.err.println("entering (dummy-)file into commit "+commitFiledummy.getName()+" ("+userFile.getKey()+"="+userFile.getGlob()+")");
+				userFile.setGlobdir(p2.getBaseDir());
+				System.err.println("entering (dummy-)file into commit '"+commitFiledummy.getName()+"' ("+userFile.getKey()+"="+userFile.getGlob()+")");
 			}
 		}
 
@@ -403,7 +403,7 @@ public class Startinstance
 										{
 											de.caegroup.process.Variable newVariable = actVariable.clone();
 											newVariable.setValue(userVariable.getValue());
-											System.err.println("entering variable into commit "+actCommit.getName()+": ("+newVariable.getKey()+"="+newVariable.getValue()+")");
+											System.err.println("entering variable into commit '"+actCommit.getName()+"' ("+newVariable.getKey()+"="+newVariable.getValue()+")");
 											actCommit.addVariable(newVariable);
 											break;
 										}
@@ -417,7 +417,7 @@ public class Startinstance
 									else
 									{
 										actVariable.setValue(userVariable.getValue());
-										System.err.println("entering variable into commit "+actCommit.getName()+": ("+actVariable.getKey()+"="+actVariable.getValue()+")");
+										System.err.println("entering variable into commit '"+actCommit.getName()+"' ("+actVariable.getKey()+"="+actVariable.getValue()+")");
 										break;
 									}
 								}
@@ -462,7 +462,7 @@ public class Startinstance
 					exiter();
 				}
 
-				System.err.println("entering variable into commit "+commitVariabledummy.getName()+": ("+userVariable.getKey()+"="+userVariable.getValue()+")");
+				System.err.println("entering variable into commit '"+commitVariabledummy.getName()+"' ("+userVariable.getKey()+"="+userVariable.getValue()+")");
 			}
 		}
 
