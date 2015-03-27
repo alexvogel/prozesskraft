@@ -110,6 +110,7 @@ implements Serializable, Cloneable
 		if(this.getRealposition().equals(this.getAbsfilename()))
 		{
 			this.log("info", "source and destination are the same. no copy needed");
+			return true;
 		}
 		
 		// ueberpruefen ob an beiden positionen das gleiche file ist, wenn nicht, dann soll es dorthin kopiert werden
