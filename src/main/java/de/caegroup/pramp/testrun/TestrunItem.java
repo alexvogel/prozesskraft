@@ -25,16 +25,18 @@ public class TestrunItem {
 	private Testrun father = null;
 	private String name = "unnamed";
 	private File callFile = null;
+	private File splDir = null;
 	private CTabFolder tabfolder = null;
 	private String comment = "-";
 	private String call = "-";
 
-	public TestrunItem(Testrun father, String name, File callFile, CTabFolder tabfolder)
+	public TestrunItem(Testrun father, String name, File callFile, File splDir, CTabFolder tabfolder)
 	{
 		this.father = father;
 		this.name = name;
 		this.callFile = callFile;
 		this.tabfolder = tabfolder;
+		this.splDir = splDir;
 
 		// die Daten aus dem spl-call-file ermitteln
 		this.detDataFromCallFile();
@@ -196,11 +198,11 @@ public class TestrunItem {
 				processSyscallWithArgs.add("-call");
 				if(schalterManagerLaunch.equals("true"))
 				{
-					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+father.getSplDir()+" -call "+callFile+" -instancedir "+instanceDir);
+					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir);
 				}
 				else
 				{
-					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+father.getSplDir()+" -call "+callFile+" -instancedir "+instanceDir + " -addopt '-nostart'");
+					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir + " -addopt '-nostart'");
 				}
 				processSyscallWithArgs.add("-stdout");
 				processSyscallWithArgs.add(instanceDir+"/.stdout.ptest-launch.txt");
@@ -348,6 +350,20 @@ public class TestrunItem {
 	 */
 	public void setFather(Testrun father) {
 		this.father = father;
+	}
+
+	/**
+	 * @return the splDir
+	 */
+	public File getSplDir() {
+		return splDir;
+	}
+
+	/**
+	 * @param splDir the splDir to set
+	 */
+	public void setSplDir(File splDir) {
+		this.splDir = splDir;
 	}	
 
 }

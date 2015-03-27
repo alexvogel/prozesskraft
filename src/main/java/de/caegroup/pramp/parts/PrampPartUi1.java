@@ -1204,7 +1204,7 @@ public class PrampPartUi1 extends ModelObject
 	 */
 	private void testrun()
 	{
-		java.io.File splDir = new java.io.File(this.domainMainDir+"/"+this.einstellungen.getDomain()+"/"+this.einstellungen.getProcess()+"/"+this.einstellungen.getVersion()+"/spl");
+		java.io.File splDir = new java.io.File(this.domainMainDir+"/"+this.einstellungen.getDomain()+"/"+this.einstellungen.getProcess()+"/"+this.einstellungen.getVersion()+"/"+this.ini.get("process", "sample-sub-directory"));
 		
 		if(splDir.exists())
 		{

@@ -143,7 +143,7 @@ public class Testrun
 						idPart2 = m.group(1); 
 					}
 					
-					TestrunItem tabItem_testcase = new TestrunItem(this, idPart1+"-"+idPart2, actFile, tabFolder);
+					TestrunItem tabItem_testcase = new TestrunItem(this, idPart1+"-"+idPart2, actFile, actSplSubDir, tabFolder);
 				}
 			}
 		}
