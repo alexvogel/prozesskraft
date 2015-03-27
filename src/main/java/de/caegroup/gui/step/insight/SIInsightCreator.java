@@ -134,7 +134,7 @@ public class SIInsightCreator
 		compositeInfo.setLayout(gridLayout_Info);
 
 		Label labelName = new Label(compositeInfo, SWT.NONE);
-		labelName.setText("step: "+step.getName());
+		labelName.setText("step: "+step.getName()+step.toString());
 
 		Label labelStatus = new Label(compositeInfo, SWT.NONE);
 		labelStatus.setText("status: "+step.getStatus());
