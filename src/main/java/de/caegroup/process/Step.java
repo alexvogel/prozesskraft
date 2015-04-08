@@ -615,7 +615,7 @@ implements Serializable, Cloneable
 						if(actMatch.getField().equals("value"))
 						{
 							// wenn "^\d+$", dann sollen die werte offensichtlich integer sein
-							if(actMatch.getPattern().matches("^\\^\\\\d\\+?\\$$"))
+							if(actMatch.getPattern().matches("^\\^\\[-\\+\\]\\?\\\\d\\+?\\$$"))
 							{
 								text1 = "=INTEGER";
 								definition = "integer";
