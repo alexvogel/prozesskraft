@@ -665,7 +665,7 @@ implements Serializable, Cloneable
 					String par = act_callitem.getPar().replaceAll("-", "");
 					if(par.equals(name))
 					{
-						if(!(act_callitem.getVal().matches(".+")))
+						if(act_callitem.getVal() == null || !(act_callitem.getVal().matches(".+")))
 						{
 							definition = "flag";
 						}
