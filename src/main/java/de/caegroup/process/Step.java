@@ -618,6 +618,12 @@ implements Serializable, Cloneable
 							{
 								text1 = "=INTEGER";
 								definition = "integer";
+
+								// als check aufnehmen
+								if(check.equals(""))
+								{
+									check = actMatch.getPattern();
+								}
 							}
 	
 							// wenn "^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$", dann sollen die werte offensichtlich float sein
@@ -625,6 +631,12 @@ implements Serializable, Cloneable
 							{
 								text1 = "=FLOAT";
 								definition = "float";
+
+								// als check aufnehmen
+								if(check.equals(""))
+								{
+									check = actMatch.getPattern();
+								}
 							}
 							
 							// wenn "^.+$", dann sollen die werte offensichtlich string sein
@@ -632,6 +644,12 @@ implements Serializable, Cloneable
 							{
 								text1 = "=STRING";
 								definition = "string";
+
+								// als check aufnehmen
+								if(check.equals(""))
+								{
+									check = actMatch.getPattern();
+								}
 							}
 							
 							// wenn ^[^\\+*?{}]+$  Muster ohne quantifier oder metazeichen gefunden wird bsplw. bei "node|element", soll das direkt als text1 verwendet werden
