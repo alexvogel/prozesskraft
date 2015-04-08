@@ -565,7 +565,6 @@ implements Serializable, Cloneable
 		int reihenfolge = 0;
 		for(Init actInit : this.getInit())
 		{
-			reihenfolge++;
 			// daten aus der init-definition
 			String name = actInit.getListname();
 			int minoccur = actInit.getMinoccur();
@@ -662,6 +661,11 @@ implements Serializable, Cloneable
 				// falls ein val existiert 'string' gesetzt, falls kein val existiert 'flag' gesetzt
 				for(Callitem act_callitem : this.work.getCallitem())
 				{
+					if(act_callitem.getSequence() != null && !act_callitem.getSequence().equals(""))
+					{
+						reihenfolge = act_callitem.getSequence();
+					}
+					
 					String par = act_callitem.getPar().replaceAll("-", "");
 					if(par.equals(name))
 					{
