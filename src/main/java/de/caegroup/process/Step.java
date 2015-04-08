@@ -581,8 +581,8 @@ implements Serializable, Cloneable
 					beruecksichtigen = true;
 				}
 				if((actCallitem.getPar() != null) && (actCallitem.getPar().matches("^.*\\{\\$" + actInit.getListname() + ".*$"))) {beruecksichtigen = true;}
-				if(actCallitem.getDel().matches("^.*\\{\\$" + actInit.getListname() + ".*$")) {beruecksichtigen = true;}
-				if(actCallitem.getVal().matches("^.*\\{\\$" + actInit.getListname() + ".*$")) {beruecksichtigen = true;}
+				if((actCallitem.getDel() != null) && (actCallitem.getDel().matches("^.*\\{\\$" + actInit.getListname() + ".*$"))) {beruecksichtigen = true;}
+				if((actCallitem.getVal() != null) && (actCallitem.getVal().matches("^.*\\{\\$" + actInit.getListname() + ".*$"))) {beruecksichtigen = true;}
 			}
 			// actInit soll im Script NICHT als Aufrufparameter vorhanden sein
 			if(!(beruecksichtigen))

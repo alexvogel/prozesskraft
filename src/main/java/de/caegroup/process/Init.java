@@ -45,6 +45,12 @@ implements Serializable
 		listname = "unnamed";
 	}
 
+	public Init(Step step)
+	{
+		this.parent = step;
+		listname = "unnamed";
+	}
+
 
 	/*----------------------------
 	  methods
