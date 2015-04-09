@@ -856,7 +856,7 @@ foreach my $refh_stackline (@CONFIG)
 		if ( grep { /perl_cb2/ } @now_action )
 		{
 			#-------------------
-			# suchen und ersetzen des platzhalters fuer 'version' in allen files
+			# ersetzen des eingetragenen perlinterpreters durch den cb2-eigene installation
 			print "info: action 'perl_cb2' found in array (@now_action)\n";
 			print "info: add '#!/opt/cb2/perl/bin/perl' as shebang-line to all perl-scripts (except the ones except=.....).\n";
 			
@@ -923,10 +923,6 @@ foreach my $refh_stackline (@CONFIG)
 							$ist_perl = 1;
 						}
 						$zeile++;
-					}
-					else
-					{
-						print "leaving current file\n";
 						last;
 					}
 				}
