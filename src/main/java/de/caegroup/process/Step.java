@@ -558,6 +558,7 @@ implements Serializable, Cloneable
 		
 		Script script = new Script();
 		script.setType("step");
+		script.setDescription(this.getDescription());
 		script.genContent();
 		
 //		System.out.println(" options : "+callitem.size());
