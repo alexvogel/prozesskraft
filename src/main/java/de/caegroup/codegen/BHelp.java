@@ -44,6 +44,8 @@ implements Serializable, Cloneable
 		{
 			content.add("my $helptext;");
 			content.add("");
+			content.add("$helptext .= \"Description: "+ this.parent.getDescription() +"\\n\";");
+			content.add("$helptext .= \"\\n\";");
 			content.add("$helptext .= \"Usage: $filename PARAMETER\\n\";");
 			content.add("$helptext .= \"\\n\";");
 			content.add("$helptext .= \"Parameter\\n\";");
@@ -102,12 +104,12 @@ implements Serializable, Cloneable
 			content.add("	}");
 			content.add("}");
 
-			content.add("$helptext .= \"author : alexander.vogel\\@caegroup.de\\n\";");
-			content.add("$helptext .= \"date   : $date\\n\";");
+			content.add("$helptext .= \"Author : alexander.vogel\\@caegroup.de\\n\";");
+			content.add("$helptext .= \"Date   : $date\\n\";");
 			content.add("");
 			content.add("if(&getOption('debug'))");
 			content.add("{");
-			content.add("	$helptext .= \"version: $version\\n\";");
+			content.add("	$helptext .= \"Version: $version\\n\";");
 			content.add("}");
 			content.add("");
 			content.add("$helptext .= \"\\n\";");

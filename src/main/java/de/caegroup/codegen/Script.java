@@ -177,6 +177,20 @@ implements Serializable, Cloneable
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	
 //	public void setContent(String block, ArrayList<String> content) throws UnknownCodeBlockException
 //	{
