@@ -48,7 +48,7 @@ implements Serializable, Cloneable
 		
 		ArrayList<String> codeOhneHeader = new  ArrayList<String>();
 		// die oeffnenden Zeilen entfernen, falls sie existieren zuerst
-		if((code.size()>=3) && (code.get(0).matches("^#====")) && (code.get(1).matches("^# processcraft:(.+):begin:(.+):(.+)")) && (code.get(2).matches("^#----")))
+		if((code.size()>=3) && (code.get(0).matches("^#====")) && (code.get(1).matches("^# prozesskraft:(.+):begin:(.+):(.+)")) && (code.get(2).matches("^#----")))
 		{
 			//processcraft:blockname:begin:origin:md5
 			Pattern p = Pattern.compile("^# processcraft:(.+):begin:(.+):(.+)");
@@ -69,7 +69,7 @@ implements Serializable, Cloneable
 		
 		ArrayList<String> codeOhneHeaderOhneFooter = new  ArrayList<String>();
 		// die letzten 3 zeilen checken ob sie dem muster eines schliessenden blocks entsprechen
-		if((codeOhneHeader.size()>=3) && (codeOhneHeader.get(codeOhneHeader.size()-3).matches("^#----")) && (codeOhneHeader.get(codeOhneHeader.size()-2).matches("^# processcraft:(.+):end")) && (codeOhneHeader.get(codeOhneHeader.size()-1).matches("^#====")))
+		if((codeOhneHeader.size()>=3) && (codeOhneHeader.get(codeOhneHeader.size()-3).matches("^#----")) && (codeOhneHeader.get(codeOhneHeader.size()-2).matches("^# prozesskraft:(.+):end")) && (codeOhneHeader.get(codeOhneHeader.size()-1).matches("^#====")))
 		{
 
 			for(int x = 0; x < (codeOhneHeader.size() -3); x++)
@@ -133,7 +133,7 @@ implements Serializable, Cloneable
 		BigInteger bigInt = null;
 		try {
 			
-			// den gesamten content in einen String einfuegen
+			// den gesamten content in einen String einfuegen (dabei kommentarzeilen und leerzeilen ignorieren)
 			String contentString = "";
 			
 			for(String line : this.code)
@@ -170,7 +170,7 @@ implements Serializable, Cloneable
 		ArrayList<String> text = new ArrayList<String>();
 		
 		text.add("#============================================================================");
-		text.add("# processcraft:" + this.blockname + ":" + "begin" + ":" + this.origin + ":" + this.md5);
+		text.add("# prozesskraft:" + this.blockname + ":" + "begin" + ":" + this.origin + ":" + this.md5);
 		text.add("#----------------------------------------------------------------------------");
 		
 		return text;
@@ -186,7 +186,7 @@ implements Serializable, Cloneable
 		ArrayList<String> text = new ArrayList<String>();
 		
 		text.add("#----------------------------------------------------------------------------");
-		text.add("# processcraft:" + this.blockname + ":" + "end");
+		text.add("# prozesskraft:" + this.blockname + ":" + "end");
 		text.add("#============================================================================");
 		
 		return text;
