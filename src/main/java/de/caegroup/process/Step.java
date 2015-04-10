@@ -957,11 +957,29 @@ implements Serializable, Cloneable
 	{
 		this.log("info", "special commit, because this step is root");
 
-		// einen commit fuer die initCommitFile und initCommitVariable anlegen
+		// einen commit fuer die initCommitFile und initCommitVariable und standardEintraege, die ProcessInfos beinhalten anlegen
 		this.removeCommit("rootCommit");
 		this.log("debug", "creating a commit 'rootCommit' and adding to step "+this.getParent().getRootStep().getName());
 		Commit rootCommit = new Commit(this);
 		rootCommit.setName("rootCommit");
+		
+		// variable _processName
+		Variable variableProcessName = new Variable();
+		variableProcessName.setKey("_processName");
+		variableProcessName.setValue(this.getParent().getName());
+		rootCommit.addVariable(variableProcessName);
+		
+		// variable _processVersion
+		Variable variableProcessVersion = new Variable();
+		variableProcessVersion.setKey("_processVersion");
+		variableProcessVersion.setValue(this.getParent().getVersion());
+		rootCommit.addVariable(variableProcessVersion);
+		
+		// variable _processDescription
+		Variable variableProcessDescription = new Variable();
+		variableProcessDescription.setKey("_processDescription");
+		variableProcessDescription.setValue(this.getParent().getDescription());
+		rootCommit.addVariable(variableProcessDescription);
 		
 		//ueber alle commitFile iterieren
 		this.log("info", "start resolving all entries of initCommitFile and adding to the "+rootCommit.getName());
