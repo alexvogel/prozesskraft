@@ -968,19 +968,19 @@ implements Serializable, Cloneable
 		variableProcessName.setKey("_processName");
 		variableProcessName.setValue(this.getParent().getName());
 		rootCommit.addVariable(variableProcessName);
-		
+
 		// variable _processVersion
 		Variable variableProcessVersion = new Variable();
 		variableProcessVersion.setKey("_processVersion");
 		variableProcessVersion.setValue(this.getParent().getVersion());
 		rootCommit.addVariable(variableProcessVersion);
-		
+
 		// variable _processDescription
 		Variable variableProcessDescription = new Variable();
 		variableProcessDescription.setKey("_processDescription");
 		variableProcessDescription.setValue(this.getParent().getDescription());
 		rootCommit.addVariable(variableProcessDescription);
-		
+
 		//ueber alle commitFile iterieren
 		this.log("info", "start resolving all entries of initCommitFile and adding to the "+rootCommit.getName());
 		for(java.io.File actInitCommitFile : this.getParent().getInitCommitFiles2())

@@ -35,9 +35,18 @@ public class TestRootCommit {
 	public void testRootCommitInitCommitVariable()
 	{
 		process.setInfilexml("src/test/resources/definitions/Admin/multiappshake/0.0.1/process.xml");
-
+		try
+		{
+			process.readXml();
+		}
+		catch (JAXBException e)
+		{
+			e.printStackTrace();
+		}
+		
 		Step rootStep = new Step("root");
 		process.addStep(rootStep);
+		// ueberschreiben der initCommitVariable
 		process.setInitCommitVariable("etc/variable.name:etc/variable.spl:etc/variable.call:etc/variable.result");
 
 		// zuerst existieren keine listen im rootStep
@@ -46,21 +55,21 @@ public class TestRootCommit {
 		// rootCommit durchfuehren
 		rootStep.commit();
 
-		for(Log actLog : rootStep.getLogRecursive())
-		{
-			System.err.println(actLog.sprint());
-		}
+//		for(Log actLog : rootStep.getLogRecursive())
+//		{
+//			System.err.println(actLog.sprint());
+//		}
 
 		// jetzt muss 1 commit existieren (der automatisch angelegte 'rootCommit')
 		assertEquals(1, rootStep.getCommit().size());
 
-		for(Variable actVariable : rootStep.getVariable())
-		{
-			System.err.println(actVariable.getKey() + "=" + actVariable.getValue());
-		}
+//		for(Variable actVariable : rootStep.getVariable())
+//		{
+//			System.err.println(actVariable.getKey() + "=" + actVariable.getValue());
+//		}
 		
-		// jetzt muessten 13 variablen existieren (3*name, 3*spl, 3*call, 3*result, _dir)
-		assertEquals(13, rootStep.getVariable().size());
+		// jetzt muessten 16 variablen existieren (3*name, 3*spl, 3*call, 3*result, _dir, _processName, _processVersion, _processDescription)
+		assertEquals(16, rootStep.getVariable().size());
 
 	}
 	
@@ -68,6 +77,14 @@ public class TestRootCommit {
 	public void testRootCommitInitCommitVariable2()
 	{
 		process.setInfilexml("src/test/resources/definitions/Admin/multiappshake/0.0.1/process.xml");
+		try
+		{
+			process.readXml();
+		}
+		catch (JAXBException e)
+		{
+			e.printStackTrace();
+		}
 
 		Step rootStep = new Step("root");
 		process.addStep(rootStep);
@@ -90,13 +107,13 @@ public class TestRootCommit {
 		// jetzt muss 1 commit existieren (der automatisch angelegte 'rootCommit')
 		assertEquals(1, rootStep.getCommit().size());
 
-//		for(Variable actVariable : rootStep.getVariable())
-//		{
-//			System.err.println(actVariable.getKey() + "=" + actVariable.getValue());
-//		}
+		for(Variable actVariable : rootStep.getVariable())
+		{
+			System.err.println(actVariable.getKey() + "=" + actVariable.getValue());
+		}
 		
-		// jetzt muessten 13 variablen existieren (3*name, 3*spl, 3*call, 3*result, _dir, 2*variables)
-		assertEquals(19, rootStep.getVariable().size());
+		// jetzt muessten 22 variablen existieren (3*name, 3*spl, 3*call, 3*result, _dir, _processName, _processVersion, _processDescription, 2*variables)
+		assertEquals(22, rootStep.getVariable().size());
 
 	}
 

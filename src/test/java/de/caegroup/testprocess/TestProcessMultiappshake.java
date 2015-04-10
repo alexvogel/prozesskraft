@@ -124,8 +124,8 @@ public class TestProcessMultiappshake {
 		// ueberpruefen ob die 3 commits, die aus dem subprocess von multiappshake kamen auch zu entsprechenden variablen und files im prozess appshake gefuehrt haben
 		// in summe 2 files (call+result)
 		assertEquals(2, childProcess.getRootStep().getFile().size());
-		// in summe 2 variable (spl, _dir)
-		assertEquals(2, childProcess.getRootStep().getVariable().size());
+		// in summe 2 variable (spl, _dir, processName, _processVarsion, _processDescription)
+		assertEquals(5, childProcess.getRootStep().getVariable().size());
 		
 		// 1 variable mit key=spl
 		assertEquals(1, childProcess.getRootStep().getVariable("spl").size());

@@ -118,6 +118,7 @@ implements Serializable
 	public Process()
 	{
 		name = "unnamed";
+		version = "unversioned";
 		description = "without description";
 		status = "waiting";
 
