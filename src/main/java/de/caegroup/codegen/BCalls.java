@@ -53,7 +53,7 @@ implements Serializable, Cloneable
 			content.add("\tif (stat $doc_path)");
 			content.add("\t{");
 			content.add("\t\tlogit('info', 'showing documentation');");
-			content.add("\t\texec 'acroread ' . $doc_path;");
+			content.add("\t\texec 'evince ' . $doc_path;");
 			content.add("\t}");
 			content.add("\telse");
 			content.add("\t{");
