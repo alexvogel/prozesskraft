@@ -16,6 +16,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 
 import de.caegroup.pramp.parts.PrampPartUi1;
 
@@ -123,13 +125,13 @@ public class Testrun
 		Pattern p = Pattern.compile("^\\.call\\.(.+)\\..+$");
 		
 		// tabFolder erzeugen
-		CTabFolder tabFolder = new CTabFolder(composite, SWT.BORDER);
+		TabFolder tabFolder = new TabFolder(composite, SWT.BORDER);
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 //		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 //		tabFolder.setTabPosition(SWT.TOP);
 //		tabFolder.setTabHeight(30);
 
-		CTabItem tabItem_testcase = new CTabItem(tabFolder, SWT.NONE);
+		TabItem tabItem_testcase = new TabItem(tabFolder, SWT.NONE);
 		tabItem_testcase.setText("irgendwas");
 		tabItem_testcase.setToolTipText("das ist ein tooltip");
 
