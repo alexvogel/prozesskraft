@@ -126,27 +126,42 @@ public class Testrun
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		tabFolder.setTabPosition(SWT.TOP);
 		tabFolder.setTabHeight(30);
-		
-		// ueber alle unterordner in splDir iterieren und fuer jedes gefundene callfile ein TabItem erzeugen
-		for(java.io.File actSplSubDir : new java.io.File(splDir).listFiles())
-		{
-			if(actSplSubDir.isDirectory())
-			{
-				String idPart1 = actSplSubDir.getName();
-				String idPart2 = "unknown";
-				// das directory durchgehen und alle ".call."-files feststellen
-				for(java.io.File actFile : actSplSubDir.listFiles(callFilter))
-				{
-					Matcher m = p.matcher(actFile.getName());
-					if(m.matches())
-					{
-						idPart2 = m.group(1); 
-					}
-					
-					TestrunItem tabItem_testcase = new TestrunItem(this, idPart1+"-"+idPart2, actFile, actSplSubDir, tabFolder);
-				}
-			}
-		}
+
+		CTabItem tabItem_testcase = new CTabItem(tabFolder, SWT.NONE);
+		tabItem_testcase.setText("irgendwas");
+		tabItem_testcase.setToolTipText("das ist ein tooltip");
+
+		Composite composite2 = new Composite(tabFolder, SWT.FILL | SWT.BORDER);
+
+		composite2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		tabItem_testcase.setControl(composite2);
+
+		// comment
+		Label comment = new Label(composite2, SWT.NONE);
+		comment.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		comment.setText("comment");
+		comment.setToolTipText("a small description");
+
+//		// ueber alle unterordner in splDir iterieren und fuer jedes gefundene callfile ein TabItem erzeugen
+//		for(java.io.File actSplSubDir : new java.io.File(splDir).listFiles())
+//		{
+//			if(actSplSubDir.isDirectory())
+//			{
+//				String idPart1 = actSplSubDir.getName();
+//				String idPart2 = "unknown";
+//				// das directory durchgehen und alle ".call."-files feststellen
+//				for(java.io.File actFile : actSplSubDir.listFiles(callFilter))
+//				{
+//					Matcher m = p.matcher(actFile.getName());
+//					if(m.matches())
+//					{
+//						idPart2 = m.group(1); 
+//					}
+//					
+//					TestrunItem tabItem_testcase = new TestrunItem(this, idPart1+"-"+idPart2, actFile, actSplSubDir, tabFolder);
+//				}
+//			}
+//		}
 
 	}
 
