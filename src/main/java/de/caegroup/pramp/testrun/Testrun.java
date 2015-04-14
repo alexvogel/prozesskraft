@@ -146,7 +146,8 @@ public class Testrun
 
 		// comment
 		Label comment = new Label(composite2, SWT.NONE);
-//		comment.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		comment.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		comment.setSize(300,30);
 		comment.setText("comment");
 //		comment.setToolTipText("a small description");
 		
