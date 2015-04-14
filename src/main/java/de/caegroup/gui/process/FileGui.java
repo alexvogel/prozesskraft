@@ -58,6 +58,7 @@ public class FileGui
 		parent_commitgui.parent.layout();
 		parent_commitgui.parent_commitcreator.sc.setMinSize(parent_commitgui.parent_commitcreator.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		parent_commitgui.parent_commitcreator.composite.layout();
+		
 }
 	
 	public void add()

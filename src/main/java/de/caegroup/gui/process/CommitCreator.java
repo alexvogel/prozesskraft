@@ -48,7 +48,7 @@ public class CommitCreator
 //		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
-
+		
 //		sc.setAlwaysShowScrollBars(true);
 
 		composite = new Composite(sc, SWT.NONE);
@@ -77,6 +77,7 @@ public class CommitCreator
 		}
 		maxBreiteDerSchluessel = maxBreiteDerSchluessel * 10;
 //		System.out.println("max Breite = "+maxBreiteDerSchluessel);
+		
 		
 		composite.layout();
 	}

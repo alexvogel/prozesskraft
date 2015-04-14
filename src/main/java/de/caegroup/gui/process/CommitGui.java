@@ -35,11 +35,12 @@ public class CommitGui
 
 		composite = new Composite(this.parent, SWT.NONE);
 //		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
-		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		composite.setLayoutData(gd_composite);
 		composite.setLayout(new GridLayout(1, false));
 
 		createControls(composite);
+		
 	}
 	
 	/**
@@ -50,8 +51,9 @@ public class CommitGui
 		// fuer jedes commit soll eine Gruppe erstellt werden
 		Group group = new Group(composite, SWT.NONE);
 		group.setText(commit.getName());
-		GridData gd_group = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-
+		GridData gd_group = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
+		
+		
 		// Layout ist ab hier --> FormLayout!
 		group.setLayoutData(gd_group);
 		group.setLayout(new GridLayout(1, false));
