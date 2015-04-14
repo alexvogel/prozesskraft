@@ -147,6 +147,8 @@ public class Testrun
 		comment.setText("comment");
 //		comment.setToolTipText("a small description");
 		
+		tabItem_testcase.setControl(comment);
+		
 		tabFolder.pack();
 		
 //		// ueber alle unterordner in splDir iterieren und fuer jedes gefundene callfile ein TabItem erzeugen
