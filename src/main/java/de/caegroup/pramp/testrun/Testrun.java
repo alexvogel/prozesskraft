@@ -170,8 +170,8 @@ public class Testrun
 				}
 			}
 		}
-
-		composite.layout(true, true);
+		
+		shell.layout();
 	}
 
 
