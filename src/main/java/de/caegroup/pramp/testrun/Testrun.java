@@ -122,10 +122,10 @@ public class Testrun
 		
 		// tabFolder erzeugen
 		CTabFolder tabFolder = new CTabFolder(composite, SWT.BORDER);
-		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
-		tabFolder.setTabPosition(SWT.TOP);
-		tabFolder.setTabHeight(30);
+//		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+//		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
+//		tabFolder.setTabPosition(SWT.TOP);
+//		tabFolder.setTabHeight(30);
 
 		CTabItem tabItem_testcase = new CTabItem(tabFolder, SWT.NONE);
 		tabItem_testcase.setText("irgendwas");
@@ -142,6 +142,8 @@ public class Testrun
 		comment.setText("comment");
 		comment.setToolTipText("a small description");
 
+		tabFolder.pack();
+		
 //		// ueber alle unterordner in splDir iterieren und fuer jedes gefundene callfile ein TabItem erzeugen
 //		for(java.io.File actSplSubDir : new java.io.File(splDir).listFiles())
 //		{
