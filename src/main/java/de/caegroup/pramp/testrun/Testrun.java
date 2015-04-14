@@ -51,13 +51,13 @@ public class Testrun
 	public Testrun(PrampPartUi1 prampPart, Shell parent, String splDir)
 	{
 		this.father = prampPart;
-		this.shell = new Shell(parent);
+		this.shell = new Shell(parent, SWT.RESIZE);
 		this.splDir = splDir;
 
 		try
 		{
 			shell.setText("testrun");
-	//		shell.setSize(600, 625);
+			shell.setSize(600, 625);
 			
 			shell.setLayout(new GridLayout(1, false));
 			shell.setLocation(display.getCursorLocation());
