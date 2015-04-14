@@ -68,6 +68,8 @@ public class Testrun
 			composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 			createControls(composite);
 
+			shell.setSize(601, 625);
+
 			try
 			{
 				shell.open();
