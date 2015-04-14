@@ -172,7 +172,7 @@ public class TestrunItem {
 		btnRun.setText("run test");
 		btnRun.addSelectionListener(listenerButtonRun);
 		
-		composite.layout();
+		composite.layout(true, true);
 	}
 
 	SelectionAdapter listenerButtonRun = new SelectionAdapter()
