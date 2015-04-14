@@ -153,6 +153,8 @@ public class TestrunItem {
 		callText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		callText.setText(this.call);
 
+		compositeEntries.layout();
+		
 		// button
 		Composite compositeBtn = new Composite(composite, SWT.NONE);
 		compositeBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -172,6 +174,7 @@ public class TestrunItem {
 		btnRun.setText("run test");
 		btnRun.addSelectionListener(listenerButtonRun);
 		
+		compositeBtn.layout();
 	}
 
 	SelectionAdapter listenerButtonRun = new SelectionAdapter()
