@@ -160,7 +160,7 @@
 				<dependency>
 					<groupId>org.eclipse.swt</groupId>
 					<artifactId>gtk.linux.x86</artifactId>
-					<version>3.100.1</version>
+					<version>4.4.2</version>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -170,7 +170,7 @@
 				<dependency>
 					<groupId>org.eclipse.swt</groupId>
 					<artifactId>gtk.linux.x86_64</artifactId>
-					<version>3.101.0</version>
+					<version>4.4.2</version>
 				</dependency>
 			</dependencies>
 		</profile>
