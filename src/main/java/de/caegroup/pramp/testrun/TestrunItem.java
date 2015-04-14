@@ -122,7 +122,7 @@ public class TestrunItem {
 
 		Composite compositeEntries = new Composite(composite, SWT.NONE);
 
-		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, true, true, 1, 1);
+		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 //		gd_composite.minimumWidth = 10;
 //		gd_composite.minimumHeight = 10;
 		compositeEntries.setLayoutData(gd_composite);
