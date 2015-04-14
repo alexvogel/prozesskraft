@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -122,7 +124,7 @@ public class Testrun
 		
 		// tabFolder erzeugen
 		CTabFolder tabFolder = new CTabFolder(composite, SWT.BORDER);
-//		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 //		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 //		tabFolder.setTabPosition(SWT.TOP);
 //		tabFolder.setTabHeight(30);
@@ -135,6 +137,9 @@ public class Testrun
 
 		composite2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		tabItem_testcase.setControl(composite2);
+		Device device = Display.getCurrent();
+		Color red = new Color(device, 255, 0, 0);
+		composite2.setBackground(red);
 
 		// comment
 		Label comment = new Label(composite2, SWT.NONE);
