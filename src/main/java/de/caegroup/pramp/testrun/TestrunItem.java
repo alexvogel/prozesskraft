@@ -129,6 +129,7 @@ public class TestrunItem {
 		// comment
 		Label comment = new Label(compositeEntries, SWT.NONE);
 		comment.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		comment.setSize(300,30);
 		comment.setText("comment");
 		comment.setToolTipText("a small description");
 		
