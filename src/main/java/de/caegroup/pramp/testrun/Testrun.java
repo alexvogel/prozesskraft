@@ -12,6 +12,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -148,6 +149,9 @@ public class Testrun
 		comment.setText("comment");
 //		comment.setToolTipText("a small description");
 		
+		Button btnCancel = new Button(composite2, SWT.NONE);
+		btnCancel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		btnCancel.setText("cancel");
 		
 		tabFolder.pack();
 		tabFolder.redraw();
