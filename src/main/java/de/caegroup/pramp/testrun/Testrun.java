@@ -143,10 +143,10 @@ public class Testrun
 
 		// comment
 		Label comment = new Label(composite2, SWT.NONE);
-		comment.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+//		comment.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		comment.setText("comment");
-		comment.setToolTipText("a small description");
-
+//		comment.setToolTipText("a small description");
+		
 		tabFolder.pack();
 		
 //		// ueber alle unterordner in splDir iterieren und fuer jedes gefundene callfile ein TabItem erzeugen
