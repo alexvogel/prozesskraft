@@ -712,18 +712,20 @@ implements Serializable
 		{
 			log("debug", "variable does define a glob instead of a value. so the content of files / directories "+master.getGlob()+" have to be interpreted as a variables.");
 
+			String globAbsolute = "";
 			// ist der glob relativ? Dann muss er um das stepdir erweitert werden
 			if(!(master.getGlob().matches("^/.+$")))
 			{
-				master.setGlob(this.getAbsdir()+"/"+master.getGlob());
-				log("debug", "glob is relative - expanding with stepdir "+this.getAbsdir()+"/"+master.getGlob());
+//				master.setGlob(this.getAbsdir()+"/"+master.getGlob());
+				globAbsolute = this.getAbsdir()+"/"+master.getGlob();
+				log("debug", "glob is relative - expanding with stepdir "+globAbsolute);
 			}
 
 			// das Verzeichnis des globs feststellen (der glob selber koennte auch ein dir sein, aber das spielt vorerst keine rolle)
 			java.io.File dirOfGlob = null;
 
-			String glob = master.getGlob();
-			String globParent = master.getGlob().replaceFirst("/[^/]+$", "");
+			String glob = globAbsolute;
+			String globParent = globAbsolute.replaceFirst("/[^/]+$", "");
 
 			// directory festlegen
 			if(new java.io.File(glob).isDirectory())
@@ -751,7 +753,7 @@ implements Serializable
 			log("debug", allFilesOfDirectory.size()+" files in directory "+dirOfGlob);
 
 			// alle eintraege des verzeichnisses, auf die der glob matched
-			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+master.getGlob());
+			PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:"+globAbsolute);
 			ArrayList<java.io.File> allEntitiesThatGlob = new ArrayList<java.io.File>();
 			for(java.io.File actFile : allFilesOfDirectory)
 			{
