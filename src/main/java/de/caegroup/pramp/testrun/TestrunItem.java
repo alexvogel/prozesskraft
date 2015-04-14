@@ -52,6 +52,7 @@ public class TestrunItem {
 		
 		createControls(composite);
 
+		composite.layout();
 	}
 	
 	/**

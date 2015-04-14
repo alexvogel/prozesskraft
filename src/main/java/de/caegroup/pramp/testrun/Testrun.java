@@ -64,8 +64,6 @@ public class Testrun
 			composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 			createControls(composite);
 
-			composite.layout();
-			
 			try
 			{
 				shell.open();
