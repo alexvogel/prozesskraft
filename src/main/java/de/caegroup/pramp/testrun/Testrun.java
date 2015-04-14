@@ -57,7 +57,7 @@ public class Testrun
 		try
 		{
 			shell.setText("testrun");
-			shell.setSize(600, 625);
+	//		shell.setSize(600, 625);
 			
 			shell.setLayout(new GridLayout(1, false));
 			shell.setLocation(display.getCursorLocation());
