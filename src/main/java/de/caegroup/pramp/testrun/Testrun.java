@@ -125,20 +125,21 @@ public class Testrun
 		Pattern p = Pattern.compile("^\\.call\\.(.+)\\..+$");
 		
 		// tabFolder erzeugen
-		CTabFolder tabFolder = new CTabFolder(composite, SWT.BORDER);
-		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+//		CTabFolder tabFolder = new CTabFolder(composite, SWT.BORDER);
+//		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 //		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 //		tabFolder.setTabPosition(SWT.TOP);
 //		tabFolder.setTabHeight(30);
+//
+//		CTabItem tabItem_testcase = new CTabItem(tabFolder, SWT.NONE);
+//		tabItem_testcase.setText("irgendwas");
+//		tabItem_testcase.setToolTipText("das ist ein tooltip");
+//
+//		Composite composite2 = new Composite(tabFolder, SWT.FILL | SWT.BORDER);
 
-		CTabItem tabItem_testcase = new CTabItem(tabFolder, SWT.NONE);
-		tabItem_testcase.setText("irgendwas");
-		tabItem_testcase.setToolTipText("das ist ein tooltip");
-
-		Composite composite2 = new Composite(tabFolder, SWT.FILL | SWT.BORDER);
-
+		Composite composite2 = new Composite(composite, SWT.FILL | SWT.BORDER);
 		composite2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		tabItem_testcase.setControl(composite2);
+//		tabItem_testcase.setControl(composite2);
 		Device device = Display.getCurrent();
 		Color red = new Color(device, 255, 0, 0);
 		composite2.setBackground(red);
@@ -153,8 +154,6 @@ public class Testrun
 		btnCancel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnCancel.setText("cancel");
 		
-		tabFolder.pack();
-		tabFolder.redraw();
 		
 //		// ueber alle unterordner in splDir iterieren und fuer jedes gefundene callfile ein TabItem erzeugen
 //		for(java.io.File actSplSubDir : new java.io.File(splDir).listFiles())
