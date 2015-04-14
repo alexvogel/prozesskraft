@@ -712,6 +712,7 @@ implements Serializable
 		{
 			log("debug", "variable does define a glob instead of a value. so the content of files / directories "+master.getGlob()+" have to be interpreted as a variables.");
 
+			// den glob zu einem absoluten glob ueberfuehren ohne den eintrag im master zu veraendern (muss fuer evtl. reset unveraendert bleiben)
 			String globAbsolute = "";
 			// ist der glob relativ? Dann muss er um das stepdir erweitert werden
 			if(!(master.getGlob().matches("^/.+$")))
@@ -720,6 +721,10 @@ implements Serializable
 				globAbsolute = this.getAbsdir()+"/"+master.getGlob();
 				log("debug", "glob is relative - expanding with stepdir "+globAbsolute);
 			}
+			else
+			{
+				globAbsolute = master.getGlob();
+			}
 
 			// das Verzeichnis des globs feststellen (der glob selber koennte auch ein dir sein, aber das spielt vorerst keine rolle)
 			java.io.File dirOfGlob = null;
@@ -727,6 +732,8 @@ implements Serializable
 			String glob = globAbsolute;
 			String globParent = globAbsolute.replaceFirst("/[^/]+$", "");
 
+			System.err.println("globabsolute: "+globAbsolute);
+			
 			// directory festlegen
 			if(new java.io.File(glob).isDirectory())
 			{
