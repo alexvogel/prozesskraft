@@ -117,7 +117,7 @@ public class PmodelViewStepSym
 			// 3) vek90: berechnung eines einheitsvektors rechtwinkelig zu vek
 			float vek90[] = {-1 * vek[1], -1 * vek[0], vek[2]};
 			// 4) verlaengern auf den abstand des levels
-			vek = vektorMultiplikation(vek[0], vek[1], vek[2], level * (float)this.parent.einstellungen.getZoom());
+			vek = vektorMultiplikation(vek[0], vek[1], vek[2], level * (float)this.parent.einstellungen.getZoom() * 0.5f);
 			// 5) falls positionsnummer ungerade, soll der vek90 umgedreht werden (nach unten)
 			if((posi % 2) != 0)
 			{
@@ -126,7 +126,7 @@ public class PmodelViewStepSym
 				vek90[2] = -1 * vek90[2];
 			}
 			// 6) verlaengern des zu addierenden vektors um die position abzubilden
-			vek90 = vektorMultiplikation(vek90[0], vek90[1], vek90[2], posi * (float)this.parent.einstellungen.getZoom());
+			vek90 = vektorMultiplikation(vek90[0], vek90[1], vek90[2], posi * (float)this.parent.einstellungen.getZoom() * 0.5f);
 			// 7) initiale position setzen abhaengig von rootPosition
 			vek = vektorAddition(vek[0], vek[1], vek[2], vek90[0], vek90[1], vek90[2]);
 			
