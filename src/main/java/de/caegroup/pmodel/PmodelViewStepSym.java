@@ -554,6 +554,8 @@ public class PmodelViewStepSym
 //				newspeed[0] = Math.min((float)(oldspeed[0] * 1.01), (oldspeed[0] + speeddiff[0]) * (1-this.parent.getDamp()));
 //				newspeed[1] = Math.min((float)(oldspeed[1] * 1.01), (oldspeed[1] + speeddiff[1]) * (1-this.parent.getDamp()));
 	
+				System.err.println("damping: "+this.parent.getDamp());
+				
 				// wenn initialer step, dann festhalten
 				if (this.name.equals(p.rootstepname))
 				{
