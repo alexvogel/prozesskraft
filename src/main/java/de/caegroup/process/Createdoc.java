@@ -79,7 +79,7 @@ public class Createdoc
 	static Map<String,String> stepTopologyImagePath = new HashMap<String,String>();
 	static Map<String,String> pdfRankFiles = new HashMap<String,String>();
 	static Map<String,String> pptxRankFiles = new HashMap<String,String>();
-	static boolean produktiv = true;
+	static boolean produktiv = false;
 
 	/*----------------------------
 	  constructors
