@@ -695,7 +695,7 @@ public class Createdoc
 				}
 				
 				// Spalte 'objectDescription'
-				row.put("objectDescription", actualFile.getDescription() + " fuer step(s)" + stepnameListe);
+				row.put("objectDescription", actualFile.getDescription() + "\n(wird benoetigt von step(s)" + stepnameListe + ")");
 
 				// Datensatz dem report hinzufuegen
 				report.addField(row);
@@ -730,7 +730,7 @@ public class Createdoc
 				}
 				
 				// Spalte 'objectDescription'
-				row.put("objectDescription", actualVariable.getDescription() + " fuer step(s)" + stepnameListe);
+				row.put("objectDescription", actualVariable.getDescription() + "\n(wird benoetigt von step(s)" + stepnameListe + ")");
 
 				// Datensatz dem report hinzufuegen
 				report.addField(row);
@@ -840,7 +840,7 @@ public class Createdoc
 							row.put("objectKey", actualFile.getKey());
 							
 							// Spalte 'objectDescription'
-							row.put("objectDescription", actualFile.getDescription() + " (aus step " + actualStep.getName() + ")");
+							row.put("objectDescription", actualFile.getDescription() + "\n(ist ein output von step " + actualStep.getName() + ")");
 		
 							// Datensatz dem report hinzufuegen
 							report.addField(row);
@@ -867,7 +867,7 @@ public class Createdoc
 							row.put("objectKey", actualVariable.getKey());
 							
 							// Spalte 'objectDescription'
-							row.put("objectDescription", actualVariable.getDescription() + " (aus step " + actualStep.getName() + ")");
+							row.put("objectDescription", actualVariable.getDescription() + "\n(ist ein output von step " + actualStep.getName() + ")");
 		
 							// Datensatz dem report hinzufuegen
 							report.addField(row);
