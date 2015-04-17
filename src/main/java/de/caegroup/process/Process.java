@@ -1825,6 +1825,7 @@ implements Serializable
 				{
 					for(Match actMatch : actInit.getMatch())
 					{
+
 						if(actMatch.getField().equals("key") && (!actMatch.getPattern().matches("\\$")) )
 						{
 							if(key.matches(actMatch.getPattern()))
@@ -1839,6 +1840,7 @@ implements Serializable
 				{
 					for(Match actMatch : actInit.getMatch())
 					{
+
 						if(actMatch.getField().equals("key") && (!actMatch.getPattern().matches("\\$")))
 						{
 							if(key.matches(actMatch.getPattern()))
