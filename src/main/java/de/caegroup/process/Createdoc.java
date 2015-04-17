@@ -691,11 +691,11 @@ public class Createdoc
 				String stepnameListe = "";
 				for(Step actStep : allStepsThatNeedThisFileFromRoot)
 				{
-					stepnameListe += " " + actStep.getName();
+					stepnameListe += "\n=> " + actStep.getName();
 				}
 				
 				// Spalte 'objectDescription'
-				row.put("objectDescription", actualFile.getDescription() + "\n(wird benoetigt von step(s)" + stepnameListe + ")");
+				row.put("objectDescription", actualFile.getDescription() + stepnameListe);
 
 				// Datensatz dem report hinzufuegen
 				report.addField(row);
@@ -726,11 +726,11 @@ public class Createdoc
 				String stepnameListe = "";
 				for(Step actStep : allStepsThatNeedThisObjectFromRoot)
 				{
-					stepnameListe += " " + actStep.getName();
+					stepnameListe += "\n=> " + actStep.getName();
 				}
 				
 				// Spalte 'objectDescription'
-				row.put("objectDescription", actualVariable.getDescription() + "\n(wird benoetigt von step(s)" + stepnameListe + ")");
+				row.put("objectDescription", actualVariable.getDescription() + stepnameListe);
 
 				// Datensatz dem report hinzufuegen
 				report.addField(row);
@@ -840,7 +840,7 @@ public class Createdoc
 							row.put("objectKey", actualFile.getKey());
 							
 							// Spalte 'objectDescription'
-							row.put("objectDescription", actualFile.getDescription() + "\n(ist ein output von step " + actualStep.getName() + ")");
+							row.put("objectDescription", actualFile.getDescription() + "\n<= " + actualStep.getName());
 		
 							// Datensatz dem report hinzufuegen
 							report.addField(row);
@@ -867,7 +867,7 @@ public class Createdoc
 							row.put("objectKey", actualVariable.getKey());
 							
 							// Spalte 'objectDescription'
-							row.put("objectDescription", actualVariable.getDescription() + "\n(ist ein output von step " + actualStep.getName() + ")");
+							row.put("objectDescription", actualVariable.getDescription() + "\n<= " + actualStep.getName());
 		
 							// Datensatz dem report hinzufuegen
 							report.addField(row);
