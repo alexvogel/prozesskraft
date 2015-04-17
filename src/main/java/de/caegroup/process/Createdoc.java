@@ -1680,7 +1680,7 @@ public class Createdoc
 		frame.setLocation(0, 0);
 		frame.setVisible(true);
 		
-		page.refresh();
+//		page.refresh();
 	}
 
 	
