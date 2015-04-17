@@ -1522,6 +1522,11 @@ public class Createdoc
 		try
 		{
 			PDDocument document = new PDDocument();
+			if(document.getNumberOfPages() > 0)
+			{
+				System.out.println("deleting empty page");
+				document.removePage(0);
+			}
 			for(String actualKey : listKey)
 			{
 
