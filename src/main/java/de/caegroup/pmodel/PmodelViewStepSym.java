@@ -96,14 +96,47 @@ public class PmodelViewStepSym
 //			float initx = p.getWidth()*this.parent.einstellungen.getRootpositionratiox() + (posi * (p.getWidth()/10));
 //			float initx = (posi * (p.getWidth()/10));
 			
-			int zufall = this.generator.nextInt(20) - 10;
-			float zufall2 = zufall;
+//			int zufall = this.generator.nextInt(20) - 10;
+//			float zufall2 = zufall;
 			
-			float initx = p.einstellungen.getWidth()*this.parent.einstellungen.getRootpositionratiox() + this.parent.einstellungen.getGravx()*10*level + this.parent.einstellungen.getGravy()*zufall;
-			float inity = (p.einstellungen.getHeight()*this.parent.einstellungen.getRootpositionratioy()+ this.parent.einstellungen.getGravy()*10*level + this.parent.einstellungen.getGravx()*zufall);
-//			int initx = this.generator.nextInt(p.getWidth());
-//			int inity = this.generator.nextInt(p.getHeight());
+			float dummyGravitationX = 0;
+			float dummyGravitationY = 1;
+
+			if(this.parent.einstellungen.getGravx() != 0 || this.parent.einstellungen.getGravy() != 0)
+			{
+				dummyGravitationX = this.parent.einstellungen.getGravx();
+				dummyGravitationY = this.parent.einstellungen.getGravy();
+			}
+//			int dummyGrav
+			
+			// berechnung des vektors rootStep -> this
+			// 1) gravitationsvektor
+			float vek[] = {dummyGravitationX, dummyGravitationY, 0};
+			// 2) gravitations-einheits-vektor
+			vek = einheitsvektor(vek[0], vek[1], vek[2]);
+			// 3) vek90: berechnung eines einheitsvektors rechtwinkelig zu vek
+			float vek90[] = {-1 * vek[1], -1 * vek[0], vek[2]};
+			// 4) verlaengern auf den abstand des levels
+			vek = vektorMultiplikation(vek[0], vek[1], vek[2], level * (float)this.parent.einstellungen.getZoom());
+			// 5) falls positionsnummer ungerade, soll der vek90 umgedreht werden (nach unten)
+			if((posi % 2) != 0)
+			{
+				vek90[0] = -1 * vek90[0];
+				vek90[1] = -1 * vek90[1];
+				vek90[2] = -1 * vek90[2];
+			}
+			// 6) verlaengern des zu addierenden vektors um die position abzubilden
+			vek90 = vektorMultiplikation(vek90[0], vek90[1], vek90[2], posi * (float)this.parent.einstellungen.getZoom());
+			// 7) initiale position setzen abhaengig von rootPosition
+			vek = vektorAddition(vek[0], vek[1], vek[2], vek90[0], vek90[1], vek90[2]);
+			
+			float initx = p.einstellungen.getWidth()*this.parent.einstellungen.getRootpositionratiox() + vek[0] ;
+			float inity = (p.einstellungen.getHeight()*this.parent.einstellungen.getRootpositionratioy() + vek[1]);
 			this.setPosition(initx, inity, 0);
+			
+//			float initx = p.einstellungen.getWidth()*this.parent.einstellungen.getRootpositionratiox() + this.parent.einstellungen.getGravx()*10*level + this.parent.einstellungen.getGravy()*zufall;
+//			float inity = (p.einstellungen.getHeight()*this.parent.einstellungen.getRootpositionratioy()+ this.parent.einstellungen.getGravy()*10*level + this.parent.einstellungen.getGravx()*zufall);
+//			this.setPosition(initx, inity, 0);
 			System.err.println(this.step.getName()+" " + this.step.getRank() + " initial position: "+this.getPosition1()+", "+this.getPosition2());
 		}
 		
@@ -903,6 +936,61 @@ public class PmodelViewStepSym
 		return connectfrom;
 	}
 
+	private float vektorBetrag(float x, float y, float z)
+	{
+		return (float)java.lang.Math.sqrt( x * x + y * y + z * z);
+	}
+	
+	/**
+	 * Berechnet den Einheitsvektor eines beliebigen Vektors
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @return float[]
+	 */
+	private float[] einheitsvektor (float x, float y, float z)
+	{
+		float vektor[] = {0, 0, 0};
+		
+		float laenge = vektorBetrag(x, y ,z);
+		
+		vektor[0] = x / laenge;
+		vektor[1] = y / laenge;
+		vektor[2] = z / laenge;
+
+		return vektor;
+	}
+	
+	/**
+	 * mulipliziert einen vektor mit einem faktor
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param faktor
+	 * @return
+	 */
+	private float[] vektorMultiplikation(float x, float y, float z, float faktor)
+	{
+		float vek[] = {x * faktor, y * faktor, z * faktor};
+		return vek;
+	}
+	
+	/**
+	 * Addiert zwei Vektoren
+	 * @param v1x
+	 * @param v1y
+	 * @param v1z
+	 * @param v2x
+	 * @param v2y
+	 * @param v2z
+	 * @return
+	 */
+	private float[] vektorAddition(float v1x, float v1y, float v1z, float v2x, float v2y, float v2z)
+	{
+		float vek[] = {v1x + v2x, v1y + v2y, v1z + v2z};
+		return vek;
+	}
+	
 //	void drawFlag()
 //	{
 //		int grundgroesse = 100;
