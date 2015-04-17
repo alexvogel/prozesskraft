@@ -1825,10 +1825,13 @@ implements Serializable
 				{
 					for(Match actMatch : actInit.getMatch())
 					{
-						if(actMatch.getField().equals("key") && (!actMatch.getPattern().matches("\\$")) && key.matches(actMatch.getPattern()))
+						if(actMatch.getField().equals("key") && (!actMatch.getPattern().matches("\\$")) )
 						{
-							allStepsThatNeedSomething.add(actStep);
-							break;
+							if(key.matches(actMatch.getPattern()))
+							{
+								allStepsThatNeedSomething.add(actStep);
+								break;
+							}
 						}
 					}
 				}
@@ -1836,10 +1839,13 @@ implements Serializable
 				{
 					for(Match actMatch : actInit.getMatch())
 					{
-						if(actMatch.getField().equals("key") && (!actMatch.getPattern().matches("\\$")) && key.matches(actMatch.getPattern()))
+						if(actMatch.getField().equals("key") && (!actMatch.getPattern().matches("\\$")))
 						{
-							allStepsThatNeedSomething.add(actStep);
-							break;
+							if(key.matches(actMatch.getPattern()))
+							{
+								allStepsThatNeedSomething.add(actStep);
+								break;
+							}
 						}
 					}
 				}
