@@ -1825,7 +1825,7 @@ implements Serializable
 				{
 					for(Match actMatch : actInit.getMatch())
 					{
-						if(actMatch.getField().equals("key") && actMatch.getPattern().equals(key))
+						if(actMatch.getField().equals("key") && key.matches(actMatch.getPattern()))
 						{
 							allStepsThatNeedSomething.add(actStep);
 							break;
@@ -1836,7 +1836,7 @@ implements Serializable
 				{
 					for(Match actMatch : actInit.getMatch())
 					{
-						if(actMatch.getField().equals("key") && actMatch.getPattern().equals(key))
+						if(actMatch.getField().equals("key") && key.matches(actMatch.getPattern()))
 						{
 							allStepsThatNeedSomething.add(actStep);
 							break;
