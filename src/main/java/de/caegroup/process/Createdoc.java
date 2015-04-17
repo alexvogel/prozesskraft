@@ -671,11 +671,11 @@ public class Createdoc
 			{
 				HashMap<String,Object> row = new HashMap<String,Object>();
 				
-				// Spalte 'objectType'
+				// Spalte 'origin'
 				row.put("origin", "user/cb2");
 				
 				// Spalte 'objectType'
-				row.put("objectType", "datei");
+				row.put("objectType", "file");
 				
 				// Spalte 'minOccur'
 				row.put("minOccur", ""+actualFile.getMinoccur());
@@ -686,8 +686,20 @@ public class Createdoc
 				// Spalte 'objectKey'
 				row.put("objectKey", actualFile.getKey());
 				
+				// die steps herausfinden, die dieses file benoetigen
+				ArrayList<Step> allStepsThatNeedThisFileFromRoot = process.getStepWhichNeedFromRoot("file", actualFile.getKey());
+				String stepnameListe = "";
+				for(Step actStep : allStepsThatNeedThisFileFromRoot)
+				{
+					stepnameListe += actStep.getName() + ", ";
+				}
+				if(stepnameListe.length() >1)
+				{
+					stepnameListe = stepnameListe.substring(0, -2);
+				}
+				
 				// Spalte 'objectDescription'
-				row.put("objectDescription", actualFile.getDescription());
+				row.put("objectDescription", actualFile.getDescription() + " fuer step(s) " + stepnameListe);
 
 				// Datensatz dem report hinzufuegen
 				report.addField(row);
@@ -698,11 +710,11 @@ public class Createdoc
 			{
 				HashMap<String,Object> row = new HashMap<String,Object>();
 				
-				// Spalte 'objectType'
+				// Spalte 'origin'
 				row.put("origin", "user/cb2");
 				
 				// Spalte 'objectType'
-				row.put("objectType", "wert");
+				row.put("objectType", "variable");
 				
 				// Spalte 'minOccur'
 				row.put("minOccur", ""+actualVariable.getMinoccur());
@@ -713,8 +725,20 @@ public class Createdoc
 				// Spalte 'objectKey'
 				row.put("objectKey", actualVariable.getKey());
 				
+				// die steps herausfinden, die dieses file benoetigen
+				ArrayList<Step> allStepsThatNeedThisObjectFromRoot = process.getStepWhichNeedFromRoot("variable", actualVariable.getKey());
+				String stepnameListe = "";
+				for(Step actStep : allStepsThatNeedThisObjectFromRoot)
+				{
+					stepnameListe += actStep.getName() + ", ";
+				}
+				if(stepnameListe.length() >1)
+				{
+					stepnameListe = stepnameListe.substring(0, -2);
+				}
+				
 				// Spalte 'objectDescription'
-				row.put("objectDescription", actualVariable.getDescription());
+				row.put("objectDescription", actualVariable.getDescription() + " fuer step(s) " + stepnameListe);
 
 				// Datensatz dem report hinzufuegen
 				report.addField(row);
@@ -808,11 +832,11 @@ public class Createdoc
 	
 							HashMap<String,Object> row = new HashMap<String,Object>();
 						
-							// Spalte 'objectType'
+							// Spalte 'destination'
 							row.put("destination", "user/cb2");
 							
 							// Spalte 'objectType'
-							row.put("objectType", "datei");
+							row.put("objectType", "file");
 							
 							// Spalte 'minOccur'
 							row.put("minOccur", ""+actualFile.getMinoccur());
@@ -824,7 +848,7 @@ public class Createdoc
 							row.put("objectKey", actualFile.getKey());
 							
 							// Spalte 'objectDescription'
-							row.put("objectDescription", actualFile.getDescription());
+							row.put("objectDescription", actualFile.getDescription() + " (aus step " + actualStep.getName() + ")");
 		
 							// Datensatz dem report hinzufuegen
 							report.addField(row);
@@ -839,7 +863,7 @@ public class Createdoc
 							row.put("destination", "user/cb2");
 		
 							// Spalte 'objectType'
-							row.put("objectType", "wert");
+							row.put("objectType", "variable");
 							
 							// Spalte 'minOccur'
 							row.put("minOccur", ""+actualVariable.getMinoccur());
@@ -851,7 +875,7 @@ public class Createdoc
 							row.put("objectKey", actualVariable.getKey());
 							
 							// Spalte 'objectDescription'
-							row.put("objectDescription", actualVariable.getDescription());
+							row.put("objectDescription", actualVariable.getDescription() + " (aus step " + actualStep.getName() + ")");
 		
 							// Datensatz dem report hinzufuegen
 							report.addField(row);
@@ -1386,7 +1410,7 @@ public class Createdoc
 						}
 						
 						// Spalte 'objectType'
-						row.put("objectType", "datei");
+						row.put("objectType", "file");
 						
 						// Spalte 'minOccur'
 						row.put("minOccur", ""+actualFile.getMinoccur());
@@ -1420,7 +1444,7 @@ public class Createdoc
 						}
 						
 						// Spalte 'objectType'
-						row.put("objectType", "wert");
+						row.put("objectType", "variable");
 						
 						// Spalte 'minOccur'
 						row.put("minOccur", ""+actualVariable.getMinoccur());
