@@ -5,3 +5,4 @@ doc/process.xsd.pdf
 doc/process.xsd.xhtml
 src/main/java/de/caegroup/jaxb/*
 src/main/java/META-INF/sun-jaxb.episode
+/doc/

@@ -1807,7 +1807,48 @@ implements Serializable
 		
 		return allDependentSteps;
 	}
+	/**
+	 * gibt alle steps zurueck, die mindestens 1 init haben, welches einen match auf den key der variable enthaelt
+	 * @param type (String: variable|file)
+	 * @param key
+	 * @return
+	 */
+	public ArrayList<Step> getStepWhichNeedFromRoot(String type, String key)
+	{
+		ArrayList<Step> allStepsThatNeedSomething = new ArrayList<Step>();
+		
+		for(Step actStep : this.getStep())
+		{
+			for(Init actInit : actStep.getInit())
+			{
+				if( actInit.getFromobjecttype().equals("variable") && actInit.getFromstep().equals("root") )
+				{
+					for(Match actMatch : actInit.getMatch())
+					{
+						if(actMatch.getField().equals("key") && actMatch.getPattern().equals(key))
+						{
+							allStepsThatNeedSomething.add(actStep);
+							break;
+						}
+					}
+				}
+				else if( actInit.getFromobjecttype().equals("file") && actInit.getFromstep().equals("root") )
+				{
+					for(Match actMatch : actInit.getMatch())
+					{
+						if(actMatch.getField().equals("key") && actMatch.getPattern().equals(key))
+						{
+							allStepsThatNeedSomething.add(actStep);
+							break;
+						}
+					}
+				}
+			}
+		}
 
+		return allStepsThatNeedSomething;
+	}
+	
 	/**
 	 * liefert den step zurueck auf den der namen exakt passt
 	 * @param stepname
