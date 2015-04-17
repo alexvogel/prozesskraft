@@ -137,7 +137,8 @@ public class PmodelViewStepSym
 //			float initx = p.einstellungen.getWidth()*this.parent.einstellungen.getRootpositionratiox() + this.parent.einstellungen.getGravx()*10*level + this.parent.einstellungen.getGravy()*zufall;
 //			float inity = (p.einstellungen.getHeight()*this.parent.einstellungen.getRootpositionratioy()+ this.parent.einstellungen.getGravy()*10*level + this.parent.einstellungen.getGravx()*zufall);
 //			this.setPosition(initx, inity, 0);
-			System.err.println(this.step.getName()+" " + this.step.getRank() + " initial position: "+this.getPosition1()+", "+this.getPosition2());
+
+//			System.err.println(this.step.getName()+" " + this.step.getRank() + " initial position: "+this.getPosition1()+", "+this.getPosition2());
 		}
 		
 		this.rank = this.step.getRank();
