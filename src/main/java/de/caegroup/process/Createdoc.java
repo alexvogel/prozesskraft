@@ -691,11 +691,11 @@ public class Createdoc
 				String stepnameListe = "";
 				for(Step actStep : allStepsThatNeedThisFileFromRoot)
 				{
-					stepnameListe += actStep.getName() + ", ";
+					stepnameListe += actStep.getName() + ",";
 				}
-				if(stepnameListe.length() >1)
+				if(stepnameListe.length() >0)
 				{
-					stepnameListe = stepnameListe.substring(0, -2);
+					stepnameListe = stepnameListe.substring(0, -1);
 				}
 				
 				// Spalte 'objectDescription'
@@ -730,11 +730,11 @@ public class Createdoc
 				String stepnameListe = "";
 				for(Step actStep : allStepsThatNeedThisObjectFromRoot)
 				{
-					stepnameListe += actStep.getName() + ", ";
+					stepnameListe += actStep.getName() + ",";
 				}
-				if(stepnameListe.length() >1)
+				if(stepnameListe.length() >0)
 				{
-					stepnameListe = stepnameListe.substring(0, -2);
+					stepnameListe = stepnameListe.substring(0, -1);
 				}
 				
 				// Spalte 'objectDescription'
