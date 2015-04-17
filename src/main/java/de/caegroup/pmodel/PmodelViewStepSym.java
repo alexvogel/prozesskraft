@@ -85,8 +85,8 @@ public class PmodelViewStepSym
 			int posi = 0;
 			try
 			{
-				Integer.parseInt(rankStringArray[0]);
-				Integer.parseInt(rankStringArray[1]);
+				level = Integer.parseInt(rankStringArray[0]);
+				posi = Integer.parseInt(rankStringArray[1]);
 			}
 			catch (Exception e)
 			{
