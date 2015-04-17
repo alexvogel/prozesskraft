@@ -320,7 +320,6 @@ public class Createdoc
 		// konfigurieren der processing ansicht
 //		PmodelViewPage page = new PmodelViewPage(process);
 		PmodelViewPage page = new PmodelViewPage();
-		page.einstellungen.setProcess(process);
 		page.einstellungen.getProcess().setStepRanks();
 		page.einstellungen.setSize(100);
 		page.einstellungen.setZoom(100);
@@ -333,6 +332,7 @@ public class Createdoc
 		page.einstellungen.setGravy(0);
 		page.einstellungen.setRootpositionratiox((float)0.05);
 		page.einstellungen.setRootpositionratioy((float)0.5);
+		page.einstellungen.setProcess(process);
 	
 		createContents(page);
 
