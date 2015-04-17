@@ -691,15 +691,11 @@ public class Createdoc
 				String stepnameListe = "";
 				for(Step actStep : allStepsThatNeedThisFileFromRoot)
 				{
-					stepnameListe += actStep.getName() + ",";
-				}
-				if(stepnameListe.length() >0)
-				{
-					stepnameListe = stepnameListe.substring(0, -1);
+					stepnameListe += " " + actStep.getName();
 				}
 				
 				// Spalte 'objectDescription'
-				row.put("objectDescription", actualFile.getDescription() + " fuer step(s) " + stepnameListe);
+				row.put("objectDescription", actualFile.getDescription() + " fuer step(s)" + stepnameListe);
 
 				// Datensatz dem report hinzufuegen
 				report.addField(row);
@@ -730,15 +726,11 @@ public class Createdoc
 				String stepnameListe = "";
 				for(Step actStep : allStepsThatNeedThisObjectFromRoot)
 				{
-					stepnameListe += actStep.getName() + ",";
-				}
-				if(stepnameListe.length() >0)
-				{
-					stepnameListe = stepnameListe.substring(0, -1);
+					stepnameListe += " " + actStep.getName();
 				}
 				
 				// Spalte 'objectDescription'
-				row.put("objectDescription", actualVariable.getDescription() + " fuer step(s) " + stepnameListe);
+				row.put("objectDescription", actualVariable.getDescription() + " fuer step(s)" + stepnameListe);
 
 				// Datensatz dem report hinzufuegen
 				report.addField(row);
