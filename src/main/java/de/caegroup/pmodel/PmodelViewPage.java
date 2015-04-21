@@ -729,7 +729,7 @@ public class PmodelViewPage extends PApplet
 		damp = Math.max(damp, 0);
 		damp = Math.min(damp, 1);
 		
-		System.out.println("damp: "+damp);
+//		System.out.println("damp: "+damp);
 		return damp;
 	}
 	
