@@ -851,100 +851,103 @@ foreach my $refh_stackline (@CONFIG)
 
 
 		#-------------------
-		# --- START ACTION 'perl_cb2' --- #
+		# --- START ACTION 'altPerl' --- #
 		# es sollen bei allen perlscripten die shebang-zeile augetauscht werden
-		if ( grep { /perl_cb2/ } @now_action )
+		foreach my $actAction (@now_action)
 		{
-			#-------------------
-			# ersetzen des eingetragenen perlinterpreters durch den cb2-eigene installation
-			print "info: action 'perl_cb2' found in array (@now_action)\n";
-			print "info: add '#!/opt/cb2/perl/bin/perl' as shebang-line to all perl-scripts (except the ones except=.....).\n";
-			
-			# gibt es ausnahmen?
-			my @matched_now_action = grep { /perl_cb2/ } @now_action;
-			my @except = grep { /except/ } @matched_now_action;
-			
-			# alles entfernen bis auf die ausnahmen
-			foreach my $except(@except)
+			if ( $actAction =~ m/altPerl\((.+)\)/ )
 			{
-				$except =~ s/perl_cb2//;
-				$except =~ s/\(//;
-				$except =~ s/\)//;
-			}
-			
-			# splitten des string except=<filename>,<filename>,...)
-			my @exceptString = split("=", $except[0]);
-			my @exceptFiles = split(",", $exceptString[1]);
-			
-			find( sub { wanted2() }, "$TMPDIR");
-			
-			sub wanted2
-			{
-				my $cb2_perl_shebang = "#!/share/sdmmisc/cb2/cb2perl/bin/perl";
-				# wenn es ein directory ist, dann verwerfen
-				print "filename in wanted: ".$File::Find::name."\n";
-				if ( -d $File::Find::name )
+				my $alternativePerlShebangzeile = "#!$1";
+				#-------------------
+				# ersetzen des eingetragenen perlinterpreters durch den cb2-eigene installation
+				print "info: action 'altPerl' found in array (@now_action)\n";
+				print "info: add $alternativePerlShebangzeile as shebang-line to all perl-scripts (except the ones except=.....).\n";
+				
+				# gibt es ausnahmen?
+				my @matched_now_action = grep { /altPerl/ } @now_action;
+				my @except = grep { /except/ } @matched_now_action;
+				
+				# alles entfernen bis auf die ausnahmen
+				foreach my $except(@except)
 				{
-					print "skipping directory: ".$File::Find::name."\n";
-					next;
+					$except =~ s/altPerl\([^)]\)//;
+					$except =~ s/\(//;
+					$except =~ s/\)//;
 				}
-				if (!( -T $File::Find::name ))
+				
+				# splitten des string except=<filename>,<filename>,...)
+				my @exceptString = split("=", $except[0]);
+				my @exceptFiles = split(",", $exceptString[1]);
+				
+				find( sub { wanted2() }, "$TMPDIR");
+				
+				sub wanted2
 				{
-					print "skipping binary file: ".$File::Find::name."\n";
-					next;
-				}
-				my $exceptFound = 0;
-				foreach my $exceptFile (@exceptFiles)
-				{
-#					print "is this file the one that should be excepted?\n";
-#					print $File::Find::name ." =~ m/" . $exceptFile . "/";
-					if ($File::Find::name =~ m/$exceptFile/)
+#					my $cb2_perl_shebang = "#!/share/sdmmisc/cb2/cb2perl/bin/perl";
+					# wenn es ein directory ist, dann verwerfen
+					print "filename in wanted: ".$File::Find::name."\n";
+					if ( -d $File::Find::name )
 					{
-						print "skipping file, because it is in the exception-list to the action 'perl_cb2': ".$File::Find::name."\n";
-						$exceptFound++;
+						print "skipping directory: ".$File::Find::name."\n";
+						next;
 					}
-				}
-				if($exceptFound)
-				{
-					next;
-				}
-				
-				if (!open (FILE, "<$File::Find::name")) {die "cannot read $File::Find::name: $!\n";}
-				
-				my $zeile = 1;
-				my $ist_perl = 0;
-				while(<FILE>)
-				{
-					if ($zeile == 1)
+					if (!( -T $File::Find::name ))
 					{
-						if ($_ =~ m/#!.*perl.*/)
+						print "skipping binary file: ".$File::Find::name."\n";
+						next;
+					}
+					my $exceptFound = 0;
+					foreach my $exceptFile (@exceptFiles)
+					{
+	#					print "is this file the one that should be excepted?\n";
+	#					print $File::Find::name ." =~ m/" . $exceptFile . "/";
+						if ($File::Find::name =~ m/$exceptFile/)
 						{
-							print "found shebang that points to perl\n";
-							$ist_perl = 1;
+							print "skipping file, because it is in the exception-list to the action 'perl_cb2': ".$File::Find::name."\n";
+							$exceptFound++;
 						}
-						$zeile++;
-						last;
 					}
-				}
-				
-				if ($ist_perl)
-				{
-					print "adding new shebang that point to a special perl-installation of cb2 at bmw\n";
-					# neue shebang als erste zeile einfuegen
-					my @alles = <FILE>;
-					unshift(@alles, $cb2_perl_shebang."\n");
+					if($exceptFound)
+					{
+						next;
+					}
 					
-					# alte datei ueberschreiben
-					close FILE;
-					unlink $File::Find::name;
-					if (!open (FILE_TO_WRITE, ">$File::Find::name")) {die "cannot write $File::Find::name: $!\n";}
-					print FILE_TO_WRITE @alles;
-					close FILE_TO_WRITE;
+					if (!open (FILE, "<$File::Find::name")) {die "cannot read $File::Find::name: $!\n";}
+					
+					my $zeile = 1;
+					my $ist_perl = 0;
+					while(<FILE>)
+					{
+						if ($zeile == 1)
+						{
+							if ($_ =~ m/#!.*perl.*/)
+							{
+								print "found shebang that points to perl\n";
+								$ist_perl = 1;
+							}
+							$zeile++;
+							last;
+						}
+					}
+					
+					if ($ist_perl)
+					{
+						print "adding new shebang that point to a special perl-installation\n";
+						# neue shebang als erste zeile einfuegen
+						my @alles = <FILE>;
+						unshift(@alles, $alternativePerlShebangzeile."\n");
+						
+						# alte datei ueberschreiben
+						close FILE;
+						unlink $File::Find::name;
+						if (!open (FILE_TO_WRITE, ">$File::Find::name")) {die "cannot write $File::Find::name: $!\n";}
+						print FILE_TO_WRITE @alles;
+						close FILE_TO_WRITE;
+					}
+					
 				}
-				
 			}
 		}
-
 		#-------------------
 		# --- END ACTION 'perl_cb2' --- #
 
