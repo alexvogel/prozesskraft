@@ -108,7 +108,7 @@ public class Perlcode
 		
 		Option ooutput = OptionBuilder.withArgName("DIR")
 				.hasArg()
-				.withDescription("[mandatory; default: .] directory for generated files.")
+				.withDescription("[mandatory] directory for generated files. must not exist when calling.")
 //				.isRequired()
 				.create("output");
 		
@@ -214,8 +214,8 @@ public class Perlcode
 		----------------------------*/
 		Process p1 = new Process();
 		java.io.File outputDir = new java.io.File(commandline.getOptionValue("output"));
+		java.io.File outputDirProcessScript = new java.io.File(commandline.getOptionValue("output"));
 		java.io.File outputDirBin = new java.io.File(commandline.getOptionValue("output") + "/bin");
-		java.io.File outputDirBin2 = new java.io.File(commandline.getOptionValue("output") + "/bin2");
 		java.io.File outputDirLib = new java.io.File(commandline.getOptionValue("output") + "/lib");
 		boolean nolist = false;
 		if (commandline.hasOption("nolist"))
@@ -248,17 +248,16 @@ public class Perlcode
 		// perlcode generieren fuer einen bestimmten step
 		if (commandline.hasOption("step"))
 		{
-			outputDirBin2.mkdir();
+			outputDirBin.mkdir();
 			String stepname = commandline.getOptionValue("step");
-			writeStepAsPerlcode(p2, stepname, outputDirBin2, nolist);
+			writeStepAsPerlcode(p2, stepname, outputDirBin, nolist);
 		}
 		
 		// perlcode generieren fuer den gesamten process
 		else
 		{
 			outputDirBin.mkdir();
-			outputDirBin2.mkdir();
-			writeProcessAsPerlcode(p2, outputDirBin, outputDirBin2, nolist);
+			writeProcessAsPerlcode(p2, outputDirProcessScript, outputDirBin, nolist);
 
 			// copy all perllibs from the lib directory
 			outputDirLib.mkdir();
