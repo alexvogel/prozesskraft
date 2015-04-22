@@ -69,7 +69,7 @@ implements Serializable, Cloneable
 			content.add("use lib $directories . \"lib\";");
 			content.add("");
 			content.add("# path to configurationfile");
-			content.add("my $conf_path1 = $directories . \"/\" . $filename.\".conf\";");
+			content.add("my $conf_path1 = $installdir . \"/\" . $filename.\".conf\";");
 			content.add("my $conf_path2 = $etcdir . \"/\" . $filename.\".conf\";");
 			content.add("");
 			content.add("my $baseFilename = $filename;");
