@@ -1041,31 +1041,47 @@ implements Serializable, Cloneable
 	}
 	private void initCodeCommandresolve()
 	{
+		
 		ArrayList<String> code = new ArrayList<String>();
 		
 		code.add("sub commandResolve");
 		code.add("{");
 		code.add("	my $command = shift;");
 		code.add("	");
-		code.add("	if(stat $bin2dir . \"/\" . $command)");
-		code.add("	{");
-		code.add("		&logit(\"debug\", \"command '\" . $command . \"' found command in installation directory\");");
-		code.add("		return $bin2dir . \"/\" . $command");
-		code.add("	}");
-		code.add("");
-		code.add("	else");
-		code.add("	{");
-		code.add("		my $which = `which $command 2> /dev/null`;");
-		code.add("		my @which = split(\" \", $which);");
+		code.add("	my $commandCall = undef;");
 		code.add("	");
-		code.add("		if((($which[0]) && (stat $which[0])) || (stat $which))");
+		code.add("	foreach my $path (split(/:/, $PROCESS_PATH))");
+		code.add("	{");
+		code.add("		my $absPath = undef;");
+		code.add("		if($path =~ m/^\\//)");
 		code.add("		{");
-		code.add("			&logit(\"debug\", \"command $command found with 'which' in \\$PATH\");");
-		code.add("			return $command;");
+		code.add("			$absPath = $path;");
+		code.add("		}");
+		code.add("		else");
+		code.add("		{");
+		code.add("			$absPath = $installdir . \"/$path\";");
+		code.add("		}");
+		code.add("		");
+		code.add("		if(stat $absPath . '/' . $command)");
+		code.add("		{");
+		code.add("			&logit(\"debug\", \"command '\" . $command . \"' found command in processPath $absPath\");");
+		code.add("			$commandCall = $absPath . '/' . $command;");
 		code.add("		}");
 		code.add("	}");
-		code.add("");
-		code.add("	return undef;");
+		code.add("	");
+		code.add("	unless ($commandCall)");
+		code.add("	{");
+		code.add("		my $which = `which $command 2> /dev/null`;");
+		code.add("		my @which = split(' ', $which);");
+		code.add("		");
+		code.add("		if((($which[0]) && (stat $which[0])) || (stat $which))");
+		code.add("		{");
+		code.add("			&logit(\"debug\", \"command $command found with 'which' in shellPath\");");
+		code.add("			$commandCall = $command;;");
+		code.add("		}");
+		code.add("	}");
+		code.add("	");
+		code.add("	return $commandCall;");
 		code.add("}");
 
 		this.code_commandresolve = code;

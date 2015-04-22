@@ -36,9 +36,51 @@ implements Serializable, Cloneable
 	{
 		ArrayList<String> content = new ArrayList<String>();
 		
-		if(type.matches("bla"))
+		if(type.matches("process"))
 		{
-			
+			content.add("my $FULLCALL = join(' ', $0, @ARGV);");
+			content.add("# feststellen des installationsortes des scripts");
+			content.add("my ($filename, $directories, $suffix);");
+			content.add("BEGIN");
+			content.add("{");
+			content.add("    use File::Basename;");
+			content.add("    ($filename, $directories, $suffix) = fileparse ($0);");
+			content.add("}");
+			content.add("");
+			content.add("# autoflush");
+			content.add("$|=1;");
+			content.add("");
+			content.add("# feststellen des installationsortes des programmes");
+			content.add("my $installdir = File::Spec->rel2abs($directories);");
+			content.add("my $etcdir = $installdir . \"/etc\";");
+			content.add("my $docdir = $installdir . \"/doc\";");
+			content.add("my $bindir = $installdir . \"/bin\";");
+			content.add("");
+			content.add("# einbinden der avoge module");
+			content.add("# zuerst, falls aus installationsverzeichnis gesucht wird");
+			content.add("use lib $directories . \"../../../myperllib/master/lib\";");
+			content.add("# falls aus eclipse gesucht wird");
+			content.add("use lib $directories . \"../../myperllib/lib\";");
+			content.add("# falls aus installationsverzeichnis das eigene lib gesucht wird (wird benoetigt falls die zentrale version nicht mehr passt)");
+			content.add("use lib $directories . \"../myperllib/lib\";");
+			content.add("# falls aus installationsverzeichnis cb2-scripts");
+			content.add("use lib $directories . \"../../../../cb2common/lib/1.0\";");
+			content.add("# falls aus installationsverzeichnis gesucht wird zuerst das lokale lib verwenden");
+			content.add("use lib $directories . \"../lib\";");
+			content.add("");
+			content.add("# path to configurationfile");
+			content.add("my $conf_path1 = $directories . \"/\" . $filename.\".conf\";");
+			content.add("my $conf_path2 = $etcdir . \"/\" . $filename.\".conf\";");
+			content.add("");
+			content.add("my $baseFilename = $filename;");
+			content.add("$baseFilename =~ s/\\..+$//; # entfernen der extension");
+			content.add("my $conf_path3 = $etcdir . \"/\" . $baseFilename.\".conf\";");
+			content.add("");
+			content.add("# path to documentation");
+			content.add("my $doc_path = $docdir . \"/\" . $filename.\".pdf\";");
+			content.add("");
+			content.add("# das aufrufverzeichnis (basedir)");
+			content.add("my $_basedir = cwd();");
 		}
 		// default
 		else
@@ -56,11 +98,9 @@ implements Serializable, Cloneable
 			content.add("$|=1;");
 			content.add("");
 			content.add("# feststellen des installationsortes des programmes");
-			content.add("$directories = File::Spec->rel2abs($directories);");
-			content.add("my $installdir = $directories . \"/..\";");
-			content.add("my $etcdir = $installdir . \"/etc\";");
-			content.add("my $docdir = $installdir . \"/doc\";");
-			content.add("my $bin2dir = $installdir . \"/bin2\";");
+			content.add("my $installdir = File::Spec->rel2abs($directories);");
+			content.add("my $etcdir = $installdir . \"/../etc\";");
+			content.add("my $docdir = $installdir . \"/../doc\";");
 			content.add("my $bindir = $directories;");
 			content.add("");
 			content.add("# einbinden der avoge module");
