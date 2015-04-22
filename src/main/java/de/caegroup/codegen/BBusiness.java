@@ -94,7 +94,7 @@ implements Serializable, Cloneable
 			content.add("		# existiert und ist ein file?");
 			content.add("		if (($entry) && stat $entry)");
 			content.add("		{");
-			content.add("			push(@row, 'datei');");
+			content.add("			push(@row, 'file');");
 			content.add("    		(my $filenam, my $dirs, my $suf) = fileparse ($entry);");
 			content.add("    		");
 			content.add("    		$displayEntry = \"<a href=\\\"\" . File::Spec->abs2rel($entry) . \"\\\">$filenam</a>\";");
@@ -102,7 +102,7 @@ implements Serializable, Cloneable
 			content.add("		# existiert und ist kein file?");
 			content.add("		elsif(($entry))");
 			content.add("		{");
-			content.add("			push(@row, 'wert');");
+			content.add("			push(@row, 'variable');");
 			content.add("			$displayEntry = $entry;");
 			content.add("		}");
 			content.add("		# existiert nicht?");
