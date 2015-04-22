@@ -1102,7 +1102,7 @@ implements Serializable, Cloneable
 		code.add("							if(@line > 1)");
 		code.add("							{");
 		code.add("								$key = shift(@line);");
-		code.add("								$value = join(/=/, @line);");
+		code.add("								$value = join('=', @line);");
 		code.add("							}");
 		code.add("							elsif(@line == 1)");
 		code.add("							{");
@@ -1117,7 +1117,7 @@ implements Serializable, Cloneable
 		code.add("					}");
 		code.add("					# traegt die datei das namensmuster variable.<key>, soll jede ziele als variable interpretiert werden");
 		code.add("					# dabei ist jedoch der schluessel immer <key>");
-		code.add("					elsif(filenname =~ m/^variable\\.(.+)$/)");
+		code.add("					elsif($filename =~ m/^variable\\.(.+)$/)");
 		code.add("					{");
 		code.add("						my $key = $1;");
 		code.add("						my $value = 'toBeDetermined';");
