@@ -913,7 +913,7 @@ foreach my $refh_stackline (@CONFIG)
 					}
 					
 					if (!open (FILE, "<$File::Find::name")) {die "cannot read $File::Find::name: $!\n";}
-					
+					my $modeOldfile = (stat($File::Find::name))[2] & 07777;
 					my $zeile = 1;
 					my $ist_perl = 0;
 					while(<FILE>)
@@ -943,13 +943,14 @@ foreach my $refh_stackline (@CONFIG)
 						if (!open (FILE_TO_WRITE, ">$File::Find::name")) {die "cannot write $File::Find::name: $!\n";}
 						print FILE_TO_WRITE @alles;
 						close FILE_TO_WRITE;
+						chmod($modeOldfile, $File::Find::name);
 					}
 					
 				}
 			}
 		}
 		#-------------------
-		# --- END ACTION 'perl_cb2' --- #
+		# --- END ACTION 'altPerl' --- #
 
 		# deploy.sh script ausfuehren, wenn eines existiert
 		if ($now_deployscript)
