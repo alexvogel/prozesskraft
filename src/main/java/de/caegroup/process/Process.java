@@ -446,8 +446,6 @@ implements Serializable
 		script.business.addCode("# anlegen des files hashes (die uebergebenen optionen werden um den pfad erweitert)");
 		script.business.addCode("my %FILE;");
 		script.business.addCode("$FILE{'root'} = [];");
-		script.business.addCode("# hinzufuegen aller files aus dem etc-verzeichnis");
-		script.business.addCode("&addFilesEtc(\\%FILE);");
 		script.business.addCode("# anlegen des variable hashes");
 		script.business.addCode("my %VARIABLE;");
 		script.business.addCode("$VARIABLE{'root'} = [];");
@@ -469,6 +467,13 @@ implements Serializable
 				script.business.addCode("&importOptionToHash('variable', \\%VARIABLE, '"+ actVariable.getKey() +"');");
 			}
 		}
+		
+		script.business.addCode("# option commitfiledummy");
+		script.business.addCode("&importOptionToHash('file', \\%FILE, 'commitfiledummy');");
+		
+		script.business.addCode("# option commitvariabledummy");
+		script.business.addCode("&importOptionToHash('variable', \\%VARIABLE, 'commitvariabledummy');");
+		
 		script.business.addCode("#-------------------");
 		script.business.addCode("");
 
