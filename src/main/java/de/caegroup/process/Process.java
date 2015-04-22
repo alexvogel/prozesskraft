@@ -417,6 +417,7 @@ implements Serializable
 		// hinzufuegen des prozess meta infos
 		script.business.addCode("# metadata from the processmodel");
 		script.business.addCode("my $PROCESS_NAME = '" + this.getName() + "';");
+		script.business.addCode("my $PROCESS_VERSION = '" + this.getVersion() + "';");
 		script.business.addCode("my $PROCESS_DESCRIPTION = \"" + this.getDescription() + "\";");
 		script.business.addCode("my $PROCESS_ARCHITECTNAME = '" + this.getArchitectName() + "';");
 		script.business.addCode("my $PROCESS_ARCHITECTMAIL = '" + this.getArchitectMail() + "';");
@@ -471,6 +472,39 @@ implements Serializable
 		script.business.addCode("#-------------------");
 		script.business.addCode("");
 
+		// standard-Variablen anlegen
+		script.business.addCode("#-------------------");
+		script.business.addCode("# standardVariablen in den Hash (fuer step root) aufnehmen");
+		script.business.addCode("");
+		script.business.addCode("# _processName");
+		script.business.addCode("&logit('debug', 'initCommitStandardVariable: _processName=' . $PROCESS_NAME);");
+		script.business.addCode("push(@{$VARIABLE{'root'}}, ['_processName', $PROCESS_NAME]);");
+		script.business.addCode("");
+		script.business.addCode("# _processVersion");
+		script.business.addCode("&logit('debug', 'initCommitStandardVariable: _processVersion=' . $PROCESS_VERSION);");
+		script.business.addCode("push(@{$VARIABLE{'root'}}, ['_processVersion', $PROCESS_VERSION]);");
+		script.business.addCode("");
+		script.business.addCode("# _processDescription");
+		script.business.addCode("&logit('debug', 'initCommitStandardVariable: _processDescription=' . $PROCESS_DESCRIPTION);");
+		script.business.addCode("push(@{$VARIABLE{'root'}}, ['_processDescription', $PROCESS_DESCRIPTION]);");
+		script.business.addCode("#-------------------");
+		script.business.addCode("");
+		
+		// initCommitVariable anlegen
+		script.business.addCode("#-------------------");
+		script.business.addCode("# importieren von initCommitVariable");
+		script.business.addCode("&importInitCommitVariable(\\%VARIABLE, " + this.getInitCommitVariable() + ");");
+		script.business.addCode("#-------------------");
+		script.business.addCode("");
+		
+		// initCommitFile anlegen
+		script.business.addCode("#-------------------");
+		script.business.addCode("# importieren von initCommitFile");
+		script.business.addCode("&importInitCommitVariable(\\%FILE, " + this.getInitCommitFile() + ");");
+		script.business.addCode("#-------------------");
+		script.business.addCode("");
+		
+		// Verzeichnis anlegen, usw
 		script.business.addCode("#-------------------");
 		script.business.addCode("# ein instanzverzeichnis anlegen");
 		script.business.addCode("mkdir $instancedir;");
@@ -1262,8 +1296,7 @@ implements Serializable
 	}
 
 	/**
-	 * liefert alle directories 'initcommitdir' zurueck in Form
-	 * eines Strings "pfad:pfad:pfad" zurueck
+	 * liefert den string 'initCommitFile' zurueck in Form "pfad:pfad:pfad" zurueck
 	 * @return
 	 * einen string, der die absoluten pfade aller 'initcommitdir' enthaelt. trennzeichen ist ':'
 	 * relative pfade werden auf absolute pfade umgesetzt, wobei getInfileXml als Basisverzeichnis verwendet wird
@@ -1272,7 +1305,7 @@ implements Serializable
 	{
 		return this.initCommitFile;
 	}
-	
+
 	/**
 	 * liefert alle directories 'initcommitdir' zurueck in Form
 	 * eines ArrayList<String> zurueck
@@ -1280,7 +1313,7 @@ implements Serializable
 	 * die absoluten pfadnamen aller 'initcommitdir' 
 	 * relative pfade werden auf absolute pfade umgesetzt, wobei getInfileXml als Basisverzeichnis verwendet wird
 	 */
-	public ArrayList<String> getInitCommitFiles()
+	public ArrayList<String> getInitCommitFileDirectory()
 	{
 		ArrayList<String> newFileArray = new ArrayList<String>();
 		if ((this.initCommitFile != null) && (!(this.initCommitFile.equals(""))))
@@ -1305,23 +1338,47 @@ implements Serializable
 	}
 
 	/**
-	 * liefert alle eintrage 'initcommitfile' zurueck in Form
+	 * liefert alle eintrage 'initCommitFile' zurueck in Form
 	 * eines ArrayList<java.io.File> zurueck
 	 * @return
-	 * die directories aller 'initcommitfile'
+	 * die directories aller 'initCommitFile'
 	 * relative pfade werden auf absolute pfade umgesetzt, wobei getInfileXml als Basisverzeichnis verwendet wird
 	 */
-	public ArrayList<java.io.File> getInitCommitFiles2()
+	public ArrayList<java.io.File> getInitCommitFileDirectoryAsFile()
 	{
 		ArrayList<java.io.File> initcommitfile = new ArrayList<java.io.File>();
-		for(String actualInitCommitFile : this.getInitCommitFiles())
+		for(String actualInitCommitFile : this.getInitCommitFileDirectory())
 		{
 			java.io.File initCommitFileAsFile = new java.io.File(actualInitCommitFile);
 			log("debug", "directory as file: "+initCommitFileAsFile.getAbsolutePath());
 			initcommitfile.add(initCommitFileAsFile);
 		}
-
 		return initcommitfile;
+	}
+
+	/**
+	 * liefert alle files, die sich in den directories 'initCommitFile' befinden in der form eines ArrayList<java.io.File> zurueck
+	 * @return
+	 */
+	public ArrayList<java.io.File> getInitCommitFileAsFile()
+	{
+		ArrayList<java.io.File> allInitCommitFileAsFile = new ArrayList<java.io.File>();
+		ArrayList<java.io.File> initCommitFileDirectory = this.getInitCommitFileDirectoryAsFile();
+
+		for(java.io.File actDirectory : initCommitFileDirectory)
+		{
+			if(actDirectory.isDirectory())
+			{
+				for(java.io.File actFile : actDirectory.listFiles())
+				{
+					if(actFile.isFile())	
+					{
+						allInitCommitFileAsFile.add(actFile);
+					}
+				}
+			}
+		}
+		return allInitCommitFileAsFile;
 	}
 
 	public String getInitCommitVariable()
@@ -1330,13 +1387,12 @@ implements Serializable
 	}
 
 	/**
-	 * liefert alle files 'initcommitvarfiles' zurueck in Form
-	 * eines ArrayList<String> zurueck
+	 * liefert alle directories 'initCommitVariable' zurueck in Form eines ArrayList<String>
 	 * @return
 	 * die absoluten pfadnamen aller 'initcommitvarfiles' 
 	 * relative pfade werden auf absolute pfade umgesetzt, wobei das directory von getInfileXml als Basisverzeichnis verwendet wird
 	 */
-	public ArrayList<String> getInitCommitVariables()
+	public ArrayList<String> getInitCommitVariableDirectory()
 	{
 		ArrayList<String> newinitcommitvariables = new ArrayList<String>();
 		if ((this.initCommitVariable != null) && (!(this.initCommitVariable.equals(""))))
@@ -1361,16 +1417,14 @@ implements Serializable
 	}
 
 	/**
-	 * liefert alle pfade aus feld 'initCommitVariable' zurueck in Form
-	 * eines ArrayList<java.io.File> zurueck
+	 * liefert alle pfade aus feld 'initCommitVariable' zurueck in Form eines ArrayList<java.io.File> zurueck
 	 * @return
-	 * die files aller 'initCommitVariables'
 	 * relative pfade werden auf absolute pfade umgesetzt, wobei das directory von getInfileXml als Basisverzeichnis verwendet wird
 	 */
-	public ArrayList<java.io.File> getInitCommitVariables2()
+	public ArrayList<java.io.File> getInitCommitVariableDirectoryAsFile()
 	{
 		ArrayList<java.io.File> initcommitvariable = new ArrayList<java.io.File>();
-		for(String actualInitCommitVariable : this.getInitCommitVariables())
+		for(String actualInitCommitVariable : this.getInitCommitVariableDirectory())
 		{
 			initcommitvariable.add(new java.io.File(actualInitCommitVariable));
 		}

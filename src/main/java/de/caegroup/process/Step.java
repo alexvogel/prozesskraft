@@ -981,33 +981,20 @@ implements Serializable, Cloneable
 		variableProcessDescription.setValue(this.getParent().getDescription());
 		rootCommit.addVariable(variableProcessDescription);
 
-		//ueber alle commitFile iterieren
+		// alle initCommitFile dem rootCommit hinzufuegen
 		this.log("info", "start resolving all entries of initCommitFile and adding to the "+rootCommit.getName());
-		for(java.io.File actInitCommitFile : this.getParent().getInitCommitFiles2())
+		for(java.io.File actFile : this.getParent().getInitCommitFileAsFile())
 		{
-			if(actInitCommitFile.isDirectory())
-			{
-				log("info", "committing all files in directory: "+actInitCommitFile.getAbsolutePath());
+			log("debug", "initCommitFile: committing file "+actFile.getAbsolutePath());
 				
-				for(java.io.File actFile : actInitCommitFile.listFiles())
-				{
-					if(actFile.isDirectory())
-					{
-						log("info", "skipping because it is a directory "+actFile.getAbsolutePath());
-					}
-					else
-					{
-						File file = new File();
-						// als schluessel soll der filenamen verwendet werden
-						file.setCategory("processInput");
-						file.setKey(actFile.getName());
-						file.setGlob(actFile.getAbsolutePath());
-						// das file soll nicht in den step importiert werden
-						file.setPreservePosition(true);
-						rootCommit.addFile(file);
-					}
-				}
-			}
+			File file = new File();
+			// als schluessel soll der filenamen verwendet werden
+			file.setCategory("processInput");
+			file.setKey(actFile.getName());
+			file.setGlob(actFile.getAbsolutePath());
+			// das file soll nicht in den step importiert werden
+			file.setPreservePosition(true);
+			rootCommit.addFile(file);
 		}
 		this.log("info", "end resolving all entries of initCommitFile and adding to the "+rootCommit.getName());
 
@@ -1015,7 +1002,7 @@ implements Serializable, Cloneable
 		this.log("info", "resolving all entries of initCommitVariable and adding to the "+rootCommit.getName());
 
 		// alle CommitVariable committen (darf ein directory-pfad oder ein filepfad oder ein glob sein
-		for(java.io.File actCommitVariable : this.getParent().getInitCommitVariables2())
+		for(java.io.File actCommitVariable : this.getParent().getInitCommitVariableDirectoryAsFile())
 		{
 			Variable variable = new Variable();
 
