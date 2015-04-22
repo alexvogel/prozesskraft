@@ -493,14 +493,14 @@ implements Serializable
 		// initCommitVariable anlegen
 		script.business.addCode("#-------------------");
 		script.business.addCode("# importieren von initCommitVariable");
-		script.business.addCode("&importInitCommitVariable(\\%VARIABLE, " + this.getInitCommitVariable() + ");");
+		script.business.addCode("&importInitCommitVariable(\\%VARIABLE, '" + this.getInitCommitVariable() + "');");
 		script.business.addCode("#-------------------");
 		script.business.addCode("");
 		
 		// initCommitFile anlegen
 		script.business.addCode("#-------------------");
 		script.business.addCode("# importieren von initCommitFile");
-		script.business.addCode("&importInitCommitVariable(\\%FILE, " + this.getInitCommitFile() + ");");
+		script.business.addCode("&importInitCommitVariable(\\%FILE, '" + this.getInitCommitFile() + "');");
 		script.business.addCode("#-------------------");
 		script.business.addCode("");
 		
