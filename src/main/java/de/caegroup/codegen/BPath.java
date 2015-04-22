@@ -66,7 +66,7 @@ implements Serializable, Cloneable
 			content.add("# falls aus installationsverzeichnis cb2-scripts");
 			content.add("use lib $directories . \"../../../../cb2common/lib/1.0\";");
 			content.add("# falls aus installationsverzeichnis gesucht wird zuerst das lokale lib verwenden");
-			content.add("use lib $directories . \"../lib\";");
+			content.add("use lib $directories . \"lib\";");
 			content.add("");
 			content.add("# path to configurationfile");
 			content.add("my $conf_path1 = $directories . \"/\" . $filename.\".conf\";");
