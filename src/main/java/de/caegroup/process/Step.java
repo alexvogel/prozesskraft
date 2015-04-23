@@ -614,8 +614,20 @@ implements Serializable, Cloneable
 					{
 						if(actMatch.getField().equals("value"))
 						{
+							// wenn als value konkrete alternativen moeglich sind (mit dem zeichen '|'), sollen diese uebernommen werden fuer string1
+							if(actMatch.getPattern().matches("^\\^?.*|.*\\$?$"))
+							{
+								text1 = actMatch.getPattern();
+								definition = "string";
+
+								// und als check aufnehmen
+								if(check.equals(""))
+								{
+									check = actMatch.getPattern();
+								}
+							}
 							// wenn "^\d+$", dann sollen die werte offensichtlich integer sein
-							if(actMatch.getPattern().matches("^\\^\\[-\\+\\]\\?\\\\d\\+?\\$$"))
+							else if(actMatch.getPattern().matches("^\\^\\[-\\+\\]\\?\\\\d\\+?\\$$"))
 							{
 								text1 = "=INTEGER";
 								definition = "integer";
