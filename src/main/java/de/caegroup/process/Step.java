@@ -615,7 +615,7 @@ implements Serializable, Cloneable
 						if(actMatch.getField().equals("value"))
 						{
 							// wenn als value konkrete alternativen moeglich sind (mit dem zeichen '|'), sollen diese uebernommen werden fuer string1
-							if(actMatch.getPattern().matches("^\\^?.*|.*\\$?$"))
+							if(actMatch.getPattern().matches("^[\\w|]$"))
 							{
 								text1 = actMatch.getPattern();
 								definition = "string";
