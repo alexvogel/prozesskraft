@@ -614,20 +614,20 @@ implements Serializable, Cloneable
 					{
 						if(actMatch.getField().equals("value"))
 						{
-							// wenn als value konkrete alternativen moeglich sind (mit dem zeichen '|'), sollen diese uebernommen werden fuer string1
-							if(actMatch.getPattern().matches("^[\\w|]+$"))
-							{
-								text1 = actMatch.getPattern();
-								definition = "string";
-
-								// und als check aufnehmen
-								if(check.equals(""))
-								{
-									check = actMatch.getPattern();
-								}
-							}
+//							// wenn als value konkrete alternativen moeglich sind (mit dem zeichen '|'), sollen diese uebernommen werden fuer string1
+//							if(actMatch.getPattern().matches("^[\\w|]+$"))
+//							{
+//								text1 = actMatch.getPattern();
+//								definition = "string";
+//
+//								// und als check aufnehmen
+//								if(check.equals(""))
+//								{
+//									check = actMatch.getPattern();
+//								}
+//							}
 							// wenn "^\d+$", dann sollen die werte offensichtlich integer sein
-							else if(actMatch.getPattern().matches("^\\^\\[-\\+\\]\\?\\\\d\\+?\\$$"))
+							if(actMatch.getPattern().matches("^\\^\\[-\\+\\]\\?\\\\d\\+?\\$$"))
 							{
 								text1 = "=INTEGER";
 								definition = "integer";
@@ -666,7 +666,7 @@ implements Serializable, Cloneable
 							}
 							
 							// wenn ^[^\\+*?{}]+$  Muster ohne quantifier oder metazeichen gefunden wird bsplw. bei "node|element", soll das direkt als text1 verwendet werden
-							else if(actMatch.getPattern().matches("^\\^.*[^\\\\+*?{}].*\\$$"))
+							else if(actMatch.getPattern().matches("^\\^?.*[^\\\\+*?{}].*\\$?$"))
 							{
 								text1 = "=" + actMatch.getPattern().replace("^", "").replace("$", "");
 								definition = "string";
