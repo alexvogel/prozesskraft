@@ -107,7 +107,7 @@ implements Serializable, Cloneable
 			content.add("$helptext .= \"Author : alexander.vogel\\@caegroup.de\\n\";");
 			content.add("$helptext .= \"Date   : $date\\n\";");
 			content.add("");
-			content.add("if(&getOption('debug'))");
+			content.add("if(&getOption('d'))");
 			content.add("{");
 			content.add("	$helptext .= \"Version: $version\\n\";");
 			content.add("}");
