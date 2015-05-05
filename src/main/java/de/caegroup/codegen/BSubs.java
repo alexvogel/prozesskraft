@@ -315,7 +315,7 @@ implements Serializable, Cloneable
 		code.add("	}");
 		code.add("	");
 		code.add("# wenn loglevel == debug, ABER --debug nicht gesetzt wurde, soll nicht geloggt werden");
-		code.add("		if ( ($level eq \"debug\") &! getOption(\"debug\") )");
+		code.add("		if ( ($level eq \"debug\") &! (getOption(\"debug\") ||  getOption(\"d\"))");
 		code.add("		{");
 		code.add("			return;");
 		code.add("		}");

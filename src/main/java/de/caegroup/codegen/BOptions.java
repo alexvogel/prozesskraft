@@ -49,7 +49,7 @@ implements Serializable, Cloneable
 			content.add("# 1 < reihenfolge <= 15");
 			content.add("# definition der standardoptions");
 			content.add("				'help' => {'reihenfolge' => '13', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'1', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'prints this helptext'},");
-			content.add("				'debug'  => {'reihenfolge' => '14', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'1', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
+			content.add("				'd'  => {'reihenfolge' => '14', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'1', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
 			content.add("				'commitfiledummy'  => {'reihenfolge' => '15', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'1', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => 'KEY=FILE; FILE', 'text2' => 'this parameter allows you to commit files into the process, which are not expected by the interface. use this parameter only in process development e.g. to accelerate tests by committing result files'},");
 			content.add("				'commitvariabledummy'  => {'reihenfolge' => '16', 'minoccur' => '0', 'maxoccur' => '99', 'definition' => 'string', 'check'=>'1', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => 'KEY=VALUE; VALUE', 'text2' => 'this parameter allows you to commit variables into the process, which are not expected by the interface. use this parameter only in process development e.g. to accelerate tests by committing result variables'},");
 			
@@ -292,7 +292,7 @@ implements Serializable, Cloneable
 			content.add("# 1 < reihenfolge <= 15");
 			content.add("# definition der standardoptions");
 			content.add("				'help' => {'reihenfolge' => '13', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'1', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'prints this helptext'},");
-			content.add("				'debug'  => {'reihenfolge' => '14', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'1', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
+			content.add("				'd'  => {'reihenfolge' => '14', 'minoccur' => '0', 'maxoccur' => '1', 'definition' => 'flag', 'check'=>'1', 'default' => '', 'allowIntegratedListIfMultiOption' => 'false', 'textfordefault' => '', 'text1' => '', 'text2' => 'will also log debug-statements.'},");
 			
 			content.add("");
 			content.add("# definition der speziellen options");
