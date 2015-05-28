@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.Scanner;
 
 import javax.xml.bind.JAXBException;
 
@@ -120,6 +121,12 @@ public class Fingerprint
 //				.isRequired()
 				.create("md5");
 		
+		Option oignore = OptionBuilder.withArgName("FILE")
+				.hasArg()
+				.withDescription("[optional] file with path-patterns (one per line) that should be ignored when creating the fingerprint")
+//				.isRequired()
+				.create("ignore");
+		
 		Option ooutput = OptionBuilder.withArgName("FILE")
 				.hasArg()
 				.withDescription("[mandatory; default: <path>/fingerprint.xml] fingerprint file")
@@ -138,6 +145,7 @@ public class Fingerprint
 		options.addOption( opath );
 		options.addOption( osizetol );
 		options.addOption( omd5 );
+		options.addOption( oignore );
 		options.addOption( ooutput );
 		options.addOption( of );
 		
@@ -185,6 +193,8 @@ public class Fingerprint
 		boolean md5 = false;
 		Float sizetolFloat = null;
 		String output = "";
+		java.io.File ignore = null;
+		
 		if ( !( commandline.hasOption("path")) )
 		{
 			System.err.println("setting default for -path=.");
@@ -232,6 +242,15 @@ public class Fingerprint
 			System.exit(1);
 		}
 
+		if (  commandline.hasOption("ignore") )
+		{
+			ignore = new java.io.File(commandline.getOptionValue("ignore"));
+			if(! ignore.exists())
+			{
+				System.err.println("warn: ignore file does not exist: "+ignore.getCanonicalPath());
+			}
+		}
+		
 		if ( !( commandline.hasOption("output")) )
 		{
 			System.err.println("setting default for -output="+path+"/fingerprint.xml");
@@ -294,9 +313,25 @@ public class Fingerprint
 		dir.setBasepath(path);
 		dir.setOutfilexml(output);
 
+		// ignore file in ein Array lesen
+		Scanner sc = new Scanner(ignore);
+		ArrayList<String> ignoreLines = new ArrayList<String>();
+		while(sc.hasNextLine())
+		{
+			ignoreLines.add(sc.nextLine());
+		}
+		sc.close();
+		
+		// debug
+		System.out.println("ignorefile content:");
+		for(String actLine : ignoreLines)
+		{
+			System.out.println("line: "+actLine);
+		}
+		
 		try
 		{
-			dir.genFingerprint(sizetolFloat, md5);
+			dir.genFingerprint(sizetolFloat, md5, ignoreLines);
 		}
 		catch (NullPointerException e)
 		{
