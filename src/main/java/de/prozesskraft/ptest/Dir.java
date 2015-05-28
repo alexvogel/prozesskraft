@@ -71,7 +71,7 @@ public class Dir {
 	private ArrayList<Dir> directoryPath = new ArrayList<Dir>();
 
 	float sizeToleranceDefault = 0F;
-	String determineMd5 = "no";
+	String respectMd5Scope = "no";
 	
 	public Dir()
 	{
@@ -250,6 +250,9 @@ public class Dir {
 			csvLine += ";" + "o";
 		}
 
+		// letzte spalte ist md5 (keine relevanz bei directory)
+		csvLine += ";" + "-";
+		
 		if(scope.equals("error") && error)
 		{
 			return csvLine;
@@ -265,7 +268,7 @@ public class Dir {
 
 	private String getCsvHeader()
 	{
-		return ("origin;id;type;path;result;pathMatched;sizeMatched;occuranceMatched;noFuzzyReference;note");
+		return ("origin;id;type;path;result;pathMatched;sizeMatched;occuranceMatched;noFuzzyReference;md5Matched;note");
 	}
 
 	/**
@@ -363,6 +366,9 @@ public class Dir {
 			{
 				csvLine += ";" + "o";
 			}
+
+			// letzte spalte ist md5 => keine relevanz bei directory
+			csvLine += ";" + "-";
 
 			String note = "";
 
@@ -676,11 +682,11 @@ public class Dir {
 	 * @throws NullPointerException
 	 * @throws IOException
 	 */
-	public void genFingerprint(float sizeToleranceDef, final String determineMd5) throws NullPointerException, IOException
+	public void genFingerprint(float sizeToleranceDef, final String respectMd5Scope) throws NullPointerException, IOException
 	{
 		directoryPath.clear();
 		this.sizeToleranceDefault = sizeToleranceDef;
-		this.determineMd5 = determineMd5;
+		this.respectMd5Scope = respectMd5Scope;
 		
 		if(basepath == null)
 		{
@@ -757,7 +763,7 @@ public class Dir {
 				file.setId(runningId++);
 				
 				// md5 feststellen
-				if(determineMd5.equals("all"))
+				if(respectMd5Scope.equals("all"))
 				{
 					try {
 						file.setMd5(Md5Checksum.getMd5Checksum(pathString));

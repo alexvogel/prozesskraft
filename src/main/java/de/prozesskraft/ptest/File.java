@@ -24,6 +24,9 @@ public class File {
 
 	public ArrayList<Log> log = new ArrayList<Log>();
 
+	private boolean respectMd5 = false;
+	
+	private boolean flagMd5Matched = false;
 	private boolean flagPathMatched = false;
 	private boolean flagSizeMatched = false;
 	private boolean flagOccuranceMatched = false;
@@ -104,6 +107,15 @@ public class File {
 		}
 
 		if(!this.isFlagFuzzyReference())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
+
+		if(!this.isFlagMd5Matched())
 		{
 			csvLine += ";" + "x";
 		}
@@ -199,6 +211,15 @@ public class File {
 			csvLine += ";" + "o";
 		}
 		
+		if(!this.isFlagMd5Matched())
+		{
+			csvLine += ";" + "x";
+		}
+		else
+		{
+			csvLine += ";" + "o";
+		}
+		
 		// rueckgabe in abhaengigkeit von scope und error
 		if(scope.equals("error") && error)
 		{
@@ -218,9 +239,21 @@ public class File {
 	 */
 	public boolean isMatchSuccessfull()
 	{
-		if(this.flagPathMatched && this.flagSizeMatched && this.flagOccuranceMatched && !this.flagFuzzyReference)
+		// wenn ueber md5 gematched werden soll
+		if(this.respectMd5)
 		{
-			return true;
+			if(this.flagMd5Matched)
+			{
+				return true;
+			}
+		}
+		// sonst ueber alle anderen angaben matchen
+		else
+		{
+			if(this.flagPathMatched && this.flagSizeMatched && this.flagOccuranceMatched && !this.flagFuzzyReference)	
+			{
+				return true;
+			}
 		}
 		return false;
 	}
@@ -308,13 +341,24 @@ public class File {
 				// wenn this nicht schon als matchend erkannt wurde, soll matchueberpruefung stattfinden
 				if((!actFile.getMatchedFile().contains(this)))
 				{
-				// den pfad vom examinee gegen den template-pfad matchen
+					// wenn beide files einen md5-eintarg enthalten, dann den vergleich darueber fuehren
+					if((actFile.getMd5() != null) && (this.getMd5() != null))
+					{
+						if(actFile.getMd5().matches(this.getMd5()))
+						{
+							actFile.setFlagMd5Matched(true);
+							actFile.log.add(new Log("debug", "(exam) file ("+actFile.getPathWithoutQuotes()+") md5 matched with (id="+this.getId()+", path="+this.getPathWithoutQuotes()+")"));
+							this.setFlagMd5Matched(true);
+							this.log.add(new Log("debug", "(ref) file ("+this.getPathWithoutQuotes()+") md5 matched with (id="+actFile.getId()+", path="+actFile.getPathWithoutQuotes()+")"));
+						}
+					}
+					// den pfad vom examinee gegen den template-pfad matchen
 					if(actFile.getPathWithoutQuotes().matches("^"+this.getPath()+"$"))
 					{
 						actFile.setFlagPathMatched(true);
-						actFile.log.add(new Log("debug", "(exam) file path ("+actFile.getPathWithoutQuotes()+") matched with (id="+this.getId()+", path="+this.getPathWithoutQuotes()+")"));
+						actFile.log.add(new Log("debug", "(exam) file ("+actFile.getPathWithoutQuotes()+") path matched with (id="+this.getId()+", path="+this.getPathWithoutQuotes()+")"));
 						this.setFlagPathMatched(true);
-						this.log.add(new Log("debug", "(ref) file path ("+this.getPathWithoutQuotes()+") matched with (id="+actFile.getId()+", path="+actFile.getPathWithoutQuotes()+")"));
+						this.log.add(new Log("debug", "(ref) file ("+this.getPathWithoutQuotes()+") path matched with (id="+actFile.getId()+", path="+actFile.getPathWithoutQuotes()+")"));
 		
 						// die groesse vergleichen
 						if(this.doesSizeMatch(actFile))
@@ -546,6 +590,20 @@ public class File {
 	 */
 	public void setMatchedFile(ArrayList<File> matchedFile) {
 		this.matchedFile = matchedFile;
+	}
+
+	/**
+	 * @return the flagMd5Matched
+	 */
+	public boolean isFlagMd5Matched() {
+		return flagMd5Matched;
+	}
+
+	/**
+	 * @param flagMd5Matched the flagMd5Matched to set
+	 */
+	public void setFlagMd5Matched(boolean flagMd5Matched) {
+		this.flagMd5Matched = flagMd5Matched;
 	}
 
 	/**
