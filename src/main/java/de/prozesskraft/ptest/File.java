@@ -354,6 +354,12 @@ public class File {
 							this.setFlagMd5Matched(true);
 							this.log.add(new Log("debug", "(ref) file ("+this.getPathWithoutQuotes()+") md5 matched with (id="+actFile.getId()+", path="+actFile.getPathWithoutQuotes()+")"));
 						}
+						else
+						{
+							System.out.println("nicht beide vergleichspartner haben eine md5");
+							System.out.println("exam: MD5: " + actFile.getMd5().toString());
+							System.out.println("ref: MD5: " + this.getMd5().toString());
+						}
 					}
 					// den pfad vom examinee gegen den template-pfad matchen
 					if(actFile.getPathWithoutQuotes().matches("^"+this.getPath()+"$"))
