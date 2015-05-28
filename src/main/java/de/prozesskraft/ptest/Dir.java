@@ -758,8 +758,8 @@ public class Dir {
 				FileSystem fileSystem = FileSystems.getDefault();
 				for(String actPattern : ignoreLines)
 				{
-					System.out.println("debug: globbing for "+"glob:" + basepath + "/" + actPattern);
-					PathMatcher pathMatcher = fileSystem.getPathMatcher("glob:" + basepath + "/" + actPattern);
+					System.out.println("debug: globbing for "+"glob:" + basepath.toFile().getCanonicalPath() + "/" + actPattern);
+					PathMatcher pathMatcher = fileSystem.getPathMatcher("glob:" + basepath.toFile().getCanonicalPath() + "/" + actPattern);
 					// Man muß zum Vergleich den reinen Dateinamen nehmen ohne Pfad !!!
 //					if (pathMatcher.matches(walkingFile.getFileName()))
 					System.out.println("debug1: vergleichen: "+pathMatcher.toString());
