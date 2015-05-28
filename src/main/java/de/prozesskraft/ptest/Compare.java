@@ -268,7 +268,8 @@ public class Compare
 		if(refPath.exists() && refPath.isDirectory())
 		{
 			refDir.setBasepath(refPath.getCanonicalPath());
-			refDir.genFingerprint(0f, md5, new ArrayList<String>());
+			refDir.genFingerprint(0f, true, new ArrayList<String>());
+			refDir.setRespectMd5Recursive(md5);
 			System.err.println("-ref is a directory");
 		}
 		// wenn es ein fingerprint ist, muss er eingelesen werden
@@ -293,7 +294,8 @@ public class Compare
 		if(examPath.exists() && examPath.isDirectory())
 		{
 			examDir.setBasepath(examPath.getCanonicalPath());
-			examDir.genFingerprint(0f, md5, new ArrayList<String>());
+			examDir.genFingerprint(0f, true, new ArrayList<String>());
+			examDir.setRespectMd5Recursive(md5);
 			System.err.println("-exam is a directory");
 		}
 		// wenn es ein fingerprint ist, muss er eingelesen werden
