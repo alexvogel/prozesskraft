@@ -219,7 +219,7 @@ public class Fingerprint
 		{
 			md5 = commandline.getOptionValue("md5");
 			
-			if(!(md5.equals("no")) || !(md5.equals("all")) )
+			if(!(md5.equals("no")) && !(md5.equals("all")) )
 			{
 				System.err.println("use only values no|all for -md5");
 				System.exit(1);
