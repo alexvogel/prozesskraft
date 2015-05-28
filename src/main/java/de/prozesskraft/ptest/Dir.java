@@ -712,6 +712,20 @@ public class Dir {
 			// called before a directory visit
 			public FileVisitResult preVisitDirectory(Path walkingDir, BasicFileAttributes attrs) throws IOException
 			{
+				// alle ignore-eintraege durchgehen und feststellen ob das aktuell besuchte file ignoriert werden soll
+				FileSystem fileSystem = FileSystems.getDefault();
+				for(String actPattern : ignoreLines)
+				{
+					System.out.println("debug: globbing for "+"glob:" + basepath.toFile().getCanonicalPath() + "/" + actPattern);
+					PathMatcher pathMatcher = fileSystem.getPathMatcher("glob:" + basepath.toFile().getCanonicalPath() + "/" + actPattern);
+					System.out.println("debug1: vergleichen: "+pathMatcher.toString());
+					System.out.println("debug2: vergleichen: "+walkingDir.getFileName());
+					if (pathMatcher.matches(walkingDir.toFile().getCanonicalFile().toPath()))
+					{
+						System.out.println("debug: ignoring directory "+walkingDir.getFileName());
+						return FileVisitResult.CONTINUE;
+					}
+				}
 				
 				// relativen Pfad (zur Basis basepath) feststellen
 //				String pathString = walkingDir.getParent() + "/"+walkingDir.getFileName();
@@ -760,11 +774,8 @@ public class Dir {
 				{
 					System.out.println("debug: globbing for "+"glob:" + basepath.toFile().getCanonicalPath() + "/" + actPattern);
 					PathMatcher pathMatcher = fileSystem.getPathMatcher("glob:" + basepath.toFile().getCanonicalPath() + "/" + actPattern);
-					// Man muß zum Vergleich den reinen Dateinamen nehmen ohne Pfad !!!
-//					if (pathMatcher.matches(walkingFile.getFileName()))
 					System.out.println("debug1: vergleichen: "+pathMatcher.toString());
 					System.out.println("debug2: vergleichen: "+walkingFile.getFileName());
-//					if (pathMatcher.matches(walkingFile.getFileName()))
 					if (pathMatcher.matches(walkingFile.toFile().getCanonicalFile().toPath()))
 					{
 						System.out.println("debug: ignoring file "+walkingFile.getFileName());
