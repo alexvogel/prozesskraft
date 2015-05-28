@@ -110,6 +110,7 @@ my $result = GetOptions(
 my @conf_muss_inhalt = (
 							"example_stack",
 							"commondriver",
+							"callFingerprint",
 							);
 # festlegen des beulen konfigurationsfiles
 # die werte dieser konfigurationsparameter muessen als files auffindbar sein
@@ -977,6 +978,7 @@ foreach my $refh_stackline (@CONFIG)
 			}
 		}
 		
+		
 #		print "info: emptying target directory if already exists ".$now_targetbulkappbranch."\n";
 #		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch/*\"\n"; 
 #		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch/*\"";
@@ -996,9 +998,18 @@ foreach my $refh_stackline (@CONFIG)
 		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"touch $now_targetbulkappbranch\"\n"; 
 		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"touch $now_targetbulkappbranch\"";
 
+		
+
 		#-----------------
 		# das quell-verzeichnis nach $target syncen und dabei die zu ignorierenden files beachten (deployignore.txt)
 		my $deployignore = "deployignore.txt";
+
+		# erstellen eines fingerprints ueber die daten
+		print "info: generating a fingerprint with ptest ".$now_targetbulkappbranch."\n";
+		print $CONF{"callFingerprint"} . " -path $TMPDIR -ignore $deployignore\n";
+		system($CONF{"callFingerprint"} . " -path $TMPDIR -ignore $deployignore");
+
+		# verarbeiten der ignore eintraege zu einem rsync aufruf...
 		my @deploy_ignore;
 		print "info: installing $TMPDIR to $now_targetbulkappbranch (excluding '.git', '.project' and '*deploy*' and everything from '$deployignore')\n";
 		if (stat $deployignore)
