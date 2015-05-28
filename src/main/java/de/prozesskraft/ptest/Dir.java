@@ -71,7 +71,7 @@ public class Dir {
 	private ArrayList<Dir> directoryPath = new ArrayList<Dir>();
 
 	float sizeToleranceDefault = 0F;
-	String respectMd5Scope = "no";
+	String respectMd5 = "no";
 	
 	public Dir()
 	{
@@ -686,7 +686,7 @@ public class Dir {
 	{
 		directoryPath.clear();
 		this.sizeToleranceDefault = sizeToleranceDef;
-		this.respectMd5Scope = respectMd5Scope;
+		this.respectMd5 = respectMd5Scope;
 		
 		if(basepath == null)
 		{
