@@ -712,6 +712,8 @@ public class Dir {
 			// called before a directory visit
 			public FileVisitResult preVisitDirectory(Path walkingDir, BasicFileAttributes attrs) throws IOException
 			{
+				boolean diesesVerzeichnisIgnorieren = false;
+				
 				// alle ignore-eintraege durchgehen und feststellen ob das aktuell besuchte file ignoriert werden soll
 				FileSystem fileSystem = FileSystems.getDefault();
 				for(String actPattern : ignoreLines)
@@ -723,44 +725,46 @@ public class Dir {
 					if (pathMatcher.matches(walkingDir.toFile().getCanonicalFile().toPath()))
 					{
 						System.out.println("debug: ignoring directory "+walkingDir.getFileName());
-						return FileVisitResult.CONTINUE;
+						diesesVerzeichnisIgnorieren = true;;
 					}
 				}
-				
-				// relativen Pfad (zur Basis basepath) feststellen
-//				String pathString = walkingDir.getParent() + "/"+walkingDir.getFileName();
-				String relPathString = getBasepath().relativize(walkingDir).toString();
 
-
-				// wenn der relative path ein leerer string ist, ist this das directory
-				if(relPathString.equals(""))
+				if(! diesesVerzeichnisIgnorieren)
 				{
-//					System.out.println("THIS DIR IS ROOT: "+walkingDir.getFileName());
-					directoryPath.add(thisObj);
+					// relativen Pfad (zur Basis basepath) feststellen
+	//				String pathString = walkingDir.getParent() + "/"+walkingDir.getFileName();
+					String relPathString = getBasepath().relativize(walkingDir).toString();
+	
+					// wenn der relative path ein leerer string ist, ist this das directory
+					if(relPathString.equals(""))
+					{
+	//					System.out.println("THIS DIR IS ROOT: "+walkingDir.getFileName());
+						directoryPath.add(thisObj);
+					}
+					else
+					{
+						// und das gleich zu betretende verzeichnis der besuchten directories hinzufuegen
+						Dir newDir = new Dir();
+						directoryPath.get(directoryPath.size()-1).addDir(newDir);	// das neue verz. dem letzten verzeichnis hinzufuegen
+						directoryPath.add(newDir); // das neue verzeichnis im path ablegen
+					}
+	
+	//				System.err.println("before visit directory (abs): "+pathString);
+	//				System.err.println("before visit directory (rel): "+relPathString);
+	
+					// die Daten setzen
+					directoryPath.get(directoryPath.size()-1).setId(runningId++);
+	
+					// der pfad wird bei vergleichen als pattern verwendet / bzw. kann vom user manuel zu einer pattern veraendert werden
+					// deshalb sollen besondere zeichen beim erstellen eines fingerprints escaped werden
+	//				String relPathStringWithEscapedMetaCaracters = relPathString.replaceAll("([\\\\\\.\\[\\{\\(\\*\\+\\?\\^\\$\\|])", "\\\\$1");
+	
+					directoryPath.get(directoryPath.size()-1).setPath(Pattern.quote(relPathString));
+					directoryPath.get(directoryPath.size()-1).setMinOccur(1);
+					directoryPath.get(directoryPath.size()-1).setMaxOccur(1);
+	
+	//				System.out.println(dir.toString());
 				}
-				else
-				{
-					// und das gleich zu betretende verzeichnis der besuchten directories hinzufuegen
-					Dir newDir = new Dir();
-					directoryPath.get(directoryPath.size()-1).addDir(newDir);	// das neue verz. dem letzten verzeichnis hinzufuegen
-					directoryPath.add(newDir); // das neue verzeichnis im path ablegen
-				}
-
-//				System.err.println("before visit directory (abs): "+pathString);
-//				System.err.println("before visit directory (rel): "+relPathString);
-
-				// die Daten setzen
-				directoryPath.get(directoryPath.size()-1).setId(runningId++);
-
-				// der pfad wird bei vergleichen als pattern verwendet / bzw. kann vom user manuel zu einer pattern veraendert werden
-				// deshalb sollen besondere zeichen beim erstellen eines fingerprints escaped werden
-//				String relPathStringWithEscapedMetaCaracters = relPathString.replaceAll("([\\\\\\.\\[\\{\\(\\*\\+\\?\\^\\$\\|])", "\\\\$1");
-
-				directoryPath.get(directoryPath.size()-1).setPath(Pattern.quote(relPathString));
-				directoryPath.get(directoryPath.size()-1).setMinOccur(1);
-				directoryPath.get(directoryPath.size()-1).setMaxOccur(1);
-
-//				System.out.println(dir.toString());
 				
 				return FileVisitResult.CONTINUE;
 			}
