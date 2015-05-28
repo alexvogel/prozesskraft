@@ -242,7 +242,7 @@ public class File {
 		// wenn ueber md5 gematched werden soll
 		if(this.respectMd5)
 		{
-			System.out.println("file respectMD5: "+this.getPath());
+			System.out.println(this.actRole+" file respectMD5: "+this.getPath());
 			if(this.flagMd5Matched)
 			{
 				return true;
