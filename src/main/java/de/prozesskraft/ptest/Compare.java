@@ -126,6 +126,12 @@ public class Compare
 //				.isRequired()
 				.create("summary");
 		
+		Option omd5 = OptionBuilder.withArgName("no|yes")
+				.hasArg()
+				.withDescription("[optional; default: yes] to ignore md5 information in comparison use -md5=no")
+//				.isRequired()
+				.create("md5");
+		
 		/*----------------------------
 		  create options object
 		----------------------------*/
@@ -137,6 +143,7 @@ public class Compare
 		options.addOption( oexam );
 		options.addOption( oresult );
 		options.addOption( osummary );
+		options.addOption( omd5 );
 		
 		/*----------------------------
 		  create the parser
@@ -179,6 +186,8 @@ public class Compare
 		----------------------------*/
 		boolean error = false;
 		String result = "";
+		String md5 = "";
+		
 		if ( !( commandline.hasOption("ref")) )
 		{
 			System.err.println("option -ref is mandatory");
@@ -200,6 +209,23 @@ public class Compare
 			System.err.println("setting default: -result=result.txt");
 			result = "result.txt";
 		}
+
+		if ( !( commandline.hasOption("md5")) )
+		{
+			System.err.println("setting default for -md5=yes");
+			md5 = "yes";
+		}
+		else
+		{
+			md5 = commandline.getOptionValue("md5");
+			
+			if(!(md5.equals("no")) && !(md5.equals("yes")) )
+			{
+				System.err.println("use only values no|yes for -md5");
+				System.exit(1);
+			}
+		}
+
 
 		/*----------------------------
 		  die lizenz ueberpruefen und ggf abbrechen
@@ -238,7 +264,7 @@ public class Compare
 		if(refPath.exists() && refPath.isDirectory())
 		{
 			refDir.setBasepath(refPath.getCanonicalPath());
-			refDir.genFingerprint(0f, "all");
+			refDir.genFingerprint(0f, md5);
 			System.err.println("-ref is a directory");
 		}
 		// wenn es ein fingerprint ist, muss er eingelesen werden
@@ -263,7 +289,7 @@ public class Compare
 		if(examPath.exists() && examPath.isDirectory())
 		{
 			examDir.setBasepath(examPath.getCanonicalPath());
-			examDir.genFingerprint(0f, "all");
+			examDir.genFingerprint(0f, md5);
 			System.err.println("-exam is a directory");
 		}
 		// wenn es ein fingerprint ist, muss er eingelesen werden
