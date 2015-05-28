@@ -238,7 +238,7 @@ public class Compare
 		if(refPath.exists() && refPath.isDirectory())
 		{
 			refDir.setBasepath(refPath.getCanonicalPath());
-			refDir.genFingerprint(0f);
+			refDir.genFingerprint(0f, "all");
 			System.err.println("-ref is a directory");
 		}
 		// wenn es ein fingerprint ist, muss er eingelesen werden
@@ -263,7 +263,7 @@ public class Compare
 		if(examPath.exists() && examPath.isDirectory())
 		{
 			examDir.setBasepath(examPath.getCanonicalPath());
-			examDir.genFingerprint(0f);
+			examDir.genFingerprint(0f, "all");
 			System.err.println("-exam is a directory");
 		}
 		// wenn es ein fingerprint ist, muss er eingelesen werden
