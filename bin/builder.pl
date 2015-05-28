@@ -871,8 +871,8 @@ foreach my $refh_stackline (@CONFIG)
 				foreach my $except(@except)
 				{
 					$except =~ s/altPerl\([^)]\)//;
-					$except =~ s/\(//;
-					$except =~ s/\)//;
+					$except =~ s/^\s*\(\s*//;
+					$except =~ s/\s*\)\s*$//;
 				}
 				
 				# splitten des string except=<filename>,<filename>,...)
