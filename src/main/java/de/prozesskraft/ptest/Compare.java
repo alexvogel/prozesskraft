@@ -277,12 +277,16 @@ public class Compare
 		{
 			refDir.setInfilexml(refPath.getCanonicalPath());
 			System.err.println("-ref is a fingerprint");
-			try {
+			try
+			{
 				refDir.readXml();
-			} catch (JAXBException e) {
+			}
+			catch (JAXBException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			refDir.setRespectMd5Recursive(md5);
 		}
 
 		// einlesen der prueflingsdaten
@@ -312,6 +316,7 @@ public class Compare
 				System.err.println("error while reading xml");
 				e.printStackTrace();
 			}
+			examDir.setRespectMd5Recursive(md5);
 		}
 
 		// durchfuehren des vergleichs
