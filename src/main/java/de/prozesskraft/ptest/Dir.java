@@ -690,6 +690,8 @@ public class Dir {
 		directoryPath.clear();
 		this.sizeToleranceDefault = sizeToleranceDef;
 
+//		this.setRespectMd5Recursive(respectMd5);
+		
 		if(basepath == null)
 		{
 			System.err.println("error: no basepath given. cannot generate a fingerprint without a basepath.");
@@ -1262,4 +1264,41 @@ public class Dir {
 			return(splittedPath.length);
 		}
 	}
+
+	/**
+	 * @return the respectMd5
+	 */
+	public boolean isRespectMd5() {
+		return respectMd5;
+	}
+
+	/**
+	 * @param respectMd5 the respectMd5 to set
+	 */
+	public void setRespectMd5(boolean respectMd5) {
+		this.respectMd5 = respectMd5;
+	}
+	
+	/**
+	 * @param respectMd5 the respectMd5 to set
+	 */
+	public void setRespectMd5Recursive(boolean respectMd5) {
+		
+		this.respectMd5 = respectMd5;
+	
+		// fuer alle files setzen
+		for(File actFile : this.getFile())
+		{
+			actFile.setRespectMd5(respectMd5);
+		}
+
+		// fuer alle unterverzeichnisse recursiv aufrufen
+		for(Dir actDir : this.getDir())
+		{
+			actDir.setRespectMd5Recursive(respectMd5);
+		}
+
+		this.respectMd5 = respectMd5;
+	}
+	
 }

@@ -33,10 +33,12 @@ public class TestResult {
 		Dir testdir01 = new Dir();
 		testdir01.setBasepath("src/test/resources/testdir01");
 		testdir01.genFingerprint(0f, false, new ArrayList<String>());
-
+		testdir01.setRespectMd5Recursive(false);
+		
 		Dir fingerprint01 = new Dir();
 		fingerprint01.setInfilexml("src/test/resources/testdir01.fpr");
 		fingerprint01.readXml();
+		fingerprint01.setRespectMd5Recursive(false);
 
 		testdir01.runCheck(fingerprint01);
 		System.out.println(testdir01.sprintSummaryAsCsv("all"));
