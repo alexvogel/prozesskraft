@@ -363,8 +363,8 @@ public class File {
 					{
 						System.out.println("-----------------");
 						System.out.println("nicht beide vergleichspartner haben eine md5");
-						System.out.println("exam: MD5: " + actFile.getMd5().toString());
-						System.out.println("ref: MD5: " + this.getMd5().toString());
+						System.out.println("exam: MD5: " + actFile.getMd5());
+						System.out.println("ref: MD5: " + this.getMd5());
 						System.out.println("exam: " + actFile.getPathWithoutQuotes());
 						System.out.println("ref:  " + this.getPathWithoutQuotes());
 						System.out.println("-----------------");
