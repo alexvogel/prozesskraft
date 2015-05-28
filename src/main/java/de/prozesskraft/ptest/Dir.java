@@ -2,6 +2,7 @@ package de.prozesskraft.ptest;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +35,7 @@ import org.dozer.DozerBeanMapper;
 import org.xml.sax.SAXException;
 
 import de.caegroup.commons.Log;
+import de.caegroup.commons.Md5Checksum;
 
 public class Dir {
 
@@ -69,6 +71,7 @@ public class Dir {
 	private ArrayList<Dir> directoryPath = new ArrayList<Dir>();
 
 	float sizeToleranceDefault = 0F;
+	String determineMd5 = "no";
 	
 	public Dir()
 	{
@@ -673,10 +676,11 @@ public class Dir {
 	 * @throws NullPointerException
 	 * @throws IOException
 	 */
-	public void genFingerprint(float sizeToleranceDef) throws NullPointerException, IOException
+	public void genFingerprint(float sizeToleranceDef, final String determineMd5) throws NullPointerException, IOException
 	{
 		directoryPath.clear();
 		this.sizeToleranceDefault = sizeToleranceDef;
+		this.determineMd5 = determineMd5;
 		
 		if(basepath == null)
 		{
@@ -742,7 +746,7 @@ public class Dir {
 			public FileVisitResult visitFile(Path walkingFile, BasicFileAttributes attrs) throws IOException
 			{
 				// relativen Pfad (zur Basis basepath) feststellen
-//				String pathString = walkingFile.getParent() + "/"+walkingFile.getFileName();
+				String pathString = walkingFile.getParent() + "/"+walkingFile.getFileName();
 				String relPathString = getBasepath().relativize(walkingFile).toString();
 
 //				System.err.println("visit file (abs): "+pathString);
@@ -751,6 +755,17 @@ public class Dir {
 				// new File erstellen
 				File file = new File();
 				file.setId(runningId++);
+				
+				// md5 feststellen
+				if(determineMd5.equals("all"))
+				{
+					try {
+						file.setMd5(Md5Checksum.getMd5Checksum(pathString));
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 
 				// der pfad wird bei vergleichen als pattern verwendet / bzw. kann vom user manuel zu einer pattern veraendert werden
 				// deshalb sollen besondere zeichen beim erstellen eines fingerprints escaped werden
