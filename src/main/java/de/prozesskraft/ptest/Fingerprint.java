@@ -236,6 +236,13 @@ public class Fingerprint
 			output = commandline.getOptionValue("output");
 		}
 		
+		// wenn output bereits existiert -> abbruch
+		java.io.File outputFile = new File(output);
+		if(outputFile.exists())
+		{
+			System.err.println("output file (" + output + ") already exists.");
+		}
+		
 //		if ( !( commandline.hasOption("output")) )
 //		{
 //			System.err.println("option -output is mandatory.");
