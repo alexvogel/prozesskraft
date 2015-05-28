@@ -126,6 +126,12 @@ public class Fingerprint
 //				.isRequired()
 				.create("output");
 		
+		Option of = OptionBuilder
+				.hasArg()
+				.withDescription("[optional] overwrite fingerprint file if already exists")
+//				.isRequired()
+				.create("force");
+		
 		/*----------------------------
 		  create options object
 		----------------------------*/
@@ -137,6 +143,7 @@ public class Fingerprint
 		options.addOption( osizetol );
 		options.addOption( omd5 );
 		options.addOption( ooutput );
+		options.addOption( of );
 		
 		/*----------------------------
 		  create the parser
@@ -237,11 +244,14 @@ public class Fingerprint
 		}
 		
 		// wenn output bereits existiert -> abbruch
-		java.io.File outputFile = new File(output);
-		if(outputFile.exists())
+		if(!(commandline.hasOption("f")))
 		{
-			System.err.println("output file (" + output + ") already exists.");
-			System.exit(1);
+			java.io.File outputFile = new File(output);
+			if(outputFile.exists())
+			{
+				System.err.println("output file (" + output + ") already exists. use -f to force overwrite.");
+				System.exit(1);
+			}
 		}
 		
 //		if ( !( commandline.hasOption("output")) )
