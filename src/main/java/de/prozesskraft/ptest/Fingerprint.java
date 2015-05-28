@@ -114,9 +114,9 @@ public class Fingerprint
 //				.isRequired()
 				.create("sizetol");
 		
-		Option omd5 = OptionBuilder.withArgName("no|all")
+		Option omd5 = OptionBuilder.withArgName("no|yes")
 				.hasArg()
-				.withDescription("[optional; default: no] should be the md5sum of files determined? no|all")
+				.withDescription("[optional; default: yes] should be the md5sum of files determined? no|yes")
 //				.isRequired()
 				.create("md5");
 		
@@ -215,16 +215,16 @@ public class Fingerprint
 
 		if ( !( commandline.hasOption("md5")) )
 		{
-			System.err.println("setting default for -md5=no");
-			md5 = "no";
+			System.err.println("setting default for -md5=yes");
+			md5 = "yes";
 		}
 		else
 		{
 			md5 = commandline.getOptionValue("md5");
 			
-			if(!(md5.equals("no")) && !(md5.equals("all")) )
+			if(!(md5.equals("no")) && !(md5.equals("yes")) )
 			{
-				System.err.println("use only values no|all for -md5");
+				System.err.println("use only values no|yes for -md5");
 				System.exit(1);
 			}
 		}
