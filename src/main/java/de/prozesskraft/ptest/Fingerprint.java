@@ -241,6 +241,7 @@ public class Fingerprint
 		if(outputFile.exists())
 		{
 			System.err.println("output file (" + output + ") already exists.");
+			System.exit(1);
 		}
 		
 //		if ( !( commandline.hasOption("output")) )
