@@ -343,12 +343,12 @@ public class Fingerprint
 //		String autoIgnoreString = ini.get("autoignore", "autoignore");
 //		ignoreLines.addAll(Arrays.asList(autoIgnoreString.split(",")));
 
-		// debug
-		System.out.println("ignorefile content:");
-		for(String actLine : ignore)
-		{
-			System.out.println("line: "+actLine);
-		}
+//		// debug
+//		System.out.println("ignorefile content:");
+//		for(String actLine : ignore)
+//		{
+//			System.out.println("line: "+actLine);
+//		}
 		
 		try
 		{
