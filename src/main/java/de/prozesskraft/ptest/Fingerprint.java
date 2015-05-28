@@ -110,7 +110,7 @@ public class Fingerprint
 		
 		Option osizetol = OptionBuilder.withArgName("FLOAT")
 				.hasArg()
-				.withDescription("[optional; default: 0.02] the sizeTolerance of all file entries will be set to this value. [0.0 < sizetol < 1.0]")
+				.withDescription("[optional; default: 0.02] the sizeTolerance (as factor in percent) of all file entries will be set to this value. [0.0 < sizetol < 1.0]")
 //				.isRequired()
 				.create("sizetol");
 		
@@ -194,9 +194,9 @@ public class Fingerprint
 
 		if ( !( commandline.hasOption("sizetol")) )
 		{
-			System.err.println("setting default for -sizetol=0.0");
-			sizetol = "0";
-			sizetolFloat = 0F;
+			System.err.println("setting default for -sizetol=0.02");
+			sizetol = "0.02";
+			sizetolFloat = 0.02F;
 		}
 		else
 		{
