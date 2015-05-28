@@ -182,7 +182,7 @@ public class Fingerprint
 		----------------------------*/
 		String path = "";
 		String sizetol = "";
-		String md5 = "";
+		boolean md5 = false;
 		Float sizetolFloat = null;
 		String output = "";
 		if ( !( commandline.hasOption("path")) )
@@ -216,17 +216,20 @@ public class Fingerprint
 		if ( !( commandline.hasOption("md5")) )
 		{
 			System.err.println("setting default for -md5=yes");
-			md5 = "yes";
+			md5 = true;
+		}
+		else if(commandline.getOptionValue("md5").equals("no"))
+		{
+			md5 = false;
+		}
+		else if(commandline.getOptionValue("md5").equals("yes"))
+		{
+			md5 = true;
 		}
 		else
 		{
-			md5 = commandline.getOptionValue("md5");
-			
-			if(!(md5.equals("no")) && !(md5.equals("yes")) )
-			{
-				System.err.println("use only values no|yes for -md5");
-				System.exit(1);
-			}
+			System.err.println("use only values no|yes for -md5");
+			System.exit(1);
 		}
 
 		if ( !( commandline.hasOption("output")) )
