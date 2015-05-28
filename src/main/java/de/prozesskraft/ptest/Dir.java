@@ -764,7 +764,8 @@ public class Dir {
 //					if (pathMatcher.matches(walkingFile.getFileName()))
 					System.out.println("debug1: vergleichen: "+pathMatcher.toString());
 					System.out.println("debug2: vergleichen: "+walkingFile.getFileName());
-					if (pathMatcher.matches(walkingFile.getFileName()))
+//					if (pathMatcher.matches(walkingFile.getFileName()))
+					if (pathMatcher.matches(walkingFile))
 					{
 						System.out.println("debug: ignoring file "+walkingFile.getFileName());
 						return FileVisitResult.CONTINUE;
