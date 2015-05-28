@@ -249,7 +249,7 @@ public class Fingerprint
 			java.io.File outputFile = new File(output);
 			if(outputFile.exists())
 			{
-				System.err.println("output file (" + output + ") already exists. use -f to force overwrite.");
+				System.err.println("error: output file (" + output + ") already exists. use -f to force overwrite.");
 				System.exit(1);
 			}
 		}
