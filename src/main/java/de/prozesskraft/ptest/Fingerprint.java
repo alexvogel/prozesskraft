@@ -126,11 +126,7 @@ public class Fingerprint
 //				.isRequired()
 				.create("output");
 		
-		Option of = OptionBuilder
-				.hasArg()
-				.withDescription("[optional] overwrite fingerprint file if already exists")
-//				.isRequired()
-				.create("force");
+		Option of = new Option("f", "[optional] force overwrite fingerprint file if it already exists");
 		
 		/*----------------------------
 		  create options object
