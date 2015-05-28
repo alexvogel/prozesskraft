@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Scanner;
 
@@ -325,7 +326,11 @@ public class Fingerprint
 			}
 			sc.close();
 		}
-		
+
+		// autoignore hinzufuegen
+		String autoIgnoreString = ini.get("autoignore", "autoignore");
+		ignoreLines.addAll(Arrays.asList(autoIgnoreString.split(",")));
+
 		// debug
 		System.out.println("ignorefile content:");
 		for(String actLine : ignoreLines)
