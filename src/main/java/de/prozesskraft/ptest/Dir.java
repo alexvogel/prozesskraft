@@ -8,11 +8,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.MessageDigest;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import javax.xml.XMLConstants;
@@ -682,11 +685,10 @@ public class Dir {
 	 * @throws NullPointerException
 	 * @throws IOException
 	 */
-	public void genFingerprint(float sizeToleranceDef, final boolean respectMd5) throws NullPointerException, IOException
+	public void genFingerprint(float sizeToleranceDef, final boolean respectMd5, final ArrayList<String> ignoreLines) throws NullPointerException, IOException
 	{
 		directoryPath.clear();
 		this.sizeToleranceDefault = sizeToleranceDef;
-		this.respectMd5 = respectMd5;
 
 		if(basepath == null)
 		{
@@ -710,10 +712,11 @@ public class Dir {
 			// called before a directory visit
 			public FileVisitResult preVisitDirectory(Path walkingDir, BasicFileAttributes attrs) throws IOException
 			{
+				
 				// relativen Pfad (zur Basis basepath) feststellen
 //				String pathString = walkingDir.getParent() + "/"+walkingDir.getFileName();
 				String relPathString = getBasepath().relativize(walkingDir).toString();
-				
+
 
 				// wenn der relative path ein leerer string ist, ist this das directory
 				if(relPathString.equals(""))
@@ -751,6 +754,20 @@ public class Dir {
 			// called for each file visited. the basic file attributes of the file are also available
 			public FileVisitResult visitFile(Path walkingFile, BasicFileAttributes attrs) throws IOException
 			{
+				// alle ignore-eintraege durchgehen und feststellen ob das aktuell besuchte file ignoriert werden soll
+				FileSystem fileSystem = FileSystems.getDefault();
+				for(String actPattern : ignoreLines)
+				{
+					PathMatcher pathMatcher = fileSystem.getPathMatcher("glob:" + basepath + "/" + actPattern);
+					// Man muß zum Vergleich den reinen Dateinamen nehmen ohne Pfad !!!
+//					if (pathMatcher.matches(walkingFile.getFileName()))
+					if (pathMatcher.matches(walkingFile.getFileName()))
+					{
+						System.out.println("debug: ignoring file "+walkingFile.getFileName());
+						return FileVisitResult.CONTINUE;
+					}
+				}
+
 				// relativen Pfad (zur Basis basepath) feststellen
 				String pathString = walkingFile.getParent() + "/"+walkingFile.getFileName();
 				String relPathString = getBasepath().relativize(walkingFile).toString();

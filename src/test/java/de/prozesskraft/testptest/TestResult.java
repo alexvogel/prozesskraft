@@ -3,6 +3,7 @@ package de.prozesskraft.testptest;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.xml.bind.JAXBException;
 
@@ -31,7 +32,7 @@ public class TestResult {
 	{
 		Dir testdir01 = new Dir();
 		testdir01.setBasepath("src/test/resources/testdir01");
-		testdir01.genFingerprint(0f, false);
+		testdir01.genFingerprint(0f, false, new ArrayList<String>());
 
 		Dir fingerprint01 = new Dir();
 		fingerprint01.setInfilexml("src/test/resources/testdir01.fpr");
@@ -57,7 +58,7 @@ public class TestResult {
 	{
 		Dir testdir01 = new Dir();
 		testdir01.setBasepath("src/test/resources/testdir01");
-		testdir01.genFingerprint(0f, false);
+		testdir01.genFingerprint(0f, false, new ArrayList<String>());
 
 		Dir fingerprint02 = new Dir();
 		fingerprint02.setInfilexml("src/test/resources/testdir02.fpr");
