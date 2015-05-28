@@ -251,7 +251,7 @@ public class File {
 		// sonst ueber alle anderen angaben matchen
 		else
 		{
-			System.out.println("file DOES NOT respectMD5: "+this.getPath());
+			System.out.println(this.actRole+"file DOES NOT respectMD5: "+this.getPath());
 			if(this.flagPathMatched && this.flagSizeMatched && this.flagOccuranceMatched && !this.flagFuzzyReference)	
 			{
 				return true;
