@@ -240,10 +240,14 @@ public class Fingerprint
 		}
 		
 		// wenn output bereits existiert -> abbruch
-		if(!(commandline.hasOption("f")))
+		java.io.File outputFile = new File(output);
+		if(outputFile.exists())
 		{
-			java.io.File outputFile = new File(output);
-			if(outputFile.exists())
+			if(commandline.hasOption("f"))
+			{
+				outputFile.delete();
+			}
+			else
 			{
 				System.err.println("error: output file (" + output + ") already exists. use -f to force overwrite.");
 				System.exit(1);
