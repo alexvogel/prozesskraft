@@ -855,7 +855,7 @@ foreach my $refh_stackline (@CONFIG)
 		# es sollen bei allen perlscripten die shebang-zeile augetauscht werden
 		foreach my $actAction (@now_action)
 		{
-			if ( $actAction =~ m/altPerl\((.+)\)/ )
+			if ( $actAction =~ m/altPerl\(([^)]+)\)/ )
 			{
 				my $alternativePerlShebangzeile = "#!$1";
 				#-------------------
@@ -870,7 +870,7 @@ foreach my $refh_stackline (@CONFIG)
 				# alles entfernen bis auf die ausnahmen
 				foreach my $except(@except)
 				{
-					$except =~ s/altPerl\([^)]\)//;
+					$except =~ s/altPerl\([^)]+\)//;
 					$except =~ s/^\s*\(\s*//;
 					$except =~ s/\s*\)\s*$//;
 				}
