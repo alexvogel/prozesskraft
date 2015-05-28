@@ -344,23 +344,32 @@ public class File {
 					// wenn beide files einen md5-eintarg enthalten, dann den vergleich darueber fuehren
 					if((actFile.getMd5() != null) && (this.getMd5() != null))
 					{
+						System.out.println("-----------------");
 						System.out.println("beide vergleichspartner haben eine md5");
 						if(actFile.getMd5().matches("^" + this.getMd5() + "$"))
 						{
 							System.out.println("MD5 passen! " + actFile.getMd5());
+							System.out.println("exam: " + actFile.getPathWithoutQuotes());
+							System.out.println("ref:  " + this.getPathWithoutQuotes());
+							System.out.println("-----------------");
 
 							actFile.setFlagMd5Matched(true);
 							actFile.log.add(new Log("debug", "(exam) file ("+actFile.getPathWithoutQuotes()+") md5 matched with (id="+this.getId()+", path="+this.getPathWithoutQuotes()+")"));
 							this.setFlagMd5Matched(true);
 							this.log.add(new Log("debug", "(ref) file ("+this.getPathWithoutQuotes()+") md5 matched with (id="+actFile.getId()+", path="+actFile.getPathWithoutQuotes()+")"));
 						}
-						else
-						{
-							System.out.println("nicht beide vergleichspartner haben eine md5");
-							System.out.println("exam: MD5: " + actFile.getMd5().toString());
-							System.out.println("ref: MD5: " + this.getMd5().toString());
-						}
 					}
+					else
+					{
+						System.out.println("-----------------");
+						System.out.println("nicht beide vergleichspartner haben eine md5");
+						System.out.println("exam: MD5: " + actFile.getMd5().toString());
+						System.out.println("ref: MD5: " + this.getMd5().toString());
+						System.out.println("exam: " + actFile.getPathWithoutQuotes());
+						System.out.println("ref:  " + this.getPathWithoutQuotes());
+						System.out.println("-----------------");
+					}
+
 					// den pfad vom examinee gegen den template-pfad matchen
 					if(actFile.getPathWithoutQuotes().matches("^"+this.getPath()+"$"))
 					{
