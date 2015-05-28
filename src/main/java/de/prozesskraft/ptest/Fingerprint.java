@@ -122,11 +122,17 @@ public class Fingerprint
 //				.isRequired()
 				.create("md5");
 		
-		Option oignore = OptionBuilder.withArgName("FILE")
+		Option oignore = OptionBuilder.withArgName("STRING")
+				.hasArgs()
+				.withDescription("[optional] path-pattern that should be ignored when creating the fingerprint")
+//				.isRequired()
+				.create("ignore");
+		
+		Option oignorefile = OptionBuilder.withArgName("FILE")
 				.hasArg()
 				.withDescription("[optional] file with path-patterns (one per line) that should be ignored when creating the fingerprint")
 //				.isRequired()
-				.create("ignore");
+				.create("ignorefile");
 		
 		Option ooutput = OptionBuilder.withArgName("FILE")
 				.hasArg()
@@ -147,6 +153,7 @@ public class Fingerprint
 		options.addOption( osizetol );
 		options.addOption( omd5 );
 		options.addOption( oignore );
+		options.addOption( oignorefile );
 		options.addOption( ooutput );
 		options.addOption( of );
 		
@@ -194,8 +201,9 @@ public class Fingerprint
 		boolean md5 = false;
 		Float sizetolFloat = null;
 		String output = "";
-		java.io.File ignore = null;
-		
+		java.io.File ignorefile = null;
+		ArrayList<String> ignore = new ArrayList<String>();
+
 		if ( !( commandline.hasOption("path")) )
 		{
 			System.err.println("setting default for -path=.");
@@ -245,10 +253,15 @@ public class Fingerprint
 
 		if (  commandline.hasOption("ignore") )
 		{
-			ignore = new java.io.File(commandline.getOptionValue("ignore"));
-			if(! ignore.exists())
+			ignore.addAll(Arrays.asList(commandline.getOptionValues("ignore")));
+		}
+		
+		if (  commandline.hasOption("ignorefile") )
+		{
+			ignorefile = new java.io.File(commandline.getOptionValue("ignorefile"));
+			if(! ignorefile.exists())
 			{
-				System.err.println("warn: ignore file does not exist: "+ignore.getCanonicalPath());
+				System.err.println("warn: ignore file does not exist: "+ignorefile.getCanonicalPath());
 			}
 		}
 		
@@ -315,32 +328,31 @@ public class Fingerprint
 		dir.setOutfilexml(output);
 
 		// ignore file in ein Array lesen
-		ArrayList<String> ignoreLines = new ArrayList<String>();
-		
-		if((ignore != null) && (ignore.exists()))
+		if((ignorefile != null) && (ignorefile.exists()))
 		{
-			Scanner sc = new Scanner(ignore);
+			Scanner sc = new Scanner(ignorefile);
 			while(sc.hasNextLine())
 			{
-				ignoreLines.add(sc.nextLine());
+				ignore.add(sc.nextLine());
 			}
 			sc.close();
 		}
 
+		
 //		// autoignore hinzufuegen
 //		String autoIgnoreString = ini.get("autoignore", "autoignore");
 //		ignoreLines.addAll(Arrays.asList(autoIgnoreString.split(",")));
 
 		// debug
 		System.out.println("ignorefile content:");
-		for(String actLine : ignoreLines)
+		for(String actLine : ignore)
 		{
 			System.out.println("line: "+actLine);
 		}
 		
 		try
 		{
-			dir.genFingerprint(sizetolFloat, md5, ignoreLines);
+			dir.genFingerprint(sizetolFloat, md5, ignore);
 		}
 		catch (NullPointerException e)
 		{
