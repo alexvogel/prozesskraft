@@ -1003,11 +1003,18 @@ foreach my $refh_stackline (@CONFIG)
 		#-----------------
 		# das quell-verzeichnis nach $target syncen und dabei die zu ignorierenden files beachten (deployignore.txt)
 		my $deployignore = "deployignore.txt";
+		my @ignorePatterns =  split(",", $CONF{"autoignore"});
 
 		# erstellen eines fingerprints ueber die daten
 		print "info: generating a fingerprint with ptest ".$now_targetbulkappbranch."\n";
-		print $CONF{"callFingerprint"} . " -path $TMPDIR -ignore $deployignore\n";
-		system($CONF{"callFingerprint"} . " -path $TMPDIR -ignore $deployignore");
+		my $callPtest = $CONF{"callFingerprint"} . " -ignorefile $deployignore -path $TMPDIR";
+		foreach my $ignorePattern(@ignorePatterns)
+		{
+			$callPtest .= " -ignore " . $ignorePattern;
+		}
+		
+		print $callPtest . "\n";
+		system($callPtest);
 
 		# verarbeiten der ignore eintraege zu einem rsync aufruf...
 		my @deploy_ignore;
@@ -1019,11 +1026,11 @@ foreach my $refh_stackline (@CONFIG)
 			chomp @deploy_ignore;
 		}
 		my $rsynccall = "rsync";
-		foreach my $exclude_string (@deploy_ignore)
+		foreach my $exclude_string (@deploy_ignore, @ignorePatterns)
 		{
 			$rsynccall .= " --exclude=\"$exclude_string\"";
 		}
-		$rsynccall .= " --exclude=\".git\" --exclude=\".project\" --exclude=\"**deploy**\" -avz $TMPDIR/ ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbulkappbranch;
+		$rsynccall .= " -avz $TMPDIR/ ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbulkappbranch;
 
 		print $rsynccall."\n";
 		system $rsynccall;
