@@ -24,7 +24,7 @@ public class File {
 
 	public ArrayList<Log> log = new ArrayList<Log>();
 
-	private boolean respectMd5 = false;
+	private boolean respectMd5 = true;
 	
 	private boolean flagMd5Matched = false;
 	private boolean flagPathMatched = false;

@@ -74,7 +74,7 @@ public class Dir {
 	private ArrayList<Dir> directoryPath = new ArrayList<Dir>();
 
 	float sizeToleranceDefault = 0F;
-	boolean respectMd5 = false;
+	boolean respectMd5 = true;
 	
 	public Dir()
 	{
