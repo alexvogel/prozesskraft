@@ -726,6 +726,7 @@ public class Dir {
 						// dummy-maessig ein verzeichnis hinzufuegen (dieses trackt die bewegung durch das filesystem
 						// im postVisitDirectory wird dieser eintrag wieder entfernt
 						directoryPath.add(new Dir());
+						return FileVisitResult.CONTINUE;
 					}
 				}
 
