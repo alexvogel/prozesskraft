@@ -59,6 +59,7 @@
 						<option>-keep public class de.caegroup.commons.MyLicense { *; }</option>
 						<option>-keep public class de.caegroup.commons.DistantHostActions { *; }</option>
 						<option>-keep public class de.caegroup.commons.Log { *; }</option>
+						<option>-keep public class de.caegroup.commons.Md5Checksum { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
