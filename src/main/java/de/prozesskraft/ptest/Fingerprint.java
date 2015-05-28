@@ -110,11 +110,11 @@ public class Fingerprint
 		
 		Option osizetol = OptionBuilder.withArgName("FLOAT")
 				.hasArg()
-				.withDescription("[optional; default: 0.0] the sizeTolerance of all file entries will be set to this value. [0.0 < sizetol < 1.0]")
+				.withDescription("[optional; default: 0.02] the sizeTolerance of all file entries will be set to this value. [0.0 < sizetol < 1.0]")
 //				.isRequired()
 				.create("sizetol");
 		
-		Option omd5 = OptionBuilder.withArgName("STRING=no|all")
+		Option omd5 = OptionBuilder.withArgName("no|all")
 				.hasArg()
 				.withDescription("[optional; default: no] should be the md5sum of files determined? no|all")
 //				.isRequired()
@@ -122,7 +122,7 @@ public class Fingerprint
 		
 		Option ooutput = OptionBuilder.withArgName("FILE")
 				.hasArg()
-				.withDescription("[mandatory; default: fingerprint.xml] fingerprint file")
+				.withDescription("[mandatory; default: <path>/fingerprint.xml] fingerprint file")
 //				.isRequired()
 				.create("output");
 		
@@ -228,8 +228,8 @@ public class Fingerprint
 
 		if ( !( commandline.hasOption("output")) )
 		{
-			System.err.println("setting default for -output=fingerprint.xml");
-			output = "fingerprint.xml";
+			System.err.println("setting default for -output="+path+"/fingerprint.xml");
+			output = path+"/fingerprint.xml";
 		}
 		else
 		{
