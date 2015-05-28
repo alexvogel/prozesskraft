@@ -314,13 +314,17 @@ public class Fingerprint
 		dir.setOutfilexml(output);
 
 		// ignore file in ein Array lesen
-		Scanner sc = new Scanner(ignore);
 		ArrayList<String> ignoreLines = new ArrayList<String>();
-		while(sc.hasNextLine())
+		
+		if(ignore.exists())
 		{
-			ignoreLines.add(sc.nextLine());
+			Scanner sc = new Scanner(ignore);
+			while(sc.hasNextLine())
+			{
+				ignoreLines.add(sc.nextLine());
+			}
+			sc.close();
 		}
-		sc.close();
 		
 		// debug
 		System.out.println("ignorefile content:");
