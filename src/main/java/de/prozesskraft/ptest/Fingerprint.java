@@ -110,9 +110,15 @@ public class Fingerprint
 		
 		Option osizetol = OptionBuilder.withArgName("FLOAT")
 				.hasArg()
-				.withDescription("[mandatory; default: 0.0] the sizeTolerance of all file entries will be set to this value. [0 < 1]")
+				.withDescription("[optional; default: 0.0] the sizeTolerance of all file entries will be set to this value. [0.0 < sizetol < 1.0]")
 //				.isRequired()
 				.create("sizetol");
+		
+		Option omd5 = OptionBuilder.withArgName("STRING=no|all")
+				.hasArg()
+				.withDescription("[optional; default: no] should be the md5sum of files determined? no|all")
+//				.isRequired()
+				.create("md5");
 		
 		Option ooutput = OptionBuilder.withArgName("FILE")
 				.hasArg()
@@ -129,6 +135,7 @@ public class Fingerprint
 		options.addOption( ov );
 		options.addOption( opath );
 		options.addOption( osizetol );
+		options.addOption( omd5 );
 		options.addOption( ooutput );
 		
 		/*----------------------------
@@ -172,6 +179,7 @@ public class Fingerprint
 		----------------------------*/
 		String path = "";
 		String sizetol = "";
+		String md5 = "";
 		Float sizetolFloat = null;
 		String output = "";
 		if ( !( commandline.hasOption("path")) )
@@ -197,7 +205,23 @@ public class Fingerprint
 			
 			if((sizetolFloat > 1) || (sizetolFloat < 0))
 			{
-				System.err.println("use only values >0 and <1 for -sizetol");
+				System.err.println("use only values >=0.0 and <1.0 for -sizetol");
+				System.exit(1);
+			}
+		}
+
+		if ( !( commandline.hasOption("md5")) )
+		{
+			System.err.println("setting default for -md5=no");
+			md5 = "no";
+		}
+		else
+		{
+			md5 = commandline.getOptionValue("md5");
+			
+			if(!(md5.equals("no")) || !(md5.equals("all")) )
+			{
+				System.err.println("use only values no|all for -md5");
 				System.exit(1);
 			}
 		}
@@ -251,7 +275,7 @@ public class Fingerprint
 
 		try
 		{
-			dir.genFingerprint(sizetolFloat);
+			dir.genFingerprint(sizetolFloat, md5);
 		}
 		catch (NullPointerException e)
 		{
