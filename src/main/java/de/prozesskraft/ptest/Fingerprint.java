@@ -327,9 +327,9 @@ public class Fingerprint
 			sc.close();
 		}
 
-		// autoignore hinzufuegen
-		String autoIgnoreString = ini.get("autoignore", "autoignore");
-		ignoreLines.addAll(Arrays.asList(autoIgnoreString.split(",")));
+//		// autoignore hinzufuegen
+//		String autoIgnoreString = ini.get("autoignore", "autoignore");
+//		ignoreLines.addAll(Arrays.asList(autoIgnoreString.split(",")));
 
 		// debug
 		System.out.println("ignorefile content:");
