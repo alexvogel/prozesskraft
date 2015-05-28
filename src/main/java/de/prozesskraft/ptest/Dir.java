@@ -716,13 +716,13 @@ public class Dir {
 				FileSystem fileSystem = FileSystems.getDefault();
 				for(String actPattern : ignoreLines)
 				{
-					System.out.println("debug: globbing for "+"glob:" + basepath.toFile().getCanonicalPath() + "/" + actPattern);
+//					System.out.println("debug: globbing for "+"glob:" + basepath.toFile().getCanonicalPath() + "/" + actPattern);
 					PathMatcher pathMatcher = fileSystem.getPathMatcher("glob:" + basepath.toFile().getCanonicalPath() + "/" + actPattern);
-					System.out.println("debug1: vergleichen: "+pathMatcher.toString());
-					System.out.println("debug2: vergleichen: "+walkingDir.getFileName());
+//					System.out.println("debug1: vergleichen: "+pathMatcher.toString());
+//					System.out.println("debug2: vergleichen: "+walkingDir.getFileName());
 					if (pathMatcher.matches(walkingDir.toFile().getCanonicalFile().toPath()))
 					{
-						System.out.println("debug: ignoring directory "+walkingDir.getFileName());
+//						System.out.println("debug: ignoring directory "+walkingDir.getFileName());
 						// dummy-maessig ein verzeichnis hinzufuegen (dieses trackt die bewegung durch das filesystem
 						// im postVisitDirectory wird dieser eintrag wieder entfernt
 						directoryPath.add(new Dir());
@@ -774,13 +774,13 @@ public class Dir {
 				FileSystem fileSystem = FileSystems.getDefault();
 				for(String actPattern : ignoreLines)
 				{
-					System.out.println("debug: globbing for "+"glob:" + basepath.toFile().getCanonicalPath() + "/" + actPattern);
+//					System.out.println("debug: globbing for "+"glob:" + basepath.toFile().getCanonicalPath() + "/" + actPattern);
 					PathMatcher pathMatcher = fileSystem.getPathMatcher("glob:" + basepath.toFile().getCanonicalPath() + "/" + actPattern);
-					System.out.println("debug1: vergleichen: "+pathMatcher.toString());
-					System.out.println("debug2: vergleichen: "+walkingFile.getFileName());
+//					System.out.println("debug1: vergleichen: "+pathMatcher.toString());
+//					System.out.println("debug2: vergleichen: "+walkingFile.getFileName());
 					if (pathMatcher.matches(walkingFile.toFile().getCanonicalFile().toPath()))
 					{
-						System.out.println("debug: ignoring file "+walkingFile.getFileName());
+//						System.out.println("debug: ignoring file "+walkingFile.getFileName());
 						return FileVisitResult.CONTINUE;
 					}
 				}
