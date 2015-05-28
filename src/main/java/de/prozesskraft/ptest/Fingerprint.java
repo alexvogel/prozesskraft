@@ -316,7 +316,7 @@ public class Fingerprint
 		// ignore file in ein Array lesen
 		ArrayList<String> ignoreLines = new ArrayList<String>();
 		
-		if(ignore.exists())
+		if((ignore != null) && (ignore.exists()))
 		{
 			Scanner sc = new Scanner(ignore);
 			while(sc.hasNextLine())
