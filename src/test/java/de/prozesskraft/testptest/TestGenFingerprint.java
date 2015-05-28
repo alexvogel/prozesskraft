@@ -31,7 +31,7 @@ public class TestGenFingerprint {
 	{
 		Dir testdir01 = new Dir();
 		testdir01.setBasepath("src/test/resources/testdir01");
-		testdir01.genFingerprint(0f, "no");
+		testdir01.genFingerprint(0f, false);
 
 		testdir01.setOutfilexml("src/test/resources/testdir01.fpr");
 		testdir01.writeXml();
@@ -42,7 +42,7 @@ public class TestGenFingerprint {
 	{
 		Dir testdir02 = new Dir();
 		testdir02.setBasepath("src/test/resources/testdir02");
-		testdir02.genFingerprint(0f, "no");
+		testdir02.genFingerprint(0f, false);
 
 		testdir02.setOutfilexml("src/test/resources/testdir02.fpr");
 		testdir02.writeXml();

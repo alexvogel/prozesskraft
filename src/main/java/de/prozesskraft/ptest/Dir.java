@@ -71,7 +71,7 @@ public class Dir {
 	private ArrayList<Dir> directoryPath = new ArrayList<Dir>();
 
 	float sizeToleranceDefault = 0F;
-	String respectMd5 = "no";
+	boolean respectMd5 = false;
 	
 	public Dir()
 	{
@@ -682,12 +682,12 @@ public class Dir {
 	 * @throws NullPointerException
 	 * @throws IOException
 	 */
-	public void genFingerprint(float sizeToleranceDef, final String respectMd5Scope) throws NullPointerException, IOException
+	public void genFingerprint(float sizeToleranceDef, final boolean respectMd5) throws NullPointerException, IOException
 	{
 		directoryPath.clear();
 		this.sizeToleranceDefault = sizeToleranceDef;
-		this.respectMd5 = respectMd5Scope;
-		
+		this.respectMd5 = respectMd5;
+
 		if(basepath == null)
 		{
 			System.err.println("error: no basepath given. cannot generate a fingerprint without a basepath.");
@@ -763,11 +763,15 @@ public class Dir {
 				file.setId(runningId++);
 				
 				// md5 feststellen
-				if(respectMd5Scope.equals("all"))
+				if(respectMd5)
 				{
-					try {
+					file.setRespectMd5(true);
+					try
+					{
 						file.setMd5(Md5Checksum.getMd5Checksum(pathString));
-					} catch (Exception e) {
+					}
+					catch (Exception e)
+					{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
