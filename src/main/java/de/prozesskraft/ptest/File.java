@@ -358,6 +358,11 @@ public class File {
 							this.setFlagMd5Matched(true);
 							this.log.add(new Log("debug", "(ref) file ("+this.getPathWithoutQuotes()+") md5 matched with (id="+actFile.getId()+", path="+actFile.getPathWithoutQuotes()+")"));
 						}
+						System.out.println("exam: " + actFile.getPathWithoutQuotes());
+						System.out.println("ref:  " + this.getPathWithoutQuotes());
+						System.out.println("exam: MD5: " + actFile.getMd5());
+						System.out.println("ref: MD5: " + this.getMd5());
+						System.out.println("-----------------");
 					}
 					else
 					{
