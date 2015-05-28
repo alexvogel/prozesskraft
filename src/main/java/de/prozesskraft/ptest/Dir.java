@@ -762,7 +762,7 @@ public class Dir {
 				directoryPath.get(directoryPath.size()-1).setMaxOccur(1);
 
 //				System.out.println(dir.toString());
-				
+
 				return FileVisitResult.CONTINUE;
 			}
 
