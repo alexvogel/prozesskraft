@@ -211,7 +211,7 @@ public class File {
 			csvLine += ";" + "o";
 		}
 		
-		if(!this.isFlagMd5Matched())
+		if(this.isFlagMd5Matched())
 		{
 			csvLine += ";" + "x";
 		}
