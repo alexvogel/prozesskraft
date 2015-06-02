@@ -584,6 +584,8 @@ public class PmodelPartUi1 extends ModelObject
 	
 	public void refreshAppletAndUi()
 	{
+		String inputFormat = "";
+		
 		log("info", "refreshing data.");
 		// process frisch einlesen
 		Process p = new Process();
@@ -593,6 +595,7 @@ public class PmodelPartUi1 extends ModelObject
 		{
 			log("info", "process binary file does exist: "+this.einstellungen.process.getInfilebinary());
 			p = this.einstellungen.getProcess().readBinary();
+			inputFormat = "binary";
 		}
 		// wenn das xml-file existiert, dann soll das eingelesen werden
 		else if(new java.io.File(this.einstellungen.process.getInfilexml()).exists())
@@ -606,6 +609,7 @@ public class PmodelPartUi1 extends ModelObject
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			inputFormat = "xml";
 		}
 		// wenn keines von beiden existiert soll nichts gemacht werden
 		else
@@ -626,7 +630,20 @@ public class PmodelPartUi1 extends ModelObject
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			p = this.einstellungen.getProcess().readBinary();
+			
+			if(inputFormat.equals("binary"))
+			{
+				p = this.einstellungen.getProcess().readBinary();
+			}
+			else if(inputFormat.equals("xml"))
+			{
+				try {
+					p = this.einstellungen.getProcess().readXml();
+				} catch (JAXBException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			zaehler ++;
 		}
 		
@@ -635,7 +652,7 @@ public class PmodelPartUi1 extends ModelObject
 			log("error", "cannot read the process binary file: "+this.einstellungen.getProcess().getInfilebinary());
 			return;
 		}
-		
+
 		// wenn das neu eingelesene Object 'gut' ist, wird es uebernommen
 		this.einstellungen.setProcess(p);
 		
