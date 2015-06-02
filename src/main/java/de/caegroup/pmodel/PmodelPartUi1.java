@@ -599,7 +599,9 @@ public class PmodelPartUi1 extends ModelObject
 		{
 			log("info", "process definition file does exist: "+this.einstellungen.process.getInfilexml());
 			try {
+				System.out.println("Vor dem xml-einlesen: Anzahl der steps ist: "+p.getStep().size());
 				p = this.einstellungen.getProcess().readXml();
+				System.out.println("Nach dem xml-einlesen: Anzahl der steps ist: "+p.getStep().size());
 			} catch (JAXBException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
