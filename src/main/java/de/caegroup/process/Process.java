@@ -793,6 +793,9 @@ implements Serializable
 //			myMappingFiles.add("dozermapping.xml");
 //			mapper.setMappingFiles(myMappingFiles);
 
+			// alle steps in this loeschen
+			this.removeStepAll();
+			
 			mapper.map(xprocess, this);
 //			System.out.println("processName2: "+this.getName());
 
