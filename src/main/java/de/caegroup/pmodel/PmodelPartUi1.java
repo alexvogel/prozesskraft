@@ -586,16 +586,31 @@ public class PmodelPartUi1 extends ModelObject
 	{
 		log("info", "refreshing data.");
 		// process frisch einlesen
+		Process p = new Process();
 		
-		// wenn das pmb-file nicht existiert, dann soll nichts gemacht werden
-		if(!(new java.io.File(this.einstellungen.process.getInfilebinary()).exists()))
+		// wenn das pmb-file existiert, dann soll es eingelesen werden
+		if(new java.io.File(this.einstellungen.process.getInfilebinary()).exists())
 		{
-			log("error", "process binary file does not exist: "+this.einstellungen.process.getInfilebinary());
+			log("info", "process binary file does exist: "+this.einstellungen.process.getInfilebinary());
+			p = this.einstellungen.getProcess().readBinary();
+		}
+		// wenn das xml-file existiert, dann soll das eingelesen werden
+		else if(new java.io.File(this.einstellungen.process.getInfilebinary()).exists())
+		{
+			log("info", "process definition file does exist: "+this.einstellungen.process.getInfilexml());
+			try {
+				p = this.einstellungen.getProcess().readXml();
+			} catch (JAXBException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		// wenn keines von beiden existiert soll nichts gemacht werden
+		else
+		{
+			log("error", "no process binary or definition file exists");
 			return;
 		}
-		
-		// binary in ein neues Process-Object einlesen
-		Process p = this.einstellungen.getProcess().readBinary();
 		
 		int zaehler = 0;
 		while(p == null && zaehler < 5)
