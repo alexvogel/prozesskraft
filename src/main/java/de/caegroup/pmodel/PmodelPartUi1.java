@@ -595,7 +595,7 @@ public class PmodelPartUi1 extends ModelObject
 			p = this.einstellungen.getProcess().readBinary();
 		}
 		// wenn das xml-file existiert, dann soll das eingelesen werden
-		else if(new java.io.File(this.einstellungen.process.getInfilebinary()).exists())
+		else if(new java.io.File(this.einstellungen.process.getInfilexml()).exists())
 		{
 			log("info", "process definition file does exist: "+this.einstellungen.process.getInfilexml());
 			try {
