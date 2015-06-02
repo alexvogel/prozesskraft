@@ -802,6 +802,9 @@ implements Serializable
 			// setzen der parenteintraege aller steps
 			this.affiliate();
 
+			// setzen der step ranks, falls steps hinzugekommen sind
+			this.setStepRanks();
+
 			// die jaxb-klassen mit den domain-klassen mappen
 //			System.out.println("processName3: "+this.getName());
 			
