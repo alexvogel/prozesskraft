@@ -259,7 +259,7 @@ public class TestrunItem {
 				// falls pmodel gestartet werden soll
 				if(schalterPmodelLaunch.equals("true"))
 				{
-					int maxWait = 10;
+					int maxWait = 20;
 					int actualWait = 0;
 					// a bisserl schlafen bis process-startinstance das unterverzeichnis mit process.pmb angelegt hat
 					father.getFather().log("info", "sleeping 2 seconds - waiting for the process.pmb of executed testrun to become available on disk");
