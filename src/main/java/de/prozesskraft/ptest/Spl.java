@@ -170,7 +170,14 @@ public class Spl {
 //				System.err.println("info: bearbeite file " + actInputFile.getAbsolutePath());
 				// abspfad file source
 				Path pathOfActInputFile = Paths.get(actInputFile.getAbsolutePath());
-				System.err.println("debug: pathOfActInputFile: " + pathOfActInputFile.toString());
+				System.err.println("debug: pathOfActInputFileAbsolute: " + pathOfActInputFile.toString());
+				try {
+					Path pathOfActInputFileCanonical = Paths.get(actInputFile.getCanonicalPath());
+					System.err.println("debug: pathOfActInputFileAbsolute: " + pathOfActInputFileCanonical.toString());
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 				// relpfad file source
 				Path pathOfActInputFileRelativeToSpl = pathOfSpl.relativize(pathOfActInputFile);
