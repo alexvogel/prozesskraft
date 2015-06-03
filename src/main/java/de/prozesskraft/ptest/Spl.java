@@ -153,18 +153,24 @@ public class Spl {
 	 */
 	public void exportInput(java.io.File target)
 	{
-		if(target.exists())
+		System.err.println("info: exporting input samplefiles");
+		if(!target.exists())
+		{
+			System.err.println("error: target directory does not exist: "+target.getAbsolutePath());
+		}
+		else if(target.exists())
 		{
 			// namen des targetfiles festlegen / dabei sollen unterverzeichnisse, die relativ zum quellverzeichnis existieren erhalten bleiben
 			// abspath basisverzeichnis
 			Path pathOfSpl = Paths.get(this.getSplDir().getAbsolutePath());
-			
+			System.err.println("info: path of sample data is: "+pathOfSpl.toString());
+
 			for(java.io.File actInputFile : this.getInput())
 			{
 //				System.err.println("info: bearbeite file " + actInputFile.getAbsolutePath());
 				// abspfad file source
 				Path pathOfActInputFile = Paths.get(actInputFile.getAbsolutePath());
-				
+
 				// relpfad file source
 				Path pathOfActInputFileRelativeToSpl = pathOfSpl.relativize(pathOfActInputFile);
 				
@@ -181,11 +187,11 @@ public class Spl {
 				// input file in das instancedir kopieren
 				try
 				{
-//					System.err.println("info: copy sample file to instance directory: "+actInputFile.getAbsolutePath() +" => " +targetFile.getAbsolutePath());
-//					System.err.println("debug: start copy at: " + new Timestamp(System.currentTimeMillis()));
+					System.err.println("info: copy sample file to instance directory: "+actInputFile.getAbsolutePath() +" => " +targetFile.getAbsolutePath());
+					System.err.println("debug: start copy at: " + new Timestamp(System.currentTimeMillis()));
 					
 					Files.copy(actInputFile.toPath(), targetFile.toPath());
-//					System.err.println("debug: end copy at: " + new Timestamp(System.currentTimeMillis()));
+					System.err.println("debug: end copy at: " + new Timestamp(System.currentTimeMillis()));
 				}
 				catch (FileAlreadyExistsException e)
 				{
