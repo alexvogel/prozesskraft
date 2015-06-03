@@ -78,7 +78,7 @@ implements Serializable, Cloneable
 		else if (fieldname.equals("filename")) 	{string_to_test = this.getFilename();}
 		else if (fieldname.equals("absfilename")) 	{string_to_test = this.getAbsfilename();}
 
-		if (string_to_test.matches(".*"+pattern+".*")) { return true;	}
+		if (string_to_test.matches("^"+pattern+"$")) { return true;	}
 //		if (string_to_test.matches(pattern)) { return true;	}
 		else { return false; }
 	}
