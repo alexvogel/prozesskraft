@@ -162,55 +162,45 @@ public class Spl {
 		{
 			// namen des targetfiles festlegen / dabei sollen unterverzeichnisse, die relativ zum quellverzeichnis existieren erhalten bleiben
 			// abspath basisverzeichnis
-			Path pathOfSpl = Paths.get(this.getSplDir().getAbsolutePath());
-			System.err.println("info: pathAbsolute of sample data is: "+pathOfSpl.toString());
-			try {
-				Path pathOfSplCanonical = Paths.get(this.getSplDir().getCanonicalPath());
-				System.err.println("info: pathCanonical of sample data is: "+pathOfSplCanonical.toString());
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-			for(java.io.File actInputFile : this.getInput())
+			try
 			{
-//				System.err.println("info: bearbeite file " + actInputFile.getAbsolutePath());
-				// abspfad file source
-				Path pathOfActInputFile = Paths.get(actInputFile.getAbsolutePath());
-				System.err.println("debug: pathOfActInputFileAbsolute: " + pathOfActInputFile.toString());
-				
-				// relpfad file source
-				Path pathOfActInputFileRelativeToSpl = pathOfSpl.relativize(pathOfActInputFile);
-				System.err.println("debug: pathOfActInputFileRelativeToSpl: " + pathOfActInputFileRelativeToSpl.toString());
-				
-				// abspfad target (mit erhaltenen unterverzeichnissen)
-				java.io.File targetFile = new java.io.File(target.getAbsolutePath() + "/" + pathOfActInputFileRelativeToSpl);
-				System.err.println("debug: pathOftargetFile: " + targetFile.getAbsolutePath());
-				
-				// erstellen der unterverzeichnisse, falls notwendig
-				if(! targetFile.getParentFile().exists())
+				Path pathOfSpl = Paths.get(this.getSplDir().getCanonicalPath());
+				System.err.println("info: pathCanonical of sample data is: "+pathOfSpl.toString());
+			
+				for(java.io.File actInputFile : this.getInput())
 				{
-//					System.err.println("info: creating target directory "+targetFile.getParent());
-					targetFile.getParentFile().mkdirs();
-				}
-				
-				// input file in das instancedir kopieren
-				try
-				{
-					System.err.println("info: copy sample file to instance directory: "+actInputFile.getAbsolutePath() +" => " +targetFile.getAbsolutePath());
+//					System.err.println("info: bearbeite file " + actInputFile.getAbsolutePath());
+					// abspfad file source
+					Path pathOfActInputFile = Paths.get(actInputFile.getCanonicalPath());
+					System.err.println("debug: pathOfActInputFileAbsolute: " + pathOfActInputFile.toString());
+					
+					// relpfad file source
+					Path pathOfActInputFileRelativeToSpl = pathOfSpl.relativize(pathOfActInputFile);
+					System.err.println("debug: pathOfActInputFileRelativeToSpl: " + pathOfActInputFileRelativeToSpl.toString());
+					
+					// abspfad target (mit erhaltenen unterverzeichnissen)
+					java.io.File targetFile = new java.io.File(target.getCanonicalPath() + "/" + pathOfActInputFileRelativeToSpl);
+					System.err.println("debug: pathOftargetFile: " + targetFile.getCanonicalPath());
+					
+					// erstellen der unterverzeichnisse, falls notwendig
+					if(! targetFile.getParentFile().exists())
+					{
+//						System.err.println("info: creating target directory "+targetFile.getParent());
+						targetFile.getParentFile().mkdirs();
+					}
+					
+					System.err.println("info: copy sample file to instance directory: "+actInputFile.getCanonicalPath() +" => " +targetFile.getCanonicalPath());
 					System.err.println("debug: start copy at: " + new Timestamp(System.currentTimeMillis()));
 					
 					Files.copy(actInputFile.toPath(), targetFile.toPath());
 					System.err.println("debug: end copy at: " + new Timestamp(System.currentTimeMillis()));
 				}
-				catch (FileAlreadyExistsException e)
-				{
-					System.err.println(e.getMessage());
-				}
-				catch (IOException e)
-				{
-					System.err.println(e.getMessage());
-				}
+			
+			}
+			catch (IOException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 		}
 	}
