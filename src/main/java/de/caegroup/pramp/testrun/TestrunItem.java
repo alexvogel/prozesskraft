@@ -283,13 +283,13 @@ public class TestrunItem {
 						// alle process.pmb in unterverzeichnissen finden
 						for(java.io.File actFile : baseDirOfStartinstance.listFiles())
 						{
-	//						System.err.println("seeing entry: "+actFile.getCanonicalPath());
+							System.err.println("seeing entry: "+actFile.getCanonicalPath());
 							if(actFile.isDirectory())
 							{
-	//							System.err.println("its a directory - going in...");
+								System.err.println("its a directory - going in...");
 								for(java.io.File actFileFile : actFile.listFiles())
 								{
-	//								System.err.println("seeing file: (name="+actFileFile.getName()+") "+actFileFile.getCanonicalPath());
+									System.err.println("seeing file: (name="+actFileFile.getName()+") "+actFileFile.getCanonicalPath());
 									if(actFileFile.getName().equals("process.pmb"))
 									{
 										allFoundProcessBinaries.add(actFileFile);
