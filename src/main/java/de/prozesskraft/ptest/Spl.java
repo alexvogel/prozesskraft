@@ -170,12 +170,15 @@ public class Spl {
 //				System.err.println("info: bearbeite file " + actInputFile.getAbsolutePath());
 				// abspfad file source
 				Path pathOfActInputFile = Paths.get(actInputFile.getAbsolutePath());
-
+				System.err.println("debug: pathOfActInputFile: " + pathOfActInputFile.toString());
+				
 				// relpfad file source
 				Path pathOfActInputFileRelativeToSpl = pathOfSpl.relativize(pathOfActInputFile);
+				System.err.println("debug: pathOfActInputFileRelativeToSpl: " + pathOfActInputFileRelativeToSpl.toString());
 				
 				// abspfad target (mit erhaltenen unterverzeichnissen)
 				java.io.File targetFile = new java.io.File(target.getAbsolutePath() + "/" + pathOfActInputFileRelativeToSpl);
+				System.err.println("debug: pathOftargetFile: " + targetFile.getAbsolutePath());
 				
 				// erstellen der unterverzeichnisse, falls notwendig
 				if(! targetFile.getParentFile().exists())
