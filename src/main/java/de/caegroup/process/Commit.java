@@ -1096,23 +1096,46 @@ implements Serializable
 		try
 		{
 			// und jetzt der konventionelle commit
+			Commit cloneOrThisCommit = null;
 
-
-			// wenn das zu committende objekt ein File ist...
-			for(File actualFile : this.getFile())
+			// wenn aktueller commit gelooped werden muss, dann werden die clone committed
+			if(!this.getLoop().equals("")) 
 			{
-				this.log("info", "file key="+actualFile.getKey());
-				// ausfuehren von evtl. vorhandenen globs in den files
-				commitFile(actualFile);
+				for(String loopVar : this.getParent().getList(this.getLoop()).getItem())
+				{
+					// den commit clonen
+					cloneOrThisCommit = this.clone();
+					
+					// und die werte fuer den clone setzen
+					cloneOrThisCommit.setLoop("");
+					cloneOrThisCommit.setLoopvar(loopVar);
+					
+					// und den commit durchfuehren als ob es kein clone waere
+					cloneOrThisCommit.doIt();
+				}
+				// commit beenden, da das commit mit dem loopeintrag selber nicht committed wird, sondern nur die clone
+				return;
 			}
-
-			// wenn das zu committende objekt eine Variable ist...
-			for(Variable actVariable : this.getVariable())
+			
+			// wenn kein loop vorhanden ist, wird 'this' committed
+			else
 			{
-				this.log("info", "variable "+actVariable.getKey());
-				this.commitVariable(actVariable);
+				// wenn das zu committende objekt ein File ist...
+				for(File actualFile : this.getFile())
+				{
+					this.log("info", "file key="+actualFile.getKey());
+					// ausfuehren von evtl. vorhandenen globs in den files
+					commitFile(actualFile);
+				}
+	
+				// wenn das zu committende objekt eine Variable ist...
+				for(Variable actVariable : this.getVariable())
+				{
+					this.log("info", "variable "+actVariable.getKey());
+					this.commitVariable(actVariable);
+				}
 			}
-
+				
 		}
 		catch (Exception e)
 		{
