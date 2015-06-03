@@ -163,7 +163,14 @@ public class Spl {
 			// namen des targetfiles festlegen / dabei sollen unterverzeichnisse, die relativ zum quellverzeichnis existieren erhalten bleiben
 			// abspath basisverzeichnis
 			Path pathOfSpl = Paths.get(this.getSplDir().getAbsolutePath());
-			System.err.println("info: path of sample data is: "+pathOfSpl.toString());
+			System.err.println("info: pathAbsolute of sample data is: "+pathOfSpl.toString());
+			try {
+				Path pathOfSplCanonical = Paths.get(this.getSplDir().getCanonicalPath());
+				System.err.println("info: pathCanonical of sample data is: "+pathOfSplCanonical.toString());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
 			for(java.io.File actInputFile : this.getInput())
 			{
@@ -171,13 +178,6 @@ public class Spl {
 				// abspfad file source
 				Path pathOfActInputFile = Paths.get(actInputFile.getAbsolutePath());
 				System.err.println("debug: pathOfActInputFileAbsolute: " + pathOfActInputFile.toString());
-				try {
-					Path pathOfActInputFileCanonical = Paths.get(actInputFile.getCanonicalPath());
-					System.err.println("debug: pathOfActInputFileAbsolute: " + pathOfActInputFileCanonical.toString());
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 				
 				// relpfad file source
 				Path pathOfActInputFileRelativeToSpl = pathOfSpl.relativize(pathOfActInputFile);
