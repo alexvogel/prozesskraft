@@ -355,7 +355,7 @@ implements Serializable
 		}
 		
 		// wenn es keine looped Commits gibt
-		else if(this.loopedCommits != null)
+		else if(this.loopedCommits == null)
 		{
 			String status = "unknown";
 	
