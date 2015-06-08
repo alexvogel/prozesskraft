@@ -48,6 +48,7 @@ implements Serializable
 	// im jungfraeulichen zustand ist es null
 	// eine leere loopedCommits gibt es dann, wenn ein loop 0 eintraege enthaelt
 	private ArrayList<Commit> loopedCommits = null;
+	private String statusOverwrite = null;
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -314,6 +315,11 @@ implements Serializable
 
 	public String getStatus()
 	{
+		if(this.statusOverwrite != null)
+		{
+			return this.statusOverwrite;
+		}
+		
 		// wenn es ein loopedCommit ist, dann den status deropedCommits abfragen um den status von this bestimmen zu koennen
 		if(this.loopedCommits != null)
 		{
@@ -1150,24 +1156,34 @@ implements Serializable
 				// die liste der looped Commits erstellen
 				this.loopedCommits = new ArrayList<Commit>();
 				
-				System.err.println("der commit ("+this.getName()+") enthaelt einen loop-entry: "+this.getLoop());
-				for(String loopVar : this.getParent().getList(this.getLoop()).getItem())
+				this.log("info", "commit ("+this.getName()+") contains a loop-entry: "+this.getLoop());
+				
+				// gibt es die liste ueberhaupt ueber die geloopt werden soll?
+				if(this.getParent().getList(this.getLoop()) == null)
 				{
-					// den commit clonen und der loopedCommits hinzufuegen
-					System.err.println("clonen des commits: "+this.getName());
-					Commit clonedCommit = this.clone();
-					clonedCommit.loopedCommits = null;
-					this.loopedCommits.add(clonedCommit);
-					
-					// und die werte fuer den clone setzen
-					System.err.println("leeren des loops des clones");
-					clonedCommit.setLoop("");
-					System.err.println("setzen der loopVariable im clone auf "+loopVar);
-					clonedCommit.setLoopvar(loopVar);
-					
-					// und den commit durchfuehren als ob es kein clone waere
-					System.err.println("den (geklonten) commit durchfuehren");
-					clonedCommit.doIt();
+					this.log("error", "commit loop="+this.getLoop()+". such a list is not known in step " + this.getParent().getName());
+					this.statusOverwrite = "error";
+				}
+				else
+				{
+					for(String loopVar : this.getParent().getList(this.getLoop()).getItem())
+					{
+						// den commit clonen und der loopedCommits hinzufuegen
+						this.log("debug", "cloning commit: "+this.getName());
+						Commit clonedCommit = this.clone();
+						clonedCommit.loopedCommits = null;
+						this.loopedCommits.add(clonedCommit);
+						
+						// und die werte fuer den clone setzen
+						this.log("debug", "leeren des loops des clones");
+						clonedCommit.setLoop("");
+						this.log("debug", "setzen der loopVariable im clone auf "+loopVar);
+						clonedCommit.setLoopvar(loopVar);
+						
+						// und den commit durchfuehren als ob es kein clone waere
+						this.log("debug", "doing the commit of the clone");
+						clonedCommit.doIt();
+					}
 				}
 				// commit beenden, da das commit mit dem loopeintrag selber nicht committed wird, sondern nur die clone
 				return;
