@@ -539,10 +539,17 @@ implements Serializable
 		{
 			log("info", "file does not have a absfilename, so i need to glob it");
 
+			// zuerst evtl. vorh. loopvar fuer {$loopvarcommit} einsetzen
+			String resolvedGlob = master.getGlob();
+			if(!this.getLoopvar().equals(""))
+			{
+				log("debug", "resolving glob internally in commit-object '"+master.getGlob()+"' to '"+resolvedGlob+"'");
+				resolvedGlob = resolvedGlob.replaceAll("\\{\\$loopvarcommit\\}", this.getLoopvar());
+			}
+			
 			// resolven des globeintrages
-			log("info", "resolving glob '"+master.getGlob()+"' to '"+this.getParent().resolveString(master.getGlob())+"'");
-//			log("info", "resolving glob '"+master.getGlob()+"' to '");
-			String resolvedGlob = this.getParent().resolveString(master.getGlob());
+			resolvedGlob = this.getParent().resolveString(resolvedGlob);
+			log("info", "resolving glob '"+master.getGlob()+"' to '"+resolvedGlob+"'");
 
 			// ist der glob relativ?, dann den pfad um das stepdir erweitern
 			java.io.File stepDir = new java.io.File(this.getAbsdir());
