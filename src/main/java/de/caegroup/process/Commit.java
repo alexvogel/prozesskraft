@@ -295,6 +295,12 @@ implements Serializable
 	{
 		ArrayList<Log> logRecursive = this.log;
 
+		// alle logs der geloopten commits hinzufuegen
+		for(Commit actCommit : this.loopedCommits)
+		{
+			logRecursive.addAll(actCommit.getLogRecursive());
+		}
+		
 		// alle logs aller Variablen hinzufuegen
 		for(Variable actVariable : this.variable)
 		{
@@ -1171,6 +1177,7 @@ implements Serializable
 						// den commit clonen und der loopedCommits hinzufuegen
 						this.log("debug", "cloning commit: "+this.getName());
 						Commit clonedCommit = this.clone();
+						clonedCommit.setName(this.getName()+"(looped)");
 						clonedCommit.loopedCommits = null;
 						this.loopedCommits.add(clonedCommit);
 						
