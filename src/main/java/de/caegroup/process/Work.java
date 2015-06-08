@@ -608,4 +608,18 @@ implements Serializable
 		}
 		return pid;
 	}
+
+	/**
+	 * @return the maxrun
+	 */
+	public Integer getMaxrun() {
+		return maxrun;
+	}
+
+	/**
+	 * @param maxrun the maxrun to set
+	 */
+	public void setMaxrun(Integer maxrun) {
+		this.maxrun = maxrun;
+	}
 }
