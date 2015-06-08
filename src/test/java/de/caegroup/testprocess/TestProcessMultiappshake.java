@@ -101,6 +101,14 @@ public class TestProcessMultiappshake {
 		Process childProcess = step.getSubprocess().genProcess("src/test/resources/definitions");
 		childProcess.setBaseDir("/tmp");
 		childProcess.getRootStep().commit();
+
+//		for(Log actLog : childProcess.getRootStep().getLogRecursive())
+//		{
+//			actLog.print();
+//		}
+	
+		
+//System.exit(0);
 //		for(Log actLog : step.getSubprocess().getLog())
 //		{
 //			actLog.print();
@@ -120,13 +128,23 @@ public class TestProcessMultiappshake {
 		
 		// 3 commits aus dem rootStep des Subprocesses + 1 automatisch erzeugter commit aus standardRootCommit fuer standardeintraege wie "_dir" etc.
 		assertEquals(4, childProcess.getRootStep().getCommit().size());
-		
+//		System.err.println("stepName: "+childProcess.getRootStep().getName());
+//		for(Commit actCommit : childProcess.getRootStep().getCommit())
+//		{
+//			System.err.println("commitName: "+actCommit.getName());
+//		}
+
+
 		// ueberpruefen ob die 3 commits, die aus dem subprocess von multiappshake kamen auch zu entsprechenden variablen und files im prozess appshake gefuehrt haben
 		// in summe 2 files (call+result)
 		assertEquals(2, childProcess.getRootStep().getFile().size());
 		// in summe 2 variable (spl, _dir, processName, _processVarsion, _processDescription)
 		assertEquals(5, childProcess.getRootStep().getVariable().size());
-		
+//		for(Variable actVariable : childProcess.getRootStep().getVariable())
+//		{
+//			System.err.println("variableName: "+actVariable.getKey());
+//		}
+
 		// 1 variable mit key=spl
 		assertEquals(1, childProcess.getRootStep().getVariable("spl").size());
 		assertEquals("/irgendein/pfad/auf/das/spl/directory", childProcess.getRootStep().getVariable("spl").get(0).getValue());

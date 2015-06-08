@@ -44,6 +44,10 @@ implements Serializable
 	private Step parent;
 
 	private ArrayList<Log> log = new ArrayList<Log>();
+	
+	// im jungfraeulichen zustand ist es null
+	// eine leere loopedCommits gibt es dann, wenn ein loop 0 eintraege enthaelt
+	private ArrayList<Commit> loopedCommits = null;
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -110,6 +114,7 @@ implements Serializable
 			actVariable.getLog().clear();
 			actVariable.setStatus("");
 		}
+		this.loopedCommits = null;
 		this.getLog().clear();
 	}
 	
@@ -309,44 +314,86 @@ implements Serializable
 
 	public String getStatus()
 	{
-		String status = "unknown";
-
-		ArrayList<String> statusAllFilesVariables = new ArrayList<String>();
-
-		for(File actFile : this.getFile())
+		// wenn es ein loopedCommit ist, dann den status deropedCommits abfragen um den status von this bestimmen zu koennen
+		if(this.loopedCommits != null)
 		{
-			statusAllFilesVariables.add(actFile.getStatus());
-//			System.err.println("status of commit "+this.getName()+": file "+actFile.getKey()+": "+actFile.getStatus());
-		}
-		for(Variable actVariable : this.getVariable())
-		{
-			statusAllFilesVariables.add(actVariable.getStatus());
-//			System.err.println("status of commit "+this.getName()+": variable "+actVariable.getKey()+": "+actVariable.getStatus());
-		}
+			String status = "unknown";
+			Map<String,Integer> statusAnzahl = new HashMap<String,Integer>();
 
-		// ist der status 'error' vorhanden? prozess=error
-		if(statusAllFilesVariables.contains("error"))
-		{
-			status = "error";
-			return status;
+			for(Commit actLoopedCommit : this.loopedCommits)
+			{
+				String statusActLoopedCommit = actLoopedCommit.getStatus();
+				// wenn es den status in dem map bereits gibt, soll der entsprechende zaehler erhoeht werden
+				if(statusAnzahl.containsKey(statusActLoopedCommit))
+				{
+					statusAnzahl.put(statusActLoopedCommit, statusAnzahl.get(statusActLoopedCommit));
+				}
+				// wenn es den status noch nicht gibt, dann anlegen mit zaehler 0
+				else
+				{
+					statusAnzahl.put(statusActLoopedCommit, 0);
+				}
+			}
+			
+			// aus den einzelstati der loopedCommit den endstatus bestimmen
+			if(statusAnzahl.containsKey("error"))
+			{
+				return "error";
+			}
+			else if(statusAnzahl.containsKey("waiting"))
+			{
+				return "waiting";
+			}
+			else if(statusAnzahl.containsKey("finished"))
+			{
+				return "finished";
+			}
+			else
+			{
+				return "unknown";
+			}
 		}
-
-		// wenn schluessel waiting nicht vorhanden sind, und nur finished vorhanden ist, dann ist commit finished
-		else if(  statusAllFilesVariables.contains("waiting") )
+		
+		// wenn es keine looped Commits gibt
+		else if(this.loopedCommits != null)
 		{
-			status = "waiting";
-			return status;
+			String status = "unknown";
+	
+			ArrayList<String> statusAllFilesVariables = new ArrayList<String>();
+	
+			for(File actFile : this.getFile())
+			{
+				statusAllFilesVariables.add(actFile.getStatus());
+	//			System.err.println("status of commit "+this.getName()+": file "+actFile.getKey()+": "+actFile.getStatus());
+			}
+			for(Variable actVariable : this.getVariable())
+			{
+				statusAllFilesVariables.add(actVariable.getStatus());
+	//			System.err.println("status of commit "+this.getName()+": variable "+actVariable.getKey()+": "+actVariable.getStatus());
+			}
+	
+			// ist der status 'error' vorhanden? prozess=error
+			if(statusAllFilesVariables.contains("error"))
+			{
+				status = "error";
+				return status;
+			}
+	
+			// wenn schluessel waiting nicht vorhanden sind, und nur finished vorhanden ist, dann ist commit finished
+			else if(  statusAllFilesVariables.contains("waiting") )
+			{
+				status = "waiting";
+				return status;
+			}
+	
+			// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist prozess finished
+			else if(  statusAllFilesVariables.contains("finished") )
+			{
+				status = "finished";
+				return status;
+			}
 		}
-
-		// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist prozess finished
-		else if(  statusAllFilesVariables.contains("finished") )
-		{
-			status = "finished";
-			return status;
-		}
-
-//		System.err.println("actual status of commit "+this.getName()+": "+status);
-		return status;
+		return "unknown";
 	}
 
 //	public void setStatus(String status)
@@ -1096,22 +1143,31 @@ implements Serializable
 		try
 		{
 			// und jetzt der konventionelle commit
-			Commit cloneOrThisCommit = null;
 
 			// wenn aktueller commit gelooped werden muss, dann werden die clone committed
-			if(!this.getLoop().equals("")) 
+			if( (this.getLoop() != null) && (!this.getLoop().equals("")) ) 
 			{
+				// die liste der looped Commits erstellen
+				this.loopedCommits = new ArrayList<Commit>();
+				
+				System.err.println("der commit ("+this.getName()+") enthaelt einen loop-entry: "+this.getLoop());
 				for(String loopVar : this.getParent().getList(this.getLoop()).getItem())
 				{
-					// den commit clonen
-					cloneOrThisCommit = this.clone();
+					// den commit clonen und der loopedCommits hinzufuegen
+					System.err.println("clonen des commits: "+this.getName());
+					Commit clonedCommit = this.clone();
+					clonedCommit.loopedCommits = null;
+					this.loopedCommits.add(clonedCommit);
 					
 					// und die werte fuer den clone setzen
-					cloneOrThisCommit.setLoop("");
-					cloneOrThisCommit.setLoopvar(loopVar);
+					System.err.println("leeren des loops des clones");
+					clonedCommit.setLoop("");
+					System.err.println("setzen der loopVariable im clone auf "+loopVar);
+					clonedCommit.setLoopvar(loopVar);
 					
 					// und den commit durchfuehren als ob es kein clone waere
-					cloneOrThisCommit.doIt();
+					System.err.println("den (geklonten) commit durchfuehren");
+					clonedCommit.doIt();
 				}
 				// commit beenden, da das commit mit dem loopeintrag selber nicht committed wird, sondern nur die clone
 				return;
