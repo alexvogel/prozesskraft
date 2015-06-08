@@ -296,9 +296,12 @@ implements Serializable
 		ArrayList<Log> logRecursive = this.log;
 
 		// alle logs der geloopten commits hinzufuegen
-		for(Commit actCommit : this.loopedCommits)
+		if(this.loopedCommits != null)
 		{
-			logRecursive.addAll(actCommit.getLogRecursive());
+			for(Commit actCommit : this.loopedCommits)
+			{
+				logRecursive.addAll(actCommit.getLogRecursive());
+			}
 		}
 		
 		// alle logs aller Variablen hinzufuegen
