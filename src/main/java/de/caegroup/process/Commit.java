@@ -651,11 +651,11 @@ implements Serializable
 					{
 						String[] arg = this.getRefactor().split(":");
 						// bei arg1==filename z.B. refactor="filename:effective_force.txt"
-						if(arg[0].equals("filename"))
+						if( (arg.length == 2) && (arg[0].equals("filename")) )
 						{
 							// das file kopieren
 							// 1) neue position setzen mit realposition
-							clonedFile.setRealposition(actFile.getAbsolutePath() + "/../" + arg[2]);
+							clonedFile.setRealposition(actFile.getAbsolutePath() + "/../" + arg[1]);
 							// 2) kopieren durchfuehren
 							clonedFile.copyIfNeeded();
 						}
