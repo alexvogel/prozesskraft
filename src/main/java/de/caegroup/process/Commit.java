@@ -663,15 +663,14 @@ implements Serializable
 							clonedFile.setFilename(arg[1]);
 							// 3) kopieren durchfuehren (realposition -> absfilename) [[ absfilename wird dynamisch ermittelt ueber die stepdir ]]
 							clonedFile.copyIfNeeded();
-							filesToCommit.add(clonedFile);
 						}
 					}
 					// falls kein refactor existiert
 					else
 					{
 						clonedFile.setRealposition(actFile.getAbsolutePath());
-						filesToCommit.add(clonedFile);
 					}
+					filesToCommit.add(clonedFile);
 				}
 			}
 		}
