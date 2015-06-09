@@ -97,6 +97,7 @@
     	<xs:attribute name="name" use="optional" type="xs:string" />
     	<xs:attribute name="toroot" use="optional" type="xs:string"/>
     	<xs:attribute name="copyto" use="optional" type="xs:string"/>
+    	<xs:attribute name="refactor" use="optional" type="xs:string"/>
     	<xs:attribute name="loop" type="xs:string"/>
     </xs:complexType>
 

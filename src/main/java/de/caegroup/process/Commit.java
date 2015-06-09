@@ -32,6 +32,7 @@ implements Serializable
 	private static final CopyOption REPLACE_EXISTING = null;
 	private String name = "";
 	private String toroot = null;
+	private String refactor = null;
 	private String copyto = null;
 	private String loop = "";
 	private String loopvar = "";
@@ -1230,5 +1231,19 @@ implements Serializable
 		{
 			log("fatal", e.getMessage() + "\n" +Arrays.toString(e.getStackTrace()));
 		}
+	}
+
+	/**
+	 * @return the refactor
+	 */
+	public String getRefactor() {
+		return refactor;
+	}
+
+	/**
+	 * @param refactor the refactor to set
+	 */
+	public void setRefactor(String refactor) {
+		this.refactor = refactor;
 	}
 }
