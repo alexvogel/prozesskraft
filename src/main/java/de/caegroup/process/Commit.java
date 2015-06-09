@@ -654,11 +654,11 @@ implements Serializable
 						// bei arg1==filename z.B. refactor="filename:effective_force.txt"
 						if( (arg.length == 2) && (arg[0].equals("filename")) )
 						{
-							this.log("debug", "refactor=\"filename:...\" means the filename will be copied with a new name before the commit");
+							this.log("debug", "refactor=\""+ this.getRefactor()+"\" means the filename will be copied with a new name before the commit");
 							// das file kopieren
 							// 1) neue position setzen mit realposition
-							clonedFile.setRealposition(actFile.getAbsolutePath() + "/../" + arg[1]);
-							this.log("debug", "setting new realposition in file to "+actFile.getAbsolutePath() + "/../" + arg[1]);
+							clonedFile.setRealposition(actFile.getParent() + "/" + arg[1]);
+							this.log("debug", "setting new realposition in file to "+actFile.getParent() + "/" + arg[1]);
 							// 2) kopieren durchfuehren
 							clonedFile.copyIfNeeded();
 							filesToCommit.add(clonedFile);
