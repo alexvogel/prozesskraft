@@ -649,20 +649,27 @@ implements Serializable
 					// evtl. vorhandenes refactor durchfuehren
 					if(this.getRefactor() != null)
 					{
+						this.log("debug", "the committed object will be refactored");
 						String[] arg = this.getRefactor().split(":");
 						// bei arg1==filename z.B. refactor="filename:effective_force.txt"
 						if( (arg.length == 2) && (arg[0].equals("filename")) )
 						{
+							this.log("debug", "refactor=\"filename:...\" means the filename will be copied with a new name before the commit");
 							// das file kopieren
 							// 1) neue position setzen mit realposition
 							clonedFile.setRealposition(actFile.getAbsolutePath() + "/../" + arg[1]);
+							this.log("debug", "setting new realposition in file to "+actFile.getAbsolutePath() + "/../" + arg[1]);
 							// 2) kopieren durchfuehren
 							clonedFile.copyIfNeeded();
+							filesToCommit.add(clonedFile);
 						}
 					}
-					
-					clonedFile.setRealposition(actFile.getAbsolutePath());
-					filesToCommit.add(clonedFile);
+					// falls kein refactor existiert
+					else
+					{
+						clonedFile.setRealposition(actFile.getAbsolutePath());
+						filesToCommit.add(clonedFile);
+					}
 				}
 			}
 		}
