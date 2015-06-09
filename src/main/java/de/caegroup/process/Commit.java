@@ -650,7 +650,7 @@ implements Serializable
 					if(this.getRefactor() != null)
 					{
 						String[] arg = this.getRefactor().split(":");
-						// bei arg1==filename
+						// bei arg1==filename z.B. refactor="filename:effective_force.txt"
 						if(arg[0].equals("filename"))
 						{
 							// das file kopieren
