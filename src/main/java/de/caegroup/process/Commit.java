@@ -656,11 +656,13 @@ implements Serializable
 						{
 							this.log("debug", "refactor=\""+ this.getRefactor()+"\" means the file will be copied with a new name before the commit");
 							// das file kopieren
+							// 0.5) den filenamen feststellen
+							String newFilename = this.getParent().resolveString(arg[1]);
 							// 1) das feld realposition auf das existierende file setzen
-							this.log("debug", "setting new filename to "+arg[1]);
 							clonedFile.setRealposition(actFile.getAbsolutePath());
 							// 2) und den filenamen aendern
-							clonedFile.setFilename(arg[1]);
+							this.log("debug", "setting new filename to "+newFilename);
+							clonedFile.setFilename(newFilename);
 							// 3) kopieren durchfuehren (realposition -> absfilename) [[ absfilename wird dynamisch ermittelt ueber die stepdir ]]
 							clonedFile.copyIfNeeded();
 						}
