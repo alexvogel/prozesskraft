@@ -645,6 +645,22 @@ implements Serializable
 				{
 					File clonedFile = master.clone();
 					clonedFile.setGlob("");
+					
+					// evtl. vorhandenes refactor durchfuehren
+					if(this.getRefactor() != null)
+					{
+						String[] arg = this.getRefactor().split(":");
+						// bei arg1==filename
+						if(arg[0].equals("filename"))
+						{
+							// das file kopieren
+							// 1) neue position setzen mit realposition
+							clonedFile.setRealposition(actFile.getAbsolutePath() + "/../" + arg[2]);
+							// 2) kopieren durchfuehren
+							clonedFile.copyIfNeeded();
+						}
+					}
+					
 					clonedFile.setRealposition(actFile.getAbsolutePath());
 					filesToCommit.add(clonedFile);
 				}
