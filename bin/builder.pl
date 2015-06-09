@@ -664,26 +664,26 @@ foreach my $refh_stackline (@CONFIG)
 #		if ( grep { /searchreplace/; /searchreplace\((.+)\)/ } @now_action )
 		if ( grep { /searchreplace/ } @now_action )
 		{
-			my @filenames_from_parameter_and_defaults;
+			my @filenames_from_parameter;
 			# alle action-strings durchgehen und falls vorhanden die filenamen innerhalb der klammern feststellen
 			foreach (@now_action)
 			{
 				if ($_ =~ m/searchreplace\((.+)\)/)
 				{
-					push(@filenames_from_parameter_and_defaults, split(",", $1));
+					push(@filenames_from_parameter, split(",", $1));
 				}
 			}
 			
 			# default files zum ignorieren hier hinzufuegen
-			push(@filenames_from_parameter_and_defaults, "Template.pm");
+			push(@filenames_from_parameter, "Template.pm");
 			
 			# falls mit searchreplace ein parameter mit gegeben wurde, soll das festgestellt werden
-			print "filenames_from_parameter_and_defaults bevor wanted aufgerufen wird: @filenames_from_parameter_and_defaults\n";
+			print "filenames_from_parameter_and_defaults bevor wanted aufgerufen wird: @filenames_from_parameter\n";
 			#-------------------
 			# suchen und ersetzen des platzhalters fuer 'version' in allen files
 			print "info: action 'searchreplace'\n";
 			print "info: search and replace placeholder [version] and [date] and [procname] and [installdir] and [home] in entry-point-file.\n";
-			find( sub { wanted($now_app, @filenames_from_parameter_and_defaults) }, "$TMPDIR");
+			find( sub { wanted($now_app, @filenames_from_parameter) }, "$TMPDIR");
 			
 			sub wanted
 			{
@@ -708,19 +708,25 @@ foreach my $refh_stackline (@CONFIG)
 					print "skipping template toolkit file: ".$File::Find::name."\n";
 					next;
 				}
+				# sonstige files, die manchmal zu problemen fuehren
+				if ( ($File::Find::name =~ m/Template.pm$/) )
+				{
+					print "skipping problematic file: ".$File::Find::name."\n";
+					next;
+				}
 				# falls $now_app ein Namen wie z.b. "pradar-checkin" ist, soll bei searchreplace auch "checkin" als entrypoints beruecksichtigt werden.
 				my $now_app_short;
 				if ($now_app_inside_wanted =~ m/^\w+-(\w+)$/i) {$now_app_short = $1;}
 #				print "info: $_\n";
 				my $now_filename_without_path = $_;
 #				print "now_filename_without_path: $now_filename_without_path\n";
-				print "filenames_from_parameter: @filenames_from_parameter2\n";
+				print "filenames_from_parameter_and_defaults2: @filenames_from_parameter2\n";
 #				print "filename: $now_filename_without_path\n";
 #				print "filename kurz vor 'if': ".$File::Find::name."\n";
 #				print "kurzname kurz vor 'if': ".$_."\n";
 #				print "now_app kurz vor 'if': ".$now_app_inside_wanted."\n";
 #				print "now_app_short kurz vor 'if': ".$now_app_short."\n";
-				if ( ( $_ =~ m/^$now_app_inside_wanted/i ) || ( $_ =~ m/^$now_app_inside_wanted\.\w+$/i ) || ($now_app_short && ( $_ =~ m/^$now_app_short\.\w+$/i )) || (@filenames_from_parameter_and_defaults && ( grep {$now_filename_without_path =~ /$_/i} @filenames_from_parameter_and_defaults )) )
+				if ( ( $_ =~ m/^$now_app_inside_wanted/i ) || ( $_ =~ m/^$now_app_inside_wanted\.\w+$/i ) || ($now_app_short && ( $_ =~ m/^$now_app_short\.\w+$/i )) || (@filenames_from_parameter && ( grep {$now_filename_without_path =~ /$_/i} @filenames_from_parameter )) )
 				{
 					print "info: processing file in search of tt placeholders: $File::Find::name\n";
 					my $relname = File::Spec->abs2rel($File::Find::name);
