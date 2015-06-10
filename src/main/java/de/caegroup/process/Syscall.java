@@ -223,7 +223,7 @@ public class Syscall {
 			for(int i=0; i<hochKommaSplit.size(); i++)
 			{
 				// wenn i gerade ist, soll es weiter an blanks gesplittet werden
-				if(i % 2 != 0)
+				if((i % 2) != 0)
 				{
 					System.err.println("GERADE: muss noch an blanks gesplittet werden: " + hochKommaSplit.get(i));
 					ArrayList<String> unterSplit = new ArrayList<String>(Arrays.asList(hochKommaSplit.get(i).split(" ")));
