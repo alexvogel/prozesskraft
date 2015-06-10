@@ -222,7 +222,8 @@ public class Syscall {
 				// wenn i gerade ist, soll es weiter an blanks gesplittet werden
 				if(i % 2 != 0)
 				{
-					processSyscallWithArgs.addAll(new ArrayList<String>(Arrays.asList(hochKommaSplit.get(i).split(" "))  )  );
+					ArrayList<String> unterSplit = new ArrayList<String>(Arrays.asList(hochKommaSplit.get(i).split(" ")));
+					processSyscallWithArgs.addAll(unterSplit);
 				}
 				else
 				{
