@@ -229,6 +229,11 @@ public class Syscall {
 					processSyscallWithArgs.add(hochKommaSplit.get(i));
 				}
 			}
+// debug
+			for(String actString : processSyscallWithArgs)
+			{
+				System.err.println("arg: " + actString);
+			}
 			
 			// hat fehler produziert bei parametern mit blanks
 //			ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(sCall.split(" ")));
