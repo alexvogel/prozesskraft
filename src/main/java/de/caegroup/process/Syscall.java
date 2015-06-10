@@ -190,6 +190,8 @@ public class Syscall {
 			writerLog.println("this program runs in directory:");
 			writerLog.println(System.getProperty("user.dir"));
 			writerLog.println("------------------------------------------------------");
+			writerLog.println("process-syscall has been called like this...");
+			writerLog.println("------------------------------------------------------");
 			writerLog.println("process syscall \\");
 			writerLog.println("-call \""+sCall+"\" \\");
 			writerLog.println("-stdout "+sStdout + " \\");
@@ -200,8 +202,9 @@ public class Syscall {
 			writerLog.println("------------------------------------------------------");
 			writerLog.println("start at         : "+ startDate.toString());
 			writerLog.println("will terminate at: "+ termDate.toString());
-			writerLog.println("-------------- STDOUT and STDERR----------------");
-			writerLog.close();
+			writerLog.println("------------------------------------------------------");
+			writerLog.println("process-syscall has called this...");
+			writerLog.println("------------------------------------------------------");
 
 			// Umleitung von STDOUT und STDERR dieses Scripts in das angegebene logfile
 			FileOutputStream logStream = new FileOutputStream(sMylog, true);
@@ -222,20 +225,26 @@ public class Syscall {
 				// wenn i gerade ist, soll es weiter an blanks gesplittet werden
 				if(i % 2 != 0)
 				{
+					System.err.println("GERADE: muss noch an blanks gesplittet werden: " + hochKommaSplit.get(i));
 					ArrayList<String> unterSplit = new ArrayList<String>(Arrays.asList(hochKommaSplit.get(i).split(" ")));
+					System.err.println("anzahl der splitter: "+unterSplit.size());
 					processSyscallWithArgs.addAll(unterSplit);
 				}
 				else
 				{
+					System.err.println("UNGERADE: muss noch an blanks gesplittet werden: " + hochKommaSplit.get(i));
 					processSyscallWithArgs.add(hochKommaSplit.get(i));
 				}
 			}
 // debug
 			for(String actString : processSyscallWithArgs)
 			{
-				System.err.println("arg: " + actString);
+				writerLog.println(actString + " \\");
 			}
 			
+			writerLog.println("----------------- STDOUT and STDERR------------------");
+			writerLog.close();
+
 			// hat fehler produziert bei parametern mit blanks
 //			ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(sCall.split(" ")));
 
