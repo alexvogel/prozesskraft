@@ -403,12 +403,12 @@ implements Serializable
 					{
 						if (!actualVariable.match(actualMatch))
 						{
-							log("debug", "variable "+actualVariable.getKey()+" from step "+this.getParent().getName()+" does NOT match '"+actualMatch.getPattern()+"' in field '"+actualMatch.getField()+"'");
+							log("debug", "variable "+actualVariable.getKey()+" from step "+actualFromstep.getName()+" does NOT match '"+actualMatch.getPattern()+"' in field '"+actualMatch.getField()+"'");
 							matchPositive = false;
 						}
 						else
 						{
-							log("debug", "variable "+actualVariable.getKey()+" from step "+this.getParent().getName()+" does match '"+actualMatch.getPattern()+"' in field '"+actualMatch.getField()+"'");
+							log("debug", "variable "+actualVariable.getKey()+" from step "+actualFromstep.getName()+" does match '"+actualMatch.getPattern()+"' in field '"+actualMatch.getField()+"'");
 						}
 					}
 					// wenn alle matches passen, soll es zum ergebnis kollektiv hinzugefuegt werden
