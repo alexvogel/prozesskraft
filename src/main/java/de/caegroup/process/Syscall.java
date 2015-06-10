@@ -209,7 +209,29 @@ public class Syscall {
 			System.setOut(logPrintStream);
 			System.setErr(logPrintStream);
 
-			ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(sCall.split(" ")));
+			// den aufruf in einzelne parameter zerlegen
+			// normalerweise wuerde splitten an blanks ausreichen, jedoch kann es sein, das parameter leerzeichen enthalten und somit eine falsche splittung stattfindet
+			// splitten an hochkommas zuerst, wenn es eine gerade anzahl davon gibt
+			ArrayList<String> hochKommaSplit = new ArrayList<String>(Arrays.asList(sCall.split("'")));
+			
+			// in diesem array sollen die endgueltigen parameter gehalten werden
+			ArrayList<String> processSyscallWithArgs = new ArrayList<String>();
+			
+			for(int i=0; i<hochKommaSplit.size(); i++)
+			{
+				// wenn i gerade ist, soll es weiter an blanks gesplittet werden
+				if(i % 2 != 0)
+				{
+					processSyscallWithArgs.addAll(new ArrayList<String>(Arrays.asList(hochKommaSplit.get(i).split(" "))  )  );
+				}
+				else
+				{
+					processSyscallWithArgs.add(hochKommaSplit.get(i));
+				}
+			}
+			
+			// hat fehler produziert bei parametern mit blanks
+//			ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(sCall.split(" ")));
 
 			// erstellen prozessbuilder
 			ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
