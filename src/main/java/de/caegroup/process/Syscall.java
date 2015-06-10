@@ -236,7 +236,17 @@ public class Syscall {
 					processSyscallWithArgs.add(hochKommaSplit.get(i));
 				}
 			}
-// debug
+
+			// leere argumente entfernen
+			for(int i=0; i<processSyscallWithArgs.size(); i++)
+			{
+				if(processSyscallWithArgs.get(i).equals(""))
+				{
+					processSyscallWithArgs.remove(i);
+				}
+			}
+			
+			// das argumenten array ins logfile schreiben
 			for(String actString : processSyscallWithArgs)
 			{
 				writerLog.println(actString + " \\");
