@@ -724,9 +724,9 @@ public class PmodelViewPage extends PApplet
 		// die ersten sekunden soll die daempfung immer sehr hoch sein
 		long millisSeitStart = (now.getTimeInMillis() - startTimeMillis);
 		
-		// das maximum (abwaertsrampe die ersten 20 sekunden oder 5/frameRate)
-		damp = Math.max((float)(1.0f - (millisSeitStart / 20000f)), (float)((-0.067 * this.frameRate) + 1) );
-		damp = Math.max(damp, 0.12f);
+		// das maximum (abwaertsrampe die ersten 30 sekunden oder 5/frameRate)
+		damp = Math.max((float)(1.0f - (millisSeitStart / 30000f)), (float)((-0.067 * this.frameRate) + 1) );
+		damp = Math.max(damp, 0.15f);
 		damp = Math.min(damp, 1);
 		
 //		System.out.println("damp: "+damp);
