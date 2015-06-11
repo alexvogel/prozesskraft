@@ -664,7 +664,7 @@ implements Serializable
 							this.log("debug", "setting new filename to "+newFilename);
 							clonedFile.setFilename(newFilename);
 							// 3) kopieren durchfuehren (realposition -> absfilename) [[ absfilename wird dynamisch ermittelt ueber die stepdir ]]
-							clonedFile.copyIfNeeded();
+//							clonedFile.copyIfNeeded();
 						}
 					}
 					// falls kein refactor existiert
