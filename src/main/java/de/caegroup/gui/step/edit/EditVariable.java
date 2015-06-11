@@ -396,7 +396,7 @@ public class EditVariable
 				{
 					variable.setKey((String)value);
 
-					if ( variable.getKey().matches("^\\w+") )
+					if ( variable.getKey().matches("^.+") )
 					{
 						keyOk = true;
 						controlDecorationKey.hide();
@@ -432,7 +432,7 @@ public class EditVariable
 				{
 					variable.setValue((String)value);
 
-					if ( variable.getValue().matches("^\\w+") )
+					if ( variable.getValue().matches("^.+") )
 					{
 						valueOk = true;
 						controlDecorationValue.hide();
