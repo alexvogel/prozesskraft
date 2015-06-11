@@ -259,12 +259,12 @@ public class TestrunItem {
 				// falls pmodel gestartet werden soll
 				if(schalterPmodelLaunch.equals("true"))
 				{
-					int maxWait = 20;
+					int maxWait = 30;
 					int actualWait = 0;
 					// a bisserl schlafen bis process-startinstance das unterverzeichnis mit process.pmb angelegt hat
-					father.getFather().log("info", "sleeping 2 seconds - waiting for the process.pmb of executed testrun to become available on disk");
+					father.getFather().log("info", "waiting 3 seconds for the process.pmb of executed testrun to become available on disk");
 					Thread.sleep(2000);
-					actualWait += 2;
+					actualWait += 3;
 					
 					// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist (das wird mit process-startinstance erstellt) muss das erst herausgefunden werden
 					// das rootDir von ptest-launch ist das basedir des prozesses, der mit startinstance angeschoben wird
@@ -300,9 +300,9 @@ public class TestrunItem {
 						
 						if(allFoundProcessBinaries.size() == 0)
 						{
-							father.getFather().log("warn", "process-binary still not found.");
-							Thread.sleep(2000);
-							actualWait += 2;
+							father.getFather().log("warn", "process-binary still not found. waiting additional 3 seconds...");
+							Thread.sleep(3000);
+							actualWait += 3;
 						}
 						else
 						{
