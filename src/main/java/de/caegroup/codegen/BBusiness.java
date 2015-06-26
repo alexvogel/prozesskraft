@@ -139,10 +139,21 @@ implements Serializable, Cloneable
 		else
 		{
 			content.add("#");
-			content.add("# you may use getConfig(<key>), setConfig(<key>, <value>), getConfigKeys() to deal with data from the configfile if one exists.");
-			content.add("# you may use getOption(<key>), setOption(<string>, <value>), getOptionKeys(), and addOption(<string>, <key>) to deal with data from the call-options.");
+			content.add("# to deal with configuration variables, use...");
+			content.add("# getConfig(<key>) to obtain information defined in the config file");
+			content.add("# setConfig(<key>, <value>) to set a configuration value");
+			content.add("# getConfigKeys() to obtain all keys used in the config file");
+			content.add("#");
+			content.add("# to deal with user call options, use...");
+			content.add("# getOption(<key>) to get the value of a certain option");
+			content.add("# setOption(<string>, <value>) to redefine a certain option. option has to be known to the program.");
+			content.add("# getOptionKeys() to obtain all used options");
+			content.add("# addOption(<string>, <key>) to add a value to an option. option has to be a multioption and declared in the options block.");
+			content.add("#");
 			content.add("# you may use @ARG for all unknown/unparsed options given. this makes writing wrapperscripts easier.");
-			content.add("# you may use logit(\"info\", \"some log information\"); to log something.");
+			content.add("#");
+			content.add("# for logging use ...");
+			content.add("# logit(\"info\", \"some log information\");");
 			content.add("#");
 			content.add("# place your business logic here.");
 			content.add("#");
