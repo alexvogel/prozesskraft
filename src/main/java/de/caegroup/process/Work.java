@@ -164,13 +164,13 @@ implements Serializable
 					this.log("debug", "using the process-owned command: "+call);
 				}
 			}
-			
-			// falls nicht in prozesseigenem path, dann davon ausgehen, dass im systemeigenen path vorhanden ist
-			if(call == null)
-			{
-				call = this.command;
-				this.log("debug", "command not found in process-owned bin-directory - will use command as a global command (must exist in $PATH of underlying shell): "+call);
-			}
+		}
+
+		// falls nicht in prozesseigenem path, dann davon ausgehen, dass im systemeigenen path vorhanden ist
+		if(call == null)
+		{
+			call = this.command;
+			this.log("debug", "command not found in process-owned bin-directory - will use command as a global command (must exist in $PATH of underlying shell): "+call);
 		}
 		
 		this.log("debug", "constructing call a): "+call);
