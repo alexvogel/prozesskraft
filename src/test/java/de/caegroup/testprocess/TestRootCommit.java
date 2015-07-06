@@ -112,8 +112,8 @@ public class TestRootCommit {
 			System.err.println(actVariable.getKey() + "=" + actVariable.getValue());
 		}
 		
-		// jetzt muessten 22 variablen existieren (3*name, 3*spl, 3*call, 3*result, _dir, _processName, _processVersion, _processDescription, 2*variables)
-		assertEquals(22, rootStep.getVariable().size());
+		// jetzt muessten 23 variablen existieren (3*name, 3*spl, 3*call, 3*result, _dir, _processName, _processVersion, _processDescription, 2*variables, und 1 file dessen vollstaendiger inhalt als 1 variable importiert werden soll)
+		assertEquals(23, rootStep.getVariable().size());
 
 	}
 

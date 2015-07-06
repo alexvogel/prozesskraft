@@ -1181,8 +1181,10 @@ implements Serializable
 			}
 		}
 		// methode 3)
-		else if(fileToExtractFrom.getName().matches("^.+$"))
+		else
+//			else if(fileToExtractFrom.getName().matches("^.+$"))
 		{
+			System.err.println("extracting the whole content as value from file " +fileToExtractFrom.getAbsolutePath());
 			log("debug", "extracting the whole content as value from file "+fileToExtractFrom.getAbsolutePath());
 			// den key verwenden, der in der variable bereits angegeben ist
 
@@ -1202,15 +1204,14 @@ implements Serializable
 					value += line;
 				}
 				
-				// entfernen eines haengenden evtl. vorhandenen newlines
-				value = value.replace("(\\r|\\n)$", "");
+				// entfernen aller newlines
+				value = value.replace("(\\r|\\n)", "");
 
 				// den master clonen
 				Variable newVariable = master.clone();
 				newVariable.setGlob(null);
 				newVariable.setKey(master.getKey());
 				newVariable.setValue(value);
-				extractedVariables.add(newVariable);
 
 				// und der variablen sammlung hinzufuegen
 				extractedVariables.add(newVariable);
