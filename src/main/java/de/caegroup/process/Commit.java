@@ -1184,7 +1184,7 @@ implements Serializable
 		else
 //			else if(fileToExtractFrom.getName().matches("^.+$"))
 		{
-			System.err.println("extracting the whole content as value from file " +fileToExtractFrom.getAbsolutePath());
+//			System.err.println("extracting the whole content as value from file " +fileToExtractFrom.getAbsolutePath());
 			log("debug", "extracting the whole content as value from file "+fileToExtractFrom.getAbsolutePath());
 			// den key verwenden, der in der variable bereits angegeben ist
 
