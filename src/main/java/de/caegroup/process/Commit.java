@@ -1006,7 +1006,8 @@ implements Serializable
 					try
 					{
 						java.io.File fileForVariableValue = new java.io.File(rootStep.getAbsdir() + "/" + actVar.getCategory() + "/variable."+actVar.getKey());
-						fileForVariableValue.mkdirs();
+						java.io.File directoryOfFileForVariableValue = fileForVariableValue.getParentFile();
+						directoryOfFileForVariableValue.mkdirs();
 						writer = new FileWriter(fileForVariableValue.getAbsolutePath());
 						writer.write(actVar.getValue()+"\n");
 						writer.close();
