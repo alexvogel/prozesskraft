@@ -985,10 +985,10 @@ implements Serializable
 					{
 						actVar.setCategory("processOutput"+"/"+this.getToroot());
 					}
-					else
-					{
-						actVar.setCategory("processOutput");
-					}
+//					else
+//					{
+//						actVar.setCategory("processOutput");
+//					}
 				}
 			}
 			
@@ -1005,7 +1005,9 @@ implements Serializable
 					FileWriter writer;
 					try
 					{
-						writer = new FileWriter(rootStep.getAbsdir() + "/" + actVar.getCategory() + "/variable."+actVar.getKey());
+						java.io.File fileForVariableValue = new java.io.File(rootStep.getAbsdir() + "/" + actVar.getCategory() + "/variable."+actVar.getKey());
+						fileForVariableValue.mkdirs();
+						writer = new FileWriter(fileForVariableValue.getAbsolutePath());
 						writer.write(actVar.getValue()+"\n");
 						writer.close();
 					}
