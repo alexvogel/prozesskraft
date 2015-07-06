@@ -1205,11 +1205,15 @@ implements Serializable
 				// entfernen eines haengenden evtl. vorhandenen newlines
 				value = value.replace("(\\r|\\n)$", "");
 
-				// das value setzen
-				master.setValue(value);
-				
+				// den master clonen
+				Variable newVariable = master.clone();
+				newVariable.setGlob(null);
+				newVariable.setKey(master.getKey());
+				newVariable.setValue(value);
+				extractedVariables.add(newVariable);
+
 				// und der variablen sammlung hinzufuegen
-				extractedVariables.add(master);
+				extractedVariables.add(newVariable);
 			}
 			catch (IOException e)
 			{
