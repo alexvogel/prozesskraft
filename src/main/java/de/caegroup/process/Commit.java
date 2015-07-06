@@ -1032,6 +1032,7 @@ implements Serializable
 	 * 
 	 * 1) ist ein file mit dem namen 'variables' vorhanden, soll der inhalt nach key=value definitionen durchgegangen werden (#=kommentar, leerzeilen ignorieren, value < 100kB)
 	 *	2) bei files mit dem namens muster variable.<key> wird jede zeile vollstaendig als eigene variable interpretiert mit value=zeileninhalt (#=kommentar, leerzeilen ignorieren, value < 100kB)
+	 * 3) bei allen anderen filenamen, soll der vollstaendige inhalt als value interpretiert werden
      *
 	 * Ein clone der Variable wird mit einem Value bestueckt und als Teil der ArrayList zurueck gegeben.
 	 *
@@ -1179,7 +1180,54 @@ implements Serializable
 				}
 			}
 		}
-		
+		// methode 3)
+		else if(fileToExtractFrom.getName().matches("^.+$"))
+		{
+			log("debug", "extracting the whole content as value from file "+fileToExtractFrom.getAbsolutePath());
+			// den key verwenden, der in der variable bereits angegeben ist
+
+			BufferedReader in = null;
+			try
+			{
+				in = new BufferedReader(new InputStreamReader(new FileInputStream(fileToExtractFrom)));
+				String line = null;
+				String value = "";
+				
+				// den glob nullen
+				master.setGlob(null);
+				
+				// den gesamten inhalt so wier ist einlesen und nur das letzte \n entfernen
+				while ((line = in.readLine()) != null)
+				{
+					value += line;
+				}
+				
+				// entfernen eines haengenden evtl. vorhandenen newlines
+				value = value.replace("(\\r|\\n)$", "");
+
+				// das value setzen
+				master.setValue(value);
+				
+				// und der variablen sammlung hinzufuegen
+				extractedVariables.add(master);
+			}
+			catch (IOException e)
+			{
+				this.log("error", e.getMessage());
+				master.setStatus("error");
+			}
+			finally
+			{
+				try {
+					in.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					this.log("error", e.getMessage());
+					master.setStatus("error");
+				}
+			}
+		}
+
 		return extractedVariables;
 	}
 
