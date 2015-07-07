@@ -1,5 +1,5 @@
 1) go to the directory where you want to install the toolbox and unpack
-	tar -xvf ptest-*.tar.gz
+	tar -xvf reporter-*.tar.gz
 
 2) link the launch script "bin/reporter" from a PATH-directory. for example
 	cd ~/bin
