@@ -315,6 +315,14 @@ public class Generate
 			reporter.setParameter(actParameterKey, variable.get(actParameterKey));
 		}
 
+		// fill report
+		try {
+			reporter.fillPReport();
+		} catch (JRException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		// export to output as pdf
 		if(format.equals("pdf"))
 		{
