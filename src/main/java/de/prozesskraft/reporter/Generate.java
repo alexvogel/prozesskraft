@@ -114,7 +114,7 @@ public class Generate
 //				.isRequired()
 				.create("template");
 		
-		Option oformat = OptionBuilder.withArgName("pdf|pptx|html|odt")
+		Option oformat = OptionBuilder.withArgName("pdf|pptx|docx|html|odt")
 				.hasArg()
 				.withDescription("[optional; default: pdf] the report will be rendered in this format.")
 //				.isRequired()
@@ -285,6 +285,8 @@ public class Generate
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
+		long jetztMillis = System.currentTimeMillis();
+		String randomPathJasperFilled = "/tmp/"+jetztMillis+"_reporterGenerate";
 		
 		// create object
 		Reporter reporter = new Reporter();
@@ -292,6 +294,9 @@ public class Generate
 		// set template
 		reporter.setJrxml(template);
 		
+		// set jasper auf tmp directory
+		reporter.setJasper(randomPathJasperFilled + "/jasper");
+
 		// compile template
 		try {
 			reporter.compile();
@@ -305,10 +310,11 @@ public class Generate
 		{
 			reporter.setParameter(actParameterKey, variable.get(actParameterKey));
 		}
-		
+
 		// export to output as pdf
 		if(format.equals("pdf"))
 		{
+			reporter.setPdf(output);
 			try {
 				reporter.exportToPdf();
 			} catch (JRException e) {
@@ -319,6 +325,18 @@ public class Generate
 		// export to output as pptx
 		else if(format.equals("pptx"))
 		{
+			reporter.setPptx(output);
+			try {
+				reporter.exportToPptx();
+			} catch (JRException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		// export to output as docx
+		else if(format.equals("docx"))
+		{
+			reporter.setDocx(output);
 			try {
 				reporter.exportToDocx();
 			} catch (JRException e) {
@@ -329,6 +347,7 @@ public class Generate
 		// export to output as html
 		else if(format.equals("html"))
 		{
+			reporter.setHtml(output);
 			try {
 				reporter.exportToHtml();
 			} catch (JRException e) {
@@ -339,6 +358,7 @@ public class Generate
 		// export to output as odt
 		else if(format.equals("odt"))
 		{
+			reporter.setOdt(output);
 			try {
 				reporter.exportToOdt();
 			} catch (JRException e) {
