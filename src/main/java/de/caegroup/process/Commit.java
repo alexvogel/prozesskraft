@@ -534,6 +534,30 @@ implements Serializable
 			filesToCommit.add(master);
 		}
 
+		// wenn der parent ein subprocess ist und subprocesskey definiert ist, soll das value aus dem rootStep des Subprocesses geholt werden
+		else if(this.getParent().getType().equals("process") && master.getSubprocesskey() != null)
+		{
+			log("info", "file will be extracted from the Files (key="+master.getSubprocesskey()+") from the rootStep of the subprocess " +this.getParent().getSubprocess().getDomain() + "/" + this.getParent().getSubprocess().getName()+ "/" + this.getParent().getSubprocess().getVersion());
+
+			// process aus subprocess holen
+			Process subprocess = this.getParent().getSubprocess().getProcess();
+			
+			// die variablen aus dem subprocess holen, die als schluessel den subprocesskey des masters haben
+			ArrayList<File> filesFromSubprocess = subprocess.getRootStep().getFile(master.getSubprocesskey());
+			
+			// fuer jedes file den master clonen, den realposition setzen setzen und zu der liste der zu committenden files hinzufuegen
+			for(File actFileFromSubprocess : filesFromSubprocess)
+			{
+				File newFile = master.clone();
+				newFile.setSubprocesskey(null);
+				newFile.setRealposition(actFileFromSubprocess.getAbsfilename());
+				log("info", "(realposition=" +newFile.getRealposition()+")");
+				filesToCommit.add(newFile);
+			}
+		}
+
+		// TODO: das globverhalten beim comitten bei einem step, der einen subprocess beherrbergt
+		// * der glob muss evtl. um das directory processOutput erweitert werden
 		// ansonsten muss mit dem glob festgestellt werden welche files gemeint sind
 		// das Verzeichnis des Steps
 		else if((master.getGlob()!=null) && (!master.getGlob().equals("")))
