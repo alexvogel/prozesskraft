@@ -428,16 +428,23 @@ unless($subcommand)
 	exit(1);
 }
 
+# jedes argument in " packen
+my @ARGV_IN_ANFUEHRUNGSZEICHEN;
+foreach my $arg (@ARGV)
+{
+	push(@ARGV_IN_ANFUEHRUNGSZEICHEN, "\"" . $arg . "\"");
+}
+
 my $return = 0;
 if (getOption("hh"))
 {
-	my $call = getConfig($subcommand) . " @ARGV --help";
+	my $call = getConfig($subcommand) . " @ARGV_IN_ANFUEHRUNGSZEICHEN --help";
 	logit("info", "launching $subcommand: $call");
 	$return = system($call);
 }
 else
 {
-	my $call = getConfig($subcommand) . " @ARGV";
+	my $call = getConfig($subcommand) . " @ARGV_IN_ANFUEHRUNGSZEICHEN";
 	logit("info", "launching $subcommand: $call");
 	$return = system($call);
 }
