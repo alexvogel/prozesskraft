@@ -23,6 +23,7 @@ import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXhtmlExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRPptxExporter;
 //import de.caegroup.process.Process;
 import net.sf.jasperreports.engine.util.JRLoader;
 
@@ -39,6 +40,7 @@ public class Reporter
 	private String html = null;
 	private String odt = null;
 	private String docx = null;
+	private String pptx = null;
 	private JasperReport jasperReport = null;
 	private OutputStream jasperReportOutputStream = null;
 	private JasperPrint jasperPrint = null;
@@ -210,6 +212,29 @@ public class Reporter
 		docxExporter.exportReport();
 	}
 	
+	/**
+	 * exports the Report to pptx
+	 * @throws JRException
+	 * @throws FileNotFoundException 
+	 */
+	public void exportToPptx() throws JRException, FileNotFoundException
+	{
+		if (pptx == null)
+		{
+			if (jasperFilled == null)
+			{
+				this.fillPReport();
+			}
+			pptx = this.jasperFilled + ".pptx";
+		}
+		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilled));
+		JRPptxExporter pptxExporter = new JRPptxExporter();
+		pptxExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+		pptxExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, pptx);
+
+		pptxExporter.exportReport();
+	}
+	
 	public void setJrxml (String jrxml)
 	{
 		this.jrxml = jrxml;
@@ -248,6 +273,16 @@ public class Reporter
 	public String getPdf ()
 	{
 		return this.pdf;
+	}
+	
+	public void setPptx (String pptx)
+	{
+		this.pptx = pptx;
+	}
+
+	public String getPptx ()
+	{
+		return this.pptx;
 	}
 	
 	public void setHtml (String html)
