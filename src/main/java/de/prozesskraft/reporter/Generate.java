@@ -114,7 +114,7 @@ public class Generate
 //				.isRequired()
 				.create("template");
 		
-		Option oformat = OptionBuilder.withArgName("pdf|pptx")
+		Option oformat = OptionBuilder.withArgName("pdf|pptx|html|odt")
 				.hasArg()
 				.withDescription("[optional; default: pdf] the report will be rendered in this format.")
 //				.isRequired()
@@ -306,7 +306,7 @@ public class Generate
 			reporter.setParameter(actParameterKey, variable.get(actParameterKey));
 		}
 		
-		// export to output
+		// export to output as pdf
 		if(format.equals("pdf"))
 		{
 			try {
@@ -315,6 +315,40 @@ public class Generate
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+		// export to output as pptx
+		else if(format.equals("pptx"))
+		{
+			try {
+				reporter.exportToDocx();
+			} catch (JRException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		// export to output as html
+		else if(format.equals("html"))
+		{
+			try {
+				reporter.exportToHtml();
+			} catch (JRException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		// export to output as odt
+		else if(format.equals("odt"))
+		{
+			try {
+				reporter.exportToOdt();
+			} catch (JRException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			System.err.println("unknown -format " + format);
 		}
 	}
 
