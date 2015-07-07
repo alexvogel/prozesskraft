@@ -106,10 +106,10 @@ public class Reporter
 			jasperFilled = jasper + ".filled";
 		}
 		
-//		System.out.println("jasper "+jasper);
-//		System.out.println("jasperFilled "+jasperFilled);
-//		System.out.println("parameter "+parameter);
-//		System.out.println("jasper "+jasper);
+		System.out.println("jasper "+jasper);
+		System.out.println("jasperFilled "+jasperFilled);
+		System.out.println("parameter "+parameter);
+		System.out.println("jasper "+jasper);
 		
 		dataSource = new JRMapCollectionDataSource((Collection)field);
 		
