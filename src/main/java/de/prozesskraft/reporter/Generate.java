@@ -298,6 +298,8 @@ public class Generate
 		
 		// set jasper auf tmp directory
 		reporter.setJasper(randomDir + "/jasper");
+		// set jasperFilled auf tmp directory
+		reporter.setJasperFilled(randomDir + "/jasperFilled");
 
 		// compile template
 		try {
