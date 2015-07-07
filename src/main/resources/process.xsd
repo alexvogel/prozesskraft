@@ -101,27 +101,28 @@
     	<xs:attribute name="loop" type="xs:string"/>
     </xs:complexType>
 
-    <xs:complexType name="file">
-    	<xs:sequence>
-    		<xs:element maxOccurs="unbounded" ref="test" minOccurs="0" />
-    	</xs:sequence>
-    	<xs:attribute name="description" use="optional"
-    		type="xs:string" />
-    	<xs:attribute name="key" use="required" type="xs:string" />
-    	<xs:attribute name="glob" type="xs:string"></xs:attribute>
-    	<xs:attribute name="maxoccur" type="xs:integer" />
-    	<xs:attribute name="minoccur" type="xs:integer" />
-    </xs:complexType>
+	<xs:complexType name="file">
+		<xs:sequence>
+			<xs:element maxOccurs="unbounded" ref="test" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="description" use="optional" type="xs:string" />
+		<xs:attribute name="key" use="required" type="xs:string" />
+		<xs:attribute name="subprocesskey" use="optional" type="xs:string"/>
+		<xs:attribute name="glob" type="xs:string"/>
+		<xs:attribute name="maxoccur" type="xs:integer" />
+		<xs:attribute name="minoccur" type="xs:integer" />
+	</xs:complexType>
 
-   <xs:complexType name="variable">
+	<xs:complexType name="variable">
     	<xs:sequence>
     		<xs:element minOccurs="0" maxOccurs="unbounded"
     			ref="choice" />
     		<xs:element ref="test" minOccurs="0" maxOccurs="unbounded" />
     	</xs:sequence>
     	<xs:attribute name="key" use="required" type="xs:string" />
-    	<xs:attribute name="value" use="optional" type="xs:string"/>
-    	<xs:attribute name="glob" type="xs:string" use="optional"/>
+    	<xs:attribute name="subprocesskey" use="optional" type="xs:string"/>
+    	<xs:attribute name="value" use="optional" type="xs:string" />
+    	<xs:attribute name="glob" type="xs:string" use="optional" />
     	<xs:attribute name="maxoccur" type="xs:integer" use="optional" />
     	<xs:attribute name="minoccur" type="xs:integer" use="optional" />
     	<xs:attribute name="type" type="xs:string" use="optional" />
@@ -146,7 +147,7 @@
     	<xs:sequence>
     		<xs:element ref="defaultitem" minOccurs="0" maxOccurs="unbounded"/>
     	</xs:sequence>
-    	<xs:attribute name="name" type="xs:string"></xs:attribute>
+    	<xs:attribute name="name" use="required" type="xs:string"/>
     	<xs:attribute name="max" use="optional" type="xs:integer" />
     	<xs:attribute name="min" use="optional" type="xs:integer" />
     </xs:complexType>

@@ -803,6 +803,30 @@ implements Serializable
 			variablesToCommit.add(master);
 		}
 
+		// wenn der parent ein subprocess ist und subprocesskey definiert ist, soll das value aus dem rootStep des Subprocesses geholt werden
+		else if((master.getValue()==null) && this.getParent().getType().equals("process") && master.getSubprocesskey() != null)
+		{
+			log("info", "value will be extracted from the Variables (key="+master.getSubprocesskey()+") from the rootStep of the subprocess " +this.getParent().getSubprocess().getDomain() + "/" + this.getParent().getSubprocess().getName()+ "/" + this.getParent().getSubprocess().getVersion());
+
+			// process aus subprocess holen
+			Process subprocess = this.getParent().getSubprocess().getProcess();
+			
+			// die variablen aus dem subprocess holen, die als schluessel den subprocesskey des masters haben
+			ArrayList<Variable> variablesFromSubprocess = subprocess.getRootStep().getVariable(master.getSubprocesskey());
+			
+			// fuer jede variable den master clonen, den value setzen und zu der liste der zu committenden variablen hinzufuegen
+			for(Variable actVariableFromSubprocess : variablesFromSubprocess)
+			{
+				Variable newVariable = master.clone();
+				newVariable.setSubprocesskey(null);
+				newVariable.setValue(this.getParent().resolveString(actVariableFromSubprocess.getValue()));
+				log("info", "(value=" +newVariable.getValue()+")");
+				variablesToCommit.add(master);
+			}
+		}
+
+		// TODO: das globben so umbauen, dass es auch beim commit eines steps funktioniert, der einen subprocess beheimatet
+		// 	* der glob muss um das verzeichnis processOutput erweitert werden
 		// ansonsten muss mit dem glob festgestellt werden welche files gemeint sind
 		else if((master.getValue()==null) && ( master.getGlob()!=null && (!master.getGlob().equals(""))) )
 		{
@@ -1256,7 +1280,7 @@ implements Serializable
 				this.loopedCommits = new ArrayList<Commit>();
 				
 				this.log("info", "commit ("+this.getName()+") contains a loop-entry: "+this.getLoop());
-				
+
 				// gibt es die liste ueberhaupt ueber die geloopt werden soll?
 				if(this.getParent().getList(this.getLoop()) == null)
 				{

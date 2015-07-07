@@ -21,6 +21,7 @@ implements Serializable, Cloneable
 
 	static final long serialVersionUID = 1;
 	private String key = "default";
+	private String subprocesskey = null;	// beim commit eines subprocess steps kann statt einem glob mit dieser angabe direkt das value aus dem subprocess geholt werden
 	private String glob = "";
 	private String globdir = null;
 	private String filename = "";
@@ -618,6 +619,20 @@ implements Serializable, Cloneable
 	 */
 	public void setPreservePosition(boolean preservePosition) {
 		this.preservePosition = preservePosition;
+	}
+
+	/**
+	 * @return the subprocesskey
+	 */
+	public String getSubprocesskey() {
+		return subprocesskey;
+	}
+
+	/**
+	 * @param subprocesskey the subprocesskey to set
+	 */
+	public void setSubprocesskey(String subprocesskey) {
+		this.subprocesskey = subprocesskey;
 	}
 
 }

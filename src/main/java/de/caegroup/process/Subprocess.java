@@ -23,6 +23,9 @@ implements Serializable
 	private String version = "noversion";
 	private int maxrun = 100;
 
+	// das process object
+	private Process process = null;
+	
 	private Step step = new Step("root");
 
 	private String status = "";	// waiting/finished/error
@@ -158,6 +161,9 @@ implements Serializable
 
 			newProcess.writeBinary();
 			
+			// und das process object in subprocess ablegen
+			this.setProcess(newProcess);
+
 			// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)
 			String AbsLogSyscallWrapper = new java.io.File(new java.io.File(this.getParent().getAbspid()).getParent()).getAbsolutePath()+"/.log";
 
@@ -529,6 +535,20 @@ implements Serializable
 	 */
 	public void setDomain(String domain) {
 		this.domain = domain;
+	}
+
+	/**
+	 * @return the process
+	 */
+	public Process getProcess() {
+		return process;
+	}
+
+	/**
+	 * @param process the process to set
+	 */
+	public void setProcess(Process process) {
+		this.process = process;
 	}
 	
 }
