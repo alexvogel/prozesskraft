@@ -116,23 +116,23 @@ public class Generate
 		
 		Option oformat = OptionBuilder.withArgName("pdf|pptx")
 				.hasArg()
-				.withDescription("[mandatory; default: pdf] the report will be rendered in this format.")
+				.withDescription("[optional; default: pdf] the report will be rendered in this format.")
 //				.isRequired()
 				.create("format");
 		
 		Option ovariable = OptionBuilder.withArgName("VARIABLE")
 				.hasArgs()
-				.withDescription("[optional] variable that should be incorporated in the  the report. forexample --variable myMail=george.fryer@domain.com")
+				.withDescription("[optional] variable that should be incorporated into the report. forexample -variable myMail=george.fryer@domain.com")
 //				.isRequired()
 				.create("variable");
 		
 		Option ooutput = OptionBuilder.withArgName("FILE")
 				.hasArg()
-				.withDescription("[mandatory; default: report.<ext>] the generated report will be written to this output file. the extension depends on the defined --format")
+				.withDescription("[mandatory; default: report.<ext>] the generated report will be written to this output file. the extension depends on the defined -format")
 //				.isRequired()
 				.create("output");
 		
-		Option of = new Option("f", "[optional] force overwrite fingerprint file if it already exists");
+		Option of = new Option("f", "[optional] force overwrite output file if it already exists");
 		
 		/*----------------------------
 		  create options object
