@@ -286,7 +286,9 @@ public class Generate
 		  die eigentliche business logic
 		----------------------------*/
 		long jetztMillis = System.currentTimeMillis();
-		String randomPathJasperFilled = "/tmp/"+jetztMillis+"_reporterGenerate";
+		String randomDir = "/tmp/"+jetztMillis+"_reporterGenerate";
+		java.io.File randomDirAsFile = new java.io.File(randomDir);
+		randomDirAsFile.mkdirs();
 		
 		// create object
 		Reporter reporter = new Reporter();
@@ -295,7 +297,7 @@ public class Generate
 		reporter.setJrxml(template);
 		
 		// set jasper auf tmp directory
-		reporter.setJasper(randomPathJasperFilled + "/jasper");
+		reporter.setJasper(randomDir + "/jasper");
 
 		// compile template
 		try {
