@@ -251,7 +251,7 @@ my $helptext;
 
 $helptext .= "usage: $filename <subcommand> PARAMETER\n";
 $helptext .= "\n";
-$helptext .= "possible subcommands: launch, fingerprint, compare\n";
+$helptext .= "possible subcommands: generate\n";
 $helptext .= "\n";
 $helptext .= "Parameter\n";
 
