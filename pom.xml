@@ -1,0 +1,135 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>de.prozesskraft.reporter</groupId>
+  <artifactId>reporter-core</artifactId>
+  <version>0.1.0</version>
+  <name>reporter-core</name>
+	<build>
+		<plugins>
+
+<!-- packt alle class-Files in ein jar legt es im target ab-->
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<id>installation-caegroup-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<finalName>${project.name}-${project.version}</finalName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+<!-- 			<plugin> -->
+<!-- 				<groupId>com.pyx4me</groupId> -->
+<!-- 				<artifactId>proguard-maven-plugin</artifactId> -->
+<!-- 				<version>2.0.4</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<phase>package</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>proguard</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 				<configuration> -->
+<!-- 					<obfuscate>true</obfuscate> -->
+<!-- 					<options> -->
+<!-- 					abhaengigkeiten in anderen packages (durch import) koennen nur aufgeloest werden, wenn diese klassen public bleiben -->
+<!-- 						<option>-keep public class de.caegroup.report.Report { *; }</option> -->
+<!-- 						<option>-keep public class de.caegroup.report.PTopoimage { *; }</option> -->
+<!-- 					</options> -->
+<!-- 					<libs> -->
+<!-- 						<lib>${java.home}/lib/rt.jar</lib> -->
+<!-- 					</libs> -->
+<!-- 					<proguardVersion>4.8</proguardVersion> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 				<artifactId>maven-assembly-plugin</artifactId> -->
+<!-- 				<version>2.2.1</version> -->
+<!-- 				<configuration> -->
+<!-- 					<descriptorRefs> -->
+<!-- 						<descriptorRef>jar-with-dependencies</descriptorRef> -->
+<!-- 					</descriptorRefs> -->
+<!-- 					<outputDirectory>/tmp/pradar/bin</outputDirectory> -->
+<!-- 					<finalName>${project.name}-${project.version}</finalName> -->
+<!-- 					<archive> -->
+<!-- 						<manifest> -->
+<!-- 							<mainClass>de.caegroup.pradar.Manager</mainClass> -->
+<!-- 							<addClasspath>true</addClasspath> -->
+<!-- 						</manifest> -->
+<!-- 					</archive> -->
+<!-- 				</configuration> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>make-assembly</id> -->
+<!-- 						<phase>package</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>single</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.swt</groupId>
+			<artifactId>gtk.linux.x86_64</artifactId>
+			<version>3.101.0</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>5.2.0</version>
+		</dependency>
+	    <dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>
+			<version>2.1</version>
+	    </dependency>
+	    <dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.1</version>
+	    </dependency>
+	    <dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.0.4</version>
+	    </dependency>
+	    <dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.3</version>
+	    </dependency>
+	    <dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>2.2.0-beta-1</version>
+	    </dependency>
+	    <dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>2.1.7</version>
+	    </dependency>
+<!-- 	    <dependency> -->
+<!-- 			<groupId>de.caegroup.process</groupId> -->
+<!-- 			<artifactId>process-core</artifactId> -->
+<!-- 			<version>0.2.0</version> -->
+<!-- 	    </dependency> -->
+	</dependencies>
+</project>
