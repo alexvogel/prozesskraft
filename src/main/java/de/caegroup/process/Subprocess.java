@@ -158,6 +158,7 @@ implements Serializable
 			// und ins step-verzeichnis das binaere file schreiben
 			String processInstance = stepDir.getCanonicalPath() + "/process.pmb";
 			newProcess.setOutfilebinary(processInstance);
+			newProcess.setInfilebinary(processInstance);
 
 			newProcess.writeBinary();
 			
