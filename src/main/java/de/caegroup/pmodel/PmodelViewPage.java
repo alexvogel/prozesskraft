@@ -98,11 +98,12 @@ public class PmodelViewPage extends PApplet
 //    private PApplet parent;
 	//	PApplet.main(new String[] {"de.caegroup.visuinstance.Page"});
 
-	private PmodelPartUi1 father = null;
+	// manipulationen von UI1 von hier aus fuehren immer zu einer Exception
+	// dies muss mit einem thread o.ae. geloest werden
+//	private PmodelPartUi1 father = null;
 	
 	public PmodelViewPage()
 	{
-		this.father = new PmodelPartUi1();
 		this.einstellungen = new PmodelViewModel();
 	}
 	
@@ -117,9 +118,8 @@ public class PmodelViewPage extends PApplet
 //		this.parent = parent;
 //	}
 	
-	public PmodelViewPage(PmodelPartUi1 father, PmodelViewModel einstellungen)
+	public PmodelViewPage(PmodelViewModel einstellungen)
 	{
-		this.father = father;
 		this.einstellungen = einstellungen;
 	}
 	
@@ -800,19 +800,4 @@ public class PmodelViewPage extends PApplet
 	{
 		this.einstellungen.setRootpositionratiox(rootpositionratiox);
 	}
-
-	/**
-	 * @return the father
-	 */
-	public PmodelPartUi1 getFather() {
-		return this.father;
-	}
-
-	/**
-	 * @param father the parent to set
-	 */
-	public void setFather(PmodelPartUi1 father) {
-		this.father = father;
-	}
-
 }

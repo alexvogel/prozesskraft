@@ -167,6 +167,12 @@ public class SIInsightCreator
 		buttonFileBrowser.setToolTipText("open step directory with a filebrowser");
 		buttonFileBrowser.addSelectionListener(listener_button_browse);
 
+		Button buttonLog = new Button(compositeAction, SWT.NONE);
+		buttonLog.setText(".log");
+		buttonLog.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonLog.setToolTipText("opens .log (contains stdout & stderr of work command) file of step with an editor");
+//		buttonLog.addSelectionListener(listener_button_log);
+
 		Button buttonReset = new Button(compositeAction, SWT.NONE);
 		buttonReset.setText("reset");
 		buttonReset.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -370,9 +376,50 @@ public class SIInsightCreator
 					}
 				}
 			}
-				
-				
+		}
+	};
 
+	SelectionAdapter listener_button_log = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			java.io.File logFile = new java.io.File(step.getAbsdir() + "/.log");
+			if(!logFile.exists())
+			{
+				father.log("error", ".log file does not exist: "+logFile.getAbsolutePath());
+			}
+			else if(!logFile.isFile())
+			{
+				father.log("error", "is not a file: "+logFile.getAbsolutePath());
+			}
+			else if(!logFile.canRead())
+			{
+				father.log("error", "cannot read .log file: "+logFile.getAbsolutePath());
+			}
+			
+			else
+			{
+				// ist der step ein unterprozess, so soll der prozess in einem eigenen pmodelfenster geoeffnet werden
+				if(step.getType().equals("process"))
+				{
+					father.log("warn", "step is a subprocess - there is no .log file to open. use the 'browse' button to open subprocess in an own pmodel session.");
+				}
+				// ist step kein unterprozess
+				else
+				{
+					String call = father.getIni().get("apps", "editor") + " " + logFile.getAbsolutePath(); 
+					father.log("info", "calling: "+call);
+					
+					try
+					{
+						java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+					}
+					catch (IOException e)
+					{
+						father.log("error", e.getMessage());
+					}
+				}
+			}
 		}
 	};
 
