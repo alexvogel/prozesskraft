@@ -840,8 +840,8 @@ implements Serializable
 			ArrayList<Step> stepsOfSubprocess = processInSubprocess.getStep();
 			for(Step actStepOfSubprocess : stepsOfSubprocess)
 			{
-				log("debug", "this is a step of subprocess: " + actStepOfSubprocess);
-				log("debug", "variables of subprocess step " + actStepOfSubprocess + ": " + StringUtils.join(actStepOfSubprocess.getVariableKeys(), ", "));
+				log("debug", "this is a step of subprocess: " + actStepOfSubprocess.getName());
+				log("debug", "variables of subprocess step " + actStepOfSubprocess.getName() + ": " + StringUtils.join(actStepOfSubprocess.getVariableKeys(), ", "));
 			}
 
 			// die variablen aus dem subprocess holen, die als schluessel den subprocesskey des masters haben
