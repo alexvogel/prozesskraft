@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
 
 //import org.apache.solr.common.util.NamedList;
 
@@ -833,10 +834,18 @@ implements Serializable
 			log("info", "value will be extracted from the Variables (key="+master.getSubprocesskey()+") from the rootStep of the subprocess " +this.getParent().getSubprocess().getDomain() + "/" + this.getParent().getSubprocess().getName()+ "/" + this.getParent().getSubprocess().getVersion());
 
 			// process aus subprocess holen
-			Process subprocess = this.getParent().getSubprocess().getProcess();
+			Process processInSubprocess = this.getParent().getSubprocess().getProcess();
 			
+			// debug
+			ArrayList<Step> stepsOfSubprocess = processInSubprocess.getStep();
+			for(Step actStepOfSubprocess : stepsOfSubprocess)
+			{
+				log("debug", "this is a step of subprocess: " + actStepOfSubprocess);
+				log("debug", "variables of subprocess step " + actStepOfSubprocess + ": " + StringUtils.join(actStepOfSubprocess.getVariableKeys(), ", "));
+			}
+
 			// die variablen aus dem subprocess holen, die als schluessel den subprocesskey des masters haben
-			ArrayList<Variable> variablesFromSubprocess = subprocess.getRootStep().getVariable(master.getSubprocesskey());
+			ArrayList<Variable> variablesFromSubprocess = processInSubprocess.getRootStep().getVariable(master.getSubprocesskey());
 			
 			// fuer jede variable den master clonen, den value setzen und zu der liste der zu committenden variablen hinzufuegen
 			for(Variable actVariableFromSubprocess : variablesFromSubprocess)
