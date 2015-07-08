@@ -402,8 +402,8 @@ public class Generate
 				System.err.println("info: field line " + x + " is: " + actFieldKey + "=" + field.get(actFieldKey).get(x));
 				line.put(actFieldKey, field.get(actFieldKey).get(x));
 				
-				reporter.addField(line);
 			}
+			reporter.addField(line);
 		}
 		
 		// fill report
