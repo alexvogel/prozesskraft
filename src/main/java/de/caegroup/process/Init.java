@@ -320,6 +320,7 @@ implements Serializable
 					// wenn alle matches passen, soll es zum ergebnis kollektiv hinzugefuegt werden
 					if(matchPositive)
 					{
+						log("debug", "file " +actualFile.getKey() + " from step " +actualFromstep.getName()  + " matched every rule");
 						files_from_fromstep_which_matched.add(actualFile);
 					}
 				}
@@ -327,6 +328,7 @@ implements Serializable
 				// das returnfield aus den files extrahieren und zur string sammlung hinzufuegen
 				for(File actFile : files_from_fromstep_which_matched)
 				{
+					log("debug", "putting string to preList "+actFile.getField(this.getReturnfield())+" (to eventually add to the list under certain rules)");
 					sammlungStrings.add(actFile.getField(this.getReturnfield()));
 				}
 			}
@@ -407,7 +409,7 @@ implements Serializable
 				log("info", "insertrule: "+this.getInsertrule());
 				for(String actString : sammlungStrings)
 				{
-					list.addItem(sammlungStrings);
+					list.addItem(actString);
 				}
 			}
 			// wenn insertrule==overwrite, wenn etwas hinzuzufuegen ist (so bleiben defaults erhalten), dann zuerst liste leeren, und dann alles hinzufuegen
