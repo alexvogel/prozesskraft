@@ -98,8 +98,11 @@ public class PmodelViewPage extends PApplet
 //    private PApplet parent;
 	//	PApplet.main(new String[] {"de.caegroup.visuinstance.Page"});
 
+	private PmodelPartUi1 father = null;
+	
 	public PmodelViewPage()
 	{
+		this.father = new PmodelPartUi1();
 		this.einstellungen = new PmodelViewModel();
 	}
 	
@@ -114,8 +117,9 @@ public class PmodelViewPage extends PApplet
 //		this.parent = parent;
 //	}
 	
-	public PmodelViewPage(PmodelViewModel einstellungen)
+	public PmodelViewPage(PmodelPartUi1 father, PmodelViewModel einstellungen)
 	{
+		this.father = father;
 		this.einstellungen = einstellungen;
 	}
 	
@@ -396,35 +400,67 @@ public class PmodelViewPage extends PApplet
 				if ( ( Calendar.getInstance().getTimeInMillis() - this.mousepressedlasttime.getTimeInMillis() )  < this.doubleclickperiod )
 				{
 					
+					// wenn es ein step ist, der einen subprocess beherrbergt, soll der subprocess in einer eigenen pmodel sitzung geoeffnet werden
+					if( this.stepcircle_clicked.getStep().getType().equals("process") && this.stepcircle_clicked.getStep().getSubprocess() != null && this.stepcircle_clicked.getStep().getSubprocess().getProcess() != null)
+					{
+						Process subprocessProcess = this.stepcircle_clicked.getStep().getSubprocess().getProcess();
 						
-//					System.out.println("timeperiod "+(Calendar.getInstance().getTimeInMillis() - this.mousepressedlasttime.getTimeInMillis()));
-					// feststellen des stdout/stderr des steps
-					String stdout = this.stepcircle_clicked.step.getAbsstdout();
-					String stderr = this.stepcircle_clicked.step.getAbsstderr();
-					
-					java.io.File stdoutfile = new java.io.File(stdout);
-					java.io.File stderrfile = new java.io.File(stderr);
-					
-					String neditstring = new String();
-					
-					if (stdoutfile.exists())
-					{
-						neditstring = neditstring+" "+stdout;
+//						java.io.File processBinaryFile = new java.io.File(step.getAbsdir() + "/process.pmb");
+						java.io.File processBinaryFile = new java.io.File(subprocessProcess.getOutfilebinary());
+						
+						if(processBinaryFile.exists())
+						{
+							// Aufruf taetigen
+							try
+							{
+								String aufruf = father.getIni().get("apps", "pmodel-gui")+" -instance "+processBinaryFile.getCanonicalPath();
+								father.log("info", "opening subprocess of step "+this.stepcircle_clicked.getName()+" with call: "+aufruf);
+								java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+							}
+							catch (IOException e)
+							{
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						else
+						{
+							father.log("warn", "no outfileBinary present for subprocess of step "+this.stepcircle_clicked.getName());
+							father.log("debug", "this binary has not been found: "+processBinaryFile.getAbsolutePath());
+						}
 					}
-					
-					if (stderrfile.exists())
-					{
-						neditstring = neditstring+" "+stderr;
-					}
-					
-					if (!(neditstring.isEmpty()))
-					// Aufruf taetigen
-					try {
-						java.lang.Process sysproc = Runtime.getRuntime().exec("nedit "+neditstring);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+//					// ansonsten nedit mit den logfiles oeffnen
+//					else
+//					{
+//	//					System.out.println("timeperiod "+(Calendar.getInstance().getTimeInMillis() - this.mousepressedlasttime.getTimeInMillis()));
+//						// feststellen des stdout/stderr des steps
+//						String stdout = this.stepcircle_clicked.step.getAbsstdout();
+//						String stderr = this.stepcircle_clicked.step.getAbsstderr();
+//						
+//						java.io.File stdoutfile = new java.io.File(stdout);
+//						java.io.File stderrfile = new java.io.File(stderr);
+//						
+//						String neditstring = new String();
+//						
+//						if (stdoutfile.exists())
+//						{
+//							neditstring = neditstring+" "+stdout;
+//						}
+//						
+//						if (stderrfile.exists())
+//						{
+//							neditstring = neditstring+" "+stderr;
+//						}
+//						
+//						if (!(neditstring.isEmpty()))
+//						// Aufruf taetigen
+//						try {
+//							java.lang.Process sysproc = Runtime.getRuntime().exec("nedit "+neditstring);
+//						} catch (IOException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//					}
 				}
 //					break;
 			}
@@ -760,6 +796,20 @@ public class PmodelViewPage extends PApplet
 	public void setRootpositionratiox(float rootpositionratiox)
 	{
 		this.einstellungen.setRootpositionratiox(rootpositionratiox);
+	}
+
+	/**
+	 * @return the father
+	 */
+	public PmodelPartUi1 getFather() {
+		return this.father;
+	}
+
+	/**
+	 * @param father the parent to set
+	 */
+	public void setFather(PmodelPartUi1 father) {
+		this.father = father;
 	}
 
 }
