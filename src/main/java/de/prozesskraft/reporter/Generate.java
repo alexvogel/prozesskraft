@@ -120,11 +120,17 @@ public class Generate
 //				.isRequired()
 				.create("format");
 		
-		Option ovariable = OptionBuilder.withArgName("VARIABLE")
+		Option oparameter = OptionBuilder.withArgName("KEY=VALUE")
 				.hasArgs()
-				.withDescription("[optional] variable that should be incorporated into the report. forexample -variable myMail=george.fryer@domain.com")
+				.withDescription("[optional] parameter that should be incorporated into the report. forexample -parameter myMail=george.fryer@domain.com. KEY has to be unique.")
 //				.isRequired()
-				.create("variable");
+				.create("parameter");
+		
+		Option ofield = OptionBuilder.withArgName("COLUMNNAME=VALUE")
+				.hasArgs()
+				.withDescription("[optional] field that should be incorporated into a table of the report. forexample -field result=success. the amount of VALUEs for every COLUMNNAME has to be the same.")
+//				.isRequired()
+				.create("field");
 		
 		Option ooutput = OptionBuilder.withArgName("FILE")
 				.hasArg()
@@ -143,7 +149,8 @@ public class Generate
 		options.addOption( ov );
 		options.addOption( otemplate );
 		options.addOption( oformat );
-		options.addOption( ovariable );
+		options.addOption( oparameter );
+		options.addOption( ofield );
 		options.addOption( ooutput );
 		options.addOption( of );
 		
@@ -188,7 +195,8 @@ public class Generate
 		----------------------------*/
 		String template = "";
 		String format = "";
-		Map<String,String> variable = new HashMap<String,String>();
+		Map<String,String> parameter = new HashMap<String,String>();
+		Map<String,ArrayList<String>> field = new HashMap<String,ArrayList<String>>();
 		String output = "";
 
 		if ( !( commandline.hasOption("template")) )
@@ -211,25 +219,86 @@ public class Generate
 			format = commandline.getOptionValue("format");
 		}
 
-		if ( commandline.hasOption("variable") )
+		if ( commandline.hasOption("parameter") )
 		{
-			String[] variables = commandline.getOptionValues("variable");
+			String[] parameters = commandline.getOptionValues("parameter");
 			
-			// variable parsen (an '=' splitten) und ins map eintragen
-			for(String actVariable : variables)
+			// parameter parsen (an '=' splitten) und ins map eintragen
+			for(String actParameter : parameters)
 			{
-				String[] keyValue = actVariable.split("=", 2);
+				String[] keyValue = actParameter.split("=", 2);
 				
 				if(keyValue.length == 2)
 				{
-					variable.put((String)keyValue[0], (String)keyValue[1]);
+					parameter.put((String)keyValue[0], (String)keyValue[1]);
 				}
 				else
 				{
-					System.err.println("error in option -variable " + actVariable);
+					System.err.println("error in option -parameter " + actParameter);
 					Generate.exiter();
 				}
 				
+			}
+		}
+		
+		// die Eingabeparameter parsen und im map speichern
+		if ( commandline.hasOption("field") )
+		{
+			String[] fields = commandline.getOptionValues("field");
+			
+			// fields parsen (an '=' splitten) und ins map eintragen
+			for(String actField : fields)
+			{
+				String[] keyValue = actField.split("=", 2);
+				
+				if(keyValue.length == 2)
+				{
+					// gibt es den key im map schon schon?
+					if(field.containsKey(keyValue[0]))
+					{
+						// die liste extrahieren
+						ArrayList<String> column = field.get(keyValue[0]);
+						// den neuen wert hinzufuegen
+						column.add(keyValue[1]);
+					}
+					// eine neue liste erstellen
+					else
+					{
+						ArrayList<String> column = new ArrayList<String>();
+						// den wert hinzufuegen
+						column.add(keyValue[1]);
+						// die liste in den map putten
+						field.put(keyValue[0], column);
+					}
+				}
+				else
+				{
+					System.err.println("error in option -field " + actField);
+					Generate.exiter();
+				}
+			}
+			
+			// testen ob jeder schluessel im field map die gleiche anzahl an eintraegen enthaelt
+			// dies muss sein, da sonst nicht klar ist welche position in der entsprechenden spalte leer bleiben soll
+			Integer anzahlDerLetztenSpalte = null;
+			for(String actKey : field.keySet())
+			{
+				if(anzahlDerLetztenSpalte != null)
+				{
+					if(field.get(actKey).size() != anzahlDerLetztenSpalte)
+					{
+						System.err.println("error in option -field. you have to provide the same amount of values for every columnname.");
+						exiter();
+					}
+					else
+					{
+						anzahlDerLetztenSpalte = field.get(actKey).size();
+					}
+				}
+				else
+				{
+					anzahlDerLetztenSpalte = field.get(actKey).size();
+				}
 			}
 		}
 		
@@ -310,11 +379,32 @@ public class Generate
 		}
 
 		// set the parameter
-		for(String actParameterKey : variable.keySet())
+		for(String actParameterKey : parameter.keySet())
 		{
-			reporter.setParameter(actParameterKey, variable.get(actParameterKey));
+			reporter.setParameter(actParameterKey, parameter.get(actParameterKey));
 		}
 
+		// set the fields
+		// anzahl der zeilen herausfinden
+		int anzahlDerZeilen = 0;
+		for(String actFieldKey : field.keySet())
+		{
+			anzahlDerZeilen = field.get(actFieldKey).size();
+			break;
+		}
+		// fuer jede zeile einen map erstellen und im reporter hinzufuegen
+		for(int x = 0; x < anzahlDerZeilen; x++)
+		{
+			// zusammenstellen einer zeile
+			HashMap line = new HashMap<String,String>();
+			for(String actFieldKey : field.keySet())
+			{
+				line.put(actFieldKey, field.get(actFieldKey).get(x));
+				
+				reporter.addField(line);
+			}
+		}
+		
 		// fill report
 		try {
 			reporter.fillPReport();
