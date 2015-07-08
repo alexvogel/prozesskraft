@@ -841,12 +841,13 @@ implements Serializable
 			ArrayList<Step> stepsOfSubprocess = processInSubprocessNeuGeladen.getStep();
 			for(Step actStepOfSubprocess : stepsOfSubprocess)
 			{
-				log("debug", "this is a step of subprocess: " + actStepOfSubprocess.getName());
+//				log("debug", "this is a step of subprocess: " + actStepOfSubprocess.getName());
 				log("debug", "variables of subprocess step " + actStepOfSubprocess.getName() + ": " + StringUtils.join(actStepOfSubprocess.getVariableKeys(), ", "));
 			}
 
 			// die variablen aus dem subprocess holen, die als schluessel den subprocesskey des masters haben
-			ArrayList<Variable> variablesFromSubprocess = processInSubprocess.getRootStep().getVariable(master.getSubprocesskey());
+			ArrayList<Variable> variablesFromSubprocess = processInSubprocessNeuGeladen.getRootStep().getVariable(master.getSubprocesskey());
+//			log("debug", "this is again and explicitly the rootStep and its variables: " + StringUtils.join(processInSubprocess.getRootStep().getVariableKeys(), ", "));
 			
 			// fuer jede variable den master clonen, den value setzen und zu der liste der zu committenden variablen hinzufuegen
 			for(Variable actVariableFromSubprocess : variablesFromSubprocess)
