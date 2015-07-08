@@ -400,35 +400,38 @@ public class PmodelViewPage extends PApplet
 				if ( ( Calendar.getInstance().getTimeInMillis() - this.mousepressedlasttime.getTimeInMillis() )  < this.doubleclickperiod )
 				{
 					
-					// wenn es ein step ist, der einen subprocess beherrbergt, soll der subprocess in einer eigenen pmodel sitzung geoeffnet werden
-					if( this.stepcircle_clicked.getStep().getType().equals("process") && this.stepcircle_clicked.getStep().getSubprocess() != null && this.stepcircle_clicked.getStep().getSubprocess().getProcess() != null)
-					{
-						Process subprocessProcess = this.stepcircle_clicked.getStep().getSubprocess().getProcess();
-						
-//						java.io.File processBinaryFile = new java.io.File(step.getAbsdir() + "/process.pmb");
-						java.io.File processBinaryFile = new java.io.File(subprocessProcess.getOutfilebinary());
-						
-						if(processBinaryFile.exists())
-						{
-							// Aufruf taetigen
-							try
-							{
-								String aufruf = father.getIni().get("apps", "pmodel-gui")+" -instance "+processBinaryFile.getCanonicalPath();
-								father.log("info", "opening subprocess of step "+this.stepcircle_clicked.getName()+" with call: "+aufruf);
-								java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-							}
-							catch (IOException e)
-							{
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
-						else
-						{
-							father.log("warn", "no outfileBinary present for subprocess of step "+this.stepcircle_clicked.getName());
-							father.log("debug", "this binary has not been found: "+processBinaryFile.getAbsolutePath());
-						}
-					}
+					
+					// konnte nicht realisiert werden, weil es immer einen "Exception in thread "Animation Thread" org.eclipse.swt.SWTException: Invalid thread access" gibt, wenn ich versuche
+					// den father zu manipulieren
+//					// wenn es ein step ist, der einen subprocess beherrbergt, soll der subprocess in einer eigenen pmodel sitzung geoeffnet werden
+//					if( this.stepcircle_clicked.getStep().getType().equals("process") && this.stepcircle_clicked.getStep().getSubprocess() != null && this.stepcircle_clicked.getStep().getSubprocess().getProcess() != null)
+//					{
+//						Process subprocessProcess = this.stepcircle_clicked.getStep().getSubprocess().getProcess();
+//						
+////						java.io.File processBinaryFile = new java.io.File(step.getAbsdir() + "/process.pmb");
+//						java.io.File processBinaryFile = new java.io.File(subprocessProcess.getOutfilebinary());
+//						
+//						if(processBinaryFile.exists())
+//						{
+//							// Aufruf taetigen
+//							try
+//							{
+//								String aufruf = father.getIni().get("apps", "pmodel-gui")+" -instance "+processBinaryFile.getCanonicalPath();
+//								father.log("info", "opening subprocess of step "+this.stepcircle_clicked.getName()+" with call: "+aufruf);
+//								java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+//							}
+//							catch (IOException e)
+//							{
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
+//						}
+//						else
+//						{
+//							father.log("warn", "no outfileBinary present for subprocess of step "+this.stepcircle_clicked.getName());
+//							father.log("debug", "this binary has not been found: "+processBinaryFile.getAbsolutePath());
+//						}
+//					}
 //					// ansonsten nedit mit den logfiles oeffnen
 //					else
 //					{
