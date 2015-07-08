@@ -399,6 +399,7 @@ public class Generate
 			HashMap line = new HashMap<String,String>();
 			for(String actFieldKey : field.keySet())
 			{
+				System.err.println("info: field line " + x + " is: " + actFieldKey + "=" + field.get(actFieldKey).get(x));
 				line.put(actFieldKey, field.get(actFieldKey).get(x));
 				
 				reporter.addField(line);
