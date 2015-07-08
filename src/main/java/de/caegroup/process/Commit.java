@@ -835,9 +835,10 @@ implements Serializable
 
 			// process aus subprocess holen
 			Process processInSubprocess = this.getParent().getSubprocess().getProcess();
+			Process processInSubprocessNeuGeladen = processInSubprocess.readBinary();
 			
 			// debug
-			ArrayList<Step> stepsOfSubprocess = processInSubprocess.getStep();
+			ArrayList<Step> stepsOfSubprocess = processInSubprocessNeuGeladen.getStep();
 			for(Step actStepOfSubprocess : stepsOfSubprocess)
 			{
 				log("debug", "this is a step of subprocess: " + actStepOfSubprocess.getName());
