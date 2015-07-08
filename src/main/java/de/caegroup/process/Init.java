@@ -357,6 +357,7 @@ implements Serializable
 					// wenn alle matches passen, soll es zum ergebnis kollektiv hinzugefuegt werden
 					if(matchPositive)
 					{
+						log("debug", "variable " +actualVariable.getKey() + " from step " +actualFromstep.getName()  + " matched every rule");
 						variables_from_fromstep_which_matched.add(actualVariable);
 					}
 				}
@@ -364,10 +365,11 @@ implements Serializable
 				// das returnfield aus den variablen extrahieren und zur string sammlung hinzufuegen
 				for(Variable actVariable : variables_from_fromstep_which_matched)
 				{
+					log("debug", "putting string to preList "+actVariable.getField(this.getReturnfield())+" (to eventually add to the list under certain rules)");
 					sammlungStrings.add(actVariable.getField(this.getReturnfield()));
 				}
 			}
-			
+
 			/////////
 			// die Stringsammlung nachbearbeiten
 			// 
@@ -377,6 +379,10 @@ implements Serializable
 				log("debug", "found "+sammlungStrings.size()+" items to add to the list, but minoccur="+this.getMinoccur()+", maxoccur="+this.getMaxoccur());
 				setStatus("error");
 				return;
+			}
+			else
+			{
+				log("debug", "found "+sammlungStrings.size()+" items to add to the list (minoccur="+this.getMinoccur()+", maxoccur="+this.getMaxoccur() + ")");
 			}
 
 			// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
