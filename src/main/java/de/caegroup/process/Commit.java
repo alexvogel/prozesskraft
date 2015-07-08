@@ -843,9 +843,13 @@ implements Serializable
 			{
 				Variable newVariable = master.clone();
 				newVariable.setSubprocesskey(null);
-				newVariable.setValue(this.getParent().resolveString(actVariableFromSubprocess.getValue()));
-				log("info", "(value=" +newVariable.getValue()+")");
-				variablesToCommit.add(master);
+				
+				// den value aus der variable des subprocesses uebernehmen (kein resolven notwendig, da das value bereits gueltig ist)
+				newVariable.setValue(actVariableFromSubprocess.getValue());
+				// den schluessel setzen und dabei resolven, da dieser platzhalter enthalten kann
+				newVariable.setKey(this.getParent().resolveString(newVariable.getKey()));
+				log("info", "this variable has been determined: (" + newVariable.getKey() + "=" +newVariable.getValue()+")");
+				variablesToCommit.add(newVariable);
 			}
 		}
 
