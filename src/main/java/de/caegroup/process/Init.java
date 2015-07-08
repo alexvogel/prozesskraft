@@ -280,7 +280,9 @@ implements Serializable
 		// wenn kein multistep, so ist nur 1 fromstep in der liste
 		ArrayList<Step> fromsteps = this.getParent().getParent().getSteps(this.getFromstep());
 
-		// ueber alle fromsteps iterieren und die gefordterte liste (mit dem namen des inits) erstellen (nur EINE insgesamt, nicht eine PRO fromstep)
+		ArrayList<String> sammlungStrings = new ArrayList<String>();
+
+		// ueber alle fromsteps iterieren und die geforderte liste (mit dem namen des inits) erstellen (nur EINE insgesamt, nicht eine PRO fromstep)
 		for (Step actualFromstep : fromsteps)
 		{
 			log("debug", "looking for field '"+this.getReturnfield()+"' from a "+this.getFromobjecttype()+" of step '"+actualFromstep.getName()+"'");
@@ -321,71 +323,12 @@ implements Serializable
 						files_from_fromstep_which_matched.add(actualFile);
 					}
 				}
-
-				// feststellen ob die gewuenschte anzahl gematched hat
-				if( (files_from_fromstep_which_matched.size() < this.getMinoccur()) || (files_from_fromstep_which_matched.size() > this.getMaxoccur()) )
+				
+				// das returnfield aus den files extrahieren und zur string sammlung hinzufuegen
+				for(File actFile : files_from_fromstep_which_matched)
 				{
-					log("debug", "found "+files_from_fromstep_which_matched.size()+" items to add to the list, but minoccur="+this.getMinoccur()+", maxoccur="+this.getMaxoccur());
-					setStatus("error");
-					return;
+					sammlungStrings.add(actFile.getField(this.getReturnfield()));
 				}
-
-				// aus der reduzierten file-liste, das gewuenschte field (returnfield) extrahieren und in der list unter dem Namen ablegen
-				// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
-				List list;
-				if (this.getParent().getList(this.getListname()) != null)
-				{
-					list = this.getParent().getList(this.getListname());
-					log("debug", "list '"+list.getName()+"' with "+list.getItem().size()+" item(s) already exists.");
-				}
-				// ansonsten eine anlegen und this hinzufuegen
-				else
-				{
-					list = new List();
-					list.setName(this.getListname());
-					log("debug", "list does not exist. creating '"+list.getName()+"'");
-					this.getParent().addList(list);
-				}
-
-				// wenn insertrule==append, hinzufuegen der listitems, unabhaengig was schon vorhanden ist
-				if(this.getInsertrule().equals("append"))
-				{
-					log("info", "insertrule: "+this.getInsertrule());
-					for(File actualFile : files_from_fromstep_which_matched)
-					{
-						list.addItem(actualFile.getField(this.getReturnfield()));
-					}
-				}
-				// wenn insertrule==overwrite, wenn etwas hinzuzufuegen ist (so bleiben defaults erhalten), dann zuerst liste leeren, und dann alles hinzufuegen
-				else if(this.getInsertrule().equals("overwrite"))
-				{
-					log("info", "insertrule: "+this.getInsertrule());
-					if(!files_from_fromstep_which_matched.isEmpty())
-					{
-						list.clear();
-						for(File actualFile :files_from_fromstep_which_matched)
-						{
-							list.addItem(actualFile.getField(this.getReturnfield()));
-						}
-					}
-				}
-				// wenn insertrule==unique zuerst alles hinzufuegen und dann mehrfachvorkommende loeschen
-				else if(this.getInsertrule().equals("unique"))
-				{
-					log("info", "insertrule: "+this.getInsertrule());
-					for(File actualFile : files_from_fromstep_which_matched)
-					{
-						list.addItem(actualFile.getField(this.getReturnfield()));
-					}
-					list.removeDoubles();
-				}
-				else
-				{
-					log("error", "unknown insertrule: "+this.getInsertrule());
-					this.setStatus("error");
-				}
-
-				log("debug", "list '"+list.getName()+"' contains "+list.getItem().size()+" item(s).");
 			}
 			
 			// wenn es ein variable ist
@@ -418,71 +361,80 @@ implements Serializable
 					}
 				}
 
-				// feststellen ob die gewuenschte anzahl der variablen gematched hat
-				if( (variables_from_fromstep_which_matched.size() < this.getMinoccur()) || (variables_from_fromstep_which_matched.size() > this.getMaxoccur()) )
+				// das returnfield aus den variablen extrahieren und zur string sammlung hinzufuegen
+				for(Variable actVariable : variables_from_fromstep_which_matched)
 				{
-					log("debug", "found "+variables_from_fromstep_which_matched.size()+" items to add to the list, but minoccur="+this.getMinoccur()+", maxoccur="+this.getMaxoccur());
-					this.setStatus("error");
-					return;
+					sammlungStrings.add(actVariable.getField(this.getReturnfield()));
 				}
-
-				// aus der reduzierten variablen-liste, das gewuenschte field (returnfield) extrahieren und in der initlist unter dem Namen ablegen
-				// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
-				List list;
-				if (this.getParent().getList(this.getListname()) != null)
-				{
-					list = this.getParent().getList(this.getListname());
-					log("debug", "list '"+list.getName()+"' with "+list.getItem().size()+" item(s) already exists.");
-				}
-				// ansonsten eine anlegen und this hinzufuegen
-				else
-				{
-					list = new List();
-					list.setName(this.getListname());
-					log("debug", "list does not exist. creating '"+list.getName()+"'");
-					this.getParent().addList(list);
-				}
-
-				// wenn insertrule==append, hinzufuegen der listitems, unabhaengig was schon vorhanden ist
-				if(this.getInsertrule().equals("append"))
-				{
-					log("info", "insertrule: "+this.getInsertrule());
-					for(Variable actualVariable : variables_from_fromstep_which_matched)
-					{
-						list.addItem(actualVariable.getField(this.getReturnfield()));
-					}
-				}
-				// wenn insertrule==overwrite, wenn etwas hinzuzufuegen ist (so bleiben defaults erhalten), dann zuerst liste leeren, und dann alles hinzufuegen
-				else if(this.getInsertrule().equals("overwrite"))
-				{
-					log("info", "insertrule: "+this.getInsertrule());
-					if(!variables_from_fromstep_which_matched.isEmpty())
-					{
-						list.clear();
-						for(Variable actualVariable : variables_from_fromstep_which_matched)
-						{
-							list.addItem(actualVariable.getField(this.getReturnfield()));
-						}
-					}
-				}
-				// wenn insertrule==unique zuerst alles hinzufuegen und dann mehrfachvorkommende loeschen
-				else if(this.getInsertrule().equals("unique"))
-				{
-					log("info", "insertrule: "+this.getInsertrule());
-					for(Variable actualVariable : variables_from_fromstep_which_matched)
-					{
-						list.addItem(actualVariable.getField(this.getReturnfield()));
-					}
-					list.removeDoubles();
-				}
-				else
-				{
-					log("error", "unknown insertrule: "+this.getInsertrule());
-					this.setStatus("error");
-				}
-
-				log("debug", "list '"+list.getName()+"' contains now "+list.getItem().size()+" item(s).");
 			}
+			
+			/////////
+			// die Stringsammlung nachbearbeiten
+			// 
+			// feststellen ob die gewuenschte anzahl in diesem init gematched hat
+			if( (sammlungStrings.size() < this.getMinoccur()) || (sammlungStrings.size() > this.getMaxoccur()) )
+			{
+				log("debug", "found "+sammlungStrings.size()+" items to add to the list, but minoccur="+this.getMinoccur()+", maxoccur="+this.getMaxoccur());
+				setStatus("error");
+				return;
+			}
+
+			// ist eine liste mit dem namen schon vorhanden, dann soll keine neue angelegt werden
+			List list;
+			if (this.getParent().getList(this.getListname()) != null)
+			{
+				list = this.getParent().getList(this.getListname());
+				log("debug", "list '"+list.getName()+"' with "+list.getItem().size()+" item(s) already exists.");
+			}
+			// ansonsten eine anlegen und this hinzufuegen
+			else
+			{
+				list = new List();
+				list.setName(this.getListname());
+				log("debug", "list does not exist. creating '"+list.getName()+"'");
+				this.getParent().addList(list);
+			}
+
+			// wenn insertrule==append, hinzufuegen der listitems, unabhaengig was schon vorhanden ist
+			if(this.getInsertrule().equals("append"))
+			{
+				log("info", "insertrule: "+this.getInsertrule());
+				for(String actString : sammlungStrings)
+				{
+					list.addItem(sammlungStrings);
+				}
+			}
+			// wenn insertrule==overwrite, wenn etwas hinzuzufuegen ist (so bleiben defaults erhalten), dann zuerst liste leeren, und dann alles hinzufuegen
+			else if(this.getInsertrule().equals("overwrite"))
+			{
+				log("info", "insertrule: "+this.getInsertrule());
+				if(!sammlungStrings.isEmpty())
+				{
+					list.clear();
+					for(String actString : sammlungStrings)
+					{
+						list.addItem(actString);
+					}
+				}
+			}
+			// wenn insertrule==unique zuerst alles hinzufuegen und dann mehrfachvorkommende loeschen
+			else if(this.getInsertrule().equals("unique"))
+			{
+				log("info", "insertrule: "+this.getInsertrule());
+				for(String actString : sammlungStrings)
+				{
+					list.addItem(actString);
+				}
+				list.removeDoubles();
+			}
+			else
+			{
+				log("error", "unknown insertrule: "+this.getInsertrule());
+				this.setStatus("error");
+			}
+
+			log("debug", "list '"+list.getName()+"' contains "+list.getItem().size()+" item(s).");
+
 		}
 		this.setStatus("finished");
 	}
