@@ -111,6 +111,8 @@ public class Reporter
 		System.out.println("parameter "+parameter);
 		System.out.println("jasper "+jasper);
 		
+		System.err.println("Anzahl der zeilen ist: " + field.size());
+		
 		dataSource = new JRMapCollectionDataSource((Collection)field);
 		
 		JasperFillManager.fillReportToFile(jasper, jasperFilled, parameter, dataSource);
