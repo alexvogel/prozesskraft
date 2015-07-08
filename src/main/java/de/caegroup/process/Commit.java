@@ -541,10 +541,11 @@ implements Serializable
 			log("info", "file will be extracted from the Files (key="+master.getSubprocesskey()+") from the rootStep of the subprocess " +this.getParent().getSubprocess().getDomain() + "/" + this.getParent().getSubprocess().getName()+ "/" + this.getParent().getSubprocess().getVersion());
 
 			// process aus subprocess holen
-			Process subprocess = this.getParent().getSubprocess().getProcess();
+			Process processInSubprocess = this.getParent().getSubprocess().getProcess();
+			Process processInSubprocessNeuGeladen = processInSubprocess.readBinary();
 			
 			// die variablen aus dem subprocess holen, die als schluessel den subprocesskey des masters haben
-			ArrayList<File> filesFromSubprocess = subprocess.getRootStep().getFile(master.getSubprocesskey());
+			ArrayList<File> filesFromSubprocess = processInSubprocessNeuGeladen.getRootStep().getFile(master.getSubprocesskey());
 			
 			// fuer jedes file den master clonen, den realposition setzen setzen und zu der liste der zu committenden files hinzufuegen
 			for(File actFileFromSubprocess : filesFromSubprocess)
@@ -552,7 +553,9 @@ implements Serializable
 				File newFile = master.clone();
 				newFile.setSubprocesskey(null);
 				newFile.setRealposition(actFileFromSubprocess.getAbsfilename());
-				log("info", "(realposition=" +newFile.getRealposition()+")");
+				newFile.setKey(this.getParent().resolveString(newFile.getKey()));
+				log("info", "this file has been determined and will be copied from the subprocess to this step after being successfully added: (" + newFile.getKey() + "=" +newFile.getRealposition()+")");
+//				log("info", "(realposition=" +newFile.getRealposition()+")");
 				filesToCommit.add(newFile);
 			}
 		}
@@ -838,12 +841,12 @@ implements Serializable
 			Process processInSubprocessNeuGeladen = processInSubprocess.readBinary();
 			
 			// debug
-			ArrayList<Step> stepsOfSubprocess = processInSubprocessNeuGeladen.getStep();
-			for(Step actStepOfSubprocess : stepsOfSubprocess)
-			{
+//			ArrayList<Step> stepsOfSubprocess = processInSubprocessNeuGeladen.getStep();
+//			for(Step actStepOfSubprocess : stepsOfSubprocess)
+//			{
 //				log("debug", "this is a step of subprocess: " + actStepOfSubprocess.getName());
-				log("debug", "variables of subprocess step " + actStepOfSubprocess.getName() + ": " + StringUtils.join(actStepOfSubprocess.getVariableKeys(), ", "));
-			}
+//				log("debug", "variables of subprocess step " + actStepOfSubprocess.getName() + ": " + StringUtils.join(actStepOfSubprocess.getVariableKeys(), ", "));
+//			}
 
 			// die variablen aus dem subprocess holen, die als schluessel den subprocesskey des masters haben
 			ArrayList<Variable> variablesFromSubprocess = processInSubprocessNeuGeladen.getRootStep().getVariable(master.getSubprocesskey());
