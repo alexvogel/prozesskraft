@@ -164,7 +164,7 @@ public class SIInsightCreator
 		Button buttonFileBrowser = new Button(compositeAction, SWT.NONE);
 		buttonFileBrowser.setText("browse");
 		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		buttonFileBrowser.setToolTipText("open step directory with a filebrowser");
+		buttonFileBrowser.setToolTipText("if its a subprocess it will be opened in an own pmodel client OR if its a normal step the data directory will be opened with a filebrowser");
 		buttonFileBrowser.addSelectionListener(listener_button_browse);
 
 		Button buttonLog = new Button(compositeAction, SWT.NONE);
