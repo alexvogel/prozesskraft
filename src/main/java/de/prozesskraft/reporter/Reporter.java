@@ -106,12 +106,12 @@ public class Reporter
 			jasperFilled = jasper + ".filled";
 		}
 		
-		System.out.println("jasper "+jasper);
-		System.out.println("jasperFilled "+jasperFilled);
-		System.out.println("parameter "+parameter);
-		System.out.println("jasper "+jasper);
+//		System.out.println("jasper "+jasper);
+//		System.out.println("jasperFilled "+jasperFilled);
+//		System.out.println("parameter "+parameter);
+//		System.out.println("jasper "+jasper);
 		
-		System.err.println("Anzahl der zeilen ist: " + field.size());
+//		System.err.println("Anzahl der zeilen ist: " + field.size());
 		
 		dataSource = new JRMapCollectionDataSource((Collection)field);
 		
