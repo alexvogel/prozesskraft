@@ -170,8 +170,8 @@ public class SIInsightCreator
 		Button buttonLog = new Button(compositeAction, SWT.NONE);
 		buttonLog.setText(".log");
 		buttonLog.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		buttonLog.setToolTipText("opens .log (contains stdout & stderr of work command) file of step with an editor");
-//		buttonLog.addSelectionListener(listener_button_log);
+		buttonLog.setToolTipText("opens .log (contains stdout/stderr of work command) file of step with an editor");
+		buttonLog.addSelectionListener(listener_button_log);
 
 		Button buttonReset = new Button(compositeAction, SWT.NONE);
 		buttonReset.setText("reset");
