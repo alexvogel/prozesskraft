@@ -1394,6 +1394,7 @@ implements Serializable, Cloneable
 				else
 				{
 					log("debug", "list: "+actList.getName()+": no defaultitems");
+					actList.clear();
 				}
 			}
 			this.setList(toPreserve);

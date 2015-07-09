@@ -180,14 +180,12 @@ implements Serializable
 		// resolven aller callitems
 		for(Callitem actCallitem : this.getCallitemssorted())
 		{
-			// da sich die callitems beim resolven veraendern (mehr oder weniger werden, etc.) muss der aktuelle callitem aus work entfernt werden
-			this.removeCallitem(actCallitem);
-			
+			// die beim resolven erzeugten callitems werden nicht in work abgelegt - sie existieren nur beim resolven (clone)
 			// wg evtl. loops entstehen beim resolven eines callitems evtl. mehr oder weniger callitems
 			ArrayList<Callitem> actCallitemResolved = actCallitem.resolve();
 			
 			// die resolvten Callitems werden dem aktuellen work wieder hinzugefuegt
-			this.addCallitem(actCallitemResolved);
+//			this.addCallitem(actCallitemResolved);
 			
 			log("debug", "the xml-callitem sequence " + actCallitem.getSequence() + " has been resolved to " +actCallitemResolved.size() +" callitems");
 			for(Callitem actResolvedCallitem : actCallitemResolved)
