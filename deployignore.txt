@@ -1,0 +1,6 @@
+# ein pattern wird im gesamten dateibaum gesucht - d.h. es wird einfach gegen den vollen relativen pfad gematcht
+# ein in einfachen anfuehrungszeichen gesetztes pattern wird als relativer pfad vom root pfad aus betrachtet
+deploytargetrename.txt
+deployignore.txt
+deploy.pl
+'20150709_download'
