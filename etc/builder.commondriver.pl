@@ -5,8 +5,8 @@ use warnings;
 use Getopt::Long;
 Getopt::Long::Configure("pass_through");
 
-my $driverversion = "0.3.0";
-my $date = "Sep 3 2014";
+my $driverversion = "0.4.0";
+my $date = "Jul 9 2015";
 
 #------------
 # appname feststellen
@@ -18,13 +18,14 @@ BEGIN
 }
 #------------
 
+my $bundleName = "license4j-server";
 my $appname = $filename;
 my $default;
 
 #------------
 # feststellen der verfuegbaren versionen
 #my $installdir = $directories."../install/$filename";
-my $installdir = $directories."../install/$appname";
+my $installdir = $directories."../install/$bundleName";
 opendir INPDIR, $installdir;   # READ INPUT DIRECTORY FILE LIST
 my @all_versions = readdir INPDIR;  # Read file list
 @all_versions = grep { !/^\.$/ && !/^\.\.$/ } @all_versions;
@@ -35,7 +36,7 @@ closedir INPDIR;  #Close directory
 
 #------------
 # feststellen der default version
-my $defaultVersionFile = $directories."../install/version.$appname";
+my $defaultVersionFile = $directories."../install/version.$bundleName";
 if(stat $defaultVersionFile)
 {
 	open (DEFAULT, '<', $defaultVersionFile) or die "Can't read $defaultVersionFile: $!";
