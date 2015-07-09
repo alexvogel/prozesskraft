@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body style="font-family:Tahoma;padding:10px;">
+        <div>
+            <h1>License4J Online License Key Floating Over Internet Example Application</h1>
+            <p>
+                This example use new <b>validateOnlineLicenseKey</b> and <b>FloatingLicenseCheckTimerHandler</b>.
+            </p>
+            <br/>
+            <h2>validateOnlineLicenseKey</h2>
+            <p>
+                This the new method to validate online license key. It is simplified, date arguments removed. 
+                This method runs new <b>FloatingLicenseCheckTimerHandler</b> which also keeps updated License object when run.
+                Server connection error handler, license invalid handler and license valid handler are all combined in a single
+                <b>FloatingLicenseCheckTimerHandler</b>. This handler is run when there is a server connection error, license is valid or for any reason invalid.
+                <br />
+                <br />
+                Since <b>FloatingLicenseCheckTimerHandler</b> runs all events, and has License object, it is easy 
+                to call any method depending on license validation status.
+            </p>
+            <p>
+                See MyFloatingHandler.java
+            </p>
+            <br/>
+            <h2>How To Run</h2>
+            <p>
+                <b>URRQ9-6ZWF4-UQ5LE-QDKXB-S2QU3</b> This keys can be directly used, it is available on Online.License4J.
+                <br/>
+                <b>WHUUJ-TYGBW-VJEAT-KXFPW-PP7UK</b> This has an expiration date.
+                <br/>
+                <b>CQDEP-WWQPJ-7JV2X-AEG22-77ISX</b> This is an <b>expired</b> key to test.
+                <br/>
+                <b>6WFDI-X3CGD-LAANG-3UGMK-HIZWM</b> This key max allowed use count is set to 10, and already reached.
+                <br/><br/>
+                To use your own key, generate, and finally, replace
+                public key and productID with yours in <b>LicenseInformationGUI.java</b> file.
+            </p>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body style="font-family:Tahoma;padding:10px;">
+        <div>
+            <h1>License4J Floating License Text Example Application</h1>
+            <p>
+                This example use new <b>validateFloatingLicenseText</b> and <b>FloatingLicenseCheckTimerHandler</b>.
+            </p>
+            <br/>
+            <h2>validateFloatingLicenseText</h2>
+            <p>
+                This the new method to validate floating license text. It is simplified, date arguments removed. 
+                This method runs new <b>FloatingLicenseCheckTimerHandler</b> which also keeps updated License object when run.
+                Server connection error handler, license invalid handler and license valid handler are all combined in a single
+                <b>FloatingLicenseCheckTimerHandler</b>. This handler is run when there is a server connection error, license is valid or for any reason invalid.
+                <br />
+                <br />
+                Since <b>FloatingLicenseCheckTimerHandler</b> runs all events, and has License object, it is easy 
+                to call any method depending on license validation status.
+            </p>
+            <p>
+                See MyFloatingHandler.java
+            </p>
+            <br/>
+            <h2>How To Run</h2>
+            <p>
+                To run this example install floating license server, generate a few example licenses. Finally, replace
+                public key and productID with yours in <b>LicenseInformationGUI.java</b> file.
+            </p>
+        </div>
+    </body>
+</html>

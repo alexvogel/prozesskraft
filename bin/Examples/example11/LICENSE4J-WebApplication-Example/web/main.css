@@ -1,0 +1,7 @@
+BODY {font-family:Verdana;padding:20px;font-size:10pt;line-height:25px;}
+.main {width:60%;text-align:justify;background:lightblue;padding:20px;border:2px outset black;}
+.licenseinfo {margin-top:50px;font-size:8pt;font-weight:bold;color:black;border-top:1px dashed black;line-height:20px;}
+.licenselist {font-family:monospace;}
+PRE {font-size:8pt;line-height:12px;}
+A, A:visited {text-decoration:none;color:#2077d8;}
+A:hover {color:#df5757;}
