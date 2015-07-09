@@ -1590,6 +1590,8 @@ public class PrampPartUi1 extends ModelObject
 		  die lizenz ueberpruefen und ggf abbrechen
 		----------------------------*/
 	
+		System.err.println("WOOOOOP");
+		
 		// check for valid license
 		ArrayList<String> allPortAtHost = new ArrayList<String>();
 		allPortAtHost.add(ini.get("license-server", "license-server-1"));
