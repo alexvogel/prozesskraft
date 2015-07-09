@@ -202,7 +202,7 @@ public class Compare
 		
 		if ( !( commandline.hasOption("exam")) )
 		{
-			java.io.File refFile = new java.io.File(ref);
+			java.io.File refFile = new java.io.File(ref).getCanonicalFile();
 			java.io.File examFile = refFile.getParentFile();
 			exam = examFile.getCanonicalPath();
 
