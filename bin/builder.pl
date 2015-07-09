@@ -1111,22 +1111,23 @@ foreach my $refh_stackline (@CONFIG)
 		# den allgemeinen commondriver an die aktuelle app anpassen
 		
 #		if (!($now_app eq "builder"))
-#		{
-#			find( sub { wanted3() }, "$TMPDIR/commondriver");
-#				
-#			sub wanted3
-#			{
-#				my $relname = File::Spec->abs2rel($File::Find::name);
-#				my $tt = Template->new();
-#				my $vars = {
-#							appname	=> sub	{
-#												print "replacing placeholder for 'appname' with '$now_app'\n";
-#												return $now_app;
-#											},
-#							};
-#	 			$tt->process($relname, $vars, $relname) || die $tt->error();
-#			}
-#		}
+		if (1)
+		{
+			find( sub { wanted3() }, "$TMPDIR/commondriver");
+				
+			sub wanted3
+			{
+				my $relname = File::Spec->abs2rel($File::Find::name);
+				my $tt = Template->new();
+				my $vars = {
+							bundleName	=> sub	{
+												print "replacing placeholder for 'bundleName' with '$now_app'\n";
+												return $now_app;
+											},
+							};
+	 			$tt->process($relname, $vars, $relname) || die $tt->error();
+			}
+		}
 
 		# den angepassten commondriver installieren
 		print "info: installing common driver $TMPDIR/commondriver to $now_targetbin"."/".$now_app."\n";

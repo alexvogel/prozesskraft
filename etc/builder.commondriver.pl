@@ -18,7 +18,7 @@ BEGIN
 }
 #------------
 
-my $bundleName = "license4j-server";
+my $bundleName = "[% bundleName %]";
 my $appname = $filename;
 my $default;
 
