@@ -473,6 +473,8 @@ public class Generate
 		{
 			System.err.println("unknown -format " + format);
 		}
+		
+		System.err.println("report generated: " + output);
 	}
 
 	private static void exiter()
