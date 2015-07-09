@@ -202,7 +202,10 @@ public class Compare
 		
 		if ( !( commandline.hasOption("exam")) )
 		{
-			exam = new java.io.File(ref).getParent();
+			java.io.File refFile = new java.io.File(ref);
+			java.io.File examFile = refFile.getParentFile();
+			exam = examFile.getCanonicalPath();
+
 			System.err.println("setting default: -exam="+exam);
 		}
 		else
