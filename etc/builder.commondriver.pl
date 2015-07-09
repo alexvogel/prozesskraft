@@ -18,7 +18,7 @@ BEGIN
 }
 #------------
 
-my $bundleName = "[% bundleName %]";
+my $bundleName = "<bundleName>";
 my $appname = $filename;
 my $default;
 
