@@ -110,7 +110,7 @@ public class Compare
 		
 		Option oexam = OptionBuilder.withArgName("PATH")
 				.hasArg()
-				.withDescription("[mandatory] directory or fingerprint, that will be checked against --ref")
+				.withDescription("[optional; default: parent directory of -ref] directory or fingerprint, that will be checked against --ref")
 //				.isRequired()
 				.create("exam");
 		
@@ -187,16 +187,27 @@ public class Compare
 		boolean error = false;
 		String result = "";
 		boolean md5 = false;
+		String ref = null;
+		String exam = null;
 		
 		if ( !( commandline.hasOption("ref")) )
 		{
 			System.err.println("option -ref is mandatory");
 			error = true;
 		}
+		else
+		{
+			ref = commandline.getOptionValue("ref");
+		}
+		
 		if ( !( commandline.hasOption("exam")) )
 		{
-			System.err.println("option -exam is mandatory");
-			error = true;
+			exam = new java.io.File(ref).getParent();
+			System.err.println("setting default: -exam="+exam);
+		}
+		else
+		{
+			exam = commandline.getOptionValue("exam");
 		}
 
 		if(error)
@@ -260,7 +271,7 @@ public class Compare
 		----------------------------*/
 		
 		// einlesen der referenzdaten
-		java.io.File refPath = new java.io.File(commandline.getOptionValue("ref"));
+		java.io.File refPath = new java.io.File(ref);
 		
 		Dir refDir = new Dir();
 
@@ -290,7 +301,7 @@ public class Compare
 		}
 
 		// einlesen der prueflingsdaten
-		java.io.File examPath = new java.io.File(commandline.getOptionValue("exam"));
+		java.io.File examPath = new java.io.File(exam);
 
 		Dir examDir = new Dir();
 
