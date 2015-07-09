@@ -1,8 +1,8 @@
 
 INSTALLATION
 
-32bit Java 1.6+ is required on 32bit OS.
-64bit Java 1.6 is required for 64bit OS.
+32bit Java 1.6+ is required for 32bit OS.
+64bit Java 1.6+ is required for 64bit OS.
 
 
 LINUX OS
@@ -14,4 +14,3 @@ LINUX OS
 MAC OS
 Floating license server can not run as a service on MAC OS.
 1- Run "java -jar FloatingLicenseServer.jar start" command.
-
