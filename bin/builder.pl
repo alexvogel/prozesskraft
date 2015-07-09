@@ -1042,7 +1042,12 @@ foreach my $refh_stackline (@CONFIG)
 			$rsynccall .= " --exclude=\"$exclude_string\"";
 		}
 		# die projekteigenen ignoreangaben werden als file uebergeben
-		$rsynccall .= " --exclude-from $deployignore -avz $TMPDIR/ ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbulkappbranch;
+		if(stat $deployignore)
+		{
+			$rsynccall .= " --exclude-from $deployignore";
+		}
+		# und der rest des aufrufes
+		$rsynccall .= " -avz $TMPDIR/ ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbulkappbranch;
 
 		print $rsynccall."\n";
 		system $rsynccall;
