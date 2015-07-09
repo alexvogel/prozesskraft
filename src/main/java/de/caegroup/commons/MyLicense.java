@@ -92,6 +92,10 @@ public class MyLicense {
 							log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
 							validLicenseFound = true;
 							break;
+						case LICENSE_INVALID:
+							log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license validation returns "+license.getValidationStatus().toString());
+							validLicenseFound = true;
+							break;
 						default:
 							log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"fatal:"+"no valid license found at this license-server.");
 					}
