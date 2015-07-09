@@ -1028,23 +1028,26 @@ foreach my $refh_stackline (@CONFIG)
 		# verarbeiten der ignore eintraege zu einem rsync aufruf...
 		my @deploy_ignore;
 		print "info: installing $TMPDIR to $now_targetbulkappbranch (excluding '.git', '.project' and '*deploy*' and everything from '$deployignore')\n";
-		if (stat $deployignore)
-		{
-			open (DEPLOYIGNORE, '<', $deployignore) or die "can't read $deployignore: $!";
-			@deploy_ignore = <DEPLOYIGNORE>;
-			chomp @deploy_ignore;
-		}
+#		if (stat $deployignore)
+#		{
+#			open (DEPLOYIGNORE, '<', $deployignore) or die "can't read $deployignore: $!";
+#			@deploy_ignore = <DEPLOYIGNORE>;
+#			chomp @deploy_ignore;
+#		}
 		my $rsynccall = "rsync";
-		foreach my $exclude_string (@deploy_ignore, @ignorePatterns)
+#		foreach my $exclude_string (@deploy_ignore, @ignorePatterns)
+#		die standardangaben der zu ignorierenden patterns werden aus dem CONF uebernommen
+		foreach my $exclude_string (@ignorePatterns)
 		{
 			$rsynccall .= " --exclude=\"$exclude_string\"";
 		}
-		$rsynccall .= " -avz $TMPDIR/ ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbulkappbranch;
+		# die projekteigenen ignoreangaben werden als file uebergeben
+		$rsynccall .= " --exclude-from $deployignore -avz $TMPDIR/ ".$now_targetuser."\@".$now_targetmachine.":".$now_targetbulkappbranch;
 
 		print $rsynccall."\n";
 		system $rsynccall;
 		#-----------------
-		
+
 		#-----------------
 		# alle umbenennungen, die in der datei deploytargetrename enthalten sind, im targetbulkappbranch durchfuehren
 		my $deploytargetrename = "deploytargetrename.txt";
