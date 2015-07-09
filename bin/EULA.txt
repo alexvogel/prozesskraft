@@ -4,7 +4,7 @@ CONDITIONS OF THIS LICENSE AGREEMENT CAREFULLY BEFORE CONTINUING WITH THIS
 PROGRAM INSTALL AND USE.
 
 By installing or using the LICENSE4J (the "Company") having its registered 
-office at Cayyolu Yasam 3207 Str. No:1/17 06810 Ankara, Republic of Turkey
+office at Cayyolu Yasam 2207 Str. No:1/17 06810 Ankara, Republic of Turkey
 product License Manager, License4J Runtime Library, License4J Development,
 Library, HardwareID Viewer, Floating License Server, Auto License Generation
 and Activation Server and License Activation and Validation Proxy Server

@@ -16,7 +16,7 @@
         Proguard ant task definitaion and proguard jar file.
         -->
         <taskdef resource="proguard/ant/task.properties"
-                 classpath="lib/proguard-4.11.jar" />
+                 classpath="lib/proguard.jar" />
     
         <!--
         Proguard configuration file. It includes descriptions in comment blocks,

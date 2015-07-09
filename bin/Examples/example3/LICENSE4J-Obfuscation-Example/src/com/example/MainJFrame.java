@@ -111,7 +111,7 @@ public class MainJFrame extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(final String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -144,6 +144,11 @@ public class MainJFrame extends javax.swing.JFrame {
                  *
                  * The sample license below is valid, so you can run this
                  * project and see the output.
+                 */
+
+                /**
+                 * New validateFloatingLicenseText with less arguments and new
+                 * handler.
                  */
                 String licenseString = "f22bb85d7950a8e98ed671c752aa02ab7a566705a0cf11adfdfb33d47d4ff9f72d8e279577e1b1a4f01f39b46d5744ba76e372436ad4c7375d650e1eef9dc35eea38938225ed269f873d2b138aa2e3aab0fd256fcc70496f8222bfb92d6a1820f52ba734dfaa4f3d01029c2d0e87c5df535b2bd301309699eb0c2b8c734cfb156dae59347662195706dc8314850e0f43e574dfc21eb2c4567dea04e04598249109a80bc7540203acde3907e22b9a301302537009aea490473c80b9abaf5b4127a0e4f6345b3ece66eb42658d9880080790f33c41ce3160fafa1e5a58600c0d15c24153bb014bcac6a74550137fa52b66a9d4a630709c7eb3fbdfd2cc6a2ddd5b471ebfd26436887a9e8911eab9e85532c1d16fe6c2bd453b0e0779962702ec6408e3270a03d0568d6e7665ed8e2331268464868395ec122823d0909d4b391aee8a7c26259eb4c3892444b143e4d6c363a01b4fe8332b5336dfb033f025bd4c1c00b71f2e492c8f59ea5bd3189d5c0a1f77d3ebc9fd07f8f92e7920a018298991137b291c6f91b0a60c961beda4bcaf49b45fb3116b80f0b56e6834b2729e9ef8bd45d47ce1c0bc08aaa436369ac89ba57c6f843286308861e436042e2c2396f21b5a07974426c7fa5f8eb204f15de1016a8e188e8eb065fe42a321e40c94e7313da830167ce2c75948ed5aad9b14821cedb840d7b157566bad443c0185b3d011bcd60681837d598a6f4b412ae48bbd4f971a6c11d9037309a9cb25d3857ef03eb1460e520739deeb1873a52f8c4ca6bad79c7eb65d3bd48ded27451b9aaadd65d46caec45191ec62da8f5b358346055a";
                 String publickey = "30819f300d06092a864886f70d010101050003818d003081893032301006072a8648ce3d02002EC311215SHA512withECDSA106052b81040006031e00044ac0562877795266a1f0b38965af339c6196923eedb1e2f4f99377f5G02818100a9a58b21279c8b4048c78f89d27523140b3b3ebe7aa256fa89e9065573b2e095cbd135d25a1affd1e1d2d298cbd992a498fbef439a1d85393dbb5002d3b844d227aa7cac31970a5ed9a016a8267112f49b5f3dfb12823a0b279ea57fa5c5ab7603RSA4102413SHA512withRSA7a926e8d56c76925be4a8d1723f98700049ecc61520d25f7b24fa0d8dec914f10203010001";
@@ -202,7 +207,6 @@ public class MainJFrame extends javax.swing.JFrame {
                 /**
                  * License validation end
                  */
-
                 new MainJFrame().setVisible(true);
             }
         });

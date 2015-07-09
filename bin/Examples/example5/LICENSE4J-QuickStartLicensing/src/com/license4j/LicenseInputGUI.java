@@ -5,7 +5,6 @@
 package com.license4j;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -74,7 +73,7 @@ public class LicenseInputGUI extends javax.swing.JDialog {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Licensing"));
 
         buttonGroup1.add(haveLicenseKeyjRadioButton);
-        haveLicenseKeyjRadioButton.setText("I have a license key:");
+        haveLicenseKeyjRadioButton.setText("I have a license key");
         haveLicenseKeyjRadioButton.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 haveLicenseKeyjRadioButtonItemStateChanged(evt);
@@ -82,7 +81,7 @@ public class LicenseInputGUI extends javax.swing.JDialog {
         });
 
         buttonGroup1.add(haveLicenseTextjRadioButton);
-        haveLicenseTextjRadioButton.setText("I have a license text:");
+        haveLicenseTextjRadioButton.setText("I have a license text");
         haveLicenseTextjRadioButton.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 haveLicenseTextjRadioButtonItemStateChanged(evt);
@@ -122,7 +121,7 @@ public class LicenseInputGUI extends javax.swing.JDialog {
                             .addComponent(haveLicenseKeyjRadioButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(licenseKeyjTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
+                            .addComponent(licenseKeyjTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
                             .addComponent(licenseFilejTextField))))
                 .addContainerGap())
         );

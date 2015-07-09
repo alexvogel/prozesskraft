@@ -22,11 +22,7 @@
 
 # Create a mapping file in specified folder.
 -printmapping '..\dist\obfuscated\obfuscated-mapping.txt'
-
-
--keepattributes Exceptions,InnerClasses,Signature,Deprecated,
-                SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
-
+             SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
 
 # Finally keep main class.
 -keep public class com.example.MainJFrame {
