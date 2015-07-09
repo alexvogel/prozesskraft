@@ -1265,7 +1265,7 @@ implements Serializable
 				String value = "";
 				
 				// den glob nullen
-				master.setGlob(null);
+//				master.setGlob(null);
 				
 				// den gesamten inhalt so wier ist einlesen und nur das letzte \n entfernen
 				while ((line = in.readLine()) != null)
