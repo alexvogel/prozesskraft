@@ -156,24 +156,28 @@
   </xs:element>
   <xs:element name="process">
   	<xs:complexType>
-		<xs:sequence>
-			<xs:element maxOccurs="unbounded" ref="step" />
-		</xs:sequence>
-		<xs:attribute name="initCommitFile" type="xs:string"></xs:attribute>
-		<xs:attribute name="initCommitVariable" type="xs:string"></xs:attribute>
-		<xs:attribute name="architectMail" use="required" type="EmailType" />
-		<xs:attribute name="architectName" type="xs:string"></xs:attribute>
-		<xs:attribute name="architectCompany" type="xs:string"></xs:attribute>
-		<xs:attribute name="customerMail" type="xs:string"></xs:attribute>
-		<xs:attribute name="customerName" type="xs:string"></xs:attribute>
-		<xs:attribute name="customerCompany" type="xs:string"></xs:attribute>
-		<xs:attribute name="description" use="required" type="xs:string" />
-		<xs:attribute name="name" use="required" type="xs:string" />
-		<xs:attribute name="path" use="required" type="xs:string" />
-		<xs:attribute name="modelVersion" use="required" type="xs:string" />
-		<xs:attribute name="version" use="required" type="xs:string" />
-		<xs:attribute name="wrapper" use="required" type="xs:boolean" />
-	</xs:complexType>
+  		<xs:sequence>
+  			<xs:element maxOccurs="unbounded" ref="step" />
+  		</xs:sequence>
+  		<xs:attribute name="amountSimultaneousStep" type="xs:integer" default="1"/>
+  		<xs:attribute name="initCommitFile" type="xs:string"></xs:attribute>
+  		<xs:attribute name="initCommitVariable" type="xs:string"></xs:attribute>
+  		<xs:attribute name="architectMail" use="required"
+  			type="EmailType" />
+  		<xs:attribute name="architectName" type="xs:string"></xs:attribute>
+  		<xs:attribute name="architectCompany" type="xs:string"></xs:attribute>
+  		<xs:attribute name="customerMail" type="xs:string"></xs:attribute>
+  		<xs:attribute name="customerName" type="xs:string"></xs:attribute>
+  		<xs:attribute name="customerCompany" type="xs:string"></xs:attribute>
+  		<xs:attribute name="description" use="required"
+  			type="xs:string" />
+  		<xs:attribute name="name" use="required" type="xs:string" />
+  		<xs:attribute name="path" use="required" type="xs:string" />
+  		<xs:attribute name="modelVersion" use="required"
+  			type="xs:string" />
+  		<xs:attribute name="version" use="required" type="xs:string" />
+  		<xs:attribute name="wrapper" use="required" type="xs:boolean" />
+  	</xs:complexType>
   </xs:element>
   <xs:element name="step" type="step"/>
   <xs:element name="init" type="init"/>

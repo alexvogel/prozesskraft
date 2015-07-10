@@ -72,6 +72,7 @@ implements Serializable
 	private String name = new String();
 	private String description = new String();
 	private String path = new String();
+	private Integer amountSimoultaneousStep = null;
 	private String initCommitFile = new String();
 	private String initCommitVariable = new String();
 	private String architectName = new String();
@@ -2310,5 +2311,19 @@ implements Serializable
 	 */
 	public void setSubprocess(boolean subprocess) {
 		this.subprocess = subprocess;
+	}
+
+	/**
+	 * @return the amountSimoultaneousStep
+	 */
+	public Integer getAmountSimoultaneousStep() {
+		return amountSimoultaneousStep;
+	}
+
+	/**
+	 * @param amountSimoultaneousStep the amountSimoultaneousStep to set
+	 */
+	public void setAmountSimoultaneousStep(Integer amountSimoultaneousStep) {
+		this.amountSimoultaneousStep = amountSimoultaneousStep;
 	}
 }
