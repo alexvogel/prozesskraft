@@ -1329,14 +1329,20 @@ implements Serializable
 		ArrayList<String> newFileArray = new ArrayList<String>();
 		if ((this.initCommitFile != null) && (!(this.initCommitFile.equals(""))))
 		{
-			
+			// trennzeichen ist ":"
 			for(String actualInitCommitFile : this.initCommitFile.split(":"))
 			{
 				String newInitCommitFile = "";
+				
+				// evtl. vorkommen von "~" durch das home directory ersetzen
+				actualInitCommitFile = actualInitCommitFile.replaceAll("~", System.getProperty("user.home"));
+				
+				// wenn relativer pfad, dann um das verzeichnis des xml-Files (Installationsverzeichnis process.xml) erweitern
 				if (!(actualInitCommitFile.matches("^/")))
 				{
 					newInitCommitFile = new java.io.File(this.getInfilexml()).getParent() + "/" + actualInitCommitFile;
 				}
+				// wenn absoluter pfad, dann der ergebnisliste hinzufuegen
 				else
 				{
 					newInitCommitFile = actualInitCommitFile;
@@ -1413,6 +1419,10 @@ implements Serializable
 			for(String actualInitCommitVariable : filesarray)
 			{
 				String newInitCommitVariable = "";
+				
+				// evtl. vorkommen von "~" durch das home directory ersetzen
+				actualInitCommitVariable = actualInitCommitVariable.replaceAll("~", System.getProperty("user.home"));
+
 				if (!(actualInitCommitVariable.matches("^/")))
 				{
 					newInitCommitVariable = new java.io.File(this.getInfilexml()).getParent() + "/" + actualInitCommitVariable;
