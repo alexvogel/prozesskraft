@@ -1584,7 +1584,7 @@ public class PrampPartUi1 extends ModelObject
 	 * checkout License from floatingLicenseServer
 	 * @return void
 	 */
-	void checkLicenseNew()
+	void checkLicense()
 	{
 		/*----------------------------
 		  die lizenz ueberpruefen und ggf abbrechen
@@ -1616,7 +1616,7 @@ public class PrampPartUi1 extends ModelObject
 	 * checkout License from floatingLicenseServer
 	 * @return void
 	 */
-	void checkLicense()
+	void checkLicenseOld()
 	{
 		String publicKey =	"30819f300d06092a864886f70d010101050003818d003081893032301006"
 				+ "072a8648ce3d02002EC311215SHA512withECDSA106052b81040006031e0"
