@@ -772,6 +772,13 @@ public class Dir {
 			// called for each file visited. the basic file attributes of the file are also available
 			public FileVisitResult visitFile(Path walkingFile, BasicFileAttributes attrs) throws IOException
 			{
+				// TODO: handling mit symbolic links implementieren
+				// wenn es sich um einen symbolischen link handelt, soll nichts gemacht werden
+				if(Files.isSymbolicLink(walkingFile))
+				{
+					return FileVisitResult.CONTINUE;
+				}
+
 				// alle ignore-eintraege durchgehen und feststellen ob das aktuell besuchte file ignoriert werden soll
 				FileSystem fileSystem = FileSystems.getDefault();
 				for(String actPattern : ignoreLines)
