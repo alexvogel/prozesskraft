@@ -80,11 +80,13 @@ public class MyLicense {
 						e.printStackTrace();
 					}
 		
+					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug: getValidationStatus: " + license.getValidationStatus());
+					
 			//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"port@host      : "+port+"@"+host);
 			//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-id     : "+productId);
 			//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-edition: "+productEdition);
 			//		log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-version: "+productVersion);
-		
+					
 					switch(license.getValidationStatus())
 					{
 						case LICENSE_VALID:
@@ -94,7 +96,7 @@ public class MyLicense {
 							break;
 						case LICENSE_INVALID:
 							log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"info:"+"license validation returns "+license.getValidationStatus().toString());
-							validLicenseFound = true;
+							validLicenseFound = false;
 							break;
 						default:
 							log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"fatal:"+"no valid license found at this license-server.");
