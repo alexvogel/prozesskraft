@@ -3,4 +3,4 @@
 deploytargetrename.txt
 deployignore.txt
 deploy.pl
-'20150709_download'
+20150709_download
