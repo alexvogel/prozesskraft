@@ -2,6 +2,7 @@
 # -----------------------------------------------------------------------------
 #
 #	DO NOT EDIT THIS SCRIPT
+# MARKED LINES EDITED BY AVOGE
 #
 # -----------------------------------------------------------------------------
 
@@ -9,14 +10,19 @@ CLASS_PATH=FloatingLicenseServer.jar
 CLASS=com.license4j.floatinglicenseserver.server.FloatingLicenseServerDaemon
 PID=/tmp/fls.pid
 
+# AVOGE START
 do_exec() {
-	if [ `getconf LONG_BIT` == "32" ]
-	then
-		./jsvc32 -server -home $JAVA -cp $CLASS_PATH -pidfile $PID $1 $CLASS
-	else
-		./jsvc64 -server -home $JAVA -cp $CLASS_PATH -pidfile $PID $1 $CLASS
-	fi	
+#	if [ `getconf LONG_BIT` == "32" ]
+#	then
+#		./jsvc32 -server -home $JAVA -cp $CLASS_PATH -pidfile $PID $1 $CLASS
+#	else
+#		./jsvc64 -server -home $JAVA -cp $CLASS_PATH -pidfile $PID $1 $CLASS
+#	fi
+# es soll immer die 32 bit fls gestartet werden
+# die bmw-maschine lpcagw13.muc liefert einen getconf = 64, aber hat nur die 32-Bit java version installiert...
+./jsvc32 -server -home $JAVA -cp $CLASS_PATH -pidfile $PID $1 $CLASS
 }
+# AVOGE END
 
 case "$1" in
 	start)  

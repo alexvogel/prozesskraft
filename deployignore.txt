@@ -2,5 +2,5 @@
 # ein in einfachen anfuehrungszeichen gesetztes pattern wird als relativer pfad vom root pfad aus betrachtet
 deploytargetrename.txt
 deployignore.txt
-deploy.pl
+deploy*
 20150709_download
