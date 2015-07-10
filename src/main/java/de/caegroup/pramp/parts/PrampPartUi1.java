@@ -98,7 +98,6 @@ public class PrampPartUi1 extends ModelObject
 	
 	private ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
 	
-	private boolean erster_license_check = true;
 //	private Ini userIni = null;
 	private Text text_basedirectory = null;
 	
@@ -1609,91 +1608,9 @@ public class PrampPartUi1 extends ModelObject
 		{
 			System.exit(1);
 		}
-}
-
-	
-	/**
-	 * checkout License from floatingLicenseServer
-	 * @return void
-	 */
-	void checkLicenseOld()
-	{
-		String publicKey =	"30819f300d06092a864886f70d010101050003818d003081893032301006"
-				+ "072a8648ce3d02002EC311215SHA512withECDSA106052b81040006031e0"
-				+ "0046454eb11885791e7d6dc167597769bd45831b10ea92852e9901793f7G"
-				+ "02818100c878fab37f201dbc1cd0c9519a83d9457838838f1e930ba1cfd4"
-				+ "afb853692d91d1cc7c93f92bc9a6876fb7f814ebc784d1a08650d4562ad6"
-				+ "1aabaf8ddce439790bad2b60f76ea67766112a0ba0a6e962abdb4543692a"
-				+ "a2c75f055b8d0d725d7b03RSA4102413SHA512withRSA7bde6ece2cb63b4"
-				+ "415b1b9ca46b2e87b48a876254dd24db0d005298b3e9870d10203010001";
-
-		boolean license_valid = false;		
-		
-		if (this.license_server_port_at_hostname.size() == 0)
-		{
-			log("error", "no license server defined. check configuration.");
-		}
-		
-		for(String portAtHost : this.license_server_port_at_hostname)
-		{
-			String[] port_and_host = portAtHost.split("@");
-			InetAddress inetAddressHost;
-			try
-			{
-				inetAddressHost = InetAddress.getByName(port_and_host[1]);
-
-				License license = LicenseValidator.validate(publicKey, "1", "user-edition", "0.1", null, null, inetAddressHost, Integer.parseInt(port_and_host[0]), null, null, null);
-
-				// logging nur beim ersten mal
-				if (erster_license_check)
-				{
-					log("info", "trying license-server "+portAtHost);
-					log("info", "license validation returns "+license.getValidationStatus().toString());
-					log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
-					erster_license_check = false;
-				}
-				
-				switch(license.getValidationStatus())
-				{
-					case LICENSE_VALID:
-						license_valid = true;
-						break;
-					default:
-						license_valid = false;
-				}
-			}
-			catch (UnknownHostException e)
-			{
-				// TODO Auto-generated catch block
-				log("warn", "unknown host "+port_and_host[1]);
-	//			e.printStackTrace();
-			}
-			
-			if (license_valid)
-			{
-				break;
-			}
-		}
-		
-		if (!(license_valid))
-		{
-			log("fatal", "no valid license found. forcing exit.");
-			try
-			{
-				Thread.sleep(10000);
-				System.exit(1);
-			} catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		else
-		{
-//			log("info", "license issued for "+license.getLicenseText().getUserEMail()+ " expires in "+license.getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).");
-		}
 	}
 
+	
 	/**
 	 * @param args
 	 */
