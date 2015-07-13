@@ -192,7 +192,14 @@ public class Spl {
 					System.err.println("info: copy sample file to instance directory: "+actInputFile.getCanonicalPath() +" => " +targetFile.getCanonicalPath());
 					System.err.println("debug: start copy at: " + new Timestamp(System.currentTimeMillis()));
 					
-					Files.copy(actInputFile.toPath(), targetFile.toPath());
+					try
+					{
+						Files.copy(actInputFile.toPath(), targetFile.toPath());
+					}
+					catch (FileAlreadyExistsException e)
+					{
+						System.err.println("warn: file already exists. " + e.getMessage());
+					}
 					System.err.println("debug: end copy at: " + new Timestamp(System.currentTimeMillis()));
 				}
 			
