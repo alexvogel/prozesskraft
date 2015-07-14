@@ -80,12 +80,12 @@ public class MyLicense {
 						e.printStackTrace();
 					}
 		
-					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"port@host      : "+port+"@"+host);
-					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-id     : "+productId);
-					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-edition: "+productEdition);
-					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-version: "+productVersion);
-					
-					System.err.println("debug: license validation status is: " + license.getValidationStatus());
+//					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"port@host      : "+port+"@"+host);
+//					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-id     : "+productId);
+//					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-edition: "+productEdition);
+//					log.add("["+new Timestamp(System.currentTimeMillis()) + "]:"+"debug:"+"product-version: "+productVersion);
+//					
+//					System.err.println("debug: license validation status is: " + license.getValidationStatus());
 					
 					switch(license.getValidationStatus())
 					{
