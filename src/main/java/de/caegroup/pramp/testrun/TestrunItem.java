@@ -260,10 +260,10 @@ public class TestrunItem {
 				if(schalterPmodelLaunch.equals("true"))
 				{
 					int maxWait = 30;
-					int actualWait = 0;
+					int actualWait = 3;
 					// a bisserl schlafen bis process-startinstance das unterverzeichnis mit process.pmb angelegt hat
-					father.getFather().log("info", "waiting 3 seconds for the process.pmb of executed testrun to become available on disk");
-					Thread.sleep(2000);
+					father.getFather().log("info", "waiting " + actualWait + " seconds for the process.pmb of executed testrun to become available on disk");
+					Thread.sleep(actualWait * 1000);
 					actualWait += 3;
 					
 					// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist (das wird mit process-startinstance erstellt) muss das erst herausgefunden werden
@@ -300,8 +300,8 @@ public class TestrunItem {
 						
 						if(allFoundProcessBinaries.size() == 0)
 						{
-							father.getFather().log("warn", "process-binary still not found. waiting additional 3 seconds...");
-							Thread.sleep(3000);
+							father.getFather().log("warn", "process-binary still not found. waiting additional " + actualWait + " seconds...");
+							Thread.sleep(actualWait * 1000);
 							actualWait += 3;
 						}
 						else
