@@ -872,20 +872,23 @@ implements Serializable
 		// ansonsten muss mit dem glob festgestellt werden welche files gemeint sind
 		else if((master.getValue()==null) && ( master.getGlob()!=null && (!master.getGlob().equals(""))) )
 		{
-			log("debug", "variable does define a glob instead of a value. so the content of files / directories "+master.getGlob()+" have to be interpreted as a variables.");
+			log("debug", "variable does define a glob instead of a value. resolving the glob entry "+master.getGlob());
 
 			// den glob zu einem absoluten glob ueberfuehren ohne den eintrag im master zu veraendern (muss fuer evtl. reset unveraendert bleiben)
+			String globResolved = this.getParent().resolveString(master.getGlob());
+			log("debug", "variable does define a glob instead of a value. so the content of files / directories "+globResolved+" have to be interpreted as a variables.");
+			
 			String globAbsolute = "";
 			// ist der glob relativ? Dann muss er um das stepdir erweitert werden
-			if(!(master.getGlob().matches("^/.+$")))
+			if(!(globResolved.matches("^/.+$")))
 			{
 //				master.setGlob(this.getAbsdir()+"/"+master.getGlob());
-				globAbsolute = this.getAbsdir()+"/"+master.getGlob();
+				globAbsolute = this.getAbsdir()+"/"+globResolved;
 				log("debug", "glob is relative - expanding with stepdir "+globAbsolute);
 			}
 			else
 			{
-				globAbsolute = master.getGlob();
+				globAbsolute = globResolved;
 			}
 
 			// das Verzeichnis des globs feststellen (der glob selber koennte auch ein dir sein, aber das spielt vorerst keine rolle)
