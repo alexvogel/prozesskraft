@@ -251,7 +251,7 @@ public class Syscall {
 			writerLog.println("whitespaces have been masked");
 			for(String actArg : processSyscallWithArgsTmp)
 			{
-				processSyscallWithArgs.add(actArg.replaceAll(" ", "\\ "));
+				processSyscallWithArgs.add(actArg.replaceAll(" ", "\\\\ "));
 			}
 			
 			writerLog.println("process-syscall has called this...");
