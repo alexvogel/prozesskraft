@@ -1350,23 +1350,48 @@ implements Serializable, Cloneable
 		// root reset ist ausschließlich die daten innerhalb des rootdirs loeschen
 		if(this.isRoot())
 		{
-			// delete stepdirectory
+			// directory, welches gesaeubert werden soll
 			Path dir = Paths.get(this.getAbsdir());
-//			Path pathProcessFile = Paths.get(this.getAbsdir()+"/process.pmb");
+
+			// verzeichnis, welches verschont werden soll
+			final Path dirSpare = Paths.get(this.getAbsdir() + "/processInput");
+			
+			// file, welches verschont werden soll
+			final Path fileSpare = Paths.get(this.getAbsdir() + "/process.pmb");
+			
+			
 			try
 			{
 				Files.walkFileTree(dir, new SimpleFileVisitor<Path>()
+					{
+						// flag ob das aktuelle verzeichnis geschont werden soll
+						boolean flagDirectorySpare = false;
+
+						// called before a directory visit
+						public FileVisitResult preVisitDirectory(Path walkingDir, BasicFileAttributes attrs) throws IOException
 						{
-							public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
+							// setzen des flags ob aktuelles verzeichnis gesaeubert werden soll oder nicht
+							if(walkingDir.equals(dirSpare))
 							{
-								if(!(file.endsWith("process.pmb")))
-								{
-									Files.delete(file);
-								}
-								return CONTINUE;
+								flagDirectorySpare = true;
 							}
+							else
+							{
+								flagDirectorySpare = false;
+							}
+							return CONTINUE;
 						}
-						);
+						
+						public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
+						{
+							if(!(file.equals(fileSpare)) &&  !(flagDirectorySpare))
+							{
+								Files.delete(file);
+							}
+							return CONTINUE;
+						}
+					}
+				);
 			}
 			catch (Exception e)
 			{
@@ -1428,8 +1453,9 @@ implements Serializable, Cloneable
 				actCommit.reset();
 			}
 			
-			// delete stepdirectory
+			// directory, welches gesaeubert werden soll
 			Path dir = Paths.get(this.getAbsdir());
+			
 			try
 			{
 				Files.walkFileTree(dir, new SimpleFileVisitor<Path>()
