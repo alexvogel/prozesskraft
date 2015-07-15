@@ -238,6 +238,7 @@ public class Syscall {
 			}
 
 			// leere argumente entfernen
+			System.err.println("leere argumente werden entfernt");
 			for(int i=0; i<processSyscallWithArgsTmp.size(); i++)
 			{
 				if(processSyscallWithArgsTmp.get(i).equals(""))
@@ -249,6 +250,7 @@ public class Syscall {
 			// in diesem array sollen die endgueltig verarbeiteten parameter gehalten werden
 			ArrayList<String> processSyscallWithArgs = new ArrayList<String>();
 			// noch vorhandene blanks in argumenten maskieren
+			System.err.println("leerzeichen in argumenten werden maskiert");
 			for(String actArg : processSyscallWithArgsTmp)
 			{
 				processSyscallWithArgs.add(actArg.replaceAll(" ", "\\ "));
