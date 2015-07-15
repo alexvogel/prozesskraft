@@ -217,8 +217,8 @@ public class Syscall {
 			// splitten an hochkommas zuerst, wenn es eine gerade anzahl davon gibt
 			ArrayList<String> hochKommaSplit = new ArrayList<String>(Arrays.asList(sCall.split("'")));
 			
-			// in diesem array sollen die endgueltigen parameter gehalten werden
-			ArrayList<String> processSyscallWithArgs = new ArrayList<String>();
+			// in diesem array soll ein zwischenschritt der verarbeiteten parameter gehalten werden
+			ArrayList<String> processSyscallWithArgsTmp = new ArrayList<String>();
 			
 			for(int i=0; i<hochKommaSplit.size(); i++)
 			{
@@ -228,22 +228,30 @@ public class Syscall {
 					System.err.println("GERADE: muss noch an blanks gesplittet werden: " + hochKommaSplit.get(i));
 					ArrayList<String> unterSplit = new ArrayList<String>(Arrays.asList(hochKommaSplit.get(i).split(" ")));
 					System.err.println("anzahl der splitter: "+unterSplit.size());
-					processSyscallWithArgs.addAll(unterSplit);
+					processSyscallWithArgsTmp.addAll(unterSplit);
 				}
 				else
 				{
 					System.err.println("UNGERADE: muss NICHT an blanks gesplittet werden: " + hochKommaSplit.get(i));
-					processSyscallWithArgs.add(hochKommaSplit.get(i));
+					processSyscallWithArgsTmp.add(hochKommaSplit.get(i));
 				}
 			}
 
 			// leere argumente entfernen
-			for(int i=0; i<processSyscallWithArgs.size(); i++)
+			for(int i=0; i<processSyscallWithArgsTmp.size(); i++)
 			{
-				if(processSyscallWithArgs.get(i).equals(""))
+				if(processSyscallWithArgsTmp.get(i).equals(""))
 				{
-					processSyscallWithArgs.remove(i);
+					processSyscallWithArgsTmp.remove(i);
 				}
+			}
+			
+			// in diesem array sollen die endgueltig verarbeiteten parameter gehalten werden
+			ArrayList<String> processSyscallWithArgs = new ArrayList<String>();
+			// noch vorhandene blanks in argumenten maskieren
+			for(String actArg : processSyscallWithArgsTmp)
+			{
+				processSyscallWithArgs.add(actArg.replaceAll(" ", "\\ "));
 			}
 			
 			// das argumenten array ins logfile schreiben
