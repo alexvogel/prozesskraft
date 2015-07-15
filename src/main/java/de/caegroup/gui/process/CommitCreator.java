@@ -65,13 +65,13 @@ public class CommitCreator
 			// alle Variablen im Commit durchgehen und die maximale Size ermitteln und festhalten
 			for(Variable actVariable : actCommit.getVariable())
 			{
-				System.out.println("variable.length "+actVariable.getKey().length());
+//				System.out.println("variable.length "+actVariable.getKey().length());
 				if(actVariable.getKey().length() > maxBreiteDerSchluessel) {maxBreiteDerSchluessel = actVariable.getKey().length();}
 			}
 			// alle Files im Commit durchgehen und die maximale Size ermitteln und festhalten
 			for(File actFile : actCommit.getFile())
 			{
-				System.out.println("variable.length "+actFile.getKey().length());
+//				System.out.println("variable.length "+actFile.getKey().length());
 				if(actFile.getKey().length() > maxBreiteDerSchluessel) {maxBreiteDerSchluessel = actFile.getKey().length();}
 			}
 		}
