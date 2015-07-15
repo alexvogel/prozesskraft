@@ -203,8 +203,6 @@ public class Syscall {
 			writerLog.println("start at         : "+ startDate.toString());
 			writerLog.println("will terminate at: "+ termDate.toString());
 			writerLog.println("------------------------------------------------------");
-			writerLog.println("process-syscall has called this...");
-			writerLog.println("------------------------------------------------------");
 
 			// Umleitung von STDOUT und STDERR dieses Scripts in das angegebene logfile
 			FileOutputStream logStream = new FileOutputStream(sMylog, true);
@@ -238,7 +236,7 @@ public class Syscall {
 			}
 
 			// leere argumente entfernen
-			System.err.println("leere argumente werden entfernt");
+			writerLog.println("empty arguments have been removed");
 			for(int i=0; i<processSyscallWithArgsTmp.size(); i++)
 			{
 				if(processSyscallWithArgsTmp.get(i).equals(""))
@@ -250,12 +248,15 @@ public class Syscall {
 			// in diesem array sollen die endgueltig verarbeiteten parameter gehalten werden
 			ArrayList<String> processSyscallWithArgs = new ArrayList<String>();
 			// noch vorhandene blanks in argumenten maskieren
-			System.err.println("leerzeichen in argumenten werden maskiert");
+			writerLog.println("whitespaces have been masked");
 			for(String actArg : processSyscallWithArgsTmp)
 			{
 				processSyscallWithArgs.add(actArg.replaceAll(" ", "\\ "));
 			}
 			
+			writerLog.println("process-syscall has called this...");
+			writerLog.println("------------------------------------------------------");
+
 			// das argumenten array ins logfile schreiben
 			for(String actString : processSyscallWithArgs)
 			{
