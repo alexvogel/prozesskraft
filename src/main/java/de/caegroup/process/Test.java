@@ -327,18 +327,38 @@ implements Serializable
 			return result;
 		}
 		
-		int grenzwert_integer = Integer.parseInt(param.get(0));
+		// ist die variable ein integer?
+		if(testVariable.getType().equals("integer"))
+		{
+			int grenzwert_integer = Integer.parseInt(param.get(0));
+			
+			if (!( Integer.parseInt(testVariable.getValue()) < grenzwert_integer ))
+			{
+				setTestFeedback("value '"+testVariable.getValue()+"' is not < "+grenzwert_integer);
+				result = false;
+			}
+			else
+			{
+				setTestFeedback("value '"+testVariable.getValue()+"' is < "+grenzwert_integer);
+			}
+		}
+		// oder ein float?
+		else if(testVariable.getType().equals("float"))
+		{
+			float grenzwert_float = Float.parseFloat(param.get(0));
+			
+			if (!( Float.parseFloat(testVariable.getValue()) < grenzwert_float ))
+			{
+				setTestFeedback("value '"+testVariable.getValue()+"' is not < "+grenzwert_float);
+				result = false;
+			}
+			else
+			{
+				setTestFeedback("value '"+testVariable.getValue()+"' is < "+grenzwert_float);
+			}
+		}
 		
-		if (!( Integer.parseInt(testVariable.getValue()) < grenzwert_integer ))
-		{
-			setTestFeedback("value '"+testVariable.getValue()+"' is not < "+grenzwert_integer);
-			result = false;
-		}
-		else
-		{
-			setTestFeedback("value '"+testVariable.getValue()+"' is < "+grenzwert_integer);
-		}
-
+		
 		return result;
 	}
 	
@@ -357,19 +377,38 @@ implements Serializable
 			result = false;
 			return result;
 		}
-		
-		int grenzwert_integer = Integer.parseInt(param.get(0));
-		
-		if (!( Integer.parseInt(testVariable.getValue()) > grenzwert_integer ))
-		{
-			setTestFeedback("value '"+testVariable.getValue()+"' is not > "+grenzwert_integer);
-			result = false;
-		}
-		else
-		{
-			setTestFeedback("value '"+testVariable.getValue()+"' is > "+grenzwert_integer);
-		}
 
+		// ist die variable ein integer?
+		if(testVariable.getType().equals("integer"))
+		{
+			int grenzwert_integer = Integer.parseInt(param.get(0));
+			
+			if (!( Integer.parseInt(testVariable.getValue()) > grenzwert_integer ))
+			{
+				setTestFeedback("value '"+testVariable.getValue()+"' is not > "+grenzwert_integer);
+				result = false;
+			}
+			else
+			{
+				setTestFeedback("value '"+testVariable.getValue()+"' is > "+grenzwert_integer);
+			}
+		}
+		// oder ein float?
+		else if(testVariable.getType().equals("float"))
+		{
+			float grenzwert_float = Float.parseFloat(param.get(0));
+
+			if (!( Float.parseFloat(testVariable.getValue()) > grenzwert_float ))
+			{
+				setTestFeedback("value '"+testVariable.getValue()+"' is not > "+grenzwert_float);
+				result = false;
+			}
+			else
+			{
+				setTestFeedback("value '"+testVariable.getValue()+"' is > "+grenzwert_float);
+			}
+		}
+		
 		return result;
 	}
 	
