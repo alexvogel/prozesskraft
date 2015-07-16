@@ -246,7 +246,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("callitem "+this.getPar(), loglevel, logmessage));
+		this.log.add(new Log("callitem "+this.getPar()+" ["+this.toString()+"]", loglevel, logmessage));
 	}
 	
 

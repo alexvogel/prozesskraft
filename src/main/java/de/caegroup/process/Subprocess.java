@@ -90,7 +90,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("subprocess-"+this.getName()+"-"+this.getVersion(), loglevel, logmessage));
+		this.log.add(new Log("subprocess-"+this.getName()+"-"+this.getVersion()+"["+this.toString()+"]", loglevel, logmessage));
 	}
 
 	/**

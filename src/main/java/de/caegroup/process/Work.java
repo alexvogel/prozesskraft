@@ -414,7 +414,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("work", loglevel, logmessage));
+		this.log.add(new Log("work"+" ["+this.toString()+"]", loglevel, logmessage));
 	}
 	
 	/**

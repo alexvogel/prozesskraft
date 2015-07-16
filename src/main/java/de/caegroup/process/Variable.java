@@ -185,7 +185,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("variable-"+this.getKey(), loglevel, logmessage));
+		this.log.add(new Log("variable "+this.getKey()+" ["+this.toString()+"]", loglevel, logmessage));
 	}
 
 	/*----------------------------

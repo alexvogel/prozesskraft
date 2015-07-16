@@ -1050,7 +1050,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("process", loglevel, logmessage));
+		this.log.add(new Log("process"+" ["+this.toString()+"]", loglevel, logmessage));
 	}
 	
 	/**
