@@ -1907,10 +1907,16 @@ implements Serializable, Cloneable
 				return status;
 			}
 
-			// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
-			else if(  this.work.getStatus().equals("finished") )
+			// wenn work finished ist, aber noch Commits vorhanden sind => worked
+			else if(  this.work.getStatus().equals("finished") && !this.getCommit().isEmpty() )
 			{
 				status = "worked";
+			}
+
+			// wenn work finished ist, und keine Commits vorhanden sind => finished
+			else if(  this.work.getStatus().equals("finished") && this.getCommit().isEmpty() )
+			{
+				status = "finished";
 			}
 		}
 
@@ -1941,11 +1947,18 @@ implements Serializable, Cloneable
 				return status;
 			}
 
-			// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist 'finished'
-			else if(  this.subprocess.getStatus().equals("finished") )
+			// wenn subprocess finished und noch Commits vorhanden sind => worked
+			else if(  this.subprocess.getStatus().equals("finished") && !this.getCommit().isEmpty())
 			{
 				status = "worked";
 			}
+
+			// wenn subprocess finished und keine Commits vorhanden sind => finished
+			else if(  this.subprocess.getStatus().equals("finished") && this.getCommit().isEmpty())
+			{
+				status = "finished";
+			}
+			
 		}
 
 		// Die Commits untersuchen
