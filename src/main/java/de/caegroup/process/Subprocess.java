@@ -403,7 +403,7 @@ implements Serializable
 		return newProcess2;
 	}
 	
-	public void refreshProcess()
+	private void refreshProcess()
 	{
 		// wenn es einen Process gibt, dann den Status von this entsprechend des status des Processes updaten
 		if(this.getProcess() != null)
@@ -416,6 +416,10 @@ implements Serializable
 			// status setzen
 			// ist Process == finished => status=worked
 			// ist Process == error => status=error
+			this.log("debug", "status of the process (triggered by subprocess): " + updatedProcess.getStatus());
+			
+			
+			
 			if(updatedProcess.getStatus().equals("finished"))
 			{
 				this.setStatus("finished");
@@ -429,7 +433,7 @@ implements Serializable
 				this.setStatus("working");
 			}
 			
-			this.log("debug", "setting step status to " + this.getStatus() + ", because subprocess status is " + updatedProcess.getStatus());
+			this.log("debug", "status of subprocess: " + updatedProcess.getStatus());
 			
 			// die binaerfiles setzen
 			updatedProcess.setInfilebinary(this.getProcess().getInfilebinary());
