@@ -78,7 +78,10 @@ implements Serializable
 	@Override
 	public Commit clone()
 	{
-		return SerializationUtils.clone(this);
+		Commit clone = SerializationUtils.clone(this);
+		clone.setParent(this.getParent());
+		
+		return clone;
 	}
 	
 	/*----------------------------
