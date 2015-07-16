@@ -386,6 +386,7 @@ implements Serializable
 		
 		// alle commits aus subprocess in die des neuenProzesses ueberschreiben inkl. aller noch nicht resolvter eintraege
 		newProcess2.getRootStep().setCommit(this.getStep().getCommit());
+		newProcess2.affiliate();
 		
 		// das Basedirectory des neuen prozesses soll das stepdir des parentsteps sein
 		newProcess2.setBaseDir(this.getParent().getAbsdir());
@@ -412,16 +413,12 @@ implements Serializable
 			// einen neuen Process erstellen und aus file einlesen
 			Process updatedProcess = this.getProcess().readBinary();
 			
-			// die binaerfiles setzen
-			updatedProcess.setInfilebinary(this.getProcess().getInfilebinary());
-			updatedProcess.setOutfilebinary(this.getProcess().getOutfilebinary());
-			
 			// status setzen
 			// ist Process == finished => status=worked
 			// ist Process == error => status=error
 			if(updatedProcess.getStatus().equals("finished"))
 			{
-				this.setStatus("worked");
+				this.setStatus("finished");
 			}
 			else if(updatedProcess.getStatus().equals("error"))
 			{
@@ -433,6 +430,12 @@ implements Serializable
 			}
 			
 			this.log("debug", "setting step status to " + this.getStatus() + ", because subprocess status is " + updatedProcess.getStatus());
+			
+			// die binaerfiles setzen
+			updatedProcess.setInfilebinary(this.getProcess().getInfilebinary());
+			updatedProcess.setOutfilebinary(this.getProcess().getOutfilebinary());
+			
+			this.setProcess(updatedProcess);
 		}
 	}
 

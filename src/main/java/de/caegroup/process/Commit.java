@@ -1335,6 +1335,7 @@ implements Serializable
 				}
 				else
 				{
+					this.log("debug", "there is a list with the name "+this.getLoop()+" in step " + this.getParent().getName() + ". it contains "+this.getParent().getList(this.getLoop()).size() + " items(s). [ "+StringUtils.join(this.getParent().getList(this.getLoop()) + "]") );
 					for(String loopVar : this.getParent().getList(this.getLoop()).getItem())
 					{
 						// den commit clonen und der loopedCommits hinzufuegen
