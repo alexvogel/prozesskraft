@@ -743,11 +743,6 @@ implements Serializable
 		{
 			log("debug", "adding "+filesToCommit.size()+" file(s) to step "+this.getParent().getName());
 
-			// falls toRoot != null, soll bei den variablen die category auf denselben wert gesetzt werden
-			for(File actFile : filesToCommit)
-			{
-			}
-			
 			// jedes file einzeln dem step hinzufuegen und sofort danach den 'key' und 'value' resolven
 			for(File actFile : filesToCommit)
 			{
@@ -765,8 +760,10 @@ implements Serializable
 				}
 				
 				// committen
+				log("debug", "vor hinzufuegen: anzahl der files im step "+this.getParent().getName() + ": " + this.getParent().getFile().size());
 				log("debug", "committen des files in den step "+this.getParent().getName());
 				this.getParent().addFile(actFile);
+				log("debug", "nach hinzufuegen: anzahl der files im step "+this.getParent().getName() + ": " + this.getParent().getFile().size());
 				log("debug", "dauerhaftes resolven des gerade committeten files von key "+actFile.getKey()+"->"+this.getParent().resolveString(actFile.getKey()));
 				actFile.setKey(this.getParent().resolveString(actFile.getKey()));
 				log("debug", "file: ("+actFile.getKey()+"=>"+actFile.getAbsfilename()+")");

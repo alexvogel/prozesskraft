@@ -402,51 +402,39 @@ implements Serializable
 		return newProcess2;
 	}
 	
-//	public String getCall(String processStartinstance)
-//	{
-////		this.parent.log("debug", "constructing call");
-//		String call = processStartinstance;
-//		this.log("debug", "constructing call a): "+call);
-//
-//		// debug logging
-//		this.log("debug", "there are "+this.getStep().getCommit().size()+" commit(s) in this 'subprocess'");
-//
-//		// debug logging
-//		if(this.getParent().getLoopvar() != null)
-//		{
-//			this.log("debug", "loopvar of parentstep is: "+this.getParent().getLoopvar());
-//		}
-//		else
-//		{
-//			this.log("debug", "loopvar of parentstep is: null");
-//		}
-//
-//		// resolven aller commits des subprocesses und ueberfuehren in die entsprechenden commitparameter des aufrufs von 'startinstance'
-//		// den loopvar fuer step(root des subprocess) von parent(processstep der den subprocess enthaelt) uebernehmen
-//		this.getStep().setLoopvar(this.getParent().getLoopvar());
-//		// alle listen fuer step(root des subprocess) von parent(processstep der den subprocess enthaelt) uebernehmen
-//		this.getStep().setList(this.getParent().getList());
-//		
-//		// resolven aller commits des subprocesses und ueberfuehren in die entsprechenden commitparameter des aufrufs von 'startinstance'
-//		for(Commit actCommit : this.getStep().getCommit())
-//		{
-//			for(File actFile : actCommit.getFile())
-//			{
-//				call += " ";
-//				call += "-commitfile "+actFile.getKey() + "=" + actFile.getGlob();
-//				this.log("debug", "constructing call b): "+call);
-//			}
-//			for(Variable actVariable : actCommit.getVariable())
-//			{
-//				call += " ";
-//				call += "-commitvariable " + actVariable.getKey() + "=" + actVariable.getValue();
-//				this.log("debug", "constructing call b): "+call);
-//			}
-//		}
-//
-//		this.log("debug", "constructing call");
-//		return call;
-//	}
+	public void refreshProcess()
+	{
+		// wenn es einen Process gibt, dann den Status von this entsprechend des status des Processes updaten
+		if(this.getProcess() != null)
+		{
+			this.log("debug", "refreshing Process from file: " + this.getProcess().getInfilebinary());
+
+			// einen neuen Process erstellen und aus file einlesen
+			Process updatedProcess = this.getProcess().readBinary();
+			
+			// die binaerfiles setzen
+			updatedProcess.setInfilebinary(this.getProcess().getInfilebinary());
+			updatedProcess.setOutfilebinary(this.getProcess().getOutfilebinary());
+			
+			// status setzen
+			// ist Process == finished => status=worked
+			// ist Process == error => status=error
+			if(updatedProcess.getStatus().equals("finished"))
+			{
+				this.setStatus("worked");
+			}
+			else if(updatedProcess.getStatus().equals("error"))
+			{
+				this.setStatus("error");
+			}
+			else if(updatedProcess.getStatus().equals("rolling"))
+			{
+				this.setStatus("working");
+			}
+			
+			this.log("debug", "setting step status to " + this.getStatus() + ", because subprocess status is " + updatedProcess.getStatus());
+		}
+	}
 
 	/*----------------------------
 	  methods get
@@ -500,6 +488,13 @@ implements Serializable
 	 * @return the status
 	 */
 	public String getStatus() {
+		
+		// den eingebetteten process nach fehler abfragen und evtl. den status updaten
+		if(this.getProcess() != null)
+		{
+			
+		}
+		
 		return status;
 	}
 
