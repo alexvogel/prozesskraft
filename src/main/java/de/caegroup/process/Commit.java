@@ -762,7 +762,7 @@ implements Serializable
 //				}
 				
 				// committen
-				log("debug", "vor hinzufuegen: anzahl der files im step "+this.getParent().getName() +" ["+this.getParent().getName() + "] des prozesses " + this.getParent().getParent().getName() +" ["+this.getParent().getParent().toString() + "]: " + this.getParent().getFile().size());
+				log("debug", "vor hinzufuegen: anzahl der files im step "+this.getParent().getName() +" ["+this.getParent().toString() + "] des prozesses " + this.getParent().getParent().getName() +" ["+this.getParent().getParent().toString() + "]: " + this.getParent().getFile().size());
 				log("debug", "committen des files in den step "+this.getParent().getName());
 				this.getParent().addFile(actFile);
 				log("debug", "nach hinzufuegen: anzahl der files im step "+this.getParent().getName()+": " + this.getParent().getFile().size());

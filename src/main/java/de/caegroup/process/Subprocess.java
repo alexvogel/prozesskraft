@@ -493,10 +493,7 @@ implements Serializable
 	public String getStatus() {
 		
 		// den eingebetteten process nach fehler abfragen und evtl. den status updaten
-		if(this.getProcess() != null)
-		{
-			
-		}
+		this.refreshProcess();
 		
 		return status;
 	}
