@@ -749,14 +749,18 @@ implements Serializable
 				// wenn commit im root-Step ist, soll die category des files auf processInput gesetzt werden
 				if(this.getParent().isRoot())
 				{
+					actFile.setCategory("processInput");
+				}
+				else
+				{
 					if(this.isTorootPresent())
 					{
-						actFile.setCategory("processInput"+"/"+this.getToroot());
+						actFile.setCategory("processOutput"+"/"+this.getToroot());
 					}
-					else
-					{
-						actFile.setCategory("processInput");
-					}
+//					else
+//					{
+//						actFile.setCategory("processInput");
+//					}
 				}
 				
 				// committen
