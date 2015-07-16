@@ -704,8 +704,8 @@ public class PmodelPartUi1 extends ModelObject
 			
 			try
 			{
-				log("info", "waiting 1 second for process become available on disk");
-				Thread.sleep(1000);
+				log("info", "waiting 3 second for process become available on disk");
+				Thread.sleep(3000);
 			} catch (InterruptedException e)
 			{
 				// TODO Auto-generated catch block
@@ -744,8 +744,8 @@ public class PmodelPartUi1 extends ModelObject
 			java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
 			try
 			{
-				log("info", "waiting a second for process become available on disk");
-				Thread.sleep(1000);
+				log("info", "waiting 3 seconds for process become available on disk");
+				Thread.sleep(3000);
 			} catch (InterruptedException e)
 			{
 				// TODO Auto-generated catch block
