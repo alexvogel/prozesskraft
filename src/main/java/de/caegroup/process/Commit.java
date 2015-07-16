@@ -751,17 +751,15 @@ implements Serializable
 				{
 					actFile.setCategory("processInput");
 				}
-				else
-				{
-					if(this.isTorootPresent())
-					{
-						actFile.setCategory("processOutput"+"/"+this.getToroot());
-					}
-//					else
+				// bei normalen steps, soll die category leer bleiben, damit file in das stepverzeichnis comitted wird
+				// weiter unten wird bei vorhandenem 'toroot' das file geklont und eine category gesetzt
+//				else
+//				{
+//					if(this.isTorootPresent())
 //					{
-//						actFile.setCategory("processInput");
+//						actFile.setCategory("processOutput"+"/"+this.getToroot());
 //					}
-				}
+//				}
 				
 				// committen
 				log("debug", "vor hinzufuegen: anzahl der files im step "+this.getParent().getName() + ": " + this.getParent().getFile().size());

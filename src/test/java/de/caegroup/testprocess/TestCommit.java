@@ -153,16 +153,19 @@ public class TestCommit {
 		// damit kein extra verzeichnis fuer prozess und step angelegt wird und das zu committende file reinkopiert wird
 		process.setBaseDir("/tmp");
 		
+		// step 'root' erzeugen
 		Step stepRoot = new Step();
 		stepRoot.setName("root");
 		stepRoot.setLoopvar("0");
 		process.addStep(stepRoot);
 
+		// step 'alpha' erzeugen
 		Step stepAlpha = new Step();
 		stepAlpha.setName("alpha");
 		stepAlpha.setLoopvar("0");
 		process.addStep(stepAlpha);
 
+		// einen commit 'ergebnisse' in step 'alpha' erstellen und diesem commit ein file mit einem glob hinzufuegen
 		Commit commit = new Commit(stepAlpha);
 		commit.setName("ergebnisse");
 		commit.setToroot("pp");

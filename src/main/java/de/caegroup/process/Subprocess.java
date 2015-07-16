@@ -386,7 +386,7 @@ implements Serializable
 		
 		// alle commits aus subprocess in die des neuenProzesses ueberschreiben inkl. aller noch nicht resolvter eintraege
 		newProcess2.getRootStep().setCommit(this.getStep().getCommit());
-		newProcess2.affiliate();
+		newProcess2.getRootStep().affiliate();
 		
 		// das Basedirectory des neuen prozesses soll das stepdir des parentsteps sein
 		newProcess2.setBaseDir(this.getParent().getAbsdir());
