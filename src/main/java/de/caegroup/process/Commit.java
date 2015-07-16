@@ -763,9 +763,11 @@ implements Serializable
 				
 				// committen
 				log("debug", "vor hinzufuegen: anzahl der files im step "+this.getParent().getName() +" ["+this.getParent().toString() + "] des prozesses " + this.getParent().getParent().getName() +" ["+this.getParent().getParent().toString() + "]: " + this.getParent().getFile().size());
+				log("debug", "vor hinzufuegen: parent des files "+actFile.getParent().getName() +" ["+actFile.getParent().toString() + "] des prozesses " + this.getParent().getParent().getName() +" ["+this.getParent().getParent().toString() + "]: " + this.getParent().getFile().size());
 				log("debug", "committen des files in den step "+this.getParent().getName());
 				this.getParent().addFile(actFile);
 				log("debug", "nach hinzufuegen: anzahl der files im step "+this.getParent().getName()+": " + this.getParent().getFile().size());
+				log("debug", "nach hinzufuegen: parent des files "+actFile.getParent().getName() +" ["+actFile.getParent().toString() + "] des prozesses " + this.getParent().getParent().getName() +" ["+this.getParent().getParent().toString() + "]: " + this.getParent().getFile().size());
 				log("debug", "dauerhaftes resolven des gerade committeten files von key "+actFile.getKey()+"->"+this.getParent().resolveString(actFile.getKey()));
 				actFile.setKey(this.getParent().resolveString(actFile.getKey()));
 				log("debug", "file: ("+actFile.getKey()+"=>"+actFile.getAbsfilename()+")");
