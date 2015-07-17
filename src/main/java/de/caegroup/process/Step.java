@@ -1951,7 +1951,6 @@ implements Serializable, Cloneable
 			else if(  this.subprocess.getStatus().equals("finished") && !this.getCommit().isEmpty())
 			{
 				status = "worked";
-				return status;
 			}
 
 			// wenn subprocess finished und keine Commits vorhanden sind => finished
