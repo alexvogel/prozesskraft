@@ -150,7 +150,10 @@ implements Serializable
 
 			// aus der hinterlegten Definition einen Prozess erzeugen
 			Process newProcess = this.genProcess(domainInstallationDirectory);
-
+			
+			// die id des Prozesses als parentid des subprocesses setzen
+			newProcess.setParentid(this.getParent().getParent().getId());
+			
 			// die commits durchfuehren. erst jetzt werden die files in das stepeigene verzeichnis kopiert und die
 			// entsprechenden pfadangaben im file-objekt angepasst
 			newProcess.getRootStep().commit();

@@ -113,6 +113,7 @@ implements Serializable
 	public int clonePerformed = 0;
 	
 	private boolean subprocess = false;
+	private String parentid = "no";
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -2325,5 +2326,19 @@ implements Serializable
 	 */
 	public void setAmountSimoultaneousStep(Integer amountSimoultaneousStep) {
 		this.amountSimoultaneousStep = amountSimoultaneousStep;
+	}
+
+	/**
+	 * @return the parentid
+	 */
+	public String getParentid() {
+		return parentid;
+	}
+
+	/**
+	 * @param parentid the parentid to set
+	 */
+	public void setParentid(String parentid) {
+		this.parentid = parentid;
 	}
 }
