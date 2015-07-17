@@ -264,7 +264,7 @@ public class Manager
 			// pradar checkin
 			if(pradar && p2.run && p2.touchInMillis == 0)
 			{
-				String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p2.getId(), "-process="+p2.getName(), "-resource="+pathBinary};
+				String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p2.getId(), "-process="+p2.getName(), "-parentid="+p2.getParentid(), "-resource="+pathBinary};
 				p2.log("info", "call: " + StringUtils.join(argsForCheckin, " "));
 				try
 				{
