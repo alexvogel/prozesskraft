@@ -84,11 +84,23 @@ public class Checkin
 		/*----------------------------
 		  create argument options
 		----------------------------*/
+//		Option domain = OptionBuilder.withArgName("domain")
+//				.hasArg()
+//				.withDescription("[mandatory] domain")
+////				.isRequired()
+//				.create("domain");
+		
 		Option process = OptionBuilder.withArgName("process")
 				.hasArg()
 				.withDescription("[mandatory] process")
 //				.isRequired()
 				.create("process");
+		
+//		Option version = OptionBuilder.withArgName("version")
+//				.hasArg()
+//				.withDescription("[mandatory] version")
+////				.isRequired()
+//				.create("version");
 		
 		Option host = OptionBuilder.withArgName("host")
 				.hasArg()
