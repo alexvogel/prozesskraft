@@ -113,7 +113,7 @@ implements Serializable
 	public int clonePerformed = 0;
 	
 	private boolean subprocess = false;
-	private String parentid = "no";
+	private String parentid = "0";
 	/*----------------------------
 	  constructors
 	----------------------------*/
