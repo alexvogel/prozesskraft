@@ -232,11 +232,11 @@ public class PradarViewTreePage
 			
 			Entity entity = (Entity) thisselection.getFirstElement();
 
-			java.io.File pmbFile = new java.io.File((new java.io.File(entity.getResource()).getParent()+"/"+entity.getProcess()+".pmb"));
+			java.io.File pmbFile = new java.io.File(entity.getResource());
 			
 			if(!(pmbFile.exists()))
 			{
-				parentData.log("error", "process-model-file does not exist");
+				parentData.log("error", "process-model-file does not exist: " + pmbFile.getAbsolutePath());
 			}
 			
 			else
