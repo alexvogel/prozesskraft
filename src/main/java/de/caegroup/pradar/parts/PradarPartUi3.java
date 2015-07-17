@@ -972,7 +972,7 @@ public class PradarPartUi3 extends ModelObject
 	void refresh()
 	{
 		einstellungen.animation = false;
-		checkLicense();
+//		checkLicense();
 		now = Calendar.getInstance();
 		if ((now.getTimeInMillis() - refresh_last.getTimeInMillis()) > refresh_min_interval)
 		{
