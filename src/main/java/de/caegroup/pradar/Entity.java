@@ -278,15 +278,17 @@ implements Serializable
 					if (matcher.group(1).equals(this.getPid()))
 					{
 						System.out.println("PID gefunden: "+matcher.group(1));
-						if (matcher.group(2).matches(this.getProcess()+".+"))
-						{
-							alive = true;
-							System.out.println("Prozessname '"+matcher.group(2)+"' stimmt auch weitgehend (ideal waehre '"+this.getProcess()+"'. jetzt gilt er als erkannt!");
-						}
-						else
-						{
-							System.out.println("Prozessname'"+matcher.group(2)+"' stimmt nicht mit gesuchtem  '"+this.getProcess()+"'-> weitersuchen");
-						}
+						alive = true;
+						System.out.println("Prozess mit id " + this.getPid() + " auf maschine " + this.getHost() + " gefunden! ");
+//						if (matcher.group(2).matches(this.getProcess()+".+"))
+//						{
+//							alive = true;
+//							System.out.println("Prozessname '"+matcher.group(2)+"' stimmt auch weitgehend (ideal waehre '"+this.getProcess()+"'. jetzt gilt er als erkannt!");
+//						}
+//						else
+//						{
+//							System.out.println("Prozessname'"+matcher.group(2)+"' stimmt nicht mit gesuchtem  '"+this.getProcess()+"'-> weitersuchen");
+//						}
 					}
 				}
 			}
