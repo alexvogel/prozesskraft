@@ -333,43 +333,6 @@ public class Manager
 						}
 					}
 					
-					else if(p3.getStatus().equals("error"))
-					{
-						// progress nur aktualisieren, falls sich der fortschritt veraendert hat
-						if((lastStepcount != p3.getStepTogo().size()+p3.getStepFinished().size()) || (lastStepcountFinished != p3.getStepFinished().size()))
-						{
-							lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
-							lastStepcountFinished = p3.getStepFinished().size();
-							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
-							p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
-							try
-							{
-								java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
-							}
-							catch (IOException e)
-							{
-								p3.log("warn", "IOException when trying to pradar progress");
-							}
-						}
-						
-						// errorcode string erzeugen
-						String exitCode = "error in step(s):";
-						for(Step actStep : p3.getStepError())
-						{
-							exitCode = exitCode + " " + actStep.getName();
-						}
-						String[] argsForCheckout = {ini.get("apps", "pradar-checkout"), "-id="+p3.getId(), "-process="+p3.getName(), "-exitcode=\""+exitCode+"\""};
-						p3.log("info", "call: " + StringUtils.join(argsForCheckout, " "));
-						try
-						{
-							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForCheckout, " "));
-						}
-						catch (IOException e)
-						{
-							p3.log("warn", "IOException when trying to pradar checkout");
-						}
-					}
-					
 					// mit letztem progress vergleichen, falls sich etwas veraendert hat , soll ein progress abgesetzt werden
 					else if(p3.getStatus().equals("working"))
 					{
@@ -400,8 +363,43 @@ public class Manager
 					p3.run = false;
 					p3.log("info", "error in process detected. setting run = false");
 					p2.log("info", "stopping manager "+p2.getManagerid());
+					
+					// pradar updaten bevor manager beendet wird
+					// progress nur aktualisieren, falls sich der fortschritt veraendert hat
+					if((lastStepcount != p3.getStepTogo().size()+p3.getStepFinished().size()) || (lastStepcountFinished != p3.getStepFinished().size()))
+					{
+						lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
+						lastStepcountFinished = p3.getStepFinished().size();
+						String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
+						p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
+						try
+						{
+							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
+						}
+						catch (IOException e)
+						{
+							p3.log("warn", "IOException when trying to pradar progress");
+						}
+					}
+					
+					// errorcode string erzeugen
+					String exitCode = "error in step(s):";
+					for(Step actStep : p3.getStepError())
+					{
+						exitCode = exitCode + " " + actStep.getName();
+					}
+					String[] argsForCheckout = {ini.get("apps", "pradar-checkout"), "-id="+p3.getId(), "-process="+p3.getName(), "-exitcode=\""+exitCode+"\""};
+					p3.log("info", "call: " + StringUtils.join(argsForCheckout, " "));
+					try
+					{
+						java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForCheckout, " "));
+					}
+					catch (IOException e)
+					{
+						p3.log("warn", "IOException when trying to pradar checkout");
+					}
 				}
-	
+					
 				if(p3.getStatus().equals("finished"))
 				{
 					// wenn der prozess den status 'finished' hat, soll dieses programm beendet werden
