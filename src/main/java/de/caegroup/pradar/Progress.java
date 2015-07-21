@@ -120,6 +120,7 @@ public class Progress
 		options.addOption( v );
 		options.addOption( process );
 		options.addOption( id );
+		options.addOption( pid );
 		options.addOption( completed );
 		options.addOption( stepcount );
 		
