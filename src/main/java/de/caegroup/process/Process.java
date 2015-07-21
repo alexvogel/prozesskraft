@@ -2366,7 +2366,7 @@ implements Serializable
 		String id2 = "";
 		for(Variable actVar : this.getRootStep().getVariable())
 		{
-			if(actVar.getKey().equals(this.getId2Variable()))
+			if(actVar.getKey().equals("basename"))
 			{
 				return actVar.getValue();
 			}
