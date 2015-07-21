@@ -2363,7 +2363,7 @@ implements Serializable
 	 */
 	public String getId2()
 	{
-		String id2 = "no";
+		String id2 = this.getId2Variable();
 		for(Variable actVar : this.getRootStep().getVariable())
 		{
 			if(actVar.getKey().equals(this.getId2Variable()))
