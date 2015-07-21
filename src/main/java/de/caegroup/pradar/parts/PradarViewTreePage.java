@@ -461,7 +461,7 @@ public class PradarViewTreePage
 				case 2: return entity.getProcess();
 				case 3: return entity.getVersion();
 //				case 4: return entity.getActive();
-				case 5: return entity.getProgressAsString();
+//				case 5: return entity.getProgressAsString();
 				case 6: return entity.getUser();
 				case 7: return entity.getHost();
 				case 8: return entity.getCheckinAsString();
