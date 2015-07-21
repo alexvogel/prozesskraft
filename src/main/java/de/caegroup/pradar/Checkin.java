@@ -118,6 +118,11 @@ public class Checkin
 				.withDescription("[optional] identification tag for users")
 				.create("id2");
 		
+		Option pid = OptionBuilder.withArgName("pid")
+				.hasArg()
+				.withDescription("[optional] pid of the program that symbolizes whether process is still running")
+				.create("pid");
+		
 		Option parentid = OptionBuilder.withArgName("parentid")
 				.hasArg()
 				.withDescription("[optional] id of the parent process")
@@ -145,6 +150,7 @@ public class Checkin
 		options.addOption( process );
 		options.addOption( id );
 		options.addOption( id2 );
+		options.addOption( pid );
 		options.addOption( parentid );
 		options.addOption( host );
 		options.addOption( user );
@@ -218,6 +224,16 @@ public class Checkin
 		{
 //			Random generator = new Random();
 			entity.setId2("noname");
+		}
+
+		if (line.hasOption("pid"))
+		{
+			entity.setPid(line.getOptionValue("pid"));
+		}
+		else
+		{
+//			Random generator = new Random();
+			entity.setPid("");
 		}
 
 		if (line.hasOption("parentid"))
