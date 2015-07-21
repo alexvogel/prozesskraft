@@ -84,6 +84,7 @@ implements Serializable
 	private String modelVersion = new String();
 	private String version = new String();
 	private boolean wrapper = false;
+	private String id2Variable = null;
 //	private NamedList<Step> steps = new NamedList<Step>();
 	private ArrayList<Step> step = new ArrayList<Step>();
 //	private ArrayList<Init> inits = new ArrayList<Init>();
@@ -2340,6 +2341,37 @@ implements Serializable
 	 */
 	public void setParentid(String parentid) {
 		this.parentid = parentid;
+	}
+
+	/**
+	 * @return the id2
+	 */
+	public String getId2Variable() {
+		return id2Variable;
+	}
+
+	/**
+	 * @param id2 the id2 to set
+	 */
+	public void setId2Variable(String id2) {
+		this.id2Variable = id2;
+	}
+
+	/**
+	 * feststellen der id2
+	 * die erste Variable mit dem key id2Variable -> dessen value wird zurueckgegeben
+	 */
+	public String getId2()
+	{
+		String id2 = "no";
+		for(Variable actVar : this.getRootStep().getVariable())
+		{
+			if(actVar.getKey().equals(this.getId2Variable()))
+			{
+				return actVar.getValue();
+			}
+		}
+		return id2;
 	}
 
 }

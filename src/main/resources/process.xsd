@@ -178,6 +178,7 @@
   			type="xs:string" />
   		<xs:attribute name="version" use="required" type="xs:string" />
   		<xs:attribute name="wrapper" use="required" type="xs:boolean" />
+  		<xs:attribute name="id2Variable" use="optional" type="xs:string"/>
   	</xs:complexType>
   </xs:element>
   <xs:element name="step" type="step"/>
