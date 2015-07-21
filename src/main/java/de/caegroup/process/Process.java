@@ -2363,6 +2363,11 @@ implements Serializable
 	 */
 	public String getId2()
 	{
+		if(this.getId2Variable() == null)
+		{
+			return "noId2Variable";
+		}
+
 		String id2 = "";
 		for(Variable actVar : this.getRootStep().getVariable())
 		{
@@ -2370,10 +2375,10 @@ implements Serializable
 			{
 				return actVar.getValue();
 			}
-			else
-			{
-				id2 += "/"+ actVar.getKey() + ".equals(" + this.getId2Variable() + ")";
-			}
+//			else
+//			{
+//				id2 += "/"+ actVar.getKey() + ".equals(" + this.getId2Variable() + ")";
+//			}
 		}
 		return id2;
 	}
