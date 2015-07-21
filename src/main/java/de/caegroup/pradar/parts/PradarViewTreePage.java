@@ -107,7 +107,7 @@ public class PradarViewTreePage
 		
 		entityTree.setLinesVisible(true);
 		FontData[] fD = entityTree.getFont().getFontData();
-		fD[0].setHeight(8);
+		fD[0].setHeight(10);
 		entityTree.setFont(new Font(entityTree.getDisplay(), fD[0]));
 
 		TreeColumn columnId2 = new TreeColumn(entityTree, SWT.LEFT);
