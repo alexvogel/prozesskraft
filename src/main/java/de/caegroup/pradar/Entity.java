@@ -271,22 +271,22 @@ implements Serializable
 			
 			while((line = reader.readLine()) != null)
 			{
-//				System.out.println(line);
+				System.out.println(line);
 				Matcher matcher = patternPsLinux.matcher(line);
 				while(matcher.find())
 				{
 					if (matcher.group(1).equals(this.getPid()))
 					{
-//						System.out.println("PID gefunden: "+matcher.group(1));
+						System.out.println("PID gefunden: "+matcher.group(1));
 						if (matcher.group(2).matches(this.getProcess()+".+"))
 						{
 							alive = true;
-//							System.out.println("Prozessname '"+matcher.group(2)+"' stimmt auch weitgehend (ideal waehre '"+this.getProcess()+"'. jetzt gilt er als erkannt!");
+							System.out.println("Prozessname '"+matcher.group(2)+"' stimmt auch weitgehend (ideal waehre '"+this.getProcess()+"'. jetzt gilt er als erkannt!");
 						}
-//						else
-//						{
-//							System.out.println("Prozessname'"+matcher.group(2)+"' stimmt nicht mit gesuchtem  '"+this.getProcess()+"'-> weitersuchen");
-//						}
+						else
+						{
+							System.out.println("Prozessname'"+matcher.group(2)+"' stimmt nicht mit gesuchtem  '"+this.getProcess()+"'-> weitersuchen");
+						}
 					}
 				}
 			}
