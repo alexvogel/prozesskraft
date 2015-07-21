@@ -407,8 +407,8 @@ public class PradarViewTreePage
 				case 5:
 				{
 					// den progressbalken erstellen
-					int breite = 50;
-					int hoehe = 10; // of balken
+					int breite = 25;
+					int hoehe = 5; // of balken
 
 					Image img_balken = new Image(entityTree.getDisplay(), breite, hoehe);
 					
@@ -461,7 +461,7 @@ public class PradarViewTreePage
 				case 2: return entity.getProcess();
 				case 3: return entity.getVersion();
 //				case 4: return entity.getActive();
-//				case 5: return entity.getProgressAsString();
+				case 5: return entity.getProgressAsString();
 				case 6: return entity.getUser();
 				case 7: return entity.getHost();
 				case 8: return entity.getCheckinAsString();
