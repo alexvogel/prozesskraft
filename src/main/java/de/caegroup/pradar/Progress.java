@@ -96,6 +96,11 @@ public class Progress
 				.withDescription("[mandatory] unique id over all instances of all possible processes")
 				.create("id");
 		
+		Option pid = OptionBuilder.withArgName("pid")
+				.hasArg()
+				.withDescription("[optional] pid of the program that symbolizes whether instance is still running. this option overwrites the existent one in pradar db. this is in case another process manager took over.")
+				.create("pid");
+		
 		Option completed = OptionBuilder.withArgName("completed")
 				.hasArg()
 				.withDescription("[mandatory] INT count of completed steps")
@@ -177,6 +182,15 @@ public class Progress
 			System.out.println("-id is mandatory.");
 			System.out.println("try -help for help.");
 			System.exit(1);
+		}
+
+		if (line.hasOption("pid"))
+		{
+			entity.setPid(line.getOptionValue("pid"));
+		}
+		else
+		{
+			entity.setPid(null);
 		}
 
 		if (line.hasOption("completed"))
