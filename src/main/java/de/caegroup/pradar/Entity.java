@@ -27,6 +27,7 @@ implements Serializable
 
 	public String id = "";
 	public String id2 = "";
+	public String pid = "";
 	public String parentid = "";
 	public Calendar checkin = Calendar.getInstance();
 	public Calendar checkout = Calendar.getInstance();
@@ -257,7 +258,7 @@ implements Serializable
 			ChannelExec channelExec = (ChannelExec)session.openChannel("exec");
 
 			InputStream in = channelExec.getInputStream();
-			String command = "ps -p "+this.getId();
+			String command = "ps -p "+this.getPid();
 			
 			channelExec.setCommand(command);
 
@@ -696,6 +697,20 @@ implements Serializable
 		{
 			return ((int)(progress * 100)) + "% ("+this.stepcountcompleted+"/"+this.stepcount+")";
 		}
+	}
+
+	/**
+	 * @return the pid
+	 */
+	public String getPid() {
+		return pid;
+	}
+
+	/**
+	 * @param pid the pid to set
+	 */
+	public void setPid(String pid) {
+		this.pid = pid;
 	}
 
 }

@@ -103,7 +103,7 @@ public class Db
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
-			sql = "create table radar (id TEXT, id2 TEXT, parentid TEXT, process TEXT, version TEXT, host TEXT, user TEXT, checkin TEXT, checkout TEXT, active TEXT, stepcount TEXT, stepcountcompleted Text, exitcode TEXT, resource TEXT)";
+			sql = "create table radar (id TEXT, id2 TEXT, pid TEXT, parentid TEXT, process TEXT, version TEXT, host TEXT, user TEXT, checkin TEXT, checkout TEXT, active TEXT, stepcount TEXT, stepcountcompleted Text, exitcode TEXT, resource TEXT)";
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
@@ -145,7 +145,7 @@ public class Db
 			Statement statement = this.connection.createStatement();
 
 			statement.setQueryTimeout(10);
-			String sql = "INSERT INTO radar (id, id2, parentid, process, version, host, user, checkin, checkout, active, stepcount, stepcountcompleted, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getId2()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getVersion()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getStepcount()+"', '"+entity.getStepcountcompleted()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
+			String sql = "INSERT INTO radar (id, id2, pid, parentid, process, version, host, user, checkin, checkout, active, stepcount, stepcountcompleted, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getId2()+"', '"+entity.getPid()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getVersion()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getStepcount()+"', '"+entity.getStepcountcompleted()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
@@ -175,15 +175,39 @@ public class Db
 			// wenn stepcount leer ist, soll dieses feld nicht upgedated werden
 			if (!(entity.getStepcount().equals("")))
 			{
-				String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', stepcount='"+entity.getStepcount()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
-				System.out.println(sql);
-				statement.executeUpdate(sql);
+				// und pid == null ist soll auch dieses feld nicht upgedatet werden
+				if(entity.getPid() == null)
+				{
+					String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', stepcount='"+entity.getStepcount()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+					System.out.println(sql);
+					statement.executeUpdate(sql);
+				}
+				// wenn neue pid angegeben wurde
+				else
+				{
+					String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', stepcount='"+entity.getStepcount()+"', pid='"+entity.getPid()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+					System.out.println(sql);
+					statement.executeUpdate(sql);
+				}
 			}
+			// wenn stepcount angegeben wurde
 			else
 			{
-				String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
-				statement.executeUpdate(sql);
-				System.out.println(sql);
+				// und pid == null ist soll auch dieses feld nicht upgedatet werden
+				if(entity.getPid() == null)
+				{
+					String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+					statement.executeUpdate(sql);
+					System.out.println(sql);
+				}
+				// wenn neue pid angegeben wurde
+				else
+				{
+					String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', pid='"+entity.getPid()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+					statement.executeUpdate(sql);
+					System.out.println(sql);
+					
+				}
 			}
 //			System.out.println(sql);
 			
@@ -511,7 +535,7 @@ public class Db
 					else if ( (actualEntity.getCheckinInMillis() - System.currentTimeMillis()) > 604800000 )
 					{
 						System.out.println("host is unreachable and instance is older than 1 week.");
-						String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='unknown. process instance vanished. forced checkout.' WHERE id IS '"+actualEntity.getId()+"' AND host IS '"+actualEntity.getHost()+"' AND user IS '"+actualEntity.getUser()+"' AND process IS '"+actualEntity.getProcess()+"' AND active IS 'true'";
+						String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='unknown. process instance vanished. host is unreachable and instance is older than 1 week. forced checkout.' WHERE id IS '"+actualEntity.getId()+"' AND host IS '"+actualEntity.getHost()+"' AND user IS '"+actualEntity.getUser()+"' AND process IS '"+actualEntity.getProcess()+"' AND active IS 'true'";
 //						System.out.println(sql);
 						statement.executeUpdate(sql);
 					}
