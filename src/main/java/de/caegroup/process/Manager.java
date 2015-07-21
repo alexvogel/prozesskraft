@@ -7,6 +7,7 @@ import de.caegroup.process.Step;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 //import de.caegroup.view.Stepconnector;
@@ -265,7 +266,7 @@ public class Manager
 			// pradar checkin
 			if(pradar && p2.run && p2.touchInMillis == 0)
 			{
-				String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p2.getId(), "-id2=noname -process="+p2.getName(), "-parentid="+p2.getParentid(), "-resource="+pathBinary};
+				String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p2.getId(), "-id2=noname -process="+p2.getName(), "-parentid="+p2.getParentid(), "-pid="+getPid(), "-resource="+pathBinary};
 				p2.log("info", "call: " + StringUtils.join(argsForCheckin, " "));
 				try
 				{
@@ -309,7 +310,7 @@ public class Manager
 						{
 							lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
 							lastStepcountFinished = p3.getStepFinished().size();
-							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
+							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-pid="+getPid(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
 							p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
 							try
 							{
@@ -341,7 +342,7 @@ public class Manager
 						{
 							lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
 							lastStepcountFinished = p3.getStepFinished().size();
-							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
+							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-pid="+getPid(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
 							p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
 							try
 							{
@@ -370,7 +371,7 @@ public class Manager
 					{
 						lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
 						lastStepcountFinished = p3.getStepFinished().size();
-						String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
+						String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-pid="+getPid(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
 						p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
 						try
 						{
@@ -437,6 +438,19 @@ public class Manager
 		}
 	}
 
+	/**
+	 * ermittelt die pid dieses manager-laufs
+	 * @return
+	 */
+	private static String getPid()
+	{
+		String fullPid = ManagementFactory.getRuntimeMXBean().getName();
+		
+		String[] splitPid = fullPid.split("@");
+		
+		return splitPid[0];
+	}
+	
 	private static void updateFile(Process process)
 	{
 		process.setDatetonow();
