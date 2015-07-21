@@ -276,6 +276,9 @@ implements Serializable
 				Matcher matcher = patternPsLinux.matcher(line);
 				while(matcher.find())
 				{
+					System.err.println("PID gesucht: " + this.getPid());
+					System.err.println("PID gefunden: " + matcher.group(1));
+					
 					if (matcher.group(1).equals(this.getPid()))
 					{
 						System.out.println("PID gefunden: "+matcher.group(1));
