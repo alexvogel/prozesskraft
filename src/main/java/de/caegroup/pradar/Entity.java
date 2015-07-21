@@ -243,7 +243,8 @@ implements Serializable
 		System.out.println("using ssh-id-rsa: "+sshIdAbsPath);
 
 		boolean alive = false;
-		Pattern patternPsLinux = Pattern.compile("^ *(\\d+) +[^ ]+ +[^ ]+ +(.+)$");
+//		Pattern patternPsLinux = Pattern.compile("^ *(\\d+) +[^ ]+ +[^ ]+ +(.+)$");
+		Pattern patternPsLinux = Pattern.compile("^ *(\\d+) +.+$");
 
 		try
 		{
