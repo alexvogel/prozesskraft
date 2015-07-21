@@ -269,10 +269,20 @@ public class Manager
 				if(p2.getId2() != null)
 				{
 					List id2List = p2.getRootStep().getList(p2.getId2());
+					p2.log("debug", "id2List in process definition is: " + p2.getId2());
 					if(id2List != null && !id2List.getItem().isEmpty())
 					{
 						id2Content = id2List.getItem().get(0);
+						p2.log("debug", "the first item of the list is chosen as id2 tag for pradar: " + id2Content);
 					}
+					else
+					{
+						p2.log("debug", "list " + id2List + " does not exist in rootStep or is empty");
+					}
+				}
+				else
+				{
+					p2.log("debug", "no id2 definition in process");
 				}
 				
 				String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p2.getId(), "-id2="+id2Content, "-process="+p2.getName(), "-parentid="+p2.getParentid(), "-resource="+pathBinary};
