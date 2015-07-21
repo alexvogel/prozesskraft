@@ -519,7 +519,7 @@ public class Db
 						
 						if (!(actualEntity.isInstanceAlive(sshIdRelPath)))
 						{
-							System.out.println("instance appears to be vanished: pid "+actualEntity.getId());
+							System.out.println("instance appears to be vanished: pid "+actualEntity.getPid());
 							String sql = "UPDATE OR REPLACE radar SET checkout='"+System.currentTimeMillis()+"', active='false', exitcode='unknown. process instance vanished. forced checkout.' WHERE id IS '"+actualEntity.getId()+"' AND host IS '"+actualEntity.getHost()+"' AND user IS '"+actualEntity.getUser()+"' AND process IS '"+actualEntity.getProcess()+"' AND active IS 'true'";
 //							System.out.println(sql);
 //							statement.execute(sql);
@@ -527,7 +527,7 @@ public class Db
 						}
 						else
 						{
-							System.out.println("instance "+actualEntity.getId()+" is still alive");
+							System.out.println("instance "+actualEntity.getPid()+" is still alive");
 						}
 
 					}
