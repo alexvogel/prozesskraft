@@ -306,9 +306,9 @@ public class Manager
 					if(p3.getStatus().equals("finished"))
 					{
 						// progress nur aktualisieren, falls sich der fortschritt veraendert hat
-						if((lastStepcount != p3.getStepTogo().size()+p3.getStepFinished().size()) || (lastStepcountFinished != p3.getStepFinished().size()))
+						if((lastStepcount != p3.getStep().size()) || (lastStepcountFinished != p3.getStepFinished().size()))
 						{
-							lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
+							lastStepcount = p3.getStep().size();
 							lastStepcountFinished = p3.getStepFinished().size();
 							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-pid="+getPid(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
 							p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
@@ -338,9 +338,9 @@ public class Manager
 					else if(p3.getStatus().equals("working"))
 					{
 						// progress nur aktualisieren, falls sich der fortschritt veraendert hat
-						if((lastStepcount != p3.getStepTogo().size()+p3.getStepFinished().size()) || (lastStepcountFinished != p3.getStepFinished().size()))
+						if((lastStepcount != p3.getStep().size()) || (lastStepcountFinished != p3.getStepFinished().size()))
 						{
-							lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
+							lastStepcount =  p3.getStep().size();
 							lastStepcountFinished = p3.getStepFinished().size();
 							String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-pid="+getPid(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
 							p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
@@ -367,9 +367,9 @@ public class Manager
 					
 					// pradar updaten bevor manager beendet wird
 					// progress nur aktualisieren, falls sich der fortschritt veraendert hat
-					if((lastStepcount != p3.getStepTogo().size()+p3.getStepFinished().size()) || (lastStepcountFinished != p3.getStepFinished().size()))
+					if((lastStepcount !=  p3.getStep().size()) || (lastStepcountFinished != p3.getStepFinished().size()))
 					{
-						lastStepcount = p3.getStepTogo().size()+p3.getStepFinished().size();
+						lastStepcount =  p3.getStep().size();
 						lastStepcountFinished = p3.getStepFinished().size();
 						String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+p3.getId(), "-process="+p3.getName(), "-pid="+getPid(), "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
 						p3.log("info", "call: " + StringUtils.join(argsForProgress, " "));
