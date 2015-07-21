@@ -159,7 +159,8 @@
   		<xs:sequence>
   			<xs:element maxOccurs="unbounded" ref="step" />
   		</xs:sequence>
-  		<xs:attribute name="amountSimultaneousStep" type="xs:integer" default="1"/>
+  		<xs:attribute name="amountSimultaneousStep" type="xs:integer"
+  			default="1" />
   		<xs:attribute name="initCommitFile" type="xs:string"></xs:attribute>
   		<xs:attribute name="initCommitVariable" type="xs:string"></xs:attribute>
   		<xs:attribute name="architectMail" use="required"
@@ -177,6 +178,7 @@
   			type="xs:string" />
   		<xs:attribute name="version" use="required" type="xs:string" />
   		<xs:attribute name="wrapper" use="required" type="xs:boolean" />
+  		<xs:attribute name="id2" type="xs:string" use="optional"/>
   	</xs:complexType>
   </xs:element>
   <xs:element name="step" type="step"/>

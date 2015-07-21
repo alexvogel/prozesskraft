@@ -84,6 +84,7 @@ implements Serializable
 	private String modelVersion = new String();
 	private String version = new String();
 	private boolean wrapper = false;
+	private String id2 = null;
 //	private NamedList<Step> steps = new NamedList<Step>();
 	private ArrayList<Step> step = new ArrayList<Step>();
 //	private ArrayList<Init> inits = new ArrayList<Init>();
@@ -2340,5 +2341,19 @@ implements Serializable
 	 */
 	public void setParentid(String parentid) {
 		this.parentid = parentid;
+	}
+
+	/**
+	 * @return the id2
+	 */
+	public String getId2() {
+		return id2;
+	}
+
+	/**
+	 * @param id2 the id2 to set
+	 */
+	public void setId2(String id2) {
+		this.id2 = id2;
 	}
 }
