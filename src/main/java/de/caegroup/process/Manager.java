@@ -264,7 +264,18 @@ public class Manager
 			// pradar checkin
 			if(pradar && p2.run && p2.touchInMillis == 0)
 			{
-				String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p2.getId(), "-process="+p2.getName(), "-parentid="+p2.getParentid(), "-resource="+pathBinary};
+				// die id2 feststellen (muss in prozess.xml angegeben sein und in einer liste des rootsteps abgeholt werden
+				String id2Content = "noname";
+				if(p2.getId2() != null)
+				{
+					List id2List = p2.getRootStep().getList(p2.getId2());
+					if(id2List != null && !id2List.getItem().isEmpty())
+					{
+						id2Content = id2List.getItem().get(0);
+					}
+				}
+				
+				String[] argsForCheckin = {ini.get("apps", "pradar-checkin"), "-id="+p2.getId(), "-id2="+id2Content, "-process="+p2.getName(), "-parentid="+p2.getParentid(), "-resource="+pathBinary};
 				p2.log("info", "call: " + StringUtils.join(argsForCheckin, " "));
 				try
 				{
