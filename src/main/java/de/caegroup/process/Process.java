@@ -1520,7 +1520,7 @@ implements Serializable
 		{
 			if(this.run)
 			{
-				status = "rolling";
+				status = "working";
 				return status;
 			}
 			else
