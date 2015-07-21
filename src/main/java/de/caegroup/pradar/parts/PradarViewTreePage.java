@@ -407,8 +407,8 @@ public class PradarViewTreePage
 				case 5:
 				{
 					// den progressbalken erstellen
-					int breite = 25;
-					int hoehe = 5; // of balken
+					int breite = 50;
+					int hoehe = 10; // of balken
 
 					Image img_balken = new Image(entityTree.getDisplay(), breite, hoehe);
 					
