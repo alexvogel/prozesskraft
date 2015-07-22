@@ -38,6 +38,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
@@ -812,7 +813,7 @@ public class PradarPartUi3 extends ModelObject
 				try
 				{
 					log("warn", "deleting directory "+resource.getParentFile().getCanonicalPath());
-					Files.delete(resource.getParentFile().toPath());
+					FileUtils.deleteDirectory(resource.getParentFile());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
