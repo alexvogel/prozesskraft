@@ -421,8 +421,6 @@ implements Serializable
 			// ist Process == error => status=error
 			this.log("debug", "status of the process (triggered by subprocess): " + updatedProcess.getStatus());
 			
-			
-			
 			if(updatedProcess.getStatus().equals("finished"))
 			{
 				this.setStatus("finished");
@@ -500,7 +498,7 @@ implements Serializable
 	public String getStatus() {
 		
 		// den eingebetteten process nach fehler abfragen und evtl. den status updaten
-		this.refreshProcess();
+		// this.refreshProcess();
 		
 		return status;
 	}
