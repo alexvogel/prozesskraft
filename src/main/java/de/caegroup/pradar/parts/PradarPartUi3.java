@@ -811,6 +811,7 @@ public class PradarPartUi3 extends ModelObject
 				// 2) loeschen der daten im filesystem
 				try
 				{
+					log("warn", "deleting directory "+resource.getParentFile().getCanonicalPath());
 					Files.delete(resource.getParentFile().toPath());
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
