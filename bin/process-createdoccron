@@ -552,7 +552,6 @@ if ($error_anzahl + $error_patternchecks)
 #
 # place your business logic here.
 #
-
 {
 	# feststellen des installations verzeichnisses
 	my $domain_installation_directory;
@@ -652,6 +651,18 @@ if ($error_anzahl + $error_patternchecks)
 				
 				&logit("info", "generating fresh documentation");
 				&logit("info", $call);
+
+				# das generieren ausfuehren
+				unless(getOption("dry"))
+				{
+					my $rueck = system($call);
+
+					# fehlerhandling - setzen des zeitstempels auf 0
+					if($rueck)
+					{
+						utime 0, 0, $domainProcessVersionDir . "/process.pdf";
+	 				}
+				}
 			}
 			else
 			{
@@ -660,6 +671,18 @@ if ($error_anzahl + $error_patternchecks)
 				
 				&logit("info", "generating documentation");
 				&logit("info", $call);
+				
+				# das generieren ausfuehren
+				unless(getOption("dry"))
+				{
+					my $rueck = system($call);
+
+					# fehlerhandling - setzen des zeitstempels auf 0
+					if($rueck)
+					{
+						utime 0, 0, $domainProcessVersionDir . "/process.pdf";
+	 				}
+				}
 			}
 		}
 		else
