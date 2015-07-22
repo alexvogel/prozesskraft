@@ -360,7 +360,7 @@ public class Manager
 		}
 	}
 
-	private static void pradarProgress(String instanceId, String processName, String pid, int lastStepcount, int lastStepcountFinished)
+	private static void pradarProgress(String instanceId, String processName, String pid, int lastStepcountFinished, int lastStepcount)
 	{
 		String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+instanceId, "-process="+processName, "-pid="+pid, "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
 		try
