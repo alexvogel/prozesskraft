@@ -15,6 +15,7 @@ implements Serializable, Cloneable
 
 	static final long serialVersionUID = 1;
 	private String name = "unnamed";
+	private String authorMail = "";
 //	private ArrayList<Option> option = new ArrayList<Option>();
 	private String description = "";
 	private String interpreter = "/usr/bin/perl";
@@ -190,6 +191,20 @@ implements Serializable, Cloneable
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * @return the authorMail
+	 */
+	public String getAuthorMail() {
+		return authorMail;
+	}
+
+	/**
+	 * @param authorMail the authorMail to set
+	 */
+	public void setAuthorMail(String authorMail) {
+		this.authorMail = authorMail;
 	}
 	
 //	public void setContent(String block, ArrayList<String> content) throws UnknownCodeBlockException

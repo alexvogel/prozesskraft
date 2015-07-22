@@ -104,7 +104,7 @@ implements Serializable, Cloneable
 			content.add("	}");
 			content.add("}");
 
-			content.add("$helptext .= \"Author : alexander.vogel\\@caegroup.de\\n\";");
+			content.add("$helptext .= \"Author : "+this.parent.getAuthorMail()+"\\n\";");
 			content.add("$helptext .= \"Date   : $date\\n\";");
 			content.add("");
 			content.add("if(&getOption('d'))");
