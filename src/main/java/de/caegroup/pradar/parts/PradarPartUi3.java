@@ -267,7 +267,7 @@ public class PradarPartUi3 extends ModelObject
 		lblHost.setText("host");
 		new Label(grpFilter, SWT.NONE);
 		
-		combo_hosts = new Combo(grpFilter, SWT.BORDER | SWT.READ_ONLY);
+		combo_hosts = new Combo(grpFilter, SWT.NONE | SWT.READ_ONLY);
 		combo_hosts.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		
 		Label lblActive = new Label(grpFilter, SWT.NONE);
