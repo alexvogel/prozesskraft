@@ -557,7 +557,7 @@ implements Serializable, Cloneable
 		Boolean allowIntegratedListIfMultiOption = !nolist;
 		
 		Script script = new Script();
-		script.setAuthorMail(this.getParent().getArchitectMail());
+		script.setAuthorMail(this.getParent().getArchitectMail().replaceFirst("@", "\\@"));
 		script.setType("step");
 		script.setDescription(this.getDescription());
 		script.genContent();
