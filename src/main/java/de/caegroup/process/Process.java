@@ -412,6 +412,7 @@ implements Serializable
 		Boolean allowIntegratedListIfMultiOption = !nolist;
 		
 		Script script = new Script();
+		script.setAuthorMail(this.getArchitectMail());
 		script.setType("process");
 		script.setName(this.getName());
 		script.meta.setVersion(this.getVersion());
