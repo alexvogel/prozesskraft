@@ -296,9 +296,10 @@ public class Manager
 				if(pradar)
 				{
 	
-					pradarProgress(p3.getId(), p3.getName(), getPid(), lastStepcountFinished, lastStepcount);
 					lastStepcount =  p3.getStep().size();
 					lastStepcountFinished = p3.getStepFinished().size();
+					p3.log("info", "manager "+managerid+": pradar progress  "+lastStepcountFinished+"/"+lastStepcount);
+					pradarProgress(p3.getId(), p3.getName(), getPid(), lastStepcountFinished, lastStepcount);
 
 					// finished
 					if(p3.getStatus().equals("finished"))
