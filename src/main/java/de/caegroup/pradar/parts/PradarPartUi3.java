@@ -724,10 +724,10 @@ public class PradarPartUi3 extends ModelObject
 				log("error", "you may only delete your instances (user "+System.getProperty("user.name")+")");
 			}
 			
-			else if ( (einstellungen.entitySelected != null) && einstellungen.entitySelected.isActive() )
-			{
-				log("error", "you may only delete finished instances.");
-			}
+//			else if ( (einstellungen.entitySelected != null) && einstellungen.entitySelected.isActive() )
+//			{
+//				log("error", "you may only delete finished instances.");
+//			}
 			
 			else if (einstellungen.entitySelected != null)
 			{
