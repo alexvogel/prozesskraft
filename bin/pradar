@@ -409,7 +409,7 @@ if ($error_anzahl + $error_patternchecks)
 #
 # place your business logic here.
 #
-my $subcommand;
+my $subcommand  = "gui";
 if(@ARGV)
 {
 	if($ARGV[0] !~ m/^-/)
