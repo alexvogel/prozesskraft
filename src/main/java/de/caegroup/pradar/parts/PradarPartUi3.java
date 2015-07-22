@@ -737,7 +737,7 @@ public class PradarPartUi3 extends ModelObject
 				MessageBox confirmation = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
 				confirmation.setText("please confirm");
 				
-				String message = "Do you really want to delete this entity from pradar and all data filesystem?\n\n";
+				String message = "Do you really want to delete this entity with all the children and all its data from filesystem?\n\n";
 				message += "id:\t\t\t"+einstellungen.entitySelected.getId() +"\n";
 				message += "process:\t\t"+einstellungen.entitySelected.getProcess() +"\n";
 				message += "user:\t\t"+einstellungen.entitySelected.getUser() +"\n";
@@ -1814,7 +1814,7 @@ public class PradarPartUi3 extends ModelObject
 					}
 					
 					shell.setLayout(new FillLayout());
-					shell.setSize(1300, 845);
+					shell.setSize(1500, 1000);
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
 					GridLayout gl_composite = new GridLayout(2, false);
 					gl_composite.marginWidth = 0;
