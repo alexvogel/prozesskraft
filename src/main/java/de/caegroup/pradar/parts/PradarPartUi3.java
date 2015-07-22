@@ -18,6 +18,7 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -299,13 +300,13 @@ public class PradarPartUi3 extends ModelObject
 		btnChildren.setText("children");
 		new Label(grpFilter, SWT.NONE);
 		
-		// Group function
-		Group grpFunction = new Group(composite_11, SWT.NONE);
-		grpFunction.setLayout(new GridLayout(4, false));
-		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-		grpFunction.setText("functions");
+		// Group functions db
+		Group grpFunctionDb = new Group(composite_11, SWT.NONE);
+		grpFunctionDb.setLayout(new GridLayout(4, false));
+		grpFunctionDb.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		grpFunctionDb.setText("db");
 		
-		button_refresh = new Button(grpFunction, SWT.NONE);
+		button_refresh = new Button(grpFunctionDb, SWT.NONE);
 		GridData gd_button_refresh = new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1);
 		gd_button_refresh.widthHint = 62;
 		button_refresh.setLayoutData(gd_button_refresh);
@@ -313,25 +314,37 @@ public class PradarPartUi3 extends ModelObject
 		button_refresh.setToolTipText("refresh status of entities from database");
 		button_refresh.addSelectionListener(listener_refresh_button);
 		
-		button_log = new Button(grpFunction, SWT.NONE);
-		button_log.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		button_log.setText("log");
-		button_log.setToolTipText("shows logfile of selected process instance");
-		button_log.addSelectionListener(listener_log_button);
+//		button_clean = new Button(grpFunctionDb, SWT.NONE);
+//		button_clean.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+//		button_clean.setText("clean");
+//		button_clean.setToolTipText("checks whether active instances are still alive - disappeared instances will be checked out");
+//		button_clean.addSelectionListener(listener_clean_button);
 		
-		button_browse = new Button(grpFunction, SWT.NONE);
-		button_browse.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
-		button_browse.setText("browse");
-		button_browse.setToolTipText("browse instance files.");
-		button_browse.addSelectionListener(listener_browse_button);
+		// Group functions instance
+		Group grpFunctionInstance = new Group(composite_11, SWT.NONE);
+		grpFunctionInstance.setLayout(new GridLayout(4, false));
+		grpFunctionInstance.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		grpFunctionInstance.setText("instance");
 		
-		button_clean = new Button(grpFunction, SWT.NONE);
-		button_clean.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		button_clean.setText("clean");
-		button_clean.setToolTipText("checks whether active instances are still alive - disappeared instances will be checked out");
-		button_clean.addSelectionListener(listener_clean_button);
+//		button_log = new Button(grpFunction, SWT.NONE);
+//		button_log.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+//		button_log.setText("log");
+//		button_log.setToolTipText("shows logfile of selected process instance");
+//		button_log.addSelectionListener(listener_log_button);
 		
-		button_delete = new Button(grpFunction, SWT.NONE);
+//		button_browse = new Button(grpFunctionInstance, SWT.NONE);
+//		button_browse.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+//		button_browse.setText("browse");
+//		button_browse.setToolTipText("browse instance files.");
+//		button_browse.addSelectionListener(listener_browse_button);
+
+		button_browse = new Button(grpFunctionInstance, SWT.NONE);
+		button_browse.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_browse.setText("open");
+		button_browse.setToolTipText("open instance with pmodel");
+		button_browse.addSelectionListener(listener_open_button);
+
+		button_delete = new Button(grpFunctionInstance, SWT.NONE);
 		button_delete.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		button_delete.setText("delete");
 		button_delete.setToolTipText("deletes a finished (already checked out) process instance from database. includes an implicit 'clean'");
@@ -350,7 +363,7 @@ public class PradarPartUi3 extends ModelObject
 		lblNewLabel_2.setText("zoom");
 		
 		scale_zoom = new Scale(grpVisual, SWT.NONE);
-		GridData gd_scale_zoom = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		GridData gd_scale_zoom = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_scale_zoom.widthHint = 144;
 		scale_zoom.setLayoutData(gd_scale_zoom);
 		scale_zoom.setMaximum(1000);
@@ -664,6 +677,44 @@ public class PradarPartUi3 extends ModelObject
 		}
 	};	
 	
+	SelectionAdapter listener_open_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			if (einstellungen.entitySelected == null)
+			{
+				log("warn", "no instance selected");
+			}
+			
+			else
+			{
+				java.io.File pmbFile = new java.io.File(einstellungen.entitySelected.getResource());
+				
+				if(!(pmbFile.exists()))
+				{
+					log("error", "process-model-file does not exist: " + pmbFile.getAbsolutePath());
+				}
+				
+				else
+				{
+					log("info", "opening process-model-file for inspection");
+					String aufruf = ini.get("apps",  "pmodel") + " -instance "+pmbFile.getAbsolutePath();
+					log("info", "calling " + aufruf);
+					
+					try
+					{
+						java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+					}
+					catch (IOException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	};	
+	
 	SelectionAdapter listener_delete_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
@@ -685,7 +736,7 @@ public class PradarPartUi3 extends ModelObject
 				MessageBox confirmation = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
 				confirmation.setText("please confirm");
 				
-				String message = "Do you really want to delete this entity from pradar database?\n\n";
+				String message = "Do you really want to delete this entity from pradar and all data filesystem?\n\n";
 				message += "id:\t\t\t"+einstellungen.entitySelected.getId() +"\n";
 				message += "process:\t\t"+einstellungen.entitySelected.getProcess() +"\n";
 				message += "user:\t\t"+einstellungen.entitySelected.getUser() +"\n";
@@ -693,7 +744,14 @@ public class PradarPartUi3 extends ModelObject
 				message += "checkin:\t\t"+einstellungen.entitySelected.getCheckinAsString() +"\n";
 				message += "checkout:\t"+einstellungen.entitySelected.getCheckoutAsString() +"\n";
 				message += "exitcode:\t\t"+einstellungen.entitySelected.getExitcode() +"\n";
-				
+				java.io.File resource = new java.io.File(einstellungen.entitySelected.getResource());
+				try {
+					message += "directory:\t\t"+resource.getParentFile().getCanonicalPath() +"\n";
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
 				confirmation.setMessage(message);
 				
 				// open confirmation and wait for user selection
@@ -702,8 +760,8 @@ public class PradarPartUi3 extends ModelObject
 
 				// ok == 32
 				if (returnCode == 32)
-				
 				{
+					// 1) loeschen des entity in der pradar-db
 					Iterator<String> iterPradarServer = pradar_server_port_at_hostname.iterator();
 					while(iterPradarServer.hasNext())
 					{
@@ -737,20 +795,27 @@ public class PradarPartUi3 extends ModelObject
 							// TODO Auto-generated catch block
 							log("warn", "unknown host "+machineName);
 							pradar_server_port_at_hostname = null;
-				//					e.printStackTrace();
+							e.printStackTrace();
+							log("error", e.getMessage());
 						}
-				//		catch (ConnectException e)
-				//		{
-				//			log("warn", "no pradar-server found at "+portNumber+"@"+machineName);
-				////					e.printStackTrace();
-				//		}
 						catch (IOException e)
 						{
 							// TODO Auto-generated catch block
 							log("warn", "input / output problems at "+portNumber+"@"+machineName);
-									e.printStackTrace();
+							e.printStackTrace();
+							log("error", e.getMessage());
 						}
 					}
+				}
+
+				// 2) loeschen der daten im filesystem
+				try
+				{
+					Files.delete(resource.getParentFile().toPath());
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					log("error", e.getMessage());
 				}
 				
 				// daten und anzeige refreshen
