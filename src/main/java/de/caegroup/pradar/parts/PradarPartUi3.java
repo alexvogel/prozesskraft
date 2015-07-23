@@ -115,7 +115,7 @@ public class PradarPartUi3 extends ModelObject
 	private Button btnChildren;
 	private Button button_refresh = null;
 	private Button button_log = null;
-	private Button button_browse = null;
+	private Button button_show = null;
 	private Button button_clean = null;
 	private Button button_delete = null;
 	private Scale scale_zoom;
@@ -339,11 +339,11 @@ public class PradarPartUi3 extends ModelObject
 //		button_browse.setToolTipText("browse instance files.");
 //		button_browse.addSelectionListener(listener_browse_button);
 
-		button_browse = new Button(grpFunctionInstance, SWT.NONE);
-		button_browse.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		button_browse.setText("open");
-		button_browse.setToolTipText("open instance with pmodel");
-		button_browse.addSelectionListener(listener_open_button);
+		button_show = new Button(grpFunctionInstance, SWT.NONE);
+		button_show.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_show.setText("show");
+		button_show.setToolTipText("open instance with pmodel");
+		button_show.addSelectionListener(listener_show_button);
 
 		button_delete = new Button(grpFunctionInstance, SWT.NONE);
 		button_delete.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -678,7 +678,7 @@ public class PradarPartUi3 extends ModelObject
 		}
 	};	
 	
-	SelectionAdapter listener_open_button = new SelectionAdapter()
+	SelectionAdapter listener_show_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
