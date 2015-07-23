@@ -325,7 +325,7 @@ public class Manager
 					{
 						p3.run = false;
 						p3.log("info", "error in process detected. setting run = false");
-						p2.log("info", "stopping manager "+p2.getManagerid());
+						p3.log("info", "stopping manager "+p2.getManagerid());
 
 						// errorcode string erzeugen
 						String exitCode = "error in step(s):";
@@ -335,6 +335,7 @@ public class Manager
 						}
 
 						// pradar checkout
+						p3.log("debug", "pradar-checkout id="+p3.getId()+", process="+p3.getName()+", exitcode="+exitCode);
 						pradarCheckout(p3.getId(), p3.getName(), exitCode);
 					}
 
