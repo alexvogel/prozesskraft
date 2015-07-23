@@ -80,6 +80,7 @@ public class PrampPartUi1 extends ModelObject
 	
 	static CommandLine line;
 	private DataBindingContext bindingContextProcesses;
+	private Button button_show = null;
 	private Button button_start = null;
 	private Button button_testrun = null;
 	private Button button_doc = null;
@@ -95,6 +96,8 @@ public class PrampPartUi1 extends ModelObject
 	private String iniFile = null;
 	private Ini ini = null;
 	private String userIniFile = null;
+	
+	private Map<String,Boolean> domainUserRights = null;
 	
 	private ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
 	
@@ -133,7 +136,9 @@ public class PrampPartUi1 extends ModelObject
 		setUserIni();
 		loadIni();
 		checkLicense();
-		getInstalledDomainNames();
+		detInstalledDomainNames();
+		detDomainUserRights();
+		reduceInstalledDomainNamesByRight();
 //		setRandomRootdirectory();
 		createControls(composite);
 	}
@@ -148,7 +153,9 @@ public class PrampPartUi1 extends ModelObject
 		loadIni();
 		checkLicense();
 		setUserIni();
-		getInstalledDomainNames();
+		detInstalledDomainNames();
+		detDomainUserRights();
+		reduceInstalledDomainNamesByRight();
 //		setRandomRootdirectory();
 		createControls(composite);
 	}
@@ -260,6 +267,23 @@ public class PrampPartUi1 extends ModelObject
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpFunction.setText("functions");
 		
+		button_show = new Button(grpFunction, SWT.NONE);
+		button_show.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		button_show.setText("create and show");
+		button_show.setToolTipText("create instance and open with pmodel");;
+		button_show.addSelectionListener(listener_show_button);
+		
+		button_start = new Button(grpFunction, SWT.NONE);
+		button_start.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		button_start.setText("create and start");
+		button_start.setToolTipText("create instance and start");;
+		button_start.addSelectionListener(listener_start_button);
+		
+		Group grpAdmin = new Group(composite_11, SWT.NONE);
+		grpAdmin.setLayout(new GridLayout(1, false));
+		grpAdmin.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		grpAdmin.setText("admin");
+	
 		button_doc = new Button(grpFunction, SWT.NONE);
 		button_doc.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		button_doc.setText("doc");
@@ -272,11 +296,6 @@ public class PrampPartUi1 extends ModelObject
 		button_testrun.setToolTipText("starts an instance of selected process with a sample dataset");;
 		button_testrun.addSelectionListener(listener_testrun_button);
 		
-		button_start = new Button(grpFunction, SWT.NONE);
-		button_start.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		button_start.setText("start");
-		button_start.setToolTipText("start an instance of selected process");;
-		button_start.addSelectionListener(listener_startinstance_button);
 		
 		// Group apps
 		Group grpApps = new Group(composite_11, SWT.NONE);
@@ -508,13 +527,49 @@ public class PrampPartUi1 extends ModelObject
 	};
 	
 	/**
-	 * listener for Selections in of button 'start'
+	 * listener for Selections in of button 'show'
 	 */
-	SelectionAdapter listener_startinstance_button = new SelectionAdapter()
+	SelectionAdapter listener_show_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
-//			System.out.println("button start wurde gedrueckt");
+//			System.out.println("button show wurde gedrueckt");
+			createInstance();
+			
+			// kurz schlafen damit der schreibvorgang beendet werden kann
+//			try
+//			{
+//				Thread.sleep(100);
+//			} catch (InterruptedException e1)
+//			{
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+
+			showInstance();
+		}
+	};
+	
+	/**
+	 * listener for Selections in of button 'start'
+	 */
+	SelectionAdapter listener_start_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+//			System.out.println("button show wurde gedrueckt");
+			createInstance();
+			
+			// kurz schlafen damit der schreibvorgang beendet werden kann
+//			try
+//			{
+//				Thread.sleep(100);
+//			} catch (InterruptedException e1)
+//			{
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+
 			startInstance();
 		}
 	};
@@ -736,36 +791,82 @@ public class PrampPartUi1 extends ModelObject
 		}
 	}
 
-//	/**
-//	 * determines all processes of a specific process-installation-directory
-//	 * @return a list of all installed processes sorted in alphabetical order
-//	 */
-//	public ArrayList<String> getInstalledProcessNames()
-//	{
-//		ArrayList<String> processes = new ArrayList<String>();
-//		try
-//		{
-//			processes = getSubDirectories(this.processMainDir);
-//		} catch (NotDirectoryException e)
-//		{
-//			System.err.println("not a directory: "+this.processMainDir);
-////			e.printStackTrace();
-//		}
-//
-//		// sortieren
-//		Collections.sort(processes);
-//
-//		// zentrale daten setzen
-//		einstellungen.setProcesses((String[]) processes.toArray(new String[processes.size()]));
-//		
-//		return processes;
-//	}
+	/**
+	 * determines the domain right of actual user
+	 */
+	public void detDomainUserRights()
+	{
+		// 1) alle domains auf true setzen
+		for(String actDomain : einstellungen.getDomains())
+		{
+			this.domainUserRights.put(actDomain, true);
+		}
+		
+		// 2) fuer alle domains aus der whitelist (ini)
+		// wenn der aktuelle user sich nicht in der liste befindet, wird die entsprechende domain auf false gesetzt
+		for( String actDomain : this.ini.get("domainWhitelist").keySet() )
+		{
+			// da eine whitelist fuer diese domain existiert, soll der aktuelle user fuer diese domain erstmal auf false gesetzt werden
+			this.domainUserRights.put(actDomain, false);
 
+			// die 'white' user fuer die aktuelle domain feststellen ((leerzeichen entfernen und an kommas splitten))
+			String[] usersWhite = this.ini.get("domainWhitelist", actDomain).replaceAll(" ", "").split(",");
+
+			// wird der aktuelle user gewhitet? dann domain auf true setzen
+			for(String actUser : usersWhite)
+			{
+				if(System.getProperty("user.name").matches(actUser))
+				{
+					this.domainUserRights.put(actDomain, true);
+				}
+			}
+		}
+		
+		// 3) fuer alle domains aus der blacklist (ini)
+		// wenn der aktuelle user sich in der liste befindet, wird die entsprechende domain auf false gesetzt
+		for( String actDomain : this.ini.get("domainBlacklist").keySet() )
+		{
+			// die 'white' user fuer die aktuelle domain feststellen ((leerzeichen entfernen und an kommas splitten))
+			String[] usersBlack = this.ini.get("domainBlacklist", actDomain).replaceAll(" ", "").split(",");
+
+			// wird der aktuelle user gewhitet? dann domain auf true setzen
+			for(String actUser : usersBlack)
+			{
+				if(System.getProperty("user.name").matches(actUser))
+				{
+					this.domainUserRights.put(actDomain, false);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * reduces the installed domain list to the domains the actual user has rights
+	 */
+	private void reduceInstalledDomainNamesByRight()
+	{
+		ArrayList<String> filteredDomainNamesByRight = new ArrayList<String>();
+		
+		for(String actDomain : einstellungen.getDomains())
+		{
+			if(this.domainUserRights.get(actDomain))
+			{
+				filteredDomainNamesByRight.add(actDomain);
+			}
+		}
+
+		// sortieren
+		Collections.sort(filteredDomainNamesByRight);
+
+		// zentrale daten setzen
+		einstellungen.setDomains((String[]) filteredDomainNamesByRight.toArray(new String[filteredDomainNamesByRight.size()]));
+	}
+	
 	/**
 	 * determines all domains
 	 * @return a list of all installed domains sorted in alphabetical order
 	 */
-	public ArrayList<String> getInstalledDomainNames()
+	private ArrayList<String> detInstalledDomainNames()
 	{
 		ArrayList<String> domains = new ArrayList<String>();
 		String directoryPath = this.domainMainDir;
@@ -792,7 +893,7 @@ public class PrampPartUi1 extends ModelObject
 		
 		// sortieren
 		Collections.sort(domainsFiltered);
-		
+
 		// zentrale daten setzen
 		einstellungen.setDomains((String[]) domainsFiltered.toArray(new String[domainsFiltered.size()]));
 		
@@ -1228,17 +1329,18 @@ public class PrampPartUi1 extends ModelObject
 	/**
 	 * commit all the defined data to the process
 	 */
-	private boolean startInstance()
+	private void createInstance()
 	{
-//		System.out.println("button start");
 
 		if (this.commitCreatorOld.containsKey((getActualCommitRootName())))
 		{
+			// wurden alle Tests erfolgreich absolviert?
 			if ( ! (this.commitCreatorOld.get(getActualCommitRootName()).doAllTestsPass()))
 			{
 				log ("error", "not all tests passed. commit refused. check input.");
-				return false;
+				return;
 			}
+			// ist prozess konsistent?
 			else if(!(process.isProcessConsistent()))
 			{
 				log ("error", "process data appears to be inconsistent. check process definition.");
@@ -1247,14 +1349,13 @@ public class PrampPartUi1 extends ModelObject
 				{
 					log (actualLog.getLevel(), actualLog.getMsg());
 				}
-				return false;
+				return;
 			}
 			else
 			{
 				// holen aller user-angaben aus dem formular
 				Multimap<String,String> content = this.commitCreatorOld.get(getActualCommitRootName()).getContent();
 
-//				if(parameterAlreadyUsed(content))
 				if(false)
 				{
 					log ("warn", "recently started an instance with same input.");
@@ -1274,7 +1375,7 @@ public class PrampPartUi1 extends ModelObject
 					// ok == 32
 					if (!(returnCode == 32))
 					{
-						return false;
+						return;
 					}
 				}
 				
@@ -1316,8 +1417,6 @@ public class PrampPartUi1 extends ModelObject
 						log("error", "problems with reading user-ini file: "+this.userIniFile);
 					}
 
-					
-					
 					// user input an den Prozess committen
 					this.commitCreatorOld.get(getActualCommitRootName()).commitAll();
 
@@ -1330,17 +1429,50 @@ public class PrampPartUi1 extends ModelObject
 					process.writeBinary();
 					log ("info", "writing binary instance file to disk "+process.getOutfilebinary());
 					
-					// kurz schlafen damit der schreibvorgang beendet werden kann
-					try
-					{
-						Thread.sleep(100);
-					} catch (InterruptedException e1)
-					{
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					
-					
+				}
+				else
+				{
+					log ("error", "problems handling instance directory."+process.getRootdir()+". doing nothing.");
+					return;
+				}
+			}
+		}
+		else
+		{
+			log ("error", "nothing to commit.");
+			return;
+		}
+	}
+
+
+	/**
+	 * open instance with pmodel
+	 */
+	private void showInstance()
+	{
+		// starten des pmodel gui lokal
+		log ("info", "launching pmodel viewer");
+
+		String[] args_for_command2 = {ini.get("apps", "pmodel"), "-instance", process.getOutfilebinary()};
+
+		log ("info", "calling: " + StringUtils.join(args_for_command2, " "));
+		try
+		{
+			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_command2, " "));
+			log ("debug", "hashCode="+sysproc.hashCode());
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			log ("error", "IOException: problems with execution");
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * start instance with process-manager
+	 */
+	private void startInstance()
+	{
 					// starten des process-manager remote
 					// ....
 					if(ini.get("start", "process-manager").equals("true"))
@@ -1394,45 +1526,6 @@ public class PrampPartUi1 extends ModelObject
 //							e.printStackTrace();
 //						}
 					}
-//					// starten des pmodel gui lokal
-//					// ....
-					if(ini.get("start", "pmodel").equals("true"))
-					{
-						log ("info", "launching pmodel viewer");
-	
-						String[] args_for_command2 = {ini.get("apps", "pmodel"), "-instance", process.getOutfilebinary()};
-	
-//						ProcessBuilder pb2 = new ProcessBuilder(args_for_command2);
-//						java.lang.Process sysproc = pb.start();
-
-						log ("info", "calling: " + StringUtils.join(args_for_command2, " "));
-						try
-						{
-							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_command2, " "));
-							log ("debug", "hashCode="+sysproc.hashCode());
-						} catch (IOException e)
-						{
-							// TODO Auto-generated catch block
-							log ("error", "IOException: problems with execution");
-							e.printStackTrace();
-						}
-					}
-
-					return true;
-
-				}
-				else
-				{
-					log ("error", "problems handling instance directory."+process.getRootdir()+". doing nothing.");
-					return false;
-				}
-			}
-		}
-		else
-		{
-			log ("error", "nothing to commit.");
-			return false;
-		}
 	}
 	
 //	void load()
@@ -1696,7 +1789,7 @@ public class PrampPartUi1 extends ModelObject
 					}
 					
 					shell.setLayout(new FillLayout());
-//					shell.setSize(620, 800);
+					shell.setSize(1000, 750);
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
 					GridLayout gl_composite = new GridLayout(2, false);
 					gl_composite.marginWidth = 0;
