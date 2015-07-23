@@ -1791,7 +1791,7 @@ public class PrampPartUi1 extends ModelObject
 					}
 					
 					shell.setLayout(new FillLayout());
-					shell.setSize(1000, 750);
+					shell.setSize(1000, 780);
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
 					GridLayout gl_composite = new GridLayout(2, false);
 					gl_composite.marginWidth = 0;
