@@ -167,12 +167,26 @@ public class SIInsightCreator
 		buttonFileBrowser.setToolTipText("if its a subprocess it will be opened in an own pmodel client OR if its a normal step the data directory will be opened with a filebrowser");
 		buttonFileBrowser.addSelectionListener(listener_button_browse);
 
+		Button buttonOpen = new Button(compositeAction, SWT.NONE);
+		buttonOpen.setText("open");
+		buttonOpen.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonOpen.setToolTipText("open subprocess with pmodel");
+		buttonOpen.addSelectionListener(listener_button_open);
+		if(this.step.getSubprocess() == null)
+		{
+			buttonOpen.setEnabled(false);
+		}
+
 		Button buttonLog = new Button(compositeAction, SWT.NONE);
 		buttonLog.setText(".log");
 		buttonLog.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonLog.setToolTipText("opens .log (contains stdout/stderr of work command) file of step with an editor");
 		buttonLog.addSelectionListener(listener_button_log);
-
+		if(this.step.getSubprocess() == null)
+		{
+			buttonOpen.setEnabled(true);
+		}
+		
 		Button buttonReset = new Button(compositeAction, SWT.NONE);
 		buttonReset.setText("reset");
 		buttonReset.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -335,6 +349,41 @@ public class SIInsightCreator
 			
 			else
 			{
+				String call = father.getIni().get("apps", "filebrowser") + " " + stepDir.getAbsolutePath(); 
+				father.log("info", "calling: "+call);
+				
+				try
+				{
+					java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+				}
+				catch (IOException e)
+				{
+					father.log("error", e.getMessage());
+				}
+			}
+		}
+	};
+
+	SelectionAdapter listener_button_open = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			java.io.File stepDir = new java.io.File(step.getAbsdir());
+			if(!stepDir.exists())
+			{
+				father.log("error", "directory does not exist: "+stepDir.getAbsolutePath());
+			}
+			else if(!stepDir.isDirectory())
+			{
+				father.log("error", "is not a directory: "+stepDir.getAbsolutePath());
+			}
+			else if(!stepDir.canRead())
+			{
+				father.log("error", "cannot read directory: "+stepDir.getAbsolutePath());
+			}
+			
+			else
+			{
 				// ist der step ein unterprozess, so soll der prozess in einem eigenen pmodelfenster geoeffnet werden
 				if(step.getType().equals("process"))
 				{
@@ -358,21 +407,6 @@ public class SIInsightCreator
 					else
 					{
 						father.log("info", "no process.pmb file present for subprocess of step "+step.getName());
-					}
-				}
-				// ist step kein unterprozess
-				else
-				{
-					String call = father.getIni().get("apps", "filebrowser") + " " + stepDir.getAbsolutePath(); 
-					father.log("info", "calling: "+call);
-					
-					try
-					{
-						java.lang.Process sysproc = Runtime.getRuntime().exec(call);
-					}
-					catch (IOException e)
-					{
-						father.log("error", e.getMessage());
 					}
 				}
 			}
@@ -402,7 +436,7 @@ public class SIInsightCreator
 				// ist der step ein unterprozess, so soll der prozess in einem eigenen pmodelfenster geoeffnet werden
 				if(step.getType().equals("process"))
 				{
-					father.log("warn", "step is a subprocess - there is no .log file to open. use the 'browse' button to open subprocess in an own pmodel session.");
+					father.log("warn", "step is a subprocess - there is no .log file to open.");
 				}
 				// ist step kein unterprozess
 				else
