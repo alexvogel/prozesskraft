@@ -807,6 +807,8 @@ implements Serializable
 			this.affiliate();
 
 			// setzen der step ranks, falls steps hinzugekommen sind
+			// dieser aufruf wird nur fuer den editor benoetigt
+			// setStepRanks muss umformuliert werden, da es viel zu lange laeuft (ab 30 Steps ~ 60 sekunden)
 //			this.setStepRanks();
 
 			// die jaxb-klassen mit den domain-klassen mappen
