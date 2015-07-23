@@ -274,6 +274,7 @@ public class Manager
 			// pradar checkin
 			if(pradar && p2.run && p2.touchInMillis == 0)
 			{
+				p2.log("debug", "pradar-checkin id="+p2.getId()+", process="+p2.getName()+", version="+p2.getVersion()+", id2="+p2.getId2()+", parentid="+p2.getParentid()+", resource="+pathBinary);
 				pradarCheckin(p2.getId(), p2.getName(), p2.getVersion(), p2.getId2(), p2.getParentid(), getPid(), pathBinary);
 			}
 				
@@ -317,6 +318,7 @@ public class Manager
 						p3.log("info", "manager "+managerid+": process instance is finished. goodbye from manager id "+p3.getManagerid());
 						
 						// pradar checkout
+						p3.log("info", "manager "+managerid+": pradar checkout id="+p3.getId()+", "+p3.getName()+"0");
 						pradarCheckout(p3.getId(), p3.getName(), "0");
 					}
 					
