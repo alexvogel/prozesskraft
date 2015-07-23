@@ -215,7 +215,7 @@ public class Manager
 				System.out.println("file does not exist: "+fileBinary.getAbsolutePath());
 				exiter();
 			}
-			
+
 			if ( line.hasOption("stop") )
 			{
 				p1.setInfilebinary(pathBinary);
@@ -225,6 +225,15 @@ public class Manager
 				p2.run = false;
 				p2.setOutfilebinary(pathBinary);
 				p2.writeBinary();
+				
+				boolean pradar =  (!(p2.isWrapper()));
+
+				// pradar checkout
+				if(pradar)
+				{
+					pradarCheckout(p2.getId(), p2.getName(), "0");
+				}
+
 				System.exit(0);
 			}
 			
@@ -253,11 +262,10 @@ public class Manager
 	
 			p2.log("debug", "manager "+managerid+": writing process to binary file to occupy instance.");
 	
-			p2.run = true;
-	
 			// wenn es kein wrapper-prozess ist, dann soll die komunikation mit pradar vom manager uebernommen werden
-//			boolean pradar =  (!(p2.isWrapper()));
-			boolean pradar = true;
+			boolean pradar =  (!(p2.isWrapper()));
+
+			p2.run = true;
 	
 			// die letzten festgestellten werte fuer die abarbeitung
 			int lastStepcount = 0;
@@ -329,6 +337,24 @@ public class Manager
 						// pradar checkout
 						pradarCheckout(p3.getId(), p3.getName(), exitCode);
 					}
+
+//					// error
+//					else if(p3.getStatus().equals("paused"))
+//					{
+//						p3.run = false;
+//						p3.log("info", "process has been paused. setting run = false");
+//						p2.log("info", "stopping manager "+p2.getManagerid());
+//
+//						// errorcode string erzeugen
+//						String exitCode = "error in step(s):";
+//						for(Step actStep : p3.getStepError())
+//						{
+//							exitCode = exitCode + " " + actStep.getName();
+//						}
+//
+//						// pradar checkout
+//						pradarCheckout(p3.getId(), p3.getName(), exitCode);
+//					}
 				}
 				
 				updateFile(p3);
