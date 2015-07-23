@@ -318,7 +318,7 @@ public class Manager
 						p3.log("info", "manager "+managerid+": process instance is finished. goodbye from manager id "+p3.getManagerid());
 						
 						// pradar checkout
-						p3.log("info", "manager "+managerid+": pradar checkout id="+p3.getId()+", "+p3.getName()+"0");
+						p3.log("info", "manager "+managerid+": pradar checkout id="+p3.getId()+", process="+p3.getName()+", exitcode=0");
 						pradarCheckout(p3.getId(), p3.getName(), "0");
 					}
 					
