@@ -376,7 +376,7 @@ public class Manager
 	
 	private static void pradarCheckin(String instanceId, String processName, String id2, String parentId, String pid, String resource)
 	{
-		String[] argsForProgress = {ini.get("apps", "pradar-checkin"), "-id="+instanceId, "-process="+processName, "-id2="+id2, "-parentid="+parentId, "-pid="+pid, "resource="+resource};
+		String[] argsForProgress = {ini.get("apps", "pradar-checkin"), "-id="+instanceId, "-process="+processName, "-id2="+id2, "-parentid="+parentId, "-pid="+pid, "-resource="+resource};
 		try
 		{
 			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
