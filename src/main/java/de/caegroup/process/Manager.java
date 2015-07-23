@@ -328,10 +328,10 @@ public class Manager
 						p3.log("info", "stopping manager "+p2.getManagerid());
 
 						// errorcode string erzeugen
-						String exitCode = "error in step(s):";
+						String exitCode = "error-in-steps:";
 						for(Step actStep : p3.getStepError())
 						{
-							exitCode = exitCode + " " + actStep.getName();
+							exitCode = exitCode + "," + actStep.getName();
 						}
 
 						// pradar checkout
