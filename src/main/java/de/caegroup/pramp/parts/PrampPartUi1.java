@@ -1034,18 +1034,19 @@ public class PrampPartUi1 extends ModelObject
 		
 		else
 		{
-			processDefinition = "";
+			processDefinition = processDefinitionDirectory + "/process.xml";
+			String processDefinitionFuerLog = "";
 			if(this.domainUserRights.get("Admin"))
 			{
-				processDefinition = processDefinitionDirectory + "/process.xml";
+				processDefinitionFuerLog = processDefinition;
 			}
 
-	    	log("info", "setting process definition "+processDefinition);
+	    	log("info", "setting process definition "+processDefinitionFuerLog);
 	    	
 	    	java.io.File fileProcess = new java.io.File(processDefinition);
 	    	if(!(fileProcess.exists()))
 	    	{
-		    	log("error", "process definition file does not exist "+processDefinition);
+		    	log("error", "process definition file does not exist "+processDefinitionFuerLog);
 		    	this.process = null;
 		    	return null;
 	    	}
@@ -1287,7 +1288,7 @@ public class PrampPartUi1 extends ModelObject
 				fileDocFuerLog = fileDoc.getAbsolutePath();
 			}
 
-			log ("error", "no documentation found.");
+			log ("error", "no documentation found " + fileDocFuerLog);
 
 			return false;
 		}
