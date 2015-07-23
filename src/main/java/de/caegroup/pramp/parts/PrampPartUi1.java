@@ -80,7 +80,7 @@ public class PrampPartUi1 extends ModelObject
 	
 	static CommandLine line;
 	private DataBindingContext bindingContextProcesses;
-	private Button button_show = null;
+	private Button button_open = null;
 	private Button button_start = null;
 	private Button button_testrun = null;
 	private Button button_doc = null;
@@ -267,11 +267,11 @@ public class PrampPartUi1 extends ModelObject
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpFunction.setText("functions");
 		
-		button_show = new Button(grpFunction, SWT.NONE);
-		button_show.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		button_show.setText("create and show");
-		button_show.setToolTipText("create instance and open with pmodel");;
-		button_show.addSelectionListener(listener_show_button);
+		button_open = new Button(grpFunction, SWT.NONE);
+		button_open.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		button_open.setText("create and open");
+		button_open.setToolTipText("create instance and open with pmodel");;
+		button_open.addSelectionListener(listener_open_button);
 		
 		button_start = new Button(grpFunction, SWT.NONE);
 		button_start.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -529,9 +529,9 @@ public class PrampPartUi1 extends ModelObject
 	};
 	
 	/**
-	 * listener for Selections in of button 'show'
+	 * listener for Selections in of button 'open'
 	 */
-	SelectionAdapter listener_show_button = new SelectionAdapter()
+	SelectionAdapter listener_open_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
