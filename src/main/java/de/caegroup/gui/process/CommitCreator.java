@@ -40,6 +40,8 @@ public class CommitCreator
 	
 	public CommitCreator(PrampPartUi1 parentPrampGui, Composite parent, Step step)
 	{
+		parentPrampGui.log("debug", "1) start commitCreator");
+		
 		this.parent_prampgui = parentPrampGui;
 		this.parent = parent;
 		this.step = step;
@@ -59,28 +61,32 @@ public class CommitCreator
 		sc.setContent(composite);
 //		sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
-//		// ermitteln wie breit die erste spalte sein muss um alle schluessel vollstaendig darstellen zu koennen
-//		for(Commit actCommit : step.getCommit())
-//		{
-//			// alle Variablen im Commit durchgehen und die maximale Size ermitteln und festhalten
-//			for(Variable actVariable : actCommit.getVariable())
-//			{
-////				System.out.println("variable.length "+actVariable.getKey().length());
-//				if(actVariable.getKey().length() > maxBreiteDerSchluessel) {maxBreiteDerSchluessel = actVariable.getKey().length();}
-//			}
-//			// alle Files im Commit durchgehen und die maximale Size ermitteln und festhalten
-//			for(File actFile : actCommit.getFile())
-//			{
-////				System.out.println("variable.length "+actFile.getKey().length());
-//				if(actFile.getKey().length() > maxBreiteDerSchluessel) {maxBreiteDerSchluessel = actFile.getKey().length();}
-//			}
-//		}
-//		maxBreiteDerSchluessel = maxBreiteDerSchluessel * 10;
-		maxBreiteDerSchluessel = 150;
+		parentPrampGui.log("debug", "2) bevor Spaltenbreitenermittlung");
+		// ermitteln wie breit die erste spalte sein muss um alle schluessel vollstaendig darstellen zu koennen
+		for(Commit actCommit : step.getCommit())
+		{
+			// alle Variablen im Commit durchgehen und die maximale Size ermitteln und festhalten
+			for(Variable actVariable : actCommit.getVariable())
+			{
+//				System.out.println("variable.length "+actVariable.getKey().length());
+				if(actVariable.getKey().length() > maxBreiteDerSchluessel) {maxBreiteDerSchluessel = actVariable.getKey().length();}
+			}
+			// alle Files im Commit durchgehen und die maximale Size ermitteln und festhalten
+			for(File actFile : actCommit.getFile())
+			{
+//				System.out.println("variable.length "+actFile.getKey().length());
+				if(actFile.getKey().length() > maxBreiteDerSchluessel) {maxBreiteDerSchluessel = actFile.getKey().length();}
+			}
+		}
+		maxBreiteDerSchluessel = maxBreiteDerSchluessel * 10;
+		parentPrampGui.log("debug", "3) nach Spaltenbreitenermittlung "+maxBreiteDerSchluessel);
+//		maxBreiteDerSchluessel = 150;
 //		System.out.println("max Breite = "+maxBreiteDerSchluessel);
 		
 		
 		composite.layout();
+		
+		parentPrampGui.log("debug", "4) nach composite.layout()");
 	}
 	
 	/**
