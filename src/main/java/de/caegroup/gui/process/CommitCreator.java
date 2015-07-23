@@ -40,8 +40,6 @@ public class CommitCreator
 	
 	public CommitCreator(PrampPartUi1 parentPrampGui, Composite parent, Step step)
 	{
-		parentPrampGui.log("debug", "1) start commitCreator");
-		
 		this.parent_prampgui = parentPrampGui;
 		this.parent = parent;
 		this.step = step;
@@ -61,7 +59,6 @@ public class CommitCreator
 		sc.setContent(composite);
 //		sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		
-		parentPrampGui.log("debug", "2) bevor Spaltenbreitenermittlung");
 		// ermitteln wie breit die erste spalte sein muss um alle schluessel vollstaendig darstellen zu koennen
 		for(Commit actCommit : step.getCommit())
 		{
@@ -79,14 +76,12 @@ public class CommitCreator
 			}
 		}
 		maxBreiteDerSchluessel = maxBreiteDerSchluessel * 10;
-		parentPrampGui.log("debug", "3) nach Spaltenbreitenermittlung "+maxBreiteDerSchluessel);
 //		maxBreiteDerSchluessel = 150;
 //		System.out.println("max Breite = "+maxBreiteDerSchluessel);
 		
 		
 		composite.layout();
 		
-		parentPrampGui.log("debug", "4) nach composite.layout()");
 	}
 	
 	/**
