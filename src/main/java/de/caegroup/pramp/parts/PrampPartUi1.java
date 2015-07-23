@@ -97,7 +97,7 @@ public class PrampPartUi1 extends ModelObject
 	private Ini ini = null;
 	private String userIniFile = null;
 	
-	private Map<String,Boolean> domainUserRights = null;
+	private Map<String,Boolean> domainUserRights = new HashMap<String,Boolean>();
 	
 	private ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
 	
