@@ -283,18 +283,20 @@ public class PrampPartUi1 extends ModelObject
 		grpAdmin.setLayout(new GridLayout(1, false));
 		grpAdmin.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpAdmin.setText("admin");
-	
+
 		button_doc = new Button(grpFunction, SWT.NONE);
 		button_doc.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		button_doc.setText("doc");
 		button_doc.setToolTipText("show documentation");;
 		button_doc.addSelectionListener(listener_showdoc_button);
+		button_doc.setEnabled(this.domainUserRights.get("Admin"));
 		
 		button_testrun = new Button(grpFunction, SWT.NONE);
 		button_testrun.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		button_testrun.setText("testrun");
 		button_testrun.setToolTipText("starts an instance of selected process with a sample dataset");;
 		button_testrun.addSelectionListener(listener_testrun_button);
+		button_testrun.setEnabled(this.domainUserRights.get("Admin"));
 		
 		
 		// Group apps
