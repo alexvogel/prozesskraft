@@ -1477,8 +1477,8 @@ public class PrampPartUi1 extends ModelObject
 	{
 					// starten des process-manager remote
 					// ....
-					if(ini.get("start", "process-manager").equals("true"))
-					{
+//					if(ini.get("start", "process-manager").equals("true"))
+//					{
 //						log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
 
 //						if(!(DistantHostActions.isHostReachable(combo_hosts.getText())))
@@ -1527,7 +1527,7 @@ public class PrampPartUi1 extends ModelObject
 //							log ("error", "IOException: problems with executing via ssh");
 //							e.printStackTrace();
 //						}
-					}
+//					}
 	}
 	
 //	void load()
