@@ -96,11 +96,11 @@ public class Checkin
 //				.isRequired()
 				.create("process");
 		
-//		Option version = OptionBuilder.withArgName("version")
-//				.hasArg()
-//				.withDescription("[mandatory] version")
-////				.isRequired()
-//				.create("version");
+		Option version = OptionBuilder.withArgName("version")
+				.hasArg()
+				.withDescription("[optional] version")
+//				.isRequired()
+				.create("version");
 		
 		Option host = OptionBuilder.withArgName("host")
 				.hasArg()
@@ -148,6 +148,7 @@ public class Checkin
 		options.addOption( help );
 		options.addOption( v );
 		options.addOption( process );
+		options.addOption( version );
 		options.addOption( id );
 		options.addOption( id2 );
 		options.addOption( pid );
@@ -214,6 +215,15 @@ public class Checkin
 		{
 //			Random generator = new Random();
 			entity.genId();
+		}
+
+		if (line.hasOption("version"))
+		{
+			entity.setVersion(line.getOptionValue("version"));
+		}
+		else
+		{
+			entity.setVersion("");
 		}
 
 		if (line.hasOption("id2"))
