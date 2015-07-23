@@ -946,6 +946,7 @@ public class PrampPartUi1 extends ModelObject
 	    	{
 				Process tmp = new Process();
 				tmp.setInfilexml(processDefinition);
+		    	log("debug", "A) vor dem einlesen des process.xml");
 				try
 				{
 				this.process = tmp.readXml();
@@ -956,6 +957,7 @@ public class PrampPartUi1 extends ModelObject
 //						e.printStackTrace();
 				}
 				this.process.setInfilexml(processDefinition);
+		    	log("debug", "B) nach dem einlesen des process.xml");
 			
 				this.processDefinitionPath = processDefinition;
 				return processDefinition;
@@ -979,6 +981,8 @@ public class PrampPartUi1 extends ModelObject
 	 */
 	public void createControlsRootCommit(Composite parent)
 	{
+
+		log("debug", "a) start createControlsRootCommit");
 
 		if (this.process == null)
 		{
@@ -1017,6 +1021,8 @@ public class PrampPartUi1 extends ModelObject
 			// ein neues composite erstellen
 			else if (this.process.isStep("root"))
 			{
+				log("debug", "b) beginne mit Aufbau des commitRootPage");
+
 				// den bisher angezeigten prozess ausblenden
 				commitRoot.setParent(shell_dummy_commitRoot);
 				commitRoot.setVisible(false);
@@ -1027,7 +1033,9 @@ public class PrampPartUi1 extends ModelObject
 //				GridLayout gl_actualComposite = new GridLayout(1, false);
 				actualComposite.setLayout(new FillLayout());
 
+				log("debug", "c) vor commitCreator");
 				CommitCreator commitCreator = new CommitCreator(this, actualComposite, this.process.getRootStep());
+				log("debug", "d) nach commitCreator");
 
 				actualComposite = commitCreator.createControls();
 //				actualComposite.pack();
@@ -1035,6 +1043,7 @@ public class PrampPartUi1 extends ModelObject
 				commitRoot = actualComposite;
 				commitRoot.setParent(parent);
 				commitRoot.setVisible(true);
+				log("debug", "e) vor parent.layout(true)");
 				parent.layout(true);
 				log("info", "creating a new commitRoot page");
 				commitRootOld.put(getActualCommitRootName(), commitRoot);
