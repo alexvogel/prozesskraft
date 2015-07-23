@@ -164,7 +164,7 @@ public class SIInsightCreator
 		Button buttonFileBrowser = new Button(compositeAction, SWT.NONE);
 		buttonFileBrowser.setText("browse");
 		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		buttonFileBrowser.setToolTipText("if its a subprocess it will be opened in an own pmodel client OR if its a normal step the data directory will be opened with a filebrowser");
+		buttonFileBrowser.setToolTipText("open step-directory with a filebrowser");
 		buttonFileBrowser.addSelectionListener(listener_button_browse);
 
 		Button buttonOpen = new Button(compositeAction, SWT.NONE);
@@ -172,7 +172,11 @@ public class SIInsightCreator
 		buttonOpen.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonOpen.setToolTipText("open subprocess with pmodel");
 		buttonOpen.addSelectionListener(listener_button_open);
-		if(this.step.getSubprocess() == null)
+		if(this.step.getType().equals("process"))
+		{
+			buttonOpen.setEnabled(true);
+		}
+		else
 		{
 			buttonOpen.setEnabled(false);
 		}
@@ -182,11 +186,15 @@ public class SIInsightCreator
 		buttonLog.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonLog.setToolTipText("opens .log (contains stdout/stderr of work command) file of step with an editor");
 		buttonLog.addSelectionListener(listener_button_log);
-		if(this.step.getSubprocess() == null)
+		if(this.step.getType().equals("process"))
+		{
+			buttonOpen.setEnabled(false);
+		}
+		else
 		{
 			buttonOpen.setEnabled(true);
 		}
-		
+
 		Button buttonReset = new Button(compositeAction, SWT.NONE);
 		buttonReset.setText("reset");
 		buttonReset.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
