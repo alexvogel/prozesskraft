@@ -745,12 +745,21 @@ public class PradarPartUi3 extends ModelObject
 				message += "checkin:\t\t"+einstellungen.entitySelected.getCheckinAsString() +"\n";
 				message += "checkout:\t"+einstellungen.entitySelected.getCheckoutAsString() +"\n";
 				message += "exitcode:\t\t"+einstellungen.entitySelected.getExitcode() +"\n";
-				java.io.File resource = new java.io.File(einstellungen.entitySelected.getResource());
-				try {
+				try
+				{
+					java.io.File resource = new java.io.File(einstellungen.entitySelected.getResource());
 					message += "directory:\t\t"+resource.getParentFile().getCanonicalPath() +"\n";
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				}
+				catch (IOException e)
+				{
+						// TODO Auto-generated catch block
+						log("error", e.getMessage());
+				}
+				catch (NullPointerException e)
+				{
+						// TODO Auto-generated catch block
+					log("warn", "resource file not found");
+					log("debug", e.getMessage());
 				}
 
 				confirmation.setMessage(message);
@@ -812,6 +821,7 @@ public class PradarPartUi3 extends ModelObject
 				// 2) loeschen der daten im filesystem
 				try
 				{
+					java.io.File resource = new java.io.File(einstellungen.entitySelected.getResource());
 					log("warn", "deleting directory "+resource.getParentFile().getCanonicalPath());
 					FileUtils.deleteDirectory(resource.getParentFile());
 				} catch (IOException e) {
