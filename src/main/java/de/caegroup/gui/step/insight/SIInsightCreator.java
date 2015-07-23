@@ -188,11 +188,11 @@ public class SIInsightCreator
 		buttonLog.addSelectionListener(listener_button_log);
 		if(this.step.getType().equals("process"))
 		{
-			buttonOpen.setEnabled(false);
+			buttonLog.setEnabled(false);
 		}
 		else
 		{
-			buttonOpen.setEnabled(true);
+			buttonLog.setEnabled(true);
 		}
 
 		Button buttonReset = new Button(compositeAction, SWT.NONE);
