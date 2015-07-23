@@ -178,14 +178,14 @@ public class Db
 				// und pid == null ist soll auch dieses feld nicht upgedatet werden
 				if(entity.getPid() == null)
 				{
-					String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', stepcount='"+entity.getStepcount()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+					String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', stepcount='"+entity.getStepcount()+"', active='true', checkout='0' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"'";
 					System.out.println(sql);
 					statement.executeUpdate(sql);
 				}
 				// wenn neue pid angegeben wurde
 				else
 				{
-					String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', stepcount='"+entity.getStepcount()+"', pid='"+entity.getPid()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+					String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', stepcount='"+entity.getStepcount()+"', pid='"+entity.getPid()+"', active='true', checkout='0' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"'";
 					System.out.println(sql);
 					statement.executeUpdate(sql);
 				}
@@ -196,14 +196,14 @@ public class Db
 				// und pid == null ist soll auch dieses feld nicht upgedatet werden
 				if(entity.getPid() == null)
 				{
-					String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+					String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', active='true', checkout='0' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"'";
 					statement.executeUpdate(sql);
 					System.out.println(sql);
 				}
 				// wenn neue pid angegeben wurde
 				else
 				{
-					String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', pid='"+entity.getPid()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"' AND active IS 'true'";
+					String sql = "UPDATE OR REPLACE radar SET stepcountcompleted='"+entity.getStepcountcompleted()+"', pid='"+entity.getPid()+"', active='true', checkout='0' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"'";
 					statement.executeUpdate(sql);
 					System.out.println(sql);
 					
