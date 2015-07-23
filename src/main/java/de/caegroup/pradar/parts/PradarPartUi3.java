@@ -759,7 +759,6 @@ public class PradarPartUi3 extends ModelObject
 				{
 						// TODO Auto-generated catch block
 					log("warn", "resource file not found");
-					log("debug", e.getMessage());
 				}
 
 				confirmation.setMessage(message);
@@ -824,10 +823,16 @@ public class PradarPartUi3 extends ModelObject
 					java.io.File resource = new java.io.File(einstellungen.entitySelected.getResource());
 					log("warn", "deleting directory "+resource.getParentFile().getCanonicalPath());
 					FileUtils.deleteDirectory(resource.getParentFile());
-				} catch (IOException e) {
+				}
+				catch (IOException e)
+				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 					log("error", e.getMessage());
+				}
+				catch (NullPointerException e)
+				{
+					log("warn", "data not deleted from filesystem, because no resource is defined");
 				}
 				
 				// daten und anzeige refreshen
