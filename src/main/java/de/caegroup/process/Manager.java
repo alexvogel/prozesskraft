@@ -274,7 +274,7 @@ public class Manager
 			// pradar checkin
 			if(pradar && p2.run && p2.touchInMillis == 0)
 			{
-				pradarCheckin(p2.getId(), p2.getName(), p2.getId2(), p2.getParentid(), getPid(), pathBinary);
+				pradarCheckin(p2.getId(), p2.getName(), p2.getVersion(), p2.getId2(), p2.getParentid(), getPid(), pathBinary);
 			}
 				
 			p2.writeBinary();
@@ -401,9 +401,9 @@ public class Manager
 		}
 	}
 	
-	private static void pradarCheckin(String instanceId, String processName, String id2, String parentId, String pid, String resource)
+	private static void pradarCheckin(String instanceId, String processName, String processVersion, String id2, String parentId, String pid, String resource)
 	{
-		String[] argsForProgress = {ini.get("apps", "pradar-checkin"), "-id="+instanceId, "-process="+processName, "-id2="+id2, "-parentid="+parentId, "-pid="+pid, "-resource="+resource};
+		String[] argsForProgress = {ini.get("apps", "pradar-checkin"), "-id="+instanceId, "-process="+processName, "-version="+processVersion, "-id2="+id2, "-parentid="+parentId, "-pid="+pid, "-resource="+resource};
 		try
 		{
 			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
