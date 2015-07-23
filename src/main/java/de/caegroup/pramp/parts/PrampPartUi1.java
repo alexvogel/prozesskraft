@@ -1034,13 +1034,18 @@ public class PrampPartUi1 extends ModelObject
 		
 		else
 		{
-			processDefinition = processDefinitionDirectory + "/process.xml";
-	    	log("info", "setting process definition: "+processDefinition);
+			processDefinition = "";
+			if(this.domainUserRights.get("Admin"))
+			{
+				processDefinition = processDefinitionDirectory + "/process.xml";
+			}
+
+	    	log("info", "setting process definition "+processDefinition);
 	    	
 	    	java.io.File fileProcess = new java.io.File(processDefinition);
 	    	if(!(fileProcess.exists()))
 	    	{
-		    	log("error", "process definition file does not exist: "+processDefinition);
+		    	log("error", "process definition file does not exist "+processDefinition);
 		    	this.process = null;
 		    	return null;
 	    	}
@@ -1276,21 +1281,34 @@ public class PrampPartUi1 extends ModelObject
 		
 		if(!(fileDoc.exists()))
 		{
-			log ("error", "no documentation found: " + fileDoc.getAbsolutePath());
+			String fileDocFuerLog = "";
+			if(this.domainUserRights.get("Admin"))
+			{
+				fileDocFuerLog = fileDoc.getAbsolutePath();
+			}
+
+			log ("error", "no documentation found.");
+
 			return false;
 		}
 		
 		else
 		{
 			String pdfreader = ini.get("apps", "pdfreader");
-			log ("info", "showing documentation with call: " +pdfreader +" " + fileDoc.getAbsolutePath());
+			
+			String fileDocFuerLog = "";
+			if(this.domainUserRights.get("Admin"))
+			{
+				fileDocFuerLog = fileDoc.getAbsolutePath();
+			}
+			
+			log ("info", "showing documentation with " +pdfreader +" " + fileDocFuerLog);
 			String[] args_for_command = {pdfreader, fileDoc.getAbsolutePath()};
 			ProcessBuilder pb = new ProcessBuilder(args_for_command);
 			
 			try
 			{
 				java.lang.Process p = pb.start();
-				log ("info", "showing documentation with call: acroread " + fileDoc.getAbsolutePath());
 				log ("debug", "hashCode="+p.hashCode());
 			} catch (IOException e)
 			{
