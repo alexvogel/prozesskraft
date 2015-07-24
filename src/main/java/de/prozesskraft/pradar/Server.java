@@ -1,4 +1,4 @@
-package de.caegroup.pradar;
+package de.prozesskraft.pradar;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,8 +20,8 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 
-import de.caegroup.commons.WhereAmI;
-import de.caegroup.network.ConcurrentServer;
+import de.prozesskraft.commons.WhereAmI;
+import de.prozesskraft.network.ConcurrentServer;
 
 import org.ini4j.*;
 
