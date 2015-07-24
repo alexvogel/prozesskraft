@@ -1,4 +1,4 @@
-package de.caegroup.testprocess;
+package de.prozesskraft.testprocess;
 
 import static org.junit.Assert.*;
 

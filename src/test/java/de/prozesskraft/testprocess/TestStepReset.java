@@ -1,4 +1,4 @@
-package de.caegroup.testprocess;
+package de.prozesskraft.testprocess;
 
 import static org.junit.Assert.*;
 
@@ -11,9 +11,9 @@ import de.prozesskraft.pkraft.Init;
 import de.prozesskraft.pkraft.Process;
 import de.prozesskraft.pkraft.Step;
 
-public class TestStep {
+public class TestStepReset {
 
-	Step step = new Step();
+	Process process = new Process();
 
 	@Before
 	public void setUp()
@@ -25,45 +25,30 @@ public class TestStep {
 		init2.setFromstep("somestep");
 
 		Init init3 = new Init();
-		init3.setFromstep("anotherstep@1");
+		init3.setFromstep("anotherstep");
 
-		Init init4 = new Init();
-		init4.setFromstep("anotherstep@2");
-		
+		Step step = new Step();
 		step.setName("myStep");
 		step.addInit(init1);
 		step.addInit(init2);
 		step.addInit(init3);
-		step.addInit(init4);
 		
-		Process process = new Process();
 		process.addStep(step);
 		process.addStep("root");
 		process.addStep("somestep");
 		process.addStep("anotherstep@1");
 		process.addStep("anotherstep@2");
 		process.addStep("tuvalu");
+		
+		
 	}
 	
 	@Test
-	public void testGetFromsteps()
+	public void testGetStepDependent()
 	{
-		assertEquals(4, step.getFromsteps().size());
+		assertEquals(1, process.getStepDependent("somestep").size());
+		assertEquals(1, process.getStepDependent("anotherstep@1").size());
+		assertEquals("myStep", process.getStepDependent("anotherstep@1").get(0).getName());
 	}
 	
-	@Test
-	public void testGetFromsteps2()
-	{
-		Init init = new Init();
-		init.setFromstep("tuvalu");
-		step.addInit(init);
-		Iterator<Step> iterStep = step.getFromsteps().iterator();
-//		while(iterStep.hasNext())
-//		{
-//			Step actualStep = iterStep.next();
-//			System.out.println("Stepname: "+actualStep.getName());
-//		}
-		assertEquals(5, step.getFromsteps().size());
-	}
-
 }
