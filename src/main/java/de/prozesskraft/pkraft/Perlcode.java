@@ -1,4 +1,4 @@
-package de.caegroup.process;
+package de.prozesskraft.pkraft;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +28,8 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
 import de.caegroup.commons.*;
+import de.caegroup.process.Process;
+import de.caegroup.process.Step;
 
 import java.nio.file.attribute.*;
 
