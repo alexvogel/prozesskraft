@@ -1,6 +1,6 @@
-package de.caegroup.process;
+package de.prozesskraft.pkraft;
 
-import java.io.File;
+//import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,10 +18,8 @@ import org.apache.commons.cli.Options;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
-import de.caegroup.commons.MyLicense;
-import de.caegroup.commons.WhereAmI;
-import de.caegroup.process.Process;
-import de.caegroup.process.Step;
+import de.prozesskraft.commons.MyLicense;
+import de.prozesskraft.commons.WhereAmI;
 
 public class Startinstance
 {
@@ -41,7 +39,7 @@ public class Startinstance
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Startinstance.class) + "/" + "../etc/process-startinstance.ini");
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Startinstance.class) + "/" + "../etc/process-startinstance.ini");
 
 		if (inifile.exists())
 		{
@@ -267,7 +265,7 @@ public class Startinstance
 			for(String actOptionCommitfile : commandline.getOptionValues("commitfile"))
 			{
 				String[] parts = actOptionCommitfile.split("=");
-				de.caegroup.process.File userFile = new de.caegroup.process.File();
+				File userFile = new File();
 
 				if(parts.length == 1)
 				{
@@ -290,7 +288,7 @@ public class Startinstance
 				for(Commit actCommit : stepRoot.getCommit())
 				{
 					// alle files des aktuellen commits
-					for(de.caegroup.process.File actFile : actCommit.getFile())
+					for(File actFile : actCommit.getFile())
 					{
 						if(actFile.getKey().equals(userFile.getKey()))
 						{
@@ -300,7 +298,7 @@ public class Startinstance
 								// wenn die maximale erlaubte anzahl noch nicht erreicht ist
 								if( actCommit.getFile(actFile.getKey()).size() < actFile.getMaxoccur() )
 								{
-									de.caegroup.process.File newFile = actFile.clone();
+									File newFile = actFile.clone();
 									newFile.setGlob(userFile.getGlob());
 									System.err.println("entering file into commit '"+actCommit.getName()+"' ("+newFile.getKey()+"="+newFile.getGlob()+")");
 									actCommit.addFile(newFile);
@@ -337,7 +335,7 @@ public class Startinstance
 			for(String actOptionCommitfiledummy : commandline.getOptionValues("commitfiledummy"))
 			{
 				String[] parts = actOptionCommitfiledummy.split("=");
-				de.caegroup.process.File userFile = new de.caegroup.process.File();
+				File userFile = new File();
 				commitFiledummy.addFile(userFile);
 
 				if(parts.length == 1)
@@ -391,7 +389,7 @@ public class Startinstance
 						for(Commit actCommit : stepRoot.getCommit())
 						{
 							// alle files des aktuellen commits
-							for(de.caegroup.process.Variable actVariable : actCommit.getVariable())
+							for(Variable actVariable : actCommit.getVariable())
 							{
 								if(actVariable.getKey().equals(userVariable.getKey()))
 								{
@@ -401,7 +399,7 @@ public class Startinstance
 										// wenn die maximale erlaubte anzahl noch nicht erreicht ist
 										if( actCommit.getVariable(actVariable.getKey()).size() < actVariable.getMaxoccur() )
 										{
-											de.caegroup.process.Variable newVariable = actVariable.clone();
+											Variable newVariable = actVariable.clone();
 											newVariable.setValue(userVariable.getValue());
 											System.err.println("entering variable into commit '"+actCommit.getName()+"' ("+newVariable.getKey()+"="+newVariable.getValue()+")");
 											actCommit.addVariable(newVariable);
