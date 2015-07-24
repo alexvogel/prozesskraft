@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.caegroup.pmodel</groupId>
+	<groupId>de.prozesskraft.pmodel</groupId>
 	<artifactId>pmodel-gui</artifactId>
 	<packaging>jar</packaging>
 	<version>0.6.0</version>
@@ -49,7 +49,7 @@
 				<version>2.3.2</version>
 				<executions>
 					<execution>
-						<id>installation-caegroup-jar</id>
+						<id>installation-prozesskraft-jar</id>
 						<phase>package</phase>
 						<goals>
 							<goal>jar</goal>
@@ -57,7 +57,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>de.caegroup.pmodel.parts.PmodelPartUi1</mainClass>
+									<mainClass>de.prozesskraft.pmodel.parts.PmodelPartUi1</mainClass>
 								</manifest>
 							</archive>
 							<outputDirectory>${project.build.directory}</outputDirectory>
@@ -82,7 +82,7 @@
 					<finalName>${project.name}-${project.version}</finalName>
 					<archive>
 						<manifest>
-							<mainClass>de.caegroup.pramp.parts.PrampPartUi1</mainClass>
+							<mainClass>de.prozesskraft.pmodel.PmodelPartUi1</mainClass>
 							<addClasspath>true</addClasspath>
 						</manifest>
 					</archive>
@@ -117,9 +117,9 @@
 					<injar>${project.name}-${project.version}.jar</injar>
 					<outjar>${project.name}-${project.version}.jar</outjar>
 					<options>
-						<option>-keep public class de.caegroup.pmodel.PmodelPartUi1 { *; }</option>
-						<option>-keep public class de.caegroup.pmodel.PmodelViewModel { *; }</option>
-						<option>-keep public class de.caegroup.pmodel.PmodelViewPage { *; }</option>
+						<option>-keep public class de.prozesskraft.pmodel.PmodelPartUi1 { *; }</option>
+						<option>-keep public class de.prozesskraft.pmodel.PmodelViewModel { *; }</option>
+						<option>-keep public class de.prozesskraft.pmodel.PmodelViewPage { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
@@ -178,8 +178,8 @@
 			<version>0.5.2</version>
 		</dependency>
 		<dependency>
-			<groupId>de.caegroup.process</groupId>
-			<artifactId>process-core</artifactId>
+			<groupId>de.prozesskraft.pkraft</groupId>
+			<artifactId>pkraft-core</artifactId>
 			<version>0.6.0</version>
 		</dependency>
     	<dependency>

@@ -1,4 +1,4 @@
-package de.caegroup.pmodel;
+package de.prozesskraft.pmodel;
 
 //import java.io.*;
 //import java.util.*;

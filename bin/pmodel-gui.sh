@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.caegroup.pmodel.PmodelPartUi1"
+MAINCLASS="de.prozesskraft.pmodel.PmodelPartUi1"
 BASEDIR=$(dirname $0)
 
 # wenn eine eigene javainstallation vorhanden ist, soll diese verwendet werden

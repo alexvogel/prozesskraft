@@ -1,4 +1,4 @@
-package de.caegroup.pmodel;
+package de.prozesskraft.pmodel;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -36,9 +36,9 @@ import javax.xml.bind.JAXBException;
 //import org.apache.commons.cli.Options;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 import processing.core.*;
-import de.caegroup.jaxb.process.File;
-import de.caegroup.process.Process;
-import de.caegroup.process.Step;
+import de.prozesskraft.jaxb.pkraft.File;
+import de.prozesskraft.pkraft.Process;
+import de.prozesskraft.pkraft.Step;
 
 public class PmodelViewPage extends PApplet
 {

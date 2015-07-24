@@ -1,4 +1,4 @@
-package de.caegroup.gui.step.insight;
+package de.prozesskraft.gui.step.insight;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -24,12 +24,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import de.caegroup.gui.step.edit.EditFile;
-import de.caegroup.gui.step.edit.EditVariable;
-import de.caegroup.process.File;
-import de.caegroup.process.Log;
-import de.caegroup.process.Step;
-import de.caegroup.process.Variable;
+import de.prozesskraft.pkraft.*;
+import de.prozesskraft.gui.step.edit.EditFile;
+import de.prozesskraft.gui.step.edit.EditVariable;
 
 public class SIFileGui
 {

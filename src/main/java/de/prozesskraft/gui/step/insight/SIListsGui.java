@@ -1,8 +1,8 @@
-package de.caegroup.gui.step.insight;
+package de.prozesskraft.gui.step.insight;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.List;
+//import java.util.List;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -22,10 +22,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import de.caegroup.process.File;
-import de.caegroup.process.Log;
-import de.caegroup.process.Step;
-import de.caegroup.process.Variable;
+import de.prozesskraft.pkraft.File;
+import de.prozesskraft.pkraft.Log;
+import de.prozesskraft.pkraft.Step;
+import de.prozesskraft.pkraft.Variable;
+import de.prozesskraft.pkraft.List;
 
 public class SIListsGui
 {
@@ -61,7 +62,7 @@ public class SIListsGui
 //		tabFolder.addSelectionListener(listener_tabFolder_selection);
 
 		// fuer jede liste ein tabItem erzeugen
-		for(de.caegroup.process.List actualList : step.getList())
+		for(List actualList : step.getList())
 		{
 			CTabItem tabItem_list = new CTabItem(tabFolder, SWT.NONE);
 			tabItem_list.setText(actualList.getName());					

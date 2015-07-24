@@ -1,4 +1,4 @@
-package de.caegroup.gui.step.edit;
+package de.prozesskraft.gui.step.edit;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

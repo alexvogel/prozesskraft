@@ -1,8 +1,7 @@
-package de.caegroup.gui.process.insight;
+package de.prozesskraft.gui.step.insight;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -19,13 +18,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import de.caegroup.process.Log;
-import de.caegroup.process.Process;
+import de.prozesskraft.pkraft.File;
+import de.prozesskraft.pkraft.Log;
+import de.prozesskraft.pkraft.Step;
+import de.prozesskraft.pkraft.Variable;
+import de.prozesskraft.pkraft.List;
 
-public class PILogGui
+public class SIListGui
 {
 	private Composite parent;
-	private Process process;
+	private List list;
 	
 	TableViewer viewer;
 //	Composite composite;
@@ -33,12 +35,12 @@ public class PILogGui
 //	ArrayList<VariableGui> variableGui = new ArrayList<VariableGui>();
 //	ArrayList<FileGui> fileGui = new ArrayList<FileGui>();
 
-	public PILogGui(Composite parent, Process process)
+	public SIListGui(Composite parent, List list)
 	{
 		this.parent = parent;
-		this.process = process;
+		this.list = list;
 		Composite composite = new Composite(this.parent, SWT.NONE);
-		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		GridData gd_composite = new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 		composite.setLayoutData(gd_composite);
 		composite.setLayout(new GridLayout(1, false));
 
@@ -47,7 +49,7 @@ public class PILogGui
 
 	public void createControls(Composite composite)
 	{
-		viewer = new TableViewer(composite, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 		
 		Table table = viewer.getTable();
 		table.setHeaderVisible(true);
@@ -57,31 +59,22 @@ public class PILogGui
 		fD[0].setHeight(8);
 		table.setFont(new Font(table.getDisplay(), fD[0]));
 
-		TableColumn colTime = new TableColumn(table, SWT.LEFT);
-		colTime.setText("time");
-		colTime.setWidth(150);
+		TableColumn colItem = new TableColumn(table, SWT.LEFT);
+		colItem.setText("item");
+		colItem.setWidth(80);
 		
-		TableColumn colLevel = new TableColumn(table, SWT.LEFT);
-		colLevel.setText("level");
-		colLevel.setWidth(80);
-
-		TableColumn colMessage = new TableColumn(table, SWT.LEFT);
-		colMessage.setText("message");
-		colMessage.setWidth(100);
-
 		viewer.setContentProvider(new MyContentProvider());
 		viewer.setLabelProvider(new MyLabelProvider());
-		viewer.setInput(process.getLog());
+		viewer.setInput(list.getItem());
 		
-		// auf die letzte zeile fokussieren
-		table.setSelection(table.getItemCount()-1);
+//		System.out.println("Anzahl ist: "+list.getItem().size());
 	}
 	
 	public class MyContentProvider implements IStructuredContentProvider
 	{
 		public Object[] getElements(Object inputElement)
 		{
-			return ((List) inputElement).toArray();
+			return ((java.util.List) inputElement).toArray();
 		}
 		
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
@@ -98,7 +91,7 @@ public class PILogGui
 	
 	public class MyLabelProvider implements ITableLabelProvider
 	{
-		List listeners = new ArrayList();
+		java.util.List listeners = new ArrayList();
 
 		public void addListener(ILabelProviderListener listener)
 		{
@@ -133,18 +126,12 @@ public class PILogGui
 
 		public String getColumnText(Object element, int columnIndex)
 		{
-			Log l = (Log) element;
+			String item = (String) element;
 			
 			switch(columnIndex)
 			{
 				case 0:
-					return (new Timestamp(l.getTime())).toString();
-					
-				case 1:
-					return l.getLevel();
-					
-				case 2:
-					return l.getMsg();
+					return item;
 			}
 			// should never get here
 			return "";

@@ -1,4 +1,4 @@
-package de.caegroup.pmodel;
+package de.prozesskraft.pmodel;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
@@ -86,12 +86,12 @@ import org.ini4j.InvalidFileFormatException;
 import com.license4j.License;
 import com.license4j.LicenseValidator;
 
-import de.caegroup.commons.MyLicense;
-import de.caegroup.commons.WhereAmI;
-import de.caegroup.gui.process.insight.PIInsightCreator;
-import de.caegroup.gui.step.insight.SIInsightCreator;
 //import de.caegroup.pradar.Init;
-import de.caegroup.process.Process;
+import de.prozesskraft.pkraft.Process;
+import de.prozesskraft.commons.MyLicense;
+import de.prozesskraft.commons.WhereAmI;
+import de.prozesskraft.gui.process.insight.PIInsightCreator;
+import de.prozesskraft.gui.step.insight.SIInsightCreator;
 
 public class PmodelPartUi1 extends ModelObject
 {

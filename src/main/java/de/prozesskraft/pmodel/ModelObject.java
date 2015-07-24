@@ -1,4 +1,4 @@
-package de.caegroup.pmodel;
+package de.prozesskraft.pmodel;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

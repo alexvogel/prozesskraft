@@ -1,7 +1,6 @@
-package de.caegroup.pmodel;
+package de.prozesskraft.pmodel;
 
-import de.caegroup.process.*;
-import de.caegroup.process.Process;
+import de.prozesskraft.pkraft.Process;
 
 public class PmodelViewModel extends ModelObject
 {

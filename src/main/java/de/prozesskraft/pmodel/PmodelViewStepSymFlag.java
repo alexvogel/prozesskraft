@@ -1,4 +1,4 @@
-package de.caegroup.pmodel;
+package de.prozesskraft.pmodel;
 
 //import java.io.*;
 import java.sql.Timestamp;
@@ -9,7 +9,7 @@ import processing.core.PApplet;
 //import org.apache.solr.common.util.NamedList;
 
 import processing.core.PFont;
-import de.caegroup.process.Step;
+import de.prozesskraft.pkraft.Step;
 
 public class PmodelViewStepSymFlag
 {

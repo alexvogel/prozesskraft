@@ -1,4 +1,4 @@
-package de.caegroup.gui.step.edit;
+package de.prozesskraft.gui.step.edit;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,10 +31,10 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import de.caegroup.gui.step.insight.SIFileGui;
-import de.caegroup.gui.step.insight.SIInsightCreator;
-import de.caegroup.gui.step.insight.SIVariableGui;
-import de.caegroup.process.*;
+import de.prozesskraft.gui.step.insight.SIFileGui;
+import de.prozesskraft.gui.step.insight.SIInsightCreator;
+import de.prozesskraft.gui.step.insight.SIVariableGui;
+import de.prozesskraft.pkraft.*;
 
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.FormLayout;

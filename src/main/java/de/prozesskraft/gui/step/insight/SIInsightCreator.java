@@ -1,4 +1,4 @@
-package de.caegroup.gui.step.insight;
+package de.prozesskraft.gui.step.insight;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,13 +31,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
-import de.caegroup.gui.step.edit.EditFile;
-import de.caegroup.gui.step.edit.EditVariable;
-import de.caegroup.pmodel.PmodelPartUi1;
-import de.caegroup.process.Commit;
-import de.caegroup.process.Step;
-import de.caegroup.process.Variable;
-import de.caegroup.process.Process;
+import de.prozesskraft.pkraft.Commit;
+import de.prozesskraft.pkraft.Step;
+import de.prozesskraft.pkraft.Variable;
+import de.prozesskraft.pkraft.Process;
+import de.prozesskraft.gui.step.edit.EditFile;
+import de.prozesskraft.gui.step.edit.EditVariable;
+import de.prozesskraft.pmodel.PmodelPartUi1;
 
 public class SIInsightCreator
 {

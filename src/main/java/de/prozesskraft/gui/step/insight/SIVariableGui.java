@@ -1,4 +1,4 @@
-package de.caegroup.gui.step.insight;
+package de.prozesskraft.gui.step.insight;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +25,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import de.caegroup.gui.step.edit.EditVariable;
-import de.caegroup.gui.step.edit.ShowLog;
 //import de.caegroup.pradar.Entity;
-import de.caegroup.process.Step;
-import de.caegroup.process.Variable;
+import de.prozesskraft.pkraft.Step;
+import de.prozesskraft.pkraft.Variable;
+import de.prozesskraft.gui.step.edit.EditVariable;
+import de.prozesskraft.gui.step.edit.ShowLog;
 
 public class SIVariableGui
 {

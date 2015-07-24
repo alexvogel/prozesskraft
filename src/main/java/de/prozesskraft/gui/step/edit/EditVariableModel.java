@@ -1,7 +1,6 @@
-package de.caegroup.gui.step.edit;
+package de.prozesskraft.gui.step.edit;
 
-import de.caegroup.process.*;
-import de.caegroup.process.Process;
+import de.prozesskraft.pkraft.*;
 
 public class EditVariableModel extends ModelObject
 {

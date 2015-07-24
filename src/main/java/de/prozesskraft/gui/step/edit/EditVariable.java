@@ -1,4 +1,4 @@
-package de.caegroup.gui.step.edit;
+package de.prozesskraft.gui.step.edit;
 
 import java.util.ArrayList;
 
@@ -27,9 +27,9 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import de.caegroup.gui.step.insight.SIInsightCreator;
-import de.caegroup.gui.step.insight.SIVariableGui;
-import de.caegroup.process.*;
+import de.prozesskraft.pkraft.*;
+import de.prozesskraft.gui.step.insight.SIInsightCreator;
+import de.prozesskraft.gui.step.insight.SIVariableGui;
 
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.FormLayout;
