@@ -2,23 +2,18 @@ package de.prozesskraft.pradar.parts;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.ConnectException;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,13 +71,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
-
-import de.prozesskraft.pradar.Entity;
-import de.prozesskraft.commons.MyLicense;
-import de.prozesskraft.commons.WhereAmI;
-
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.wb.swt.SWTResourceManager;
 //import java.beans.PropertyChangeSupport;
 //import java.beans.PropertyChangeListener;
 //import org.eclipse.jface.viewers.TableViewer;
@@ -97,10 +88,10 @@ import org.eclipse.swt.widgets.Spinner;
 //import org.eclipse.core.databinding.beans.PojoProperties;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
-import org.eclipse.wb.swt.SWTResourceManager;
 
-import com.license4j.License;
-import com.license4j.LicenseValidator;
+import de.prozesskraft.commons.MyLicense;
+import de.prozesskraft.commons.WhereAmI;
+import de.prozesskraft.pradar.Entity;
 
 public class PradarPartUi3 extends ModelObject
 {
