@@ -18,7 +18,6 @@ import org.ini4j.InvalidFileFormatException;
 
 import de.prozesskraft.commons.MyLicense;
 import de.prozesskraft.commons.WhereAmI;
-import de.prozesskraft.process.Process;
 
 
 public class Wrap
@@ -28,7 +27,7 @@ public class Wrap
 	  structure
 	----------------------------*/
 	static CommandLine commandline;
-	static String author = "alexander.vogel@caegroup.de";
+	static String author = "alexander.vogel@prozesskraft.de";
 	static String version = "[% version %]";
 	static String date = "[% date %]";
 	static Ini ini;
