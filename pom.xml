@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.caegroup.process</groupId>
-	<artifactId>process-createdoc</artifactId>
+	<groupId>de.prozesskraft.pkraft</groupId>
+	<artifactId>pkraft-createdoc</artifactId>
 	<packaging>jar</packaging>
 	<version>0.6.0</version>
-	<name>process-createdoc</name>
+	<name>pkraft-createdoc</name>
 	<url>http://maven.apache.org</url>
 	<build>
 
@@ -49,7 +49,7 @@
 				<version>2.3.2</version>
 				<executions>
 					<execution>
-						<id>installation-caegroup-jar</id>
+						<id>installation-prozesskraft-jar</id>
 						<phase>package</phase>
 						<goals>
 							<goal>jar</goal>
@@ -57,7 +57,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>de.caegroup.process.Createdoc</mainClass>
+									<mainClass>de.prozesskraft.pkraft.Createdoc</mainClass>
 								</manifest>
 							</archive>
 							<outputDirectory>${project.build.directory}</outputDirectory>
@@ -129,22 +129,22 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>de.caegroup.process</groupId>
-			<artifactId>process-core</artifactId>
+			<groupId>de.prozesskraft.pkraft</groupId>
+			<artifactId>pkraft-core</artifactId>
 			<version>0.6.0</version>
 		</dependency>
 		<dependency>
-			<groupId>de.caegroup.report</groupId>
+			<groupId>de.prozesskraft.report</groupId>
 			<artifactId>report-core</artifactId>
 			<version>0.0.2</version>
 		</dependency>
 		<dependency>
-			<groupId>de.caegroup.pmodel</groupId>
+			<groupId>de.prozesskraft.pmodel</groupId>
 			<artifactId>pmodel-gui</artifactId>
 			<version>0.6.0</version>
 		</dependency>
 		<dependency>
-			<groupId>de.caegroup.commons</groupId>
+			<groupId>de.prozesskraft.commons</groupId>
 			<artifactId>avoge-commons</artifactId>
 			<version>0.2.0</version>
 		</dependency>
