@@ -13,7 +13,7 @@
 				<version>2.3.2</version>
 				<executions>
 					<execution>
-						<id>installation-caegroup-jar</id>
+						<id>installation-prozesskraft-jar</id>
 						<phase>package</phase>
 						<goals>
 							<goal>jar</goal>
@@ -41,8 +41,8 @@
 <!-- 					<obfuscate>true</obfuscate> -->
 <!-- 					<options> -->
 <!-- 					abhaengigkeiten in anderen packages (durch import) koennen nur aufgeloest werden, wenn diese klassen public bleiben -->
-<!-- 						<option>-keep public class de.caegroup.report.Report { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.report.PTopoimage { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.report.Report { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.report.PTopoimage { *; }</option> -->
 <!-- 					</options> -->
 <!-- 					<libs> -->
 <!-- 						<lib>${java.home}/lib/rt.jar</lib> -->
@@ -62,7 +62,7 @@
 <!-- 					<finalName>${project.name}-${project.version}</finalName> -->
 <!-- 					<archive> -->
 <!-- 						<manifest> -->
-<!-- 							<mainClass>de.caegroup.pradar.Manager</mainClass> -->
+<!-- 							<mainClass>de.prozesskraft.pradar.Manager</mainClass> -->
 <!-- 							<addClasspath>true</addClasspath> -->
 <!-- 						</manifest> -->
 <!-- 					</archive> -->
@@ -127,9 +127,9 @@
 			<version>2.1.7</version>
 	    </dependency>
 <!-- 	    <dependency> -->
-<!-- 			<groupId>de.caegroup.process</groupId> -->
-<!-- 			<artifactId>process-core</artifactId> -->
-<!-- 			<version>0.2.0</version> -->
+<!-- 			<groupId>de.prozesskraft.pkraft</groupId> -->
+<!-- 			<artifactId>pkraft-core</artifactId> -->
+<!-- 			<version>0.6.0</version> -->
 <!-- 	    </dependency> -->
 	</dependencies>
 </project>
