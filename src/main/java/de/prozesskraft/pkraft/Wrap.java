@@ -1,4 +1,4 @@
-package de.caegroup.process;
+package de.prozesskraft.pkraft;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,8 +16,9 @@ import org.apache.commons.cli.Options;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
-import de.caegroup.commons.MyLicense;
-import de.caegroup.commons.WhereAmI;
+import de.prozesskraft.commons.MyLicense;
+import de.prozesskraft.commons.WhereAmI;
+import de.prozesskraft.process.Process;
 
 
 public class Wrap
