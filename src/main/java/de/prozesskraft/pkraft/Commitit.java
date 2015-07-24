@@ -15,11 +15,8 @@ import org.apache.commons.cli.Options;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
-import de.caegroup.commons.MyLicense;
-import de.caegroup.commons.WhereAmI;
-//import de.caegroup.process.Commit;
-//import de.caegroup.process.Process;
-//import de.caegroup.process.Step;
+import de.prozesskraft.commons.MyLicense;
+import de.prozesskraft.commons.WhereAmI;
 
 
 public class Commitit
