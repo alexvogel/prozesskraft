@@ -1,4 +1,4 @@
-package de.caegroup.process;
+package de.prozesskraft.pkraft;
 
 import de.caegroup.commons.MyLicense;
 import de.caegroup.commons.WhereAmI;
