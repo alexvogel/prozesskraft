@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.caegroup.process.Createdoc"
+MAINCLASS="de.prozesskraft.pkraft.Createdoc"
 BASEDIR=$(dirname $0)
 
 # wenn eine eigene javainstallation vorhanden ist, soll diese verwendet werden
