@@ -1,4 +1,4 @@
-package de.caegroup.pradar;
+package de.prozesskraft.pradar;
 
 import java.io.File;
 import java.net.URISyntaxException;

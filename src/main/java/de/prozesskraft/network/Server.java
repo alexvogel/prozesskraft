@@ -11,9 +11,9 @@ import java.net.Socket;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-import de.caegroup.pradar.Db;
-import de.caegroup.pradar.Entity;
 import de.prozesskraft.commons.*;
+import de.prozesskraft.pradar.Db;
+import de.prozesskraft.pradar.Entity;
 
 
 public class Server
