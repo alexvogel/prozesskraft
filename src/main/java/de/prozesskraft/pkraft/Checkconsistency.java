@@ -16,8 +16,8 @@ import org.apache.commons.cli.Options;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
-import de.caegroup.commons.MyLicense;
-import de.caegroup.commons.WhereAmI;
+import de.prozesskraft.commons.MyLicense;
+import de.prozesskraft.commons.WhereAmI;
 
 public class Checkconsistency
 {
@@ -105,7 +105,7 @@ public class Checkconsistency
 		
 		if ( commandline.hasOption("v"))
 		{
-			System.out.println("author:  alexander.vogel@caegroup.de");
+			System.out.println("author:  alexander.vogel@prozesskraft.de");
 			System.out.println("version: [% version %]");
 			System.out.println("date:    [% date %]");
 			System.exit(0);
