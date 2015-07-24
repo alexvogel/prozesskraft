@@ -28,7 +28,7 @@ public class Createmap
 	  structure
 	----------------------------*/
 	static CommandLine commandline;
-	static String author = "alexander.vogel@caegroup.de";
+	static String author = "alexander.vogel@prozesskraft.de";
 	static String version = "[% version %]";
 	static String date = "[% date %]";
 	static Ini ini;
