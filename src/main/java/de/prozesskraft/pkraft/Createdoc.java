@@ -61,7 +61,7 @@ import org.ini4j.InvalidFileFormatException;
 import org.pptx4j.Pptx4jException;
 
 import de.prozesskraft.pmodel.PmodelViewPage;
-import de.prozesskraft.report.*;
+import de.prozesskraft.reporter.*;
 import de.prozesskraft.commons.AutoCropBorder;
 import de.prozesskraft.commons.MyLicense;
 import de.prozesskraft.commons.WhereAmI;
@@ -283,7 +283,7 @@ public class Createdoc
 		----------------------------*/
 		
 		Process process = new Process();
-		Report report;
+		Reporter report;
 
 		process.setInfilexml(definition);
 		
@@ -422,7 +422,7 @@ public class Createdoc
 		page.destroy();
 
 //////////////////////////////////////////
-		report = new Report();
+		report = new Reporter();
 		
 		// P03) erstellen des p03
 		System.out.println("info: generating p03.");
@@ -494,7 +494,7 @@ public class Createdoc
 //System.exit(0);
 
 //////////////////////////////////////////
-		report = new Report();
+		report = new Reporter();
 		
 		// P05) erstellen des p05
 		System.out.println("info: generating p05.");
@@ -561,7 +561,7 @@ public class Createdoc
 		//System.exit(0);
 				
 //////////////////////////////////////////
-		report = new Report();
+		report = new Reporter();
 
 		// P08) erstellen des p08
 		System.out.println("info: generating p08.");
@@ -630,7 +630,7 @@ public class Createdoc
 
 //////////////////////////////////////////
 		
-		report = new Report();
+		report = new Reporter();
 		
 		// P10) erstellen des p10
 		System.out.println("info: generating p10.");
@@ -668,7 +668,7 @@ public class Createdoc
 		{
 			
 			// ueber alle files iterieren
-			for(de.caegroup.process.File actualFile : actualCommit.getFile())
+			for(de.prozesskraft.pkraft.File actualFile : actualCommit.getFile())
 			{
 				HashMap<String,Object> row = new HashMap<String,Object>();
 				
@@ -703,7 +703,7 @@ public class Createdoc
 			}
 
 			// ueber alle variablen iterieren
-			for(de.caegroup.process.Variable actualVariable : actualCommit.getVariable())
+			for(de.prozesskraft.pkraft.Variable actualVariable : actualCommit.getVariable())
 			{
 				HashMap<String,Object> row = new HashMap<String,Object>();
 				
@@ -775,7 +775,7 @@ public class Createdoc
 		
 //////////////////////////////////////////
 
-		report = new Report();
+		report = new Reporter();
 		
 		// P20) erstellen des p20
 		System.out.println("info: generating p20.");
@@ -820,7 +820,7 @@ public class Createdoc
 					if(actualCommit.isTorootPresent())
 					{
 						// ueber alle files iterieren
-						for(de.caegroup.process.File actualFile : actualCommit.getFile())
+						for(de.prozesskraft.pkraft.File actualFile : actualCommit.getFile())
 						{
 	
 							HashMap<String,Object> row = new HashMap<String,Object>();
@@ -848,7 +848,7 @@ public class Createdoc
 						}
 	
 						// ueber alle variablen iterieren
-						for(de.caegroup.process.Variable actualVariable : actualCommit.getVariable())
+						for(de.prozesskraft.pkraft.Variable actualVariable : actualCommit.getVariable())
 						{
 							HashMap<String,Object> row = new HashMap<String,Object>();
 							
@@ -915,7 +915,7 @@ public class Createdoc
 	
 //////////////////////////////////////////
 
-		report = new Report();
+		report = new Reporter();
 		
 		// P30) erstellen des p30
 		System.out.println("info: generating p30.");
@@ -985,7 +985,7 @@ public class Createdoc
 //		System.exit(0);
 //////////////////////////////////////////
 		
-		report = new Report();
+		report = new Reporter();
 			
 		// P40) erstellen des p40
 		System.out.println("info: generating p40.");
@@ -1102,7 +1102,7 @@ public class Createdoc
 			else
 			{
 				
-				report = new Report();
+				report = new Reporter();
 				
 				// P51x) erstellen des p51
 				System.out.println("info: generating p51 for step "+actualStep.getRank()+" => "+actualStep.getName());
@@ -1180,7 +1180,7 @@ public class Createdoc
 					
 					for(Commit actCommit : actualStep.getSubprocess().getStep().getCommit())
 					{
-						for(de.caegroup.process.File actFile : actCommit.getFile())
+						for(de.prozesskraft.pkraft.File actFile : actCommit.getFile())
 						{
 							aufruf += " --commitfile "+actFile.getGlob();
 						}
@@ -1308,7 +1308,7 @@ public class Createdoc
 			else
 			{
 			
-				report = new Report();
+				report = new Reporter();
 				
 				// P52x) erstellen des p52
 				System.out.println("info: generating p52 for step "+actualStep.getRank()+" => "+actualStep.getName());
@@ -1387,7 +1387,7 @@ public class Createdoc
 				{
 				
 					// ueber alle files iterieren
-					for(de.caegroup.process.File actualFile : actualCommit.getFile())
+					for(de.prozesskraft.pkraft.File actualFile : actualCommit.getFile())
 					{
 
 						HashMap<String,Object> row = new HashMap<String,Object>();
@@ -1422,7 +1422,7 @@ public class Createdoc
 					}
 
 					// ueber alle variablen iterieren
-					for(de.caegroup.process.Variable actualVariable : actualCommit.getVariable())
+					for(de.prozesskraft.pkraft.Variable actualVariable : actualCommit.getVariable())
 					{
 						HashMap<String,Object> row = new HashMap<String,Object>();
 						

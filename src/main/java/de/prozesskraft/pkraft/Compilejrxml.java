@@ -199,7 +199,7 @@ public class Compilejrxml
 		  die eigentliche business logic
 		----------------------------*/
 		
-		Report report = new Report();
+		Reporter report = new Reporter();
 		
 		Pattern pattern = Pattern.compile("^(.+)\\.jrxml$");
 
