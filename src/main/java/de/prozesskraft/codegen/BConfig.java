@@ -1,4 +1,4 @@
-package de.caegroup.codegen;
+package de.prozesskraft.codegen;
 
 import java.io.*;
 import java.math.BigInteger;

@@ -1,4 +1,4 @@
-package de.caegroup.codegen;
+package de.prozesskraft.codegen;
 
 public class UnknownCodeBlockException extends Exception {
 
