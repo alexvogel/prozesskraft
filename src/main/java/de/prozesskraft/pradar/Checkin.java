@@ -1,4 +1,4 @@
-package de.caegroup.pradar;
+package de.prozesskraft.pradar;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,10 +26,11 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 
-import de.caegroup.pradar.Entity;
-import de.caegroup.commons.WhereAmI;
 
-//import de.caegroup.pradar.*;
+import de.prozesskraft.pradar.Entity;
+import de.prozesskraft.commons.WhereAmI;
+
+//import de.prozesskraft.pradar.*;
 
 public class Checkin
 {
