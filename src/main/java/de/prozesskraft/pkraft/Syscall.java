@@ -25,7 +25,7 @@ public class Syscall {
 	----------------------------*/
 	static CommandLine commandline;
 	static String web = "www.prozesskraft.de";
-	static String author = "alexander.vogel@caegroup.de";
+	static String author = "alexander.vogel@prozesskraft.de";
 	static String version = "[% version %]";
 	static String date = "[% date %]";
 
