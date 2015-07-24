@@ -1,4 +1,4 @@
-package de.caegroup.commons;
+package de.prozesskraft.commons;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;

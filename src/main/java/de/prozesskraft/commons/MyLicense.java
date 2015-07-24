@@ -1,4 +1,4 @@
-package de.caegroup.commons;
+package de.prozesskraft.commons;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

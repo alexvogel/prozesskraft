@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.caegroup.commons</groupId>
+	<groupId>de.prozesskraft.commons</groupId>
 	<artifactId>avoge-commons</artifactId>
 	<packaging>jar</packaging>
 	<version>0.2.0</version>
@@ -16,7 +16,7 @@
 				<version>2.3.2</version>
 				<executions>
 					<execution>
-						<id>installation-caegroup-jar</id>
+						<id>installation-prozesskraft-jar</id>
 						<phase>package</phase>
 						<goals>
 							<goal>jar</goal>
@@ -52,14 +52,14 @@
 <!-- 					<outjar>bin/${project.build.finalName}.jar</outjar> -->
 					<options>
 <!-- 					abhaengigkeiten in anderen packages (durch import) koennen nur aufgeloest werden, wenn diese klassen public bleiben -->
-						<option>-keep public class de.caegroup.commons.WhereAmI { *; }</option>
-						<option>-keep public class de.caegroup.commons.AutoCropBorder { *; }</option>
-						<option>-keep public class de.caegroup.commons.writeFile { *; }</option>
-						<option>-keep public class de.caegroup.commons.copyDirectoryTree { *; }</option>
-						<option>-keep public class de.caegroup.commons.MyLicense { *; }</option>
-						<option>-keep public class de.caegroup.commons.DistantHostActions { *; }</option>
-						<option>-keep public class de.caegroup.commons.Log { *; }</option>
-						<option>-keep public class de.caegroup.commons.Md5Checksum { *; }</option>
+						<option>-keep public class de.prozesskraft.commons.WhereAmI { *; }</option>
+						<option>-keep public class de.prozesskraft.commons.AutoCropBorder { *; }</option>
+						<option>-keep public class de.prozesskraft.commons.writeFile { *; }</option>
+						<option>-keep public class de.prozesskraft.commons.copyDirectoryTree { *; }</option>
+						<option>-keep public class de.prozesskraft.commons.MyLicense { *; }</option>
+						<option>-keep public class de.prozesskraft.commons.DistantHostActions { *; }</option>
+						<option>-keep public class de.prozesskraft.commons.Log { *; }</option>
+						<option>-keep public class de.prozesskraft.commons.Md5Checksum { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
