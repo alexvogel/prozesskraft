@@ -1,6 +1,6 @@
-package de.caegroup.process;
+package de.prozesskraft.pkraft;
 
-import java.io.File;
+//import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -17,6 +17,9 @@ import org.ini4j.InvalidFileFormatException;
 
 import de.caegroup.commons.MyLicense;
 import de.caegroup.commons.WhereAmI;
+//import de.caegroup.process.Commit;
+//import de.caegroup.process.Process;
+//import de.caegroup.process.Step;
 
 
 public class Commitit
@@ -51,7 +54,7 @@ public class Commitit
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Commitit.class) + "/" + "../etc/process-commitit.ini");
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Commitit.class) + "/" + "../etc/process-commitit.ini");
 
 		if (inifile.exists())
 		{
@@ -236,7 +239,7 @@ public class Commitit
 		// committen
 		if (commandline.hasOption("file"))
 		{
-			de.caegroup.process.File file = new de.caegroup.process.File();
+			File file = new File();
 			file.setKey(key);
 			file.setGlob(commandline.getOptionValue("file"));
 			commit.addFile(file);
@@ -245,7 +248,7 @@ public class Commitit
 
 		if (commandline.hasOption("variable"))
 		{
-			de.caegroup.process.Variable variable = new de.caegroup.process.Variable();
+			Variable variable = new Variable();
 			variable.setKey(key);
 			variable.setValue(commandline.getOptionValue("variable"));
 			commit.addVariable(variable);
