@@ -1,4 +1,4 @@
-package de.caegroup.pradar;
+package de.prozesskraft.pradar;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import org.apache.commons.cli.Options;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
-import de.caegroup.commons.WhereAmI;
+import de.prozesskraft.commons.WhereAmI;
 
 public class Cleandb
 {

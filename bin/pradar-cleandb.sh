@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.caegroup.pradar.Cleandb"
+MAINCLASS="de.prozesskraft.pradar.Cleandb"
 BASEDIR=$(dirname $0)
 
 # wenn eine eigene javainstallation vorhanden ist, soll diese verwendet werden
