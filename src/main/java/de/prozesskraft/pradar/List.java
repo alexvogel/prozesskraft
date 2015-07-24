@@ -1,4 +1,4 @@
-package de.caegroup.pradar;
+package de.prozesskraft.pradar;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,8 +27,11 @@ import org.ini4j.InvalidFileFormatException;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 
 
-import de.caegroup.commons.*;
-import de.caegroup.pradar.*;
+
+
+import de.prozesskraft.pradar.Entity;
+import de.prozesskraft.commons.*;
+import de.prozesskraft.pradar.*;
 
 public class List
 {
