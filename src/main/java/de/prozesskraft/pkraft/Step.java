@@ -15,8 +15,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.caegroup.codegen.Script;
-import de.prozesskraft.pkraft.Commit;
+import de.prozesskraft.codegen.Script;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;

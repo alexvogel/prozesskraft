@@ -56,9 +56,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import de.caegroup.codegen.Script;
-import de.caegroup.codegen.UnknownCodeBlockException;
-import de.caegroup.commons.WhereAmI;
+import de.prozesskraft.codegen.Script;
+import de.prozesskraft.codegen.UnknownCodeBlockException;
+import de.prozesskraft.commons.WhereAmI;
 
 
 public class Process extends ModelObject
@@ -785,13 +785,13 @@ implements Serializable
 //			{
 //				protected void configure()
 //				{
-//					mapping(de.caegroup.jaxb.process.Process.class, de.caegroup.process.Process.class, oneWay(), mapId("A"), mapNull(true));
+//					mapping(de.prozesskraft.jaxb.pkraft.Process.class, de.prozesskraft.pkraft.Process.class, oneWay(), mapId("A"), mapNull(true));
 //				}
 //			};
 			
 //			System.out.println("processName1: "+this.getName());
 			DozerBeanMapper mapper = new DozerBeanMapper();
-//			destObject = mapper.map(xprocess, de.caegroup.process.Process.class);
+//			destObject = mapper.map(xprocess, de.prozesskraft.pkraft.Process.class);
 
 //			ArrayList<String> myMappingFiles = new ArrayList<String>();
 //			myMappingFiles.add("dozermapping.xml");
