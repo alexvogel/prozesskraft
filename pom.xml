@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>de.caegroup.process</groupId>
-  <artifactId>process-syscall</artifactId>
+  <groupId>de.prozesskraft.pkraft</groupId>
+  <artifactId>pkraft-syscall</artifactId>
   <version>0.6.0</version>
-	<name>process-syscall</name>
+	<name>pkraft-syscall</name>
 	<url>http://maven.apache.org</url>
 	<build>
 
@@ -47,7 +47,7 @@
 				<version>2.3.2</version>
 				<executions>
 					<execution>
-						<id>installation-caegroup-jar</id>
+						<id>installation-prozesskraft-jar</id>
 						<phase>package</phase>
 						<goals>
 							<goal>jar</goal>
@@ -55,7 +55,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>de.caegroup.process.Syscall</mainClass>
+									<mainClass>de.prozesskraft.pkraft.Syscall</mainClass>
 								</manifest>
 							</archive>
 							<outputDirectory>${project.build.directory}</outputDirectory>
@@ -84,7 +84,7 @@
 					<injar>${project.name}-${project.version}.jar</injar>
 					<outjar>${project.name}-${project.version}.jar</outjar>
 					<options>
-						<option>-keep public class de.caegroup.process.Syscall { *; }</option>
+						<option>-keep public class de.prozesskraft.pkraft.Syscall { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
