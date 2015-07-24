@@ -1,4 +1,4 @@
-package de.caegroup.network;
+package de.prozesskraft.network;
 
 import java.io.File;
 import java.net.BindException;
@@ -8,7 +8,7 @@ import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 
 import de.caegroup.pradar.Db;
-import de.caegroup.commons.*;
+import de.prozesskraft.commons.*;
 
 
 public class ConcurrentServer implements Runnable
