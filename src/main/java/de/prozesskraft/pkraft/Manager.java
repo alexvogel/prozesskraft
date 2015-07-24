@@ -1,14 +1,13 @@
 package de.prozesskraft.pkraft;
 
-import de.caegroup.commons.MyLicense;
-import de.caegroup.commons.WhereAmI;
+import de.prozesskraft.commons.MyLicense;
+import de.prozesskraft.commons.WhereAmI;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
-//import de.caegroup.view.Stepconnector;
 //import org.w3c.dom.*;
 //import org.xml.sax.*;
 //import javax.xml.parsers.*;
