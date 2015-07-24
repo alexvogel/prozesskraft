@@ -3,7 +3,6 @@ package de.prozesskraft.pkraft;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
@@ -19,8 +18,6 @@ import org.ini4j.InvalidFileFormatException;
 
 import de.caegroup.commons.MyLicense;
 import de.caegroup.commons.WhereAmI;
-import de.caegroup.process.Process;
-import de.caegroup.process.Step;
 
 public class Checkconsistency
 {
