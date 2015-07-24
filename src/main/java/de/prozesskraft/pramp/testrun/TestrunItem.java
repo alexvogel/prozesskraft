@@ -1,4 +1,4 @@
-package de.caegroup.pramp.testrun;
+package de.prozesskraft.pramp.testrun;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -186,7 +186,7 @@ public class TestrunItem {
 //			father.getFather().process.genRandomId();
 //			father.getFather().process.makeRootdir();
 
-			de.caegroup.process.Process dummyProcess = new de.caegroup.process.Process();
+			de.prozesskraft.pkraft.Process dummyProcess = new de.prozesskraft.pkraft.Process();
 			dummyProcess.setName("testrun-"+name);
 			dummyProcess.setVersion("Intern");
 			dummyProcess.setBaseDir(father.getFather().einstellungen.getBaseDirectory());

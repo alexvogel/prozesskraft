@@ -1,4 +1,4 @@
-package de.caegroup.gui.process;
+package de.prozesskraft.gui.process;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,8 +29,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.FileDialog;
 
-import de.caegroup.process.Commit;
-import de.caegroup.process.File;
+import de.prozesskraft.pkraft.Commit;
+import de.prozesskraft.pkraft.File;
 
 public class FileOccurGui
 {

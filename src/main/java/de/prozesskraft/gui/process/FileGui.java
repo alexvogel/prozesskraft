@@ -1,4 +1,4 @@
-package de.caegroup.gui.process;
+package de.prozesskraft.gui.process;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -11,32 +11,32 @@ import org.eclipse.swt.widgets.Composite;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import de.caegroup.process.Commit;
-import de.caegroup.process.Step;
-import de.caegroup.process.Variable;
+import de.prozesskraft.pkraft.Commit;
+import de.prozesskraft.pkraft.File;
+import de.prozesskraft.pkraft.Step;
 
-public class VariableGui
+public class FileGui
 {
-	Variable variable;
+	File file = null;
 	
 	Composite parent;
 	CommitGui parent_commitgui;
 	
 	Composite composite;
 
-	ArrayList<VariableOccurGui> variableoccurGui = new ArrayList<VariableOccurGui>();
+	ArrayList<FileOccurGui> fileoccurGui = new ArrayList<FileOccurGui>();
 	
-	public VariableGui(CommitGui parent_commitgui, Composite parent, Variable variable)
+	public FileGui(CommitGui parent_commitgui, Composite parent, File file)
 	{
 		this.parent = parent;
 		this.parent_commitgui = parent_commitgui;
-		this.variable = variable;
+		this.file = file;
 		
 		composite = new Composite(this.parent, SWT.NONE);
 		GridData gd_composite = new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1);
 		composite.setLayoutData(gd_composite);
 		composite.setLayout(new GridLayout(1, false));
-		
+
 		addFirst();
 	}
 
@@ -47,39 +47,27 @@ public class VariableGui
 	public void addFirst()
 	{
 		// solange welche benoetigt werden, (< minOccur) welche erstellen und keinen button anbieten
-		while (variable.getMinoccur() > this.variableoccurGui.size())
+		while (file.getMinoccur() > this.fileoccurGui.size())
 		{
-			VariableOccurGui variableoccur = new VariableOccurGui(this, composite, variable, variable.getKey(), variable.getFree(), true, false);
-			variableoccurGui.add(variableoccur);
+			FileOccurGui fileoccur = new FileOccurGui(this, composite, file, file.getKey(), true, false);
+			fileoccurGui.add(fileoccur);
 		}
 		
-//		if ((this.variableoccurGui.size() == variable.getMinoccur()) && (this.variableoccurGui.size() < variable.getMinoccur()))
-//		{
-//			VariableOccurGui variableoccur = new VariableOccurGui(this, composite, variable, variable.getKey(), variable.getFree(), false, true);
-//			variableoccurGui.add(variableoccur);
-//		}
-//		
-		
 		addButtonIfNecessary();
-		
-//		// wenn schon die mindestanzahl erreicht ist aber die maximalzahl noch nicht, soll NUR ein button erstellt werden
-//		if ( (this.variableoccurGui.size() >= variable.getMinoccur()) && (this.variableoccurGui.size() < variable.getMaxoccur()) )
-//		{
-//			addOnlyButton();
-//		}
-//		setBackground();
+
 		parent_commitgui.parent.layout();
 		parent_commitgui.parent_commitcreator.sc.setMinSize(parent_commitgui.parent_commitcreator.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		parent_commitgui.parent_commitcreator.composite.layout();
-	}
+		
+}
 	
 	public void add()
 	{
-		if (this.variableoccurGui.size() < variable.getMaxoccur())
+		if (this.fileoccurGui.size() < file.getMaxoccur())
 		{
-			VariableOccurGui variableoccur = new VariableOccurGui(this, composite, variable, variable.getKey(), variable.getFree(), false, true);
-			variableoccurGui.add(variableoccur);
-//			setBackground();
+			FileOccurGui fileoccur = new FileOccurGui(this, composite, file, file.getKey(), false, true);
+			fileoccurGui.add(fileoccur);
+
 			parent_commitgui.parent.layout();
 			parent_commitgui.parent_commitcreator.sc.setMinSize(parent_commitgui.parent_commitcreator.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 //			System.out.println("minHeight: "+parent_commitgui.parent_commitcreator.sc.getMinHeight());
@@ -91,19 +79,19 @@ public class VariableGui
 	public void addButtonIfNecessary()
 	{
 		// ist die mindestanzahl der eintraege erreicht UND maximalanzahl der eintraege noch nicht erreicht, und existiert noch kein einzelnes button, soll ein einzelnes button erzeugt werden
-		if ( (this.variableoccurGui.size() >= variable.getMinoccur()) && (this.variableoccurGui.size() < variable.getMaxoccur()) && (!(isVariableOccurWithOnlyAButtonPresent())))
+		if ( (this.fileoccurGui.size() >= file.getMinoccur()) && (this.fileoccurGui.size() < file.getMaxoccur()) && (!(isFileOccurWithOnlyAButtonPresent())))
 		{
-			VariableOccurGui variableoccur = new VariableOccurGui(this, composite, variable, variable.getKey(), variable.getFree(), false, true);
-			variableoccurGui.add(variableoccur);
+			FileOccurGui fileoccur = new FileOccurGui(this, composite, file, file.getKey(), false, true);
+			fileoccurGui.add(fileoccur);
 		}
 	}
 	
-	public boolean isVariableOccurWithOnlyAButtonPresent()
+	public boolean isFileOccurWithOnlyAButtonPresent()
 	{
 		boolean isPresent = false;
-		for (VariableOccurGui v : this.variableoccurGui)
+		for (FileOccurGui v : this.fileoccurGui)
 		{
-			if ( (!(v.comboexist)) & v.buttonexist )
+			if ( (!(v.textexist)) & v.buttonexist )
 			{
 				isPresent = true;
 			}
@@ -111,7 +99,9 @@ public class VariableGui
 		return isPresent;
 	}
 	
-//	private void setBackground()
+
+	
+	//	private void setBackground()
 //	{
 //		if (this.variableoccurGui.size() > 1)
 //		{
@@ -127,28 +117,22 @@ public class VariableGui
 	/**
 	 * removes
 	 */
-	public void remove(VariableOccurGui variableoccurgui)
+	public void remove(FileOccurGui fileoccurgui)
 	{
-//		System.out.println("Anzahl vor remove: "+this.variableoccurGui.size());
+		this.parent_commitgui.parent_commitcreator.parent_prampgui.log("debug", "Anzahl vor remove: "+this.fileoccurGui.size());
 		
-		this.variableoccurGui.remove(variableoccurgui);
+		this.fileoccurGui.remove(fileoccurgui);
 		
-//		System.out.println("Anzahl nach remove: "+this.variableoccurGui.size());
+		this.parent_commitgui.parent_commitcreator.parent_prampgui.log("debug", "Anzahl nach remove: "+this.fileoccurGui.size());
 		
-		if (this.variableoccurGui.size() == 0)
+		if (this.fileoccurGui.size() == 0)
 		{
 			addFirst();
 //			System.out.println("Nochmal Ersterstellung durchlaufen und jetzt eine laenge von: "+this.variableoccurGui.size());
 		}
-		
+
 		addButtonIfNecessary();
 		
-//		else if ( ( ( variable.getMaxoccur() - this.variableoccurGui.size()) == 1 ) && this.variableoccurGui.get(this.variableoccurGui.size()-1).comboexist )
-//		{
-//			addOnlyButton();
-//		}
-//		System.out.println("comboexist in last variableOccur: "+this.variableoccurGui.get(this.variableoccurGui.size()-1).comboexist);
-
 //		setBackground();
 		parent_commitgui.parent.layout();
 		parent_commitgui.parent_commitcreator.sc.setMinSize(parent_commitgui.parent_commitcreator.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -164,15 +148,15 @@ public class VariableGui
 	public Multimap<String,String> getContent ()
 	{
 		Multimap<String,String> content = HashMultimap.create();
-		for(VariableOccurGui actualVariableoccurGui : variableoccurGui)
+		for(FileOccurGui actualFileoccurGui : fileoccurGui)
 		{
-			// die map aus VariableOccur holen
-			Map<String,String> mapActualVariableoccurGui = actualVariableoccurGui.getContent();
-			// iterieren ueber die liste und schon vorhandene schluessel mit -1 hochzaehlern
-			for(String key : mapActualVariableoccurGui.keySet())
+			// die map aus FileOccur holen
+			Map<String,String> mapActualFileoccurGui = actualFileoccurGui.getContent();
+			// iterieren ueber die map und schon vorhandene schluessel mit -1 hochzaehlern
+			for(String key : mapActualFileoccurGui.keySet())
 			{
 				// die schluessel-werte paare ablegen
-				content.put(key, mapActualVariableoccurGui.get(key));
+				content.put(key, mapActualFileoccurGui.get(key));
 			}
 
 		}
@@ -184,25 +168,27 @@ public class VariableGui
 	 */
 	public void commit (Commit commit)
 	{
-		commit.log("debug", "Commit all occurances "+ variableoccurGui.size() +" of variable.");
-		for(VariableOccurGui actualVariableoccurGui : variableoccurGui)
+		commit.log("debug", "Commit all occurances "+ fileoccurGui.size() +" of file.");
+		for(FileOccurGui actualFileoccurGui : fileoccurGui)
 		{
-			actualVariableoccurGui.commit(commit);
+			actualFileoccurGui.commit(commit);
 		}
 	}
-
+	
 	/**
-	 * checks the status of all Tests associated with this commitRoot (all Variables in this view)
+	 * checks the status of all Tests associated with this commitRoot (all Files in this view)
 	 */
 	public boolean doAllTestsPass ()
 	{
-		for(VariableOccurGui actualVariableoccurGui : variableoccurGui)
+		for(FileOccurGui actualFileoccurGui : fileoccurGui)
 		{
-			if ( ! ( actualVariableoccurGui.doAllTestsPass() ) )
+			if ( ! ( actualFileoccurGui.doAllTestsPass() ) )
 			{
 				return false;
 			}
 		}
 		return true;
 	}
+
+
 }

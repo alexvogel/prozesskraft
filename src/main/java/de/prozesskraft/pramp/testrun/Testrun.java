@@ -1,4 +1,4 @@
-package de.caegroup.pramp.testrun;
+package de.prozesskraft.pramp.testrun;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 
-import de.caegroup.pramp.parts.PrampPartUi1;
+import de.prozesskraft.pramp.parts.PrampPartUi1;
 
 public class Testrun
 {

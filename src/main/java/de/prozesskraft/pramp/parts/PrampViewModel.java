@@ -1,4 +1,4 @@
-package de.caegroup.pramp.parts;
+package de.prozesskraft.pramp.parts;
 
 public class PrampViewModel extends ModelObject
 {

@@ -1,4 +1,4 @@
-package de.caegroup.gui.process;
+package de.prozesskraft.gui.process;
 
 import java.util.ArrayList;
 
@@ -11,10 +11,10 @@ import org.eclipse.swt.widgets.Group;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import de.caegroup.process.File;
-import de.caegroup.process.Commit;
-import de.caegroup.process.Step;
-import de.caegroup.process.Variable;
+import de.prozesskraft.pkraft.File;
+import de.prozesskraft.pkraft.Commit;
+import de.prozesskraft.pkraft.Step;
+import de.prozesskraft.pkraft.Variable;
 
 public class CommitGui
 {

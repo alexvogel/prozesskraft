@@ -1,8 +1,4 @@
-package de.caegroup.pramp.parts;
-
-import de.caegroup.commons.DistantHostActions;
-import de.caegroup.commons.MyLicense;
-import de.caegroup.gui.process.CommitCreator;
+package de.prozesskraft.pramp.parts;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -68,10 +64,11 @@ import com.jcraft.jsch.JSchException;
 import com.license4j.License;
 import com.license4j.LicenseValidator;
 
-import de.caegroup.commons.*;
-import de.caegroup.pramp.testrun.Testrun;
-import de.caegroup.process.Log;
-import de.caegroup.process.Process;
+import de.prozesskraft.pkraft.Log;
+import de.prozesskraft.pkraft.Process;
+import de.prozesskraft.commons.*;
+import de.prozesskraft.gui.process.CommitCreator;
+import de.prozesskraft.pramp.testrun.Testrun;
 
 public class PrampPartUi1 extends ModelObject
 //public class PrampPartUi1

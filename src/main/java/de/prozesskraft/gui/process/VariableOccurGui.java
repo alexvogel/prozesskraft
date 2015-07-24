@@ -1,4 +1,4 @@
-package de.caegroup.gui.process;
+package de.prozesskraft.gui.process;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,9 +27,9 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import de.caegroup.process.Commit;
-import de.caegroup.process.Step;
-import de.caegroup.process.Variable;
+import de.prozesskraft.pkraft.Commit;
+import de.prozesskraft.pkraft.Step;
+import de.prozesskraft.pkraft.Variable;
 
 public class VariableOccurGui
 {

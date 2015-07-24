@@ -12,7 +12,7 @@
 			<scope>runtime</scope>
 			<includes>
 				<include>de.caegroup.*</include>
-<!-- 				<include>de.caegroup.pramp.parts:pramp-gui</include> -->
+<!-- 				<include>de.prozesskraft.pramp.parts:pramp-gui</include> -->
 			</includes>
 			<unpack>true</unpack>
 		</dependencySet>

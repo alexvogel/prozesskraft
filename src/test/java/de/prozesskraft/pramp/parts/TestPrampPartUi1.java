@@ -1,4 +1,5 @@
-//package de.caegroup.pramp.parts;
+package de.prozesskraft.pramp.parts;
+//package de.prozesskraft.pramp.parts;
 //
 //import static org.junit.Assert.*;
 //

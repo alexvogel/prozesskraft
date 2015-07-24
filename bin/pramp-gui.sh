@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.caegroup.pramp.parts.PrampPartUi1"
+MAINCLASS="de.prozesskraft.pramp.parts.PrampPartUi1"
 BASEDIR=$(dirname $0)
 
 # wenn eine eigene javainstallation vorhanden ist, soll diese verwendet werden

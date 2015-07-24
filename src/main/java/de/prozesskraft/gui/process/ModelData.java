@@ -1,4 +1,4 @@
-package de.caegroup.gui.process;
+package de.prozesskraft.gui.process;
 
 //import java.util.ArrayList;
 //import java.util.Collections;

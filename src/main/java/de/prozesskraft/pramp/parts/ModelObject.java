@@ -1,4 +1,4 @@
-package de.caegroup.gui.process;
+package de.prozesskraft.pramp.parts;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
