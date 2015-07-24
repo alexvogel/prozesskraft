@@ -86,33 +86,33 @@
 <!-- 					<injar>${project.name}-${project.version}.jar</injar> -->
 <!-- 					<outjar>${project.name}-${project.version}.jar</outjar> -->
 <!-- 					<options> -->
-<!-- 						<option>-keep public class de.caegroup.process.Process { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.process.Step { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.process.Init { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.process.Commit { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.process.Log { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.process.Variable { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.process.File { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.process.List { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.process.Work { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.process.Callitem { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.process.Exit { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.process.Match { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.process.Test { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.process.Param { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.jaxb.process.Process { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.jaxb.process.Step { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.jaxb.process.Init { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.jaxb.process.Commit { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.jaxb.process.Variable { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.jaxb.process.File { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.jaxb.process.List { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.jaxb.process.Work { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.jaxb.process.Callitem { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.jaxb.process.Exit { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.jaxb.process.Match { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.jaxb.process.Test { *; }</option> -->
-<!-- 						<option>-keep public class de.caegroup.jaxb.process.Param { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Process { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Step { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Init { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Commit { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Log { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Variable { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.File { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.List { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Work { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Callitem { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Exit { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Match { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Test { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Param { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Process { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Step { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Init { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Commit { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Variable { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.File { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.List { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Work { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Callitem { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Exit { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Match { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Test { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Param { *; }</option> -->
 <!-- 					</options> -->
 <!-- 					<libs> -->
 <!-- 						<lib>${java.home}/lib/rt.jar</lib> -->
@@ -141,7 +141,7 @@
 			<version>0.5.2</version>
 		</dependency>
 		<dependency>
-			<groupId>de.caegroup.commons</groupId>
+			<groupId>de.prozesskraft.commons</groupId>
 			<artifactId>avoge-commons</artifactId>
 			<version>0.2.0</version>
 		</dependency>

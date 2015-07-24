@@ -37,8 +37,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.dozer.DozerBeanMapper;
 import org.xml.sax.SAXException;
 
-import de.caegroup.commons.Log;
-import de.caegroup.commons.Md5Checksum;
+import de.prozesskraft.commons.Log;
+import de.prozesskraft.commons.Md5Checksum;
 
 public class Dir {
 
