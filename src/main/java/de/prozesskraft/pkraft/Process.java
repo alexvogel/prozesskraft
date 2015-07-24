@@ -1,4 +1,4 @@
-package de.caegroup.process;
+package de.prozesskraft.pkraft;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -701,11 +701,11 @@ implements Serializable
 		JAXBContext jaxbContext;
 		try
 		{
-			jaxbContext = JAXBContext.newInstance(de.caegroup.jaxb.process.Process.class);
+			jaxbContext = JAXBContext.newInstance(de.prozesskraft.jaxb.pkraft.Process.class);
 			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		
 			// die daten aus this in das jaxb objekt mappen
-			de.caegroup.jaxb.process.Process xprocess = new de.caegroup.jaxb.process.Process();
+			de.prozesskraft.jaxb.pkraft.Process xprocess = new de.prozesskraft.jaxb.pkraft.Process();
 			DozerBeanMapper mapper = new DozerBeanMapper();
 //			mapper.map(xprocess, this);
 			mapper.map(this, xprocess);
@@ -731,7 +731,7 @@ implements Serializable
 			throw new NullPointerException();
 		}
 		
-		JAXBContext context = JAXBContext.newInstance(de.caegroup.jaxb.process.Process.class);
+		JAXBContext context = JAXBContext.newInstance(de.prozesskraft.jaxb.pkraft.Process.class);
 		Unmarshaller um = context.createUnmarshaller();
 		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		Schema schema;
@@ -778,7 +778,7 @@ implements Serializable
 		// das aktuelle xml-file in die jaxb-klassen einlesen
 		try
 		{
-			de.caegroup.jaxb.process.Process xprocess = (de.caegroup.jaxb.process.Process) um.unmarshal(new java.io.File(this.getInfilexml()));
+			de.prozesskraft.jaxb.pkraft.Process xprocess = (de.prozesskraft.jaxb.pkraft.Process) um.unmarshal(new java.io.File(this.getInfilexml()));
 
 //			System.out.println("xprocess variable1 free = "+xprocess.getStep().get(0).getCommit().get(0).getVariable().get(0).isFree());
 //			BeanMappingBuilder builder = new BeanMappingBuilder()

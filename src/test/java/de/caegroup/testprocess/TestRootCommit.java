@@ -10,16 +10,16 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 import org.junit.Before;
 
-import de.caegroup.process.Commit;
-import de.caegroup.process.Log;
-import de.caegroup.process.Param;
-import de.caegroup.process.Process;
-import de.caegroup.process.Step;
-import de.caegroup.process.List;
-import de.caegroup.process.Init;
-import de.caegroup.process.Variable;
-import de.caegroup.process.Work;
-import de.caegroup.process.Callitem;
+import de.prozesskraft.pkraft.Callitem;
+import de.prozesskraft.pkraft.Commit;
+import de.prozesskraft.pkraft.Init;
+import de.prozesskraft.pkraft.List;
+import de.prozesskraft.pkraft.Log;
+import de.prozesskraft.pkraft.Param;
+import de.prozesskraft.pkraft.Process;
+import de.prozesskraft.pkraft.Step;
+import de.prozesskraft.pkraft.Variable;
+import de.prozesskraft.pkraft.Work;
 
 public class TestRootCommit {
 
@@ -144,7 +144,7 @@ public class TestRootCommit {
 		// jetzt muss 1 commit existieren (der automatisch angelegte 'rootCommit')
 		assertEquals(1, rootStep.getCommit().size());
 
-		for(de.caegroup.process.File actFile : rootStep.getFile())
+		for(de.prozesskraft.pkraft.File actFile : rootStep.getFile())
 		{
 //			System.err.println("FILE" + actFile.getKey() + "=" + actFile.getFilename());
 		}

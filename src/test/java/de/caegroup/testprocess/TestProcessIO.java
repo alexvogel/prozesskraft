@@ -10,15 +10,15 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 import org.junit.Before;
 
-import de.caegroup.process.Commit;
-import de.caegroup.process.Param;
-import de.caegroup.process.Process;
-import de.caegroup.process.Step;
-import de.caegroup.process.List;
-import de.caegroup.process.Init;
-import de.caegroup.process.Variable;
-import de.caegroup.process.Work;
-import de.caegroup.process.Callitem;
+import de.prozesskraft.pkraft.Callitem;
+import de.prozesskraft.pkraft.Commit;
+import de.prozesskraft.pkraft.Init;
+import de.prozesskraft.pkraft.List;
+import de.prozesskraft.pkraft.Param;
+import de.prozesskraft.pkraft.Process;
+import de.prozesskraft.pkraft.Step;
+import de.prozesskraft.pkraft.Variable;
+import de.prozesskraft.pkraft.Work;
 
 public class TestProcessIO {
 

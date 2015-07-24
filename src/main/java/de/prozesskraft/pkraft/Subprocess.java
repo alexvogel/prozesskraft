@@ -1,4 +1,4 @@
-package de.caegroup.process;
+package de.prozesskraft.pkraft;
 
 import java.io.*;
 //import java.util.*;
@@ -359,7 +359,7 @@ implements Serializable
 		
 		log("info", "creating process");
 		// einen neuen Process erstellen und den rootStep aus subprocess ruebernehmen
-		de.caegroup.process.Process newProcess = new Process();
+		de.prozesskraft.pkraft.Process newProcess = new Process();
 		try
 		{
 			newProcess.setInfilexml(processDef.getCanonicalPath());
@@ -370,7 +370,7 @@ implements Serializable
 			e1.printStackTrace();
 			log("error", e1.getMessage());
 		}
-		de.caegroup.process.Process newProcess2 = null;
+		de.prozesskraft.pkraft.Process newProcess2 = null;
 		try
 		{
 			newProcess2 = newProcess.readXml();

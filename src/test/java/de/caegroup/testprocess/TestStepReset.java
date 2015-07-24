@@ -7,9 +7,9 @@ import java.util.Iterator;
 import org.junit.Test;
 import org.junit.Before;
 
-import de.caegroup.process.Init;
-import de.caegroup.process.Process;
-import de.caegroup.process.Step;
+import de.prozesskraft.pkraft.Init;
+import de.prozesskraft.pkraft.Process;
+import de.prozesskraft.pkraft.Step;
 
 public class TestStepReset {
 

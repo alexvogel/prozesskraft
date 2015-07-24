@@ -5,17 +5,17 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
-import de.caegroup.process.Callitem;
-import de.caegroup.process.Commit;
-import de.caegroup.process.File;
-import de.caegroup.process.List;
-import de.caegroup.process.Log;
-import de.caegroup.process.Step;
-import de.caegroup.process.Work;
+import de.prozesskraft.pkraft.Callitem;
+import de.prozesskraft.pkraft.Commit;
+import de.prozesskraft.pkraft.File;
+import de.prozesskraft.pkraft.List;
+import de.prozesskraft.pkraft.Log;
+import de.prozesskraft.pkraft.Step;
+import de.prozesskraft.pkraft.Work;
 
 public class TestFile {
 
-	de.caegroup.process.Process process = new de.caegroup.process.Process();
+	de.prozesskraft.pkraft.Process process = new de.prozesskraft.pkraft.Process();
 
 	@Before
 	public void setUp()

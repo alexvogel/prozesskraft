@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.caegroup.process</groupId>
-	<artifactId>process-core</artifactId>
+	<groupId>de.prozesskraft.pkraft</groupId>
+	<artifactId>pkraft-core</artifactId>
 	<packaging>jar</packaging>
 	<version>0.6.0</version>
-	<name>process-core</name>
+	<name>pkraft-core</name>
 	<url>http://maven.apache.org</url>
 	
 	<build>
@@ -17,7 +17,7 @@
 				<version>2.3.2</version>
 				<executions>
 					<execution>
-						<id>installation-caegroup-jar</id>
+						<id>installation-prozesskraft-jar</id>
 						<phase>package</phase>
 						<goals>
 							<goal>jar</goal>
@@ -45,7 +45,7 @@
 			      			<schemaIncludes>
 			        			<include>process.xsd</include>
 			      			</schemaIncludes>
-			      			<generatePackage>de.caegroup.jaxb.process</generatePackage>
+			      			<generatePackage>de.prozesskraft.jaxb.pkraft</generatePackage>
 			      			<generateDirectory>src/main/java</generateDirectory>
 						</configuration>
 					</execution>

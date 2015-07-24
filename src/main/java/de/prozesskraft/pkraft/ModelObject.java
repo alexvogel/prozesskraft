@@ -1,4 +1,4 @@
-package de.caegroup.process;
+package de.prozesskraft.pkraft;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

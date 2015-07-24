@@ -1,4 +1,4 @@
-package de.caegroup.process;
+package de.prozesskraft.pkraft;
 
 import java.io.*;
 import java.util.*;
@@ -6,7 +6,7 @@ import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.solr.common.util.NamedList;
 
-import de.caegroup.process.Callitem;
+import de.prozesskraft.pkraft.Callitem;
 
 public class Work
 implements Serializable

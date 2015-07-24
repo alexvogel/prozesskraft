@@ -1,4 +1,4 @@
-package de.caegroup.process;
+package de.prozesskraft.pkraft;
 
 import java.io.*;
 import java.nio.file.FileSystems;
@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.caegroup.codegen.Script;
-import de.caegroup.process.Commit;
+import de.prozesskraft.pkraft.Commit;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;

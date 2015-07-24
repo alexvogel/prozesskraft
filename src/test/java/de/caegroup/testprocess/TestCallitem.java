@@ -5,11 +5,11 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.Before;
 
-import de.caegroup.process.Callitem;
-import de.caegroup.process.List;
-import de.caegroup.process.Log;
-import de.caegroup.process.Step;
-import de.caegroup.process.Work;
+import de.prozesskraft.pkraft.Callitem;
+import de.prozesskraft.pkraft.List;
+import de.prozesskraft.pkraft.Log;
+import de.prozesskraft.pkraft.Step;
+import de.prozesskraft.pkraft.Work;
 
 public class TestCallitem {
 
@@ -51,7 +51,7 @@ public class TestCallitem {
 	@Test
 	public void testConstructCall()
 	{
-		de.caegroup.process.Process process = new de.caegroup.process.Process();
+		de.prozesskraft.pkraft.Process process = new de.prozesskraft.pkraft.Process();
 		process.setInfilexml("/irgendetwas");
 		
 		Step step1 = new Step(process);
