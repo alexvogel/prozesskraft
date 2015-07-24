@@ -35,10 +35,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
-import de.caegroup.commons.WhereAmI;
-import de.caegroup.pmodel.PmodelViewPage;
-import de.caegroup.process.Process;
-import de.caegroup.report.*;
+import de.prozesskraft.pmodel.PmodelViewPage;
+import de.prozesskraft.process.Process;
+import de.prozesskraft.report.*;
+import de.prozesskraft.commons.WhereAmI;
 
 public class Compilejrxml
 {
