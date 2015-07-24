@@ -27,9 +27,7 @@ import org.apache.commons.cli.Options;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
-import de.caegroup.commons.*;
-import de.caegroup.process.Process;
-import de.caegroup.process.Step;
+import de.prozesskraft.commons.*;
 
 import java.nio.file.attribute.*;
 
