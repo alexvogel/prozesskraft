@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.caegroup.pradar.parts.PradarPartUi3"
+MAINCLASS="de.prozesskraft.pradar.parts.PradarPartUi3"
 BASEDIR=$(dirname $0)
 
 # wenn eine eigene javainstallation vorhanden ist, soll diese verwendet werden

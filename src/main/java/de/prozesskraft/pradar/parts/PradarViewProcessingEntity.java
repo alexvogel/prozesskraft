@@ -1,4 +1,4 @@
-package de.caegroup.pradar.parts;
+package de.prozesskraft.pradar.parts;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import java.util.Random;
 
 import processing.core.PApplet;
 
-import de.caegroup.pradar.Entity;
+import de.prozesskraft.pradar.Entity;
 
 public class PradarViewProcessingEntity
 {

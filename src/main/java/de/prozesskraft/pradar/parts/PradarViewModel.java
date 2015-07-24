@@ -1,6 +1,6 @@
-package de.caegroup.pradar.parts;
+package de.prozesskraft.pradar.parts;
 
-import de.caegroup.pradar.Entity;
+import de.prozesskraft.pradar.Entity;
 
 public class PradarViewModel extends ModelObject
 {

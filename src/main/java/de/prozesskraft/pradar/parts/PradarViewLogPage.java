@@ -1,4 +1,4 @@
-package de.caegroup.pradar.parts;
+package de.prozesskraft.pradar.parts;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
-import de.caegroup.pradar.Entity;
+import de.prozesskraft.pradar.Entity;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.databinding.viewers.ViewerProperties;
 import org.eclipse.core.databinding.beans.PojoProperties;

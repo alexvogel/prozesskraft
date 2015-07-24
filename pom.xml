@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>de.caegroup.pradar.parts</groupId>
+	<groupId>de.prozesskraft.pradar.parts</groupId>
 	<artifactId>pradar-gui</artifactId>
 	<packaging>jar</packaging>
 	<version>0.6.0</version>
@@ -51,7 +51,7 @@
 				<version>2.3.2</version>
 				<executions>
 					<execution>
-						<id>installation-caegroup-jar</id>
+						<id>installation-prozesskraft-jar</id>
 						<phase>package</phase>
 						<goals>
 							<goal>jar</goal>
@@ -59,7 +59,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>de.caegroup.pradar.parts.PradarPartUi3</mainClass>
+									<mainClass>de.prozesskraft.pradar.parts.PradarPartUi3</mainClass>
 								</manifest>
 							</archive>
 							<outputDirectory>${project.build.directory}</outputDirectory>
@@ -84,7 +84,7 @@
 					<finalName>${project.name}-${project.version}</finalName>
 					<archive>
 						<manifest>
-							<mainClass>de.caegroup.pradar.parts.PradarPartUi3</mainClass>
+							<mainClass>de.prozesskraft.pradar.parts.PradarPartUi3</mainClass>
 							<addClasspath>true</addClasspath>
 						</manifest>
 					</archive>
@@ -120,12 +120,12 @@
 					<injar>${project.name}-${project.version}-nonObf.jar</injar>
 					<outjar>${project.name}-${project.version}.jar</outjar>
 					<options>
-						<option>-keep public class de.caegroup.pradar.parts.PradarPartUi3 { *; }</option>
-						<option>-keep public class de.caegroup.pradar.parts.PradarViewModel { *; }</option>
-						<option>-keep public class de.caegroup.pradar.parts.PradarViewProcessingPage { *; }</option>
-						<option>-keep public class de.caegroup.pradar.parts.PradarViewProcessingEntity { *; }</option>
-						<option>-keep public class de.caegroup.pradar.parts.PradarViewTreePage { *; }</option>
-						<option>-keep public class de.caegroup.pradar.parts.PradarViewLogPage { *; }</option>
+						<option>-keep public class de.prozesskraft.pradar.parts.PradarPartUi3 { *; }</option>
+						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewModel { *; }</option>
+						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewProcessingPage { *; }</option>
+						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewProcessingEntity { *; }</option>
+						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewTreePage { *; }</option>
+						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewLogPage { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
@@ -204,7 +204,7 @@
 			<version>0.5.2</version>
 		</dependency>
 		<dependency>
-			<groupId>de.caegroup.pradar</groupId>
+			<groupId>de.prozesskraft.pradar</groupId>
 			<artifactId>pradar-core</artifactId>
 			<version>0.6.0</version>
 		</dependency>
@@ -315,7 +315,7 @@
 			<version>4.2.1</version>
 		</dependency>
 		<dependency>
-			<groupId>de.caegroup.commons</groupId>
+			<groupId>de.prozesskraft.commons</groupId>
 			<artifactId>avoge-commons</artifactId>
 			<version>0.2.0</version>
 		</dependency>

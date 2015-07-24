@@ -1,4 +1,4 @@
-package de.caegroup.pradar.parts;
+package de.prozesskraft.pradar.parts;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
@@ -78,9 +78,9 @@ import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import de.caegroup.pradar.Entity;
-import de.caegroup.commons.MyLicense;
-import de.caegroup.commons.WhereAmI;
+import de.prozesskraft.pradar.Entity;
+import de.prozesskraft.commons.MyLicense;
+import de.prozesskraft.commons.WhereAmI;
 
 import org.eclipse.swt.widgets.Spinner;
 //import java.beans.PropertyChangeSupport;

@@ -1,4 +1,4 @@
-package de.caegroup.pradar.parts;
+package de.prozesskraft.pradar.parts;
 
 import java.sql.Timestamp;
 
@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import de.caegroup.pradar.Entity;
+import de.prozesskraft.pradar.Entity;
 
 
 

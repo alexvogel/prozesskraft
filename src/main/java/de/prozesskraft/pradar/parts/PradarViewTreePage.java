@@ -1,4 +1,4 @@
-package de.caegroup.pradar.parts;
+package de.prozesskraft.pradar.parts;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
-import de.caegroup.pradar.Entity;
+import de.prozesskraft.pradar.Entity;
 
 import org.eclipse.jface.viewers.ViewerSorter;
 

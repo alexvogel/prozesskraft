@@ -1,4 +1,4 @@
-package de.caegroup.pradar.parts;
+package de.prozesskraft.pradar.parts;
 
 
 import java.awt.event.MouseWheelEvent;
@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Display;
 
 import processing.core.PApplet;
 import processing.core.PFont;
-import de.caegroup.pradar.Entity;
+import de.prozesskraft.pradar.Entity;
 //import java.lang.management.ManagementFactory;
 
 public class PradarViewProcessingPage extends PApplet

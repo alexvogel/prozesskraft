@@ -1,4 +1,4 @@
-package de.caegroup.pradar.parts;
+package de.prozesskraft.pradar.parts;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

@@ -11,7 +11,7 @@
 		<dependencySet>
 			<scope>runtime</scope>
 			<includes>
-				<include>de.caegroup.pradar.parts</include>
+				<include>de.prozesskraft.pradar.parts</include>
 				<include>com.license4j*</include>
 			</includes>
 			<unpack>true</unpack>
