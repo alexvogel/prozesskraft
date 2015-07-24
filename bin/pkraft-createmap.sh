@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.caegroup.process.Createmap"
+MAINCLASS="de.prozesskraft.pkraft.Createmap"
 BASEDIR=$(dirname $0)
 
 # wenn eine eigene javainstallation vorhanden ist, soll diese verwendet werden
