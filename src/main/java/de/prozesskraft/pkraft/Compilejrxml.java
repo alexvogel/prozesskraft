@@ -36,8 +36,8 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
 import de.prozesskraft.pmodel.PmodelViewPage;
-import de.prozesskraft.process.Process;
-import de.prozesskraft.report.*;
+import de.prozesskraft.pkraft.Process;
+import de.prozesskraft.reporter.*;
 import de.prozesskraft.commons.WhereAmI;
 
 public class Compilejrxml
