@@ -51,7 +51,7 @@ public class Commitit
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Commitit.class) + "/" + "../etc/process-commitit.ini");
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Commitit.class) + "/" + "../etc/pkraft-commitit.ini");
 
 		if (inifile.exists())
 		{
