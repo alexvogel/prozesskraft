@@ -55,7 +55,7 @@ public class Wrap
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Wrap.class) + "/" + "../etc/process-wrap.ini");
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Wrap.class) + "/" + "../etc/pkraft-wrap.ini");
 
 		if (inifile.exists())
 		{
