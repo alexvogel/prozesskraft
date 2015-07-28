@@ -66,7 +66,7 @@ public class Manager
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Manager.class) + "/" + "../etc/process-manager.ini");
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Manager.class) + "/" + "../etc/pkraft-manager.ini");
 
 		if (inifile.exists())
 		{
