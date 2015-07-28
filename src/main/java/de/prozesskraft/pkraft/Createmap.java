@@ -56,7 +56,7 @@ public class Createmap
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Createmap.class) + "/" + "../etc/process-createmap.ini");
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Createmap.class) + "/" + "../etc/pkraft-createmap.ini");
 
 		if (inifile.exists())
 		{
