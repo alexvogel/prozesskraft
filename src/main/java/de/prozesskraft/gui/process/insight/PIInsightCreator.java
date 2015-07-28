@@ -151,8 +151,9 @@ public class PIInsightCreator
 		buttonClone.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonClone.setToolTipText("clone process");
 		buttonClone.addSelectionListener(listener_button_clone);
-		if(process.getStatus().equals("rolling")) {buttonClone.setEnabled(false);}
-
+		if(process.getStatus().equals("working")) {buttonClone.setEnabled(false);}
+		else{buttonClone.setEnabled(true);}
+		
 		Label labelDummy1 = new Label(compositeAction, SWT.NONE);
 
 		Label labelDummy2 = new Label(compositeAction, SWT.NONE);
