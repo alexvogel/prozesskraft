@@ -95,7 +95,7 @@ public class Createdoc
 		----------------------------*/
 		File installDir = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Createdoc.class) + "/..");
 		
-		File inifile = new java.io.File(installDir.getAbsolutePath() + "/etc/pramp-createdoc.ini");
+		File inifile = new java.io.File(installDir.getAbsolutePath() + "/etc/pkraft-createdoc.ini");
 
 		if (inifile.exists())
 		{
