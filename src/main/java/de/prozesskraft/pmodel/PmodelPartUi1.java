@@ -163,7 +163,7 @@ public class PmodelPartUi1 extends ModelObject
 		setIni();
 		loadIni();
 		checkLicense();
-//		this.einstellungen.getProcess().setStepRanks();
+		this.einstellungen.getProcess().setStepRanks();
 		applet = new PmodelViewPage(einstellungen);
 		createControls(composite);
 	}
