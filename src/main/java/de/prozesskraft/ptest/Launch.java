@@ -319,7 +319,7 @@ public class Launch
 		{
 			// den Aufrufstring fuer die externe App (process syscall --version 0.6.0)) splitten
 			// beim aufruf muss das erste argument im path zu finden sein, sonst gibt die fehlermeldung 'no such file or directory'
-			ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(ini.get("apps", "process-syscall").split(" ")));
+			ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(ini.get("apps", "pkraft-syscall").split(" ")));
 
 			// die sonstigen argumente hinzufuegen
 			processSyscallWithArgs.add("-call");
