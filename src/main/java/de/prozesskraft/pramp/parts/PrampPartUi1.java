@@ -1487,7 +1487,7 @@ public class PrampPartUi1 extends ModelObject
 	}
 	
 	/**
-	 * start instance with process-manager
+	 * start instance with pkraft-manager
 	 */
 	private void startInstance()
 	{
@@ -1503,7 +1503,7 @@ public class PrampPartUi1 extends ModelObject
 //							return false;
 //						}
 						
-						String call = ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary();
+						String call = ini.get("apps", "pkraft-manager") +" -instance "+process.getOutfilebinary();
 						
 //						try
 //						{
@@ -1528,7 +1528,7 @@ public class PrampPartUi1 extends ModelObject
 							e.printStackTrace();
 						}
 
-//						String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"" + ini.get("apps", "process-manager") +" -instance "+process.getOutfilebinary()+"\""};
+//						String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"" + ini.get("apps", "pkraft-manager") +" -instance "+process.getOutfilebinary()+"\""};
 
 //						ProcessBuilder pb = new ProcessBuilder(args_for_command);
 //						java.lang.Process sysproc = pb.start();

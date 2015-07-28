@@ -193,10 +193,10 @@ public class TestrunItem {
 			dummyProcess.makeRootdir();
 
 			String schalterPmodelLaunch = father.getFather().getIni().get("start", "pmodel");
-			String schalterManagerLaunch = father.getFather().getIni().get("start", "process-manager");
+			String schalterManagerLaunch = father.getFather().getIni().get("start", "pkraft-manager");
 
 			String instanceDir = dummyProcess.getRootdir();
-			String syscall = father.getFather().getIni().get("apps", "process-syscall");
+			String syscall = father.getFather().getIni().get("apps", "pkraft-syscall");
 
 			try
 			{
@@ -261,12 +261,12 @@ public class TestrunItem {
 				{
 					int maxWait = 30;
 					int actualWait = 3;
-					// a bisserl schlafen bis process-startinstance das unterverzeichnis mit process.pmb angelegt hat
+					// a bisserl schlafen bis pkraft-startinstance das unterverzeichnis mit process.pmb angelegt hat
 					father.getFather().log("info", "waiting " + actualWait + " seconds for the process.pmb of executed testrun to become available on disk");
 					Thread.sleep(actualWait * 1000);
 					actualWait += 3;
 					
-					// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist (das wird mit process-startinstance erstellt) muss das erst herausgefunden werden
+					// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist (das wird mit pkraft-startinstance erstellt) muss das erst herausgefunden werden
 					// das rootDir von ptest-launch ist das basedir des prozesses, der mit startinstance angeschoben wird
 					java.io.File baseDirOfStartinstance = new java.io.File(dummyProcess.getRootdir());
 
