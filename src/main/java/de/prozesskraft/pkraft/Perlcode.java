@@ -66,7 +66,7 @@ public class Perlcode
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Perlcode.class) + "/" + "../etc/process-perlcode.ini");
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Perlcode.class) + "/" + "../etc/pkraft-perlcode.ini");
 
 		if (inifile.exists())
 		{
