@@ -1636,10 +1636,10 @@ implements Serializable, Cloneable
 //		}
 //		
 		// der eigene level ist um 1 hoeher als der hoechste aller fromstep-level (auser beim rootstep)
-//		if (!this.isRoot()) 
-//		{
-//			level++;
-//		}
+		if (!this.isRoot()) 
+		{
+			level++;
+		}
 		return level;
 	}
 	
