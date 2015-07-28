@@ -200,7 +200,8 @@ public class SIInsightCreator
 		buttonReset.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonReset.setToolTipText("reset this step to initial state");
 		buttonReset.addSelectionListener(listener_button_reset);
-		if(step.getParent().getStatus().equals("rolling")) {buttonReset.setEnabled(false);}
+		if(step.getParent().getStatus().equals("working")) {buttonReset.setEnabled(false);}
+		else {buttonReset.setEnabled(true);}
 
 		Label labelDummy2 = new Label(compositeAction, SWT.NONE);
 
