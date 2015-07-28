@@ -192,9 +192,9 @@ public class TestrunItem {
 			dummyProcess.setBaseDir(father.getFather().einstellungen.getBaseDirectory());
 			dummyProcess.makeRootdir();
 
-			String schalterPmodelLaunch = father.getFather().getIni().get("start", "pmodel");
-			String schalterManagerLaunch = father.getFather().getIni().get("start", "pkraft-manager");
-
+//			String schalterPmodelLaunch = father.getFather().getIni().get("start", "pmodel");
+//			String schalterManagerLaunch = father.getFather().getIni().get("start", "pkraft-manager");
+//
 			String instanceDir = dummyProcess.getRootdir();
 			String syscall = father.getFather().getIni().get("apps", "pkraft-syscall");
 
@@ -206,14 +206,14 @@ public class TestrunItem {
 
 				// die sonstigen argumente hinzufuegen
 				processSyscallWithArgs.add("-call");
-				if(schalterManagerLaunch.equals("true"))
-				{
-					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir);
-				}
-				else
-				{
+//				if(schalterManagerLaunch.equals("true"))
+//				{
+//					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir);
+//				}
+//				else
+//				{
 					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir + " -addopt '-nostart'");
-				}
+//				}
 				processSyscallWithArgs.add("-stdout");
 				processSyscallWithArgs.add(instanceDir+"/.stdout.ptest-launch.txt");
 				processSyscallWithArgs.add("-stderr");
@@ -257,8 +257,8 @@ public class TestrunItem {
 				java.lang.Process sysproc = pb.start();
 				
 				// falls pmodel gestartet werden soll
-				if(schalterPmodelLaunch.equals("true"))
-				{
+//				if(schalterPmodelLaunch.equals("true"))
+//				{
 					int maxWait = 30;
 					int actualWait = 3;
 					// a bisserl schlafen bis pkraft-startinstance das unterverzeichnis mit process.pmb angelegt hat
@@ -331,7 +331,7 @@ public class TestrunItem {
 					}
 				}
 				
-			}
+//			}
 			catch (Exception e)
 			{
 				father.getFather().log("error", e.getMessage());
