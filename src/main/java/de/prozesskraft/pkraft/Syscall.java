@@ -190,9 +190,9 @@ public class Syscall {
 			writerLog.println("this program runs in directory:");
 			writerLog.println(System.getProperty("user.dir"));
 			writerLog.println("------------------------------------------------------");
-			writerLog.println("process-syscall has been called like this...");
+			writerLog.println("pkraft-syscall has been called like this...");
 			writerLog.println("------------------------------------------------------");
-			writerLog.println("process syscall \\");
+			writerLog.println("pkraft syscall \\");
 			writerLog.println("-call \""+sCall+"\" \\");
 			writerLog.println("-stdout "+sStdout + " \\");
 			writerLog.println("-stderr "+sStderr + " \\");
@@ -254,7 +254,7 @@ public class Syscall {
 				processSyscallWithArgs.add(actArg.replaceAll(" ", "\\\\ "));
 			}
 			
-			writerLog.println("process-syscall has called this...");
+			writerLog.println("pkraft-syscall has called this...");
 			writerLog.println("------------------------------------------------------");
 
 			// das argumenten array ins logfile schreiben
