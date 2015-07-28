@@ -1598,43 +1598,43 @@ implements Serializable, Cloneable
 	 */
 	public int getLevel()
 	{
-		boolean run = true;
-		ArrayList<Step> allFromsteps = this.getFromsteps();
-		// einsammeln aller fromsteps
-		while(run)
-		{
-			run = false;
+		ArrayList<Step> fromstepsToExamine = this.getFromsteps();
+		
+		int level = 0;
 
-			ArrayList<Step> newFromsteps = new ArrayList<Step>();
-			
-			for(Step actualFromstep : allFromsteps)
+		// durchgehen aller fromsteps und den laengsten weg bis root feststellen
+		while(fromstepsToExamine.size() > 0)
+		{
+			level++;
+
+			ArrayList<Step> superNewFromsteps = new ArrayList<Step>();
+
+			for(Step actualFromstep : fromstepsToExamine)
 			{
 				ArrayList<Step> fromstepsOfActualStep = actualFromstep.getFromsteps();
 				for(Step actualStep2 : fromstepsOfActualStep)
 				{
-					if (!(allFromsteps.contains(actualStep2)))
+					if (!(fromstepsToExamine.contains(actualStep2)))
 					{
-						newFromsteps.add(actualStep2);
+						superNewFromsteps.add(actualStep2);
 					}
 				}
 			}
 			
-			// wenn neue fromsteps gefunden werden, soll erneut durchlaufen werden
-			if (newFromsteps.size() > 0) {run = true;}
-			allFromsteps.addAll(newFromsteps);
+			fromstepsToExamine = superNewFromsteps;
 		}
 
-		int level = 0;
-		// den hoechsten level aller fromsteps ermitteln
-		for(Step actualStep : allFromsteps)
-		{
-			int rankActualStep = actualStep.getLevel();
-			if (rankActualStep > level)
-			{
-				level = rankActualStep;
-			}
-		}
-		
+//		int level = 0;
+//		// den hoechsten level aller fromsteps ermitteln
+//		for(Step actualStep : allFromsteps)
+//		{
+//			int rankActualStep = actualStep.getLevel();
+//			if (rankActualStep > level)
+//			{
+//				level = rankActualStep;
+//			}
+//		}
+//		
 		// der eigene level ist um 1 hoeher als der hoechste aller fromstep-level (auser beim rootstep)
 		if (!this.isRoot()) 
 		{
