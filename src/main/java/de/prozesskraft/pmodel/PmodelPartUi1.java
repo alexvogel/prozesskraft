@@ -696,7 +696,7 @@ public class PmodelPartUi1 extends ModelObject
 			return;
 		}
 		
-		String aufruf = ini.get("apps", "process-manager")+" -instance "+this.einstellungen.process.getInfilebinary();
+		String aufruf = ini.get("apps", "pkraft-manager")+" -instance "+this.einstellungen.process.getInfilebinary();
 		try
 		{
 			log("info", aufruf);
@@ -737,7 +737,7 @@ public class PmodelPartUi1 extends ModelObject
 			return;
 		}
 		
-		String aufruf =  ini.get("apps", "process-manager")+" -stop -instance "+this.einstellungen.process.getInfilebinary();
+		String aufruf =  ini.get("apps", "pkraft-manager")+" -stop -instance "+this.einstellungen.process.getInfilebinary();
 		try
 		{
 			log("info", aufruf);
