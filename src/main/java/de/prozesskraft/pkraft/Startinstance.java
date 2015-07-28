@@ -39,7 +39,7 @@ public class Startinstance
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Startinstance.class) + "/" + "../etc/process-startinstance.ini");
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Startinstance.class) + "/" + "../etc/pkraft-startinstance.ini");
 
 		if (inifile.exists())
 		{
