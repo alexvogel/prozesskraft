@@ -644,9 +644,9 @@ foreach my $refh_stackline (@CONFIG)
 			if(-d $TMPDIR."/config/$config")
 			{
 				print "special config $config found in $TMPDIR/config/$config";
-				print "syncing the config files to main-data\n";
-				print "rsync -avz $TMPDIR/config/$config/ $TMPDIR\n";
-				system "rsync -avz $TMPDIR/config/$config/ $TMPDIR";
+				print "copying the config files to main-data\n";
+				print "scp -r $TMPDIR/config/$config/* $TMPDIR\n";
+				system "scp -r $TMPDIR/config/$config/* $TMPDIR";
 				print "special config finished";
 			}
 			else
