@@ -37,7 +37,7 @@ public class Checkconsistency
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Checkconsistency.class) + "/" + "../etc/process-checkconsistency.ini");
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Checkconsistency.class) + "/" + "../etc/pkraft-checkconsistency.ini");
 
 		if (inifile.exists())
 		{
