@@ -208,11 +208,11 @@ public class TestrunItem {
 				processSyscallWithArgs.add("-call");
 //				if(schalterManagerLaunch.equals("true"))
 //				{
-//					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir);
+					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir);
 //				}
 //				else
 //				{
-					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir + " -addopt '-nostart'");
+//					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir + " -addopt '-nostart'");
 //				}
 				processSyscallWithArgs.add("-stdout");
 				processSyscallWithArgs.add(instanceDir+"/.stdout.ptest-launch.txt");
