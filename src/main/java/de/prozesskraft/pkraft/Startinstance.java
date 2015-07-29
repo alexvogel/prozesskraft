@@ -497,7 +497,7 @@ public class Startinstance
 		if( ! commandline.hasOption("nostart"))
 		{
 			System.err.println("info: starting processmanager for instance "+p2.getOutfilebinary());
-			String aufrufString = ini.get("apps", "process-manager") + " -instance "+p2.getOutfilebinary();
+			String aufrufString = ini.get("apps", "pkraft-manager") + " -instance "+p2.getOutfilebinary();
 			System.err.println("calling: "+aufrufString);
 
 			ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(aufrufString.split(" ")));
