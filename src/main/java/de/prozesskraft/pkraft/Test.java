@@ -74,7 +74,7 @@ implements Serializable
 			result = this.testVariableMoreThan(variableToTest, this.getParameterList());
 		}
 		
-		else if (this.name.equals("isA"))
+		else if (this.name.equals(""))
 		{
 			result = this.testVariableIsA(variableToTest, this.getParameterList());
 		}
@@ -432,9 +432,9 @@ implements Serializable
 
 		if (type.matches("^string|STRING$"))
 		{
-			if(!testVariable.getValue().matches("^\\w+$"))
+			if(!testVariable.getValue().matches("^.+$"))
 			{
-				setTestFeedback("value '"+testVariable.getValue()+"' is not a string (= does not match /^\\w+$/)");
+				setTestFeedback("value '"+testVariable.getValue()+"' is not a string (= does not match /^.+$/)");
 				result = false;
 			}
 		}
