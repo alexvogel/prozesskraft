@@ -257,6 +257,8 @@ public class Syscall {
 			writerLog.println("pkraft-syscall has called this...");
 			writerLog.println("------------------------------------------------------");
 
+			processSyscallWithArgs = processSyscallWithArgsTmp;
+			
 			// das argumenten array ins logfile schreiben
 			for(String actString : processSyscallWithArgs)
 			{
