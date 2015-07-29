@@ -248,11 +248,11 @@ public class Syscall {
 			// in diesem array sollen die endgueltig verarbeiteten parameter gehalten werden
 			ArrayList<String> processSyscallWithArgs = new ArrayList<String>();
 			// noch vorhandene blanks in argumenten maskieren
-			writerLog.println("whitespaces have been masked");
-			for(String actArg : processSyscallWithArgsTmp)
-			{
-				processSyscallWithArgs.add(actArg.replaceAll(" ", "\\\\ "));
-			}
+//			writerLog.println("whitespaces have been masked");
+//			for(String actArg : processSyscallWithArgsTmp)
+//			{
+//				processSyscallWithArgs.add(actArg.replaceAll(" ", "\\\\ "));
+//			}
 			
 			writerLog.println("pkraft-syscall has called this...");
 			writerLog.println("------------------------------------------------------");
