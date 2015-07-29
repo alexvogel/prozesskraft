@@ -74,7 +74,7 @@ implements Serializable
 			result = this.testVariableMoreThan(variableToTest, this.getParameterList());
 		}
 		
-		else if (this.name.equals(""))
+		else if (this.name.equals("isA"))
 		{
 			result = this.testVariableIsA(variableToTest, this.getParameterList());
 		}
