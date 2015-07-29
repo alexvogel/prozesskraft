@@ -296,7 +296,7 @@ public class Manager
 				}
 	
 				// prozess laufen lassen
-				p3.doIt(ini.get("apps", "process-syscall"), ini.get("apps", "process-manager"), ini.get("process", "domain-installation-directory"));
+				p3.doIt(ini.get("apps", "pkraft-syscall"), ini.get("apps", "pkraft-manager"), ini.get("process", "domain-installation-directory"));
 
 				// pradar aktualisieren
 				if(pradar)
