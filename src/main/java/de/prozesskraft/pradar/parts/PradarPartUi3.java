@@ -805,26 +805,29 @@ public class PradarPartUi3 extends ModelObject
 							e.printStackTrace();
 							log("error", e.getMessage());
 						}
+						
+						
+						// 2) loeschen der daten im filesystem
+						try
+						{
+							java.io.File resource = new java.io.File(einstellungen.entitySelected.getResource());
+							log("warn", "deleting directory "+resource.getParentFile().getCanonicalPath());
+							FileUtils.deleteDirectory(resource.getParentFile());
+						}
+						catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							log("error", e.getMessage());
+						}
+						catch (NullPointerException e)
+						{
+							log("warn", "data not deleted from filesystem, because no resource is defined");
+						}
+
 					}
 				}
 
-				// 2) loeschen der daten im filesystem
-				try
-				{
-					java.io.File resource = new java.io.File(einstellungen.entitySelected.getResource());
-					log("warn", "deleting directory "+resource.getParentFile().getCanonicalPath());
-					FileUtils.deleteDirectory(resource.getParentFile());
-				}
-				catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					log("error", e.getMessage());
-				}
-				catch (NullPointerException e)
-				{
-					log("warn", "data not deleted from filesystem, because no resource is defined");
-				}
 				
 				// daten und anzeige refreshen
 				refresh();
