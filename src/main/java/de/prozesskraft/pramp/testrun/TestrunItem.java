@@ -161,8 +161,8 @@ public class TestrunItem {
 		GridLayout sss = new GridLayout(3, true);
 		compositeBtn.setLayout(sss);
 		
-		Label dummyLabel = new Label(compositeBtn, SWT.NONE);
-		dummyLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+//		Label dummyLabel = new Label(compositeBtn, SWT.NONE);
+//		dummyLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		
 		Button btnCancel = new Button(compositeBtn, SWT.NONE);
 		btnCancel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -172,12 +172,14 @@ public class TestrunItem {
 		Button btnStart = new Button(compositeBtn, SWT.NONE);
 		btnStart.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnStart.setText("create and start");
+		btnStart.setToolTipText("creates an instance directory, copies all files from the spl-directory to the instance directory, creates an instance and starts it");
 		btnStart.addSelectionListener(listenerButtonStart);
 		
-		Button btnOpen = new Button(compositeBtn, SWT.NONE);
-		btnOpen.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnOpen.setText("create and open");
-		btnOpen.addSelectionListener(listenerButtonStartOpen);
+		Button btnStartOpen = new Button(compositeBtn, SWT.NONE);
+		btnStartOpen.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		btnStartOpen.setText("create, start and open");
+		btnStartOpen.setToolTipText("creates an instance directory, copies all files from the spl-directory to the instance directory, creates an instance and starts it. opens the instance with pmodel");
+		btnStartOpen.addSelectionListener(listenerButtonStartOpen);
 		
 		compositeBtn.layout();
 	}
