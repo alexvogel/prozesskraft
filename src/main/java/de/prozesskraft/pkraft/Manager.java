@@ -306,7 +306,9 @@ public class Manager
 					lastStepcountFinishedOrCanceled = p3.getStepFinishedOrCanceled().size();
 					p3.log("info", "manager "+managerid+": pradar progress  "+lastStepcountFinishedOrCanceled+"/"+lastStepcount);
 					pradarProgress(p3.getId(), p3.getName(), getPid(), lastStepcountFinishedOrCanceled, lastStepcount);
-
+					// evtl. stoeren sich zwei kurz aufeinander folgende aufrufe von pradar...
+					Thread.sleep(500);
+					
 					// finished
 					if(p3.getStatus().equals("finished"))
 					{
