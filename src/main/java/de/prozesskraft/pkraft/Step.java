@@ -1600,30 +1600,31 @@ implements Serializable, Cloneable
 	{
 		ArrayList<Step> fromstepsToExamine = this.getFromsteps();
 		
-		int level = 0;
-
+		int highestLevelOfFromsteps = 0;
+		
 		// durchgehen aller fromsteps und den laengsten weg bis root feststellen
-		while(fromstepsToExamine.size() > 0)
+		for(Step actualFromstep : fromstepsToExamine)
 		{
-			level++;
-
-			ArrayList<Step> superNewFromsteps = new ArrayList<Step>();
-
-			for(Step actualFromstep : fromstepsToExamine)
-			{
-				ArrayList<Step> fromstepsOfActualStep = actualFromstep.getFromsteps();
-				for(Step actualStep2 : fromstepsOfActualStep)
-				{
-					if (!(fromstepsToExamine.contains(actualStep2)))
-					{
-						superNewFromsteps.add(actualStep2);
-					}
-				}
-			}
+			int level = actualFromstep.getLevel();
 			
-			fromstepsToExamine = superNewFromsteps;
+			if(level > highestLevelOfFromsteps)
+			{
+				highestLevelOfFromsteps = level;
+			}
 		}
 
+		if(this.isRoot())
+		{
+			System.err.println("debug: step "+this.getName() + " has level: "+0);
+			return 0;
+		}
+		else
+		{
+			System.err.println("debug: step "+this.getName() + " has level: "+(highestLevelOfFromsteps+1));
+			return (highestLevelOfFromsteps+1);
+		}
+		
+		
 //		int level = 0;
 //		// den hoechsten level aller fromsteps ermitteln
 //		for(Step actualStep : allFromsteps)
@@ -1640,7 +1641,8 @@ implements Serializable, Cloneable
 //		{
 //			level++;
 //		}
-		return level;
+
+//		return level;
 	}
 	
 	/**
