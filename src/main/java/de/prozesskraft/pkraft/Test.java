@@ -210,8 +210,8 @@ implements Serializable
 	}
 
 	/**
-	 * VariableTest: tests whether the Variable-value matches all patterns
-	 * @param Variable testVariable, ArrayList<String> pattern
+	 * FileTest: tests whether the Content of the file matches all patterns
+	 * @param File testFile, ArrayList<String> pattern
 	 * @return boolean testResult
 	 */
 	private boolean testFileMatchPattern(File testFile, ArrayList<String> param)
