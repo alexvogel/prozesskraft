@@ -139,6 +139,8 @@ public class Launch
 //				.isRequired()
 				.create("addopt");
 
+		Option onolaunch = new Option("nolaunch", "only create instance directory, copy all spl files, but do NOT launch the process");
+
 		/*----------------------------
 		  create options object
 		----------------------------*/
@@ -151,6 +153,7 @@ public class Launch
 		options.addOption( ocall );
 		options.addOption( oaltapp );
 		options.addOption( oaddopt );
+		options.addOption( onolaunch );
 
 		/*----------------------------
 		  create the parser
@@ -167,7 +170,7 @@ public class Launch
 			System.err.println( "Parsing failed. Reason: "+ exp.getMessage());
 			exiter();
 		}
-		
+
 		/*----------------------------
 		  usage/help
 		----------------------------*/
@@ -309,6 +312,13 @@ public class Launch
 		// Inputdaten in das InstanceDir exportieren
 		actSpl.exportInput(actSplInstanceDir);
 
+		// exit, wenn --nolaunch
+		if(commandline.hasOption("nolaunch"))
+		{
+			System.err.println("info: exiting, because of -nolaunch");
+			System.exit(0);
+		}
+		
 		// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)
 		String AbsLogSyscallWrapper = actSplInstanceDir.getCanonicalPath()+"/.log";
 		String AbsStdout = actSplInstanceDir.getCanonicalPath()+"/.stdout.txt";
