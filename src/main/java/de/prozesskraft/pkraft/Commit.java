@@ -1121,7 +1121,7 @@ implements Serializable
 
 		// ueber den filenamen feststellen welche extraktionsmethode angewendet werden soll
 		// methode 1)
-		if(fileToExtractFrom.getName().matches("^variables$"))
+		if(fileToExtractFrom.getName().matches("^.*variables$"))
 		{
 			BufferedReader in = null;
 			try
