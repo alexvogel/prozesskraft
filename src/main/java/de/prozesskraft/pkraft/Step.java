@@ -61,6 +61,9 @@ implements Serializable, Cloneable
 	private String rank = "";
 	private int reset = 0;
 	
+	private int level = 0;
+	private long levelCalctime = 0;
+	
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 	/*----------------------------
 	  constructors
@@ -1598,15 +1601,24 @@ implements Serializable, Cloneable
 	 */
 	public int getLevel()
 	{
+		// gibt es eine kuerzlich berechneten level? dann soll dieser ausgegeben werden
+		if((System.currentTimeMillis() - this.levelCalctime) < 5000)
+		{
+			return this.level;
+		}
+
+		// ansonsten neu berechnen
 		ArrayList<Step> fromstepsToExamine = this.getFromsteps();
-		
+
 		int highestLevelOfFromsteps = 0;
-		
+
 		// durchgehen aller fromsteps und den laengsten weg bis root feststellen
 		for(Step actualFromstep : fromstepsToExamine)
 		{
-			int level = actualFromstep.getLevel();
-			
+			Integer level = null;
+
+			level = actualFromstep.getLevel();
+
 			if(level > highestLevelOfFromsteps)
 			{
 				highestLevelOfFromsteps = level;
@@ -1616,11 +1628,15 @@ implements Serializable, Cloneable
 		if(this.isRoot())
 		{
 			System.err.println("debug: step "+this.getName() + " has level: "+0);
+			this.level = 0;
+			this.levelCalctime = System.currentTimeMillis();
 			return 0;
 		}
 		else
 		{
 			System.err.println("debug: step "+this.getName() + " has level: "+(highestLevelOfFromsteps+1));
+			this.level = (highestLevelOfFromsteps+1);
+			this.levelCalctime = System.currentTimeMillis();
 			return (highestLevelOfFromsteps+1);
 		}
 		
