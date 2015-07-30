@@ -266,7 +266,7 @@ public class Manager
 	
 			// die letzten festgestellten werte fuer die abarbeitung
 			int lastStepcount = 0;
-			int lastStepcountFinished = 0;
+			int lastStepcountFinishedOrCanceled = 0;
 	
 			// pradar checkin
 			if(pradar && p2.run && p2.touchInMillis == 0)
@@ -303,9 +303,9 @@ public class Manager
 				{
 	
 					lastStepcount =  p3.getStep().size();
-					lastStepcountFinished = p3.getStepFinished().size();
-					p3.log("info", "manager "+managerid+": pradar progress  "+lastStepcountFinished+"/"+lastStepcount);
-					pradarProgress(p3.getId(), p3.getName(), getPid(), lastStepcountFinished, lastStepcount);
+					lastStepcountFinishedOrCanceled = p3.getStepFinishedOrCanceled().size();
+					p3.log("info", "manager "+managerid+": pradar progress  "+lastStepcountFinishedOrCanceled+"/"+lastStepcount);
+					pradarProgress(p3.getId(), p3.getName(), getPid(), lastStepcountFinishedOrCanceled, lastStepcount);
 
 					// finished
 					if(p3.getStatus().equals("finished"))
@@ -387,9 +387,9 @@ public class Manager
 		}
 	}
 
-	private static void pradarProgress(String instanceId, String processName, String pid, int lastStepcountFinished, int lastStepcount)
+	private static void pradarProgress(String instanceId, String processName, String pid, int lastStepcountFinishedOrCanceled, int lastStepcount)
 	{
-		String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+instanceId, "-process="+processName, "-pid="+pid, "-completed="+lastStepcountFinished, "-stepcount="+lastStepcount};
+		String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+instanceId, "-process="+processName, "-pid="+pid, "-completed="+lastStepcountFinishedOrCanceled, "-stepcount="+lastStepcount};
 		try
 		{
 			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
