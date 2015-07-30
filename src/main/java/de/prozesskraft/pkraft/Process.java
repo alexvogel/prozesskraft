@@ -1693,6 +1693,24 @@ implements Serializable
 	}
 	
 	/**
+	 * liefert alle steps, die erfolgreich verarbeitet wurden, zurueck
+	 * @param 
+	 * @return ArrayList<Step>
+	 */
+	public ArrayList<Step> getStepFinishedOrCanceled()
+	{
+		ArrayList<Step> finishedOrCanceledStep = new ArrayList<Step>();
+		for(Step actStep : this.getStep())
+		{
+			if(actStep.getStatus().equals("finished") || actStep.getStatus().equals("canceled"))
+			{
+				finishedOrCanceledStep.add(actStep);
+			}
+		}
+		return finishedOrCanceledStep;
+	}
+	
+	/**
 	 * liefert alle steps, die fehler enthalten,, zurueck
 	 * @param 
 	 * @return ArrayList<Step>
