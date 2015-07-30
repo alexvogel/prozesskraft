@@ -169,15 +169,20 @@ public class TestrunItem {
 		btnCancel.setText("cancel");
 		btnCancel.addSelectionListener(listenerButtonCancel);
 		
-		Button btnRun = new Button(compositeBtn, SWT.NONE);
-		btnRun.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnRun.setText("run test");
-		btnRun.addSelectionListener(listenerButtonRun);
+		Button btnStart = new Button(compositeBtn, SWT.NONE);
+		btnStart.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		btnStart.setText("create and start");
+		btnStart.addSelectionListener(listenerButtonStart);
+		
+		Button btnOpen = new Button(compositeBtn, SWT.NONE);
+		btnOpen.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		btnOpen.setText("create and open");
+		btnOpen.addSelectionListener(listenerButtonStartOpen);
 		
 		compositeBtn.layout();
 	}
 
-	SelectionAdapter listenerButtonRun = new SelectionAdapter()
+	SelectionAdapter listenerButtonStart = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
@@ -256,88 +261,108 @@ public class TestrunItem {
 				// starten des prozesses
 				java.lang.Process sysproc = pb.start();
 				
-				// falls pmodel gestartet werden soll
-//				if(schalterPmodelLaunch.equals("true"))
-//				{
-					int maxWait = 30;
-					int actualWait = 3;
-					// a bisserl schlafen bis pkraft-startinstance das unterverzeichnis mit process.pmb angelegt hat
-					father.getFather().log("info", "waiting " + actualWait + " seconds for the process.pmb of executed testrun to become available on disk");
-					Thread.sleep(actualWait * 1000);
-					actualWait += 3;
-					
-					// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist (das wird mit pkraft-startinstance erstellt) muss das erst herausgefunden werden
-					// das rootDir von ptest-launch ist das basedir des prozesses, der mit startinstance angeschoben wird
-					java.io.File baseDirOfStartinstance = new java.io.File(dummyProcess.getRootdir());
-
-					ArrayList<File> allFoundProcessBinaries = new ArrayList<File>();
-					
-					boolean processBinaryNichtVorhanden = true;
-					
-					while(processBinaryNichtVorhanden && (actualWait<maxWait))
-					{
-						
-						// loeschen evtl. eintraege
-						allFoundProcessBinaries.clear();
-						
-						// alle process.pmb in unterverzeichnissen finden
-						for(java.io.File actFile : baseDirOfStartinstance.listFiles())
-						{
-//							System.err.println("seeing entry: "+actFile.getCanonicalPath());
-							if(actFile.isDirectory())
-							{
-//								System.err.println("its a directory - going in...");
-								for(java.io.File actFileFile : actFile.listFiles())
-								{
-//									System.err.println("seeing file: (name="+actFileFile.getName()+") "+actFileFile.getCanonicalPath());
-									if(actFileFile.getName().equals("process.pmb"))
-									{
-										allFoundProcessBinaries.add(actFileFile);
-									}
-								}
-							}
-						}
-						
-						if(allFoundProcessBinaries.size() == 0)
-						{
-							father.getFather().log("warn", "process-binary still not found. waiting additional " + actualWait + " seconds...");
-							Thread.sleep(actualWait * 1000);
-							actualWait += 3;
-						}
-						else
-						{
-							processBinaryNichtVorhanden = false;
-						}
-						
-					}
-					
-					if(allFoundProcessBinaries.size() > 1)
-					{
-						father.getFather().log("error", "cannot open pmodel-gui because more than 1 process.pmb found in subdirectories of "+baseDirOfStartinstance);
-						for(java.io.File actFile : allFoundProcessBinaries)
-						{
-							father.getFather().log("debug", "this is a process.pmb: "+actFile.getCanonicalPath());
-						}
-					}
-					else
-					{
-						String pmodelCall = father.getFather().getIni().get("apps", "pmodel") + " -instance " + allFoundProcessBinaries.get(0).getCanonicalPath();
-						ArrayList<String> pmodelCallAsArray = new ArrayList<String>(Arrays.asList(pmodelCall.split(" ")));
-						ProcessBuilder pb2 = new ProcessBuilder(pmodelCallAsArray);
-						pb2.directory(new java.io.File(instanceDir));
-						father.getFather().log("info", "calling: " + pb2.command());
-						// starten des pmodel
-						java.lang.Process sysproc2 = pb2.start();
-					}
-				}
-				
-//			}
+			}
 			catch (Exception e)
 			{
 				father.getFather().log("error", e.getMessage());
 			}
 			getFather().shell.dispose();
 		}
+	};
+
+	SelectionAdapter listenerButtonStartOpen = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			// erstelle instanz, kopiere spl-daten, und starte
+			de.prozesskraft.pkraft.Process dummyProcess = createInstanceAndStart();
+			
+			// ermitteln des instanceVerzeichnisses
+			String instanceDir = dummyProcess.getRootdir();
+			
+			try
+			{
+				// oeffnen von process.xml mit pmodel
+				int maxWait = 30;
+				int actualWait = 3;
+				// a bisserl schlafen bis pkraft-startinstance das unterverzeichnis mit process.pmb angelegt hat
+				father.getFather().log("info", "waiting " + actualWait + " seconds for the process.pmb of executed testrun to become available on disk");
+				Thread.sleep(actualWait * 1000);
+				actualWait += 3;
+	
+				// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist (das wird mit pkraft-startinstance erstellt) muss das erst herausgefunden werden
+				// das rootDir von ptest-launch ist das basedir des prozesses, der mit startinstance angeschoben wird
+				java.io.File baseDirOfStartinstance = new java.io.File(dummyProcess.getRootdir());
+	
+				ArrayList<File> allFoundProcessBinaries = new ArrayList<File>();
+				
+				boolean processBinaryNichtVorhanden = true;
+				
+				while(processBinaryNichtVorhanden && (actualWait<maxWait))
+				{
+					
+					// loeschen evtl. eintraege
+					allFoundProcessBinaries.clear();
+					
+					// alle process.pmb in unterverzeichnissen finden
+					for(java.io.File actFile : baseDirOfStartinstance.listFiles())
+					{
+						System.err.println("seeing entry: "+actFile.getCanonicalPath());
+						if(actFile.isDirectory())
+						{
+							System.err.println("its a directory - going in...");
+							for(java.io.File actFileFile : actFile.listFiles())
+							{
+								System.err.println("seeing file: (name="+actFileFile.getName()+") "+actFileFile.getCanonicalPath());
+								if(actFileFile.getName().equals("process.pmb"))
+								{
+									allFoundProcessBinaries.add(actFileFile);
+								}
+							}
+						}
+					}
+					
+					if(allFoundProcessBinaries.size() == 0)
+					{
+						father.getFather().log("warn", "process-binary still not found. waiting additional " + actualWait + " seconds...");
+						Thread.sleep(actualWait * 1000);
+						actualWait += 3;
+					}
+					else
+					{
+						processBinaryNichtVorhanden = false;
+					}
+					
+				}
+				
+				if(allFoundProcessBinaries.size() > 1)
+				{
+					father.getFather().log("error", "cannot open pmodel-gui because more than 1 process.pmb found in subdirectories of "+baseDirOfStartinstance);
+					for(java.io.File actFile : allFoundProcessBinaries)
+					{
+						father.getFather().log("debug", "this is a process.pmb: "+actFile.getCanonicalPath());
+					}
+				}
+				else
+				{
+					String pmodelCall = father.getFather().getIni().get("apps", "pmodel") + " -instance " + allFoundProcessBinaries.get(0).getCanonicalPath();
+					ArrayList<String> pmodelCallAsArray = new ArrayList<String>(Arrays.asList(pmodelCall.split(" ")));
+					ProcessBuilder pb2 = new ProcessBuilder(pmodelCallAsArray);
+					pb2.directory(new java.io.File(instanceDir));
+					father.getFather().log("info", "calling: " + pb2.command());
+					// starten des pmodel
+					java.lang.Process sysproc2 = pb2.start();
+				}
+				
+				// schliessen des fensters
+				getFather().shell.dispose();
+			}
+			catch (Exception e)
+			{
+				father.getFather().log("error", "exception: " + e.getMessage());
+			}
+		}
+			
 	};
 
 	SelectionAdapter listenerButtonCancel = new SelectionAdapter()
@@ -348,6 +373,87 @@ public class TestrunItem {
 		}
 	};
 
+	private de.prozesskraft.pkraft.Process createInstanceAndStart()
+	{
+		de.prozesskraft.pkraft.Process dummyProcess = new de.prozesskraft.pkraft.Process();
+		dummyProcess.setName("testrun-"+name);
+		dummyProcess.setVersion("Intern");
+		dummyProcess.setBaseDir(father.getFather().einstellungen.getBaseDirectory());
+		dummyProcess.makeRootdir();
+
+//		String schalterPmodelLaunch = father.getFather().getIni().get("start", "pmodel");
+//		String schalterManagerLaunch = father.getFather().getIni().get("start", "pkraft-manager");
+//
+		String instanceDir = dummyProcess.getRootdir();
+		String syscall = father.getFather().getIni().get("apps", "pkraft-syscall");
+
+		try
+		{
+			// den Aufrufstring fuer die externe App (process syscall --version 0.6.0)) splitten
+			// beim aufruf muss das erste argument im path zu finden sein, sonst gibt die fehlermeldung 'no such file or directory'
+			ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(syscall.split(" ")));
+
+			// die sonstigen argumente hinzufuegen
+			processSyscallWithArgs.add("-call");
+//			if(nolaunch)
+//			{
+//				processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir + " -nolaunch");
+//			}
+//			else
+//			{
+				processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir);
+//			}
+			processSyscallWithArgs.add("-stdout");
+			processSyscallWithArgs.add(instanceDir+"/.stdout.ptest-launch.txt");
+			processSyscallWithArgs.add("-stderr");
+			processSyscallWithArgs.add(instanceDir+"/.stderr.ptest-launch.txt");
+			processSyscallWithArgs.add("-pid");
+			processSyscallWithArgs.add(instanceDir+"/.pid.ptest-launch");
+			processSyscallWithArgs.add("-mylog");
+			processSyscallWithArgs.add(instanceDir+"/.log.ptest-launch");
+			processSyscallWithArgs.add("-maxrun");
+			// ~2 Tage
+			processSyscallWithArgs.add("3000");
+
+			// erstellen prozessbuilder
+			ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
+
+			// erweitern des PATHs um den prozesseigenen path
+//			Map<String,String> env = pb.environment();
+//			String path = env.get("PATH");
+//			log("debug", "$PATH="+path);
+//			path = this.parent.getAbsPath()+":"+path;
+//			env.put("PATH", path);
+//			log("info", "path: "+path);
+			
+			// setzen der aktuellen directory
+			java.io.File directory = new java.io.File(instanceDir);
+			father.getFather().log("info", "setting execution directory to: "+directory.getAbsolutePath());
+			pb.directory(directory);
+
+			// zum debuggen ein paar ausgaben
+//			java.lang.Process p1 = Runtime.getRuntime().exec("date >> ~/tmp.debug.work.txt");
+//			p1.waitFor();
+//			java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
+//			p2.waitFor();
+//			java.lang.Process pro = Runtime.getRuntime().exec("nautilus");
+//			java.lang.Process superpro = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
+//			p3.waitFor();
+			
+			father.getFather().log("info", "calling: " + pb.command());
+
+			// starten des prozesses
+			java.lang.Process sysproc = pb.start();
+		}
+		catch (Exception e)
+		{
+			father.getFather().log("error", e.getMessage());
+		}
+
+		// rueckgabe des prozesses
+		return dummyProcess;
+	}
+	
 	/**
 	 * @return the father
 	 */
