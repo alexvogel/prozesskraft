@@ -198,10 +198,16 @@ public class SIInsightCreator
 		Button buttonReset = new Button(compositeAction, SWT.NONE);
 		buttonReset.setText("reset");
 		buttonReset.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		buttonReset.setToolTipText("reset this step to initial state");
+		buttonReset.setToolTipText("reset this step to initial state (with an implcit kill)");
 		buttonReset.addSelectionListener(listener_button_reset);
 		if(step.getParent().getStatus().equals("working")) {buttonReset.setEnabled(false);}
 		else {buttonReset.setEnabled(true);}
+
+		Button buttonKill = new Button(compositeAction, SWT.NONE);
+		buttonKill.setText("kill");
+		buttonKill.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonKill.setToolTipText("kill the program that has been started by this step");
+		buttonKill.addSelectionListener(listener_button_kill);
 
 		Label labelDummy2 = new Label(compositeAction, SWT.NONE);
 
@@ -539,6 +545,52 @@ public class SIInsightCreator
 		}
 		messageShell.dispose();
 	}
+
+	SelectionAdapter listener_button_kill = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			kill_execute();
+		}
+	};
+
+	private void kill_execute()
+	{
+		Shell messageShell = new Shell();
+		MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
+		confirmation.setText("please confirm");
+		
+		String message = "";
+		if(step.isRoot())
+		{
+			message += "WARNING\n";
+			message += "you are about to  kill all programs that has been started by this process instance.\n";
+			message += "the process will most probably run into an error.\n\n";
+			message += "do you really want to proceed?";
+		}
+		else
+		{
+			message += "WARNING\n";
+			message += "you are about to  kill the program that has been started by this step.\n";
+			message += "the process will most probably run into an error.\n\n";
+			message += "do you really want to proceed?";
+		}
+
+		confirmation.setMessage(message);
+
+		// open confirmation and wait for user selection
+		int returnCode = confirmation.open();
+//		System.out.println("returnCode is: "+returnCode);
+
+		// ok == 32
+		if (returnCode == 32)
+		{
+			// den step resetten und alle von diesem step abhaengigen steps
+			step.kill();
+		}
+		messageShell.dispose();
+	}
+
 
 	/**
 	 * @return the father
