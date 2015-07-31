@@ -6,6 +6,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -181,36 +183,50 @@ public class Syscall {
 			final String sStderr = commandline.getOptionValue("stderr");
 			final String sMaxrun = commandline.getOptionValue("maxrun");
 
-			// wenn die ausgabefiles mylog, stderr, stdout, pid bereits existieren, sollen die existenten umbenannt werden
-		    // NOTE: Usually this should be a field rather than a method
-		    // variable so that it is not re-seeded every call.
-		    Random rand = new Random();
+		    // die ausgabefiles in einen map aufnehmen
+		    Map<String,String> filesKeyPath = new HashMap<String,String>();
+		    filesKeyPath.put("mylog", sMylog);
+		    filesKeyPath.put("pid", sPid);
+		    filesKeyPath.put("stdout", sStdout);
+		    filesKeyPath.put("stderr", sStderr);
 
-		    // nextInt is normally exclusive of the top value,
-		    // so add 1 to make it inclusive
-		    int randomNum = rand.nextInt(99999);
+			// wenn die auch nur eines von den ausgabefiles mylog, stderr, stdout, pid bereits existieren, sollen alle ausgabefiles eine um 1 hochgezaehlte nummer erhalten
+		    int zaehler = 0;
 
-		    ArrayList<String> filesToRenameIfExist = new ArrayList<String>();
-		    filesToRenameIfExist.add(sMylog);
-		    filesToRenameIfExist.add(sPid);
-		    filesToRenameIfExist.add(sStdout);
-		    filesToRenameIfExist.add(sStderr);
-		    filesToRenameIfExist.add(sMaxrun);
-
-		    for(String actFileAbsPath : filesToRenameIfExist)
+		    boolean irgendEinAusgabeFileExistiert = true;
+		    while(irgendEinAusgabeFileExistiert)
 		    {
-		    	File file = new File(actFileAbsPath);
-		    	
-		    	if(file.exists())
+		    	// renamen der ausgabefiles, falls zaehler == 1
+		    	if(zaehler == 1)
 		    	{
-		    		// file with new name
-		    		File newFile = new File(actFileAbsPath + "_" + randomNum);
-		    		if(newFile.exists()) throw new java.io.IOException("file exists");
-		    		
-		    		// rename file
-		    		boolean success = file.renameTo(newFile);
-		    		if(!success) throw new java.io.IOException("rename failed");
+				    for(String key : filesKeyPath.keySet())
+				    {
+				    	filesKeyPath.put(key, filesKeyPath.get(key) + "_" + zaehler);
+				    }
 		    	}
+		    	if(zaehler > 1)
+		    	{
+				    for(String key : filesKeyPath.keySet())
+				    {
+				    	filesKeyPath.put(key, filesKeyPath.get(key).replaceFirst("_\\d+$", "_"+zaehler));
+				    }
+		    	}
+
+		    	irgendEinAusgabeFileExistiert = false;
+			    for(String actFileAbsPath : filesKeyPath.values())
+			    {
+			    	File file = new File(actFileAbsPath);
+
+			    	if(file.exists())
+			    	{
+			    		irgendEinAusgabeFileExistiert = true;
+			    	}
+			    }
+			    
+			    if(irgendEinAusgabeFileExistiert)
+			    {
+			    	zaehler++;
+			    }
 		    }
 
 			// startzeit merken
@@ -225,11 +241,11 @@ public class Syscall {
 			writerLog.println("pkraft-syscall has been called like this...");
 			writerLog.println("------------------------------------------------------");
 			writerLog.println("pkraft syscall \\");
-			writerLog.println("-call \""+sCall+"\" \\");
-			writerLog.println("-stdout "+sStdout + " \\");
-			writerLog.println("-stderr "+sStderr + " \\");
-			writerLog.println("-pid "+sPid + " \\");
-			writerLog.println("-mylog "+sMylog + " \\");
+			writerLog.println("-call \""+ sCall +"\" \\");
+			writerLog.println("-stdout "+ filesKeyPath.get("stdout") + " \\");
+			writerLog.println("-stderr "+ filesKeyPath.get("stderr") + " \\");
+			writerLog.println("-pid "+ filesKeyPath.get("pid") + " \\");
+			writerLog.println("-mylog "+ filesKeyPath.get("mylog") + " \\");
 			writerLog.println("-maxrun "+sMaxrun + " \\");
 			writerLog.println("------------------------------------------------------");
 			writerLog.println("start at         : "+ startDate.toString());
