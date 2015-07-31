@@ -208,6 +208,8 @@ public class SIInsightCreator
 		buttonKill.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonKill.setToolTipText("kill the program that has been started by this step");
 		buttonKill.addSelectionListener(listener_button_kill);
+		if(step.isRoot()) {buttonReset.setEnabled(false);}
+		else {buttonReset.setEnabled(true);}
 
 		Label labelDummy2 = new Label(compositeAction, SWT.NONE);
 
@@ -561,20 +563,10 @@ public class SIInsightCreator
 		confirmation.setText("please confirm");
 		
 		String message = "";
-		if(step.isRoot())
-		{
-			message += "WARNING\n";
-			message += "you are about to  kill all programs that has been started by this process instance.\n";
-			message += "the process will most probably run into an error.\n\n";
-			message += "do you really want to proceed?";
-		}
-		else
-		{
-			message += "WARNING\n";
-			message += "you are about to  kill the program that has been started by this step.\n";
-			message += "the process will most probably run into an error.\n\n";
-			message += "do you really want to proceed?";
-		}
+		message += "WARNING\n";
+		message += "you are about to kill the program that has been started by this step if it is still running.\n";
+		message += "the process will most probably run into an error.\n\n";
+		message += "do you really want to proceed?";
 
 		confirmation.setMessage(message);
 

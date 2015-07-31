@@ -154,6 +154,12 @@ public class PIInsightCreator
 		if(process.getStatus().equals("working")) {buttonClone.setEnabled(false);}
 		else{buttonClone.setEnabled(true);}
 		
+		Button buttonKill = new Button(compositeAction, SWT.NONE);
+		buttonKill.setText("kill");
+		buttonKill.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonKill.setToolTipText("kill all programs that has been started by this process instance");
+		buttonKill.addSelectionListener(listener_button_kill);
+
 		Label labelDummy1 = new Label(compositeAction, SWT.NONE);
 
 		Label labelDummy2 = new Label(compositeAction, SWT.NONE);
@@ -407,6 +413,41 @@ public class PIInsightCreator
 			}
 		}
 	};
+
+	SelectionAdapter listener_button_kill = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			kill_execute();
+		}
+	};
+
+	private void kill_execute()
+	{
+		Shell messageShell = new Shell();
+		MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
+		confirmation.setText("please confirm");
+		
+		String message = "";
+		message += "WARNING\n";
+		message += "you are about to kill all programs that has been started by this process if they are still running.\n";
+		message += "the process will most probably run into an error.\n\n";
+		message += "do you really want to proceed?";
+
+		confirmation.setMessage(message);
+
+		// open confirmation and wait for user selection
+		int returnCode = confirmation.open();
+//		System.out.println("returnCode is: "+returnCode);
+
+		// ok == 32
+		if (returnCode == 32)
+		{
+			// den step resetten und alle von diesem step abhaengigen steps
+			process.kill();
+		}
+		messageShell.dispose();
+	}
 
 
 	
