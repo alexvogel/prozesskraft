@@ -1493,6 +1493,37 @@ implements Serializable, Cloneable
 		}
 	}
 
+	public void kill()
+	{
+		if(this.subprocess != null)
+		{
+			this.subprocess.kill();
+		}
+
+		// array das den aufruf beherbergt
+		ArrayList<String> callToKill = new ArrayList<String>();
+		callToKill.add("cat");
+		callToKill.add(this.getAbspid());
+		callToKill.add("|");
+		callToKill.add("{ read myPid; kill $myPid; }");
+		
+		// log
+		this.log("warn", "killing program that possibly has been launched by this step");
+		this.log("info", "call: " + StringUtils.join(callToKill, " "));
+		
+		// erstellen prozessbuilder
+		ProcessBuilder pb = new ProcessBuilder(callToKill);
+
+		// Aufruf taetigen
+		try {
+			final java.lang.Process sysproc = pb.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			this.log("error", e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 //	/**
 //	 * resets the this step and all dependent steps
 //	 */

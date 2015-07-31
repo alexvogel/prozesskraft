@@ -168,6 +168,17 @@ implements Serializable
 	}
 	
 	/**
+	 * kills all steps
+	 */
+	public void kill()
+	{
+		for(Step actStep : this.getStep())
+		{
+			actStep.kill();
+		}
+	}
+	
+	/**
 	 * generates a new step with a random name and adds it to this.
 	 */
 	public void addStep()

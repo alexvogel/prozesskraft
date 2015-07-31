@@ -83,6 +83,14 @@ implements Serializable
 		this.setStatus("");
 	}
 	
+	/**
+	 * kill the process inside this
+	 */
+	public void kill()
+	{
+		this.getProcess().kill();
+	}
+	
 
 	/**
 	 * stores a message in the object log
