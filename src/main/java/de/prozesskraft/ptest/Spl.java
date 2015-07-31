@@ -72,14 +72,17 @@ public class Spl {
 						System.err.println("debug: string of first line before: "+actString);
 
 						// wenn es ein file/directory mit dem expandeten path gibt, soll dieser (statt dem bisherigen relativen Pfad) verwendet werden
+						System.err.println("debug: test if there is a file or directory with this path "+testFile.getCanonicalPath());
 						if(testFile.exists())
 						{
+							System.err.println("debug: yes - there is a file/directory, so this option will be expanded to its full path");
 							firstLineExpanded.add(testFile.getCanonicalPath());
 							System.err.println("debug: string of first line after: "+testFile.getCanonicalPath());
 
 						}
 						else
 						{
+							System.err.println("debug: no - there is no file/directory, so this option will be left unchanged");
 							firstLineExpanded.add(actString);
 							System.err.println("debug: string of first line after: "+actString);
 						}
