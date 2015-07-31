@@ -1495,6 +1495,7 @@ implements Serializable, Cloneable
 
 	public void kill()
 	{
+		
 		if(this.subprocess != null)
 		{
 			this.subprocess.kill();
