@@ -1493,7 +1493,7 @@ implements Serializable, Cloneable
 		}
 	}
 
-	public void kill()
+	public String kill()
 	{
 		
 		if(this.subprocess != null)
@@ -1523,6 +1523,8 @@ implements Serializable, Cloneable
 			this.log("error", e.getMessage());
 			e.printStackTrace();
 		}
+		
+		return StringUtils.join(callToKill, " ");
 	}
 
 //	/**
