@@ -234,7 +234,7 @@ public class Syscall {
 			final Date termDate = new Date(startDate.getTime() + Integer.parseInt(sMaxrun)*60*1000);
 
 			// Aufruf in das call -logfile schreiben
-			PrintWriter writerLog = new PrintWriter(sMylog);
+			PrintWriter writerLog = new PrintWriter(filesKeyPath.get("mylog"));
 			writerLog.println("this program runs in directory:");
 			writerLog.println(System.getProperty("user.dir"));
 			writerLog.println("------------------------------------------------------");
@@ -253,7 +253,7 @@ public class Syscall {
 			writerLog.println("------------------------------------------------------");
 
 			// Umleitung von STDOUT und STDERR dieses Scripts in das angegebene logfile
-			FileOutputStream logStream = new FileOutputStream(sMylog, true);
+			FileOutputStream logStream = new FileOutputStream(filesKeyPath.get("mylog"), true);
 			PrintStream logPrintStream = new PrintStream(logStream);
 			System.setOut(logPrintStream);
 			System.setErr(logPrintStream);
@@ -326,7 +326,7 @@ public class Syscall {
 //			pb.redirectErrorStream(true);
 			
 			// bevor der prozess gestartet wird, soll eine dummy-pid eingetragen werden
-			PrintWriter writerDummyPid = new PrintWriter(sPid);
+			PrintWriter writerDummyPid = new PrintWriter(filesKeyPath.get("pid"));
 			writerDummyPid.println("dummyPID");
 			writerDummyPid.close();
 			
@@ -341,7 +341,7 @@ public class Syscall {
 			String patt = "(\\d+)";
 			Pattern r = Pattern.compile(patt);
 			Matcher m = r.matcher(pid);
-			PrintWriter writerPid = new PrintWriter(sPid);
+			PrintWriter writerPid = new PrintWriter(filesKeyPath.get("pid"));
 			// wenn eine fuehrende zahl gefunden wird, wird diese als pid verwendet
 			if (m.find())
 			{
@@ -356,9 +356,9 @@ public class Syscall {
 			writerPid.close();
 
 			// oeffnen der OutputStream zur STDOUT-Ausgabedatei
-			final FileWriter fw_stdout = new FileWriter(sStdout);
+			final FileWriter fw_stdout = new FileWriter(filesKeyPath.get("stdout"));
 			// oeffnen der OutputStream zur STDERR-Ausgabedatei
-			final FileWriter fw_stderr = new FileWriter(sStderr);
+			final FileWriter fw_stderr = new FileWriter(filesKeyPath.get("stderr"));
 			
 			// InputStream erstellen (wichtig, sonst bleiben scripte, die eingaben ueber stdin erwarten haengen)
 			InputStream is = sysproc.getInputStream();
