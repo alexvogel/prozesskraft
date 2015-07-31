@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -131,7 +132,7 @@ public class Syscall {
 			System.out.println("date:    "+date);
 			System.exit(0);
 		}
-		
+
 		/*----------------------------
 		  ueberpruefen ob eine schlechte kombination von parametern angegeben wurde
 		----------------------------*/
@@ -180,7 +181,38 @@ public class Syscall {
 			final String sStderr = commandline.getOptionValue("stderr");
 			final String sMaxrun = commandline.getOptionValue("maxrun");
 
-			
+			// wenn die ausgabefiles mylog, stderr, stdout, pid bereits existieren, sollen die existenten umbenannt werden
+		    // NOTE: Usually this should be a field rather than a method
+		    // variable so that it is not re-seeded every call.
+		    Random rand = new Random();
+
+		    // nextInt is normally exclusive of the top value,
+		    // so add 1 to make it inclusive
+		    int randomNum = rand.nextInt(99999);
+
+		    ArrayList<String> filesToRenameIfExist = new ArrayList<String>();
+		    filesToRenameIfExist.add(sMylog);
+		    filesToRenameIfExist.add(sPid);
+		    filesToRenameIfExist.add(sStdout);
+		    filesToRenameIfExist.add(sStderr);
+		    filesToRenameIfExist.add(sMaxrun);
+
+		    for(String actFileAbsPath : filesToRenameIfExist)
+		    {
+		    	File file = new File(actFileAbsPath);
+		    	
+		    	if(file.exists())
+		    	{
+		    		// file with new name
+		    		File newFile = new File(actFileAbsPath + "_" + randomNum);
+		    		if(newFile.exists()) throw new java.io.IOException("file exists");
+		    		
+		    		// rename file
+		    		boolean success = file.renameTo(newFile);
+		    		if(!success) throw new java.io.IOException("rename failed");
+		    	}
+		    }
+
 			// startzeit merken
 			Date startDate = new Date();
 			final Date termDate = new Date(startDate.getTime() + Integer.parseInt(sMaxrun)*60*1000);
