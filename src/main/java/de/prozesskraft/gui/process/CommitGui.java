@@ -51,7 +51,7 @@ public class CommitGui
 		// fuer jedes commit soll eine Gruppe erstellt werden
 		Group group = new Group(composite, SWT.NONE);
 		group.setText(commit.getName());
-		GridData gd_group = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1);
+		GridData gd_group = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
 		
 		
 		// Layout ist ab hier --> FormLayout!
