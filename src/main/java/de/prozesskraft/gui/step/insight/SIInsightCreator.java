@@ -578,8 +578,10 @@ public class SIInsightCreator
 		if (returnCode == 32)
 		{
 			// den step resetten und alle von diesem step abhaengigen steps
-			step.kill();
+			String killString = step.kill();
+			father.log("warn", killString);
 		}
+		
 		messageShell.dispose();
 	}
 
