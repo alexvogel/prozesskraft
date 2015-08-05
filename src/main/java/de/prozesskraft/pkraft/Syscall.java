@@ -2,6 +2,7 @@ package de.prozesskraft.pkraft;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -334,25 +335,18 @@ public class Syscall {
 			final java.lang.Process sysproc = pb.start();
 
 			// feststellen der Process-ID des laufenden JavaVM und in die PID-Datei schreiben
-			String pid = ManagementFactory.getRuntimeMXBean().getName();
-
+//			String pid = ManagementFactory.getRuntimeMXBean().getName();
+			Integer pid = getPid(sysproc);
+			
 			// da die pid von der ManagementFactory normalerweise die Form "267353@ws11.caegroup" hat
 			// soll nur die fuehrende Zahl erfasst werden
-			String patt = "(\\d+)";
-			Pattern r = Pattern.compile(patt);
-			Matcher m = r.matcher(pid);
+//			String patt = "(\\d+)";
+//			Pattern r = Pattern.compile(patt);
+//			Matcher m = r.matcher(pid);
 			PrintWriter writerPid = new PrintWriter(filesKeyPath.get("pid"));
 			// wenn eine fuehrende zahl gefunden wird, wird diese als pid verwendet
-			if (m.find())
-			{
-				System.out.println("PID WIRD FESTGESTELLT ALS: "+m.group(1));
-				writerPid.println(m.group(1));
-			}
-			// wenn keine fuehrende zahl gefunden wird, wird der gesamte string als pid verwendet
-			else
-			{
-				writerPid.println(pid);
-			}
+			System.out.println("PID WIRD FESTGESTELLT ALS: "+String.valueOf(pid));
+			writerPid.println(String.valueOf(pid));
 			writerPid.close();
 
 			// oeffnen der OutputStream zur STDOUT-Ausgabedatei
@@ -555,5 +549,18 @@ public class Syscall {
 		System.exit(1);
 	}
 
-
+	public static Integer getPid(Process process)
+	{
+	    try
+	    {
+	        Class<?> ProcessImpl = process.getClass();
+	        Field field = ProcessImpl.getDeclaredField("pid");
+	        field.setAccessible(true);
+	        return field.getInt(process);
+	    }
+	    catch (Exception e)
+	    {
+	        return null;
+	    }
+	}
 }
