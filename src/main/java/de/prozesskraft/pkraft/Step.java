@@ -19,6 +19,7 @@ import de.prozesskraft.codegen.Script;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.io.FileUtils;
 
 import com.rits.cloning.Cloner;
 
@@ -1493,38 +1494,54 @@ implements Serializable, Cloneable
 		}
 	}
 
-	public String kill()
+	public void kill()
 	{
 		
 		if(this.subprocess != null)
 		{
 			this.subprocess.kill();
 		}
-
-		// array das den aufruf beherbergt
-		ArrayList<String> callToKill = new ArrayList<String>();
-		callToKill.add("cat");
-		callToKill.add(this.getAbspid());
-		callToKill.add("|");
-		callToKill.add("{ read myPid; kill $myPid; }");
 		
-		// log
-		this.log("warn", "killing program that possibly has been launched by this step");
-		this.log("info", "call: " + StringUtils.join(callToKill, " "));
+		java.util.List<String> allLines = null;
 		
-		// erstellen prozessbuilder
-		ProcessBuilder pb = new ProcessBuilder(callToKill);
-
-		// Aufruf taetigen
-		try {
-			final java.lang.Process sysproc = pb.start();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			this.log("error", e.getMessage());
-			e.printStackTrace();
+		try
+		{
+			allLines = org.apache.commons.io.FileUtils.readLines(new java.io.File(this.getAbspid()));
+		}
+		catch (IOException e1)
+		{
+			this.log("error", e1.getMessage());
+			e1.printStackTrace();
 		}
 		
-		return StringUtils.join(callToKill, " ");
+		// array das den aufruf beherbergt
+		if(allLines != null && allLines.size() > 0)
+		{
+			ArrayList<String> callToKill = new ArrayList<String>();
+			callToKill.add("kill");
+			callToKill.add(allLines.get(0));
+			
+			// log
+			this.log("info", "killing program that possibly has been launched by this step");
+			this.log("info", "call: " + StringUtils.join(callToKill, " "));
+		
+			// erstellen prozessbuilder
+			ProcessBuilder pb = new ProcessBuilder(callToKill);
+
+			// Aufruf taetigen
+			try {
+				final java.lang.Process sysproc = pb.start();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				this.log("error", e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			this.log("error", "tried to kill, but file does not have the expected content: "+this.getAbspid());
+		}
+//		return StringUtils.join(callToKill, " ");
 	}
 
 //	/**
