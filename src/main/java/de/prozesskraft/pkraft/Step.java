@@ -1494,7 +1494,7 @@ implements Serializable, Cloneable
 		}
 	}
 
-	public void kill()
+	public String kill()
 	{
 		
 		if(this.subprocess != null)
@@ -1536,12 +1536,13 @@ implements Serializable, Cloneable
 				this.log("error", e.getMessage());
 				e.printStackTrace();
 			}
+			return StringUtils.join(callToKill, " ");
 		}
 		else
 		{
 			this.log("error", "tried to kill, but file does not have the expected content: "+this.getAbspid());
 		}
-//		return StringUtils.join(callToKill, " ");
+		return "kill failed";
 	}
 
 //	/**
