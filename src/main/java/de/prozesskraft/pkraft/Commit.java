@@ -1121,6 +1121,7 @@ implements Serializable
 
 		// ueber den filenamen feststellen welche extraktionsmethode angewendet werden soll
 		// methode 1)
+		// es wird jede zeile als variable extrahiert (key=value)
 		if(fileToExtractFrom.getName().matches("^.*variables$"))
 		{
 			BufferedReader in = null;
@@ -1190,6 +1191,7 @@ implements Serializable
 
 		}
 		// methode 2)
+		// es wird der gesamte inhalt als variable extrahiert der teil nach dem punkt ist <key>, der gesamte inhalt ist <value>
 		else if(fileToExtractFrom.getName().matches("^variable\\..+$"))
 		{
 			// den key aus dem filenamen extrahieren (variable.<key>)
@@ -1257,6 +1259,9 @@ implements Serializable
 			}
 		}
 		// methode 3)
+		// es wird der gesamte inhalt als variable extrahiert der gesamte inhalt ist <value>
+		// untermethode wird von attribut "content" gesteuert
+		// ist content = "grep:<pattern>" wird der inhalt des ersten klammerpaares als value extrahiert
 		else
 //			else if(fileToExtractFrom.getName().matches("^.+$"))
 		{
@@ -1274,14 +1279,52 @@ implements Serializable
 				// den glob nullen
 //				master.setGlob(null);
 				
-				// den gesamten inhalt so wier ist einlesen und nur das letzte \n entfernen
+				// den gesamten inhalt so wie er ist einlesen und nur das letzte \n entfernen
 				while ((line = in.readLine()) != null)
 				{
 					value += line;
 				}
 				
-				// entfernen aller newlines
-				value = value.replace("(\\r|\\n)", "");
+				// gibt es eine bestimmte content-anweisung?
+				// dann soll das value mit dieser content-anweisung ueberschrieben werden
+				if(master.getContent() != null)
+				{
+					
+					// die methode 'grep'
+					if(master.getContent().matches("^grep:.+$"))
+					{
+						// die regex aus dem content attribut extrahieren
+						Pattern p = Pattern.compile("^grep:(.+)$", Pattern.CASE_INSENSITIVE);
+						Matcher m = p.matcher(master.getContent());
+						
+						String grep = null;
+	
+						if(m.find())
+						{
+							grep = m.group(1);
+						}
+	
+						// wenn etwas als regex festgestellt wurde
+						// die regex escapen und seinerseits auf den gesamten fileinhalt (derzeit value) anwenden
+						if(grep != null)
+						{
+							Pattern p2 = Pattern.compile(Pattern.quote(grep));
+							Matcher m2 = p2.matcher(value);
+							
+							String greppedValue = "";
+							if(m.find())
+							{
+								// der inhalt des ersten klammerpaares 
+								greppedValue = m.group(1);
+							}
+							// ...ist das gewuenschte value
+							value = greppedValue;
+						}
+					}
+				}
+
+//				// entfernen aller newlines
+//				value = value.replace("(\\r|\\n)", "");
 
 				// den master clonen
 				Variable newVariable = master.clone();

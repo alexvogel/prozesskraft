@@ -1496,12 +1496,50 @@ implements Serializable, Cloneable
 
 	public String kill()
 	{
+		String returnStringInfoAboutKills = "";
 		
+		// wenn es einen subprocess gibt, soll auf dieser gekillt werden
 		if(this.subprocess != null)
 		{
 			this.subprocess.kill();
 		}
+
+		// ein kill wird durch 2 aufeinanderfolgende kills ausgefuehrt
+
+		// KILL 1
+		// wenn es ein explizites killcommand im work-object gibt, soll dieses ausgefuehrt werden
+		// dies wird benoetigt um ein kill programm zu triggern, dass bsplw. eine analyse auf dem hpc abschiesst
+		// <killcommand> <killpid>
+		if(this.getWork().getKillcommand() != null)
+		{
+			for(Variable actKillPid : this.getVariable("killpid"))
+			{
+				ArrayList<String> callToKill = new ArrayList<String>();
+				callToKill.add(this.getWork().getKillcommand());
+				callToKill.add(actKillPid.getValue());
+
+				// log
+				this.log("info", "call killcommand: " + StringUtils.join(callToKill, " "));
+				returnStringInfoAboutKills += ", " + StringUtils.join(callToKill, " ");
+				
+				// erstellen prozessbuilder
+				ProcessBuilder pb = new ProcessBuilder(callToKill);
+
+				// Aufruf taetigen
+				try {
+					final java.lang.Process sysproc = pb.start();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					this.log("error", e.getMessage());
+					e.printStackTrace();
+				}
+				
+			}
+		}
 		
+		// KILL 2
+		// das gestartete programm killen
+		// die pid des gestarteten programms feststellen (inhalt des .pid-files)
 		java.util.List<String> allLines = null;
 		
 		try
@@ -1514,6 +1552,7 @@ implements Serializable, Cloneable
 			e1.printStackTrace();
 		}
 		
+		// kill aufruf erzeugen (kill <pid>)
 		// array das den aufruf beherbergt
 		if(allLines != null && allLines.size() > 0)
 		{
@@ -1522,8 +1561,9 @@ implements Serializable, Cloneable
 			callToKill.add(allLines.get(0));
 			
 			// log
-			this.log("info", "killing program that possibly has been launched by this step");
+			this.log("info", "killing program that has been launched by this step");
 			this.log("info", "call: " + StringUtils.join(callToKill, " "));
+			returnStringInfoAboutKills += ", " + StringUtils.join(callToKill, " ");
 		
 			// erstellen prozessbuilder
 			ProcessBuilder pb = new ProcessBuilder(callToKill);
@@ -1536,13 +1576,15 @@ implements Serializable, Cloneable
 				this.log("error", e.getMessage());
 				e.printStackTrace();
 			}
-			return StringUtils.join(callToKill, " ");
+			return returnStringInfoAboutKills;
 		}
 		else
 		{
 			this.log("error", "tried to kill, but file does not have the expected content: "+this.getAbspid());
+			returnStringInfoAboutKills += ", kill failed";
+			return returnStringInfoAboutKills;
 		}
-		return "kill failed";
+
 	}
 
 //	/**

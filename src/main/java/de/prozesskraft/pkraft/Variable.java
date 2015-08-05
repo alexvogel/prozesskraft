@@ -20,6 +20,7 @@ implements Serializable
 	private String value = null;
 	private String description = "";
 	private String glob = null;
+	private String content = null; // beim extrahieren aus einem commit, wird diese methodik angewand um den value der variable festzulegen
 	private ArrayList<String> choice = new ArrayList<String>();
 	private ArrayList<Test> test = new ArrayList<Test>();
 	private int minoccur = 0;
@@ -368,6 +369,20 @@ implements Serializable
 	 */
 	public void setSubprocesskey(String subprocesskey) {
 		this.subprocesskey = subprocesskey;
+	}
+
+	/**
+	 * @return the content
+	 */
+	public String getContent() {
+		return content;
+	}
+
+	/**
+	 * @param content the content to set
+	 */
+	public void setContent(String content) {
+		this.content = content;
 	}
 
 

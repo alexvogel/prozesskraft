@@ -24,7 +24,8 @@ implements Serializable
 	private String logfile = "";
 	private ArrayList<Callitem> callitem = new ArrayList<Callitem>();
 	private ArrayList<Exit> exit = new ArrayList<Exit>();
-//	private String loop = null; // kein loop in element 'work' -> dazu ist das element 'step' da!!
+	private String killcommand = null; // dieser aufruf wird bei einem kill zusaetzlich aufgerufen - gefolgt von der variable 'killpid'
+	//	private String loop = null; // kein loop in element 'work' -> dazu ist das element 'step' da!!
 
 	private ArrayList<Log> log = new ArrayList<Log>();
 
@@ -619,5 +620,19 @@ implements Serializable
 	 */
 	public void setMaxrun(Integer maxrun) {
 		this.maxrun = maxrun;
+	}
+
+	/**
+	 * @return the killcommand
+	 */
+	public String getKillcommand() {
+		return killcommand;
+	}
+
+	/**
+	 * @param killcommand the killcommand to set
+	 */
+	public void setKillcommand(String killcommand) {
+		this.killcommand = killcommand;
 	}
 }
