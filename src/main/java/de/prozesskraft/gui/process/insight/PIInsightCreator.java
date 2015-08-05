@@ -443,8 +443,10 @@ public class PIInsightCreator
 		// ok == 32
 		if (returnCode == 32)
 		{
-			// den step resetten und alle von diesem step abhaengigen steps
-			process.kill();
+			String killString = process.kill();
+			// den prozess killen und alle von diesem step abhaengigen steps
+			father.log("info", killString);
+
 		}
 		messageShell.dispose();
 	}
