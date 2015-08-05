@@ -170,12 +170,15 @@ implements Serializable
 	/**
 	 * kills all steps
 	 */
-	public void kill()
+	public String kill()
 	{
+		String returnStringInfoAboutKills = "";
 		for(Step actStep : this.getStep())
 		{
-			actStep.kill();
+			returnStringInfoAboutKills += actStep.kill();
 		}
+		
+		return returnStringInfoAboutKills;
 	}
 	
 	/**
