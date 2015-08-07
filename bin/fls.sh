@@ -11,7 +11,7 @@ CLASS=com.license4j.floatinglicenseserver.server.FloatingLicenseServerDaemon
 PID=/tmp/fls.pid
 
 BASEDIR=$(dirname $0)
-JAVA=$BASEDIR/../java/latest
+JAVAHOME=$BASEDIR/../java/latest
 
 # AVOGE START
 do_exec() {
@@ -23,7 +23,7 @@ do_exec() {
 #	fi
 # es soll immer die 32 bit fls gestartet werden
 # die bmw-maschine lpcagw13.muc liefert einen getconf = 64, aber hat nur die 32-Bit java version installiert...
-./jsvc32 -server -home $JAVA -cp $CLASS_PATH -pidfile $PID $1 $CLASS
+./jsvc32 -server -home $JAVAHOME -cp $CLASS_PATH -pidfile $PID $1 $CLASS
 }
 # AVOGE END
 
