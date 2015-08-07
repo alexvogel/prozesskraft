@@ -93,9 +93,19 @@ implements Serializable
 		this.file.add(file);
 	}
 
+	public void removeFile(File file)
+	{
+		this.file.remove(file);
+	}
+
 	public void addVariable(Variable variable)
 	{
 		this.variable.add(variable);
+	}
+	
+	public void removeVariable(Variable variable)
+	{
+		this.variable.remove(variable);
 	}
 	
 	/**
