@@ -117,12 +117,16 @@ public class CommitCreator
 		step.getVariable().clear();
 		step.getFile().clear();
 		step.log("debug", "CommitCreator: work on all commits");
-		step.commit();
+
 		for (CommitGui actualCommitGui : commitGui)
 		{
 			actualCommitGui.commit(step);
 		}
 		
+		// die commits durchfuehren
+		step.log("debug", "performing commits");
+		step.commit();
+
 		// alle files/variablen aller commits des aktuellen steps sollen auf 'finished' gesetzt werden
 
 		for(Commit actCommit : step.getCommit())
