@@ -189,6 +189,13 @@ public class VariableGui
 		{
 			actualVariableoccurGui.commit(commit);
 		}
+
+		// entfernen der urspruenglichen variable (die aus dem process.xml)
+		// sonst wird diese auch committed -> das fuehrt zu doppelten Eintraegen und Fehlern im Prozessablauf
+//		if(!variableoccurGui.isEmpty())
+//		{
+			commit.removeVariable(variable);
+//		}
 	}
 
 	/**

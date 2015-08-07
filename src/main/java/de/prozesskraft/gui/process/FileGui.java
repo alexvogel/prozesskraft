@@ -173,6 +173,14 @@ public class FileGui
 		{
 			actualFileoccurGui.commit(commit);
 		}
+		
+		// entfernen der urspruenglichen file (die aus dem process.xml)
+		// sonst wird diese auch committed -> das fuehrt zu doppelten Eintraegen und Fehlern im Prozessablauf
+//		if(!variableoccurGui.isEmpty())
+//		{
+			commit.removeFile(file);
+//		}
+
 	}
 	
 	/**
