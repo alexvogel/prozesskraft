@@ -95,7 +95,17 @@ implements Serializable
 
 	public void removeFile(File file)
 	{
-		this.file.remove(file);
+		file.setParent(null);
+
+		boolean erfolgRemoveFile = this.file.remove(file);
+		if(erfolgRemoveFile)
+		{
+			this.log("debug", "file removed from commit");
+		}
+		else
+		{
+			this.log("debug", "file to remove does not exist in commit");
+		}
 	}
 
 	public void addVariable(Variable variable)
@@ -105,7 +115,17 @@ implements Serializable
 	
 	public void removeVariable(Variable variable)
 	{
-		this.variable.remove(variable);
+		variable.setParent(null);
+		
+		boolean erfolgRemoveVariable = this.variable.remove(variable);
+		if(erfolgRemoveVariable)
+		{
+			this.log("debug", "variable removed from commit");
+		}
+		else
+		{
+			this.log("debug", "variable to remove does not exist in commit");
+		}
 	}
 	
 	/**
