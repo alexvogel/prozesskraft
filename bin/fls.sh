@@ -11,7 +11,7 @@ CLASS=com.license4j.floatinglicenseserver.server.FloatingLicenseServerDaemon
 PID=/tmp/fls.pid
 
 BASEDIR=$(dirname $0)
-JAVA=$BASEDIR/../java/latest
+JAVA=$BASEDIR/../java/latest/bin/java
 
 # AVOGE START
 do_exec() {
