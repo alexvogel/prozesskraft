@@ -664,6 +664,10 @@ if ($error_anzahl + $error_patternchecks)
 	 				}
 				}
 			}
+			elsif(@statPdf)
+			{
+				&logit("info", "process.pdf found. pdf is younger than the model. doing nothing");
+			}
 			else
 			{
 				&logit("info", "no process.pdf found");
