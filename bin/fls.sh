@@ -10,6 +10,9 @@ CLASS_PATH=FloatingLicenseServer.jar
 CLASS=com.license4j.floatinglicenseserver.server.FloatingLicenseServerDaemon
 PID=/tmp/fls.pid
 
+BASEDIR=$(dirname $0)
+JAVA=$BASEDIR/../java/latest
+
 # AVOGE START
 do_exec() {
 #	if [ `getconf LONG_BIT` == "32" ]
