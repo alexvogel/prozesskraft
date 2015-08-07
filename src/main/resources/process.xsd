@@ -126,7 +126,7 @@
 			type="xs:string" />
 		<xs:attribute name="value" use="optional" type="xs:string" />
 		<xs:attribute name="glob" type="xs:string" use="optional" />
-		<xs:attribute name="content" use="optional" type="xs:string"/>
+		<xs:attribute name="extract" use="optional" type="xs:string"/>
 		<xs:attribute name="maxoccur" type="xs:integer" use="optional" />
 		<xs:attribute name="minoccur" type="xs:integer" use="optional" />
 		<xs:attribute name="type" type="xs:string" use="optional" />

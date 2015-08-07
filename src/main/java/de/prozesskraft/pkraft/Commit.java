@@ -1285,17 +1285,17 @@ implements Serializable
 					value += line;
 				}
 				
-				// gibt es eine bestimmte content-anweisung?
+				// gibt es eine bestimmte extract-anweisung?
 				// dann soll das value mit dieser content-anweisung ueberschrieben werden
-				if(master.getContent() != null)
+				if(master.getExtract() != null)
 				{
 					
 					// die methode 'grep'
-					if(master.getContent().matches("^grep:.+$"))
+					if(master.getExtract().matches("^grep:.+$"))
 					{
 						// die regex aus dem content attribut extrahieren
 						Pattern p = Pattern.compile("^grep:(.+)$", Pattern.CASE_INSENSITIVE);
-						Matcher m = p.matcher(master.getContent());
+						Matcher m = p.matcher(master.getExtract());
 						
 						String grep = null;
 	

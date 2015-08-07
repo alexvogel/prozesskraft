@@ -20,7 +20,7 @@ implements Serializable
 	private String value = null;
 	private String description = "";
 	private String glob = null;
-	private String content = null; // beim extrahieren aus einem commit, wird diese methodik angewand um den value der variable festzulegen
+	private String extract = null; // beim extrahieren aus einem commit, wird diese methodik angewand um den value der variable festzulegen
 	private ArrayList<String> choice = new ArrayList<String>();
 	private ArrayList<Test> test = new ArrayList<Test>();
 	private int minoccur = 0;
@@ -372,17 +372,17 @@ implements Serializable
 	}
 
 	/**
-	 * @return the content
+	 * @return the extract
 	 */
-	public String getContent() {
-		return content;
+	public String getExtract() {
+		return extract;
 	}
 
 	/**
-	 * @param content the content to set
+	 * @param extact the extract to set
 	 */
-	public void setContent(String content) {
-		this.content = content;
+	public void setExtract(String extract) {
+		this.extract = extract;
 	}
 
 
