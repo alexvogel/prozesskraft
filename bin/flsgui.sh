@@ -7,5 +7,5 @@
 
 #$JAVA/bin/java -jar FloatingLicenseServerAdmin.jar
 BASEDIR=$(dirname $0)
-JAVA=$BASEDIR/../java/latest/bin/java
+JAVA=$BASEDIR/../java/latest
 $JAVA -jar FloatingLicenseServerAdmin.jar

@@ -11,7 +11,7 @@
 #
 #JAVA=/usr/local/jdk1.7.0_21
 BASEDIR=$(dirname $0)
-JAVA=$BASEDIR/../java/latest/bin/java
+JAVA=$BASEDIR/../java/latest
 #
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
