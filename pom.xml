@@ -4,7 +4,7 @@
 	<groupId>de.prozesskraft.pramp.parts</groupId>
 	<artifactId>pramp-gui</artifactId>
 	<packaging>jar</packaging>
-	<version>0.6.0</version>
+	<version>0.7.0</version>
 	<name>pramp-gui</name>
 	<url>http://maven.apache.org</url>
 	<build>
@@ -184,7 +184,7 @@
  		<dependency>
 			<groupId>de.prozesskraft.pkraft</groupId>
 			<artifactId>pkraft-core</artifactId>
-			<version>0.6.0</version>
+			<version>0.7.0</version>
 		</dependency>
 	    <dependency>
 			<groupId>net.sf.dozer</groupId>
@@ -280,7 +280,7 @@
 		<dependency>
 			<groupId>de.prozesskraft.commons</groupId>
 			<artifactId>avoge-commons</artifactId>
-			<version>0.2.0</version>
+			<version>0.3.0</version>
 		</dependency>
 	</dependencies>
 </project>
