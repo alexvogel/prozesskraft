@@ -4,7 +4,7 @@
 	<groupId>de.prozesskraft.pkraft</groupId>
 	<artifactId>pkraft-createdoc</artifactId>
 	<packaging>jar</packaging>
-	<version>0.6.0</version>
+	<version>0.7.0</version>
 	<name>pkraft-createdoc</name>
 	<url>http://maven.apache.org</url>
 	<build>
@@ -131,22 +131,22 @@
 		<dependency>
 			<groupId>de.prozesskraft.pkraft</groupId>
 			<artifactId>pkraft-core</artifactId>
-			<version>0.6.0</version>
+			<version>0.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>de.prozesskraft.reporter</groupId>
 			<artifactId>reporter-core</artifactId>
-			<version>0.2.0</version>
+			<version>0.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>de.prozesskraft.pmodel</groupId>
 			<artifactId>pmodel-gui</artifactId>
-			<version>0.6.0</version>
+			<version>0.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>de.prozesskraft.commons</groupId>
 			<artifactId>avoge-commons</artifactId>
-			<version>0.2.0</version>
+			<version>0.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
