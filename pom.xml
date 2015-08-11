@@ -4,7 +4,7 @@
 	<groupId>de.prozesskraft.pradar</groupId>
 	<artifactId>pradar-list</artifactId>
 	<packaging>jar</packaging>
-	<version>0.6.0</version>
+	<version>0.7.0</version>
 	<name>pradar-list</name>
 	<url>http://maven.apache.org</url>
 	<build>
@@ -126,7 +126,7 @@
 		<dependency>
 			<groupId>de.prozesskraft.commons</groupId>
 			<artifactId>avoge-commons</artifactId>
-			<version>0.2.0</version>
+			<version>0.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>
@@ -136,7 +136,7 @@
 		<dependency>
 			<groupId>de.prozesskraft.pradar</groupId>
 			<artifactId>pradar-core</artifactId>
-			<version>0.6.0</version>
+			<version>0.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
