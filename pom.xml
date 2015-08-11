@@ -4,7 +4,7 @@
 	<groupId>de.prozesskraft.codegen</groupId>
 	<artifactId>codegen-core</artifactId>
 	<packaging>jar</packaging>
-	<version>0.0.3</version>
+	<version>0.0.4</version>
 	<name>codegen-core</name>
 	<url>http://maven.apache.org</url>
 	<build>
