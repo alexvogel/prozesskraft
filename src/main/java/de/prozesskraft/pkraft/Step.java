@@ -796,6 +796,7 @@ implements Serializable, Cloneable
 		// wenn alle fromsteps den status 'finished' haben wird evtl. zuerst 'gefanned'
 		else if (this.getStatus().equals("initialized") && this.loop!=null && !(this.loop.equals("")))
 		{
+			log("debug", "there is a loop -> fanning multistep");
 			this.fan();
 		}
 
@@ -803,10 +804,12 @@ implements Serializable, Cloneable
 		{
 			if(this.getType().equals("automatic") && (this.getWork() != null))
 			{
+				log("debug", "step is automatic -> starting work");
 				this.work(aufrufProcessSyscall);
 			}
 			else if(this.getType().equals("process") && (this.getSubprocess() != null))
 			{
+				log("debug", "step is a process -> calling subprocess");
 				this.subprocess(aufrufProcessSyscall, aufrufProcessStartinstance, domainInstallationDirectory);
 			}
 		}
