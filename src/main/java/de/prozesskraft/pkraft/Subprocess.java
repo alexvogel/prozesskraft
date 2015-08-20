@@ -157,13 +157,16 @@ implements Serializable
 			}
 
 			// aus der hinterlegten Definition einen Prozess erzeugen
+			log("info", "committing the rootStep of subprocess...");
 			Process newProcess = this.genProcess(domainInstallationDirectory);
 			
 			// die id des Prozesses als parentid des subprocesses setzen
+			log("info", "setting the parentid of subprocess...");
 			newProcess.setParentid(this.getParent().getParent().getId());
 			
 			// die commits durchfuehren. erst jetzt werden die files in das stepeigene verzeichnis kopiert und die
 			// entsprechenden pfadangaben im file-objekt angepasst
+			log("info", "committing the rootStep of subprocess...");
 			newProcess.getRootStep().commit();
 			
 			// und ins step-verzeichnis das binaere file schreiben
@@ -171,6 +174,7 @@ implements Serializable
 			newProcess.setOutfilebinary(processInstance);
 			newProcess.setInfilebinary(processInstance);
 
+			log("info", "writing the binary-instance-file of subprocess...");
 			newProcess.writeBinary();
 			
 			// und das process object in subprocess ablegen
@@ -365,7 +369,7 @@ implements Serializable
 			return null;
 		}
 		
-		log("info", "creating process");
+		log("debug", "creating process");
 		// einen neuen Process erstellen und den rootStep aus subprocess ruebernehmen
 		de.prozesskraft.pkraft.Process newProcess = new Process();
 		try
@@ -390,19 +394,24 @@ implements Serializable
 		}
 
 		// dem root-Step des neuenProcesses, die listen aus parent-Step des Parent-Prozesses uebergeben (damit resolving mit platzhaltern funktioniert)
+		log("debug", "comitting all lists of step to the rootStep of subprocess");
 		newProcess2.getRootStep().setList(this.getParent().getList());
 		
 		// die loopvar des parentsteps auf den rootStep des neuenProzesses ueberschreiben, damit das resolving funktioniert
+		log("debug", "mapping the loopVar of step to the rootStep of subprocess");
 		newProcess2.getRootStep().setLoopvar(this.getParent().getLoopvar());
 		
 		// alle commits aus subprocess in die des neuenProzesses ueberschreiben inkl. aller noch nicht resolvter eintraege
+		log("debug", "setting all commits of step to the rootStep of subprocess");
 		newProcess2.getRootStep().setCommit(this.getStep().getCommit());
 		newProcess2.getRootStep().affiliate();
 		
 		// das Basedirectory des neuen prozesses soll das stepdir des parentsteps sein
+		log("debug", "setting baseDir of subprocess to the same value like stepDir of step");
 		newProcess2.setBaseDir(this.getParent().getAbsdir());
 		
 		// der neue Process ist ein Subprocess (das hat auswirkungen auf die pfade fuer die daten
+		log("debug", "setting a flag to indicate that the subprocess is a subprocess");
 		newProcess2.setSubprocess(true);
 		
 		// dem root-Step des neuenProzesses alle commits ausfuehren
