@@ -1320,9 +1320,11 @@ implements Serializable
 				if(master.getExtract() != null)
 				{
 					
+					log("debug", "reducing the value because of the extract-element "+master.getExtract());
 					// die methode 'grep'
 					if(master.getExtract().matches("^grep:.+$"))
 					{
+						log("debug", "subfunction is grep");
 						// die regex aus dem content attribut extrahieren
 						Pattern p = Pattern.compile("^grep:(.+)$", Pattern.CASE_INSENSITIVE);
 						Matcher m = p.matcher(master.getExtract());
@@ -1331,6 +1333,7 @@ implements Serializable
 	
 						if(m.find())
 						{
+							log("debug", "regex for grep is: "+m.group(1));
 							grep = m.group(1);
 						}
 	
@@ -1338,6 +1341,7 @@ implements Serializable
 						// die regex escapen und seinerseits auf den gesamten fileinhalt (derzeit value) anwenden
 						if(grep != null)
 						{
+							log("debug", "escaped regex (which is actually used) for grep is: "+Pattern.quote(grep));
 							Pattern p2 = Pattern.compile(Pattern.quote(grep));
 							Matcher m2 = p2.matcher(value);
 							
@@ -1345,11 +1349,18 @@ implements Serializable
 							if(m.find())
 							{
 								// der inhalt des ersten klammerpaares 
+								log("debug", "the extracted (grepped) value is: "+m.group(1));
 								greppedValue = m.group(1);
 							}
 							// ...ist das gewuenschte value
 							value = greppedValue;
 						}
+					}
+					// der eintrag im extract-element ist unbekannt
+					else
+					{
+						log("error", "no reduction of the value because of the UNKNOWN extract-element "+master.getExtract());
+						master.setStatus("error");
 					}
 				}
 
