@@ -1344,7 +1344,7 @@ implements Serializable
 							log("debug", "escaped regex (which is actually used) for grep is: "+Pattern.quote(grep));
 							Pattern p2 = Pattern.compile(Pattern.quote(grep));
 							Matcher m2 = p2.matcher(value);
-							
+
 							String greppedValue = "";
 							if(m.find())
 							{
