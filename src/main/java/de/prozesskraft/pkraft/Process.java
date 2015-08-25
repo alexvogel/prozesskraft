@@ -72,7 +72,8 @@ implements Serializable
 	private String name = new String();
 	private String description = new String();
 	private String path = new String();
-	private Integer amountSimoultaneousStep = null;
+	private Integer maxSimultaneousSteps = null;
+	private Integer stepStartDelayMinutes = null;
 	private String initCommitFile = new String();
 	private String initCommitVariable = new String();
 	private String architectName = new String();
@@ -115,6 +116,8 @@ implements Serializable
 	
 	private boolean subprocess = false;
 	private String parentid = "0";
+	
+	private Long timeOfLastStepStart = 0L;
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -1725,6 +1728,24 @@ implements Serializable
 	}
 	
 	/**
+	 * liefert alle steps, die momentan im status 'working' sind
+	 * @param 
+	 * @return ArrayList<Step>
+	 */
+	public ArrayList<Step> getStepWorking()
+	{
+		ArrayList<Step> workingSteps = new ArrayList<Step>();
+		for(Step actStep : this.getStep())
+		{
+			if(actStep.getStatus().equals("working"))
+			{
+				workingSteps.add(actStep);
+			}
+		}
+		return workingSteps;
+	}
+	
+	/**
 	 * liefert alle steps, die fehler enthalten,, zurueck
 	 * @param 
 	 * @return ArrayList<Step>
@@ -2351,20 +2372,6 @@ implements Serializable
 	}
 
 	/**
-	 * @return the amountSimoultaneousStep
-	 */
-	public Integer getAmountSimoultaneousStep() {
-		return amountSimoultaneousStep;
-	}
-
-	/**
-	 * @param amountSimoultaneousStep the amountSimoultaneousStep to set
-	 */
-	public void setAmountSimoultaneousStep(Integer amountSimoultaneousStep) {
-		this.amountSimoultaneousStep = amountSimoultaneousStep;
-	}
-
-	/**
 	 * @return the parentid
 	 */
 	public String getParentid() {
@@ -2416,6 +2423,48 @@ implements Serializable
 //			}
 		}
 		return id2;
+	}
+
+	/**
+	 * @return the maxSimultaneousSteps
+	 */
+	public Integer getMaxSimultaneousSteps() {
+		return maxSimultaneousSteps;
+	}
+
+	/**
+	 * @param maxSimultaneousSteps the maxSimultaneousSteps to set
+	 */
+	public void setMaxSimultaneousSteps(Integer maxSimultaneousSteps) {
+		this.maxSimultaneousSteps = maxSimultaneousSteps;
+	}
+
+	/**
+	 * @return the stepStartDelayMinutes
+	 */
+	public Integer getStepStartDelayMinutes() {
+		return stepStartDelayMinutes;
+	}
+
+	/**
+	 * @param stepStartDelayMinutes the stepstartDelayMinutes to set
+	 */
+	public void setStepStartDelayMinutes(Integer stepStartDelayMinutes) {
+		this.stepStartDelayMinutes = stepStartDelayMinutes;
+	}
+
+	/**
+	 * @return the timeOfLastStepStart
+	 */
+	public Long getTimeOfLastStepStart() {
+		return timeOfLastStepStart;
+	}
+
+	/**
+	 * @param timeOfLastStepStart the timeOfLastStepStart to set
+	 */
+	public void setTimeOfLastStepStart(Long timeOfLastStepStart) {
+		this.timeOfLastStepStart = timeOfLastStepStart;
 	}
 
 }

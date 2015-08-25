@@ -401,6 +401,10 @@ implements Serializable
 		log("debug", "mapping the loopVar of step to the rootStep of subprocess");
 		newProcess2.getRootStep().setLoopvar(this.getParent().getLoopvar());
 		
+		// den wert simultaneousSteps auf max=1 setzen unabhaengig was im xml definiert ist
+		log("debug", "setting attribute of subprocess maxSimultaneousSteps=1");
+		newProcess2.setMaxSimultaneousSteps(1);
+
 		// alle commits aus subprocess in die des neuenProzesses ueberschreiben inkl. aller noch nicht resolvter eintraege
 		log("debug", "setting all commits of step to the rootStep of subprocess");
 		newProcess2.getRootStep().setCommit(this.getStep().getCommit());
