@@ -18,6 +18,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXhtmlExporter;
@@ -41,6 +42,7 @@ public class Reporter
 	private String odt = null;
 	private String docx = null;
 	private String pptx = null;
+	private String csv = null;
 	private JasperReport jasperReport = null;
 	private OutputStream jasperReportOutputStream = null;
 	private JasperPrint jasperPrint = null;
@@ -237,6 +239,29 @@ public class Reporter
 		pptxExporter.exportReport();
 	}
 	
+	/**
+	 * exports the Report to csv
+	 * @throws JRException
+	 * @throws FileNotFoundException 
+	 */
+	public void exportToCsv() throws JRException, FileNotFoundException
+	{
+		if (csv == null)
+		{
+			if (jasperFilled == null)
+			{
+				this.fillPReport();
+			}
+			csv = this.jasperFilled + ".csv";
+		}
+		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilled));
+		JRCsvExporter csvExporter = new JRCsvExporter();
+		csvExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+		csvExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, csv);
+
+		csvExporter.exportReport();
+	}
+
 	public void setJrxml (String jrxml)
 	{
 		this.jrxml = jrxml;
