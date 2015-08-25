@@ -1341,16 +1341,17 @@ implements Serializable
 						// die regex escapen und seinerseits auf den gesamten fileinhalt (derzeit value) anwenden
 						if(grep != null)
 						{
-							log("debug", "escaped regex (which is actually used) for grep is: "+Pattern.quote(grep));
-							Pattern p2 = Pattern.compile(Pattern.quote(grep));
+//							log("debug", "escaped regex (which is actually used) for grep is: "+Pattern.quote(grep));
+//							Pattern p2 = Pattern.compile(Pattern.quote(grep));
+							Pattern p2 = Pattern.compile(grep);
 							Matcher m2 = p2.matcher(value);
 
 							String greppedValue = "";
-							if(m.find())
+							if(m2.find())
 							{
 								// der inhalt des ersten klammerpaares 
-								log("debug", "the extracted (grepped) value is: "+m.group(1));
-								greppedValue = m.group(1);
+								log("debug", "the extracted (grepped) value is: "+m2.group(1));
+								greppedValue = m2.group(1);
 							}
 							// ...ist das gewuenschte value
 							value = greppedValue;
