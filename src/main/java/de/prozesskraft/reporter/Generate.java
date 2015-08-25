@@ -475,6 +475,14 @@ public class Generate
 		}
 		
 		System.err.println("report generated: " + output);
+		
+		// output der daten als csv
+		try {
+			reporter.exportToCsv();
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private static void exiter()
