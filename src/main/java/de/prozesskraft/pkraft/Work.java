@@ -428,7 +428,6 @@ implements Serializable
 	 */
 	public void doIt(String processSyscall)
 	{
-		this.setStatus("working");
 
 		this.resolve();
 
@@ -480,7 +479,8 @@ implements Serializable
 			// wenn alle voraussetzungen zum starten eines neuen steps erfuellt sind
 			if(schrittStarten)
 			{
-			
+				this.setStatus("working");
+
 				// den aufruf erstellen
 				log("info", "program not lauched yet");
 	
