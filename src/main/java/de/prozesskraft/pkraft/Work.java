@@ -553,14 +553,14 @@ implements Serializable
 					// starten des prozesses
 					java.lang.Process sysproc = pb.start();
 	
-					// den zeitpunkt des starts festhalten
-					this.getParent().getParent().setTimeOfLastStepStart(System.currentTimeMillis());
-					
 	//				alternativer aufruf
 	//				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
 					
 	//				log("info", "call executed. pid="+sysproc.hashCode());
 	
+					// den zeitpunkt des starts festhalten
+					this.getParent().getParent().setTimeOfLastStepStart(System.currentTimeMillis());
+
 					// wait 2 seconds for becoming the pid-file visible
 					Thread.sleep(2000);
 				}
