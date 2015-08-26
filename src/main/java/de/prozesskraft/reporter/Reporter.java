@@ -13,6 +13,8 @@ import java.util.Map;
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JRField;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -78,7 +80,22 @@ public class Reporter
 		{
 //			throw new NullPointerException();
 		}
-		
+	}
+
+	public void printPlaceholder()
+	{
+		System.out.println("to fully fill the template use this call:");
+		System.out.println("reporter generate \\");
+		JRParameter[] parameter = this.jasperReport.getParameters();
+		for(JRParameter actParameter : parameter)
+		{
+			System.out.println("-parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\");
+		}
+		JRField[] field = this.jasperReport.getFields();
+		for(JRField actField : field)
+		{
+			System.out.println("-field " + actField.getName() + "=" + actField.getValueClassName() + " \\");
+		}
 	}
 	
 	public void setParameter(String paramKey, Object paramValue)
