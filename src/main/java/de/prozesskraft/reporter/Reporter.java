@@ -19,7 +19,9 @@ import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.base.JRBaseReport;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
@@ -84,17 +86,27 @@ public class Reporter
 
 	public void printPlaceholder()
 	{
-		System.out.println("to fully fill the template use this call:");
-		System.out.println("reporter generate \\");
-		JRParameter[] parameter = this.jasperReport.getParameters();
-		for(JRParameter actParameter : parameter)
+		if (this.jrxml != null)
 		{
-			System.out.println("-parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\");
-		}
-		JRField[] field = this.jasperReport.getFields();
-		for(JRField actField : field)
-		{
-			System.out.println("-field " + actField.getName() + "=" + actField.getValueClassName() + " \\");
+			try {
+				this.jasperReport = JasperCompileManager.compileReport(jrxml);
+			} catch (JRException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			System.out.println("to fully fill the template use this call:");
+			System.out.println("reporter generate \\");
+			JRParameter[] parameter = this.jasperReport.getParameters();
+			for(JRParameter actParameter : parameter)
+			{
+				System.out.println("-parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\");
+			}
+			JRField[] field = this.jasperReport.getFields();
+			for(JRField actField : field)
+			{
+				System.out.println("-field " + actField.getName() + "=" + actField.getValueClassName() + " \\");
+			}
 		}
 	}
 	
