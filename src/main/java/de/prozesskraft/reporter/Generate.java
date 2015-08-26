@@ -211,6 +211,21 @@ public class Generate
 			template = commandline.getOptionValue("template");
 		}
 
+		// wenn -print, dann nur die im template vorhandenen platzhalter ausgeben
+		if ( ( commandline.hasOption("print")) )
+		{
+			Reporter reporter = new Reporter();
+			
+			// set template
+			reporter.setJrxml(template);
+			
+			// auf stdout ausgeben
+			reporter.printPlaceholder();
+			
+			// beenden
+			System.exit(0);
+		}
+		
 		if ( !( commandline.hasOption("format")) )
 		{
 			System.err.println("setting default for -format=pdf");
@@ -356,21 +371,6 @@ public class Generate
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
-		// wenn -print, dann nur die im template vorhandenen platzhalter ausgeben
-		if ( ( commandline.hasOption("print")) )
-		{
-			Reporter reporter = new Reporter();
-			
-			// set template
-			reporter.setJrxml(template);
-			
-			// auf stdout ausgeben
-			reporter.printPlaceholder();
-			
-			// beenden
-			System.exit(0);
-		}
-		
 		
 		long jetztMillis = System.currentTimeMillis();
 		String randomDir = "/tmp/"+jetztMillis+"_reporterGenerate";
