@@ -100,12 +100,25 @@ public class Reporter
 			JRParameter[] parameter = this.jasperReport.getParameters();
 			for(JRParameter actParameter : parameter)
 			{
-				System.out.println("-parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\");
+				// wenn parameter mit mit 2 grossbuchstaben anfaengt, soll er auf stderr ausgegeben werden
+				if(actParameter.getName().matches("^[A-Z]{2}.*$"))
+				{
+					System.err.println("# skipping -parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\");
+				}
+				else
+				{
+					System.out.println("-parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\");
+				}
 			}
-			JRField[] field = this.jasperReport.getFields();
-			for(JRField actField : field)
+			
+			// gibt es fields? dann auch ausgeben
+			if(this.jasperReport.getFields() != null)
 			{
-				System.out.println("-field " + actField.getName() + "=" + actField.getValueClassName() + " \\");
+				JRField[] field = this.jasperReport.getFields();
+				for(JRField actField : field)
+				{
+					System.out.println("-field " + actField.getName() + "=" + actField.getValueClassName() + " \\");
+				}
 			}
 		}
 	}
