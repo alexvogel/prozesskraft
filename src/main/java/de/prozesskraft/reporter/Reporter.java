@@ -53,7 +53,9 @@ public class Reporter
 	private Map<String,Object> parameter = new HashMap<String,Object>();
 	private List<Map<String,?>> field = new ArrayList<Map<String, ?>> ();
 //	private ArrayList<HashMap> field = new ArrayList<HashMap>();
-	private JRMapCollectionDataSource dataSource;
+//	private JRMapCollectionDataSource dataSource;
+
+	private Map<String,Reporter> subreports = new HashMap<String,Reporter>();
 
 	/*----------------------------
 	  constructors
@@ -76,6 +78,9 @@ public class Reporter
 			{
 				this.jasper = this.jrxml + ".jasper";
 			}
+			// in das object compilen
+			this.jasperReport = JasperCompileManager.compileReport(jrxml);
+			// in das jasper file compilen
 			JasperCompileManager.compileReportToFile(jrxml, jasper);
 		}
 		else
@@ -162,7 +167,7 @@ public class Reporter
 		
 //		System.err.println("Anzahl der zeilen ist: " + field.size());
 		
-		dataSource = new JRMapCollectionDataSource((Collection)field);
+		JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource((Collection)field);
 		
 		JasperFillManager.fillReportToFile(jasper, jasperFilled, parameter, dataSource);
 //		JasperFillManager.fillReportToFile(jasper, jasperFilled, new HashMap(), dataSource);
