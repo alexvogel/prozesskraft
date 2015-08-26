@@ -112,9 +112,10 @@ public class Reporter
 				{
 					System.out.println("-parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\");
 				}
-				System.err.println(zumSchlussAusgeben);
 			}
-			
+
+			System.err.println(zumSchlussAusgeben);
+
 			// gibt es fields? dann auch ausgeben
 			if(this.jasperReport.getFields() != null)
 			{
