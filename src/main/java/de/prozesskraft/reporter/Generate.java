@@ -103,6 +103,7 @@ public class Generate
 		  create boolean options
 		----------------------------*/
 		Option ohelp = new Option("help", "print this message");
+		Option oprint = new Option("print", "prints the layout of given template");
 		Option ov = new Option("v", "prints version and build-date");
 		
 		/*----------------------------
@@ -147,6 +148,7 @@ public class Generate
 		
 		options.addOption( ohelp );
 		options.addOption( ov );
+		options.addOption( oprint );
 		options.addOption( otemplate );
 		options.addOption( oformat );
 		options.addOption( oparameter );
@@ -177,7 +179,7 @@ public class Generate
 		if ( commandline.hasOption("help"))
 		{
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("fingerprint", options);
+			formatter.printHelp("generate", options);
 			System.exit(0);
 		}
 
@@ -354,6 +356,22 @@ public class Generate
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
+		// wenn -print, dann nur die im template vorhandenen platzhalter ausgeben
+		if ( ( commandline.hasOption("print")) )
+		{
+			Reporter reporter = new Reporter();
+			
+			// set template
+			reporter.setJrxml(template);
+			
+			// auf stdout ausgeben
+			reporter.printPlaceholder();
+			
+			// beenden
+			System.exit(0);
+		}
+		
+		
 		long jetztMillis = System.currentTimeMillis();
 		String randomDir = "/tmp/"+jetztMillis+"_reporterGenerate";
 		java.io.File randomDirAsFile = new java.io.File(randomDir);
