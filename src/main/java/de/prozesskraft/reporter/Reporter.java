@@ -95,8 +95,8 @@ public class Reporter
 				e.printStackTrace();
 			}
 
-			System.out.println("to fully fill the template use this call:");
-			System.out.println("reporter generate --template " + this.jrxml + "\\");
+			System.out.println("to fill the template use this example call:");
+			System.out.println("reporter generate --template " + this.jrxml + " \\");
 			JRParameter[] parameter = this.jasperReport.getParameters();
 			
 			String zumSchlussAusgeben = "";
