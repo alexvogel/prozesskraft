@@ -98,17 +98,21 @@ public class Reporter
 			System.out.println("to fully fill the template use this call:");
 			System.out.println("reporter generate \\");
 			JRParameter[] parameter = this.jasperReport.getParameters();
+			
+			String zumSchlussAusgeben = "";
+			
 			for(JRParameter actParameter : parameter)
 			{
 				// wenn parameter mit mit 2 grossbuchstaben anfaengt, soll er auf stderr ausgegeben werden
 				if(actParameter.getName().matches("^[A-Z]{2}.*$"))
 				{
-					System.err.println("# skipping -parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\");
+					zumSchlussAusgeben += "# skipping -parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\\n";
 				}
 				else
 				{
 					System.out.println("-parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\");
 				}
+				System.err.println(zumSchlussAusgeben);
 			}
 			
 			// gibt es fields? dann auch ausgeben
