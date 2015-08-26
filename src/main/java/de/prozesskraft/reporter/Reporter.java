@@ -96,7 +96,7 @@ public class Reporter
 			}
 
 			System.out.println("to fully fill the template use this call:");
-			System.out.println("reporter generate \\");
+			System.out.println("reporter generate --template " + this.jrxml + "\\");
 			JRParameter[] parameter = this.jasperReport.getParameters();
 			
 			String zumSchlussAusgeben = "";
