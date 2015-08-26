@@ -127,6 +127,12 @@ public class Generate
 //				.isRequired()
 				.create("parameter");
 		
+		Option oparameterFile = OptionBuilder.withArgName("FILE")
+				.hasArgs()
+				.withDescription("[optional] file that contains parameter in the form KEY=VALUE. each parameter in a separate line. empty lines or lines starting with # will be ignored. KEY has to be unique within all parameters.")
+//				.isRequired()
+				.create("parameterFile");
+		
 		Option ofield = OptionBuilder.withArgName("COLUMNNAME=VALUE")
 				.hasArgs()
 				.withDescription("[optional] field that should be incorporated into a table of the report. forexample -field result=success. the amount of VALUEs for every COLUMNNAME has to be the same.")
@@ -152,6 +158,7 @@ public class Generate
 		options.addOption( otemplate );
 		options.addOption( oformat );
 		options.addOption( oparameter );
+		options.addOption( oparameterFile );
 		options.addOption( ofield );
 		options.addOption( ooutput );
 		options.addOption( of );
@@ -379,10 +386,26 @@ public class Generate
 		
 		// create object
 		Reporter reporter = new Reporter();
-		
+
 		// set template
 		reporter.setJrxml(template);
-		
+
+		// parameter aus parameterFile einlesen, falls notwendig
+		if ( commandline.hasOption("parameterFile") )
+		{
+			// wenn parameterfile tag==main, dann alle parameter daraus dem hauptreport hinzufuegen
+			
+			// wenn parameterfile tag!=main, dann einen subreport erstellen (tag = name) und diesem alle parameter aus diesem file hinzufuegen
+		}
+
+		// fieldFile muss ein csv file sein
+		if ( commandline.hasOption("fieldFile") )
+		{
+			// wenn fieldFile tag==main, dann dataConnectorCsv erstellen, auf dieses file zeigen lassen und dem hauptreport als dataConnector hinzufuegen 
+
+			// wenn fieldFile tag!=main, dann dataConnectorCsv erstellen, auf dieses file zeigen lassen und dem subreport  (tag = name) als dataConnector hinzufuegen
+		}
+
 		// set jasper auf tmp directory
 		reporter.setJasper(randomDir + "/jasper");
 		// set jasperFilled auf tmp directory
