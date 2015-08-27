@@ -381,7 +381,18 @@ public class Reporter
 				// sind die ersten 2 buchstaben gross geschrieben, handelt es sich um interne parameter => nicht ausgeben
 				if(!actParameterKey.matches("^[A-Z]{2}.*$"))
 				{
-					writer.println(actParameterKey + "=" + this.parameter.get(actParameterKey));
+					writer.println("");
+					// handelt es sich beim value um einen filepfad, der auf ein existierendes file zeigt, dann soll der pfad in "relativ zum template" gewandelt werden
+					java.io.File testObFile = new java.io.File((String) this.parameter.get(actParameterKey));
+					if(testObFile.exists())
+					{
+						writer.println("# " + actParameterKey + "=" + this.parameter.get(actParameterKey));
+						writer.println(actParameterKey + "=" + new java.io.File(this.jrxml).toURI().relativize(testObFile.toURI()).getPath());
+					}
+					else
+					{
+						writer.println(actParameterKey + "=" + this.parameter.get(actParameterKey));
+					}
 				}
 			}
 
