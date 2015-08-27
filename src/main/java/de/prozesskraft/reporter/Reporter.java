@@ -2,7 +2,11 @@ package de.prozesskraft.reporter;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -17,6 +21,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JRPrintPage;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -350,7 +355,7 @@ public class Reporter
 
 		csvExporter.exportReport();
 	}
-
+	
 	/**
 	 * exports JasperReport to csv
 	 * @throws JRException
@@ -363,6 +368,99 @@ public class Reporter
 		csvExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, outPath);
 
 		csvExporter.exportReport();
+	}
+
+	/**
+	 * reads the JasperPrint from a file (filledReport=jasperFilled)
+	 * @throws JRException
+	 * @throws FileNotFoundException 
+	 */
+	public void readJasperFilled(String inPath) throws JRException, FileNotFoundException
+	{
+		try
+		{
+			FileInputStream fs = new FileInputStream(inPath);
+			ObjectInputStream is = new ObjectInputStream(fs);
+			this.jasperPrint = (JasperPrint)is.readObject();
+		}
+		catch (ClassNotFoundException e)
+		{
+			System.err.println(e.toString());
+		}
+		catch (FileNotFoundException e)
+		{
+			System.err.println(e.toString());
+		}
+		catch (IOException e)
+		{
+			System.err.println(e.toString());
+		}
+	}
+
+	/**
+	 * writes the JasperPrint to a file (filledReport=jasperFilled)
+	 * @throws JRException
+	 * @throws FileNotFoundException 
+	 */
+	public void writeJasperFilled(String outPath) throws JRException, FileNotFoundException
+	{
+		try
+		{
+			FileOutputStream fs = new FileOutputStream(outPath);
+			ObjectOutputStream os = new ObjectOutputStream(fs);
+			os.writeObject(this.jasperPrint);
+			os.flush();
+			os.close();
+		}
+		catch (FileNotFoundException e)
+		{
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			System.err.println(e.toString());
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * append a jasperFilled(JasperPrint) from a file (filledReport=jasperFilled) to the existent JasperPrint of this
+	 * @throws JRException
+	 * @throws FileNotFoundException 
+	 */
+	public void appendJasperFilled(String inPath) throws JRException, FileNotFoundException
+	{
+		if(this.jasperPrint == null)
+		{
+			System.err.println("you must not append to an empty report. 1) fill the main report 2) append other filled reports");
+			return;
+		}
+
+		try
+		{
+			FileInputStream fs = new FileInputStream(inPath);
+			ObjectInputStream is = new ObjectInputStream(fs);
+			JasperPrint jasperPrintToAppend = (JasperPrint)is.readObject();
+			
+			// jede einzelne seite dem report anhaengen
+			for(JRPrintPage jasperPrintPage : jasperPrintToAppend.getPages())
+			{
+				this.jasperPrint.addPage(jasperPrintPage);
+			}
+		}
+		catch (ClassNotFoundException e)
+		{
+			System.err.println(e.toString());
+		}
+		catch (FileNotFoundException e)
+		{
+			System.err.println(e.toString());
+		}
+		catch (IOException e)
+		{
+			System.err.println(e.toString());
+		}
 	}
 
 	/**
@@ -388,14 +486,13 @@ public class Reporter
 					if(testObFile.exists())
 					{
 						System.err.println("yes, it is an existent file: "+this.parameter.get(actParameterKey));
-						writer.println("# jrxml=" + this.jrxml);
 						writer.println("# " + actParameterKey + "=" + this.parameter.get(actParameterKey));
-						String relativePath = new java.io.File(this.jrxml).toURI().relativize(testObFile.toURI()).getPath();
-						writer.println(actParameterKey + "=" + new java.io.File(this.jrxml).toURI().relativize(testObFile.toURI()).getPath());
+						String relativePath = new java.io.File(outpath).toURI().relativize(testObFile.toURI()).getPath();
+						writer.println(actParameterKey + "=" + relativePath);
 					}
 					else
 					{
-						System.err.println("no, it is not an existent file: "+this.parameter.get(actParameterKey));
+//						System.err.println("no, it is not an existent file: "+this.parameter.get(actParameterKey));
 						writer.println(actParameterKey + "=" + this.parameter.get(actParameterKey));
 					}
 				}
@@ -415,40 +512,6 @@ public class Reporter
 			e.printStackTrace();
 		}
 	}
-
-//	public void exportFieldsToFile(String path)
-//	{
-//		// wenn keine fields vorhanden => return
-//		if(this.jasperReport.getFields() == null)
-//		{
-//			return;
-//		}
-//
-//		// anlegen printwriter
-//		try
-//		{
-//			PrintWriter writer = new PrintWriter(path, "UTF-8");
-//
-//			// ueber die properties iterieren und im conf-format rausschreiben
-//			for(JRField actField : this.jasperReport.getFields())
-//			{
-//				writer.println(actField.getName() + "=" + actField.toString());
-//			}
-//			
-//			// file schliessen
-//			writer.close();
-//		}
-//		catch (FileNotFoundException e)
-//		{
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		catch (UnsupportedEncodingException e)
-//		{
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
 
 	public void setJrxml (String jrxml)
 	{
