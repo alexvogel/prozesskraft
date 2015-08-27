@@ -388,7 +388,9 @@ public class Reporter
 					if(testObFile.exists())
 					{
 						System.err.println("yes, it is an existent file: "+this.parameter.get(actParameterKey));
+						writer.println("# jrxml=" + this.jrxml);
 						writer.println("# " + actParameterKey + "=" + this.parameter.get(actParameterKey));
+						String relativePath = new java.io.File(this.jrxml).toURI().relativize(testObFile.toURI()).getPath();
 						writer.println(actParameterKey + "=" + new java.io.File(this.jrxml).toURI().relativize(testObFile.toURI()).getPath());
 					}
 					else
