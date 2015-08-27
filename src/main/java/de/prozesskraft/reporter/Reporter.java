@@ -383,8 +383,11 @@ public class Reporter
 				writer.println("Description");
 				writer.println(actParameter.getDescription());
 
-				writer.println(".getDefaultValueExpression().getText()");
-				writer.println(actParameter.getDefaultValueExpression().getText());
+				if(actParameter.getDefaultValueExpression().getText() != null)
+				{
+					writer.println(".getDefaultValueExpression().getText()");
+					writer.println(actParameter.getDefaultValueExpression().getText());
+				}
 				
 				writer.println(".getDefaultValueExpression().getId()");
 				writer.println(actParameter.getDefaultValueExpression().getId());
