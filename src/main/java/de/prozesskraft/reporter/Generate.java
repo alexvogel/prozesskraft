@@ -386,7 +386,8 @@ public class Generate
 		
 		// create object
 		Reporter reporter = new Reporter();
-
+		reporter.setName("main");
+		
 		// set template
 		reporter.setJrxml(template);
 
@@ -405,11 +406,6 @@ public class Generate
 
 			// wenn fieldFile tag!=main, dann dataConnectorCsv erstellen, auf dieses file zeigen lassen und dem subreport  (tag = name) als dataConnector hinzufuegen
 		}
-
-		// set jasper auf tmp directory
-		reporter.setJasper(randomDir + "/jasper");
-		// set jasperFilled auf tmp directory
-		reporter.setJasperFilled(randomDir + "/jasperFilled");
 
 		// compile template
 		try {
@@ -448,9 +444,12 @@ public class Generate
 		}
 		
 		// fill report
-		try {
-			reporter.fillPReport();
-		} catch (JRException e1) {
+		try
+		{
+			reporter.fillReport();
+		}
+		catch (JRException e1)
+		{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -458,9 +457,8 @@ public class Generate
 		// export to output as pdf
 		if(format.equals("pdf"))
 		{
-			reporter.setPdf(output);
 			try {
-				reporter.exportToPdf();
+				reporter.exportToPdf(output);
 			} catch (JRException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -469,9 +467,8 @@ public class Generate
 		// export to output as pptx
 		else if(format.equals("pptx"))
 		{
-			reporter.setPptx(output);
 			try {
-				reporter.exportToPptx();
+				reporter.exportToPptx(output);
 			} catch (JRException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -480,9 +477,8 @@ public class Generate
 		// export to output as docx
 		else if(format.equals("docx"))
 		{
-			reporter.setDocx(output);
 			try {
-				reporter.exportToDocx();
+				reporter.exportToDocx(output);
 			} catch (JRException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -491,9 +487,8 @@ public class Generate
 		// export to output as html
 		else if(format.equals("html"))
 		{
-			reporter.setHtml(output);
 			try {
-				reporter.exportToHtml();
+				reporter.exportToHtml(output);
 			} catch (JRException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -502,9 +497,8 @@ public class Generate
 		// export to output as odt
 		else if(format.equals("odt"))
 		{
-			reporter.setOdt(output);
 			try {
-				reporter.exportToOdt();
+				reporter.exportToOdt(output);
 			} catch (JRException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -517,13 +511,13 @@ public class Generate
 		
 		System.err.println("report generated: " + output);
 		
-		// output der daten als csv
-		try {
-			reporter.exportToCsv();
-		} catch (JRException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// output der parameter im conf-format
+		System.err.println("writing parameter content to file: " + output + ".parameter.conf");
+		reporter.exportParametersToFile(output + ".parameter.conf");
+
+		// output der fields im csv-format
+//		System.err.println("if available, writing field content to file: " + output + ".field.conf");
+//		reporter.exportFieldsToFile(output + ".parameter.conf");
 	}
 
 	private static void exiter()
