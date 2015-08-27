@@ -378,9 +378,30 @@ public class Reporter
 			// ueber die properties iterieren und im conf-format rausschreiben
 			for(JRParameter actParameter : this.jasperReport.getParameters())
 			{
+				writer.println(actParameter.getName());
+				
+				writer.println("Description");
+				writer.println(actParameter.getDescription());
+
+				writer.println(".getDefaultValueExpression().getText()");
+				writer.println(actParameter.getDefaultValueExpression().getText());
+				
+				writer.println(".getDefaultValueExpression().getId()");
+				writer.println(actParameter.getDefaultValueExpression().getId());
+				
+				writer.println(".getValueClassName()");
+				writer.println(actParameter.getValueClassName());
+				
+				writer.println(".getClass().toString()");
+				writer.println(actParameter.getClass().toString());
+				
+				writer.println(".toString()");
+				writer.println(actParameter.toString());
+				
 				
 				for(String actPropertyName : actParameter.getPropertiesMap().getPropertyNames())
 				{
+					writer.println(".getPropertiesMap().getPropertyNames");
 					writer.println(actParameter.getName() + "=" + actPropertyName);
 				}
 
