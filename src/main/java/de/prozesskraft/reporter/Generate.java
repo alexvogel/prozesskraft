@@ -144,7 +144,7 @@ public class Generate
 				.withDescription("[mandatory; default: report.<ext>] the generated report will be written to this output file. the extension depends on the defined -format")
 //				.isRequired()
 				.create("output");
-		
+
 		Option oappendJasperFilled = OptionBuilder.withArgName("FILE")
 				.hasArg()
 				.withDescription("[optional] this report will be appended as an subreport")
