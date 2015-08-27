@@ -145,6 +145,12 @@ public class Generate
 //				.isRequired()
 				.create("output");
 		
+		Option oappendJasperFilled = OptionBuilder.withArgName("FILE")
+				.hasArg()
+				.withDescription("[optional] this report will be appended as an subreport")
+//				.isRequired()
+				.create("appendJasperFilled");
+		
 		Option of = new Option("f", "[optional] force overwrite output file if it already exists");
 		
 		/*----------------------------
@@ -161,6 +167,7 @@ public class Generate
 		options.addOption( oparameterFile );
 		options.addOption( ofield );
 		options.addOption( ooutput );
+		options.addOption( oappendJasperFilled );
 		options.addOption( of );
 		
 		/*----------------------------
@@ -438,15 +445,43 @@ public class Generate
 			{
 				line.put(actFieldKey, field.get(actFieldKey).get(x));
 			}
-			
+
 			// dem report hinzufuegen
 			reporter.addField(line);
 		}
-		
+
 		// fill report
 		try
 		{
 			reporter.fillReport();
+		}
+		catch (JRException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		// alle -appendJasperFilled anhaengen
+		if ( commandline.hasOption("appendJasperFilled") )
+		{
+			for(String actAppendJasperFilled : commandline.getOptionValues("appendJasperFilled"))
+			{
+				try
+				{
+					reporter.appendJasperFilled(actAppendJasperFilled);
+				}
+				catch (JRException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		// write filled report as binary
+		try
+		{
+			reporter.writeJasperFilled(output + ".jasperFilled");
 		}
 		catch (JRException e1)
 		{
