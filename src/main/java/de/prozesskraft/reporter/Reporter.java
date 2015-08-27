@@ -378,35 +378,19 @@ public class Reporter
 			// ueber die properties iterieren und im conf-format rausschreiben
 			for(JRParameter actParameter : this.jasperReport.getParameters())
 			{
+				writer.println("");
 				writer.println(actParameter.getName());
 				
-				writer.println("Description");
-				writer.println(actParameter.getDescription());
-				
-				if(actParameter.getDefaultValueExpression() != null)
+				if(!actParameter.isSystemDefined() && actParameter.isForPrompting())
 				{
-					writer.println(".getDefaultValueExpression().getText()");
-					writer.println(actParameter.getDefaultValueExpression().getText());
+					writer.println("Name: "+actParameter.getName()+ " ,\\nDesc: "+actParameter.getDescription()+" ,\\nDefaultValueExpr: "+actParameter.getDefaultValueExpression()+" ,\\nNestedTypeName: "+actParameter.getNestedTypeName()+ " ,\\nValueClassName: "+actParameter.getValueClassName()+" , \\nNestedType: "+actParameter.getNestedType());
 
-					writer.println(".getDefaultValueExpression().getId()");
-					writer.println(actParameter.getDefaultValueExpression().getId());
+					if (actParameter.getValueClassName().equalsIgnoreCase("java.lang.String"))
+					{
+						
+					}
 				}
-				
-				writer.println(".getValueClassName()");
-				writer.println(actParameter.getValueClassName());
-				
-				writer.println(".getClass().toString()");
-				writer.println(actParameter.getClass().toString());
-				
-				writer.println(".toString()");
-				writer.println(actParameter.toString());
-				
-				
-				for(String actPropertyName : actParameter.getPropertiesMap().getPropertyNames())
-				{
-					writer.println(".getPropertiesMap().getPropertyNames");
-					writer.println(actParameter.getName() + "=" + actPropertyName);
-				}
+	            
 
 			}
 
