@@ -376,22 +376,9 @@ public class Reporter
 			PrintWriter writer = new PrintWriter(outpath, "UTF-8");
 
 			// ueber die properties iterieren und im conf-format rausschreiben
-			for(JRParameter actParameter : this.jasperReport.getParameters())
+			for(String actParameterKey : this.parameter.keySet())
 			{
-				writer.println("");
-				writer.println(actParameter.getName());
-				
-				if(!actParameter.isSystemDefined() && actParameter.isForPrompting())
-				{
-					writer.println("Name: "+actParameter.getName()+ " ,\\nDesc: "+actParameter.getDescription()+" ,\\nDefaultValueExpr: "+actParameter.getDefaultValueExpression()+" ,\\nNestedTypeName: "+actParameter.getNestedTypeName()+ " ,\\nValueClassName: "+actParameter.getValueClassName()+" , \\nNestedType: "+actParameter.getNestedType());
-
-					if (actParameter.getValueClassName().equalsIgnoreCase("java.lang.String"))
-					{
-						
-					}
-				}
-	            
-
+				writer.println(actParameterKey + "=" + this.parameter.get(actParameterKey));
 			}
 
 			// file schliessen
