@@ -378,7 +378,11 @@ public class Reporter
 			// ueber die properties iterieren und im conf-format rausschreiben
 			for(String actParameterKey : this.parameter.keySet())
 			{
-				writer.println(actParameterKey + "=" + this.parameter.get(actParameterKey));
+				// sind die ersten 2 buchstaben gross geschrieben, handelt es sich um interne parameter => nicht ausgeben
+				if(!actParameterKey.matches("^[A-Z]{2}.*$"))
+				{
+					writer.println(actParameterKey + "=" + this.parameter.get(actParameterKey));
+				}
 			}
 
 			// file schliessen
