@@ -382,17 +382,15 @@ public class Reporter
 				
 				writer.println("Description");
 				writer.println(actParameter.getDescription());
-
 				
-				
-				if(actParameter.getDefaultValueExpression().getText() != null)
+				if(actParameter.getDefaultValueExpression() != null)
 				{
 					writer.println(".getDefaultValueExpression().getText()");
 					writer.println(actParameter.getDefaultValueExpression().getText());
+
+					writer.println(".getDefaultValueExpression().getId()");
+					writer.println(actParameter.getDefaultValueExpression().getId());
 				}
-				
-				writer.println(".getDefaultValueExpression().getId()");
-				writer.println(actParameter.getDefaultValueExpression().getId());
 				
 				writer.println(".getValueClassName()");
 				writer.println(actParameter.getValueClassName());
