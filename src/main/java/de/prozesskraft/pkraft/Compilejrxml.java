@@ -220,10 +220,8 @@ public class Compilejrxml
 				
 				System.out.println("creating jasper-file: "+outFile.getAbsolutePath());
 
-				report.setJrxml(actualFile.getAbsolutePath());
-				report.setJasper(outFile.getAbsolutePath());
 				try {
-					report.compile();
+					report.compileFileToFile(actualFile.getAbsolutePath(), outFile.getAbsolutePath());
 				} catch (JRException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
