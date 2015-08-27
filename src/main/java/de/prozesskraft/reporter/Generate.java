@@ -481,6 +481,7 @@ public class Generate
 		// write filled report as binary
 		try
 		{
+			System.err.println("writing the filled report to file " +output + ".jasperFilled" );
 			reporter.writeJasperFilled(output + ".jasperFilled");
 		}
 		catch (JRException e1)
