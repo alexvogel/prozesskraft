@@ -384,13 +384,16 @@ public class Reporter
 					writer.println("");
 					// handelt es sich beim value um einen filepfad, der auf ein existierendes file zeigt, dann soll der pfad in "relativ zum template" gewandelt werden
 					java.io.File testObFile = new java.io.File((String) this.parameter.get(actParameterKey));
+					System.err.println("test, if value is an existent file: "+this.parameter.get(actParameterKey));
 					if(testObFile.exists())
 					{
+						System.err.println("yes, it is an existent file: "+this.parameter.get(actParameterKey));
 						writer.println("# " + actParameterKey + "=" + this.parameter.get(actParameterKey));
 						writer.println(actParameterKey + "=" + new java.io.File(this.jrxml).toURI().relativize(testObFile.toURI()).getPath());
 					}
 					else
 					{
+						System.err.println("no, it is not an existent file: "+this.parameter.get(actParameterKey));
 						writer.println(actParameterKey + "=" + this.parameter.get(actParameterKey));
 					}
 				}
