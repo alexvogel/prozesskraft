@@ -1085,9 +1085,12 @@ foreach my $refh_stackline (@CONFIG)
 		}
 
 		# vorab rechte in zielverzeichnis setzen auf 755 (dies ist nur notwendig, wenn now_app == builder ist, schadet aber bei anderen nicht)
-		print "info: vorab setting rights in targetbulk to 755 (dies ist nur notwendig, wenn now_app == builder ist, schadet aber bei anderen nicht)\n";
-		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulk\"\n"; 
-		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulk\"";
+		if($now_app eq "builder")
+		{
+			print "info: vorab setting rights in targetbulkappbranch to 755 (dies ist nur notwendig, wenn now_app == builder ist, schadet aber bei anderen nicht)\n";
+			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulkappbranch\"\n"; 
+			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulkappbranch\"";
+		}
 
 		# den allgemeinen commondriver in das temporaere verzeichnis kopieren
 		print "info: copying common driver $CONF{'commondriver'} to $TMPDIR/commondriver\n";
@@ -1173,27 +1176,22 @@ foreach my $refh_stackline (@CONFIG)
 		}
 
 		# rechte in zielverzeichnis setzen auf 755
-		print "info: setting rights in targetbulk to 755\n";
-		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulk\"\n"; 
-		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulk\"";
+		print "info: setting rights in targetbulkappbranch to 755\n";
+		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulkappbranch\"\n"; 
+		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulkappbranch\"";
 		print "info: setting rights in targetbin to 755\n";
 		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbin\"\n"; 
 		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbin\"";
 
 		# rechte aller files, die mit "Makefile.PL" enden, sollen auf 444 (nur lesen) gesetzt werden
-		print "info: setting rights in targetbulk to 444 for all files/dirs matching /*Makefile.PL/\n";
+		print "info: setting rights in targetbulkappbranch to 444 for all files/dirs matching /*Makefile.PL/\n";
 		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*Makefile.PL' -exec chmod -R 444 {} \\;\"\n"; 
 		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*Makefile.PL' -exec chmod -R 444 {} \\;\""; 
 
 		# rechte aller files und verzeichnisse, die mit ".source" enden, sollen auf 750 gesetzt werden
-		print "info: setting rights in targetbulk to 750 for all files/dirs matching /.source*/\n";
-		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulk -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\"\n"; 
-		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulk -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\""; 
-
-		# rechte aller files und verzeichnisse, die mit ".source" enden, sollen auf 750 gesetzt werden
-		print "info: setting rights in targetbulk to 750 for all files/dirs matching /.source*/\n";
-		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulk -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\"\n"; 
-		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulk -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\""; 
+		print "info: setting rights in targetbulkappbranch to 750 for all files/dirs matching /.source*/\n";
+		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\"\n"; 
+		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\""; 
 
 		# wenn das flag --pack gesetzt wurde, soll das installationsverzeichnis in ein *.tar.gz archiv gepackt werden
 		if($pack)
