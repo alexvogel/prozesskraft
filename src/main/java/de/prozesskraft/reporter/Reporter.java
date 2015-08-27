@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,22 +40,26 @@ public class Reporter
 	  structure
 	----------------------------*/
 //	private Process process = null;
+	private String name = null;	// hauptreport.name = main
+
 	private String jrxml = null;
-	private String jasper = null;
-	private String jasperFilled = null;
-	private String pdf = null;
-	private String html = null;
-	private String odt = null;
-	private String docx = null;
-	private String pptx = null;
-	private String csv = null;
+//	private String jasper = null;
+//	private String jasperFilled = null;
+//	private String pdf = null;
+//	private String html = null;
+//	private String odt = null;
+//	private String docx = null;
+//	private String pptx = null;
+
 	private JasperReport jasperReport = null;
-	private OutputStream jasperReportOutputStream = null;
+//	private OutputStream jasperReportOutputStream = null;
 	private JasperPrint jasperPrint = null;
+
+	// parameter
 	private Map<String,Object> parameter = new HashMap<String,Object>();
+	// field (dataconnection)
 	private List<Map<String,?>> field = new ArrayList<Map<String, ?>> ();
-//	private ArrayList<HashMap> field = new ArrayList<HashMap>();
-//	private JRMapCollectionDataSource dataSource;
+//	private String fieldCsvPath = null;
 
 	private Map<String,Reporter> subreports = new HashMap<String,Reporter>();
 
@@ -70,35 +76,31 @@ public class Reporter
 	/*----------------------------
 	  methods
 	----------------------------*/
+	/**
+	 * compiles jrxml to internal jasperReport
+	 * @throws JRException
+	 */
 	public void compile() throws JRException
 	{
-		if (this.jrxml != null)
-		{
-			if (this.jasper == null)
-			{
-				this.jasper = this.jrxml + ".jasper";
-			}
-			// in das object compilen
-			this.jasperReport = JasperCompileManager.compileReport(jrxml);
-			// in das jasper file compilen
-			JasperCompileManager.compileReportToFile(jrxml, jasper);
-		}
-		else
-		{
-//			throw new NullPointerException();
-		}
+		this.jasperReport = JasperCompileManager.compileReport(jrxml);
+	}
+
+	public static void compileFileToFile(String jrxmlPath, String jasperPath) throws JRException
+	{
+		// file2file compilen
+		JasperCompileManager.compileReportToFile(jrxmlPath, jasperPath);
 	}
 
 	public void printPlaceholder()
 	{
-		if (this.jrxml != null)
-		{
-			try {
-				this.jasperReport = JasperCompileManager.compileReport(jrxml);
-			} catch (JRException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//		if (this.jrxml != null)
+//		{
+//			try {
+//				this.jasperReport = JasperCompileManager.compileReport(jrxml);
+//			} catch (JRException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 
 			System.out.println("to fill the template use this example call:");
 			System.out.println("reporter generate --template " + this.jrxml + " \\");
@@ -131,7 +133,7 @@ public class Reporter
 				}
 			}
 		}
-	}
+//	}
 	
 	public void setParameter(String paramKey, Object paramValue)
 	{
@@ -148,18 +150,23 @@ public class Reporter
 	 * @throws FileNotFoundException
 	 * @throws JRException
 	 */
-	public void fillPReport() throws FileNotFoundException, JRException
+	public void fillReport() throws FileNotFoundException, JRException
 	{
 
-		if (jasperFilled == null)
-		{
-			if (jasper == null)
-			{
-				this.compile();
-			}
-			jasperFilled = jasper + ".filled";
-		}
+		JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource((Collection)field);
 		
+		this.jasperPrint = JasperFillManager.fillReport(this.jasperReport, this.parameter, dataSource);
+//		jasperPrint = JasperFillManager.fillReport(jasperReport, parameter, new JREmptyDataSource());
+	}
+	
+	/**
+	 * fills the report with data from the given process and writes a jasper binary with filled conten
+	 * @throws FileNotFoundException
+	 * @throws JRException
+	 */
+	public void fillReportFileToFile(String jasperPath, String jasperFilledPath) throws FileNotFoundException, JRException
+	{
+
 //		System.out.println("jasper "+jasper);
 //		System.out.println("jasperFilled "+jasperFilled);
 //		System.out.println("parameter "+parameter);
@@ -169,7 +176,7 @@ public class Reporter
 		
 		JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource((Collection)field);
 		
-		JasperFillManager.fillReportToFile(jasper, jasperFilled, parameter, dataSource);
+		JasperFillManager.fillReportToFile(jasperPath, jasperFilledPath, parameter, dataSource);
 //		JasperFillManager.fillReportToFile(jasper, jasperFilled, new HashMap(), dataSource);
 //		JasperFillManager.fillReportToFile(jasper, jasperFilled, parameter, new JREmptyDataSource());
 		
@@ -177,142 +184,251 @@ public class Reporter
 	}
 	
 	/**
-	 * exports the Report to pdf
+	 * converts a filled JasperReportFile to pdf
 	 * @throws JRException
 	 * @throws FileNotFoundException 
 	 */
-	public void exportToPdf() throws JRException, FileNotFoundException
+	public static void convertFileToPdf(String jasperFilledPath, String outPath) throws JRException, FileNotFoundException
 	{
-		if (pdf == null)
-		{
-			if (jasperFilled == null)
-			{
-				this.fillPReport();
-			}
-			pdf = this.jasperFilled + ".pdf";
-		}
-		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilled));
+		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilledPath));
 		JRPdfExporter pdfExporter = new JRPdfExporter();
 		pdfExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-		pdfExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, pdf);
+		pdfExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, outPath);
 
 		pdfExporter.exportReport();
 	}
-	
+
 	/**
-	 * exports the Report to html
+	 * exports JasperReportFile to pdf
 	 * @throws JRException
 	 * @throws FileNotFoundException 
 	 */
-	public void exportToHtml() throws JRException, FileNotFoundException
+	public void exportToPdf(String outPath) throws JRException, FileNotFoundException
 	{
-		if (html == null)
-		{
-			if (jasperFilled == null)
-			{
-				this.fillPReport();
-			}
-			html = this.jasperFilled + ".html";
-		}
-		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilled));
+		JRPdfExporter pdfExporter = new JRPdfExporter();
+		pdfExporter.setParameter(JRExporterParameter.JASPER_PRINT, this.jasperPrint);
+		pdfExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, outPath);
+
+		pdfExporter.exportReport();
+	}
+
+	/**
+	 * converts a filled JasperReportFile to html
+	 * @throws JRException
+	 * @throws FileNotFoundException 
+	 */
+	public static void convertFileToHtml(String jasperFilledPath, String outPath) throws JRException, FileNotFoundException
+	{
+
+		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilledPath));
 		JRHtmlExporter htmlExporter = new JRHtmlExporter();
 		htmlExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-		htmlExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, html);
+		htmlExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, outPath);
 
 		htmlExporter.exportReport();
 	}
 	
 	/**
-	 * exports the Report to odt
+	 * exports JasperReport to html
 	 * @throws JRException
 	 * @throws FileNotFoundException 
 	 */
-	public void exportToOdt() throws JRException, FileNotFoundException
+	public void exportToHtml(String outPath) throws JRException, FileNotFoundException
 	{
-		if (odt == null)
-		{
-			if (jasperFilled == null)
-			{
-				this.fillPReport();
-			}
-			odt = this.jasperFilled + ".odt";
-		}
-		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilled));
+
+		JRHtmlExporter htmlExporter = new JRHtmlExporter();
+		htmlExporter.setParameter(JRExporterParameter.JASPER_PRINT, this.jasperPrint);
+		htmlExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, outPath);
+
+		htmlExporter.exportReport();
+	}
+	
+	/**
+	 * converts a filled JasperReportFile to odt
+	 * @throws JRException
+	 * @throws FileNotFoundException 
+	 */
+	public static void convertFileToOdt(String jasperFilledPath, String outPath) throws JRException, FileNotFoundException
+	{
+
+		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilledPath));
 		JROdtExporter odtExporter = new JROdtExporter();
 		odtExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-		odtExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, odt);
+		odtExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, outPath);
 
 		odtExporter.exportReport();
 	}
 	
 	/**
-	 * exports the Report to docx
+	 * exports JasperReport to odt
 	 * @throws JRException
 	 * @throws FileNotFoundException 
 	 */
-	public void exportToDocx() throws JRException, FileNotFoundException
+	public void exportToOdt(String outPath) throws JRException, FileNotFoundException
 	{
-		if (docx == null)
-		{
-			if (jasperFilled == null)
-			{
-				this.fillPReport();
-			}
-			docx = this.jasperFilled + ".docx";
-		}
-		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilled));
+
+		JROdtExporter odtExporter = new JROdtExporter();
+		odtExporter.setParameter(JRExporterParameter.JASPER_PRINT, this.jasperPrint);
+		odtExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, outPath);
+
+		odtExporter.exportReport();
+	}
+	
+	/**
+	 * converts a filled JasperReportFile to docx
+	 * @throws JRException
+	 * @throws FileNotFoundException 
+	 */
+	public static void convertFileToDocx(String jasperFilledPath, String outPath) throws JRException, FileNotFoundException
+	{
+
+		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilledPath));
 		JRDocxExporter docxExporter = new JRDocxExporter();
 		docxExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-		docxExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, docx);
+		docxExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, outPath);
 
 		docxExporter.exportReport();
 	}
 	
 	/**
-	 * exports the Report to pptx
+	 * exports JasperReport to docx
 	 * @throws JRException
 	 * @throws FileNotFoundException 
 	 */
-	public void exportToPptx() throws JRException, FileNotFoundException
+	public void exportToDocx(String outPath) throws JRException, FileNotFoundException
 	{
-		if (pptx == null)
-		{
-			if (jasperFilled == null)
-			{
-				this.fillPReport();
-			}
-			pptx = this.jasperFilled + ".pptx";
-		}
-		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilled));
+
+		JRDocxExporter docxExporter = new JRDocxExporter();
+		docxExporter.setParameter(JRExporterParameter.JASPER_PRINT, this.jasperPrint);
+		docxExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, outPath);
+
+		docxExporter.exportReport();
+	}
+	
+	/**
+	 * converts a filled JasperReportFile to pptx
+	 * @throws JRException
+	 * @throws FileNotFoundException 
+	 */
+	public static void convertFileToPptx(String jasperFilledPath, String outPath) throws JRException, FileNotFoundException
+	{
+
+		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilledPath));
 		JRPptxExporter pptxExporter = new JRPptxExporter();
 		pptxExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-		pptxExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, pptx);
+		pptxExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, outPath);
 
 		pptxExporter.exportReport();
 	}
 	
 	/**
-	 * exports the Report to csv
+	 * exports JasperReport to pptx
 	 * @throws JRException
 	 * @throws FileNotFoundException 
 	 */
-	public void exportToCsv() throws JRException, FileNotFoundException
+	public void exportToPptx(String outPath) throws JRException, FileNotFoundException
 	{
-		if (csv == null)
-		{
-			if (jasperFilled == null)
-			{
-				this.fillPReport();
-			}
-			csv = this.jasperFilled + ".csv";
-		}
-		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilled));
+
+		JRPptxExporter pptxExporter = new JRPptxExporter();
+		pptxExporter.setParameter(JRExporterParameter.JASPER_PRINT, this.jasperPrint);
+		pptxExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, outPath);
+
+		pptxExporter.exportReport();
+	}
+	
+	/**
+	 * converts a filled JasperReportFile to csv
+	 * @throws JRException
+	 * @throws FileNotFoundException 
+	 */
+	public static void convertFileToCsv(String jasperFilledPath, String outPath) throws JRException, FileNotFoundException
+	{
+		JasperPrint jasperPrint = (JasperPrint) JRLoader.loadObject(new java.io.File(jasperFilledPath));
 		JRCsvExporter csvExporter = new JRCsvExporter();
 		csvExporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-		csvExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, csv);
+		csvExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, outPath);
 
 		csvExporter.exportReport();
 	}
+
+	/**
+	 * exports JasperReport to csv
+	 * @throws JRException
+	 * @throws FileNotFoundException 
+	 */
+	public void exportToCsv(String outPath) throws JRException, FileNotFoundException
+	{
+		JRCsvExporter csvExporter = new JRCsvExporter();
+		csvExporter.setParameter(JRExporterParameter.JASPER_PRINT, this.jasperPrint);
+		csvExporter.setParameter(JRExporterParameter.OUTPUT_FILE_NAME, outPath);
+
+		csvExporter.exportReport();
+	}
+
+	/**
+	 * exports the Parameter to a conf-file
+	 */
+	public void exportParametersToFile(String outpath)
+	{
+		try
+		{
+			// anlegen printwriter
+			PrintWriter writer = new PrintWriter(outpath, "UTF-8");
+
+			// ueber die properties iterieren und im conf-format rausschreiben
+			for(JRParameter actParameter : this.jasperReport.getParameters())
+			{
+				writer.println(actParameter.getName() + "=" + actParameter.toString());
+			}
+
+			// file schliessen
+			writer.close();
+		}
+		catch (FileNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+//	public void exportFieldsToFile(String path)
+//	{
+//		// wenn keine fields vorhanden => return
+//		if(this.jasperReport.getFields() == null)
+//		{
+//			return;
+//		}
+//
+//		// anlegen printwriter
+//		try
+//		{
+//			PrintWriter writer = new PrintWriter(path, "UTF-8");
+//
+//			// ueber die properties iterieren und im conf-format rausschreiben
+//			for(JRField actField : this.jasperReport.getFields())
+//			{
+//				writer.println(actField.getName() + "=" + actField.toString());
+//			}
+//			
+//			// file schliessen
+//			writer.close();
+//		}
+//		catch (FileNotFoundException e)
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		catch (UnsupportedEncodingException e)
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
 	public void setJrxml (String jrxml)
 	{
@@ -323,75 +439,19 @@ public class Reporter
 	{
 		return this.jrxml;
 	}
-	
-	public void setJasper (String jasper)
-	{
-		this.jasper = jasper;
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
 	}
 
-	public String getJasper ()
-	{
-		return this.jasper;
-	}
-
-	public void setJasperFilled (String jasperFilled)
-	{
-		this.jasperFilled = jasperFilled;
-	}
-
-	public String getJasperFilled ()
-	{
-		return this.jasperFilled;
-	}
-
-	public void setPdf (String pdf)
-	{
-		this.pdf = pdf;
-	}
-
-	public String getPdf ()
-	{
-		return this.pdf;
-	}
-	
-	public void setPptx (String pptx)
-	{
-		this.pptx = pptx;
-	}
-
-	public String getPptx ()
-	{
-		return this.pptx;
-	}
-	
-	public void setHtml (String html)
-	{
-		this.html = html;
-	}
-
-	public String getHtml ()
-	{
-		return this.html;
-	}
-	
-	public void setOdt (String odt)
-	{
-		this.odt = odt;
-	}
-
-	public String getOdt ()
-	{
-		return this.odt;
-	}
-	
-	public void setDocx (String docx)
-	{
-		this.docx = docx;
-	}
-
-	public String getDocx ()
-	{
-		return this.docx;
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 }
