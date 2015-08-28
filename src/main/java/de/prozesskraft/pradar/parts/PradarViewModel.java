@@ -13,7 +13,7 @@ public class PradarViewModel extends ModelObject
 	public String[] exitcodes = null;
 	public String exitcode = "";
 	public int period = 168;
-	public boolean children = false;
+	public boolean children = true;
 	public boolean perspectiveRadar = true;
 	public boolean perspectiveTree = false;
 	public int zoom = 60;
