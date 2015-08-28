@@ -174,6 +174,7 @@ public class PmodelPartUi1 extends ModelObject
 	@Inject
 	public PmodelPartUi1(Composite composite, String pathToProcessFile)
 	{
+		
 		java.io.File inFile = new java.io.File(pathToProcessFile);
 		
 		if (inFile.exists())
@@ -225,6 +226,10 @@ public class PmodelPartUi1 extends ModelObject
 //		applet = new PmodelViewPage(this, einstellungen);
 		applet = new PmodelViewPage(einstellungen);
 		createControls(composite);
+		
+		// den text in der fensterleiste praezisieren
+		composite.getShell().setText(this.einstellungen.getProcess().getId2() + " - " + this.einstellungen.getProcess().getName() + " " + this.einstellungen.getProcess().getVersion() + " - pmodel [% version %]");
+
 	}
 
 	/**
