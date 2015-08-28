@@ -1862,7 +1862,7 @@ public class PradarPartUi3 extends ModelObject
 				try
 				{
 					Shell shell = new Shell(display);
-					shell.setText("pradar-gui "+"v[% version %]");
+					shell.setText("pradar "+"[% version %]");
 
 					// set an icon
 					if(this.getClass().getResourceAsStream("/logoSymbol50Transp.png") != null)
