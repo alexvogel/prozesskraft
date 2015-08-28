@@ -150,7 +150,7 @@ public class PIInsightCreator
 		buttonBrowse.setText("browse");
 		buttonBrowse.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonBrowse.setToolTipText("show instance-directory with a filebrowser");
-		buttonBrowse.addSelectionListener(listener_button_clone);
+		buttonBrowse.addSelectionListener(listener_button_browse);
 		buttonBrowse.setEnabled(true);
 
 		Label labelDummyA = new Label(compositeAction, SWT.NONE);
@@ -181,8 +181,14 @@ public class PIInsightCreator
 		if(process.getStatus().equals("working")) {buttonKill.setEnabled(false);}
 		else{buttonKill.setEnabled(true);}
 
-		Label labelDummy1 = new Label(compositeAction, SWT.NONE);
-
+		Button buttonMerge = new Button(compositeAction, SWT.NONE);
+		buttonMerge.setText("merge");
+		buttonMerge.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonMerge.setToolTipText("merge with another instance of the same process");
+		buttonMerge.addSelectionListener(listener_button_kill);
+		if(process.getStatus().equals("working")) {buttonMerge.setEnabled(false);}
+		else{buttonMerge.setEnabled(true);}
+		buttonMerge.setEnabled(false);
 		return parent;
 	}
 
