@@ -106,8 +106,10 @@ public class PradarPartUi3 extends ModelObject
 	private Button btnChildren;
 	private Button button_refresh = null;
 	private Button button_log = null;
-	private Button button_show = null;
+	private Button button_browse = null;
+	private Button button_open = null;
 	private Button button_clean = null;
+	private Button button_clone = null;
 	private Button button_delete = null;
 	private Scale scale_zoom;
 	private StyledText text_logging = null;
@@ -314,7 +316,7 @@ public class PradarPartUi3 extends ModelObject
 		
 		// Group functions instance
 		Group grpFunctionInstance = new Group(composite_11, SWT.NONE);
-		grpFunctionInstance.setLayout(new GridLayout(4, false));
+		grpFunctionInstance.setLayout(new GridLayout(4, true)); // 4 spalten, gleich breit
 		grpFunctionInstance.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpFunctionInstance.setText("instance");
 		
@@ -324,18 +326,25 @@ public class PradarPartUi3 extends ModelObject
 //		button_log.setToolTipText("shows logfile of selected process instance");
 //		button_log.addSelectionListener(listener_log_button);
 		
-//		button_browse = new Button(grpFunctionInstance, SWT.NONE);
-//		button_browse.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
-//		button_browse.setText("browse");
-//		button_browse.setToolTipText("browse instance files.");
-//		button_browse.addSelectionListener(listener_browse_button);
+		button_browse = new Button(grpFunctionInstance, SWT.NONE);
+		button_browse.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_browse.setText("browse");
+		button_browse.setToolTipText("show instance directory with a filebrowser.");
+		button_browse.addSelectionListener(listener_browse_button);
 
-		button_show = new Button(grpFunctionInstance, SWT.NONE);
-		button_show.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		button_show.setText("show");
-		button_show.setToolTipText("open instance with pmodel");
-		button_show.addSelectionListener(listener_show_button);
+		button_open = new Button(grpFunctionInstance, SWT.NONE);
+		button_open.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_open.setText("open");
+		button_open.setToolTipText("open instance with pmodel");
+		button_open.addSelectionListener(listener_open_button);
 
+		button_clone = new Button(grpFunctionInstance, SWT.NONE);
+		button_clone.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_clone.setText("clone");
+		button_clone.setToolTipText("copy the instance");
+		button_clone.setEnabled(false);
+//		button_clone.addSelectionListener(listener_clone_button);
+		
 		button_delete = new Button(grpFunctionInstance, SWT.NONE);
 		button_delete.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		button_delete.setText("delete");
@@ -573,7 +582,7 @@ public class PradarPartUi3 extends ModelObject
 		}
 	};
 	
-	SelectionAdapter listener_browse_button = new SelectionAdapter()
+	SelectionAdapter listener_browse_button_OLD = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
@@ -606,11 +615,54 @@ public class PradarPartUi3 extends ModelObject
 			}
 			else
 			{
-				log("warn", "no entity marked.");
+				log("warn", "no instance selected.");
 			}
 		}
 	};
 	
+	SelectionAdapter listener_browse_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			if(einstellungen.entitySelected == null)
+			{
+				log("warn", "no instance selected");
+				return;
+			}
+
+			String pathInstanceDir = new File(einstellungen.entitySelected.getResource()).getParent();
+
+			java.io.File stepDir = new java.io.File(pathInstanceDir);
+			if(!stepDir.exists())
+			{
+				log("error", "directory does not exist: "+stepDir.getAbsolutePath());
+			}
+			else if(!stepDir.isDirectory())
+			{
+				log("error", "is not a directory: "+stepDir.getAbsolutePath());
+			}
+			else if(!stepDir.canRead())
+			{
+				log("error", "cannot read directory: "+stepDir.getAbsolutePath());
+			}
+			
+			else
+			{
+				String call = ini.get("apps", "filebrowser") + " " + stepDir.getAbsolutePath(); 
+				log("info", "calling: "+call);
+				
+				try
+				{
+					java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+				}
+				catch (IOException e)
+				{
+					log("error", e.getMessage());
+				}
+			}
+		}
+	};
+
 	SelectionAdapter listener_clean_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
@@ -669,7 +721,7 @@ public class PradarPartUi3 extends ModelObject
 		}
 	};	
 	
-	SelectionAdapter listener_show_button = new SelectionAdapter()
+	SelectionAdapter listener_open_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
@@ -837,7 +889,7 @@ public class PradarPartUi3 extends ModelObject
 			
 			else
 			{
-				log("warn", "no entity marked.");
+				log("warn", "no instance selected");
 			}
 			
 		}
