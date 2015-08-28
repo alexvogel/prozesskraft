@@ -1342,19 +1342,45 @@ implements Serializable, Cloneable
 			this.reset();
 		}
 	}
-	
+
 	/**
-	 * resets the step
+	 * resets the commits of a step (full reset)
+	 * 1) clear variables
+	 * 2) clear files
+	 * 3) reset commits
+	 */
+	public void resetCommits()
+	{
+		// variablen leeren
+		this.getVariable().clear();
+
+		// files leeren
+		this.getFile().clear();
+
+		// commits reseten
+		for(Commit actCommit : this.getCommit())
+		{
+			actCommit.reset();
+		}
+	}
+
+	/**
+	 * resets the step (full reset)
 	 * 1) clear log
 	 * 2) clear lists
 	 * 3) clear variables
 	 * 4) clear files
 	 * 5) delete step-directory
-	 * 6) hochzaehlen des resetzaehlers
+	 * 6) reset inits
+	 * 7) reset work
+	 * 8) reset subprocess
+	 * 9) reset commits
+	 * 10) hochzaehlen des resetzaehlers
 	 */
 	public void reset()
 	{
 		// root reset ist ausschließlich die daten innerhalb des rootdirs loeschen
+		// variablen und files verbleiben im rootStep
 		if(this.isRoot())
 		{
 			// directory, welches gesaeubert werden soll
