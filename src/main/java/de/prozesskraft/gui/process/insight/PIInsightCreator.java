@@ -146,6 +146,17 @@ public class PIInsightCreator
 		gridLayout_Action.marginRight = 0;
 		compositeAction.setLayout(gridLayout_Action);
 
+		Button buttonBrowse = new Button(compositeAction, SWT.NONE);
+		buttonBrowse.setText("browse");
+		buttonBrowse.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonBrowse.setToolTipText("show instance-directory with a filebrowser");
+		buttonBrowse.addSelectionListener(listener_button_clone);
+		buttonBrowse.setEnabled(true);
+
+		Label labelDummyA = new Label(compositeAction, SWT.NONE);
+
+		Label labelDummyB = new Label(compositeAction, SWT.NONE);
+		
 		Button buttonClone = new Button(compositeAction, SWT.NONE);
 		buttonClone.setText("clone");
 		buttonClone.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -153,83 +164,24 @@ public class PIInsightCreator
 		buttonClone.addSelectionListener(listener_button_clone);
 		if(process.getStatus().equals("working")) {buttonClone.setEnabled(false);}
 		else{buttonClone.setEnabled(true);}
-		
+
+		Button buttonReset = new Button(compositeAction, SWT.NONE);
+		buttonReset.setText("reset");
+		buttonReset.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonReset.setToolTipText("reset this instance to initial state");
+		buttonReset.addSelectionListener(listener_button_reset);
+		if(process.getStatus().equals("working")) {buttonReset.setEnabled(false);}
+		else{buttonReset.setEnabled(true);}
+
 		Button buttonKill = new Button(compositeAction, SWT.NONE);
 		buttonKill.setText("kill");
 		buttonKill.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonKill.setToolTipText("kill all programs that has been started by this process instance");
 		buttonKill.addSelectionListener(listener_button_kill);
+		if(process.getStatus().equals("working")) {buttonKill.setEnabled(false);}
+		else{buttonKill.setEnabled(true);}
 
 		Label labelDummy1 = new Label(compositeAction, SWT.NONE);
-
-		Label labelDummy2 = new Label(compositeAction, SWT.NONE);
-
-		Label labelDummy3 = new Label(compositeAction, SWT.NONE);
-
-		Label labelDummy4 = new Label(compositeAction, SWT.NONE);
-
-		Label labelDummy5 = new Label(compositeAction, SWT.NONE);
-
-		Label labelDummy6 = new Label(compositeAction, SWT.NONE);
-
-		Label labelDummy7 = new Label(compositeAction, SWT.NONE);
-
-		Label labelDummy8 = new Label(compositeAction, SWT.NONE);
-
-		Label labelDummy9 = new Label(compositeAction, SWT.NONE);
-
-		Label labelDummy10 = new Label(compositeAction, SWT.NONE);
-
-//		// instanceFile
-//		Label label_instanceDirectory1 = new Label(fieldComposite, SWT.NONE);
-//		label_instanceDirectory1.setText("instance file: ");
-//
-//		Label label_instanceDirectory2 = new Label(fieldComposite, SWT.NONE);
-//		label_instanceDirectory2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-//		if ((new java.io.File(this.process.getInfilebinary()).getParent()) != null)
-//		{
-//			label_instanceDirectory2.setText(new java.io.File(this.process.getInfilebinary()).getAbsolutePath());
-//		}
-//		else
-//		{
-//			label_instanceDirectory2.setText("unknown");
-//		}
-
-//		// rootDirectory
-//		Label label_rootDirectory1 = new Label(fieldComposite, SWT.NONE);
-//		label_rootDirectory1.setText("root directory: ");
-//		
-//		Label label_rootDirectory2 = new Label(fieldComposite, SWT.NONE);
-//		label_rootDirectory2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-//		if ((new java.io.File(this.process.getRootdir()).getParent()) != null)
-//		{
-//			label_rootDirectory2.setText(new java.io.File(this.process.getRootdir()).getAbsolutePath());
-//		}
-//		else
-//		{
-//			label_rootDirectory2.setText("unknown");
-//		}
-
-//		// definitionDirectory
-//		Label label_definitionDirectory1 = new Label(fieldComposite, SWT.NONE);
-//		label_definitionDirectory1.setText("definition directory: ");
-//		
-//		Label label_definitionDirectory2 = new Label(fieldComposite, SWT.NONE);
-//		label_definitionDirectory2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-//		if ((new java.io.File(this.process.getInfilexml()).getParent()) != null)
-//		{
-//			label_definitionDirectory2.setText((new java.io.File(this.process.getInfilexml()).getParent()));
-//		}
-//		else
-//		{
-//			label_definitionDirectory2.setText("unknown");
-//		}
-
-		// erstellen eines table fuer das Prozess-Logging
-//		new PILogGui(composite, process);
-
-		// databinding
-//		initDataBindingsProcess();
 
 		return parent;
 	}
