@@ -1794,7 +1794,7 @@ public class PrampPartUi1 extends ModelObject
 				try
 				{
 					shell = new Shell(display);
-					shell.setText("pramp-gui "+"v[% version %]");
+					shell.setText("pramp "+"[% version %]");
 
 					// set an icon
 					if(this.getClass().getResourceAsStream("/logoSymbol50Transp.png") != null)
