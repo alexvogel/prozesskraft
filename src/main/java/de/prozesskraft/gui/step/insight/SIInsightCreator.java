@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -32,11 +34,13 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import de.prozesskraft.pkraft.Commit;
+import de.prozesskraft.pkraft.File;
 import de.prozesskraft.pkraft.Step;
 import de.prozesskraft.pkraft.Variable;
 import de.prozesskraft.pkraft.Process;
 import de.prozesskraft.gui.step.edit.EditFile;
 import de.prozesskraft.gui.step.edit.EditVariable;
+import de.prozesskraft.gui.step.edit.ResetStep;
 import de.prozesskraft.pmodel.PmodelPartUi1;
 
 public class SIInsightCreator
@@ -484,7 +488,8 @@ public class SIInsightCreator
 			}
 			else
 			{
-				reset_execute();
+//				reset_execute();
+				new ResetStep(This, step);
 			}
 		}
 	};
@@ -612,6 +617,20 @@ public class SIInsightCreator
 	 */
 	public void setParent(Composite parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * @return the shell
+	 */
+	public Shell getShell() {
+		return shell;
+	}
+
+	/**
+	 * @param shell the shell to set
+	 */
+	public void setShell(Shell shell) {
+		this.shell = shell;
 	}
 
 	
