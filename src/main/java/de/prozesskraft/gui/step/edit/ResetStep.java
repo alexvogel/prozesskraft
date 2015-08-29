@@ -315,6 +315,7 @@ public class ResetStep
 			{
 				System.err.println("error: no reset performed");
 			}
+			step.getParent().writeBinary();
 			shell.dispose();
 		}
 	};
