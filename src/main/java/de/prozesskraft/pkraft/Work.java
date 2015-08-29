@@ -528,7 +528,21 @@ implements Serializable
 					ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
 	
 					// sind env-angaben im work-element?, dann soll das bestehende environment um diese erweitert bzw. umdefiniert werden
-					pb.environment().putAll(this.getEnvAsMap());
+					if(this.getEnv() != null)
+					{
+						Map<String,String> zusEnv = this.getEnvAsMap();
+
+						// env loggen
+						String logString = "tweaking environment variables\n";
+						for(String actKey : zusEnv.keySet())
+						{
+							logString += actKey + "=" + zusEnv.get(actKey);
+						}
+						log("info", logString);
+						
+						// env definieren
+						pb.environment().putAll(zusEnv);
+					}
 
 					// erweitern des PATHs um den prozesseigenen path
 	//				Map<String,String> env = pb.environment();
