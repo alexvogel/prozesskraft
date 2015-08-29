@@ -303,11 +303,17 @@ public class ResetStep
 //			System.out.println("selection of commit: " + buttonCommitReset.getSelection());
 			if(buttonFullReset.getSelection() && !buttonCommitReset.getSelection())
 			{
+				System.err.println("performing a full reset on step " + step.getName());
 				step.reset();
 			}
 			else if(!buttonFullReset.getSelection() && buttonCommitReset.getSelection())
 			{
+				System.err.println("performing a resetCommit on step " + step.getName());
 				step.resetCommits();
+			}
+			else
+			{
+				System.err.println("error: no reset performed");
 			}
 			shell.dispose();
 		}
