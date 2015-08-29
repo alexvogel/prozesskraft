@@ -19,6 +19,7 @@ implements Serializable
 	private String name = "unnamed";
 	private String description = "no description";
 	private Integer maxrun = 5; // minuten
+	private String env = null; // environment definitionen getrennt durch diese zeichenfolge [trenner]. z.B. "DISPLAY=:77[trenner]HOME=/home/avoge"
 	private String interpreter = "";
 	private String command = "";
 	private String logfile = "";
@@ -526,6 +527,9 @@ implements Serializable
 					// erstellen prozessbuilder
 					ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
 	
+					// sind env-angaben im work-element?, dann soll das bestehende environment um diese erweitert bzw. umdefiniert werden
+					pb.environment().putAll(this.getEnvAsMap());
+
 					// erweitern des PATHs um den prozesseigenen path
 	//				Map<String,String> env = pb.environment();
 	//				String path = env.get("PATH");
@@ -662,5 +666,43 @@ implements Serializable
 	 */
 	public void setKillcommand(String killcommand) {
 		this.killcommand = killcommand;
+	}
+
+	/**
+	 * der environment string wird in einen Map umgewandelt und zurueckgegeben
+	 * @return the envAsMap
+	 */
+	public Map<String,String> getEnvAsMap()
+	{
+		Map<String,String> environment = new HashMap<String,String>();
+		
+		if(this.getEnv() != null)
+		{
+			
+			for(String oneEnvDefinition : this.getEnv().split("\\[trenner\\]"))
+			{
+				String[] oneEnv = oneEnvDefinition.split("=", 2);
+				if(oneEnv.length == 2)
+				{
+					environment.put(this.getParent().resolveString(oneEnv[0]), this.getParent().resolveString(oneEnv[1]));
+				}
+			}
+		}
+		
+		return environment;
+	}
+
+	/**
+	 * @return the env
+	 */
+	public String getEnv() {
+		return env;
+	}
+
+	/**
+	 * @param env the env to set
+	 */
+	public void setEnv(String env) {
+		this.env = env;
 	}
 }
