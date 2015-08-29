@@ -1349,7 +1349,7 @@ implements Serializable, Cloneable
 	 * 2) clear files
 	 * 3) reset commits
 	 */
-	public void resetCommits()
+	public void resetCommit()
 	{
 		this.log("info", "performing a resetCommit");
 		// variablen leeren

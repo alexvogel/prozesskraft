@@ -171,6 +171,26 @@ implements Serializable
 	}
 	
 	/**
+	 * reset only the commit of a certain step and perform a full reset for all subsequent steps (the steps who have an Init, that link to a fromstep that has been reset)
+	 * @param Step
+	 */
+	public void resetCommitStep(String stepname)
+	{
+		// zuerst alle dependent steps reseten
+		ArrayList<Step> stepsToReset = this.getStepDependent(stepname);
+		for(Step actStep : stepsToReset)
+		{
+			log("warn", "reset step (because of dependency): "+actStep.getName());
+			actStep.resetBecauseOfDependency();
+		}
+		
+		// erst dann den urspruenglichen step reseten
+		Step stepToReset = this.getStep(stepname);
+		stepToReset.resetCommit();
+		log("warn", "reset commit step: "+stepname);
+	}
+	
+	/**
 	 * kills all steps
 	 */
 	public String kill()
