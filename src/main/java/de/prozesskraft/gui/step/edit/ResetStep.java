@@ -303,19 +303,30 @@ public class ResetStep
 //			System.out.println("selection of commit: " + buttonCommitReset.getSelection());
 			if(buttonFullReset.getSelection() && !buttonCommitReset.getSelection())
 			{
-				System.err.println("performing a full reset on step " + step.getName());
-				step.reset();
+				System.err.println("performing a full reset on step " + step.getName() + " and all downstream steps");
+
+				// den step resetten und alle von diesem step abhaengigen steps
+				step.getParent().resetStep(step.getName());
 			}
 			else if(!buttonFullReset.getSelection() && buttonCommitReset.getSelection())
 			{
-				System.err.println("performing a resetCommit on step " + step.getName());
-				step.resetCommits();
+				System.err.println("performing a resetCommit on step " + step.getName() + " and afull reset on all downstream steps");
+
+				// den step resetten und alle von diesem step abhaengigen steps
+				step.getParent().resetCommitStep(step.getName());
 			}
 			else
 			{
 				System.err.println("error: no reset performed");
 			}
+
+			// die veraenderte instanz auf platte schreiben
 			step.getParent().writeBinary();
+
+			// den gui update anstossen
+			((SIInsightCreator)father).getFather().refreshAppletAndUi();
+
+			// nachfragefenster schliessen
 			shell.dispose();
 		}
 	};

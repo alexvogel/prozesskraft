@@ -523,47 +523,47 @@ public class SIInsightCreator
 		messageShell.dispose();
 	}
 
-	private void reset_execute()
-	{
-		Shell messageShell = new Shell();
-		MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
-		confirmation.setText("please confirm");
-		String message = "";
-		if(step.isRoot())
-		{
-			message += "WARNING\n";
-			message += "you are about to reset all steps of this instance.\n";
-			message += "aggregated data (variables, files) will be deleted, all produced files will be erased from the filesystem.\n\n";
-			message += "do you really want to reset all steps?";
-		}
-		else
-		{
-			message += "WARNING\n";
-			message += "you are about to reset step "+step.getName()+" and all steps which depend on it.\n";
-			message += "aggregated data (variables, files) will be deleted, all produced files will be erased from the filesystem.\n\n";
-			message += "do you really want to reset step "+step.getName()+" and all its dependencies?";
-		}
-
-		confirmation.setMessage(message);
-
-		// open confirmation and wait for user selection
-		int returnCode = confirmation.open();
-//		System.out.println("returnCode is: "+returnCode);
-
-		// ok == 32
-		if (returnCode == 32)
-		{
-			// den step resetten und alle von diesem step abhaengigen steps
-			step.getParent().resetStep(step.getName());
-
-			step.getParent().writeBinary();
-			
-			// den update anstossen
-			father.refreshAppletAndUi();
-
-		}
-		messageShell.dispose();
-	}
+//	private void reset_execute()
+//	{
+//		Shell messageShell = new Shell();
+//		MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
+//		confirmation.setText("please confirm");
+//		String message = "";
+//		if(step.isRoot())
+//		{
+//			message += "WARNING\n";
+//			message += "you are about to reset all steps of this instance.\n";
+//			message += "aggregated data (variables, files) will be deleted, all produced files will be erased from the filesystem.\n\n";
+//			message += "do you really want to reset all steps?";
+//		}
+//		else
+//		{
+//			message += "WARNING\n";
+//			message += "you are about to reset step "+step.getName()+" and all steps which depend on it.\n";
+//			message += "aggregated data (variables, files) will be deleted, all produced files will be erased from the filesystem.\n\n";
+//			message += "do you really want to reset step "+step.getName()+" and all its dependencies?";
+//		}
+//
+//		confirmation.setMessage(message);
+//
+//		// open confirmation and wait for user selection
+//		int returnCode = confirmation.open();
+////		System.out.println("returnCode is: "+returnCode);
+//
+//		// ok == 32
+//		if (returnCode == 32)
+//		{
+//			// den step resetten und alle von diesem step abhaengigen steps
+//			step.getParent().resetStep(step.getName());
+//
+//			step.getParent().writeBinary();
+//			
+//			// den update anstossen
+//			father.refreshAppletAndUi();
+//
+//		}
+//		messageShell.dispose();
+//	}
 
 	SelectionAdapter listener_button_kill = new SelectionAdapter()
 	{
