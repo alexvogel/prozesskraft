@@ -1351,6 +1351,7 @@ implements Serializable, Cloneable
 	 */
 	public void resetCommits()
 	{
+		this.log("info", "performing a resetCommit");
 		// variablen leeren
 		this.getVariable().clear();
 
@@ -1379,6 +1380,7 @@ implements Serializable, Cloneable
 	 */
 	public void reset()
 	{
+		this.log("info", "performing a full reset");
 		// root reset ist ausschließlich die daten innerhalb des rootdirs loeschen
 		// variablen und files verbleiben im rootStep
 		if(this.isRoot())
