@@ -442,12 +442,14 @@ public class Reporter
 			FileInputStream fs = new FileInputStream(inPath);
 			ObjectInputStream is = new ObjectInputStream(fs);
 			JasperPrint jasperPrintToAppend = (JasperPrint)is.readObject();
-			
+
 			// jede einzelne seite dem report anhaengen
 			for(JRPrintPage jasperPrintPage : jasperPrintToAppend.getPages())
 			{
 				this.jasperPrint.addPage(jasperPrintPage);
 			}
+
+			is.close();
 		}
 		catch (ClassNotFoundException e)
 		{
