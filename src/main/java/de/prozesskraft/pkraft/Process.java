@@ -117,7 +117,7 @@ implements Serializable
 	private boolean subprocess = false;
 	private String parentid = "0";
 	
-	private Long timeOfLastStepStart = 0L;
+	private Long timeOfLastStepStart = System.currentTimeMillis()-60000;
 	/*----------------------------
 	  constructors
 	----------------------------*/
