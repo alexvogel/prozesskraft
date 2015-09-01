@@ -57,7 +57,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>de.prozesskraft.pkraft.parts.PkraftPartUi1</mainClass>
+									<mainClass>de.prozesskraft.pkraft.PkraftPartUi1</mainClass>
 								</manifest>
 							</archive>
 							<outputDirectory>${project.build.directory}</outputDirectory>
