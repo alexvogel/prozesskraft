@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.prozesskraft.pkraft.PkraftPartUi1"
+MAINCLASS="de.prozesskraft.pkraft.PkraftPartUi1" 
 BASEDIR=$(dirname $0)
 
 # wenn eine eigene javainstallation vorhanden ist, soll diese verwendet werden
