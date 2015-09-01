@@ -188,6 +188,11 @@
 			<version>0.7.0</version>
 		</dependency>
  		<dependency>
+			<groupId>de.prozesskraft.pradar</groupId>
+			<artifactId>pradar-gui</artifactId>
+			<version>0.7.0</version>
+		</dependency>
+ 		<dependency>
 			<groupId>de.prozesskraft.pmodel</groupId>
 			<artifactId>pmodel-gui</artifactId>
 			<version>0.7.0</version>

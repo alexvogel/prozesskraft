@@ -30,6 +30,7 @@ import org.eclipse.swt.custom.CTabFolder;
 
 //import de.caegroup.pradar.Init;
 import de.prozesskraft.pmodel.*;
+import de.prozesskraft.pradar.parts.PradarPartUi3;
 import de.prozesskraft.pramp.parts.PrampPartUi1;
 
 import org.eclipse.swt.custom.CTabItem;
@@ -99,23 +100,31 @@ public class PkraftPartUi1
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 
 		// erstellen des items fuer pramp
-		CTabItem tbtmNewItem = new CTabItem(tabFolder, SWT.NONE);
-		tbtmNewItem.setText("pramp");
-		tbtmNewItem.setToolTipText("launch instances");
+		CTabItem tabItemPramp = new CTabItem(tabFolder, SWT.NONE);
+		tabItemPramp.setText("pramp");
+		tabItemPramp.setToolTipText("launch instances");
 
-		Composite compositePart = new Composite(tabFolder, SWT.NONE);
-		GridLayout gl_compositePart = new GridLayout(1, false);
-		gl_compositePart.marginWidth = 0;
-		gl_compositePart.marginHeight = 0;
-		compositePart.setLayout(gl_compositePart);
+		Composite compositePramp = new Composite(tabFolder, SWT.NONE);
+		GridLayout gl_compositePramp = new GridLayout(1, false);
+		gl_compositePramp.marginWidth = 0;
+		gl_compositePramp.marginHeight = 0;
+		compositePramp.setLayout(gl_compositePramp);
 		
-		new PrampPartUi1(compositePart);
-
-		tbtmNewItem.setControl(compositePart);
+		new PrampPartUi1(compositePramp);
+		tabItemPramp.setControl(compositePramp);
 		
-		CTabItem tbtmNewItem_1 = new CTabItem(tabFolder, SWT.NONE);
-		tbtmNewItem_1.setText("pradar");
+		CTabItem tabItemPradar = new CTabItem(tabFolder, SWT.NONE);
+		tabItemPradar.setText("pradar");
+		tabItemPradar.setToolTipText("follow running instances");
 		
+		Composite compositePradar = new Composite(tabFolder, SWT.NONE);
+		GridLayout gl_compositePradar = new GridLayout(1, false);
+		gl_compositePradar.marginWidth = 0;
+		gl_compositePradar.marginHeight = 0;
+		compositePradar.setLayout(gl_compositePradar);
+		
+		new PradarPartUi3(compositePradar);
+		tabItemPradar.setControl(compositePradar);
 		
 	}
 	
