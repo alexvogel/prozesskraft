@@ -469,6 +469,8 @@ implements Serializable
 				schrittStarten = false;
 			}
 
+			log("debug", "now in milliseconds: " + System.currentTimeMillis());
+			log("debug", "time of last stepstart in milliseconds: " + this.getParent().getParent().getTimeOfLastStepStart());
 			Integer minutesSinceLastStepStart = (int)(long)(System.currentTimeMillis() - this.getParent().getParent().getTimeOfLastStepStart()) / 60000;
 			// 2) der zeitpunkt an dem der letzte schritt gestartet wurde ist weniger minuten her als der mindest-Delay fuer Stepstarts vorschreibt
 			if( minutesSinceLastStepStart < this.getParent().getParent().getStepStartDelayMinutes())
