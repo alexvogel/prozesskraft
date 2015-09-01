@@ -7,9 +7,9 @@ use Cwd;
 $|=1;
 
 # tmp-target-directory loeschen
-print "loeschen des targetverzeichnisses\n";
-print "rm -rf /tmp/pmodel\n";
-system "rm -rf /tmp/pmodel";
+#print "loeschen des targetverzeichnisses\n";
+#print "rm -rf /tmp/pmodel\n";
+#system "rm -rf /tmp/pmodel";
 
 # maven ausfuehren
 print "**\n";
