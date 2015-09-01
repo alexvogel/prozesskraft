@@ -99,6 +99,20 @@ public class PkraftPartUi1
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 
+		// erstellen des items fuer pradar
+		CTabItem tabItemPradar = new CTabItem(tabFolder, SWT.NONE);
+		tabItemPradar.setText("pradar");
+		tabItemPradar.setToolTipText("follow running instances");
+		
+		Composite compositePradar = new Composite(tabFolder, SWT.NONE);
+		GridLayout gl_compositePradar = new GridLayout(1, false);
+		gl_compositePradar.marginWidth = 0;
+		gl_compositePradar.marginHeight = 0;
+		compositePradar.setLayout(gl_compositePradar);
+		
+		new PradarPartUi3(compositePradar);
+		tabItemPradar.setControl(compositePradar);
+
 		// erstellen des items fuer pramp
 		CTabItem tabItemPramp = new CTabItem(tabFolder, SWT.NONE);
 		tabItemPramp.setText("pramp");
@@ -113,18 +127,6 @@ public class PkraftPartUi1
 		new PrampPartUi1(compositePramp);
 		tabItemPramp.setControl(compositePramp);
 		
-		CTabItem tabItemPradar = new CTabItem(tabFolder, SWT.NONE);
-		tabItemPradar.setText("pradar");
-		tabItemPradar.setToolTipText("follow running instances");
-		
-		Composite compositePradar = new Composite(tabFolder, SWT.NONE);
-		GridLayout gl_compositePradar = new GridLayout(1, false);
-		gl_compositePradar.marginWidth = 0;
-		gl_compositePradar.marginHeight = 0;
-		compositePradar.setLayout(gl_compositePradar);
-		
-		new PradarPartUi3(compositePradar);
-		tabItemPradar.setControl(compositePradar);
 		
 	}
 	
