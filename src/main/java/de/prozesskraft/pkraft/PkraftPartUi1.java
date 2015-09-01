@@ -113,19 +113,19 @@ public class PkraftPartUi1
 		new PradarPartUi3(compositePradar);
 		tabItemPradar.setControl(compositePradar);
 
-		// erstellen des items fuer pramp
-		CTabItem tabItemPramp = new CTabItem(tabFolder, SWT.NONE);
-		tabItemPramp.setText("pramp");
-		tabItemPramp.setToolTipText("launch instances");
-
-		Composite compositePramp = new Composite(tabFolder, SWT.NONE);
-		GridLayout gl_compositePramp = new GridLayout(1, false);
-		gl_compositePramp.marginWidth = 0;
-		gl_compositePramp.marginHeight = 0;
-		compositePramp.setLayout(gl_compositePramp);
-		
-		new PrampPartUi1(compositePramp);
-		tabItemPramp.setControl(compositePramp);
+//		// erstellen des items fuer pramp
+//		CTabItem tabItemPramp = new CTabItem(tabFolder, SWT.NONE);
+//		tabItemPramp.setText("pramp");
+//		tabItemPramp.setToolTipText("launch instances");
+//
+//		Composite compositePramp = new Composite(tabFolder, SWT.NONE);
+//		GridLayout gl_compositePramp = new GridLayout(1, false);
+//		gl_compositePramp.marginWidth = 0;
+//		gl_compositePramp.marginHeight = 0;
+//		compositePramp.setLayout(gl_compositePramp);
+//		
+//		new PrampPartUi1(compositePramp);
+//		tabItemPramp.setControl(compositePramp);
 		
 		
 	}
