@@ -425,6 +425,7 @@ public class Generate
 		// set the parameter
 		for(String actParameterKey : parameter.keySet())
 		{
+			System.err.println("setting parameter " + actParameterKey + "=" + parameter.get(actParameterKey) );
 			reporter.setParameter(actParameterKey, parameter.get(actParameterKey));
 		}
 
@@ -443,6 +444,7 @@ public class Generate
 			HashMap line = new HashMap<String,String>();
 			for(String actFieldKey : field.keySet())
 			{
+				System.err.println("adding field " + actFieldKey + "=" + field.get(actFieldKey).get(x) );
 				line.put(actFieldKey, field.get(actFieldKey).get(x));
 			}
 
@@ -453,6 +455,7 @@ public class Generate
 		// fill report
 		try
 		{
+			System.err.println("filling report");
 			reporter.fillReport();
 		}
 		catch (JRException e1)
@@ -468,6 +471,7 @@ public class Generate
 			{
 				try
 				{
+					System.err.println("appending a jasperFilled to current report " +actAppendJasperFilled );
 					reporter.appendJasperFilled(actAppendJasperFilled);
 				}
 				catch (JRException e)
