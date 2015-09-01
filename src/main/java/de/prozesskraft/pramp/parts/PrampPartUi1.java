@@ -1051,6 +1051,7 @@ public class PrampPartUi1 extends ModelObject
 	    	else
 	    	{
 				Process tmp = new Process();
+				System.err.println("reading process definition " + processDefinition);
 				tmp.setInfilexml(processDefinition);
 				try
 				{
