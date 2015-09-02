@@ -43,8 +43,8 @@ public class EditFile
 {
 	private Object father;
 //	public Shell shell = new Shell(Display.getCurrent(), SWT.SHELL_TRIM & (~SWT.RESIZE));
-//	public Shell shell = new Shell(SWT.PRIMARY_MODAL | SWT.SHELL_TRIM & (~SWT.RESIZE));
-	public Shell shell = null;
+	public Shell shell = new Shell(SWT.PRIMARY_MODAL | SWT.SHELL_TRIM & (~SWT.RESIZE));
+//	public Shell shell = null;
 	private Display display = Display.getCurrent();
 	
 	private Text textKey = null;
