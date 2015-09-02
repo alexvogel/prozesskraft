@@ -87,7 +87,7 @@ public class EditVariable
 		
 		try
 		{
-			shell = new Shell(fatherShell, SWT.APPLICATION_MODAL | SWT.ON_TOP);
+			shell = new Shell(fatherShell, SWT.APPLICATION_MODAL | SWT.ON_TOP | SWT.DIALOG_TRIM);
 			shell.setText("edit variable");
 			shell.setSize(425, 162);
 			shell.setLayout(new FormLayout());
@@ -139,7 +139,7 @@ public class EditVariable
 
 		try
 		{
-			shell = new Shell(fatherShell, SWT.APPLICATION_MODAL | SWT.ON_TOP);
+			shell = new Shell(fatherShell, SWT.APPLICATION_MODAL | SWT.ON_TOP | SWT.DIALOG_TRIM);
 			shell.setText("edit variable");
 			shell.setSize(425, 162);
 			shell.setLayout(new FormLayout());
