@@ -297,7 +297,7 @@ public class Generate
 			{
 				System.err.println("reading fieldFile "+actFieldFile);
 				Reader reader = new FileReader(actFieldFile);
-				Iterable<CSVRecord> records = CSVFormat.DEFAULT.withDelimiter(';').parse(reader);
+				Iterable<CSVRecord> records = CSVFormat.DEFAULT.withDelimiter(';').withHeader().parse(reader);
 				for(CSVRecord actRecord : records)
 				{
 					System.err.println("area="+actRecord.get("area"));
