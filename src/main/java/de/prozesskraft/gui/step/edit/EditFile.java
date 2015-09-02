@@ -89,7 +89,7 @@ public class EditFile
 				
 		try
 		{
-			shell = new Shell(((SIFileGui)father).getParent().getShell(), SWT.APPLICATION_MODAL);
+			shell = new Shell(((SIFileGui)father).getParent().getShell(), SWT.PRIMARY_MODAL);
 			shell.setText("edit file");
 			shell.setSize(425, 162);
 			shell.setLayout(new FormLayout());
