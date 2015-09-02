@@ -551,6 +551,10 @@ implements Serializable
 						// env definieren
 						pb.environment().putAll(zusEnv);
 					}
+					else
+					{
+						log("debug", "no change in environment variables");
+					}
 
 					// erweitern des PATHs um den prozesseigenen path
 	//				Map<String,String> env = pb.environment();
