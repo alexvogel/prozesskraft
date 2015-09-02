@@ -501,7 +501,7 @@ public class SIInsightCreator
 			else
 			{
 //				reset_execute();
-				new ResetStep(This, step);
+				new ResetStep(shell, This, step);
 			}
 		}
 	};

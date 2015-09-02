@@ -72,16 +72,12 @@ public class ResetStep
 	/**
 	 * Constructor fuer pkraft & Co.
 	 */
-	public ResetStep(Object father, Step step)
+	public ResetStep(Shell fatherShell, Object father, Step step)
 	{
 		this.father = father;
 		this.step = step;
 
-		if(this.father instanceof SIInsightCreator)
-		{
-			shell = new Shell(((SIInsightCreator) this.father).getShell(), SWT.SHELL_TRIM & (~SWT.RESIZE));
-//			this.shell.setParent(((SIInsightCreator) this.father).getShell());
-		}
+		shell = new Shell(fatherShell, SWT.PRIMARY_MODAL | SWT.SHELL_TRIM & (~SWT.RESIZE));
 		try
 		{
 			shell.setText("reset step " + this.step.getName());
