@@ -239,6 +239,8 @@ public class Syscall {
 			writerLog.println("this program runs in directory:");
 			writerLog.println(System.getProperty("user.dir"));
 			writerLog.println("------------------------------------------------------");
+			writerLog.println("pkraft-syscall has been called with this env DISPLAY="+System.getenv("DISPLAY"));
+			writerLog.println("------------------------------------------------------");
 			writerLog.println("pkraft-syscall has been called like this...");
 			writerLog.println("------------------------------------------------------");
 			writerLog.println("pkraft syscall \\");
