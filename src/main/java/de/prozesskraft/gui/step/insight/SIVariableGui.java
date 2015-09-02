@@ -174,7 +174,7 @@ public class SIVariableGui
 				IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
 				
 				Variable variable = (Variable) thisselection.getFirstElement();
-				EditVariable editor = new EditVariable(This, step, variable);
+				EditVariable editor = new EditVariable(father.getShell(), This, step, variable);
 			}
 		}
 	};

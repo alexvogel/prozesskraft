@@ -69,6 +69,7 @@ public class EditFile
 		file.setKey("");
 		file.setRealposition("");
 
+		shell = new Shell(Display.getCurrent());
 		shell.setText("edit file");
 		shell.setSize(425, 162);
 		shell.setLocation(display.getCursorLocation());

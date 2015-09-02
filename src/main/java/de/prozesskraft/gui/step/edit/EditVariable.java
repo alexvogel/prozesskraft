@@ -37,7 +37,8 @@ import org.eclipse.swt.layout.FormLayout;
 public class EditVariable
 {
 	private Object father;
-	public Shell shell = new Shell(Display.getCurrent());
+//	public Shell shell = new Shell(Display.getCurrent());
+	public Shell shell = null;
 	private Display display = Display.getCurrent();
 	
 	private Button btnEnter = null;
@@ -61,6 +62,7 @@ public class EditVariable
 		variable.setKey("");
 		variable.setValue("");
 		
+		shell = new Shell(Display.getCurrent());
 		shell.setText("edit variable");
 		shell.setSize(425, 162);
 		shell.setLayout(new FormLayout());
@@ -75,7 +77,7 @@ public class EditVariable
 		createControls(composite);
 	}
 
-	public EditVariable(Object father, Step step)
+	public EditVariable(Shell fatherShell, Object father, Step step)
 	{
 		this.father = father;
 		this.step = step;
@@ -85,6 +87,7 @@ public class EditVariable
 		
 		try
 		{
+			shell = new Shell(fatherShell, SWT.PRIMARY_MODAL);
 			shell.setText("edit variable");
 			shell.setSize(425, 162);
 			shell.setLayout(new FormLayout());
@@ -128,7 +131,7 @@ public class EditVariable
 		}
 	}
 	
-	public EditVariable(SIVariableGui father, Step step, Variable variable)
+	public EditVariable(Shell fatherShell, SIVariableGui father, Step step, Variable variable)
 	{
 		this.father = father;
 		this.step = step;
@@ -136,6 +139,7 @@ public class EditVariable
 
 		try
 		{
+			shell = new Shell(fatherShell, SWT.PRIMARY_MODAL);
 			shell.setText("edit variable");
 			shell.setSize(425, 162);
 			shell.setLayout(new FormLayout());

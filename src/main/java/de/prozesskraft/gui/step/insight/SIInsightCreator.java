@@ -350,7 +350,7 @@ public class SIInsightCreator
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
-			new EditVariable(This, step);
+			new EditVariable(shell, This, step);
 		}
 	};
 
