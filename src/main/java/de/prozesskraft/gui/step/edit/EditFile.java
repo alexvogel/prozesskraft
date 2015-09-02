@@ -90,7 +90,7 @@ public class EditFile
 				
 		try
 		{
-			shell = new Shell(fatherShell, SWT.PRIMARY_MODAL);
+			shell = new Shell(fatherShell, SWT.APPLICATION_MODAL | SWT.ON_TOP);
 //			if(father instanceof SIInsightCreator)
 //			{
 //				shell = new Shell(((SIInsightCreator)father).getParent().getShell(), SWT.PRIMARY_MODAL);
@@ -151,7 +151,7 @@ public class EditFile
 
 		try
 		{
-			shell = new Shell(fatherShell, SWT.PRIMARY_MODAL);
+			shell = new Shell(fatherShell, SWT.APPLICATION_MODAL | SWT.ON_TOP);
 			shell.setText("edit file");
 			shell.setSize(425, 162);
 
