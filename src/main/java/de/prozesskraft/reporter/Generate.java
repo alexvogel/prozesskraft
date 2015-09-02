@@ -467,6 +467,11 @@ public class Generate
 		// alle -appendJasperFilled anhaengen
 		if ( commandline.hasOption("appendJasperFilled") )
 		{
+			// die letzte seite des berichts entfernen ACHTUNG!! Das kann moeglicherweise ein Fehler sein
+			// notwendig bei multibeulen+
+			reporter.removeLastPage();
+
+			// alle appenJasperFilled appenden...
 			for(String actAppendJasperFilled : commandline.getOptionValues("appendJasperFilled"))
 			{
 				try
