@@ -43,8 +43,8 @@ public class EditFile
 {
 	private Object father;
 //	public Shell shell = new Shell(Display.getCurrent(), SWT.SHELL_TRIM & (~SWT.RESIZE));
-	public Shell shell = new Shell(SWT.PRIMARY_MODAL | SWT.SHELL_TRIM & (~SWT.RESIZE));
-//	public Shell shell = null;
+//	public Shell shell = new Shell(SWT.PRIMARY_MODAL | SWT.SHELL_TRIM & (~SWT.RESIZE));
+	public Shell shell = null;
 	private Display display = Display.getCurrent();
 	
 	private Text textKey = null;
@@ -78,7 +78,7 @@ public class EditFile
 		createControls(composite);
 	}
 
-	public EditFile(Object father, Step step)
+	public EditFile(Shell fatherShell, Object father, Step step)
 	{
 		this.father = father;
 		this.step = step;
@@ -89,6 +89,7 @@ public class EditFile
 				
 		try
 		{
+			shell = new Shell(fatherShell, SWT.PRIMARY_MODAL);
 //			if(father instanceof SIInsightCreator)
 //			{
 //				shell = new Shell(((SIInsightCreator)father).getParent().getShell(), SWT.PRIMARY_MODAL);
@@ -140,7 +141,7 @@ public class EditFile
 		}
 	}
 	
-	public EditFile(SIFileGui father, Step step, File file)
+	public EditFile(Shell fatherShell, SIFileGui father, Step step, File file)
 	{
 		this.father = father;
 		this.step = step;
@@ -149,6 +150,7 @@ public class EditFile
 
 		try
 		{
+			shell = new Shell(fatherShell, SWT.PRIMARY_MODAL);
 			shell.setText("edit file");
 			shell.setSize(425, 162);
 

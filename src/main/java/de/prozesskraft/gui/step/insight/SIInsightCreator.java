@@ -358,7 +358,7 @@ public class SIInsightCreator
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
-			new EditFile(This, step);
+			new EditFile(shell, This, step);
 		}
 	};
 

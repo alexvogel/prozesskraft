@@ -105,7 +105,7 @@ public class SIFileGui
 				IStructuredSelection thisselection = (IStructuredSelection) viewer.getSelection();
 				
 				File file = (File) thisselection.getFirstElement();
-				EditFile editor = new EditFile(This, step, file);
+				EditFile editor = new EditFile(father.getShell(), This, step, file);
 			}
 		}
 	};
