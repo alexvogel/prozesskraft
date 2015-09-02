@@ -297,7 +297,7 @@ public class Generate
 			{
 				System.err.println("reading fieldFile "+actFieldFile);
 				Reader reader = new FileReader(actFieldFile);
-				Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(reader);
+				Iterable<CSVRecord> records = CSVFormat.DEFAULT.withDelimiter(';').parse(reader);
 				for(CSVRecord actRecord : records)
 				{
 					Map<String,String> recordAsMap = actRecord.toMap();
