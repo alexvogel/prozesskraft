@@ -213,7 +213,7 @@ public class PIInsightCreator
 			else
 			{
 				String call = father.getIni().get("apps", "filebrowser") + " " + stepDir.getAbsolutePath(); 
-				process.log("info", "calling: "+call);
+				father.log("info", "calling: "+call);
 				
 				try
 				{
