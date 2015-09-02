@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -223,7 +224,8 @@ public class Generate
 		String template = "";
 		String format = "";
 		Map<String,String> parameter = new HashMap<String,String>();
-		Map<String,ArrayList<String>> field = new HashMap<String,ArrayList<String>>();
+//		Map<String,ArrayList<String>> field = new HashMap<String,ArrayList<String>>();
+		List<Map<String,?>> field = new ArrayList<Map<String, ?>> ();
 		String output = "";
 
 		if ( !( commandline.hasOption("template")) )
@@ -296,28 +298,7 @@ public class Generate
 				for(CSVRecord actRecord : records)
 				{
 					Map<String,String> recordAsMap = actRecord.toMap();
-					
-					// den record map in den map 'field' integrieren
-					for(String actKey : recordAsMap.keySet())
-					{
-						// gibt es den key im map schon schon?
-						if(field.containsKey(actKey))
-						{
-							// die liste extrahieren
-							ArrayList<String> column = field.get(actKey);
-							// den neuen wert hinzufuegen
-							column.add(recordAsMap.get(actKey));
-						}
-						// eine neue liste erstellen
-						else
-						{
-							ArrayList<String> column = new ArrayList<String>();
-							// den wert hinzufuegen
-							column.add(recordAsMap.get(actKey));
-							// die liste in den map putten
-							field.put(actKey, column);
-						}
-					}
+					field.add(recordAsMap);
 				}
 			}
 		}
@@ -328,28 +309,27 @@ public class Generate
 			String[] fields = commandline.getOptionValues("field");
 
 			// fields parsen (an '=' splitten) und ins map eintragen
+			Map<String,ArrayList<String>> fieldsTmp = new HashMap<String,ArrayList<String>>();
 			for(String actField : fields)
 			{
 				String[] keyValue = actField.split("=", 2);
-				
+
 				if(keyValue.length == 2)
 				{
-					// gibt es den key im map schon schon?
-					if(field.containsKey(keyValue[0]))
+//					Map<String,String> recordMap = new HashMap<String,String>();
+//					recordMap.put(keyValue[0], keyValue[1]);
+					
+					// gibts den key schon? dann hinzufuegen
+					if(fieldsTmp.containsKey(keyValue[0]))
 					{
-						// die liste extrahieren
-						ArrayList<String> column = field.get(keyValue[0]);
-						// den neuen wert hinzufuegen
-						column.add(keyValue[1]);
+						fieldsTmp.get(keyValue[0]).add(keyValue[1]);
 					}
-					// eine neue liste erstellen
+					// gibts den key noch nicht, dann eine liste erstellen und den value hinzufuegen
 					else
 					{
-						ArrayList<String> column = new ArrayList<String>();
-						// den wert hinzufuegen
-						column.add(keyValue[1]);
-						// die liste in den map putten
-						field.put(keyValue[0], column);
+						ArrayList<String> liste = new ArrayList<String>();
+						liste.add(keyValue[1]);
+						fieldsTmp.put(keyValue[0], liste);
 					}
 				}
 				else
@@ -358,27 +338,39 @@ public class Generate
 					Generate.exiter();
 				}
 			}
-			
-			// testen ob jeder schluessel im field map die gleiche anzahl an eintraegen enthaelt
+
+			// testen ob jeder schluessel im fieldsTmp die gleiche anzahl an eintraegen enthaelt
 			// dies muss sein, da sonst nicht klar ist welche position in der entsprechenden spalte leer bleiben soll
+			Integer anzahlZeilen = null;
 			Integer anzahlDerLetztenSpalte = null;
-			for(String actKey : field.keySet())
+			for(String actKey : fieldsTmp.keySet())
 			{
+				anzahlZeilen = fieldsTmp.get(actKey).size();
 				if(anzahlDerLetztenSpalte != null)
 				{
-					if(field.get(actKey).size() != anzahlDerLetztenSpalte)
+					if(fieldsTmp.get(actKey).size() != anzahlDerLetztenSpalte)
 					{
 						System.err.println("error in option -field. you have to provide the same amount of values for every columnname.");
 						exiter();
 					}
 					else
 					{
-						anzahlDerLetztenSpalte = field.get(actKey).size();
+						anzahlDerLetztenSpalte = fieldsTmp.get(actKey).size();
 					}
 				}
 				else
 				{
-					anzahlDerLetztenSpalte = field.get(actKey).size();
+					anzahlDerLetztenSpalte = fieldsTmp.get(actKey).size();
+				}
+			}
+			
+			// hinzufuegen der fiels, die ueber aufrufoption kommen zur der gesamt field map
+			for(int i=0; i<anzahlZeilen; i++)
+			{
+				Map<String,String> recordAsMap = new HashMap<String,String>();
+				for(String actKey : fieldsTmp.keySet())
+				{
+					recordAsMap.put(actKey, fieldsTmp.get(actKey).get(i));
 				}
 			}
 		}
@@ -448,22 +440,6 @@ public class Generate
 		// set template
 		reporter.setJrxml(template);
 
-		// parameter aus parameterFile einlesen, falls notwendig
-		if ( commandline.hasOption("parameterFile") )
-		{
-			// wenn parameterfile tag==main, dann alle parameter daraus dem hauptreport hinzufuegen
-			
-			// wenn parameterfile tag!=main, dann einen subreport erstellen (tag = name) und diesem alle parameter aus diesem file hinzufuegen
-		}
-
-		// fieldFile muss ein csv file sein
-		if ( commandline.hasOption("fieldFile") )
-		{
-			// wenn fieldFile tag==main, dann dataConnectorCsv erstellen, auf dieses file zeigen lassen und dem hauptreport als dataConnector hinzufuegen 
-
-			// wenn fieldFile tag!=main, dann dataConnectorCsv erstellen, auf dieses file zeigen lassen und dem subreport  (tag = name) als dataConnector hinzufuegen
-		}
-
 		// compile template
 		try {
 			reporter.compile();
@@ -479,27 +455,11 @@ public class Generate
 			reporter.setParameter(actParameterKey, parameter.get(actParameterKey));
 		}
 
-		// set the fields
-		// anzahl der zeilen herausfinden
-		int anzahlDerZeilen = 0;
-		for(String actFieldKey : field.keySet())
-		{
-			anzahlDerZeilen = field.get(actFieldKey).size();
-			break;
-		}
 		// fuer jede zeile einen map erstellen und im reporter hinzufuegen
-		for(int x = 0; x < anzahlDerZeilen; x++)
+		for(Map recordAsMap : field)
 		{
-			// zusammenstellen einer zeile
-			HashMap line = new HashMap<String,String>();
-			for(String actFieldKey : field.keySet())
-			{
-				System.err.println("adding field " + actFieldKey + "=" + field.get(actFieldKey).get(x) );
-				line.put(actFieldKey, field.get(actFieldKey).get(x));
-			}
-
 			// dem report hinzufuegen
-			reporter.addField(line);
+			reporter.addField(recordAsMap);
 		}
 
 		// fill report
