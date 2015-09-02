@@ -63,7 +63,7 @@ public class Reporter
 	// parameter
 	private Map<String,Object> parameter = new HashMap<String,Object>();
 	// field (dataconnection)
-	private List<Map<String,?>> field = new ArrayList<Map<String, ?>> ();
+	private List<Map<String,?>> field = new ArrayList<Map<String,?>> ();
 //	private String fieldCsvPath = null;
 
 	private Map<String,Reporter> subreports = new HashMap<String,Reporter>();
@@ -145,7 +145,7 @@ public class Reporter
 		parameter.put(paramKey, paramValue);
 	}
 	
-	public void addField(HashMap map)
+	public void addField(Map map)
 	{
 		field.add(map);
 	}
