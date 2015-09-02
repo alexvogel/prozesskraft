@@ -469,7 +469,7 @@ public class Generate
 		{
 			// die letzte seite des berichts entfernen ACHTUNG!! Das kann moeglicherweise ein Fehler sein
 			// notwendig bei multibeulen+
-			reporter.removeLastPage();
+//			reporter.removeLastPage();
 
 			// alle appenJasperFilled appenden...
 			for(String actAppendJasperFilled : commandline.getOptionValues("appendJasperFilled"))
