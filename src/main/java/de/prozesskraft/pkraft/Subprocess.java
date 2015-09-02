@@ -139,117 +139,151 @@ implements Serializable
 		// wenn schritt noch nicht gestartet wurde
 		else 
 		{
-			// den aufruf erstellen
-			log("info", "subprocess not created yet");
-
-			// das stepverzeichnis
-			java.io.File stepDir = new java.io.File(this.getParent().getAbsdir());
+			// soll der Schritt ueberhaupt gestartet werden?
+			boolean schrittStarten = true;
 			
-			// step-directory (=neuerProzess-Directory) anlegen, falls es noch nicht existiert
-			if(!(stepDir.exists()))
+			// nicht starten, wenn aktuell laufendeSteps >= simultaneousSteps(max=?)
+			// nicht starten, wenn der zeitpunkt des letzten Stepstarts kuerzer zurueckliegt als simultaneousSteps(delay=?)
+			
+			// 1) max. erlaubte laufende stepanzahl bereits erreicht?
+			Integer workingSteps =  this.getParent().getParent().getStepWorking().size();
+			Integer maxWorkingSteps =  this.getParent().getParent().getMaxSimultaneousSteps();
+			log("debug", "amount of working Steps is: " + workingSteps + " maxSimultaneousSteps=" + maxWorkingSteps);
+			if(this.getParent().getParent().getMaxSimultaneousSteps() <= workingSteps)
 			{
-				log("info", "creating step directory "+stepDir.getCanonicalPath());
-				if(!this.getParent().mkdir(stepDir.getCanonicalPath()))
+				log("info", "starting of new steps is not allowed at the moment");
+				schrittStarten = false;
+			}
+			else
+			{
+				log("info", "starting of new steps is allowed");
+			}
+
+			log("debug", "now in milliseconds: " + System.currentTimeMillis());
+			log("debug", "time of last stepstart in milliseconds: " + this.getParent().getParent().getTimeOfLastStepStart());
+			Integer minutesSinceLastStepStart = (int)((long)(System.currentTimeMillis() - this.getParent().getParent().getTimeOfLastStepStart()) / 60000);
+			// 2) der zeitpunkt an dem der letzte schritt gestartet wurde ist weniger minuten her als der mindest-Delay fuer Stepstarts vorschreibt
+			if( minutesSinceLastStepStart < this.getParent().getParent().getStepStartDelayMinutes())
+			{
+				log("debug", "minutes since last Step has been started: " + minutesSinceLastStepStart + " StepStartDelayMinutes=" + this.getParent().getParent().getStepStartDelayMinutes() +". starting of new steps is not allowed at the moment");
+				schrittStarten = false;
+			}
+
+			// wenn schritt noch nicht gestartet wurde
+			if(schrittStarten) 
+			{
+				// den aufruf erstellen
+				log("info", "subprocess not created yet");
+	
+				// das stepverzeichnis
+				java.io.File stepDir = new java.io.File(this.getParent().getAbsdir());
+				
+				// step-directory (=neuerProzess-Directory) anlegen, falls es noch nicht existiert
+				if(!(stepDir.exists()))
 				{
-					log("error", "could not create directory: "+stepDir.getCanonicalPath());
+					log("info", "creating step directory "+stepDir.getCanonicalPath());
+					if(!this.getParent().mkdir(stepDir.getCanonicalPath()))
+					{
+						log("error", "could not create directory: "+stepDir.getCanonicalPath());
+						this.setStatus("error");
+					}
+				}
+	
+				// aus der hinterlegten Definition einen Prozess erzeugen
+				log("info", "committing the rootStep of subprocess...");
+				Process newProcess = this.genProcess(domainInstallationDirectory);
+				
+				// die id des Prozesses als parentid des subprocesses setzen
+				log("info", "setting the parentid of subprocess...");
+				newProcess.setParentid(this.getParent().getParent().getId());
+				
+				// die commits durchfuehren. erst jetzt werden die files in das stepeigene verzeichnis kopiert und die
+				// entsprechenden pfadangaben im file-objekt angepasst
+				log("info", "committing the rootStep of subprocess...");
+				newProcess.getRootStep().commit();
+				
+				// und ins step-verzeichnis das binaere file schreiben
+				String processInstance = stepDir.getCanonicalPath() + "/process.pmb";
+				newProcess.setOutfilebinary(processInstance);
+				newProcess.setInfilebinary(processInstance);
+	
+				log("info", "writing the binary-instance-file of subprocess...");
+				newProcess.writeBinary();
+				
+				// und das process object in subprocess ablegen
+				this.setProcess(newProcess);
+	
+				// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)
+				String AbsLogSyscallWrapper = new java.io.File(new java.io.File(this.getParent().getAbspid()).getParent()).getAbsolutePath()+"/.log";
+	
+				try
+				{
+					// den Aufrufstring fuer die externe App (process syscall --version 0.6.0)) splitten
+					// beim aufruf muss das erste argument im path zu finden sein, sonst gibt die fehlermeldung 'no such file or directory'
+					ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(processSyscall.split(" ")));
+	
+					// die sonstigen argumente hinzufuegen
+					processSyscallWithArgs.add("-call");
+					processSyscallWithArgs.add(aufrufProcessManager + " -instance " + processInstance);
+	//				processSyscallWithArgs.add("\""+processSyscall+"\"");
+					processSyscallWithArgs.add("-stdout");
+					processSyscallWithArgs.add(this.getParent().getAbsstdout());
+					processSyscallWithArgs.add("-stderr");
+					processSyscallWithArgs.add(this.getParent().getAbsstderr());
+					processSyscallWithArgs.add("-pid");
+					processSyscallWithArgs.add(this.getParent().getAbspid());
+					processSyscallWithArgs.add("-mylog");
+					processSyscallWithArgs.add(AbsLogSyscallWrapper);
+					processSyscallWithArgs.add("-maxrun");
+					processSyscallWithArgs.add(""+this.maxrun);
+	
+					// erstellen prozessbuilder
+					ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
+	
+					// erweitern des PATHs um den prozesseigenen path
+	//				Map<String,String> env = pb.environment();
+	//				String path = env.get("PATH");
+	//				log("debug", "$PATH="+path);
+	//				path = this.parent.getAbsPath()+":"+path;
+	//				env.put("PATH", path);
+	//				log("info", "path: "+path);
+					
+					// setzen der aktuellen directory
+					java.io.File directory = new java.io.File(this.getParent().getAbsdir());
+					log("info", "setting execution directory to: "+directory.getAbsolutePath());
+					pb.directory(directory);
+	
+					// zum debuggen ein paar ausgaben
+	//				java.lang.Process p1 = Runtime.getRuntime().exec("date >> ~/tmp.debug.work.txt");
+	//				p1.waitFor();
+	//				java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
+	//				p2.waitFor();
+	//				java.lang.Process pro = Runtime.getRuntime().exec("nautilus");
+	//				java.lang.Process superpro = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
+	//				p3.waitFor();
+					
+					log ("info", "calling: " + pb.command());
+	
+					// starten des prozesses
+					java.lang.Process sysproc = pb.start();
+	
+	
+					
+	//				alternativer aufruf
+	//				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
+					
+	//				log("info", "call executed. pid="+sysproc.hashCode());
+	
+					// wait 2 seconds for becoming the pid-file visible
+					Thread.sleep(2000);
+				}
+				catch (Exception e2)
+				{
+					log("error", e2.getMessage());
 					this.setStatus("error");
 				}
+				this.setStatus("working");
 			}
-
-			// aus der hinterlegten Definition einen Prozess erzeugen
-			log("info", "committing the rootStep of subprocess...");
-			Process newProcess = this.genProcess(domainInstallationDirectory);
-			
-			// die id des Prozesses als parentid des subprocesses setzen
-			log("info", "setting the parentid of subprocess...");
-			newProcess.setParentid(this.getParent().getParent().getId());
-			
-			// die commits durchfuehren. erst jetzt werden die files in das stepeigene verzeichnis kopiert und die
-			// entsprechenden pfadangaben im file-objekt angepasst
-			log("info", "committing the rootStep of subprocess...");
-			newProcess.getRootStep().commit();
-			
-			// und ins step-verzeichnis das binaere file schreiben
-			String processInstance = stepDir.getCanonicalPath() + "/process.pmb";
-			newProcess.setOutfilebinary(processInstance);
-			newProcess.setInfilebinary(processInstance);
-
-			log("info", "writing the binary-instance-file of subprocess...");
-			newProcess.writeBinary();
-			
-			// und das process object in subprocess ablegen
-			this.setProcess(newProcess);
-
-			// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)
-			String AbsLogSyscallWrapper = new java.io.File(new java.io.File(this.getParent().getAbspid()).getParent()).getAbsolutePath()+"/.log";
-
-			try
-			{
-				// den Aufrufstring fuer die externe App (process syscall --version 0.6.0)) splitten
-				// beim aufruf muss das erste argument im path zu finden sein, sonst gibt die fehlermeldung 'no such file or directory'
-				ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(processSyscall.split(" ")));
-
-				// die sonstigen argumente hinzufuegen
-				processSyscallWithArgs.add("-call");
-				processSyscallWithArgs.add(aufrufProcessManager + " -instance " + processInstance);
-//				processSyscallWithArgs.add("\""+processSyscall+"\"");
-				processSyscallWithArgs.add("-stdout");
-				processSyscallWithArgs.add(this.getParent().getAbsstdout());
-				processSyscallWithArgs.add("-stderr");
-				processSyscallWithArgs.add(this.getParent().getAbsstderr());
-				processSyscallWithArgs.add("-pid");
-				processSyscallWithArgs.add(this.getParent().getAbspid());
-				processSyscallWithArgs.add("-mylog");
-				processSyscallWithArgs.add(AbsLogSyscallWrapper);
-				processSyscallWithArgs.add("-maxrun");
-				processSyscallWithArgs.add(""+this.maxrun);
-
-				// erstellen prozessbuilder
-				ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
-
-				// erweitern des PATHs um den prozesseigenen path
-//				Map<String,String> env = pb.environment();
-//				String path = env.get("PATH");
-//				log("debug", "$PATH="+path);
-//				path = this.parent.getAbsPath()+":"+path;
-//				env.put("PATH", path);
-//				log("info", "path: "+path);
-				
-				// setzen der aktuellen directory
-				java.io.File directory = new java.io.File(this.getParent().getAbsdir());
-				log("info", "setting execution directory to: "+directory.getAbsolutePath());
-				pb.directory(directory);
-
-				// zum debuggen ein paar ausgaben
-//				java.lang.Process p1 = Runtime.getRuntime().exec("date >> ~/tmp.debug.work.txt");
-//				p1.waitFor();
-//				java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
-//				p2.waitFor();
-//				java.lang.Process pro = Runtime.getRuntime().exec("nautilus");
-//				java.lang.Process superpro = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
-//				p3.waitFor();
-				
-				log ("info", "calling: " + pb.command());
-
-				// starten des prozesses
-				java.lang.Process sysproc = pb.start();
-
-
-				
-//				alternativer aufruf
-//				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
-				
-//				log("info", "call executed. pid="+sysproc.hashCode());
-
-				// wait 2 seconds for becoming the pid-file visible
-				Thread.sleep(2000);
-			}
-			catch (Exception e2)
-			{
-				log("error", e2.getMessage());
-				this.setStatus("error");
-			}
-			this.setStatus("working");
 		}
 	}
 
