@@ -300,6 +300,7 @@ public class Generate
 				Iterable<CSVRecord> records = CSVFormat.DEFAULT.withDelimiter(';').parse(reader);
 				for(CSVRecord actRecord : records)
 				{
+					System.err.println("area="+actRecord.get("area"));
 					Map<String,String> recordAsMap = actRecord.toMap();
 					System.err.println("reading line from fieldFile with " + recordAsMap.keySet().size() + " entries");
 					field.add(recordAsMap);
