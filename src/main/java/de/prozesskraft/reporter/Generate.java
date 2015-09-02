@@ -290,14 +290,18 @@ public class Generate
 		{
 			String[] fieldFiles = commandline.getOptionValues("fieldFile");
 			
+			System.err.println("reading fieldFiles");
+
 			// jedes csv-file einlesen, parsen, den inhalt dem grossen field-map hinzufuegen
 			for(String actFieldFile : fieldFiles)
 			{
+				System.err.println("reading fieldFile "+actFieldFile);
 				Reader reader = new FileReader(actFieldFile);
 				Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(reader);
 				for(CSVRecord actRecord : records)
 				{
 					Map<String,String> recordAsMap = actRecord.toMap();
+					System.err.println("reading line from fieldFile with " + recordAsMap.keySet().size() + " entries");
 					field.add(recordAsMap);
 				}
 			}
