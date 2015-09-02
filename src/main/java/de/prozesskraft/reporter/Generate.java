@@ -225,7 +225,7 @@ public class Generate
 		String format = "";
 		Map<String,String> parameter = new HashMap<String,String>();
 //		Map<String,ArrayList<String>> field = new HashMap<String,ArrayList<String>>();
-		List<Map<String,?>> field = new ArrayList<Map<String, ?>> ();
+		List<Map<String,String>> field = new ArrayList<Map<String,String>> ();
 		String output = "";
 
 		if ( !( commandline.hasOption("template")) )
@@ -456,8 +456,12 @@ public class Generate
 		}
 
 		// fuer jede zeile einen map erstellen und im reporter hinzufuegen
-		for(Map recordAsMap : field)
+		for(Map<String,String> recordAsMap : field)
 		{
+			for(String actKey : recordAsMap.keySet())
+			{
+				System.err.println("adding field " + actKey + "=" +  recordAsMap.get(actKey));
+			}
 			// dem report hinzufuegen
 			reporter.addField(recordAsMap);
 		}
