@@ -218,6 +218,20 @@ public class SIFileGui
 	public void setFather(SIInsightCreator father) {
 		this.father = father;
 	}
+
+	/**
+	 * @return the parent
+	 */
+	public Composite getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param parent the parent to set
+	 */
+	public void setParent(Composite parent) {
+		this.parent = parent;
+	}
 	
 
 }

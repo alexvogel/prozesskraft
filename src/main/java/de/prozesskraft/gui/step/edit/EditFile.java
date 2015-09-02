@@ -43,7 +43,8 @@ public class EditFile
 {
 	private Object father;
 //	public Shell shell = new Shell(Display.getCurrent(), SWT.SHELL_TRIM & (~SWT.RESIZE));
-	public Shell shell = new Shell(SWT.PRIMARY_MODAL | SWT.SHELL_TRIM & (~SWT.RESIZE));
+//	public Shell shell = new Shell(SWT.PRIMARY_MODAL | SWT.SHELL_TRIM & (~SWT.RESIZE));
+	public Shell shell = null;
 	private Display display = Display.getCurrent();
 	
 	private Text textKey = null;
@@ -88,6 +89,7 @@ public class EditFile
 				
 		try
 		{
+			shell = new Shell(((SIFileGui)father).getParent().getShell(), SWT.APPLICATION_MODAL);
 			shell.setText("edit file");
 			shell.setSize(425, 162);
 			shell.setLayout(new FormLayout());
