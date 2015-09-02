@@ -2,8 +2,10 @@ package de.prozesskraft.reporter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileVisitOption;
@@ -30,6 +32,8 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
@@ -139,6 +143,12 @@ public class Generate
 //				.isRequired()
 				.create("field");
 		
+		Option ofieldFile = OptionBuilder.withArgName("FILE")
+				.hasArgs()
+				.withDescription("[optional] file that contains field information in csv format with the first line as a header (header => key)")
+//				.isRequired()
+				.create("fieldFile");
+		
 		Option ooutput = OptionBuilder.withArgName("FILE")
 				.hasArg()
 				.withDescription("[mandatory; default: report.<ext>] the generated report will be written to this output file. the extension depends on the defined -format")
@@ -166,10 +176,11 @@ public class Generate
 		options.addOption( oparameter );
 		options.addOption( oparameterFile );
 		options.addOption( ofield );
+		options.addOption( ofieldFile );
 		options.addOption( ooutput );
 		options.addOption( oappendJasperFilled );
 		options.addOption( of );
-		
+
 		/*----------------------------
 		  create the parser
 		----------------------------*/
@@ -271,12 +282,51 @@ public class Generate
 				
 			}
 		}
-		
+
+		// fieldvalues aus csv einlesen und im map speichern
+		if ( commandline.hasOption("fieldFile") )
+		{
+			String[] fieldFiles = commandline.getOptionValues("fieldFile");
+			
+			// jedes csv-file einlesen, parsen, den inhalt dem grossen field-map hinzufuegen
+			for(String actFieldFile : fieldFiles)
+			{
+				Reader reader = new FileReader(actFieldFile);
+				Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(reader);
+				for(CSVRecord actRecord : records)
+				{
+					Map<String,String> recordAsMap = actRecord.toMap();
+					
+					// den record map in den map 'field' integrieren
+					for(String actKey : recordAsMap.keySet())
+					{
+						// gibt es den key im map schon schon?
+						if(field.containsKey(actKey))
+						{
+							// die liste extrahieren
+							ArrayList<String> column = field.get(actKey);
+							// den neuen wert hinzufuegen
+							column.add(recordAsMap.get(actKey));
+						}
+						// eine neue liste erstellen
+						else
+						{
+							ArrayList<String> column = new ArrayList<String>();
+							// den wert hinzufuegen
+							column.add(recordAsMap.get(actKey));
+							// die liste in den map putten
+							field.put(actKey, column);
+						}
+					}
+				}
+			}
+		}
+
 		// die Eingabeparameter parsen und im map speichern
 		if ( commandline.hasOption("field") )
 		{
 			String[] fields = commandline.getOptionValues("field");
-			
+
 			// fields parsen (an '=' splitten) und ins map eintragen
 			for(String actField : fields)
 			{
