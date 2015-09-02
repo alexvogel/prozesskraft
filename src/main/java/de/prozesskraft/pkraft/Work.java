@@ -462,11 +462,17 @@ implements Serializable
 			// nicht starten, wenn der zeitpunkt des letzten Stepstarts kuerzer zurueckliegt als simultaneousSteps(delay=?)
 			
 			// 1) max. erlaubte laufende stepanzahl bereits erreicht?
-			Integer maxWorkingSteps =  this.getParent().getParent().getStepWorking().size();
-			if(this.getParent().getParent().getMaxSimultaneousSteps() <= maxWorkingSteps)
+			Integer workingSteps =  this.getParent().getParent().getStepWorking().size();
+			Integer maxWorkingSteps =  this.getParent().getParent().getMaxSimultaneousSteps();
+			log("debug", "amount of working Steps is: " + workingSteps + " maxSimultaneousSteps=" + maxWorkingSteps);
+			if(this.getParent().getParent().getMaxSimultaneousSteps() <= workingSteps)
 			{
-				log("debug", "amount of working Steps is: " + maxWorkingSteps + " maxSimultaneousSteps=" + this.getParent().getParent().getMaxSimultaneousSteps() +". starting of new steps is not allowed at the moment");
+				log("info", "starting of new steps is not allowed at the moment");
 				schrittStarten = false;
+			}
+			else
+			{
+				log("info", "starting of new steps is allowed");
 			}
 
 			log("debug", "now in milliseconds: " + System.currentTimeMillis());
@@ -608,7 +614,7 @@ implements Serializable
 			return false;
 		}
 	}
-	
+
 	public static boolean isPidalive(String pid)
 	{
 		try
