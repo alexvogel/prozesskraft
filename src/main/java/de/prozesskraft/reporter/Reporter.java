@@ -443,11 +443,25 @@ public class Reporter
 			ObjectInputStream is = new ObjectInputStream(fs);
 			JasperPrint jasperPrintToAppend = (JasperPrint)is.readObject();
 
+			// alle (ausser der letzten) seiten des bestehenden reports kopieren
+			JasperPrint jasperPrintJoin = new JasperPrint();
+			System.err.println("amount of pages in jasperPrint is: " + this.jasperPrint.getPages().size());
+			System.err.println("copying pages to a join jasperPrint");
+			for(int i = 0; i+1 < this.jasperPrint.getPages().size(); i++)
+			{
+				System.err.println("adding page " + (i+1));
+				jasperPrintJoin.addPage(this.jasperPrint.getPages().get(i));
+			}
+			System.err.println("copying pages to a join jasperPrint done");
+
+			System.err.println("appending to the join jasperPrint from jasperFilled" + inPath);
 			// jede einzelne seite dem report anhaengen
 			for(JRPrintPage jasperPrintPage : jasperPrintToAppend.getPages())
 			{
+				System.err.println("appending page");
 				this.jasperPrint.addPage(jasperPrintPage);
 			}
+			System.err.println("appending pages to the join jasperPrint from jasperFilled " + inPath);
 
 			is.close();
 		}
