@@ -459,14 +459,14 @@ public class Reporter
 			ObjectInputStream is = new ObjectInputStream(fs);
 			JasperPrint jasperPrintToAppend = (JasperPrint)is.readObject();
 
-			System.err.println("appending to the join jasperPrint from jasperFilled" + inPath);
+			System.err.println("appending to the existent jasperPrint from jasperFilled" + inPath);
 			// jede einzelne seite dem report anhaengen
 			for(JRPrintPage jasperPrintPage : jasperPrintToAppend.getPages())
 			{
 				System.err.println("appending page");
 				this.jasperPrint.addPage(jasperPrintPage);
 			}
-			System.err.println("appending pages to the join jasperPrint from jasperFilled " + inPath);
+			System.err.println("appending pages to the existent jasperPrint from jasperFilled " + inPath);
 
 			is.close();
 		}
