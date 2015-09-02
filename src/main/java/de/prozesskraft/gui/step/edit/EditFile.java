@@ -43,7 +43,7 @@ public class EditFile
 {
 	private Object father;
 //	public Shell shell = new Shell(Display.getCurrent(), SWT.SHELL_TRIM & (~SWT.RESIZE));
-	public Shell shell = new Shell(Display.getCurrent());
+	public Shell shell = new Shell(SWT.PRIMARY_MODAL | SWT.SHELL_TRIM & (~SWT.RESIZE));
 	private Display display = Display.getCurrent();
 	
 	private Text textKey = null;
@@ -433,7 +433,7 @@ public class EditFile
 				{
 //					file.setKey((String)value);
 
-					if ( textKey.getText().matches("^\\w+") )
+					if ( textKey.getText().matches("^.+") )
 					{
 						keyOk = true;
 						controlDecorationKey.hide();
@@ -449,9 +449,9 @@ public class EditFile
 						btnEnter.setEnabled(false);
 					}
 				}
-				controlDecorationKey.setDescriptionText( "type at least one character (a-Z0-9_)" );
+				controlDecorationKey.setDescriptionText( "type at least one character" );
 				controlDecorationKey.show();
-				return ValidationStatus.error("type at least one character (a-Z0-9_)");
+				return ValidationStatus.error("type at least one character");
 			}
 		};
 
