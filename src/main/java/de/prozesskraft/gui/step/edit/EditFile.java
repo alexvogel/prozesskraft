@@ -89,14 +89,14 @@ public class EditFile
 				
 		try
 		{
-			if(father instanceof SIInsightCreator)
-			{
-				shell = new Shell(((SIInsightCreator)father).getParent().getShell(), SWT.PRIMARY_MODAL);
-			}
-			else if(father instanceof SIFileGui)
-			{
-				shell = new Shell(((SIFileGui)father).getParent().getShell(), SWT.PRIMARY_MODAL);
-			}
+//			if(father instanceof SIInsightCreator)
+//			{
+//				shell = new Shell(((SIInsightCreator)father).getParent().getShell(), SWT.PRIMARY_MODAL);
+//			}
+//			else if(father instanceof SIFileGui)
+//			{
+//				shell = new Shell(((SIFileGui)father).getParent().getShell(), SWT.PRIMARY_MODAL);
+//			}
 			shell.setText("edit file");
 			shell.setSize(425, 162);
 			shell.setLayout(new FormLayout());
