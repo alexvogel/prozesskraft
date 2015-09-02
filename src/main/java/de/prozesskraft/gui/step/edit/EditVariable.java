@@ -101,7 +101,7 @@ public class EditVariable
 			fd_composite.left = new FormAttachment(0);
 			composite.setLayoutData(fd_composite);
 			createControls(composite);
-			
+
 			try
 			{
 				shell.open();
