@@ -76,11 +76,11 @@ public class Generate
 //			System.out.println("***ArrayIndexOutOfBoundsException: Please specify processdefinition.xml, openoffice_template.od*, newfile_for_processdefinitions.odt\n" + e.toString());
 //		}
 
-		for(String actOpt : args)
-		{
-			System.err.println(actOpt);
-		}
-		System.exit(1);
+//		for(String actOpt : args)
+//		{
+//			System.err.println(actOpt);
+//		}
+//		System.exit(1);
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
