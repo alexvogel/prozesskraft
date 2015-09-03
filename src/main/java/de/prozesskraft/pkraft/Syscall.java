@@ -300,9 +300,18 @@ public class Syscall {
 			ArrayList<String> processSyscallWithArgs = new ArrayList<String>();
 			// noch vorhandene blanks in argumenten maskieren
 			writerLog.println("all values have been double-quotes-quote to \"'mask'\" special characters like whitespaces and the like");
+			int nr = 0;
 			for(String actArg : processSyscallWithArgsTmp)
 			{
-				processSyscallWithArgs.add("\"'" + actArg + "'\"" );
+				if(nr == 0)
+				{
+					processSyscallWithArgs.add(actArg);
+				}
+				else
+				{
+					processSyscallWithArgs.add("\"'" + actArg + "'\"" );
+				}
+				nr++;
 			}
 
 			writerLog.println("pkraft-syscall has called this...");
