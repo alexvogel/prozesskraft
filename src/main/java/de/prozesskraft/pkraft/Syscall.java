@@ -299,20 +299,21 @@ public class Syscall {
 			// in diesem array sollen die endgueltig verarbeiteten parameter gehalten werden
 			ArrayList<String> processSyscallWithArgs = new ArrayList<String>();
 			// noch vorhandene blanks in argumenten maskieren
-			writerLog.println("all values have been double-quotes-quote to \"'mask'\" special characters like whitespaces and the like");
-			int nr = 0;
-			for(String actArg : processSyscallWithArgsTmp)
-			{
-				if(nr == 0)
-				{
-					processSyscallWithArgs.add(actArg);
-				}
-				else
-				{
-					processSyscallWithArgs.add("\"'" + actArg + "'\"" );
-				}
-				nr++;
-			}
+//			writerLog.println("all values have been double-quotes-quote to \"'mask'\" special characters like whitespaces and the like");
+//			int nr = 0;
+//			for(String actArg : processSyscallWithArgsTmp)
+//			{
+//				if(nr == 0)
+//				{
+//					processSyscallWithArgs.add(actArg);
+//				}
+//				else
+//				{
+//					processSyscallWithArgs.add("\"'" + actArg + "'\"" );
+//				}
+//				nr++;
+//			}
+			processSyscallWithArgs = processSyscallWithArgsTmp;
 
 			writerLog.println("pkraft-syscall has called this...");
 			writerLog.println("------------------------------------------------------");
