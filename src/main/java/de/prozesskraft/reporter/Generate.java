@@ -119,7 +119,7 @@ public class Generate
 			newArgAsList.add(actKey);
 			newArgAsList.addAll(newArgs.get(actKey));
 		}
-		args = (String[])newArgAsList.toArray();
+		args = newArgAsList.toArray(new String[newArgAsList.size()]);
 		
 		System.exit(1);
 		/*----------------------------
