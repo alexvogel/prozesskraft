@@ -134,7 +134,10 @@ public class Generate
 		// newargs nach args kopieren, null values ignorieren
 		for(String actKey : newArgs.keySet())
 		{
-			newArgAsList.add(actKey);
+			if(actKey != null)
+			{
+				newArgAsList.add(actKey);
+			}
 			for(String actString : newArgs.get(actKey))
 			{
 				if(actString != null)
