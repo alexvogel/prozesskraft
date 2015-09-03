@@ -159,7 +159,7 @@ public class Generate
 			System.err.println(actString);
 		}
 		
-		System.exit(1);
+//		System.exit(1);
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
