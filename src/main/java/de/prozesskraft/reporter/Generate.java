@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import javax.xml.bind.JAXBException;
 
 import net.sf.jasperreports.engine.JRException;
@@ -77,7 +80,7 @@ public class Generate
 //		}
 
 		// damit man diese anwendung auch mit whitespaces in den values aufrufen kann (z.B. -parameter name=Alexander Vogel), wird args[] umgestaltet
-		Map<String, ArrayList<String>> newArgs = new HashMap<String, ArrayList<String>>();
+		Multimap<String,String> newArgs = HashMultimap.create();
 		boolean lastMemberWasOptionName = false;
 		String lastOptionName = null;
 		String lastValue = null;
@@ -86,13 +89,10 @@ public class Generate
 			// wenn es eine option der form -parameter ist
 			if(actOpt.matches("^-.+$"))
 			{
-				// den letzten value im map speichern
+				// den letzten value im multiMap speichern
 				if(lastValue != null)
 				{
-					if(newArgs.containsKey(actOpt))
-					{
-						newArgs.get(actOpt).add(lastValue);
-					}
+					newArgs.put(actOpt, lastValue);
 				}
 
 				lastValue = null;
@@ -103,15 +103,16 @@ public class Generate
 			else if(lastMemberWasOptionName)
 			{
 				lastValue = actOpt;
+				
 				lastMemberWasOptionName = false;
 			}
 			else
 			{
 				lastValue += " " + actOpt;
 				lastMemberWasOptionName = false;
-			}				
+			}
 		}
-		
+
 		ArrayList<String> newArgAsList = new ArrayList<String>();
 		// newargs nach args kopieren
 		for(String actKey : newArgs.keySet())
@@ -120,8 +121,9 @@ public class Generate
 			newArgAsList.addAll(newArgs.get(actKey));
 		}
 		args = newArgAsList.toArray(new String[newArgAsList.size()]);
-		
+
 		// ausgeben
+		System.err.println("anzahl der parameterNamen: " +newArgs.keySet().size());
 		for(String actString : args)
 		{
 			System.err.println(actString);
