@@ -77,6 +77,7 @@ public class PrampPartUi1 extends ModelObject
 	
 	static CommandLine line;
 	private DataBindingContext bindingContextProcesses;
+	private Button button_create = null;
 	private Button button_open = null;
 	private Button button_start = null;
 	private Button button_testrun = null;
@@ -116,6 +117,8 @@ public class PrampPartUi1 extends ModelObject
 	final Color colorLogInfo = new Color(new Shell().getDisplay(), 184, 210, 176);
 	
 	int logLineCount = 0;
+
+	PrampPartUi1 This = this;
 	
 	public PrampViewModel einstellungen = new PrampViewModel();
 
@@ -264,17 +267,23 @@ public class PrampPartUi1 extends ModelObject
 		grpFunction.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpFunction.setText("functions");
 		
-		button_open = new Button(grpFunction, SWT.NONE);
-		button_open.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		button_open.setText("create and open");
-		button_open.setToolTipText("create instance and open with pmodel");;
-		button_open.addSelectionListener(listener_open_button);
+		button_create = new Button(grpFunction, SWT.NONE);
+		button_create.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		button_create.setText("create");
+		button_create.setToolTipText("create instance");
+		button_create.addSelectionListener(listener_create_button);
 		
-		button_start = new Button(grpFunction, SWT.NONE);
-		button_start.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		button_start.setText("create and start");
-		button_start.setToolTipText("create instance and start");;
-		button_start.addSelectionListener(listener_start_button);
+//		button_open = new Button(grpFunction, SWT.NONE);
+//		button_open.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+//		button_open.setText("create and open");
+//		button_open.setToolTipText("create instance and open with pmodel");
+//		button_open.addSelectionListener(listener_open_button);
+//		
+//		button_start = new Button(grpFunction, SWT.NONE);
+//		button_start.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+//		button_start.setText("create and start");
+//		button_start.setToolTipText("create instance and start");
+//		button_start.addSelectionListener(listener_start_button);
 		
 		Group grpAdmin = new Group(composite_11, SWT.NONE);
 		grpAdmin.setLayout(new GridLayout(1, false));
@@ -524,6 +533,18 @@ public class PrampPartUi1 extends ModelObject
 			showDoc();
 		}
 	};
+
+	/**
+	 * listener for Selections in of button 'create'
+	 */
+	SelectionAdapter listener_create_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			new CreateInstanceGui(shell, This);
+		}
+	};
+	
 	
 	/**
 	 * listener for Selections in of button 'open'
@@ -1348,7 +1369,7 @@ public class PrampPartUi1 extends ModelObject
 	/**
 	 * commit all the defined data to the process
 	 */
-	private void createInstance()
+	void createInstance()
 	{
 
 		if (this.commitCreatorOld.containsKey((getActualCommitRootName())))
@@ -1467,7 +1488,7 @@ public class PrampPartUi1 extends ModelObject
 	/**
 	 * open instance with pmodel
 	 */
-	private void showInstance()
+	void showInstance()
 	{
 		// starten des pmodel gui lokal
 		log ("info", "launching pmodel viewer");
@@ -1490,7 +1511,7 @@ public class PrampPartUi1 extends ModelObject
 	/**
 	 * start instance with pkraft-manager
 	 */
-	private void startInstance()
+	void startInstance()
 	{
 					// starten des process-manager remote
 					// ....
@@ -1843,5 +1864,12 @@ public class PrampPartUi1 extends ModelObject
 			}
 		});
 		System.exit(0);
+	}
+
+	/**
+	 * @param process the process to set
+	 */
+	public void setProcess(Process process) {
+		this.process = process;
 	}
 }
