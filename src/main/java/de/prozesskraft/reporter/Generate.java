@@ -81,44 +81,44 @@ public class Generate
 
 		// damit man diese anwendung auch mit whitespaces in den values aufrufen kann (z.B. -parameter name=Alexander Vogel), wird args[] umgestaltet
 		Multimap<String,String> newArgs = HashMultimap.create();
-		boolean lastMemberWasOptionName = false;
-		String lastOptionName = null;
-		String lastValue = null;
-		for(String actOpt : args)
+		boolean lastMemberWasNamedArgument = false;
+		String lastNamedArgument = null;
+		String lastArgument = null;
+		for(String actArg : args)
 		{
 			// wenn es eine option der form -parameter ist
-			if(actOpt.matches("^-.+$"))
+			if(actArg.matches("^-.+$"))
 			{
 				// den zuletzt gesehenen value im multiMap speichern
-				if(lastValue != null)
+				if(lastArgument != null)
 				{
-					newArgs.put(actOpt, lastValue);
+					newArgs.put(lastNamedArgument, lastArgument);
 				}
 
-				lastValue = null;
-				lastOptionName = actOpt;
-				lastMemberWasOptionName = true;
+				lastArgument = null;
+				lastNamedArgument = actArg;
+				lastMemberWasNamedArgument = true;
 			}
 			// wenn es ein value ist, aber davor war ein optionname wie -parameter
-			else if(lastMemberWasOptionName)
+			else if(lastMemberWasNamedArgument)
 			{
-				lastValue = actOpt;
+				lastArgument = actArg;
 				
-				lastMemberWasOptionName = false;
+				lastMemberWasNamedArgument = false;
 			}
 			else
 			{
-				lastValue += " " + actOpt;
-				lastMemberWasOptionName = false;
+				lastArgument += " " + actArg;
+				lastMemberWasNamedArgument = false;
 			}
 		}
 		
 		// den letzten value im multiMap speichern
-		if(lastValue != null)
+		if(lastArgument != null)
 		{
-			if(lastOptionName != null && lastValue != null)
+			if(lastNamedArgument != null && lastArgument != null)
 			{
-				newArgs.put(lastOptionName, lastValue);
+				newArgs.put(lastNamedArgument, lastArgument);
 			}
 		}
 
