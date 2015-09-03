@@ -136,16 +136,19 @@ public class Generate
 		{
 			if(actKey != null)
 			{
-				newArgAsList.add(actKey);
-			}
-			for(String actValue : newArgs.get(actKey))
-			{
-				if(actValue != null)
+				for(String actValue : newArgs.get(actKey))
 				{
-					newArgAsList.add(actValue);
+					if(actValue != null)
+					{
+						newArgAsList.add(actKey);
+						newArgAsList.add(actValue);
+					}
+					else
+					{
+						newArgAsList.add(actKey);
+					}
 				}
-			}
-			
+			}			
 		}
 		args = newArgAsList.toArray(new String[newArgAsList.size()]);
 
