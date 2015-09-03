@@ -77,8 +77,7 @@ public class ResetStep
 		this.father = father;
 		this.step = step;
 
-//		shell = new Shell(fatherShell, SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM | SWT.ON_TOP);
-		shell = new Shell(SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM);
+		shell = new Shell(fatherShell, SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM);
 		try
 		{
 			shell.setText("reset step " + this.step.getName());
