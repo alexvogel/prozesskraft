@@ -138,11 +138,11 @@ public class Generate
 			{
 				newArgAsList.add(actKey);
 			}
-			for(String actString : newArgs.get(actKey))
+			for(String actValue : newArgs.get(actKey))
 			{
-				if(actString != null)
+				if(actValue != null)
 				{
-					newArgAsList.addAll(newArgs.get(actKey));	
+					newArgAsList.add(actValue);
 				}
 			}
 			
