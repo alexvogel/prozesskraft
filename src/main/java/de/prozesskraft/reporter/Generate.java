@@ -120,9 +120,9 @@ public class Generate
 		// den letzten value im multiMap speichern
 		if(lastArgument != null)
 		{
-			if(lastNamedArgument != null && lastArgument != null)
+			if(lastNamedArgument != null)
 			{
-				newArgs.put(lastNamedArgument, lastArgument);
+					newArgs.put(lastNamedArgument, lastArgument);
 			}
 		}
 
