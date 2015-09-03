@@ -76,11 +76,52 @@ public class Generate
 //			System.out.println("***ArrayIndexOutOfBoundsException: Please specify processdefinition.xml, openoffice_template.od*, newfile_for_processdefinitions.odt\n" + e.toString());
 //		}
 
-//		for(String actOpt : args)
-//		{
-//			System.err.println(actOpt);
-//		}
-//		System.exit(1);
+		// damit man diese anwendung auch mit whitespaces in den values aufrufen kann (z.B. -parameter name=Alexander Vogel), wird args[] umgestaltet
+		Map<String, ArrayList<String>> newArgs = new HashMap<String, ArrayList<String>>();
+		boolean lastMemberWasOptionName = false;
+		String lastOptionName = null;
+		String lastValue = null;
+		for(String actOpt : args)
+		{
+			// wenn es eine option der form -parameter ist
+			if(actOpt.matches("^-.+$"))
+			{
+				// den letzten value im map speichern
+				if(lastValue != null)
+				{
+					if(newArgs.containsKey(actOpt))
+					{
+						newArgs.get(actOpt).add(lastValue);
+					}
+				}
+
+				lastValue = null;
+				lastOptionName = actOpt;
+				lastMemberWasOptionName = true;
+			}
+			// wenn es ein value ist, aber davor war ein optionname wie -parameter
+			else if(lastMemberWasOptionName)
+			{
+				lastValue = actOpt;
+				lastMemberWasOptionName = false;
+			}
+			else
+			{
+				lastValue += " " + actOpt;
+				lastMemberWasOptionName = false;
+			}				
+		}
+		
+		ArrayList<String> newArgAsList = new ArrayList<String>();
+		// newargs nach args kopieren
+		for(String actKey : newArgs.keySet())
+		{
+			newArgAsList.add(actKey);
+			newArgAsList.addAll(newArgs.get(actKey));
+		}
+		args = (String[])newArgAsList.toArray();
+		
+		System.exit(1);
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
