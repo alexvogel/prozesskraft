@@ -89,7 +89,7 @@ public class Generate
 			// wenn es eine option der form -parameter ist
 			if(actOpt.matches("^-.+$"))
 			{
-				// den letzten value im multiMap speichern
+				// den zuletzt gesehenen value im multiMap speichern
 				if(lastValue != null)
 				{
 					newArgs.put(actOpt, lastValue);
@@ -110,6 +110,15 @@ public class Generate
 			{
 				lastValue += " " + actOpt;
 				lastMemberWasOptionName = false;
+			}
+		}
+		
+		// den letzten value im multiMap speichern
+		if(lastValue != null)
+		{
+			if(lastOptionName != null && lastValue != null)
+			{
+				newArgs.put(lastOptionName, lastValue);
 			}
 		}
 
