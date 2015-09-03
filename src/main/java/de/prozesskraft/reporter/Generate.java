@@ -96,7 +96,7 @@ public class Generate
 				}
 				else
 				{
-					newArgs.put(lastNamedArgument, "");
+					newArgs.put(lastNamedArgument, null);
 				}
 				
 				lastArgument = null;
@@ -127,11 +127,18 @@ public class Generate
 		}
 
 		ArrayList<String> newArgAsList = new ArrayList<String>();
-		// newargs nach args kopieren
+		// newargs nach args kopieren, null values ignorieren
 		for(String actKey : newArgs.keySet())
 		{
 			newArgAsList.add(actKey);
-			newArgAsList.addAll(newArgs.get(actKey));
+			for(String actString : newArgs.get(actKey))
+			{
+				if(actString != null)
+				{
+					newArgAsList.addAll(newArgs.get(actKey));	
+				}
+			}
+			
 		}
 		args = newArgAsList.toArray(new String[newArgAsList.size()]);
 
