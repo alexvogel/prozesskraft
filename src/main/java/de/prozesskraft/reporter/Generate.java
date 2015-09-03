@@ -94,7 +94,11 @@ public class Generate
 				{
 					newArgs.put(lastNamedArgument, lastArgument);
 				}
-
+				else
+				{
+					newArgs.put(lastNamedArgument, "");
+				}
+				
 				lastArgument = null;
 				lastNamedArgument = actArg;
 				lastMemberWasNamedArgument = true;
