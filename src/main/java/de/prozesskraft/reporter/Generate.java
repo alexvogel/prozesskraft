@@ -121,6 +121,12 @@ public class Generate
 		}
 		args = newArgAsList.toArray(new String[newArgAsList.size()]);
 		
+		// ausgeben
+		for(String actString : args)
+		{
+			System.err.println(actString);
+		}
+		
 		System.exit(1);
 		/*----------------------------
 		  get options from ini-file
