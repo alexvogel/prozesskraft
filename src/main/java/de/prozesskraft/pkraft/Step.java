@@ -879,6 +879,7 @@ implements Serializable, Cloneable
 			int x = 1;
 			for(String loopVariable : looplist.getItem())
 			{
+				System.err.println("fanning for item "+x+": " + loopVariable);
 				// einen neuen step erzeugen (klon von this)
 				Step newstep = cloner.deepClone(this);
 				newstep.setLoopvar(loopVariable);
@@ -887,6 +888,7 @@ implements Serializable, Cloneable
 				newstep.setLoop(null);
 
 				newstep.setName(newstep.getName()+"@"+x);
+				System.err.println("this step '"+newstep.getName()+"' was fanned out from step '"+this.getName()+"'");
 				newstep.log("info", "this step '"+newstep.getName()+"' was fanned out from step '"+this.getName()+"'");
 
 				// eine liste mit dem namen 'loop' anlegen und darin die loopvar speichern
