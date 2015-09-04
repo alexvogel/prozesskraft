@@ -163,6 +163,8 @@ public class PradarPartUi3 extends ModelObject
 	private Text txtTesttext;
 	private Composite composite_3;
 
+	private boolean userAdmin = false;
+
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
 	 * @wbp.parser.entryPoint
@@ -256,6 +258,10 @@ public class PradarPartUi3 extends ModelObject
 		
 		combo_users = new Combo(grpFilter, SWT.BORDER | SWT.READ_ONLY);
 		combo_users.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+		if(!this.isUserAdmin())
+		{
+			combo_users.setEnabled(false);
+		}
 		
 		Label lblHost = new Label(grpFilter, SWT.NONE);
 		lblHost.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
@@ -1338,6 +1344,15 @@ public class PradarPartUi3 extends ModelObject
 				}
 			}
 			this.license_server_port_at_hostname = license_server_list;
+
+			// feststelen ob aktueller user ein admin ist
+			for(String iniUser : ini.get("roles", "admin").split(","))
+			{
+				if(iniUser.equals(System.getProperty("user.name")))
+				{
+					this.userAdmin = true;
+				}
+			}
 		}
 		catch (FileNotFoundException e)
 		{
@@ -1910,5 +1925,19 @@ public class PradarPartUi3 extends ModelObject
 			}
 		});
 		System.exit(0);
+	}
+
+	/**
+	 * @param userAdmin the userAdmin to set
+	 */
+	public void setUserAdmin(boolean userAdmin) {
+		this.userAdmin = userAdmin;
+	}
+
+	/**
+	 * @return the userAdmin
+	 */
+	public boolean isUserAdmin() {
+		return userAdmin;
 	}
 }
