@@ -860,18 +860,20 @@ implements Serializable, Cloneable
 		{
 			String listname = m.group(1);
 			this.log("debug", "listname in index(*) is "+listname);
-//			System.err.println("step-"+this.getName()+": listname in loop=index(<listname>) is "+listname);
+			System.err.println("step-"+this.getName()+": listname in loop=index(<listname>) is "+listname);
 			looplist.addItem(this.getIndexesOfListItems(listname));
 		}
 		// loop enthaelt keine funktion, sondern direkt den namen einer liste
 		else
 		{
+			System.err.println("step-"+this.getName()+": listname in loop="+this.loop);
 			looplist.addItem(this.getListItems(this.loop));
 		}
 		
 		// wenn die loopliste mindestens 1 wert enthaelt, ueber dioe liste iterieren und fuer jeden wert den aktuellen step clonen
 		if (looplist.size() > 0)
 		{
+			System.err.println("size of looplist: "+looplist.size());
 			// cloner erstellen fuer einen deep-copy
 			Cloner cloner = new Cloner();
 			int x = 1;

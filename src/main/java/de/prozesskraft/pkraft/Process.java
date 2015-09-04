@@ -1120,7 +1120,7 @@ implements Serializable
 			{
 				this.run = false;
 			}
-			
+
 			for(Step actStep : this.getStep().toArray(new Step[this.getStep().size()]))
 			{
 				// alle steps, die nicht aus gutem grund beendet sind, sollen angeschoben werden
