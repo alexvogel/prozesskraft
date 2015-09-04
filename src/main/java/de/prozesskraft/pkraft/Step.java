@@ -874,12 +874,12 @@ implements Serializable, Cloneable
 		if (looplist.size() > 0)
 		{
 			System.err.println("size of looplist: "+looplist.size());
-			// cloner erstellen fuer einen deep-copy
-			Cloner cloner = new Cloner();
 			int x = 1;
 			for(String loopVariable : looplist.getItem())
 			{
 				System.err.println("fanning for item "+x+": " + loopVariable);
+				// cloner erstellen fuer einen deep-copy
+				Cloner cloner = new Cloner();
 				// einen neuen step erzeugen (klon von this)
 				Step newstep = cloner.deepClone(this);
 				newstep.setLoopvar(loopVariable);
