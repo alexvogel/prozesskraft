@@ -48,7 +48,7 @@ implements Serializable
 	
 	// im jungfraeulichen zustand ist es null
 	// eine leere loopedCommits gibt es dann, wenn ein loop 0 eintraege enthaelt
-	private ArrayList<Commit> loopedCommits = new ArrayList<Commit>();
+	private ArrayList<Commit> loopedCommits = null;
 	private String statusOverwrite = null;
 
 	// don't clone parent when cloning this
@@ -100,9 +100,12 @@ implements Serializable
 		{
 			newCommit.addLog(actLog.clone());
 		}
-		for(Commit actCommit : this.loopedCommits)
+		if(this.loopedCommits != null)
 		{
-			newCommit.loopedCommits.add(actCommit.clone());
+			for(Commit actCommit : this.loopedCommits)
+			{
+				newCommit.loopedCommits.add(actCommit.clone());
+			}
 		}
 		newCommit.statusOverwrite = this.statusOverwrite;
 		
