@@ -18,6 +18,7 @@ implements Serializable
 	private int value = 0;
 	private String msg = "";
 
+	// don't clone parent when you clone this
 	private Work parent = null;
 
 	/*----------------------------
@@ -36,7 +37,15 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
-
+	public Exit clone()
+	{
+		Exit newExit = new Exit();
+		newExit.setValue(this.getValue());
+		newExit.setMsg(this.getMsg());
+		
+		return newExit;
+	}
+	
 	/*----------------------------
 	  methods getter / setter
 	----------------------------*/

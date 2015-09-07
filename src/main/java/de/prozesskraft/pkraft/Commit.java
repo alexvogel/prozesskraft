@@ -42,15 +42,18 @@ implements Serializable
 	
 //	private String status = "waiting";	// waiting/committing/finished/error/cancelled
 
-	private java.lang.Process proc;
-	private Step parent;
 
 	private ArrayList<Log> log = new ArrayList<Log>();
+//	private java.lang.Process proc;
 	
 	// im jungfraeulichen zustand ist es null
 	// eine leere loopedCommits gibt es dann, wenn ein loop 0 eintraege enthaelt
 	private ArrayList<Commit> loopedCommits = null;
 	private String statusOverwrite = null;
+
+	// don't clone parent when cloning this
+	private Step parent = null;
+
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -78,15 +81,55 @@ implements Serializable
 	@Override
 	public Commit clone()
 	{
+		Commit newCommit = new Commit();
+		newCommit.setName(this.getName());
+		newCommit.setToroot(this.getToroot());
+		newCommit.setRefactor(this.getRefactor());
+		newCommit.setCopyto(this.getCopyto());
+		newCommit.setLoop(this.getLoop());
+		newCommit.setLoopvar(this.getLoopvar());
+		for(Variable actVariable : this.getVariable())
+		{
+			newCommit.addVariable(actVariable.clone());
+		}
+		for(File actFile : this.getFile())
+		{
+			newCommit.addFile(actFile.clone());
+		}
+		for(Log actLog : this.getLog())
+		{
+			newCommit.addLog(actLog.clone());
+		}
+		for(Commit actCommit : this.loopedCommits)
+		{
+			newCommit.loopedCommits.add(actCommit.clone());
+		}
+		newCommit.statusOverwrite = this.statusOverwrite;
+		
+		return newCommit;
+	}
+	
+	/**
+	 * oldclone
+	 * returns a clone of this
+	 * @return Commit
+	 */
+	public Commit oldClone()
+	{
 		Commit clone = SerializationUtils.clone(this);
 		clone.setParent(this.getParent());
-		
+
 		return clone;
 	}
 	
 	/*----------------------------
 	  methods
 	----------------------------*/
+
+	public void addLog(Log log)
+	{
+		this.log.add(log);
+	}
 
 	public void addFile(File file)
 	{
@@ -296,16 +339,6 @@ implements Serializable
 	public void setFile(ArrayList<File> file)
 	{
 		this.file = file;
-	}
-
-	public java.lang.Process getProc()
-	{
-		return this.proc;
-	}
-	
-	public void setProc(java.lang.Process proc)
-	{
-		this.proc = proc;
 	}
 
 	public Step getParent()

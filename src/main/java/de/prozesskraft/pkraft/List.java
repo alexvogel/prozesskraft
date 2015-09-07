@@ -21,6 +21,7 @@ implements Serializable
 	private ArrayList<String> item = new ArrayList<String>();
 	private ArrayList<String> defaultitem = new ArrayList<String>();
 
+	// don't clone this, when cloning this List
 	private Step parent = null;
 
 	/*----------------------------
@@ -46,6 +47,27 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
+	/**
+	 * clone the list
+	 */
+	public List clone()
+	{
+		List newList = new List();
+		newList.setName(this.getName());
+		newList.setMin(this.getMin());
+		newList.setMax(this.getMax());
+		for(String actItem : this.getItem())
+		{
+			newList.addItem(actItem);
+		}
+		for(String actDefaultitem : this.getDefaultitem())
+		{
+			newList.addDefaultitem(actDefaultitem);
+		}
+		
+		return newList;
+	}
+
 	/**
 	 * clears the list
 	 */
@@ -138,6 +160,14 @@ implements Serializable
 		this.item = item;
 	}
 	
+	/**
+	 * @param add defaultitem
+	 */
+	public void addDefaultitem(String item)
+	{
+		this.defaultitem.add(item);
+	}
+
 	/**
 	 * @param item the item to add
 	 */

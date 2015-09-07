@@ -48,26 +48,22 @@ implements Serializable, Cloneable
 	private String loopOld = null;
 	private String loopvar = null;
 
-	private Process parent = null;
-//	private String dir = new String();
-//	private String absdir = new String();
-//	private String abspid = new String();
-//	private String absstdout = new String();
-//	private String absstderr = new String();
 	private ArrayList<File> file = new ArrayList<File>();
 	private ArrayList<Variable> variable = new ArrayList<Variable>();
 //	private String status = "waiting";	// waiting/initializing/working/committing/ finished/error/cancelled
-
-	public String statusOverwrite = null;
-
 	private ArrayList<Log> log = new ArrayList<Log>();
+	public String statusOverwrite = null;
 	private String rank = "";
 	private int reset = 0;
-	
+
 	private int level = 0;
 	private long levelCalctime = 0;
-	
+
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
+
+	// don't clone parent when cloning this
+	private Process parent = null;
+
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -127,9 +123,70 @@ implements Serializable, Cloneable
 	@Override
 	public Step clone()
 	{
+		Step newStep = new Step();
+		newStep.setName(this.getName());
+		newStep.setClip(this.getName());
+		newStep.setType(this.getName());
+		newStep.setDescription(this.getName());
+		newStep.setName(this.getName());
+		
+		for(List actList : this.getList())
+		{
+			newStep.addList(actList.clone());
+		}
+		for(List actList : this.getDefaultlist())
+		{
+			newStep.addDefaultlist(actList.clone());
+		}
+		for(Init actInit : this.getInit())
+		{
+			newStep.addInit(actInit.clone());
+		}
+		newStep.setWork(this.getWork().clone());
+		newStep.setSubprocess(this.getSubprocess().clone());
+		for(Commit actCommit : this.getCommit())
+		{
+			newStep.addCommit(actCommit.clone());
+		}
+		newStep.setLoop(this.getLoop());
+		newStep.setLoopOld(this.getLoopOld());
+		newStep.setLoopvar(this.getLoopvar());
+		for(File actFile : this.getFile())
+		{
+			newStep.addFile(actFile.clone());
+		}
+		for(Variable actVariable : this.getVariable())
+		{
+			newStep.addVariable(actVariable.clone());
+		}
+		for(Log actLog : this.getLog())
+		{
+			newStep.addLog(actLog.clone());
+		}
+		newStep.setStatusOverwrite(this.getStatusOverwrite());
+		newStep.setRank(this.getRank());
+		newStep.setReset(this.getReset());
+		newStep.setLevel(this.getLevel());
+		newStep.setLevelCalctime(this.getLevelCalctime());
+
+		return newStep;
+	}
+
+	/**
+	 * clone
+	 * returns a clone of this
+	 * @return Step
+	 */
+	public Step oldClone()
+	{
 		return SerializationUtils.clone(this);
 	}
 
+	public void addLog(Log log)
+	{
+		this.log.add(log);
+	}
+	
 	/**
 	 * getCommandResolveAsPerlCode()
 	 * generates perlcode for resolving a command
@@ -885,8 +942,10 @@ implements Serializable, Cloneable
 				System.err.println("fanning for item "+x+": " + loopVariable);
 				// einen neuen step erzeugen (klon von this)
 				System.err.println("1: " + new Timestamp(System.currentTimeMillis()).toString());
-				Step newstep = cloner.deepClone(this);
-//				Step newstep = this.clone();
+				
+				// this clonen, allerdings mit moeglichst geringen aufwand
+//				Step newstep = cloner.deepClone(this);
+				Step newstep = this.clone();
 				System.err.println("2: " + new Timestamp(System.currentTimeMillis()).toString());
 				newstep.setLoopvar(loopVariable);
 				System.err.println("3: " + new Timestamp(System.currentTimeMillis()).toString());
@@ -2370,6 +2429,11 @@ implements Serializable, Cloneable
 		this.variable = variable;
 	}
 		
+	public void addDefaultlist(List list)
+	{
+		this.defaultlist.add(list);
+	}
+		
 	public void addList(List list)
 	{
 		this.list.add(list);
@@ -2619,6 +2683,41 @@ implements Serializable, Cloneable
 	 */
 	public void setLoopOld(String loopOld) {
 		this.loopOld = loopOld;
+	}
+
+	/**
+	 * @return the reset
+	 */
+	public int getReset() {
+		return reset;
+	}
+
+	/**
+	 * @param reset the reset to set
+	 */
+	public void setReset(int reset) {
+		this.reset = reset;
+	}
+
+	/**
+	 * @return the levelCalctime
+	 */
+	public long getLevelCalctime() {
+		return levelCalctime;
+	}
+
+	/**
+	 * @param levelCalctime the levelCalctime to set
+	 */
+	public void setLevelCalctime(long levelCalctime) {
+		this.levelCalctime = levelCalctime;
+	}
+
+	/**
+	 * @param level the level to set
+	 */
+	public void setLevel(int level) {
+		this.level = level;
 	}
 	
 }

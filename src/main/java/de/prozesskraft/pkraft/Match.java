@@ -14,18 +14,20 @@ implements Serializable
 
 	static final long serialVersionUID = 1;
 	
-	private Init parent = new Init();
-	
 	private String field = "";
 	private String pattern = "";
 
 	private ArrayList<Log> log = new ArrayList<Log>();
 
+	// don't clone parent when you clone this
+	private Init parent = null;
+	
 	/*----------------------------
 	  constructors
 	----------------------------*/
 	public Match()
 	{
+		this.parent = new Init();
 	}
 
 	public Match(Init parent)
@@ -35,6 +37,29 @@ implements Serializable
 	}
 
 
+	/*----------------------------
+	  methods
+	----------------------------*/
+	public Match clone()
+	{
+		Match newMatch = new Match();
+		
+		newMatch.setField(this.getField());
+		newMatch.setPattern(this.getPattern());
+		
+		for(Log actLog : this.getLog())
+		{
+			newMatch.addLog(actLog.clone());
+		}
+		
+		return newMatch;
+	}
+	
+	public void addLog(Log log)
+	{
+		this.log.add(log);
+	}
+	
 	/*----------------------------
 	  methods get
 	----------------------------*/

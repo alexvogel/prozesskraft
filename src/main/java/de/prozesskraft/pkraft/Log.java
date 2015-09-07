@@ -58,6 +58,16 @@ implements Serializable, Comparable
 		return "["+this.getTimestamp()+"]:"+this.getLevel()+":"+this.getMsg();
 	}
 
+	public Log clone()
+	{
+		Log newLog = new Log();
+		newLog.setLabel(this.getLabel());
+		newLog.setLevel(this.getLevel());
+		newLog.setMsg(this.getMsg());
+		newLog.setTime(this.getTime());
+		
+		return newLog;
+	}
 	/*----------------------------
 	  methods getter & setter
 	----------------------------*/
@@ -130,6 +140,13 @@ implements Serializable, Comparable
 	public int compareTo(Object logToCompare)
 	{
 		return (int)(this.time - ((Log)logToCompare).getTime());
+	}
+
+	/**
+	 * @param label the label to set
+	 */
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 }

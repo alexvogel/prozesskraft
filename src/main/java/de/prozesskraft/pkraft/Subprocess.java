@@ -23,16 +23,17 @@ implements Serializable
 	private String version = "noversion";
 	private int maxrun = 100;
 
-	// das process object
-	private Process process = null;
-	
-	private Step step = new Step("root");
-
 	private String status = "";	// waiting/finished/error
 
 	private ArrayList<Log> log = new ArrayList<Log>();
 
-	public Step parent;
+	// das process object
+	private Process process = null;
+	
+//	private Step step = new Step("root");
+	
+	// don't clone parent when you clone this
+	public Step parent = null;
 
 	/*----------------------------
 	  constructors
@@ -71,6 +72,28 @@ implements Serializable
 	@Override
 	public Subprocess clone()
 	{
+		Subprocess newSubprocess = new Subprocess();
+		newSubprocess.setDomain(this.getDomain());
+		newSubprocess.setName(this.getName());
+		newSubprocess.setVersion(this.getVersion());
+		newSubprocess.setMaxrun(this.getMaxrun());
+		newSubprocess.setStatus(this.getStatus());
+		for(Log actLog : this.getLog())
+		{
+			newSubprocess.addLog(actLog.clone());
+		}
+		newSubprocess.setProcess(this.getProcess().clone());
+
+		return newSubprocess;
+	}
+	
+	/**
+	 * oldClone
+	 * returns a clone of this
+	 * @return Variable
+	 */
+	public Subprocess oldClone()
+	{
 		return SerializationUtils.clone(this);
 	}
 	
@@ -91,7 +114,12 @@ implements Serializable
 		this.getProcess().kill();
 	}
 	
+	public void addLog(Log log)
+	{
+		this.log.add(log);
+	}
 
+	
 	/**
 	 * stores a message in the object log
 	 * @param String loglevel, String logmessage
@@ -441,7 +469,7 @@ implements Serializable
 
 		// alle commits aus subprocess in die des neuenProzesses ueberschreiben inkl. aller noch nicht resolvter eintraege
 		log("debug", "setting all commits of step to the rootStep of subprocess");
-		newProcess2.getRootStep().setCommit(this.getStep().getCommit());
+		newProcess2.getRootStep().setCommit(this.getParent().getCommit());
 		newProcess2.getRootStep().affiliate();
 		
 		// das Basedirectory des neuen prozesses soll das stepdir des parentsteps sein
@@ -522,25 +550,25 @@ implements Serializable
 		this.version = version;
 	}
 
-	public Step getStep()
-	{
-		return this.step;
-	}
-
-	public void setStep(Step step)
-	{
-		this.step = step;
-	}
-
-	public Step getRoot()
-	{
-		return this.step;
-	}
-
-	public void setRoot(Step step)
-	{
-		this.step = step;
-	}
+//	public Step getStep()
+//	{
+//		return this.step;
+//	}
+//
+//	public void setStep(Step step)
+//	{
+//		this.step = step;
+//	}
+//
+//	public Step getRoot()
+//	{
+//		return this.step;
+//	}
+//
+//	public void setRoot(Step step)
+//	{
+//		this.step = step;
+//	}
 
 	public ArrayList<Log> getLog()
 	{
@@ -605,6 +633,20 @@ implements Serializable
 	 */
 	public void setProcess(Process process) {
 		this.process = process;
+	}
+
+	/**
+	 * @return the maxrun
+	 */
+	public int getMaxrun() {
+		return maxrun;
+	}
+
+	/**
+	 * @param maxrun the maxrun to set
+	 */
+	public void setMaxrun(int maxrun) {
+		this.maxrun = maxrun;
 	}
 	
 }

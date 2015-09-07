@@ -18,21 +18,23 @@ implements Serializable
 	static final long serialVersionUID = 1;
 	private String name = "unnamed";
 	private String description = "no description";
-	private Integer maxrun = 5; // minuten
+	private int maxrun = 5; // minuten
 	private String env = null; // environment definitionen getrennt durch diese zeichenfolge [trenner]. z.B. "DISPLAY=:77[trenner]HOME=/home/avoge"
 	private String interpreter = "";
 	private String command = "";
 	private String logfile = "";
-	private ArrayList<Callitem> callitem = new ArrayList<Callitem>();
-	private ArrayList<Exit> exit = new ArrayList<Exit>();
 	private String killcommand = null; // dieser aufruf wird bei einem kill zusaetzlich aufgerufen - gefolgt von der variable 'killpid'
+	private String status = "";	// waiting/working/finished/error/cancelled
 	//	private String loop = null; // kein loop in element 'work' -> dazu ist das element 'step' da!!
 
+	private ArrayList<Callitem> callitem = new ArrayList<Callitem>();
+	private ArrayList<Exit> exit = new ArrayList<Exit>();
 	private ArrayList<Log> log = new ArrayList<Log>();
 
-	private String status = new String();	// waiting/working/finished/error/cancelled
 	private int exitvalue;
-	public Step parent;
+	
+	// don't clone parent when you clone this
+	public Step parent = null;
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -50,6 +52,47 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
+	
+	public Work clone()
+	{
+		Work newWork = new Work();
+		newWork.setName(this.getName());
+		newWork.setDescription(this.getDescription());
+		newWork.setMaxrun(this.getMaxrun());
+		newWork.setEnv(this.getEnv());
+		newWork.setInterpreter(this.getInterpreter());
+		newWork.setCommand(this.getCommand());
+		newWork.setLogfile(this.getLogfile());
+		newWork.setKillcommand(this.getKillcommand());
+		newWork.setStatus(this.getStatus());
+		for(Callitem actCallitem : this.getCallitem())
+		{
+			newWork.addCallitem(actCallitem.clone());
+		}
+		for(Exit actExit : this.getExit())
+		{
+			newWork.addExit(actExit.clone());
+		}
+		for(Log actLog : this.getLog())
+		{
+			newWork.addLog(actLog.clone());
+		}
+		newWork.setExitvalue(this.getExitvalue());
+		
+		return newWork;
+		
+	}
+	
+	public void addExit(Exit exit)
+	{
+		this.exit.add(exit);
+	}
+	
+	public void addLog(Log log)
+	{
+		this.log.add(log);
+	}
+	
 	public void addCallitem(Callitem callitem)
 	{
 		callitem.setParent(this);
@@ -67,6 +110,8 @@ implements Serializable
 		}
 	}
 
+	
+	
 	/**
 	 * removeCallitem
 	 * remove a certain callitem from this
@@ -669,7 +714,7 @@ implements Serializable
 	/**
 	 * @return the maxrun
 	 */
-	public Integer getMaxrun() {
+	public int getMaxrun() {
 		return maxrun;
 	}
 

@@ -142,12 +142,81 @@ implements Serializable
 	@Override
 	public Process clone()
 	{
+		Process clone = new Process();
+		clone.setName(this.getName());
+		clone.setDescription(this.getDescription());
+		clone.setPath(this.getPath());
+		clone.setMaxSimultaneousSteps(this.getMaxSimultaneousSteps());
+		clone.setStepStartDelayMinutes(this.getStepStartDelayMinutes());
+		clone.setInitCommitFile(this.getInitCommitFile());
+		clone.setInitCommitVariable(this.getInitCommitVariable());
+		clone.setArchitectName(this.getArchitectName());
+		clone.setArchitectCompany(this.getArchitectCompany());
+		clone.setArchitectMail(this.getArchitectMail());
+		clone.setCustomerName(this.getCustomerName());
+		clone.setCustomerCompany(this.getCustomerCompany());
+		clone.setCustomerMail(this.getCustomerMail());
+		clone.setModelVersion(this.getModelVersion());
+		clone.setVersion(this.getVersion());
+		clone.setWrapper(this.isWrapper());
+		clone.setId2Variable(this.getId2Variable());
+		clone.setRun(this.isRun());
+		clone.setStatus(this.getStatus());
+		clone.setBaseDir(this.getBaseDir());
+		clone.setManagerid(this.getManagerid());
+		clone.setDate(this.getDate());
+		clone.setInfilebinary(this.getInfilebinary());
+		clone.setInfilexml(this.getInfilexml());
+		clone.setOutfilebinary(this.getOutfilebinary());
+		clone.setOutfilexml(this.getOutfilexml());
+		clone.setOutFileDoc(this.getOutFileDoc());
+		clone.setFiledoctemplateodf(this.getFiledoctemplateodf());
+		clone.setFileDocJrxml(this.getFileDocJrxml());
+		clone.setRootstepname(this.getRootstepname());
+		clone.setIdRumpf(this.getIdRumpf());
+		clone.setTouchAsString(this.getTouchAsString());
+		clone.setTouchInMillis(this.getTouchInMillis());
+		clone.setCloneGeneration(this.getCloneGeneration());
+		clone.setCloneDescendant(this.getCloneDescendant());
+		clone.setClonePerformed(this.getClonePerformed());
+		clone.setSubprocess(this.isSubprocess());
+		clone.setParentid(this.getParentid());
+		clone.setTimeOfLastStepStart(this.getTimeOfLastStepStart());
+
+		for(Step actStep : this.getStep())
+		{
+			this.addStep(actStep.clone());
+		}
+		for(Log actLog : this.getLog())
+		{
+			this.addLog(actLog.clone());
+		}
+
+		clone.cloneGeneration++;
+		clone.clonePerformed = 0;
+		this.clonePerformed++;
+		clone.cloneDescendant = this.clonePerformed;
+		return clone;
+	}
+	
+	/**
+	 * clone
+	 * returns a clone of this
+	 * @return Process
+	 */
+	public Process oldClone()
+	{
 		Process clonedProcess = SerializationUtils.clone(this);
 		clonedProcess.cloneGeneration++;
 		clonedProcess.clonePerformed = 0;
 		this.clonePerformed++;
 		clonedProcess.cloneDescendant = this.clonePerformed;
 		return clonedProcess;
+	}
+	
+	private void addLog(Log log)
+	{
+		this.log.add(log);
 	}
 	
 	/**
@@ -2485,6 +2554,41 @@ implements Serializable
 	 */
 	public void setTimeOfLastStepStart(Long timeOfLastStepStart) {
 		this.timeOfLastStepStart = timeOfLastStepStart;
+	}
+
+	/**
+	 * @return the run
+	 */
+	public boolean isRun() {
+		return run;
+	}
+
+	/**
+	 * @param run the run to set
+	 */
+	public void setRun(boolean run) {
+		this.run = run;
+	}
+
+	/**
+	 * @return the idRumpf
+	 */
+	public String getIdRumpf() {
+		return idRumpf;
+	}
+
+	/**
+	 * @param idRumpf the idRumpf to set
+	 */
+	public void setIdRumpf(String idRumpf) {
+		this.idRumpf = idRumpf;
+	}
+
+	/**
+	 * @param date the date to set
+	 */
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
 }

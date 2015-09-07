@@ -55,9 +55,43 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
+	public Init clone()
+	{
+		Init newInit = new Init();
+		newInit.setListname(this.getListname());
+		newInit.setFromobjecttype(this.getFromobjecttype());
+		newInit.setReturnfield(this.getReturnfield());
+		newInit.setFromstep(this.getFromstep());
+		newInit.setInsertrule(this.getInsertrule());
+		
+		for(Match actMatch : this.getMatch())
+		{
+			newInit.addMatch(actMatch.clone());
+		}
+		
+		newInit.setMinoccur(this.getMinoccur());
+		newInit.setMaxoccur(this.getMaxoccur());
+		newInit.setDescription(this.getDescription());
+		newInit.setLoop(this.getLoop());
+		newInit.setLoopvar(this.getLoopvar());
+
+		for(Log actLog : this.getLog())
+		{
+			newInit.addLog(actLog.clone());
+		}
+
+		
+		return newInit;
+	}
+	
 	public void addMatch(Match match)
 	{
 		this.match.add(match);
+	}
+	
+	public void addLog(Log log)
+	{
+		this.log.add(log);
 	}
 	
 	public void reset()
