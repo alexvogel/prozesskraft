@@ -121,7 +121,11 @@ public class TestStringResolve {
 	@Test
 	public void testResolving2()
 	{
-
+		for(Step actStep : process.getStep())
+		{
+			System.err.println("aktueller step: >" + actStep.getName() + "<");
+		}
+		
 		assertEquals("ersterEintrag-bla", process.getStep("appshake@1").resolveString("{root:$irgendEinListennamen}"));
 	}
 }

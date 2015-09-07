@@ -21,8 +21,6 @@ import de.prozesskraft.codegen.Script;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.rits.cloning.Cloner;
-
 import org.apache.commons.io.FileUtils;
 
 public class Step
@@ -142,8 +140,14 @@ implements Serializable, Cloneable
 		{
 			newStep.addInit(actInit.clone());
 		}
-		newStep.setWork(this.getWork().clone());
-		newStep.setSubprocess(this.getSubprocess().clone());
+		if(this.getWork() != null)
+		{
+			newStep.setWork(this.getWork().clone());
+		}
+		if(this.getSubprocess() != null)
+		{
+			newStep.setSubprocess(this.getSubprocess().clone());
+		}
 		for(Commit actCommit : this.getCommit())
 		{
 			newStep.addCommit(actCommit.clone());
@@ -947,9 +951,6 @@ implements Serializable, Cloneable
 //				Step newstep = cloner.deepClone(this);
 				Step newstep = this.clone();
 
-				System.err.println("1.5: " + new Timestamp(System.currentTimeMillis()).toString());
-				// die parents neu setzen
-				newstep.affiliate();
 				System.err.println("2: " + new Timestamp(System.currentTimeMillis()).toString());
 				newstep.setLoopvar(loopVariable);
 				System.err.println("3: " + new Timestamp(System.currentTimeMillis()).toString());
@@ -981,6 +982,9 @@ implements Serializable, Cloneable
 			// den urspruenglichen step (this) aus dem prozess entfernen
 			this.parent.getStep().remove(this);
 
+			// parents neu setzen
+			this.parent.affiliate();
+			
 			// die ranks neu setzen
 			this.parent.setStepRanks();
 		}
