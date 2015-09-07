@@ -82,7 +82,10 @@ implements Serializable
 		{
 			newSubprocess.addLog(actLog.clone());
 		}
-		newSubprocess.setProcess(this.getProcess().clone());
+		if(this.getProcess() != null)
+		{
+			newSubprocess.setProcess(this.getProcess().clone());
+		}
 
 		return newSubprocess;
 	}
