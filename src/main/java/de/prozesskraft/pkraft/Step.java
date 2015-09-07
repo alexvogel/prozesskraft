@@ -871,15 +871,14 @@ implements Serializable, Cloneable
 			System.err.println("step-"+this.getName()+": listname in loop="+this.loop);
 			looplist.addItem(this.getListItems(this.loop));
 		}
-		
+
 		// wenn die loopliste mindestens 1 wert enthaelt, ueber dioe liste iterieren und fuer jeden wert den aktuellen step clonen
 		if (looplist.size() > 0)
 		{
 			System.err.println("size of looplist: "+looplist.size());
 			// cloner erstellen fuer einen deep-copy
 //			Cloner cloner = new Cloner();
-			Kryo kryo = new Kryo();
-			
+
 			int x = 1;
 			for(String loopVariable : looplist.getItem())
 			{
@@ -887,7 +886,7 @@ implements Serializable, Cloneable
 				// einen neuen step erzeugen (klon von this)
 				System.err.println("1: " + new Timestamp(System.currentTimeMillis()).toString());
 //				Step newstep = cloner.deepClone(this);
-				Step newstep = kryo.copy(this);
+				Step newstep = this.clone();
 				System.err.println("2: " + new Timestamp(System.currentTimeMillis()).toString());
 				newstep.setLoopvar(loopVariable);
 				System.err.println("3: " + new Timestamp(System.currentTimeMillis()).toString());
@@ -915,10 +914,10 @@ implements Serializable, Cloneable
 				x++;
 				System.err.println("9: " + new Timestamp(System.currentTimeMillis()).toString());
 			}
-			
+
 			// den urspruenglichen step (this) aus dem prozess entfernen
 			this.parent.getStep().remove(this);
-			
+
 			// die ranks neu setzen
 			this.parent.setStepRanks();
 		}
