@@ -18,7 +18,7 @@ implements Serializable
 	static final long serialVersionUID = 1;
 	private String name = "unnamed";
 	private String description = "no description";
-	private int maxrun = 5; // minuten
+	private Integer maxrun = 5; // minuten
 	private String env = null; // environment definitionen getrennt durch diese zeichenfolge [trenner]. z.B. "DISPLAY=:77[trenner]HOME=/home/avoge"
 	private String interpreter = "";
 	private String command = "";
@@ -714,7 +714,7 @@ implements Serializable
 	/**
 	 * @return the maxrun
 	 */
-	public int getMaxrun() {
+	public Integer getMaxrun() {
 		return maxrun;
 	}
 
