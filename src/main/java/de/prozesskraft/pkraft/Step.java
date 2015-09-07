@@ -934,7 +934,7 @@ implements Serializable, Cloneable
 		{
 			System.err.println("size of looplist: "+looplist.size());
 			// cloner erstellen fuer einen deep-copy
-			Cloner cloner = new Cloner();
+//			Cloner cloner = new Cloner();
 
 			int x = 1;
 			for(String loopVariable : looplist.getItem())
@@ -946,6 +946,10 @@ implements Serializable, Cloneable
 				// this clonen, allerdings mit moeglichst geringen aufwand
 //				Step newstep = cloner.deepClone(this);
 				Step newstep = this.clone();
+
+				System.err.println("1.5: " + new Timestamp(System.currentTimeMillis()).toString());
+				// die parents neu setzen
+				newstep.affiliate();
 				System.err.println("2: " + new Timestamp(System.currentTimeMillis()).toString());
 				newstep.setLoopvar(loopVariable);
 				System.err.println("3: " + new Timestamp(System.currentTimeMillis()).toString());
