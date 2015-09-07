@@ -20,6 +20,9 @@ import de.prozesskraft.codegen.Script;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import com.rits.cloning.Cloner;
+
 import org.apache.commons.io.FileUtils;
 
 public class Step
@@ -874,7 +877,7 @@ implements Serializable, Cloneable
 		{
 			System.err.println("size of looplist: "+looplist.size());
 			// cloner erstellen fuer einen deep-copy
-//			Cloner cloner = new Cloner();
+			Cloner cloner = new Cloner();
 
 			int x = 1;
 			for(String loopVariable : looplist.getItem())
@@ -882,8 +885,8 @@ implements Serializable, Cloneable
 				System.err.println("fanning for item "+x+": " + loopVariable);
 				// einen neuen step erzeugen (klon von this)
 				System.err.println("1: " + new Timestamp(System.currentTimeMillis()).toString());
-//				Step newstep = cloner.deepClone(this);
-				Step newstep = this.clone();
+				Step newstep = cloner.deepClone(this);
+//				Step newstep = this.clone();
 				System.err.println("2: " + new Timestamp(System.currentTimeMillis()).toString());
 				newstep.setLoopvar(loopVariable);
 				System.err.println("3: " + new Timestamp(System.currentTimeMillis()).toString());
