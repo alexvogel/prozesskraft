@@ -186,11 +186,11 @@ implements Serializable
 
 		for(Step actStep : this.getStep())
 		{
-			this.addStep(actStep.clone());
+			clone.addStep(actStep.clone());
 		}
 		for(Log actLog : this.getLog())
 		{
-			this.addLog(actLog.clone());
+			clone.addLog(actLog.clone());
 		}
 
 		clone.cloneGeneration++;
