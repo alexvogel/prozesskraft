@@ -38,6 +38,23 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
+	public Test clone()
+	{
+		Test clone = new Test();
+		clone.setName(this.getName());
+		clone.setDescription(this.getDescription());
+		clone.setTestFeedback(this.getTestFeedback());
+		clone.setTestResult(this.getTestResult());
+
+		for(Param actParam : this.getParam())
+		{
+			clone.addParam(actParam.clone());
+		}
+		
+		return clone;
+	}
+	
+	
 	public void reset()
 	{
 		this.setTestFeedback(null);
@@ -473,6 +490,11 @@ implements Serializable
 	public String getDescription()
 	{
 		return this.description;
+	}
+
+	public void addParam(Param param)
+	{
+		this.param.add(param);
 	}
 
 	public ArrayList<Param> getParam()

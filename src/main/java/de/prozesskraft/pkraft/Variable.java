@@ -31,11 +31,11 @@ implements Serializable
 	private String category = null;
 	private String status = "";	// waiting/finished/error
 
-	private Step parent = null;
-	
 	private ArrayList<Log> log = new ArrayList<Log>();
 
-
+	// don't clone parent when you clone this
+	private Step parent = null;
+	
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -67,6 +67,43 @@ implements Serializable
 	@Override
 	public Variable clone()
 	{
+		Variable clone = new Variable();
+		clone.setKey(this.getKey());
+		clone.setSubprocesskey(this.getSubprocesskey());
+		clone.setValue(this.getValue());
+		clone.setDescription(this.getDescription());
+		clone.setGlob(this.getGlob());
+		clone.setExtract(this.getExtract());
+		clone.setMinoccur(this.getMinoccur());
+		clone.setMaxoccur(this.getMaxoccur());
+		clone.setType(this.getType());
+		clone.setFree(this.getFree());
+		clone.setCategory(this.getCategory());
+		clone.setStatus(this.getStatus());
+
+		for(String actChoice : this.getChoice())
+		{
+			clone.addChoice(actChoice);
+		}
+		for(Test actTest : this.getTest())
+		{
+			clone.addTest(actTest.clone());
+		}
+		for(Log actLog : this.getLog())
+		{
+			clone.addLog(actLog.clone());
+		}
+		
+		return clone;
+	}
+	
+	/**
+	 * clone
+	 * returns a clone of this
+	 * @return Variable
+	 */
+	public Variable oldClone()
+	{
 		return SerializationUtils.clone(this);
 	}
 	
@@ -94,6 +131,21 @@ implements Serializable
 
 		if (string_to_test.matches(pattern)) { return true;	}
 		else { return false; }
+	}
+	
+	public void addTest(Test test)
+	{
+		this.test.add(test);
+	}
+	
+	public void addLog(Log log)
+	{
+		this.log.add(log);
+	}
+	
+	public void addChoice(String choice)
+	{
+		this.choice.add(choice);
 	}
 	
 	public void performAllTests()

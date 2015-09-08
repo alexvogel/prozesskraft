@@ -35,11 +35,11 @@ implements Serializable, Cloneable
 	private boolean preservePosition = false;
 	private String status = "";	// waiting/finished/error
 
-	private Step parent = null;
-	
 	private ArrayList<Log> log = new ArrayList<Log>();
 
-
+	// don't clone parent when cloning this
+	private Step parent = null;
+	
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -65,6 +65,39 @@ implements Serializable, Cloneable
 	 */
 	@Override
 	public File clone()
+	{
+		File clone = new File();
+		clone.setKey(this.getKey());
+		clone.setSubprocesskey(this.getSubprocesskey());
+		clone.setGlob(this.getGlob());
+		clone.setGlobdir(this.getGlobdir());
+		clone.setFilename(this.getFilename());
+		clone.setDescription(this.getDescription());
+		clone.setRealposition(this.getRealposition());
+		clone.setMinoccur(this.getMinoccur());
+		clone.setMaxoccur(this.getMaxoccur());
+		clone.setCategory(this.getCategory());
+		clone.setPreservePosition(this.isPreservePosition());
+		clone.setStatus(this.getStatus());
+
+		for(Test actTest : this.getTest())
+		{
+			clone.addTest(actTest.clone());
+		}
+		for(Log actLog : this.getLog())
+		{
+			clone.addLog(actLog.clone());
+		}
+
+		return clone;
+	}
+	
+	/**
+	 * clone
+	 * returns a clone of this
+	 * @return File
+	 */
+	public File oldClone()
 	{
 		return SerializationUtils.clone(this);
 	}
@@ -95,6 +128,11 @@ implements Serializable, Cloneable
 		{
 			actTest.reset();
 		}
+	}
+	
+	private void addLog(Log log)
+	{
+		this.log.add(log);
 	}
 	
 	/**

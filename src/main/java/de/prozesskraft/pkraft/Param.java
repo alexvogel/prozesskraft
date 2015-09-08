@@ -35,7 +35,16 @@ implements Serializable
 	/*----------------------------
 	  methods
 	----------------------------*/
-
+	public Param clone()
+	{
+		Param clone = new Param();
+		clone.setId(this.getId());
+		clone.setContent(this.getContent());
+		
+		return clone;
+	}
+	
+	
 	/*----------------------------
 	  methods get
 	----------------------------*/
