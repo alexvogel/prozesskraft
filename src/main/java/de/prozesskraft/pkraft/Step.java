@@ -1669,7 +1669,7 @@ implements Serializable, Cloneable
 			this.log("info", "killing program that has been launched by this step");
 			this.log("info", "call: " + StringUtils.join(callToKill, " "));
 			returnStringInfoAboutKills += ", " + StringUtils.join(callToKill, " ");
-		
+
 			// erstellen prozessbuilder
 			ProcessBuilder pb = new ProcessBuilder(callToKill);
 
