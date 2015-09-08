@@ -123,10 +123,9 @@ implements Serializable, Cloneable
 	{
 		Step newStep = new Step();
 		newStep.setName(this.getName());
-		newStep.setClip(this.getName());
-		newStep.setType(this.getName());
-		newStep.setDescription(this.getName());
-		newStep.setName(this.getName());
+		newStep.setClip(this.getClip());
+		newStep.setType(this.getType());
+		newStep.setDescription(this.getDescription());
 		
 		for(List actList : this.getList())
 		{
