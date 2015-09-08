@@ -39,7 +39,7 @@ public class Clone
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Clone.class) + "/" + "../etc/pkraft-startinstance.ini");
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Clone.class) + "/" + "../etc/pkraft-clone.ini");
 
 		if (inifile.exists())
 		{
