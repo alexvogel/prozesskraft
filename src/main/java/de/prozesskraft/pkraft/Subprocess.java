@@ -478,8 +478,11 @@ implements Serializable
 
 		// alle commits aus subprocess in die des neuenProzesses ueberschreiben inkl. aller noch nicht resolvter eintraege
 		log("debug", "setting all commits of embedded rootStep to the rootStep of new process");
-		newProcess2.getRootStep().setCommit(this.getStep().getCommit());
-		newProcess2.getRootStep().affiliate();
+		for(Commit actCommit : this.getStep().getCommit())
+		{
+			newProcess2.getRootStep().addCommit(actCommit.clone());
+		}
+		newProcess2.affiliate();
 		
 		// das Basedirectory des neuen prozesses soll das stepdir des parentsteps sein
 		log("debug", "setting baseDir of subprocess to the same value like stepDir of step");
