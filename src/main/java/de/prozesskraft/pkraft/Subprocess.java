@@ -480,6 +480,7 @@ implements Serializable
 		log("debug", "setting all commits of embedded rootStep to the rootStep of new process");
 		for(Commit actCommit : this.getStep().getCommit())
 		{
+			newProcess2.getRootStep().setCommit(new ArrayList<Commit>());
 			newProcess2.getRootStep().addCommit(actCommit.clone());
 		}
 		newProcess2.affiliate();
