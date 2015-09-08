@@ -152,20 +152,20 @@ public class Clone
 		----------------------------*/
 		String pathToInstance = commandline.getOptionValue("instance");
 		java.io.File fileInstance = new java.io.File(pathToInstance);
-		
+
 		// wenn es nicht vorhanden ist, dann mit fehlermeldung abbrechen
 		if(!fileInstance.exists())
 		{
 			System.err.println("instance file does not exist.");
 			exiter();
 		}
-		
+
 		Process p1 = new Process();
-		p1.setInfilebinary(pathToInstance);
-		
-		Process p2 = p1.readBinary();
-		
-		Process p3 = p2.cloneWithData();
+//		p1.setInfilebinary(pathToInstance);
+
+//		Process p2 = p1.readBinary();
+
+//		Process p3 = p2.cloneWithData();
 
 	}
 	
