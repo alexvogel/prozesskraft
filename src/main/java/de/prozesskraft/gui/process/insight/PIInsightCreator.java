@@ -318,56 +318,26 @@ public class PIInsightCreator
 				father.log("info", "cloning process");
 
 				// bisherigen process klonen
-				Process clonedProcess = process.clone();
+				Process clonedProcess = process.cloneWithData();
 
-				// den datenbaum umkopieren
+				// den aufruf zusammenstellen und
+				// starten von pmodel, mit der angabe des neuen pmb
+				ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(father.getIni().get("apps", "pmodel-gui").split(" ")));
+
+				// die sonstigen argumente hinzufuegen
+				processSyscallWithArgs.add("-instance");
+				processSyscallWithArgs.add(clonedProcess.getRootdir() + "/" + "process.pmb");
+
+				father.log("info", "calling: "+StringUtils.join(processSyscallWithArgs, " "));
+
 				try
 				{
-					father.log("info", "copying directory tree: source="+process.getRootdir()+", target="+clonedProcess.getRootdir());
-					FileUtils.copyDirectory(new java.io.File(process.getRootdir()), new java.io.File(clonedProcess.getRootdir()), true);
-
-					// speichern des geklonten prozesses in das neue verzeichnis (dabei wird das alte pmb ueberschrieben)
-					clonedProcess.setOutfilebinary(clonedProcess.getRootdir() + "/" + "process.pmb");
-					clonedProcess.writeBinary();
-					
-					// den aufruf zusammenstellen und
-					// starten von pmodel, mit der angabe des neuen pmb
-					ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(father.getIni().get("apps", "pmodel-gui").split(" ")));
-
-					// die sonstigen argumente hinzufuegen
-					processSyscallWithArgs.add("-instance");
-					processSyscallWithArgs.add(clonedProcess.getRootdir() + "/" + "process.pmb");
-
-					father.log("info", "calling: "+StringUtils.join(processSyscallWithArgs, " "));
-					
-					try
-					{
-						java.lang.Process pqq = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
-					}
-					catch (IOException e)
-					{
-						father.log("error", e.getMessage());
-					}
-
+					java.lang.Process pqq = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
 				}
-				// falls directoryCopy schief laeuft, soll das clonen rueckabgewickelt werden
 				catch (IOException e)
 				{
-					process.log("error", "copying of directory tree failed -> cloning failed. deleting all copied data.");
-					process.log("error", e.getMessage()+"\n"+Arrays.toString(e.getStackTrace()));
-
-//					try
-//					{
-						father.log("warn", "delete this directory by hand: "+clonedProcess.getRootdir());
-						// FileUtils.deleteDirectory(new java.io.File(clonedProcess.getRootdir()));
-//					}
-//					catch (IOException e1)
-//					{
-//						process.log("error", "deleting of half copied directory tree failed -> chaos arises.");
-//						process.log("error", e1.getMessage()+"\n"+Arrays.toString(e1.getStackTrace()));
-//					}
+					father.log("error", e.getMessage());
 				}
-
 			}
 		}
 	};
