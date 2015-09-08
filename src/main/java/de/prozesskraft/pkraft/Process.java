@@ -65,7 +65,7 @@ import de.prozesskraft.commons.WhereAmI;
 public class Process extends ModelObject
 implements Serializable
 {
-	/*----------------------------
+	/*----------------------------pkraft-startinstance
 	  structure
 	----------------------------*/
 	static final long serialVersionUID = 1;
