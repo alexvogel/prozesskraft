@@ -44,6 +44,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.dozer.DozerBeanMapper;
 import org.ini4j.Ini;
@@ -197,6 +198,40 @@ implements Serializable
 		this.clonePerformed++;
 		clone.cloneDescendant = this.clonePerformed;
 		return clone;
+	}
+	
+	/**
+	 * clones the process and makes a copy of all files on filesystem
+	 * returns a clone of this
+	 * @return Process
+	 */
+	public Process cloneWithData()
+	{
+		// bisherigen process klonen
+		Process clonedProcess = this.clone();
+		
+		// kopieren der daten auf filesystem
+		clonedProcess.log("info", "copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
+		try
+		{
+			FileUtils.copyDirectory(new java.io.File(this.getRootdir()), new java.io.File(clonedProcess.getRootdir()), true);
+		}
+		catch (IOException e)
+		{
+			this.log("error", "copying of directory tree failed -> cloning failed. deleting all copied data.");
+			this.log("error", e.getMessage()+"\n"+Arrays.toString(e.getStackTrace()));
+
+			this.log("warn", "delete this directory by hand: "+clonedProcess.getRootdir());
+
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// speichern des geklonten prozesses in das neue verzeichnis (dabei wird das alte pmb ueberschrieben)
+		clonedProcess.setOutfilebinary(clonedProcess.getRootdir() + "/" + "process.pmb");
+		clonedProcess.writeBinary();
+		
+		return clonedProcess;
 	}
 	
 	/**
