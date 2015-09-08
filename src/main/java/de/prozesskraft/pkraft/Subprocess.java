@@ -32,7 +32,7 @@ implements Serializable
 	
 	// der step, der in subprocess eingebettet ist und dessen commits auf den rootStep des neuen Processes gemapped werden sollen
 	// dieser step wird automatisch initialisiert durch die daten im xml
-	private Step step = new Step("root");
+	private Step step = null;
 	
 	// don't clone parent when you clone this
 	public Step parent = null;
@@ -396,7 +396,7 @@ implements Serializable
 			this.setStatus("error");
 			return null;
 		}
-		
+
 		// check ob es das process verzeichnis ueberhaupt gibt
 		java.io.File processDir = new java.io.File(domainInstallationDirectory + "/" + this.getDomain() + "/" + this.getName());
 		if(processDir.exists() && processDir.isDirectory())
