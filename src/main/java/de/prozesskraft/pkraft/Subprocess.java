@@ -84,6 +84,10 @@ implements Serializable
 		{
 			newSubprocess.addLog(actLog.clone());
 		}
+		if(this.getStep() != null)
+		{
+			newSubprocess.setStep(this.getStep().clone());
+		}
 		if(this.getProcess() != null)
 		{
 			newSubprocess.setProcess(this.getProcess().clone());
@@ -473,7 +477,7 @@ implements Serializable
 		newProcess2.setMaxSimultaneousSteps(1);
 
 		// alle commits aus subprocess in die des neuenProzesses ueberschreiben inkl. aller noch nicht resolvter eintraege
-		log("debug", "setting all commits of step to the rootStep of subprocess");
+		log("debug", "setting all commits of embedded rootStep to the rootStep of new process");
 		newProcess2.getRootStep().setCommit(this.getStep().getCommit());
 		newProcess2.getRootStep().affiliate();
 		
