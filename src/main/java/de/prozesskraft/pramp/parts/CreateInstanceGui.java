@@ -180,6 +180,7 @@ public class CreateInstanceGui
 //				e1.printStackTrace();
 //			}
 			father.showInstance();
+			shell.dispose();
 		}
 	};
 
@@ -204,6 +205,7 @@ public class CreateInstanceGui
 //			}
 
 			father.startInstance();
+			shell.dispose();
 		}
 	};
 
