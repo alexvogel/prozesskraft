@@ -237,7 +237,7 @@ public class PmodelViewStepSym
 			this.pump = false;
 		}
 		
-		if ( this.step.getName().equals(this.step.getParent().getRootstepname()))
+		if ( this.step.isRoot())
 		{
 			symbol_quadrat_mit_x(this.parent.bezugsgroesse * (float)this.parent.einstellungen.getZoom()/100, true);
 //			System.out.println("symbol: quadrat mit x");
