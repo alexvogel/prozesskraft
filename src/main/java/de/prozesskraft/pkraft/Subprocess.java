@@ -30,7 +30,9 @@ implements Serializable
 	// das process object
 	private Process process = null;
 	
-//	private Step step = new Step("root");
+	// der step, der in subprocess eingebettet ist und dessen commits auf den rootStep des neuen Processes gemapped werden sollen
+	// dieser step wird automatisch initialisiert durch die daten im xml
+	private Step step = new Step("root");
 	
 	// don't clone parent when you clone this
 	public Step parent = null;
@@ -472,7 +474,7 @@ implements Serializable
 
 		// alle commits aus subprocess in die des neuenProzesses ueberschreiben inkl. aller noch nicht resolvter eintraege
 		log("debug", "setting all commits of step to the rootStep of subprocess");
-		newProcess2.getRootStep().setCommit(this.getParent().getCommit());
+		newProcess2.getRootStep().setCommit(this.getStep().getCommit());
 		newProcess2.getRootStep().affiliate();
 		
 		// das Basedirectory des neuen prozesses soll das stepdir des parentsteps sein
@@ -650,6 +652,20 @@ implements Serializable
 	 */
 	public void setMaxrun(int maxrun) {
 		this.maxrun = maxrun;
+	}
+
+	/**
+	 * @return the step
+	 */
+	public Step getStep() {
+		return step;
+	}
+
+	/**
+	 * @param step the step to set
+	 */
+	public void setStep(Step step) {
+		this.step = step;
 	}
 	
 }

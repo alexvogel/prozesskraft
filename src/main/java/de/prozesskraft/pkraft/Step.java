@@ -944,38 +944,29 @@ implements Serializable, Cloneable
 			{
 				System.err.println("fanning for item "+x+": " + loopVariable);
 				// einen neuen step erzeugen (klon von this)
-				System.err.println("1: " + new Timestamp(System.currentTimeMillis()).toString());
 				
 				// this clonen, allerdings mit moeglichst geringen aufwand
 //				Step newstep = cloner.deepClone(this);
 				Step newstep = this.clone();
 
-				System.err.println("2: " + new Timestamp(System.currentTimeMillis()).toString());
 				newstep.setLoopvar(loopVariable);
-				System.err.println("3: " + new Timestamp(System.currentTimeMillis()).toString());
 				// den loop fuer einen evtl. spaeteren reset merken
 				newstep.setLoopOld(newstep.getLoop());
-				System.err.println("4: " + new Timestamp(System.currentTimeMillis()).toString());
 				newstep.setLoop(null);
-				System.err.println("5: " + new Timestamp(System.currentTimeMillis()).toString());
 
 				newstep.setName(newstep.getName()+"@"+x);
-				System.err.println("6: " + new Timestamp(System.currentTimeMillis()).toString());
-				System.err.println("this step '"+newstep.getName()+"' was fanned out from step '"+this.getName()+"'");
+//				System.err.println("this step '"+newstep.getName()+"' was fanned out from step '"+this.getName()+"'");
 				newstep.log("info", "this step '"+newstep.getName()+"' was fanned out from step '"+this.getName()+"'");
 
 				// eine liste mit dem namen 'loop' anlegen und darin die loopvar speichern
 				List listLoop = new List();
-				System.err.println("7: " + new Timestamp(System.currentTimeMillis()).toString());
 				listLoop.setName("loopvar");
 				listLoop.addItem(loopVariable);
 				newstep.addList(listLoop);
-				System.err.println("8: " + new Timestamp(System.currentTimeMillis()).toString());
 
 				// den neuen step (klon von this) dem prozess hinzufuegen
 				this.parent.getStep().add(newstep);
 				x++;
-				System.err.println("9: " + new Timestamp(System.currentTimeMillis()).toString());
 			}
 
 			// den urspruenglichen step (this) aus dem prozess entfernen
