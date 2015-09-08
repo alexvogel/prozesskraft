@@ -161,7 +161,7 @@ public class Clone
 		}
 
 		Process p1 = new Process();
-//		p1.setInfilebinary(pathToInstance);
+		p1.setInfilebinary(pathToInstance);
 
 //		Process p2 = p1.readBinary();
 
