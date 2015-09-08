@@ -1467,6 +1467,7 @@ implements Serializable
 						this.log("debug", "cloning commit: "+this.getName());
 						this.log("debug", "parent of master commit: "+this.getParent().toString());
 						Commit clonedCommit = this.clone();
+						clonedCommit.setParent(this.getParent());
 						this.log("debug", "parent of clone commit: "+clonedCommit.getParent().toString());
 						clonedCommit.setName(this.getName()+"(looped)");
 						clonedCommit.loopedCommits = null;
