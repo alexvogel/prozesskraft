@@ -86,7 +86,6 @@ public class PmodelViewPage extends PApplet
 	int mouse_pressed_x;
 	int mouse_pressed_y;
 
-
     
 //    private int width = 600;
 //    private int height = 400;
@@ -162,6 +161,7 @@ public class PmodelViewPage extends PApplet
 	----------------------------*/
 	public void draw()
 	{
+		
 		// zoom from the center of the scetch
 //		translate(width/2, height/2); // use translate around scale
 //		scale((float)this.einstellungen.getZoom()/100);
@@ -765,9 +765,12 @@ public class PmodelViewPage extends PApplet
 		
 		// das maximum (abwaertsrampe die ersten 30 sekunden oder 5/frameRate)
 		damp = Math.max((float)(1.0f - (millisSeitStart / 30000f)), (float)((-0.067 * this.frameRate) + 1) );
-		damp = Math.max(damp, 0.95f);
-		damp = Math.min(damp, 1.0f);
 		
+		// sind es weniger als 25 steps? (unterer wert: kleine modelle => 0.15, ab 25 steps aus einem multistep => 0.5, ab 50 steps aus einem multistep => 0,98 
+		
+		damp = Math.max(damp, 0.5f);
+		damp = Math.min(damp, 1.0f);
+
 //		System.out.println("damp: "+damp);
 		return damp;
 	}

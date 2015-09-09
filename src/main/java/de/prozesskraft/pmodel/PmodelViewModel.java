@@ -9,6 +9,7 @@ public class PmodelViewModel extends ModelObject
 	public int height = 800;
 	public int size = 100;
 	public int zoom = 100;
+	public int damp = 15;
 	public String zoomstring = "";
 
 	public int textsize = 10;
