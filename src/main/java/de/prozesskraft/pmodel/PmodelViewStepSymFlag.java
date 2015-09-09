@@ -21,6 +21,8 @@ public class PmodelViewStepSymFlag
 	
 	private int grundgroesse = 15;
 	private ArrayList<String> wrappedDescription = new ArrayList<String>();
+	private ArrayList<String> wrappedId2 = new ArrayList<String>();
+
 	PFont fontCourier;
 	PFont fontCourierBold;
 	
@@ -93,6 +95,7 @@ public class PmodelViewStepSymFlag
 			if(this.step.getSubprocess().getProcess() != null)
 			{
 				//this.parent.parent.text("lulu", initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
+				wrappedId2 = wrapDescription(this.step.getDescription(), grundgroesse * 2);
 				this.parent.parent.text(this.step.getSubprocess().getProcess().getId2(), initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
 			}
 		}
