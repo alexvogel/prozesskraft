@@ -90,8 +90,11 @@ public class PmodelViewStepSymFlag
 		// zeile 2) id2, falls subprocess
 		if(this.step.getSubprocess() != null)
 		{
-			this.parent.parent.text("lulu", initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
-			//this.parent.parent.text(this.step.getSubprocess().getProcess().getId2(), initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
+			if(this.step.getSubprocess().getProcess() != null)
+			{
+				//this.parent.parent.text("lulu", initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
+				this.parent.parent.text(this.step.getSubprocess().getProcess().getId2(), initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
+			}
 		}
 		
 		// zeile 3) Description
