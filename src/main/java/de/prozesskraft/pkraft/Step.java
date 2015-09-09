@@ -2493,6 +2493,18 @@ implements Serializable, Cloneable
 		return isamultistep;
 	}
 	
+	public boolean isAFannedMultistep()
+	{
+		if(this.getName().matches("^.+@.+$"))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 	public ArrayList<Log> getLog()
 	{
 		return this.log;
