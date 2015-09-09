@@ -212,6 +212,7 @@ public class Merge
 
 		System.err.println("info: clone instance to directory: " + baseDir);
 		Process cloneInstance = p2.cloneWithData(baseDir);
+		cloneInstance.setOutfilebinary(cloneInstance.getRootdir() + "/process.pmb");
 
 		// weil beim clonen auch beim original felder veraendert werden (zaehler fuer klone, etc.) soll auch das original neu geschrieben werden
 		System.err.println("info: schreiben des binary files: " + p2.getOutfilebinary());
@@ -257,7 +258,9 @@ public class Merge
 				System.err.println("debug: ignoring from external instance step " + actStep.getName());
 			}
 		}
-
+		
+		// speichern der ergebnis instanz
+		cloneInstance.writeBinary();
 	}
 	
 	private static void exiter()
