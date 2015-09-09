@@ -54,7 +54,7 @@ public class PmodelViewStepSymFlag
 		float zeilenHoehe =  textgroesse + puffer;
 //		System.out.println("zeilenHoehe: "+zeilenHoehe);
 
-		float flagHoehe = (wrappedDescription.size() + 1) * zeilenHoehe + puffer;
+		float flagHoehe = (wrappedId2.size() + wrappedDescription.size() + 1) * zeilenHoehe + puffer;
 //		System.out.println("flagHoehe: "+flagHoehe);
 
 		float flagBreite = grundgroesse * 20 * zoom;
@@ -96,7 +96,10 @@ public class PmodelViewStepSymFlag
 			{
 				//this.parent.parent.text("lulu", initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
 				wrappedId2 = wrapDescription(this.step.getDescription(), grundgroesse * 2);
-				this.parent.parent.text(this.step.getSubprocess().getProcess().getId2(), initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
+				for(String actZeile : wrappedId2)
+				{
+					this.parent.parent.text(this.step.getSubprocess().getProcess().getId2(), initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
+				}
 			}
 		}
 		
