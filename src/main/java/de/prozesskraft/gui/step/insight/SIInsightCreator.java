@@ -202,19 +202,20 @@ public class SIInsightCreator
 			buttonLog.setEnabled(true);
 		}
 
-		Button buttonClone = new Button(compositeAction, SWT.NONE);
-		buttonClone.setText("clone");
-		buttonClone.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		buttonClone.setToolTipText("clone this step");
-		buttonClone.addSelectionListener(listener_button_clone);
-		if(step.isAFannedMultistep() && !step.getParent().getStatus().equals("working"))
-		{
-			buttonClone.setEnabled(true);
-		}
-		else
-		{
-			buttonClone.setEnabled(false);
-		}
+		Label labelDummy1 = new Label(compositeAction, SWT.NONE);
+//		Button buttonClone = new Button(compositeAction, SWT.NONE);
+//		buttonClone.setText("clone");
+//		buttonClone.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+//		buttonClone.setToolTipText("clone this step");
+//		buttonClone.addSelectionListener(listener_button_clone);
+//		if(step.isAFannedMultistep() && !step.getParent().getStatus().equals("working"))
+//		{
+//			buttonClone.setEnabled(true);
+//		}
+//		else
+//		{
+//			buttonClone.setEnabled(false);
+//		}
 
 		Button buttonReset = new Button(compositeAction, SWT.NONE);
 		buttonReset.setText("reset");

@@ -43,6 +43,7 @@ import de.prozesskraft.pkraft.Step;
 import de.prozesskraft.pkraft.Variable;
 import de.prozesskraft.pkraft.Process;
 import de.prozesskraft.pmodel.PmodelPartUi1;
+import de.prozesskraft.gui.process.edit.*;;
 
 public class PIInsightCreator
 {
@@ -53,6 +54,8 @@ public class PIInsightCreator
 	private Composite composite;
 	private ScrolledComposite sc;
 	
+	private Shell shell = new Shell(Display.getCurrent());
+	private PIInsightCreator This = this;
 //	ArrayList<CommitGui> commitGui = new ArrayList<CommitGui>();
 //	
 	public PIInsightCreator(PmodelPartUi1 father, Composite parent, Process process)
@@ -185,10 +188,10 @@ public class PIInsightCreator
 		buttonMerge.setText("merge");
 		buttonMerge.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonMerge.setToolTipText("merge with another instance of the same process");
-		buttonMerge.addSelectionListener(listener_button_kill);
+		buttonMerge.addSelectionListener(listener_button_merge);
 		if(process.getStatus().equals("working")) {buttonMerge.setEnabled(false);}
 		else{buttonMerge.setEnabled(true);}
-		buttonMerge.setEnabled(false);
+
 		return parent;
 	}
 
@@ -350,6 +353,16 @@ public class PIInsightCreator
 		}
 	};
 
+	SelectionAdapter listener_button_merge = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			new MergeProcess(shell, This, process);
+		}
+	};
+
+	
+	
 	private void kill_execute()
 	{
 		Shell messageShell = new Shell();
@@ -377,6 +390,20 @@ public class PIInsightCreator
 
 		}
 		messageShell.dispose();
+	}
+
+	/**
+	 * @return the father
+	 */
+	public PmodelPartUi1 getFather() {
+		return father;
+	}
+
+	/**
+	 * @param father the father to set
+	 */
+	public void setFather(PmodelPartUi1 father) {
+		this.father = father;
 	}
 
 
