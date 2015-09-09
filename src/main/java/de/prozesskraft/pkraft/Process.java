@@ -363,15 +363,18 @@ implements Serializable
 	 * integrates a step into a process
 	 * this is only possible for a fanned out multistep
 	 * 1) the name will be changed to avoid collision with existent fanned steps
+	 * 2) if there is a datadirectory, this will also be copied and onthefly renamed
 	 * @param step
 	 * @return
 	 */
 	public boolean integrateStep(Step step)
 	{
-		System.err.println("want to integrate step: " + step.getName());
+		boolean integrationErfolgreich = true;
 
-		boolean integrationErfolgreich = false;
-		// feststellen des groessten zaehlers fuer den multistep
+		this.log("info", "want to integrate step: " + step.getName());
+
+		// das alte datenverzeichnis feststellen
+		java.io.File sourceStepDir = new java.io.File(step.getAbsdir());
 
 		// feststellen des namensrumpfes
 		Pattern p = Pattern.compile("^(.+)@(.+)$");
@@ -380,9 +383,9 @@ implements Serializable
 		if(m.find())
 		{
 			String rumpf = m.group(1);
-			System.err.println("rumpfnamen: " + rumpf);
+//			System.err.println("rumpfnamen: " + rumpf);
 			int zaehler = Integer.parseInt(m.group(2));
-			System.err.println("zaehler: " + zaehler);
+//			System.err.println("zaehler: " + zaehler);
 
 			// hochzaehlen
 			zaehler++;
@@ -392,14 +395,47 @@ implements Serializable
 			{
 				zaehler++;
 			}
-			
+
 			// den namen fuer den zu integrierenden step setzen
 			step.setName(rumpf+"@"+zaehler);
-			System.err.println("neuer namen fuer den step beim integrieren: " + step.getName());
+			this.log("info", "renaming step while integrating. new name is: " + step.getName());
 			
-			// hinzufuegen
+			// den neuen step dem process hinzufuegen
 			this.addStep(step);
-			integrationErfolgreich = true;
+			
+			// ein evtl. vorhandenes daten verzeichnis einkopieren
+			java.io.File destStepDir = new java.io.File(step.getAbsdir());
+			
+			// gibt es ueberhaupt ein source directory?
+			if(sourceStepDir.exists() && sourceStepDir.isDirectory())
+			{
+				// gibt es bereits ein verzeichnis, dass den pfad des destination step directories traegt?
+				if(destStepDir.exists())
+				{
+					this.log("error", "destination step directory does already exist -> no data integration possible.");
+					integrationErfolgreich = false;
+				}
+				else
+				{
+					this.log("info", "copying data for step integration. " + sourceStepDir.getAbsolutePath() + " => " + destStepDir.getAbsolutePath());
+					try
+					{
+						FileUtils.copyDirectory(sourceStepDir, destStepDir, true);
+					}
+					catch (IOException e)
+					{
+						this.log("error", "copying of directory tree failed");
+						// TODO Auto-generated catch block
+						this.log("error", e.getMessage());
+						e.printStackTrace();
+					}
+				}
+			}
+			else
+			{
+				this.log("info", "source step directory does not exist -> no data integration needed.");
+			}
+			
 		}
 		else
 		{
