@@ -366,9 +366,11 @@ implements Serializable
 	 */
 	public boolean integrateStep(Step step)
 	{
+		System.err.println("want to integrate step: " + step.getName());
+
 		boolean integrationErfolgreich = false;
 		// feststellen des groessten zaehlers fuer den multistep
-		
+
 		// feststellen des namensrumpfes
 		Pattern p = Pattern.compile("^(.+)@.(.+)$");
 		Matcher m = p.matcher(step.getName());
@@ -376,7 +378,9 @@ implements Serializable
 		if(m.find())
 		{
 			String rumpf = m.group(1);
+			System.err.println("rumpfnamen: " + rumpf);
 			int zaehler = Integer.parseInt(m.group(2));
+			System.err.println("zaehler: " + zaehler);
 
 			// hochzaehlen
 			zaehler++;
@@ -389,10 +393,15 @@ implements Serializable
 			
 			// den namen fuer den zu integrierenden step setzen
 			step.setName(rumpf+"@"+zaehler);
+			System.err.println("neuer namen fuer den step beim integrieren: " + step.getName());
 			
 			// hinzufuegen
 			this.addStep(step);
 			integrationErfolgreich = true;
+		}
+		else
+		{
+			System.err.println("Pattern " + "^(.+)@.(.+)$" + " did not match the stepname!!!!!!");
 		}
 
 		return integrationErfolgreich;
