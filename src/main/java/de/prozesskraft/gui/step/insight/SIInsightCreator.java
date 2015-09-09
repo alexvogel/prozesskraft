@@ -38,6 +38,7 @@ import de.prozesskraft.pkraft.File;
 import de.prozesskraft.pkraft.Step;
 import de.prozesskraft.pkraft.Variable;
 import de.prozesskraft.pkraft.Process;
+import de.prozesskraft.gui.step.edit.CloneStep;
 import de.prozesskraft.gui.step.edit.EditFile;
 import de.prozesskraft.gui.step.edit.EditVariable;
 import de.prozesskraft.gui.step.edit.ResetStep;
@@ -205,10 +206,15 @@ public class SIInsightCreator
 		buttonClone.setText("clone");
 		buttonClone.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonClone.setToolTipText("clone this step");
-//		buttonClone.addSelectionListener(listener_button_clone);
-		if(step.isRoot()) {buttonClone.setEnabled(false);}
-		else {buttonClone.setEnabled(true);}
-		buttonClone.setEnabled(false);
+		buttonClone.addSelectionListener(listener_button_clone);
+		if(step.isAmultistep() && !step.getParent().getStatus().equals("working"))
+		{
+			buttonClone.setEnabled(true);
+		}
+		else
+		{
+			buttonClone.setEnabled(false);
+		}
 
 		Button buttonReset = new Button(compositeAction, SWT.NONE);
 		buttonReset.setText("reset");
@@ -503,6 +509,14 @@ public class SIInsightCreator
 //				reset_execute();
 				new ResetStep(shell, This, step);
 			}
+		}
+	};
+
+	SelectionAdapter listener_button_clone = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			new CloneStep(shell, This, step);
 		}
 	};
 
