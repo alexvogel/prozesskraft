@@ -210,11 +210,13 @@ implements Serializable
 		// bisherigen process klonen
 		Process clonedProcess = this.clone();
 		
-		// falls angegeben, soll das basedir geaendert werden
+		// falls angegeben, soll das basedir auf einen bestimmten pfad geaendert werden
+		// falls null, dann bleibt es wie vom Vatter beim klonen erhalten
 		if(baseDir != null)
 		{
 			clonedProcess.setBaseDir(baseDir);
 		}
+		System.err.println("copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
 		
 		// kopieren der daten auf filesystem
 		clonedProcess.log("info", "copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
