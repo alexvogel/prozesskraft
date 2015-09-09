@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.prozesskraft.codegen.Script;
+import de.prozesskraft.pkraft.Process;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -175,6 +176,46 @@ implements Serializable, Cloneable
 		return newStep;
 	}
 
+	/**
+	 * clones the step,
+	 * integrates the clone into process
+	 * clones the stepdirectory on filesystem
+	 * writes prozess to file
+	 * returns the cloned step
+	 * @return Step
+	 */
+	public Step cloneAndIntegrateWithData()
+	{
+		// bisherigen step klonen
+		Step clonedStep = this.clone();
+
+		// den geklonten step in den Prozess integrieren
+		if(!this.getParent().integrateStep(clonedStep))
+		{
+			this.log("error", "integrating step into process failed");
+			return null;
+		}
+
+		// kopieren der daten auf filesystem
+		clonedStep.log("info", "copying step directory: source="+this.getAbsdir()+", target="+clonedStep.getAbsdir());
+		try
+		{
+			FileUtils.copyDirectory(new java.io.File(this.getAbsdir()), new java.io.File(clonedStep.getAbsdir()), true);
+		}
+		catch (IOException e)
+		{
+			this.log("error", "copying of directory tree failed -> cloning failed. deleting all copied data.");
+			this.log("error", e.getMessage()+"\n"+Arrays.toString(e.getStackTrace()));
+
+			this.log("warn", "delete this directory by hand: "+clonedStep.getAbsdir());
+
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return clonedStep;
+	}
+	
 	/**
 	 * clone
 	 * returns a clone of this

@@ -351,6 +351,46 @@ implements Serializable
 		return true;
 	}
 
+	/**
+	 * integrates a step into a process
+	 * this is only possible for a fanned out multistep
+	 * 1) the name will be changed to avoid collision with existent fanned steps
+	 * @param step
+	 * @return
+	 */
+	boolean integrateStep(Step step)
+	{
+		boolean integrationErfolgreich = false;
+		// feststellen des groessten zaehlers fuer den multistep
+		
+		// feststellen des namensrumpfes
+		Pattern p = Pattern.compile("^(.+)@.(.+)$");
+		Matcher m = p.matcher(step.getName());
+		
+		if(m.matches())
+		{
+			String rumpf = m.group(1);
+			int zaehler = Integer.parseInt(m.group(2));
+
+			// hochzaehlen
+			zaehler++;
+
+			// mit bekannten zaehler beginnen und so lange hochzaehlen bis kein step mit diesem namen gefunden wird
+			while(this.getStep(rumpf+"@"+zaehler) != null)
+			{
+				zaehler++;
+			}
+			
+			// den namen fuer den zu integrierenden step setzen
+			step.setName(rumpf+"@"+zaehler);
+			
+			// hinzufuegen
+			this.addStep(step);
+			integrationErfolgreich = true;
+		}
+
+		return integrationErfolgreich;
+	}
 	
 	/**
 	 * generates a ArrayList that represents a graph in the format 'dot'
