@@ -207,6 +207,7 @@ public class Merge
 		// instance einlesen
 		Process p1 = new Process();
 		p1.setInfilebinary(pathToInstance);
+		p1.setOutfilebinary(pathToInstance);
 		Process p2 = p1.readBinary();
 
 		System.err.println("info: clone instance to directory: " + baseDir);
