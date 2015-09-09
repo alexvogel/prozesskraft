@@ -207,7 +207,7 @@ public class SIInsightCreator
 		buttonClone.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonClone.setToolTipText("clone this step");
 		buttonClone.addSelectionListener(listener_button_clone);
-		if(step.isAmultistep() && !step.getParent().getStatus().equals("working"))
+		if(step.isAFannedMultistep() && !step.getParent().getStatus().equals("working"))
 		{
 			buttonClone.setEnabled(true);
 		}
