@@ -209,6 +209,7 @@ public class Merge
 		p1.setInfilebinary(pathToInstance);
 		Process p2 = p1.readBinary();
 
+		System.err.println("info: clone instance to directory: " + baseDir);
 		Process cloneInstance = p2.cloneWithData(baseDir);
 
 		// guest einlesen
