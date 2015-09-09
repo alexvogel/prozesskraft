@@ -21,7 +21,7 @@ public class PmodelViewStepSymFlag
 	
 	private int grundgroesse = 15;
 	private ArrayList<String> wrappedDescription = new ArrayList<String>();
-	private ArrayList<String> wrappedId2 = new ArrayList<String>();
+	int anzahlZeilenId2 = 0;
 
 	PFont fontCourier;
 	PFont fontCourierBold;
@@ -54,7 +54,7 @@ public class PmodelViewStepSymFlag
 		float zeilenHoehe =  textgroesse + puffer;
 //		System.out.println("zeilenHoehe: "+zeilenHoehe);
 
-		float flagHoehe = (wrappedId2.size() + wrappedDescription.size() + 1) * zeilenHoehe + puffer;
+		float flagHoehe = (anzahlZeilenId2 + wrappedDescription.size() + 1) * zeilenHoehe + puffer;
 //		System.out.println("flagHoehe: "+flagHoehe);
 
 		float flagBreite = grundgroesse * 20 * zoom;
@@ -95,11 +95,8 @@ public class PmodelViewStepSymFlag
 			if(this.step.getSubprocess().getProcess() != null)
 			{
 				//this.parent.parent.text("lulu", initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
-				wrappedId2 = wrapDescription(this.step.getDescription(), grundgroesse * 2);
-				for(String actZeile : wrappedId2)
-				{
-					this.parent.parent.text(this.step.getSubprocess().getProcess().getId2(), initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
-				}
+				anzahlZeilenId2 = 1;
+				this.parent.parent.text(this.step.getSubprocess().getProcess().getId2(), initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
 			}
 		}
 		
