@@ -285,7 +285,7 @@ public class MergeProcess
 			p1.setInfilebinary(fileInstance.getAbsolutePath());
 
 			Process guestProcess = p1.readBinary();
-			
+
 			// sind sie vom gleichen typ
 			if(!process.getName().equals(guestProcess.getName()))
 			{

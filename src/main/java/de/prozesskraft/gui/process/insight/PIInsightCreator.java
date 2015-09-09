@@ -321,7 +321,7 @@ public class PIInsightCreator
 				father.log("info", "cloning process");
 
 				// bisherigen process klonen
-				Process clonedProcess = process.cloneWithData();
+				Process clonedProcess = process.cloneWithData(null);
 
 				// den aufruf zusammenstellen und
 				// starten von pmodel, mit der angabe des neuen pmb
