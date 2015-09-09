@@ -372,7 +372,7 @@ implements Serializable
 		// feststellen des groessten zaehlers fuer den multistep
 
 		// feststellen des namensrumpfes
-		Pattern p = Pattern.compile("^(.+)@.(.+)$");
+		Pattern p = Pattern.compile("^(.+)@(.+)$");
 		Matcher m = p.matcher(step.getName());
 
 		if(m.find())
@@ -401,7 +401,7 @@ implements Serializable
 		}
 		else
 		{
-			System.err.println("Pattern " + "^(.+)@.(.+)$" + " did not match the stepname!!!!!!");
+			System.err.println("Pattern " + "^(.+)@(.+)$" + " did not match the stepname!!!!!!");
 		}
 
 		return integrationErfolgreich;
