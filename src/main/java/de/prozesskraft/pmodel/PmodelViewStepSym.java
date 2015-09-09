@@ -563,7 +563,7 @@ public class PmodelViewStepSym
 				}
 	
 				this.speed = newspeed;
-				System.err.println("speed: " + this.speed);
+				System.err.println("speed: " + this.speed[0] + " / " + this.speed[0]);
 	
 				float[] oldposition = this.getPosition();
 				float[] newposition = new float[3];
