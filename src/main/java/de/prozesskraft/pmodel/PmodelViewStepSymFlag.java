@@ -84,8 +84,17 @@ public class PmodelViewStepSymFlag
 		this.parent.parent.fill(100);
 		this.parent.parent.textFont(fontCourierBold, textgroesse);
 
+		// zeile 1) Stepname
 		this.parent.parent.text(this.step.getName(), initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
 		
+		// zeile 2) id2, falls subprocess
+		if(this.step.getSubprocess() != null)
+		{
+			this.parent.parent.text(this.step.getSubprocess().getProcess().getId2(), initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
+		}
+		this.parent.parent.text(this.step.getName(), initSchreibPositionX, initSchreibPositionY + (zeilenHoehe * zeile++));
+		
+		// zeile 3) Description
 		this.parent.parent.textFont(fontCourier, textgroesse);
 		for(String actZeile : this.wrappedDescription)
 		{
