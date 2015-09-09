@@ -358,7 +358,7 @@ implements Serializable
 	 * @param step
 	 * @return
 	 */
-	boolean integrateStep(Step step)
+	public boolean integrateStep(Step step)
 	{
 		boolean integrationErfolgreich = false;
 		// feststellen des groessten zaehlers fuer den multistep
@@ -366,7 +366,7 @@ implements Serializable
 		// feststellen des namensrumpfes
 		Pattern p = Pattern.compile("^(.+)@.(.+)$");
 		Matcher m = p.matcher(step.getName());
-		
+
 		if(m.matches())
 		{
 			String rumpf = m.group(1);
