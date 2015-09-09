@@ -367,7 +367,7 @@ implements Serializable
 		Pattern p = Pattern.compile("^(.+)@.(.+)$");
 		Matcher m = p.matcher(step.getName());
 
-		if(m.matches())
+		if(m.find())
 		{
 			String rumpf = m.group(1);
 			int zaehler = Integer.parseInt(m.group(2));
