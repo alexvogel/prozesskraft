@@ -765,7 +765,7 @@ public class PmodelViewPage extends PApplet
 		
 		// das maximum (abwaertsrampe die ersten 30 sekunden oder 5/frameRate)
 		damp = Math.max((float)(1.0f - (millisSeitStart / 30000f)), (float)((-0.067 * this.frameRate) + 1) );
-		damp = Math.max(damp, 0.9f);
+		damp = Math.max(damp, 0.98f);
 		damp = Math.min(damp, 1.0f);
 		
 //		System.out.println("damp: "+damp);
