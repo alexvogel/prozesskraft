@@ -205,10 +205,16 @@ implements Serializable
 	 * returns a clone of this
 	 * @return Process
 	 */
-	public Process cloneWithData()
+	public Process cloneWithData(String baseDir)
 	{
 		// bisherigen process klonen
 		Process clonedProcess = this.clone();
+		
+		// falls angegeben, soll das basedir geaendert werden
+		if(baseDir != null)
+		{
+			clonedProcess.setBaseDir(baseDir);
+		}
 		
 		// kopieren der daten auf filesystem
 		clonedProcess.log("info", "copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
