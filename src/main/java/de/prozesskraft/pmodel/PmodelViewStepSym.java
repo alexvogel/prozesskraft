@@ -554,6 +554,8 @@ public class PmodelViewStepSym
 				newspeed[1] = (oldspeed[1] + speeddiff[1]) * (1-this.parent.getDamp());
 				newspeed[0] = Math.max(newspeed[0], 100);
 				newspeed[1] = Math.max(newspeed[1], 100);
+				newspeed[0] = Math.min(newspeed[0], -100);
+				newspeed[1] = Math.min(newspeed[1], -100);
 
 //				newspeed[0] = Math.min((float)(oldspeed[0] * 1.01), (oldspeed[0] + speeddiff[0]) * (1-this.parent.getDamp()));
 //				newspeed[1] = Math.min((float)(oldspeed[1] * 1.01), (oldspeed[1] + speeddiff[1]) * (1-this.parent.getDamp()));
