@@ -41,7 +41,7 @@ import org.eclipse.swt.layout.FormLayout;
 
 public class CloneStep
 {
-	private Object father;
+	private SIInsightCreator father;
 	public Shell shell = null;
 //	public Shell shell = new Shell(Display.getCurrent(), SWT.SHELL_TRIM & (~SWT.RESIZE));
 //	public Shell shell = new Shell(Display.getCurrent());
@@ -72,7 +72,7 @@ public class CloneStep
 	/**
 	 * Constructor fuer pkraft & Co.
 	 */
-	public CloneStep(Shell fatherShell, Object father, Step step)
+	public CloneStep(Shell fatherShell, SIInsightCreator father, Step step)
 	{
 		this.father = father;
 		this.step = step;
@@ -265,7 +265,12 @@ public class CloneStep
 			// prozess schreiben
 			if(clone != null)
 			{
+				father.getFather().log("info", "step successfully cloned to " + clone.getName());
 				step.getParent().writeBinary();
+			}
+			else
+			{
+				father.getFather().log("error", "cloning step failed");
 			}
 
 			// nachfragefenster schliessen
@@ -276,14 +281,14 @@ public class CloneStep
 	/**
 	 * @return the father
 	 */
-	public Object getFather() {
+	public SIInsightCreator getFather() {
 		return father;
 	}
 
 	/**
 	 * @param father the father to set
 	 */
-	public void setFather(Object father) {
+	public void setFather(SIInsightCreator father) {
 		this.father = father;
 	}
 
