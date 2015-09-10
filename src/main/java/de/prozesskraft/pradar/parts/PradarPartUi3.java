@@ -93,6 +93,9 @@ import de.prozesskraft.commons.MyLicense;
 import de.prozesskraft.commons.WhereAmI;
 import de.prozesskraft.pradar.Entity;
 
+import de.prozesskraft.pkraft.*;
+import de.prozesskraft.pkraft.Process;
+
 public class PradarPartUi3 extends ModelObject
 {
 	static CommandLine line;
@@ -832,21 +835,31 @@ public class PradarPartUi3 extends ModelObject
 					
 					else
 					{
-						// den prozess klonen durch aufruf des tools: pkraft-clone
-						String call = ini.get("apps", "pkraft-clone") + " -instance " + fileResource.getAbsolutePath(); 
-						log("info", "calling: "+call);
+						Process p1 = new Process();
+						p1.setInfilebinary(fileResource.getAbsolutePath());
+						Process process = p1.readBinary();
 						
-						try
-						{
-							java.lang.Process sysproc = Runtime.getRuntime().exec(call);
-						}
-						catch (IOException e)
-						{
-							log("error", e.getMessage());
-						}
+						// klonen mit data
+						Process clone = process.cloneWithData(null);
+						log("info", "cloning instance to this resource: " + clone.getRootdir());
 						
+//						
+//						
+//						// den prozess klonen durch aufruf des tools: pkraft-clone
+//						String call = ini.get("apps", "pkraft-clone") + " -instance " + fileResource.getAbsolutePath(); 
+//						log("info", "calling: "+call);
+//						
+//						try
+//						{
+//							java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+//						}
+//						catch (IOException e)
+//						{
+//							log("error", e.getMessage());
+//						}
+//						
 						// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
-						String call2 = ini.get("apps", "pradar-attend") + " -instance " + fileResource.getAbsolutePath(); 
+						String call2 = ini.get("apps", "pradar-attend") + " -instance " + clone.getRootdir() + "/process.pmb"; 
 						log("info", "calling: "+call2);
 
 						try
