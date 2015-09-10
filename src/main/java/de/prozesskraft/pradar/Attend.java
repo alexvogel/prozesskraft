@@ -188,10 +188,10 @@ public class Attend
 			// mache nichts, dann greift der default 'HAL'
 		}
 
-		System.exit(1);
 		
 		// die zeiten aus dem process setzen
 		entity.setCheckin(process.getTimeOfProcessCreated());
+		System.exit(1);
 		entity.setCheckout(process.getTimeOfProcessFinishedOrError());
 		
 		// die resource setzen
