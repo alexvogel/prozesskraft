@@ -227,7 +227,7 @@ public class Attend
 		}
 
 		// debugging
-		entity.print();
+//		entity.print();
 		
 		// eintragen in die DB
 		Socket server = null;
