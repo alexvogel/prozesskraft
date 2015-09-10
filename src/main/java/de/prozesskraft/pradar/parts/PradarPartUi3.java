@@ -843,8 +843,10 @@ public class PradarPartUi3 extends ModelObject
 						Process clone = process.cloneWithData(null);
 						log("info", "cloning instance to this resource: " + clone.getRootdir());
 						
-//						
-//						
+//						// das original speichern, weil auch hier aenderungen vorhanden sind (zaehler fuer klone)
+						process.setOutfilebinary(fileResource.getAbsolutePath());
+						process.writeBinary();
+
 //						// den prozess klonen durch aufruf des tools: pkraft-clone
 //						String call = ini.get("apps", "pkraft-clone") + " -instance " + fileResource.getAbsolutePath(); 
 //						log("info", "calling: "+call);
