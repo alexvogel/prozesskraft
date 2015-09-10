@@ -119,6 +119,8 @@ implements Serializable
 	private String parentid = "0";
 	
 	private Long timeOfLastStepStart = System.currentTimeMillis()-60000;
+	private Long timeOfProcessCreated = System.currentTimeMillis();
+	private Long timeOfProcessFinishedOrError = 0L;
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -1737,7 +1739,7 @@ implements Serializable
 	public String getStatus()
 	{
 		String status = "unknown";
-		
+
 		ArrayList<String> statusAllSteps = new ArrayList<String>();
 
 		for(Step actStep : this.getStep())
@@ -1751,18 +1753,20 @@ implements Serializable
 			status = "error";
 			return status;
 		}
-		
+
 		// wenn schluessel waiting/initializing/working/committing nicht vorhanden sind, und nur finished vorhanden ist, dann ist prozess finished
 		else if(  statusAllSteps.contains("initializing") || statusAllSteps.contains("initialized") || statusAllSteps.contains("working")  || statusAllSteps.contains("worked") || statusAllSteps.contains("committing")   )
 		{
 			if(this.run)
 			{
 				status = "working";
+				this.setTimeOfProcessFinishedOrError(0L);
 				return status;
 			}
 			else
 			{
 				status = "paused";
+				this.setTimeOfProcessFinishedOrError(0L);
 				return status;
 			}
 		}
@@ -1771,16 +1775,18 @@ implements Serializable
 		else if(  statusAllSteps.contains("waiting") )
 		{
 			status = "waiting";
+			this.setTimeOfProcessFinishedOrError(0L);
 			return status;
 		}
-		
+
 		// wenn schluessel finished vorhanden ist und die vorherigen optionen nicht in Frage kommen, dann ist prozess finished
 		else if(  statusAllSteps.contains("finished") )
 		{
 			status = "finished";
+			
 			return status;
 		}
-		
+
 		return status;
 	}
 
@@ -2717,6 +2723,34 @@ implements Serializable
 	 */
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	/**
+	 * @return the timeOfProcessCreated
+	 */
+	public Long getTimeOfProcessCreated() {
+		return timeOfProcessCreated;
+	}
+
+	/**
+	 * @param timeOfProcessCreated the timeOfProcessCreated to set
+	 */
+	public void setTimeOfProcessCreated(Long timeOfProcessCreated) {
+		this.timeOfProcessCreated = timeOfProcessCreated;
+	}
+
+	/**
+	 * @return the timeOfProcessFinishedOrError
+	 */
+	public Long getTimeOfProcessFinishedOrError() {
+		return timeOfProcessFinishedOrError;
+	}
+
+	/**
+	 * @param timeOfProcessFinishedOrError the timeOfProcessFinishedOrError to set
+	 */
+	public void setTimeOfProcessFinishedOrError(Long timeOfProcessFinishedOrError) {
+		this.timeOfProcessFinishedOrError = timeOfProcessFinishedOrError;
 	}
 
 }
