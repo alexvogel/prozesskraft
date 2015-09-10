@@ -196,7 +196,6 @@ implements Serializable
 		}
 
 		clone.cloneGeneration++;
-		clone.clonePerformed = 0;
 		this.clonePerformed++;
 		clone.cloneDescendant = this.clonePerformed;
 		return clone;
