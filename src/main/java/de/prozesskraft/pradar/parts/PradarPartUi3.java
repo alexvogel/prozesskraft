@@ -356,6 +356,14 @@ public class PradarPartUi3 extends ModelObject
 		button_delete.setText("delete");
 		button_delete.setToolTipText("deletes a finished (already checked out) process instance from database. includes an implicit 'clean'");
 		button_delete.addSelectionListener(listener_delete_button);
+		if ( (einstellungen.entitySelected != null) && ( einstellungen.entitySelected.getParentid()).equals("0") )
+		{
+			button_delete.setEnabled(true);
+		}
+		else
+		{
+			button_delete.setEnabled(false);
+		}
 		
 		// Group visual
 		Group grpVisual = new Group(composite_11, SWT.NONE);
