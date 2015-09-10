@@ -323,6 +323,9 @@ public class PIInsightCreator
 				// bisherigen process klonen
 				Process clonedProcess = process.cloneWithData(null);
 
+				// originalProcess speichern, da auch hier derzaehler veraendert wurde
+				clonedProcess.writeBinary();
+				
 				// den aufruf zusammenstellen und
 				// starten von pmodel, mit der angabe des neuen pmb
 				ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(father.getIni().get("apps", "pmodel-gui").split(" ")));
