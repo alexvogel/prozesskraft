@@ -166,7 +166,6 @@ public class Attend
 		Process p1 = new Process();
 		p1.setInfilebinary(fileProcessBinary.getAbsolutePath());
 		Process process = p1.readBinary();
-		System.exit(1);
 
 		
 		// ein pradar entity erstellen
@@ -230,6 +229,7 @@ public class Attend
 		// debugging
 		entity.print();
 		
+		System.exit(1);
 		
 		// eintragen in die DB
 		Socket server = null;
