@@ -178,6 +178,8 @@ public class Attend
 		entity.setId2(process.getId2());
 		entity.setParentid(process.getParentid());
 
+		System.exit(1);
+		
 		// setzen des hosts vom system
 		try
 		{
