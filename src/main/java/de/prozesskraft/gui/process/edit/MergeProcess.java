@@ -322,6 +322,13 @@ public class MergeProcess
 				}
 			}
 
+			// speichern der ergebnis instanz
+			process.writeBinary();
+
+			// den gui update anstossen
+			father.getFather().refreshAppletAndUi();
+
+			// fenster schliessen
 			shell.dispose();
 		}
 	};	
