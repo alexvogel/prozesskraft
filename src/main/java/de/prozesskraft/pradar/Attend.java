@@ -165,9 +165,9 @@ public class Attend
 		// instanz einlesen
 		Process p1 = new Process();
 		p1.setInfilebinary(fileProcessBinary.getAbsolutePath());
-		System.exit(1);
 		Process process = p1.readBinary();
-		
+		System.exit(1);
+
 		
 		// ein pradar entity erstellen
 		Entity entity = new Entity();
