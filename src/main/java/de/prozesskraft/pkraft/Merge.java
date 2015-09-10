@@ -116,7 +116,7 @@ public class Merge
 		if ( commandline.hasOption("help"))
 		{
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("startinstance", options);
+			formatter.printHelp("merge", options);
 			System.exit(0);
 		}
 
