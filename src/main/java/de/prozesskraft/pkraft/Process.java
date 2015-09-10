@@ -2629,7 +2629,7 @@ implements Serializable
 	{
 		if(this.getId2Variable() == null)
 		{
-			return "noId2Variable";
+			return "";
 		}
 
 		String id2 = "";
