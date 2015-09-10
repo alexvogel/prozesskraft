@@ -210,6 +210,25 @@ public class Merge
 		p1.setOutfilebinary(pathToInstance);
 		Process p2 = p1.readBinary();
 
+		// guest einlesen
+		Process p30 = new Process();
+		p30.setInfilebinary(pathToGuest);
+		Process pGuest = p1.readBinary();
+
+		// testen ob beide instanzen vom gleichen typ sind
+		if(!p2.getName().equals(pGuest.getName()))
+		{
+			System.err.println("error: instances are not from the same type (-instance=" + p2.getName() + " != -guest=" + pGuest.getName());
+			exiter();
+		}
+		
+		// testen ob beide instanzen von gleicher version sind
+		if(!p2.getVersion().equals(pGuest.getVersion()))
+		{
+			System.err.println("error: instances are not from the same version (" + p2.getVersion() + "!=" + pGuest.getVersion());
+			exiter();
+		}
+
 		System.err.println("info: clone instance to directory: " + baseDir);
 		Process cloneInstance = p2.cloneWithData(baseDir);
 		cloneInstance.setOutfilebinary(cloneInstance.getRootdir() + "/process.pmb");
@@ -218,10 +237,6 @@ public class Merge
 		System.err.println("info: schreiben des binary files: " + p2.getOutfilebinary());
 		p2.writeBinary();
 		
-		// guest einlesen
-		Process p30 = new Process();
-		p30.setInfilebinary(pathToGuest);
-		Process pGuest = p1.readBinary();
 
 		// sind sie vom gleichen typ
 		if(!cloneInstance.getName().equals(pGuest.getName()))
@@ -255,7 +270,7 @@ public class Merge
 			}
 			else
 			{
-				System.err.println("debug: ignoring from external instance step " + actStep.getName());
+				System.err.println("debug: because it's not a multistep, ignoring from external instance step " + actStep.getName());
 			}
 		}
 		
