@@ -832,12 +832,26 @@ public class PradarPartUi3 extends ModelObject
 					
 					else
 					{
+						// den prozess klonen durch aufruf des tools: pkraft-clone
 						String call = ini.get("apps", "pkraft-clone") + " -instance " + fileResource.getAbsolutePath(); 
 						log("info", "calling: "+call);
 						
 						try
 						{
 							java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+						}
+						catch (IOException e)
+						{
+							log("error", e.getMessage());
+						}
+						
+						// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
+						String call2 = ini.get("apps", "pradar-attend") + " -instance " + fileResource.getAbsolutePath(); 
+						log("info", "calling: "+call2);
+
+						try
+						{
+							java.lang.Process sysproc = Runtime.getRuntime().exec(call2);
 						}
 						catch (IOException e)
 						{
