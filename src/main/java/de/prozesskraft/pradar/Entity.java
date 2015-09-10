@@ -186,6 +186,8 @@ implements Serializable
 		System.out.println("active:  "+this.active);
 		System.out.println("checkin: "+this.getCheckinAsString());
 		System.out.println("checkout:"+this.getCheckoutAsString());
+		System.out.println("stepcount:"+this.getStepcount());
+		System.out.println("stepcountcompleted:"+this.getStepcountcompleted());
 		System.out.println("exitcode:"+this.exitcode);
 		System.out.println("resource:"+this.resource);
 		System.out.println("period:  "+this.resource);
