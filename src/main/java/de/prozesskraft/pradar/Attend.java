@@ -166,7 +166,7 @@ public class Attend
 		Process p1 = new Process();
 		p1.setInfilebinary(fileProcessBinary.getAbsolutePath());
 		Process process = p1.readBinary();
-
+		process.setOutfilebinary(fileProcessBinary.getAbsolutePath());
 		
 		// ein pradar entity erstellen
 		Entity entity = new Entity();
@@ -193,7 +193,7 @@ public class Attend
 		entity.setCheckout(process.getTimeOfProcessFinishedOrError());
 		
 		// die resource setzen
-		entity.setResource(process.getInfilebinary());
+		entity.setResource(fileProcessBinary.getAbsolutePath());
 		
 		// setzen des user vom system
 		entity.setUser(System.getProperty("user.name"));
