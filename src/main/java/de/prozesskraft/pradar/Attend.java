@@ -217,7 +217,7 @@ public class Attend
 		{
 			entity.setExitcode("0");
 		}
-		else if(process.getStatus().equals("working"))
+		else if(process.getStatus().equals("working") || process.getStatus().equals("waiting"))
 		{
 			// belassen bei ""
 		}
