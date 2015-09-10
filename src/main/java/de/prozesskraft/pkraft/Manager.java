@@ -315,6 +315,7 @@ public class Manager
 						// wenn der prozess den status 'finished' hat, soll dieses programm beendet werden
 						p3.run = false;
 						p3.log("info", "manager "+managerid+": process instance is finished. goodbye from manager id "+p3.getManagerid());
+						p3.setTimeOfProcessFinishedOrError(System.currentTimeMillis());
 						
 						// pradar checkout
 						p3.log("info", "manager "+managerid+": pradar checkout id="+p3.getId()+", process="+p3.getName()+", exitcode=0");
@@ -327,6 +328,7 @@ public class Manager
 						p3.run = false;
 						p3.log("info", "error in process detected. setting run = false");
 						p3.log("info", "stopping manager "+p2.getManagerid());
+						p3.setTimeOfProcessFinishedOrError(System.currentTimeMillis());
 
 						// errorcode string erzeugen
 						String exitCode = "error-in-steps:";
