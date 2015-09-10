@@ -167,6 +167,8 @@ public class Attend
 		process.setInfilebinary(fileProcessBinary.getAbsolutePath());
 		process.readBinary();
 		
+		System.err.println("FROM BINARY PROCESSNAME IS: " + process.getName());
+		
 		// ein pradar entity erstellen
 		Entity entity = new Entity();
 
