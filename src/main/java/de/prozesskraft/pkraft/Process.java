@@ -1086,7 +1086,7 @@ implements Serializable
 			}
 			is.close();
 //			proc1 = proc;
-			System.out.println("NAMEN des Prozesses proc: "+proc.getName());
+//			System.out.println("NAMEN des Prozesses proc: "+proc.getName());
 //			System.out.println("NAMEN des Prozesses proc1: "+proc1.getName());
 
 			// wenn der eingelesene prozess in den file-feldern inhalte hat, sollen diese beibehalten werden
