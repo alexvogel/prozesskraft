@@ -229,8 +229,6 @@ public class Attend
 		// debugging
 		entity.print();
 		
-		System.exit(1);
-		
 		// eintragen in die DB
 		Socket server = null;
 
