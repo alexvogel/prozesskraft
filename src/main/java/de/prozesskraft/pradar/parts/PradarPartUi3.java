@@ -348,23 +348,24 @@ public class PradarPartUi3 extends ModelObject
 		button_clone.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		button_clone.setText("clone");
 		button_clone.setToolTipText("copy the instance");
-		button_clone.setEnabled(false);
-//		button_clone.addSelectionListener(listener_clone_button);
+		button_clone.addSelectionListener(listener_clone_button);
 		
 		button_delete = new Button(grpFunctionInstance, SWT.NONE);
 		button_delete.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		button_delete.setText("delete");
 		button_delete.setToolTipText("deletes a finished (already checked out) process instance from database. includes an implicit 'clean'");
 		button_delete.addSelectionListener(listener_delete_button);
-//		if ( (einstellungen.entitySelected != null) && ( einstellungen.entitySelected.getParentid()).equals("") )
-			if ( (einstellungen.entitySelected != null)  )
-		{
-			button_delete.setEnabled(true);
-		}
-		else
-		{
-			button_delete.setEnabled(false);
-		}
+		
+		// den button auf diese weise aktiv/deaktiv zu stellen funktioniert nicht.
+		// muss ueber databinding realisiert werden
+		//		if ( (einstellungen.entitySelected != null) && ( einstellungen.entitySelected.getParentid()).equals("") )
+//		{
+//			button_delete.setEnabled(true);
+//		}
+//		else
+//		{
+//			button_delete.setEnabled(false);
+//		}
 		
 		// Group visual
 		Group grpVisual = new Group(composite_11, SWT.NONE);
@@ -773,6 +774,85 @@ public class PradarPartUi3 extends ModelObject
 			}
 		}
 	};	
+
+	SelectionAdapter listener_clone_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			if ( (einstellungen.entitySelected != null) && (!(einstellungen.entitySelected.getUser().equals(System.getProperty("user.name")))) )
+			{
+				log("error", "you may only clone your instances (user "+System.getProperty("user.name")+")");
+			}
+			if ( (einstellungen.entitySelected != null) && (!(einstellungen.entitySelected.getParentid().equals("0"))) )
+			{
+				log("error", "you must not clone child instances");
+			}
+
+//			else if ( (einstellungen.entitySelected != null) && einstellungen.entitySelected.isActive() )
+//			{
+//				log("error", "you may only delete finished instances.");
+//			}
+
+			else if (einstellungen.entitySelected != null)
+			{
+				// bestaetigungsdialog
+				Shell shell = new Shell();
+				MessageBox confirmation = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+				String message = "";
+
+				message += "you are about to clone this instance.\n";
+				message += "a full copy of this process instance with all its nested instances and all associated files will be made.\n\n";
+				message += "do you really want to clone?";
+
+				confirmation.setMessage(message);
+
+				// open confirmation and wait for user selection
+				int returnCode = confirmation.open();
+//				System.out.println("returnCode is: "+returnCode);
+
+				// ok == 32
+				if (returnCode == 32)
+				{
+					log("info", "cloning process");
+
+					File fileResource = new File(einstellungen.entitySelected.getResource());
+
+					if(!fileResource.exists())
+					{
+						log("error", "resource does not exist: "+fileResource.getAbsolutePath());
+					}
+					else if(!fileResource.isFile())
+					{
+						log("error", "resource is not a file: "+fileResource.getAbsolutePath());
+					}
+					else if(!fileResource.canRead())
+					{
+						log("error", "cannot read resource: "+fileResource.getAbsolutePath());
+					}
+					
+					else
+					{
+						String call = ini.get("apps", "pkraft-clone") + " -instance " + fileResource.getAbsolutePath(); 
+						log("info", "calling: "+call);
+						
+						try
+						{
+							java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+						}
+						catch (IOException e)
+						{
+							log("error", e.getMessage());
+						}
+					}
+				}
+			}
+			else
+			{
+				log("warn", "no instance selected");
+			}
+			
+		}
+	};	
 	
 	SelectionAdapter listener_delete_button = new SelectionAdapter()
 	{
@@ -782,12 +862,16 @@ public class PradarPartUi3 extends ModelObject
 			{
 				log("error", "you may only delete your instances (user "+System.getProperty("user.name")+")");
 			}
-			
+			if ( (einstellungen.entitySelected != null) && (!(einstellungen.entitySelected.getParentid().equals("0"))) )
+			{
+				log("error", "you must not delete child instances");
+			}
+
 //			else if ( (einstellungen.entitySelected != null) && einstellungen.entitySelected.isActive() )
 //			{
 //				log("error", "you may only delete finished instances.");
 //			}
-			
+
 			else if (einstellungen.entitySelected != null)
 			{
 				// bestaetigungsdialog
