@@ -178,8 +178,6 @@ public class Attend
 		entity.setId2(process.getId2());
 		entity.setParentid(process.getParentid());
 
-		System.exit(1);
-		
 		// setzen des hosts vom system
 		try
 		{
@@ -193,6 +191,8 @@ public class Attend
 		// die zeiten aus dem process setzen
 		entity.setCheckin(process.getTimeOfProcessCreated());
 		entity.setCheckout(process.getTimeOfProcessFinishedOrError());
+		
+		System.exit(1);
 		
 		// die resource setzen
 		entity.setResource(fileProcessBinary.getAbsolutePath());
