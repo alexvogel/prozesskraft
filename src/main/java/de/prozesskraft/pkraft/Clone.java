@@ -162,11 +162,16 @@ public class Clone
 
 		Process p1 = new Process();
 		p1.setInfilebinary(pathToInstance);
+		p1.setOutfilebinary(pathToInstance);
 
 		Process p2 = p1.readBinary();
 
 		Process p3 = p2.cloneWithData(null);
 
+		// da auch im original aenderungen durchgefuehrt werden (klonzaehler wird erhoeht)
+		// auch das original speichern
+		p2.setOutfilebinary(pathToInstance);
+		p2.writeBinary();
 	}
 	
 	private static void exiter()
