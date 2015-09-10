@@ -161,7 +161,7 @@ public class Attend
 			System.err.println("error: process instance file does not exist: " + pathProcessBinary);
 			exiter();
 		}
-		
+
 		// instanz einlesen
 		Process process = new Process();
 		process.setInfilebinary(fileProcessBinary.getAbsolutePath());
@@ -208,7 +208,7 @@ public class Attend
 
 		// stepcounts setzen
 		entity.setStepcount("" + process.getStep().size());
-		entity.setStepcountcompleted("" + process.getStepFinishedOrCanceled());
+		entity.setStepcountcompleted("" + process.getStepFinishedOrCanceled().size());
 		
 		// exitcode setzen
 		if(process.getStatus().equals("finished"))
