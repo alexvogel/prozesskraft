@@ -190,9 +190,8 @@ public class Attend
 
 		
 		// die zeiten aus dem process setzen
-		entity.setCheckin(process.getTimeOfProcessCreated());
-		System.exit(1);
-		entity.setCheckout(process.getTimeOfProcessFinishedOrError());
+//		entity.setCheckin(process.getTimeOfProcessCreated());
+//		entity.setCheckout(process.getTimeOfProcessFinishedOrError());
 		
 		// die resource setzen
 		entity.setResource(fileProcessBinary.getAbsolutePath());
