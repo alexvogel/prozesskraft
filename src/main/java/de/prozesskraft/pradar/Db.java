@@ -1,11 +1,8 @@
 package de.prozesskraft.pradar;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.sql.*;
 
 import de.prozesskraft.commons.*;
@@ -132,6 +129,49 @@ public class Db
 	}
 
 	/**
+	 * if the entity already exists (combo of 'id' and 'process' exists) then all the fields will be updated
+	 * otherwise a new entity will be created with all the datafields set
+	 * @param Entity
+	 */
+	public void attendEntity(Entity entity)
+	{
+		this.sqlvoodoo();
+		this.connection = null;
+		try
+		{
+			this.getConnection();
+			Statement statement = this.connection.createStatement();
+			ResultSet rs;
+
+			statement.setQueryTimeout(10);
+
+			// erst sehen ob es bereits ein entity mit dem id und process gibt
+			String sql = "SELECT * FROM radar WHERE id=" + entity.getId() + " AND process=" + entity.getProcessSqlPattern(); 
+			rs = statement.executeQuery(sql);
+
+			// gibt es das entity schon? => dann soll upgedatet werden (alle felder updaten im entity, welches mit id und process uebereinstimmt)
+			if(rs.getFetchSize() > 0)
+			{
+				sql = "UPDATE OR REPLACE radar SET id2='"+entity.getId2()+"', parentid='"+entity.getParentid()+"', version='"+entity.getVersion()+"', host='"+entity.getHost()+"', user='"+entity.getUser()+"', checkin='"+entity.getCheckinInMillis()+"', checkout='"+entity.getCheckoutInMillis()+"', active='"+entity.getActive()+"', stepcount='"+entity.getStepcount()+"', stepcountcompleted='"+entity.getStepcountcompleted()+"', exitcode='"+entity.getExitcode()+"', resource='"+entity.getResource()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"'";
+			}
+			// gibt es dieses entity noch nicht, dann soll es eingetragen werden
+			else
+			{
+				sql = "INSERT INTO radar (id, id2, pid, parentid, process, version, host, user, checkin, checkout, active, stepcount, stepcountcompleted, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getId2()+"', '"+entity.getPid()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getVersion()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getStepcount()+"', '"+entity.getStepcountcompleted()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
+			}
+			
+			System.out.println(sql);
+			statement.executeUpdate(sql);
+			
+			this.connection.close();
+		} catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * creating in database in table 'radar' a row with content of Object 'Entity'
 	 * setting column 'checkin' to currentTimeInMillis
 	 * @param Entity
@@ -149,7 +189,7 @@ public class Db
 			String sql = "INSERT INTO radar (id, id2, pid, parentid, process, version, host, user, checkin, checkout, active, stepcount, stepcountcompleted, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getId2()+"', '"+entity.getPid()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getVersion()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getStepcount()+"', '"+entity.getStepcountcompleted()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
 			System.out.println(sql);
 			statement.executeUpdate(sql);
-			
+
 			this.connection.close();
 		} catch (SQLException e)
 		{

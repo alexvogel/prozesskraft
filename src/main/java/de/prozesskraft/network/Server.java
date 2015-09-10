@@ -83,6 +83,15 @@ public class Server
 				this.parent.db.initForceDb();
 			}
 
+			// wenn der befehl vom client 'attend' lautet, soll ein prozess eingecheckt oder upgedatet werden
+			else if (type.equals("attend"))
+			{
+				Entity entity = (Entity) objectFromClient.readObject();
+				
+				log("info", "attenting entity id "+entity.getId());
+				this.parent.db.attendEntity(entity);
+			}
+
 			// wenn der befehl vom client 'checkin' lautet, soll ein prozess eingecheckt werden
 			else if (type.equals("checkin"))
 			{
