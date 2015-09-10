@@ -147,6 +147,7 @@ public class Db
 
 			// erst sehen ob es bereits ein entity mit dem id und process gibt
 			String sql = "SELECT * FROM radar WHERE id=" + entity.getId() + " AND process=" + entity.getProcessSqlPattern(); 
+			System.out.println(sql);
 			rs = statement.executeQuery(sql);
 
 			// gibt es das entity schon? => dann soll upgedatet werden (alle felder updaten im entity, welches mit id und process uebereinstimmt)
