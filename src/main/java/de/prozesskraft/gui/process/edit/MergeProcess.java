@@ -293,7 +293,7 @@ public class MergeProcess
 				shell.dispose();
 			}
 			
-			// sind sie vom gleichen version
+			// sind sie von gleicher version
 			if(!process.getVersion().equals(guestProcess.getVersion()))
 			{
 				father.getFather().log("error", "instances are not from the same version (" + process.getVersion() + "!=" + guestProcess.getVersion());
@@ -315,6 +315,10 @@ public class MergeProcess
 					{
 						father.getFather().log("error", "merging step failed.");
 					}
+				}
+				else
+				{
+					System.err.println("debug: because it's not a multistep, ignoring from external instance step " + actStep.getName());
 				}
 			}
 
