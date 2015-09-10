@@ -224,6 +224,10 @@ public class Attend
 			entity.setExitcode(process.getStatus());
 		}
 
+		// debugging
+		entity.print();
+		
+		
 		// eintragen in die DB
 		Socket server = null;
 
