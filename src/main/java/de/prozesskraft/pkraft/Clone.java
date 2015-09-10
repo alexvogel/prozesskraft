@@ -103,7 +103,7 @@ public class Clone
 		if ( commandline.hasOption("help"))
 		{
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("startinstance", options);
+			formatter.printHelp("clone", options);
 			System.exit(0);
 		}
 
