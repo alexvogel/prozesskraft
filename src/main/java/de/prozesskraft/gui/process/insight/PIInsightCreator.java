@@ -344,6 +344,20 @@ public class PIInsightCreator
 				{
 					father.log("error", e.getMessage());
 				}
+				
+				// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
+				String call2 = father.getIni().get("apps", "pradar-attend") + " -instance " + clonedProcess.getRootdir() + "/" + "process.pmb"; 
+				father.log("info", "calling: "+call2);
+
+				try
+				{
+					java.lang.Process sysproc = Runtime.getRuntime().exec(call2);
+				}
+				catch (IOException e)
+				{
+					father.log("error", e.getMessage());
+				}
+
 			}
 		}
 	};
