@@ -240,9 +240,12 @@ implements Serializable
 		try
 		{
 			// kopieren des InputDirs des RootSteps
-			clonedProcess.log("debug", "copying directory of rootStep: source="+this.getRootdir() + "/processInput, target="+clonedProcess.getRootdir() + "/processInput");
-			FileUtils.copyDirectory(new java.io.File(this.getRootdir() + "/processInput"), new java.io.File(clonedProcess.getRootdir() + "/processInput"), true);
-
+			if(new java.io.File(this.getRootdir() + "/processInput").exists())
+			{
+				clonedProcess.log("debug", "copying directory of rootStep: source="+this.getRootdir() + "/processInput, target="+clonedProcess.getRootdir() + "/processInput");
+				FileUtils.copyDirectory(new java.io.File(this.getRootdir() + "/processInput"), new java.io.File(clonedProcess.getRootdir() + "/processInput"), true);
+			}
+			
 			// kopieren des OutputDirs des RootSteps
 			if(new java.io.File(this.getRootdir() + "/processOutput").exists())
 			{
