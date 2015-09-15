@@ -117,6 +117,7 @@ implements Serializable
 	
 	private boolean subprocess = false;
 	private String parentid = "0";
+	public String stepnameOfParent = null;
 	
 	private Long timeOfLastStepStart = System.currentTimeMillis()-60000;
 	private Long timeOfProcessCreated = System.currentTimeMillis();
@@ -184,6 +185,10 @@ implements Serializable
 		clone.setClonePerformed(this.getClonePerformed());
 		clone.setSubprocess(this.isSubprocess());
 		clone.setParentid(this.getParentid());
+		if(this.getStepnameOfParent() != null)
+		{
+			clone.setStepnameOfParent(this.getStepnameOfParent());
+		}
 		clone.setTimeOfLastStepStart(this.getTimeOfLastStepStart());
 
 		for(Step actStep : this.getStep())
@@ -2786,6 +2791,20 @@ implements Serializable
 	 */
 	public void setTimeOfProcessFinishedOrError(Long timeOfProcessFinishedOrError) {
 		this.timeOfProcessFinishedOrError = timeOfProcessFinishedOrError;
+	}
+
+	/**
+	 * @return the stepnameOfParent
+	 */
+	public String getStepnameOfParent() {
+		return stepnameOfParent;
+	}
+
+	/**
+	 * @param stepnameOfParent the stepnameOfParent to set
+	 */
+	public void setStepnameOfParent(String stepnameOfParent) {
+		this.stepnameOfParent = stepnameOfParent;
 	}
 
 }
