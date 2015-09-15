@@ -873,13 +873,13 @@ public class PradarPartUi3 extends ModelObject
 			if(parentProcess == null)
 			{
 				clone = process.cloneWithData(null, null);
+				log("info", "cloning instance: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
 			}
 			else
 			{
-				clone = process.cloneWithData(parentProcess.getBaseDir(), parentProcess.getId());
+				clone = process.cloneWithData(parentProcess.getRootdir() + "/" + process.getStepnameOfParent(), parentProcess.getId());
+				log("info", "cloning instance as a child: original=" + process.getRootdir() + "/" + process.getStepnameOfParent() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
 			}
-
-			log("info", "cloning instance: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
 
 //			// das original speichern, weil auch hier aenderungen vorhanden sind (zaehler fuer klone)
 			process.setOutfilebinary(entity.getResource());
