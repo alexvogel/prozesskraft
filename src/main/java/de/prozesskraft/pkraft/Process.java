@@ -203,14 +203,16 @@ implements Serializable
 	
 	/**
 	 * clones the process and makes a copy of all files on filesystem
+	 * step-directories of subprocesses will not be copied
+	 * if process is a child, the path to the (just beforehand cloned) parentId is needed to set the parentId.
 	 * returns a clone of this
 	 * @return Process
 	 */
-	public Process cloneWithData(String baseDir)
+	public Process cloneWithData(String baseDir, String parentId)
 	{
 		// bisherigen process klonen
 		Process clonedProcess = this.clone();
-		
+
 		// falls angegeben, soll das basedir auf einen bestimmten pfad geaendert werden
 		// falls null, dann bleibt es wie vom Vatter beim klonen erhalten
 		if(baseDir != null)
@@ -218,12 +220,42 @@ implements Serializable
 			clonedProcess.setBaseDir(baseDir);
 		}
 		System.err.println("copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
-		
+
 		// kopieren der daten auf filesystem
-		clonedProcess.log("info", "copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
+		clonedProcess.log("info", "copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir() + " without directories of subprocesses");
+
+		// falls eine parentId uebergeben wurde soll diese im clonedProcess als parentId gesetzt werden
+		if(parentId != null)
+		{
+			clonedProcess.setParentid(parentId);
+		}
+
+		// erstellen des zielverzeichnisses (rootDir des clonedProcesses)
+		new java.io.File(clonedProcess.getRootdir()).mkdirs();
+
+		// speichern des geklonten prozesses in das neue verzeichnis (dabei wird das alte pmb ueberschrieben)
+		clonedProcess.setOutfilebinary(clonedProcess.getRootdir() + "/" + "process.pmb");
+		clonedProcess.writeBinary();
+
 		try
 		{
-			FileUtils.copyDirectory(new java.io.File(this.getRootdir()), new java.io.File(clonedProcess.getRootdir()), true);
+			// kopieren des InputDirs des RootSteps
+			clonedProcess.log("debug", "copying directory of rootStep: source="+this.getRootdir() + "/processInput, target="+clonedProcess.getRootdir() + "/processInput");
+			FileUtils.copyDirectory(new java.io.File(this.getRootdir() + "/processInput"), new java.io.File(clonedProcess.getRootdir() + "/processInput"), true);
+
+			// kopieren des OutputDirs des RootSteps
+			clonedProcess.log("debug", "copying directory of rootStep: source="+this.getRootdir() + "/processOutput, target="+clonedProcess.getRootdir() + "/processOutput");
+			FileUtils.copyDirectory(new java.io.File(this.getRootdir() + "/processOutput"), new java.io.File(clonedProcess.getRootdir() + "/processOutput"), true);
+
+			// kopieren aller Step-Directories (außer rootStep und SubprocessSteps)
+			for(Step actStep : this.getStep())
+			{
+				if(!actStep.isRoot() && actStep.getSubprocess() == null)
+				{
+					clonedProcess.log("debug", "copying directory of a step "+actStep.getName() +": source="+actStep.getAbsdir() +", target="+clonedProcess.getStep(actStep.getName()).getAbsdir());
+					FileUtils.copyDirectory(new java.io.File(actStep.getAbsdir()), new java.io.File(clonedProcess.getStep(actStep.getName()).getAbsdir()), true);
+				}
+			}
 		}
 		catch (IOException e)
 		{
@@ -236,10 +268,6 @@ implements Serializable
 			e.printStackTrace();
 		}
 
-		// speichern des geklonten prozesses in das neue verzeichnis (dabei wird das alte pmb ueberschrieben)
-		clonedProcess.setOutfilebinary(clonedProcess.getRootdir() + "/" + "process.pmb");
-		clonedProcess.writeBinary();
-		
 		return clonedProcess;
 	}
 	
