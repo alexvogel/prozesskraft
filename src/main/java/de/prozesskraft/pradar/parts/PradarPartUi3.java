@@ -780,6 +780,7 @@ public class PradarPartUi3 extends ModelObject
 
 	SelectionAdapter listener_clone_button = new SelectionAdapter()
 	{
+		
 		public void widgetSelected(SelectionEvent event)
 		{
 			if ( (einstellungen.entitySelected != null) && (!(einstellungen.entitySelected.getUser().equals(System.getProperty("user.name")))) )
@@ -835,43 +836,18 @@ public class PradarPartUi3 extends ModelObject
 					
 					else
 					{
-						Process p1 = new Process();
-						p1.setInfilebinary(fileResource.getAbsolutePath());
-						Process process = p1.readBinary();
+						this.cloneProcess(einstellungen.entitySelected);
 						
-						// klonen mit data
-						Process clone = process.cloneWithData(null);
-						log("info", "cloning instance to this resource: " + clone.getRootdir());
-						
-//						// das original speichern, weil auch hier aenderungen vorhanden sind (zaehler fuer klone)
-						process.setOutfilebinary(fileResource.getAbsolutePath());
-						process.writeBinary();
-
-//						// den prozess klonen durch aufruf des tools: pkraft-clone
-//						String call = ini.get("apps", "pkraft-clone") + " -instance " + fileResource.getAbsolutePath(); 
-//						log("info", "calling: "+call);
-//						
-//						try
-//						{
-//							java.lang.Process sysproc = Runtime.getRuntime().exec(call);
-//						}
-//						catch (IOException e)
-//						{
-//							log("error", e.getMessage());
-//						}
-//						
-						// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
-						String call2 = ini.get("apps", "pradar-attend") + " -instance " + clone.getRootdir() + "/process.pmb"; 
-						log("info", "calling: "+call2);
-
-						try
+						// falls children vorhanden, sollen diese auch geklont werden
+						for(Entity possibleChild : entities_filtered)
 						{
-							java.lang.Process sysproc = Runtime.getRuntime().exec(call2);
+							// ist es ein child?
+							if(possibleChild.getParentid().equals(einstellungen.entitySelected.getId()))
+							{
+								this.cloneProcess(possibleChild);
+							}
 						}
-						catch (IOException e)
-						{
-							log("error", e.getMessage());
-						}
+
 					}
 				}
 			}
@@ -879,7 +855,38 @@ public class PradarPartUi3 extends ModelObject
 			{
 				log("warn", "no instance selected");
 			}
+		}
+
+		/**
+		 * clone Process mit Daten an Hand der pradar-Entity
+		 * @param entity
+		 */
+		public void cloneProcess(Entity entity)
+		{
+			Process p1 = new Process();
+			p1.setInfilebinary(entity.getResource());
+			Process process = p1.readBinary();
 			
+			// klonen mit data
+			Process clone = process.cloneWithData(null, null);
+			log("info", "cloning instance to this resource: " + clone.getRootdir());
+			
+//			// das original speichern, weil auch hier aenderungen vorhanden sind (zaehler fuer klone)
+			process.setOutfilebinary(entity.getResource());
+			process.writeBinary();
+
+			// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
+			String call2 = ini.get("apps", "pradar-attend") + " -instance " + clone.getRootdir() + "/process.pmb"; 
+			log("info", "calling: "+call2);
+
+			try
+			{
+				java.lang.Process sysproc = Runtime.getRuntime().exec(call2);
+			}
+			catch (IOException e)
+			{
+				log("error", e.getMessage());
+			}
 		}
 	};	
 	
