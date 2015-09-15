@@ -234,6 +234,9 @@ implements Serializable
 				log("info", "setting the parentid of subprocess...");
 				newProcess.setParentid(this.getParent().getParent().getId());
 				
+				// den stepnameOfParent setzen
+				newProcess.setStepnameOfParent(this.getParent().getName());
+
 				// die commits durchfuehren. erst jetzt werden die files in das stepeigene verzeichnis kopiert und die
 				// entsprechenden pfadangaben im file-objekt angepasst
 				log("info", "committing the rootStep of subprocess...");
@@ -464,9 +467,6 @@ implements Serializable
 			log("fatal", e.getMessage());
 		}
 
-		// den stepnameOfParent setzen
-		newProcess2.setStepnameOfParent(this.getParent().getName());
-		
 		// dem root-Step des neuenProcesses, die listen aus parent-Step des Parent-Prozesses uebergeben (damit resolving mit platzhaltern funktioniert)
 		log("debug", "comitting all lists of step to the rootStep of subprocess");
 		newProcess2.getRootStep().setList(this.getParent().getList());
