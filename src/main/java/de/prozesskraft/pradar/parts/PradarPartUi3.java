@@ -836,7 +836,7 @@ public class PradarPartUi3 extends ModelObject
 					
 					else
 					{
-						String idOfClonedProcess = this.cloneProcess(einstellungen.entitySelected, null);
+						Process clonedProcess = this.cloneProcess(einstellungen.entitySelected, null);
 						
 						// falls children vorhanden, sollen diese auch geklont werden
 						for(Entity possibleChild : entities_filtered)
@@ -844,7 +844,7 @@ public class PradarPartUi3 extends ModelObject
 							// ist es ein child?
 							if(possibleChild.getParentid().equals(einstellungen.entitySelected.getId()))
 							{
-								this.cloneProcess(possibleChild, idOfClonedProcess);
+								this.cloneProcess(possibleChild, clonedProcess);
 							}
 						}
 
@@ -862,14 +862,14 @@ public class PradarPartUi3 extends ModelObject
 		 * returns process-id
 		 * @param entity
 		 */
-		public String cloneProcess(Entity entity, String parentId)
+		public Process cloneProcess(Entity entity, Process parentProcess)
 		{
 			Process p1 = new Process();
 			p1.setInfilebinary(entity.getResource());
 			Process process = p1.readBinary();
-			
+
 			// klonen mit data
-			Process clone = process.cloneWithData(null, parentId);
+			Process clone = process.cloneWithData(parentProcess.getBaseDir(), parentProcess.getId());
 			log("info", "cloning instance: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
 
 //			// das original speichern, weil auch hier aenderungen vorhanden sind (zaehler fuer klone)
@@ -890,7 +890,7 @@ public class PradarPartUi3 extends ModelObject
 			}
 			
 			// rueckgabe der id. kann beim klonen von childprozessen verwendet werden
-			return clone.getId();
+			return clone;
 		}
 	};	
 	
