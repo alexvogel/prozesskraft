@@ -151,7 +151,7 @@ public class Db
 			rs = statement.executeQuery(sql);
 
 			// gibt es das entity schon? => dann soll upgedatet werden (alle felder updaten im entity, welches mit id und process uebereinstimmt)
-			if(rs.getFetchSize() > 0)
+			if(rs.next())
 			{
 				sql = "UPDATE OR REPLACE radar SET id2='"+entity.getId2()+"', parentid='"+entity.getParentid()+"', version='"+entity.getVersion()+"', host='"+entity.getHost()+"', user='"+entity.getUser()+"', checkin='"+entity.getCheckinInMillis()+"', checkout='"+entity.getCheckoutInMillis()+"', active='"+entity.getActive()+"', stepcount='"+entity.getStepcount()+"', stepcountcompleted='"+entity.getStepcountcompleted()+"', exitcode='"+entity.getExitcode()+"', resource='"+entity.getResource()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"'";
 			}
