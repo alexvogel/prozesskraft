@@ -321,7 +321,7 @@ public class PIInsightCreator
 				father.log("info", "cloning process");
 
 				// bisherigen process klonen
-				Process clonedProcess = process.cloneWithData(null);
+				Process clonedProcess = process.cloneWithData(null, null);
 
 				// originalProcess speichern, da auch hier derzaehler veraendert wurde
 				clonedProcess.writeBinary();
