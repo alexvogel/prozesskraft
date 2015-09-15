@@ -146,7 +146,7 @@ public class Db
 			statement.setQueryTimeout(10);
 
 			// erst sehen ob es bereits ein entity mit dem id und process gibt
-			String sql = "SELECT * FROM radar WHERE id='" + entity.getId() + "' AND process='" + entity.getProcessSqlPattern() +"'"; 
+			String sql = "SELECT * FROM radar WHERE id='" + entity.getId() + "' AND process='" + entity.getProcess() +"'"; 
 			System.out.println(sql);
 			rs = statement.executeQuery(sql);
 
