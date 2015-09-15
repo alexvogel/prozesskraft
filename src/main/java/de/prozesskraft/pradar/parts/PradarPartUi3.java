@@ -877,7 +877,7 @@ public class PradarPartUi3 extends ModelObject
 			}
 			else
 			{
-				clone = process.cloneWithData(parentProcess.getRootdir() + "/" + process.getStepnameOfParent(), parentProcess.getId());
+				clone = process.cloneWithData(parentProcess.getRootdir() + "/dir4step_" + process.getStepnameOfParent(), parentProcess.getId());
 				log("debug", "stepname of parentProcess is: " + process.getStepnameOfParent());
 				log("debug", "process.cloneWithData(" + parentProcess.getRootdir() + "/dir4step_" + process.getStepnameOfParent() + ", " + parentProcess.getId());
 				log("info", "cloning instance as a child: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
