@@ -869,7 +869,16 @@ public class PradarPartUi3 extends ModelObject
 			Process process = p1.readBinary();
 
 			// klonen mit data
-			Process clone = process.cloneWithData(parentProcess.getBaseDir(), parentProcess.getId());
+			Process clone = null;
+			if(parentProcess == null)
+			{
+				clone = process.cloneWithData(null, null);
+			}
+			else
+			{
+				clone = process.cloneWithData(parentProcess.getBaseDir(), parentProcess.getId());
+			}
+
 			log("info", "cloning instance: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
 
 //			// das original speichern, weil auch hier aenderungen vorhanden sind (zaehler fuer klone)
