@@ -235,6 +235,7 @@ implements Serializable
 				newProcess.setParentid(this.getParent().getParent().getId());
 				
 				// den stepnameOfParent setzen
+				log("info", "setting the stepnameOfParent of subprocess..." + this.getParent().getName());
 				newProcess.setStepnameOfParent(this.getParent().getName());
 
 				// die commits durchfuehren. erst jetzt werden die files in das stepeigene verzeichnis kopiert und die

@@ -205,7 +205,7 @@ implements Serializable
 		clone.cloneDescendant = this.clonePerformed;
 		return clone;
 	}
-	
+
 	/**
 	 * clones the process and makes a copy of all files on filesystem
 	 * step-directories of subprocesses will not be copied
