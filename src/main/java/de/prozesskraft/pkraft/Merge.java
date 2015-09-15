@@ -230,7 +230,7 @@ public class Merge
 		}
 
 		System.err.println("info: clone instance to directory: " + baseDir);
-		Process cloneInstance = p2.cloneWithData(baseDir);
+		Process cloneInstance = p2.cloneWithData(baseDir, null);
 		cloneInstance.setOutfilebinary(cloneInstance.getRootdir() + "/process.pmb");
 
 		// weil beim clonen auch beim original felder veraendert werden (zaehler fuer klone, etc.) soll auch das original neu geschrieben werden
