@@ -166,7 +166,7 @@ public class Clone
 
 		Process p2 = p1.readBinary();
 
-		Process p3 = p2.cloneWithData(null);
+		Process p3 = p2.cloneWithData(null, null);
 
 		// da auch im original aenderungen durchgefuehrt werden (klonzaehler wird erhoeht)
 		// auch das original speichern
