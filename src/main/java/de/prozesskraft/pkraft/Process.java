@@ -249,13 +249,16 @@ implements Serializable
 				clonedProcess.log("debug", "copying directory of rootStep: source="+this.getRootdir() + "/processOutput, target="+clonedProcess.getRootdir() + "/processOutput");
 				FileUtils.copyDirectory(new java.io.File(this.getRootdir() + "/processOutput"), new java.io.File(clonedProcess.getRootdir() + "/processOutput"), true);
 			}
-			// kopieren aller Step-Directories (außer rootStep und SubprocessSteps)
+			// kopieren aller Step-Directories, falls sie existieren (außer rootStep und SubprocessSteps)
 			for(Step actStep : this.getStep())
 			{
 				if(!actStep.isRoot() && actStep.getSubprocess() == null)
 				{
-					clonedProcess.log("debug", "copying directory of a step "+actStep.getName() +": source="+actStep.getAbsdir() +", target="+clonedProcess.getStep(actStep.getName()).getAbsdir());
-					FileUtils.copyDirectory(new java.io.File(actStep.getAbsdir()), new java.io.File(clonedProcess.getStep(actStep.getName()).getAbsdir()), true);
+					if(new java.io.File(actStep.getAbsdir()).exists())
+					{
+						clonedProcess.log("debug", "copying directory of a step "+actStep.getName() +": source="+actStep.getAbsdir() +", target="+clonedProcess.getStep(actStep.getName()).getAbsdir());
+						FileUtils.copyDirectory(new java.io.File(actStep.getAbsdir()), new java.io.File(clonedProcess.getStep(actStep.getName()).getAbsdir()), true);
+					}
 				}
 			}
 		}
