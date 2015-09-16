@@ -2469,6 +2469,7 @@ implements Serializable, Cloneable
 	public void addList(List list)
 	{
 		this.list.add(list);
+		list.setParent(this);
 	}
 		
 	public void removeList(List list)
