@@ -58,6 +58,7 @@ import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -800,8 +801,8 @@ public class PradarPartUi3 extends ModelObject
 			else if (einstellungen.entitySelected != null)
 			{
 				// bestaetigungsdialog
-				Shell shell = new Shell();
-				MessageBox confirmation = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+				Shell diaShell = new Shell();
+				MessageBox confirmation = new MessageBox(diaShell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
 				String message = "";
 
 				message += "you are about to clone this instance.\n";
@@ -817,6 +818,9 @@ public class PradarPartUi3 extends ModelObject
 				// ok == 32
 				if (returnCode == 32)
 				{
+					// creating and setting a busy cursor
+					diaShell.setCursor(new Cursor(display, SWT.CURSOR_WAIT));
+
 					log("info", "cloning process");
 
 					File fileResource = new File(einstellungen.entitySelected.getResource());
@@ -847,7 +851,7 @@ public class PradarPartUi3 extends ModelObject
 								this.cloneProcess(possibleChild, clonedProcess);
 							}
 						}
-
+						diaShell.setCursor(new Cursor(display, SWT.CURSOR_ARROW));
 					}
 				}
 			}
@@ -855,6 +859,8 @@ public class PradarPartUi3 extends ModelObject
 			{
 				log("warn", "no instance selected");
 			}
+			
+			// creating and setting an arrow cursor
 		}
 
 		/**
