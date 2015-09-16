@@ -80,7 +80,8 @@ public class Generate
 //		}
 
 		// damit man diese anwendung auch mit whitespaces in den values aufrufen kann (z.B. -parameter name=Alexander Vogel), wird args[] umgestaltet
-		Multimap<String,String> newArgs = HashMultimap.create();
+//		Multimap<String,String> newArgs = HashMultimap.create();
+		ArrayList<Map> newArgs = new ArrayList<Map>();
 		boolean lastMemberWasNamedArgument = false;
 		String lastNamedArgument = null;
 		String lastArgument = null;
@@ -92,11 +93,16 @@ public class Generate
 				// den zuletzt gesehenen value im multiMap speichern
 				if(lastArgument != null)
 				{
-					newArgs.put(lastNamedArgument, lastArgument);
+					// mit der schluessel-wert-kombination einen map erstellen und in newArg ablegen
+					Map<String,String> anArg = new HashMap<String,String>();
+					anArg.put(lastNamedArgument, lastArgument);
+					newArgs.add(anArg);
 				}
 				else
 				{
-					newArgs.put(lastNamedArgument, null);
+					Map<String,String> anArg = new HashMap<String,String>();
+					anArg.put(lastNamedArgument, null);
+					newArgs.add(anArg);
 				}
 				
 				lastArgument = null;
@@ -116,44 +122,49 @@ public class Generate
 				lastMemberWasNamedArgument = false;
 			}
 		}
-		
+
 		// den letzten value im multiMap speichern
 		if(lastNamedArgument != null)
 		{
 			if(lastArgument != null)
 			{
-				newArgs.put(lastNamedArgument, lastArgument);
+				Map<String,String> anArg = new HashMap<String,String>();
+				anArg.put(lastNamedArgument, lastArgument);
+				newArgs.add(anArg);
 			}
 			else
 			{
-				newArgs.put(lastNamedArgument, null);
+				Map<String,String> anArg = new HashMap<String,String>();
+				anArg.put(lastNamedArgument, null);
+				newArgs.add(anArg);
 			}
 		}
 
 		ArrayList<String> newArgAsList = new ArrayList<String>();
 		// newargs nach args kopieren, null values ignorieren
-		for(String actKey : newArgs.keySet())
+		for(Map anArg : newArgs)
 		{
-			if(actKey != null)
+			for(Object theKey : anArg.keySet())
 			{
-				for(String actValue : newArgs.get(actKey))
+				String theKeyAsString = (String)theKey;
+				if(theKey != null)
 				{
-					if(actValue != null)
+					String theValue = (String)anArg.get(theKey);
+					if(theValue != null)
 					{
-						newArgAsList.add(actKey);
-						newArgAsList.add(actValue);
+						newArgAsList.add(theKeyAsString);
+						newArgAsList.add(theValue);
 					}
 					else
 					{
-						newArgAsList.add(actKey);
+						newArgAsList.add(theKeyAsString);
 					}
 				}
-			}			
+			}
 		}
 		args = newArgAsList.toArray(new String[newArgAsList.size()]);
 
 		// ausgeben
-		System.err.println("anzahl der parameterNamen: " +newArgs.keySet().size());
 		for(String actString : args)
 		{
 			System.err.println(actString);
