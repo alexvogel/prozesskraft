@@ -1740,13 +1740,14 @@ implements Serializable, Cloneable
 	{
 		this.log("debug", "adding Init "+init.getListname());
 		this.init.add(init);
+		init.setParent(this);
 	}
 
 	public void addCommit(Commit commit)
 	{
+		this.log("debug", "adding Commit "+commit.getName());
 		this.commit.add(commit);
 		commit.setParent(this);
-		this.log("debug", "adding Commit "+commit.getName());
 	}
 
 	public void removeCommit(Commit commit)
