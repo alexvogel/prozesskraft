@@ -94,7 +94,7 @@ public class PradarViewTreePage
 	
 	public void createControls(Composite parent)
 	{
-		entityTree = new Tree(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE);
+		entityTree = new Tree(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 		entityTree.setSize(1000, 1000);
 		entityTree.setLayout(new GridLayout(1, false));
 //		GridData gd_entityTree = new GridData(SWT.LEFT, SWT.FILL, true, true, 1, 1);

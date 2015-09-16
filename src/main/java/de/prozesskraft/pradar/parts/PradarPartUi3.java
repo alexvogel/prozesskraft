@@ -99,6 +99,8 @@ import de.prozesskraft.pkraft.Process;
 
 public class PradarPartUi3 extends ModelObject
 {
+	Shell shell = null;
+	
 	static CommandLine line;
 	private DataBindingContext bindingContextFilter;
 	private DataBindingContext bindingContextZoom;
@@ -178,7 +180,7 @@ public class PradarPartUi3 extends ModelObject
 		checkJavaVersion();
 		loadIni();
 //		checkLicense();
-		Shell shell = new Shell();
+		shell = new Shell();
 		shell.setSize(450, 465);
 //		shell.setSize(633, 767);
 //		shell.setSize(633, 900);
@@ -199,6 +201,7 @@ public class PradarPartUi3 extends ModelObject
 	@Inject
 	public PradarPartUi3(Composite composite)
 	{
+		shell = composite.getShell();
 		checkJavaVersion();
 		loadIni();
 //		checkLicense();
@@ -819,7 +822,7 @@ public class PradarPartUi3 extends ModelObject
 				if (returnCode == 32)
 				{
 					// creating and setting a busy cursor
-					diaShell.setCursor(new Cursor(display, SWT.CURSOR_WAIT));
+					shell.setCursor(new Cursor(display, SWT.CURSOR_WAIT));
 
 					log("info", "cloning process");
 
@@ -851,7 +854,6 @@ public class PradarPartUi3 extends ModelObject
 								this.cloneProcess(possibleChild, clonedProcess);
 							}
 						}
-						diaShell.setCursor(new Cursor(display, SWT.CURSOR_ARROW));
 					}
 				}
 			}
@@ -861,6 +863,7 @@ public class PradarPartUi3 extends ModelObject
 			}
 			
 			// creating and setting an arrow cursor
+			shell.setCursor(new Cursor(display, SWT.CURSOR_ARROW));
 		}
 
 		/**
