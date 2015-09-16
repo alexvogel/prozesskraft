@@ -292,7 +292,7 @@ public class MergeProcess
 				father.getFather().log("error", "instances are not from the same type (" + process.getName() + "!=" + guestProcess.getName());
 				shell.dispose();
 			}
-			
+
 			// sind sie von gleicher version
 			if(!process.getVersion().equals(guestProcess.getVersion()))
 			{
@@ -309,6 +309,12 @@ public class MergeProcess
 					father.getFather().log("info", "merging from external instance step " + actStep.getName());
 					if(process.integrateStep(actStep))
 					{
+						ArrayList<Step> allDependentStepsOfIntegrated = process.getStepDependent(actStep.getName());
+						for(Step actStepToResetBecauseOfDependency : allDependentStepsOfIntegrated)
+						{
+							actStepToResetBecauseOfDependency.resetBecauseOfDependency();
+						}
+
 						father.getFather().log("info", "merging step successfully.");
 					}
 					else
