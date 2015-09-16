@@ -1405,7 +1405,7 @@ implements Serializable, Cloneable
 	}
 
 	/**
-	 * resets the step because it is dependent from another step that has been resetete
+	 * resets the step because it is dependent from another step that has been resettet
 	 * this means that fanned-out steps has to be reduced to their former multistep
 	 * 
 	 * 1) has another sibling already resetted, then simply delete this
@@ -1733,13 +1733,6 @@ implements Serializable, Cloneable
 
 	}
 
-//	/**
-//	 * resets the this step and all dependent steps
-//	 */
-//	public void resetIncDependent()
-//	{
-//		this.getParent().resetStep(this.getName());
-//	}
 	/*----------------------------
 	  methods add / remove
 	----------------------------*/
