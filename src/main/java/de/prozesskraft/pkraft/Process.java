@@ -190,6 +190,7 @@ implements Serializable
 			clone.setStepnameOfParent(this.getStepnameOfParent());
 		}
 		clone.setTimeOfLastStepStart(this.getTimeOfLastStepStart());
+		clone.setTimeOfProcessCreated(this.getTimeOfProcessCreated());
 
 		for(Step actStep : this.getStep())
 		{
