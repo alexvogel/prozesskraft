@@ -80,6 +80,7 @@ implements Serializable
 			newInit.addLog(actLog.clone());
 		}
 
+		newInit.setStatus(this.getStatus());
 		
 		return newInit;
 	}
