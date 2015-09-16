@@ -95,6 +95,8 @@ import de.prozesskraft.gui.step.insight.SIInsightCreator;
 
 public class PmodelPartUi1 extends ModelObject
 {
+	Shell shell = null;
+	
 	static CommandLine line;
 	private DataBindingContext bindingContextVisual;
 	private DataBindingContext bindingContextMarked;
@@ -142,7 +144,7 @@ public class PmodelPartUi1 extends ModelObject
 	 */
 	public PmodelPartUi1()
 	{
-		Shell shell = new Shell();
+		shell = new Shell();
 		shell.setSize(633, 688);
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLocation(0, 0);
@@ -160,6 +162,7 @@ public class PmodelPartUi1 extends ModelObject
 	@Inject
 	public PmodelPartUi1(Composite composite)
 	{
+		shell = composite.getShell();
 		setIni();
 		loadIni();
 		checkLicense();
@@ -174,6 +177,7 @@ public class PmodelPartUi1 extends ModelObject
 	@Inject
 	public PmodelPartUi1(Composite composite, String pathToProcessFile)
 	{
+		shell = composite.getShell();
 		
 		java.io.File inFile = new java.io.File(pathToProcessFile);
 		
