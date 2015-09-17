@@ -241,12 +241,13 @@ public class Merge
 			alleGuests.add(pGuest);
 		}
 
-		System.err.println("info: cloning instance as base instance to directory: " + baseDir);
+//		System.err.println("info: cloning instance as base instance to directory: " + baseDir);
 		Process cloneInstance = p2.cloneWithData(baseDir, null);
 		cloneInstance.setOutfilebinary(cloneInstance.getRootdir() + "/process.pmb");
+		System.err.println("info: cloned instance as base instance to directory: " + cloneInstance.getRootdir());
 
 		// weil beim clonen auch beim original felder veraendert werden (zaehler fuer klone, etc.) soll auch das original neu geschrieben werden
-		System.err.println("info: writing des binary files: " + p2.getOutfilebinary());
+		System.err.println("info: writing original binary file: " + p2.getOutfilebinary());
 		p2.writeBinary();
 		
 		// alle dependent steps der zielinstanz einsammeln
@@ -280,7 +281,7 @@ public class Merge
 				}
 				else
 				{
-					System.err.println("debug: because it's not a multistep, ignoring from external instance step " + actStep.getName());
+					System.err.println("debug: because it's not a multistep, ignoring from guest instance step " + actStep.getName());
 				}
 			}
 		}
