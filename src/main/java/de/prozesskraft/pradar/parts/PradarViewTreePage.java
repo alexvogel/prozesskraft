@@ -1,6 +1,7 @@
 package de.prozesskraft.pradar.parts;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.databinding.DataBindingContext;
@@ -15,6 +16,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
@@ -22,6 +25,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -182,7 +186,8 @@ public class PradarViewTreePage
 //					}
 //				}
 //			});
-		
+
+//		entityTree.addMouseListener(listener_one_click);
 		
 		myTreeViewer = new TreeViewer(entityTree);
 		myTreeViewer.setSorter(new Sorter());
@@ -199,7 +204,6 @@ public class PradarViewTreePage
 
 		myTreeViewer.addDoubleClickListener(listener_double_click);
 		
-		
 		if (parentData.einstellungen.entitySelected != null)
 		{
 			myTreeViewer.setSelection(new StructuredSelection(parentData.einstellungen.entitySelected), true);
@@ -215,14 +219,26 @@ public class PradarViewTreePage
 		{
 			TreeItem item = (TreeItem) e.item;
 			Entity entity = (Entity)item.getData();
+
+			// das zuletzt markierte entity
 			parentData.einstellungen.entitySelected = entity;
+
+			// alle bisher markierten entities aus den treeitems einsammeln und im Datenmodell ablegen
+			ArrayList<Entity> entitiesSelected = new ArrayList<Entity>();
+
+			for(TreeItem actItem : entityTree.getSelection())
+			{
+				entitiesSelected.add((Entity)actItem.getData());
+			}
+			
+			parentData.einstellungen.setEntitiesSelected(entitiesSelected);
 			if (item.getItemCount() > 0)
 			{
 //				item.setExpanded(true);
 			}
 		}
 	};
-	
+
 	IDoubleClickListener listener_double_click = new IDoubleClickListener()
 	{
 		public void doubleClick(DoubleClickEvent event)
@@ -270,24 +286,6 @@ public class PradarViewTreePage
 //				entityTree.setSelection(treeItem[x]);
 				entityTree.setSelection(entityTree.getItem(x));
 			}
-//			else if (treeItem[x].getItemCount() > 0)
-//			{
-//				System.out.println("itemCount ist: "+treeItem[x].getItemCount());
-//				Entity tmp = (Entity)treeItem[x].getData();
-//				System.out.println("ProcessName ist: "+tmp.getProcess());
-//				TreeItem[] treeItem2 = treeItem[x].getItems();
-//				for (int y = 0; y < treeItem2.length; y++)
-//				{
-//					Entity tmp2 = (Entity)treeItem2[y].getData();
-//					System.out.println("is instance of entity? "+ ( tmp2 instanceof Entity ));
-//					System.out.println("is instance of: "+ ( tmp2.getClass().toString() ));
-//					System.out.println("ProzessName ist: "+tmp2.getProcess());
-//					if (treeItem2[y].getData().equals(this.parentData.einstellungen.entitySelected))
-//					{
-//						entityTree.setSelection(treeItem2[y]);
-//					}
-//				}
-//			}
 		}
 		myTreeViewer.refresh();
 		myTreeViewer.expandAll();

@@ -605,44 +605,6 @@ public class PradarPartUi3 extends ModelObject
 		}
 	};
 	
-	SelectionAdapter listener_browse_button_OLD = new SelectionAdapter()
-	{
-		public void widgetSelected(SelectionEvent event)
-		{
-			if (einstellungen.entitySelected != null && (!(einstellungen.entitySelected.getResource().equals(""))))
-			{
-				String pathInstanceDir = new File(einstellungen.entitySelected.getResource()).getParent();
-				log("info", "opening filebrowser for entity "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
-				try
-				{
-					log("info", "nautilus --browser "+pathInstanceDir);
-					java.lang.Process sysproc = Runtime.getRuntime().exec("nautilus --browser "+pathInstanceDir);
-				} catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-			else if (einstellungen.entitySelected != null && einstellungen.entitySelected.getResource().equals(""))
-			{
-				log("warn", "unknown instance directory for entity "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
-			}
-			else if (einstellungen.entitySelected != null && (new File(einstellungen.entitySelected.getResource()).getParentFile().canRead() ) )
-			{
-				log("warn", "cannot read instance directory of entity "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
-			}
-			else if (einstellungen.entitySelected != null && (!(new File(einstellungen.entitySelected.getResource()).getParentFile().exists()) ) )
-			{
-				log("warn", "instance directory of entity does not exist "+einstellungen.entitySelected.getId()+" (instance of process '"+einstellungen.entitySelected.getProcess()+"')");
-			}
-			else
-			{
-				log("warn", "no instance selected.");
-			}
-		}
-	};
-	
 	SelectionAdapter listener_browse_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
@@ -653,34 +615,45 @@ public class PradarPartUi3 extends ModelObject
 				return;
 			}
 
-			String pathInstanceDir = new File(einstellungen.entitySelected.getResource()).getParent();
+			// ist mehr als eine bestimmte zahl markiert
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 5)
+			{
+				log("warn", "browse allows max 5 entity at a time");
+				return;
+			}
 
-			java.io.File stepDir = new java.io.File(pathInstanceDir);
-			if(!stepDir.exists())
+			// fuer jedes markierte entity ein pmodel oeffnen
+			for(Entity actEntity : einstellungen.entitiesSelected)
 			{
-				log("error", "directory does not exist: "+stepDir.getAbsolutePath());
-			}
-			else if(!stepDir.isDirectory())
-			{
-				log("error", "is not a directory: "+stepDir.getAbsolutePath());
-			}
-			else if(!stepDir.canRead())
-			{
-				log("error", "cannot read directory: "+stepDir.getAbsolutePath());
-			}
-			
-			else
-			{
-				String call = ini.get("apps", "filebrowser") + " " + stepDir.getAbsolutePath(); 
-				log("info", "calling: "+call);
-				
-				try
+				String pathInstanceDir = new File(actEntity.getResource()).getParent();
+	
+				java.io.File stepDir = new java.io.File(pathInstanceDir);
+				if(!stepDir.exists())
 				{
-					java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+					log("error", "directory does not exist: "+stepDir.getAbsolutePath());
 				}
-				catch (IOException e)
+				else if(!stepDir.isDirectory())
 				{
-					log("error", e.getMessage());
+					log("error", "is not a directory: "+stepDir.getAbsolutePath());
+				}
+				else if(!stepDir.canRead())
+				{
+					log("error", "cannot read directory: "+stepDir.getAbsolutePath());
+				}
+				
+				else
+				{
+					String call = ini.get("apps", "filebrowser") + " " + stepDir.getAbsolutePath(); 
+					log("info", "calling: "+call);
+					
+					try
+					{
+						java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+					}
+					catch (IOException e)
+					{
+						log("error", e.getMessage());
+					}
 				}
 			}
 		}
@@ -748,34 +721,47 @@ public class PradarPartUi3 extends ModelObject
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
-			if (einstellungen.entitySelected == null)
+			// ist ueberhaupt etwas markiert?
+			if (einstellungen.entitiesSelected == null || einstellungen.entitiesSelected.size() == 0)
 			{
 				log("warn", "no instance selected");
 			}
-			
+
+			// ist mehr als eine bestimmte zahl markiert
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 5)
+			{
+				log("warn", "open allows max 5 entity at a time");
+				return;
+			}
+
+			// wenn mit der markierung alles in Ordnung ist
 			else
 			{
-				java.io.File pmbFile = new java.io.File(einstellungen.entitySelected.getResource());
-				
-				if(!(pmbFile.exists()))
+				// fuer jedes markierte entity ein pmodel oeffnen
+				for(Entity actEntity : einstellungen.entitiesSelected)
 				{
-					log("error", "process-model-file does not exist: " + pmbFile.getAbsolutePath());
-				}
-				
-				else
-				{
-					log("info", "opening process-model-file for inspection");
-					String aufruf = ini.get("apps",  "pmodel") + " -instance "+pmbFile.getAbsolutePath();
-					log("info", "calling " + aufruf);
+					java.io.File pmbFile = new java.io.File(actEntity.getResource());
 					
-					try
+					if(!(pmbFile.exists()))
 					{
-						java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+						log("error", "process-model-file does not exist: " + pmbFile.getAbsolutePath());
 					}
-					catch (IOException e)
+					
+					else
 					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log("info", "opening process-model-file for inspection");
+						String aufruf = ini.get("apps",  "pmodel") + " -instance "+pmbFile.getAbsolutePath();
+						log("info", "calling " + aufruf);
+						
+						try
+						{
+							java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+						}
+						catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -787,19 +773,28 @@ public class PradarPartUi3 extends ModelObject
 		
 		public void widgetSelected(SelectionEvent event)
 		{
+			
+			// ist ueberhaupt etwas markiert?
+			if (einstellungen.entitySelected == null)
+			{
+				log("warn", "no instance selected");
+			}
+
+			// ist mehr als eine bestimmte zahl markiert
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 1)
+			{
+				log("warn", "clone allows max 1 entity at a time");
+				return;
+			}
+			
 			if ( (einstellungen.entitySelected != null) && (!(einstellungen.entitySelected.getUser().equals(System.getProperty("user.name")))) )
 			{
-				log("error", "you may only clone your instances (user "+System.getProperty("user.name")+")");
+				log("warn", "you may only clone your instances (user "+System.getProperty("user.name")+")");
 			}
 			if ( (einstellungen.entitySelected != null) && (!(einstellungen.entitySelected.getParentid().equals("0"))) )
 			{
-				log("error", "you must not clone child instances");
+				log("warn", "you must not clone child instances");
 			}
-
-//			else if ( (einstellungen.entitySelected != null) && einstellungen.entitySelected.isActive() )
-//			{
-//				log("error", "you may only delete finished instances.");
-//			}
 
 			else if (einstellungen.entitySelected != null)
 			{
@@ -865,10 +860,6 @@ public class PradarPartUi3 extends ModelObject
 					}
 				}
 			}
-			else
-			{
-				log("warn", "no instance selected");
-			}
 			
 			// creating and setting an arrow cursor
 			shell.setCursor(new Cursor(display, SWT.CURSOR_ARROW));
@@ -923,6 +914,19 @@ public class PradarPartUi3 extends ModelObject
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
+			// ist ueberhaupt etwas markiert?
+			if (einstellungen.entitySelected == null)
+			{
+				log("warn", "no instance selected");
+			}
+
+			// ist mehr als eine bestimmte zahl markiert
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 1)
+			{
+				log("warn", "delete allows max 1 entity at a time");
+				return;
+			}
+			
 			if ( (einstellungen.entitySelected != null) && (!(einstellungen.entitySelected.getUser().equals(System.getProperty("user.name")))) )
 			{
 				log("error", "you may only delete your instances (user "+System.getProperty("user.name")+")");
@@ -1049,11 +1053,6 @@ public class PradarPartUi3 extends ModelObject
 				refresh();
 				tree.refresh();
 
-			}
-			
-			else
-			{
-				log("warn", "no instance selected");
 			}
 			
 		}

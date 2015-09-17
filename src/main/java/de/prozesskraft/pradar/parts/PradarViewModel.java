@@ -1,5 +1,7 @@
 package de.prozesskraft.pradar.parts;
 
+import java.util.ArrayList;
+
 import de.prozesskraft.pradar.Entity;
 
 public class PradarViewModel extends ModelObject
@@ -20,6 +22,7 @@ public class PradarViewModel extends ModelObject
 	public int refresh = 600;
 	public boolean animation = true;
 	public Entity entitySelected = null;
+	public ArrayList<Entity> entitiesSelected = null;
 	public boolean isRadarVisible = true;
 	
 	public PradarViewModel()
@@ -106,6 +109,11 @@ public class PradarViewModel extends ModelObject
 		return entitySelected;
 	}
 
+	public ArrayList<Entity> getEntitiesSelected()
+	{
+		return entitiesSelected;
+	}
+
 	public boolean getIsRadarVisible()
 	{
 		return isRadarVisible;
@@ -190,6 +198,11 @@ public class PradarViewModel extends ModelObject
 	public void setEntitySelected(Entity entitySelected)
 	{
 		firePropertyChange("entitySelected", this.entitySelected, this.entitySelected = entitySelected);
+	}
+
+	public void setEntitiesSelected(ArrayList<Entity> entitiesSelected)
+	{
+		firePropertyChange("entitiesSelected", this.entitiesSelected, this.entitiesSelected = entitiesSelected);
 	}
 
 	public void setIsRadarVisible(boolean isRadarVisible)
