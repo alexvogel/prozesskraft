@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
@@ -170,93 +172,6 @@ public class MergeProcess
 
 		composite.layout();
 		
-		
-		
-//	    labelWrap.setBounds(120, 10, 100, 100);
-
-	    
-//		Label fileKey = new Label(compositeEntries, SWT.NONE);
-//		fileKey.setText("key");
-//		fileKey.setToolTipText("key/label of file");
-//		
-//		FormData fd_fileKey = new FormData();
-//		fd_fileKey.top = new FormAttachment(0, 10);
-//		fd_fileKey.left = new FormAttachment(0, 8);
-//		fileKey.setLayoutData(fd_fileKey);
-//
-//		textKey = new Text(compositeEntries, SWT.BORDER);
-//		textKey.setToolTipText("key/label of file");
-//		textKey.setMessage("key/label of file");
-//
-//		FormData fd_textKey = new FormData();
-//		fd_textKey.top = new FormAttachment(0, 5);
-//		fd_textKey.left = new FormAttachment(0, 50);
-//		fd_textKey.right = new FormAttachment(100, -8);
-//		fd_textKey.width = 190;
-//		textKey.setLayoutData(fd_textKey);
-//		
-//		Label filePath = new Label(compositeEntries, SWT.NONE);
-//		filePath.setText("path");
-//		filePath.setToolTipText("path of file");
-//		
-//		FormData fd_filePath = new FormData();
-//		fd_filePath.top = new FormAttachment(0, 45);
-//		fd_filePath.left = new FormAttachment(0, 8);
-//		filePath.setLayoutData(fd_filePath);
-//
-//		textPath = new Text(compositeEntries, SWT.BORDER);
-//		textPath.setToolTipText("full path of file");
-//		textPath.setMessage("path");
-//
-//		FormData fd_textPath = new FormData();
-//		fd_textPath.top = new FormAttachment(0, 40);
-//		fd_textPath.left = new FormAttachment(0, 50);
-//		fd_textPath.right = new FormAttachment(100, -35);
-//		textPath.setLayoutData(fd_textPath);
-//		
-//		Button fileButton = new Button(compositeEntries, SWT.NONE);
-//		fileButton.setText("...");
-//		fileButton.addSelectionListener(listener_file_button);
-//
-//		FormData fd_file_button = new FormData();
-//		fd_file_button.top = new FormAttachment(0, 40);
-//		fd_file_button.left = new FormAttachment(textPath, 0, SWT.RIGHT);
-//		fd_file_button.width = 27;
-//		fd_file_button.height = 27;
-//		fileButton.setLayoutData(fd_file_button);
-//		
-//		Composite compositeBtn = new Composite(composite, SWT.NONE);
-//		compositeBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-//		GridLayout sss = new GridLayout(3, true);
-//		compositeBtn.setLayout(sss);
-//		
-//		Button btnCancel = new Button(compositeBtn, SWT.NONE);
-//		btnCancel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-//		btnCancel.setText("cancel");
-//		btnCancel.addSelectionListener(listenerButtonCancel);
-//
-//		Button btnDelete = new Button(compositeBtn, SWT.NONE);
-//		btnDelete.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-//		btnDelete.setText("delete");
-//		btnDelete.addSelectionListener(listenerButtonDelete);
-//		if(this.entertype.equals("add"))
-//		{
-//			btnDelete.setEnabled(false);
-//		}
-//		
-//		btnEnter = new Button(compositeBtn, SWT.NONE);
-//		btnEnter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-//		btnEnter.setText("enter");
-//		btnEnter.addSelectionListener(listenerButtonEnter);
-//		
-//		// setzen der aktuellen werte der variable in die felder
-//		textKey.setText(file.getKey());
-//		textPath.setText(file.getAbsfilename());
-//		einstellungen.setKey(file.getKey());
-//		einstellungen.setPath(file.getAbsfilename());
-		
-//		 //binding
-//		bindingContextFelder();
 	}
 
 	SelectionAdapter listenerButtonCancel = new SelectionAdapter()
@@ -300,6 +215,10 @@ public class MergeProcess
 				shell.dispose();
 			}
 
+			// alle dependent steps der zielinstanz einsammeln
+			// dies wird zum resetten benoetigt, damit steps nicht doppelt resettet werden
+			Map<Step,String> dependentSteps = new HashMap<Step,String>();
+			
 			// merge durchfuehren
 			// alle fanned steps (ehemalige multisteps) des zu mergenden prozesses in die fanned multisteps des bestehenden prozesses integrieren
 			for(Step actStep : guestProcess.getStep())
@@ -307,12 +226,11 @@ public class MergeProcess
 				if(actStep.isAFannedMultistep())
 				{
 					father.getFather().log("info", "merging from external instance step " + actStep.getName());
-					if(process.integrateStep(actStep))
+					if(process.integrateStep(actStep.clone()))
 					{
-						ArrayList<Step> allDependentStepsOfIntegrated = process.getStepDependent(actStep.getName());
-						for(Step actStepToResetBecauseOfDependency : allDependentStepsOfIntegrated)
+						for(Step actStepToResetBecauseOfDependency : process.getStepDependent(actStep.getName()))
 						{
-							actStepToResetBecauseOfDependency.resetBecauseOfDependency();
+							dependentSteps.put(actStepToResetBecauseOfDependency, "dummy");
 						}
 
 						father.getFather().log("info", "merging step successfully.");
@@ -328,6 +246,12 @@ public class MergeProcess
 				}
 			}
 
+			// alle steps downstream der merge-positionen resetten
+			for(Step actStep : dependentSteps.keySet())
+			{
+				actStep.resetBecauseOfDependency();
+			}
+			
 			// speichern der ergebnis instanz
 			process.writeBinary();
 
