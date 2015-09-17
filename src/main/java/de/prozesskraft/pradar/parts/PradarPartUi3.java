@@ -843,7 +843,11 @@ public class PradarPartUi3 extends ModelObject
 					
 					else
 					{
-						Process clonedProcess = this.cloneProcess(einstellungen.entitySelected, null);
+						Process p1 = new Process();
+						p1.setInfilebinary(einstellungen.entitySelected.getResource());
+						Process process = p1.readBinary();
+						
+						Process clonedProcess = this.cloneProcess(process, null);
 						
 						// falls children vorhanden, sollen diese auch geklont werden
 						for(Entity possibleChild : entities_filtered)
@@ -851,7 +855,11 @@ public class PradarPartUi3 extends ModelObject
 							// ist es ein child?
 							if(possibleChild.getParentid().equals(einstellungen.entitySelected.getId()))
 							{
-								this.cloneProcess(possibleChild, clonedProcess);
+								// Process Object einlesen und clonen
+								Process processChild1 = new Process();
+								processChild1.setInfilebinary(possibleChild.getResource());
+								Process processChild = processChild1.readBinary();
+								this.cloneProcess(processChild, clonedProcess);
 							}
 						}
 					}
@@ -871,11 +879,8 @@ public class PradarPartUi3 extends ModelObject
 		 * returns process-id
 		 * @param entity
 		 */
-		public Process cloneProcess(Entity entity, Process parentProcess)
+		public Process cloneProcess(Process process, Process parentProcess)
 		{
-			Process p1 = new Process();
-			p1.setInfilebinary(entity.getResource());
-			Process process = p1.readBinary();
 
 			// klonen mit data
 			Process clone = null;
@@ -893,7 +898,7 @@ public class PradarPartUi3 extends ModelObject
 			}
 
 //			// das original speichern, weil auch hier aenderungen vorhanden sind (zaehler fuer klone)
-			process.setOutfilebinary(entity.getResource());
+			process.setOutfilebinary(process.getInfilebinary());
 			process.writeBinary();
 
 			// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
