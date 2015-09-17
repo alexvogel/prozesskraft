@@ -116,6 +116,7 @@ public class PradarPartUi3 extends ModelObject
 	private Button button_open = null;
 	private Button button_clean = null;
 	private Button button_clone = null;
+	private Button button_merge = null;
 	private Button button_delete = null;
 	private Scale scale_zoom;
 	private StyledText text_logging = null;
@@ -356,6 +357,12 @@ public class PradarPartUi3 extends ModelObject
 		button_clone.setText("clone");
 		button_clone.setToolTipText("copy the instance");
 		button_clone.addSelectionListener(listener_clone_button);
+		
+		button_merge = new Button(grpFunctionInstance, SWT.NONE);
+		button_merge.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_merge.setText("merge");
+		button_merge.setToolTipText("merge several instances to a new instance. steps downstream of mergepoints will be resettet, content of upstream steps is taken from the first selected entity");
+		button_merge.addSelectionListener(listener_merge_button);
 		
 		button_delete = new Button(grpFunctionInstance, SWT.NONE);
 		button_delete.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -770,10 +777,8 @@ public class PradarPartUi3 extends ModelObject
 
 	SelectionAdapter listener_clone_button = new SelectionAdapter()
 	{
-		
 		public void widgetSelected(SelectionEvent event)
 		{
-			
 			// ist ueberhaupt etwas markiert?
 			if (einstellungen.entitySelected == null)
 			{
@@ -811,6 +816,197 @@ public class PradarPartUi3 extends ModelObject
 
 				// open confirmation and wait for user selection
 				int returnCode = confirmation.open();
+//					System.out.println("returnCode is: "+returnCode);
+
+				// ok == 32
+				if (returnCode == 32)
+				{
+					// creating and setting a busy cursor
+					shell.setCursor(new Cursor(display, SWT.CURSOR_WAIT));
+
+					// clone ausfuehren
+					execute_clone(einstellungen.entitySelected);
+					
+					// creating and setting an arrow cursor
+					shell.setCursor(new Cursor(display, SWT.CURSOR_ARROW));
+				}
+			}
+		}
+	};	
+
+	public void execute_clone(Entity entity)
+	{
+		log("info", "cloning process");
+
+		File fileResource = new File(einstellungen.entitySelected.getResource());
+
+		if(!fileResource.exists())
+		{
+			log("error", "resource does not exist: "+fileResource.getAbsolutePath());
+		}
+		else if(!fileResource.isFile())
+		{
+			log("error", "resource is not a file: "+fileResource.getAbsolutePath());
+		}
+		else if(!fileResource.canRead())
+		{
+			log("error", "cannot read resource: "+fileResource.getAbsolutePath());
+		}
+		
+		else
+		{
+			Process p1 = new Process();
+			p1.setInfilebinary(einstellungen.entitySelected.getResource());
+			Process process = p1.readBinary();
+			
+			Process clonedProcess = this.cloneProcess(process, null);
+			
+			// falls children vorhanden, sollen diese auch geklont werden
+			for(Entity possibleChild : entities_filtered)
+			{
+				// ist es ein child?
+				if(possibleChild.getParentid().equals(einstellungen.entitySelected.getId()))
+				{
+					// Process Object einlesen und clonen
+					Process processChild1 = new Process();
+					processChild1.setInfilebinary(possibleChild.getResource());
+					Process processChild = processChild1.readBinary();
+					this.cloneProcess(processChild, clonedProcess);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * clone Process mit Daten
+	 * returns process-id
+	 * @param entity
+	 */
+	public Process cloneProcess(Process process, Process parentProcess)
+	{
+
+		// klonen mit data
+		Process clone = null;
+		if(parentProcess == null)
+		{
+			clone = process.cloneWithData(null, null);
+			log("info", "cloning instance: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
+		}
+		else
+		{
+			clone = process.cloneWithData(parentProcess.getRootdir() + "/dir4step_" + process.getStepnameOfParent(), parentProcess.getId());
+			log("debug", "stepname of parentProcess is: " + process.getStepnameOfParent());
+			log("debug", "process.cloneWithData(" + parentProcess.getRootdir() + "/dir4step_" + process.getStepnameOfParent() + ", " + parentProcess.getId());
+			log("info", "cloning instance as a child: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
+		}
+
+//		// das original speichern, weil auch hier aenderungen vorhanden sind (zaehler fuer klone)
+		process.setOutfilebinary(process.getInfilebinary());
+		process.writeBinary();
+
+		// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
+		String call2 = ini.get("apps", "pradar-attend") + " -instance " + clone.getRootdir() + "/process.pmb"; 
+		log("info", "calling: "+call2);
+
+		try
+		{
+			java.lang.Process sysproc = Runtime.getRuntime().exec(call2);
+		}
+		catch (IOException e)
+		{
+			log("error", e.getMessage());
+		}
+		
+		// rueckgabe der id. kann beim klonen von childprozessen verwendet werden
+		return clone;
+	}
+
+	/**
+	 * mergen mehrerer instanzen
+	 */
+	SelectionAdapter listener_merge_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			// ist ueberhaupt etwas markiert?
+			if (einstellungen.entitiesSelected == null || einstellungen.entitiesSelected.size() == 0)
+			{
+				log("error", "no instance selected");
+			}
+
+			// ist weniger als eine bestimmte zahl markiert
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() < 2)
+			{
+				log("error", "merge needs min 2 entities");
+				return;
+			}
+
+			// ist mehr als eine bestimmte zahl markiert
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 5)
+			{
+				log("error", "merge allows max 5 entities at a time");
+				return;
+			}
+
+			else if ( (einstellungen.entitySelected != null) && (!(einstellungen.entitySelected.getUser().equals(System.getProperty("user.name")))) )
+			{
+				log("error", "you may only merge your instances (user "+System.getProperty("user.name")+")");
+				return;
+			}
+			else if ( (einstellungen.entitySelected != null) && (!(einstellungen.entitySelected.getParentid().equals("0"))) )
+			{
+				log("error", "you must not merge child instances");
+				return;
+			}
+			else
+			{
+				// sind alle selected instances vom selben prozess und version
+				String lastProcessName = null;
+				String lastProcessVersion = null;
+				for(Entity actEntity : einstellungen.entitiesSelected)
+				{
+					if(lastProcessName == null)
+					{
+						lastProcessName = actEntity.getProcess();
+					}
+					else
+					{
+						if(!lastProcessName.equals(actEntity.getProcess()))
+						{
+							log("error", "you may only merge instances of same process");
+							return;
+						}
+					}
+					if(lastProcessVersion == null)
+					{
+						lastProcessVersion = actEntity.getVersion();
+					}
+					else
+					{
+						if(!lastProcessVersion.equals(actEntity.getVersion()))
+						{
+							log("error", "you may only merge instances of same version");
+							return;
+						}
+					}
+				}
+
+				// bestaetigungsdialog
+				Shell diaShell = new Shell();
+				MessageBox confirmation = new MessageBox(diaShell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+				String message = "";
+
+				message += "you are about to merge several instances into a new created instance.\n";
+				message += "a clone of the first entity in your selection sequence will be used as the base instance.\n";
+				message += "the other instances will be merged into the base instance.\n";
+				message += "now existing instances remain unchanged.\n";
+				message += "depending on the amount of data the merging can take some time.\n\n";
+				message += "do you really want to proceed?";
+
+				confirmation.setMessage(message);
+
+				// open confirmation and wait for user selection
+				int returnCode = confirmation.open();
 //				System.out.println("returnCode is: "+returnCode);
 
 				// ok == 32
@@ -819,45 +1015,101 @@ public class PradarPartUi3 extends ModelObject
 					// creating and setting a busy cursor
 					shell.setCursor(new Cursor(display, SWT.CURSOR_WAIT));
 
-					log("info", "cloning process");
+					// alle dependent steps der zielinstanz einsammeln
+					// dies wird zum resetten benoetigt, damit steps nicht doppelt resettet werden
+					Map<Step,String> dependentSteps = new HashMap<Step,String>();
 
-					File fileResource = new File(einstellungen.entitySelected.getResource());
-
-					if(!fileResource.exists())
+					// alle selectionen durcharbeiten
+					Process cloneOfFirstInstance = null;
+					for(Entity actEntity : einstellungen.entitiesSelected)
 					{
-						log("error", "resource does not exist: "+fileResource.getAbsolutePath());
-					}
-					else if(!fileResource.isFile())
-					{
-						log("error", "resource is not a file: "+fileResource.getAbsolutePath());
-					}
-					else if(!fileResource.canRead())
-					{
-						log("error", "cannot read resource: "+fileResource.getAbsolutePath());
-					}
-					
-					else
-					{
-						Process p1 = new Process();
-						p1.setInfilebinary(einstellungen.entitySelected.getResource());
-						Process process = p1.readBinary();
+						java.io.File fileResource = new java.io.File(actEntity.getResource());
 						
-						Process clonedProcess = this.cloneProcess(process, null);
-						
-						// falls children vorhanden, sollen diese auch geklont werden
-						for(Entity possibleChild : entities_filtered)
+						if(!fileResource.exists())
 						{
-							// ist es ein child?
-							if(possibleChild.getParentid().equals(einstellungen.entitySelected.getId()))
+							log("error", "resource does not exist: "+fileResource.getAbsolutePath());
+						}
+						else if(!fileResource.isFile())
+						{
+							log("error", "resource is not a file: "+fileResource.getAbsolutePath());
+						}
+						else if(!fileResource.canRead())
+						{
+							log("error", "cannot read resource: "+fileResource.getAbsolutePath());
+						}
+
+						// die instanz der ersten selection vollstaendig klonen
+						if(cloneOfFirstInstance == null)
+						{
+							log("info", "cloning first selected instance as base instance");
+
+							Process p1 = new Process();
+							p1.setInfilebinary(einstellungen.entitySelected.getResource());
+							Process process = p1.readBinary();
+							
+							cloneOfFirstInstance = cloneProcess(process, null);
+
+							// falls children vorhanden, sollen diese auch geklont werden
+							for(Entity possibleChild : entities_filtered)
 							{
-								// Process Object einlesen und clonen
-								Process processChild1 = new Process();
-								processChild1.setInfilebinary(possibleChild.getResource());
-								Process processChild = processChild1.readBinary();
-								this.cloneProcess(processChild, clonedProcess);
+								// ist es ein child?
+								if(possibleChild.getParentid().equals(einstellungen.entitySelected.getId()))
+								{
+									// Process Object einlesen und clonen
+									Process processChild1 = new Process();
+									processChild1.setInfilebinary(possibleChild.getResource());
+									Process processChild = processChild1.readBinary();
+									cloneProcess(processChild, cloneOfFirstInstance);
+								}
 							}
 						}
+						// die instanzen aller anderen selektionen sollen in die instanz der ersten selektion gemergt werden
+						else
+						{
+							Process p1 = new Process();
+							p1.setInfilebinary(einstellungen.entitySelected.getResource());
+							Process process = p1.readBinary();
+
+							// merge durchfuehren
+							// alle fanned steps (ehemalige multisteps) des zu mergenden prozesses in die fanned multisteps des bestehenden prozesses integrieren
+							for(Step actStep : process.getStep())
+							{
+								if(actStep.isAFannedMultistep())
+								{
+									log("info", "merging into base instance the step " + actStep.getName() + " from instance " + process.getInfilebinary());
+									if(cloneOfFirstInstance.integrateStep(actStep))
+									{
+										log("info", "merging step successfully.");
+										// die downstream steps vom merge-punkt merken
+										for(Step actStepToResetBecauseOfDependency : cloneOfFirstInstance.getStepDependent(actStep.getName()))
+										{
+											dependentSteps.put(actStepToResetBecauseOfDependency, "dummy");
+										}
+									}
+									else
+									{
+										log("error", "merging step failed.");
+									}
+								}
+								else
+								{
+									System.err.println("debug: because it's not a multistep, ignoring from external instance step " + actStep.getName());
+								}
+							}
+							
+						}
+						
 					}
+					
+					// alle steps downstream der merge-positionen resetten
+					for(Step actStep : dependentSteps.keySet())
+					{
+						actStep.resetBecauseOfDependency();
+					}
+
+					// speichern der ergebnis instanz
+					cloneOfFirstInstance.writeBinary();
+
 				}
 			}
 			
@@ -865,49 +1117,6 @@ public class PradarPartUi3 extends ModelObject
 			shell.setCursor(new Cursor(display, SWT.CURSOR_ARROW));
 		}
 
-		/**
-		 * clone Process mit Daten an Hand der pradar-Entity
-		 * returns process-id
-		 * @param entity
-		 */
-		public Process cloneProcess(Process process, Process parentProcess)
-		{
-
-			// klonen mit data
-			Process clone = null;
-			if(parentProcess == null)
-			{
-				clone = process.cloneWithData(null, null);
-				log("info", "cloning instance: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
-			}
-			else
-			{
-				clone = process.cloneWithData(parentProcess.getRootdir() + "/dir4step_" + process.getStepnameOfParent(), parentProcess.getId());
-				log("debug", "stepname of parentProcess is: " + process.getStepnameOfParent());
-				log("debug", "process.cloneWithData(" + parentProcess.getRootdir() + "/dir4step_" + process.getStepnameOfParent() + ", " + parentProcess.getId());
-				log("info", "cloning instance as a child: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
-			}
-
-//			// das original speichern, weil auch hier aenderungen vorhanden sind (zaehler fuer klone)
-			process.setOutfilebinary(process.getInfilebinary());
-			process.writeBinary();
-
-			// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
-			String call2 = ini.get("apps", "pradar-attend") + " -instance " + clone.getRootdir() + "/process.pmb"; 
-			log("info", "calling: "+call2);
-
-			try
-			{
-				java.lang.Process sysproc = Runtime.getRuntime().exec(call2);
-			}
-			catch (IOException e)
-			{
-				log("error", e.getMessage());
-			}
-			
-			// rueckgabe der id. kann beim klonen von childprozessen verwendet werden
-			return clone;
-		}
 	};	
 	
 	SelectionAdapter listener_delete_button = new SelectionAdapter()
@@ -1139,6 +1348,17 @@ public class PradarPartUi3 extends ModelObject
 		}
 	}
 
+	protected DataBindingContext initDataBindingsZoom()
+	{
+		DataBindingContext bindingContextZoom = new DataBindingContext();
+		//
+		IObservableValue targetObservableZoom = WidgetProperties.selection().observe(scale_zoom);
+		IObservableValue modelObservableZoom = BeanProperties.value("zoom").observe(einstellungen);
+		bindingContextZoom.bindValue(targetObservableZoom, modelObservableZoom, null, null);
+		//
+		return bindingContextZoom;
+	}
+
 	/**
 	 * add change listener for binding 'zoom'
 	 */
@@ -1153,54 +1373,10 @@ public class PradarPartUi3 extends ModelObject
 		b.getModel().addChangeListener(listener_zoom);
 	}
 
-	protected DataBindingContext initDataBindingsZoom()
-	{
-		DataBindingContext bindingContextZoom = new DataBindingContext();
-		//
-		IObservableValue targetObservableZoom = WidgetProperties.selection().observe(scale_zoom);
-		IObservableValue modelObservableZoom = BeanProperties.value("zoom").observe(einstellungen);
-		bindingContextZoom.bindValue(targetObservableZoom, modelObservableZoom, null, null);
-		//
-		return bindingContextZoom;
-	}
 	
 	protected DataBindingContext initDataBindingsFilter()
 	{
 
-//		// Einrichten der ControlDecoration über dem Textfeld 'active'
-//		final ControlDecoration controlDecorationActive = new ControlDecoration(text_active, SWT.LEFT | SWT.TOP);
-//		controlDecorationActive.setDescriptionText("use 'true', 'false' or leave field blank");
-//		FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
-//		controlDecorationActive.setImage(fieldDecoration.getImage());
-//
-//		// Validator for 'active' mit Verbindung zur Controldecoration
-//		IValidator validatorActive = new IValidator()
-//		{
-//			public IStatus validate(Object value)
-//			{
-//				if (value instanceof String)
-//				{
-//					if (((String) value).matches("true|false|all|"))
-//					{
-//						controlDecorationActive.hide();
-//						return ValidationStatus.ok();
-//						
-//					}
-//				}
-//				controlDecorationActive.show();
-//				return ValidationStatus.error("not a boolean or 'all'");
-//			}
-//		};
-//
-//		// UpdateStrategy fuer 'active' ist: update der werte nur wenn validierung erfolgreich
-//		UpdateValueStrategy strategyActive = new UpdateValueStrategy();
-//		strategyActive.setBeforeSetValidator(validatorActive);
-//
-//		IObservableValue targetObservableActive = WidgetProperties.text().observeDelayed(800, text_active);
-//		IObservableValue modelObservableActive = BeanProperties.value("active").observe(einstellungen);
-//		bindingContextFilter.bindValue(targetObservableActive, modelObservableActive, strategyActive, null);
-		//
-		//---------
 		
 		DataBindingContext bindingContextFilter = new DataBindingContext();
 		//
