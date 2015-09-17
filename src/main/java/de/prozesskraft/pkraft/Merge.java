@@ -137,7 +137,7 @@ public class Merge
 		}
 		if ( !( commandline.hasOption("guest")))
 		{
-			System.err.println("option -guest is mandatory");
+			System.err.println("at least one option -guest is mandatory");
 			exiter();
 		}
 
@@ -171,8 +171,7 @@ public class Merge
 		String pathToInstance = commandline.getOptionValue("instance");
 		java.io.File fileInstance = new java.io.File(pathToInstance);
 
-		String pathToGuest = commandline.getOptionValue("guest");
-		java.io.File fileGuest = new java.io.File(pathToGuest);
+		String[] pathToGuest = commandline.getOptionValues("guest");
 
 		String baseDir = null;
 		if(commandline.hasOption("basedir"))
@@ -191,89 +190,86 @@ public class Merge
 			baseDir = commandline.getOptionValue("basedir");
 		}
 
+		// ueberpruefen ob die process.pmb files vorhanden sind
 		// wenn es nicht vorhanden ist, dann mit fehlermeldung abbrechen
 		if(!fileInstance.exists())
 		{
 			System.err.println("instance file does not exist: " + fileInstance.getAbsolutePath());
 			exiter();
 		}
-		// wenn es nicht vorhanden ist, dann mit fehlermeldung abbrechen
-		if(!fileGuest.exists())
+		for(String pathGuest : pathToGuest)
 		{
-			System.err.println("guest file does not exist: " + fileGuest.getAbsolutePath());
-			exiter();
+			java.io.File fileGuest = new java.io.File(pathGuest);
+
+			// wenn es nicht vorhanden ist, dann mit fehlermeldung abbrechen
+			if(!fileGuest.exists())
+			{
+				System.err.println("guest file does not exist: " + fileGuest.getAbsolutePath());
+				exiter();
+			}
 		}
 
-		// instance einlesen
+		// base - instance einlesen
 		Process p1 = new Process();
 		p1.setInfilebinary(pathToInstance);
 		p1.setOutfilebinary(pathToInstance);
 		Process p2 = p1.readBinary();
 
-		// guest einlesen
-		Process p30 = new Process();
-		p30.setInfilebinary(pathToGuest);
-		Process pGuest = p1.readBinary();
-
-		// testen ob beide instanzen vom gleichen typ sind
-		if(!p2.getName().equals(pGuest.getName()))
+		// alle guests einlesen
+		ArrayList<Process> alleGuests = new ArrayList<Process>();
+		for(String actPathGuest : pathToGuest)
 		{
-			System.err.println("error: instances are not from the same type (-instance=" + p2.getName() + " != -guest=" + pGuest.getName());
-			exiter();
-		}
-		
-		// testen ob beide instanzen von gleicher version sind
-		if(!p2.getVersion().equals(pGuest.getVersion()))
-		{
-			System.err.println("error: instances are not from the same version (" + p2.getVersion() + "!=" + pGuest.getVersion());
-			exiter();
+			Process p30 = new Process();
+			p30.setInfilebinary(actPathGuest);
+			Process pGuest = p1.readBinary();
+	
+			// testen ob base-instanz und aktuelle guestinstanz vom gleichen typ sind
+			if(!p2.getName().equals(pGuest.getName()))
+			{
+				System.err.println("error: instances are not from the same type (-instance=" + p2.getName() + " != -guest=" + pGuest.getName());
+				exiter();
+			}
+			
+			// testen ob base-instanz und aktuelle guestinstanz von gleicher version sind
+			if(!p2.getVersion().equals(pGuest.getVersion()))
+			{
+				System.err.println("error: instances are not from the same version (" + p2.getVersion() + "!=" + pGuest.getVersion());
+				exiter();
+			}
 		}
 
-		System.err.println("info: clone instance to directory: " + baseDir);
+		System.err.println("info: cloning instance as base instance to directory: " + baseDir);
 		Process cloneInstance = p2.cloneWithData(baseDir, null);
 		cloneInstance.setOutfilebinary(cloneInstance.getRootdir() + "/process.pmb");
 
 		// weil beim clonen auch beim original felder veraendert werden (zaehler fuer klone, etc.) soll auch das original neu geschrieben werden
-		System.err.println("info: schreiben des binary files: " + p2.getOutfilebinary());
+		System.err.println("info: writing des binary files: " + p2.getOutfilebinary());
 		p2.writeBinary();
 		
-
-		// sind sie vom gleichen typ
-		if(!cloneInstance.getName().equals(pGuest.getName()))
+		// alle guest prozesse merge durchfuehren
+		for(Process actGuestProcess : alleGuests)
 		{
-			System.err.println("error: instances are not from the same type (" + cloneInstance.getName() + "!=" + pGuest.getName());
-			exiter();
-		}
-
-		// sind sie vom gleichen version
-		if(!cloneInstance.getVersion().equals(pGuest.getVersion()))
-		{
-			System.err.println("error: instances are not from the same version (" + cloneInstance.getVersion() + "!=" + pGuest.getVersion());
-			exiter();
-		}
-
-		// merge durchfuehren
-		// alle fanned steps (ehemalige multisteps) des zu mergenden prozesses in die fanned multisteps des bestehenden prozesses integrieren
-		for(Step actStep : pGuest.getStep())
-		{
-			if(actStep.isAFannedMultistep())
+			// alle fanned steps (ehemalige multisteps) des zu mergenden prozesses in die fanned multisteps des bestehenden prozesses integrieren
+			for(Step actStep : actGuestProcess.getStep())
 			{
-				System.err.println("info: merging from external instance step " + actStep.getName());
-				if(cloneInstance.integrateStep(actStep))
+				if(actStep.isAFannedMultistep())
 				{
-					System.err.println("info: merging step successfully.");
+					System.err.println("info: merging from external instance step " + actStep.getName());
+					if(cloneInstance.integrateStep(actStep))
+					{
+						System.err.println("info: merging step successfully.");
+					}
+					else
+					{
+						System.err.println("error: merging step failed.");
+					}
 				}
 				else
 				{
-					System.err.println("error: merging step failed.");
+					System.err.println("debug: because it's not a multistep, ignoring from external instance step " + actStep.getName());
 				}
 			}
-			else
-			{
-				System.err.println("debug: because it's not a multistep, ignoring from external instance step " + actStep.getName());
-			}
 		}
-		
 		// speichern der ergebnis instanz
 		cloneInstance.writeBinary();
 	}
