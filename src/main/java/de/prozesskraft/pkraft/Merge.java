@@ -4,6 +4,7 @@ package de.prozesskraft.pkraft;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
@@ -246,6 +247,10 @@ public class Merge
 		System.err.println("info: writing des binary files: " + p2.getOutfilebinary());
 		p2.writeBinary();
 		
+		// alle dependent steps der zielinstanz einsammeln
+		// dies wird zum resetten benoetigt, damit steps nicht doppelt resettet werden
+		Map<Step,String> dependentSteps = new HashMap<Step,String>();
+		
 		// alle guest prozesse merge durchfuehren
 		for(Process actGuestProcess : alleGuests)
 		{
@@ -255,9 +260,14 @@ public class Merge
 				if(actStep.isAFannedMultistep())
 				{
 					System.err.println("info: merging from external instance step " + actStep.getName());
-					if(cloneInstance.integrateStep(actStep))
+					if(cloneInstance.integrateStep(actStep.clone()))
 					{
 						System.err.println("info: merging step successfully.");
+						// die downstream steps vom merge-punkt merken
+						for(Step actStepToResetBecauseOfDependency : cloneInstance.getStepDependent(actStep.getName()))
+						{
+							dependentSteps.put(actStepToResetBecauseOfDependency, "dummy");
+						}
 					}
 					else
 					{
@@ -270,6 +280,13 @@ public class Merge
 				}
 			}
 		}
+		
+		// alle steps downstream der merge-positionen resetten
+		for(Step actStep : dependentSteps.keySet())
+		{
+			actStep.resetBecauseOfDependency();
+		}
+
 		// speichern der ergebnis instanz
 		cloneInstance.writeBinary();
 	}
