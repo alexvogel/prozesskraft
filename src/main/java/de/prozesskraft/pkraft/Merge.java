@@ -254,12 +254,14 @@ public class Merge
 		// alle guest prozesse merge durchfuehren
 		for(Process actGuestProcess : alleGuests)
 		{
+			System.err.println("info: merging guest process " + actGuestProcess.getInfilebinary());
+
 			// alle fanned steps (ehemalige multisteps) des zu mergenden prozesses in die fanned multisteps des bestehenden prozesses integrieren
 			for(Step actStep : actGuestProcess.getStep())
 			{
 				if(actStep.isAFannedMultistep())
 				{
-					System.err.println("info: merging from external instance step " + actStep.getName());
+					System.err.println("info: merging from guest instance step " + actStep.getName());
 					if(cloneInstance.integrateStep(actStep.clone()))
 					{
 						System.err.println("info: merging step successfully.");
