@@ -160,18 +160,26 @@ public class Clone
 			exiter();
 		}
 
+		// den main-prozess trotzdem nochmal einlesen um subprozesse extrahieren zu koennen
 		Process p1 = new Process();
 		p1.setInfilebinary(pathToInstance);
-		p1.setOutfilebinary(pathToInstance);
+		Process process = p1.readBinary();
 
-		Process p2 = p1.readBinary();
+		// den main-prozess ueber die static function klonen
+		Process clonedProcess = cloneProcess(process, null);
 
-		Process p3 = p2.cloneWithData(null, null);
-
-		// da auch im original aenderungen durchgefuehrt werden (klonzaehler wird erhoeht)
-		// auch das original speichern
-		p2.setOutfilebinary(pathToInstance);
-		p2.writeBinary();
+		// alle steps durchgehen und falls subprocesses existieren auch fuer diese ein cloning durchfuehren
+		for(Step actStep : process.getStep())
+		{
+			if (actStep.getSubprocess() != null)
+			{
+				Process processInSubprocess = actStep.getSubprocess().getProcess();
+				if(processInSubprocess != null)
+				{
+					cloneProcess(processInSubprocess, clonedProcess);
+				}
+			}
+		}
 	}
 	
 	private static void exiter()
@@ -180,5 +188,48 @@ public class Clone
 		System.exit(1);
 	}
 
+	/**
+	 * clone Process mit Daten
+	 * returns process-id
+	 * @param entity
+	 */
+	public static Process cloneProcess(Process process, Process parentProcess)
+	{
+
+		// klonen mit data
+		Process clone = null;
+		if(parentProcess == null)
+		{
+			clone = process.cloneWithData(null, null);
+			System.err.println("info: cloning instance: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
+		}
+		else
+		{
+			clone = process.cloneWithData(parentProcess.getRootdir() + "/dir4step_" + process.getStepnameOfParent(), parentProcess.getId());
+			System.err.println("debug: stepname of parentProcess is: " + process.getStepnameOfParent());
+			System.err.println("debug: process.cloneWithData(" + parentProcess.getRootdir() + "/dir4step_" + process.getStepnameOfParent() + ", " + parentProcess.getId());
+			System.err.println("info: cloning instance as a child: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
+		}
+
+//		// das original speichern, weil auch hier aenderungen vorhanden sind (zaehler fuer klone)
+		process.setOutfilebinary(process.getInfilebinary());
+		process.writeBinary();
+
+		// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
+		String call2 = ini.get("apps", "pradar-attend") + " -instance " + clone.getRootdir() + "/process.pmb"; 
+		System.err.println("info: calling: "+call2);
+
+		try
+		{
+			java.lang.Process sysproc = Runtime.getRuntime().exec(call2);
+		}
+		catch (IOException e)
+		{
+			System.err.println("error: " + e.getMessage());
+		}
+		
+		// rueckgabe der id. kann beim klonen von childprozessen verwendet werden
+		return clone;
+	}
 
 }
