@@ -237,6 +237,8 @@ public class Merge
 				System.err.println("error: instances are not from the same version (" + p2.getVersion() + "!=" + pGuest.getVersion());
 				exiter();
 			}
+			
+			alleGuests.add(pGuest);
 		}
 
 		System.err.println("info: cloning instance as base instance to directory: " + baseDir);
