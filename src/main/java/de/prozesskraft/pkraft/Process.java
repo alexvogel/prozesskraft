@@ -191,6 +191,7 @@ implements Serializable
 		}
 		clone.setTimeOfLastStepStart(this.getTimeOfLastStepStart());
 		clone.setTimeOfProcessCreated(this.getTimeOfProcessCreated());
+		clone.setTimeOfProcessFinishedOrError(this.getTimeOfProcessFinishedOrError());
 
 		for(Step actStep : this.getStep())
 		{
