@@ -618,7 +618,7 @@ public class PradarPartUi3 extends ModelObject
 			// ist mehr als eine bestimmte zahl markiert
 			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 5)
 			{
-				log("warn", "browse allows max 5 entity at a time");
+				log("warn", "browse allows max 5 entities at a time");
 				return;
 			}
 
@@ -730,7 +730,7 @@ public class PradarPartUi3 extends ModelObject
 			// ist mehr als eine bestimmte zahl markiert
 			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 5)
 			{
-				log("warn", "open allows max 5 entity at a time");
+				log("warn", "open allows max 5 entities at a time");
 				return;
 			}
 
