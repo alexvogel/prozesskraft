@@ -452,8 +452,8 @@ implements Serializable
 			// ein evtl. vorhandenes daten verzeichnis einkopieren
 			java.io.File destStepDir = new java.io.File(step.getAbsdir());
 
-			this.log("info", "info: source directory that will be copied: " + sourceStepDir.getAbsolutePath());
-			System.err.println("info: source directory that will be copied: " + sourceStepDir.getAbsolutePath());
+			this.log("info", "info: source directory that will be processed: " + sourceStepDir.getAbsolutePath());
+			System.err.println("info: source directory that will be processed: " + sourceStepDir.getAbsolutePath());
 			// gibt es ueberhaupt ein source directory?
 			if(sourceStepDir.exists() && sourceStepDir.isDirectory())
 			{
@@ -471,6 +471,9 @@ implements Serializable
 					// und den step clonen
 					if(step.getSubprocess() != null && step.getSubprocess().getProcess() != null)
 					{
+						this.log("error", "step contains a process -> this process will be cloned");
+						System.err.println("error: step contains a process -> this process will be cloned");
+
 						Process subprozessOriginal = step.getSubprocess().getProcess().readBinary();
 						Process subprozessClone = subprozessOriginal.cloneWithData(destStepDir.getAbsolutePath(), this.getParentid());
 
