@@ -475,7 +475,8 @@ implements Serializable
 						Process subprozessClone = subprozessOriginal.cloneWithData(destStepDir.getAbsolutePath(), this.getParentid());
 
 						subprozessOriginal.writeBinary();
-
+						subprozessClone.writeBinary();
+						
 //						Process gemergteSubprocess = step.getSubprocess().getProcess();
 //						gemergteSubprocess.setInfilebinary(destStepDir + "/process.pmb");
 //						gemergteSubprocess.setOutfilebinary(destStepDir + "/process.pmb");
