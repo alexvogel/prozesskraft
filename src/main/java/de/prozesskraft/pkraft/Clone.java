@@ -174,7 +174,7 @@ public class Clone
 			if (actStep.getSubprocess() != null)
 			{
 				Process processInSubprocess = actStep.getSubprocess().getProcess().readBinary();
-				System.err.println("info: reading process freshly from file: " + actStep.getSubprocess().getProcess().readBinary());
+				System.err.println("info: reading process freshly from file: " + actStep.getSubprocess().getProcess().getInfilebinary());
 				if(processInSubprocess != null)
 				{
 					cloneProcess(processInSubprocess, clonedProcess);
