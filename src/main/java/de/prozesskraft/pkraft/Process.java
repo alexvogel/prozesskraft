@@ -466,31 +466,41 @@ implements Serializable
 				}
 				else
 				{
-					// das alte bestehende stepdirectory in den neuen prozess (this) kopieren und dabei den neuen stepnamen beruecksichtigen
-					this.log("info", "copying data for step integration. " + sourceStepDir.getAbsolutePath() + " => " + destStepDir.getAbsolutePath());
-					System.err.println("info: copying data for step integration. " + sourceStepDir.getAbsolutePath() + " => " + destStepDir.getAbsolutePath());
-					try
-					{
-						FileUtils.copyDirectory(sourceStepDir, destStepDir, true);
-					}
-					catch (IOException e)
-					{
-						this.log("error", "copying of directory tree failed");
-						System.err.println("error: copying of directory tree failed");
-						// TODO Auto-generated catch block
-						this.log("error", e.getMessage());
-						e.printStackTrace();
-					}
-					
-					// falls die kopierten stepdirectory ein process.pmb enthaelt, dann handelt es sich um einen prozess
+					// falls das integrierte step einen subprozess enthaelt
 					// in diesem fall soll das basedir dieses subprocesses auf denselben wert gesetzt werden wie das neue stepdir lauten
+					// und den step clonen
 					if(step.getSubprocess() != null && step.getSubprocess().getProcess() != null)
 					{
-						Process gemergteSubprocess = step.getSubprocess().getProcess();
-						gemergteSubprocess.setInfilebinary(destStepDir + "/process.pmb");
-						gemergteSubprocess.setOutfilebinary(destStepDir + "/process.pmb");
-						gemergteSubprocess.setBaseDir(destStepDir.getAbsolutePath());
-						gemergteSubprocess.writeBinary();
+						Process subprozessOriginal = step.getSubprocess().getProcess().readBinary();
+						Process subprozessClone = subprozessOriginal.cloneWithData(destStepDir.getAbsolutePath(), this.getParentid());
+
+						subprozessOriginal.writeBinary();
+
+//						Process gemergteSubprocess = step.getSubprocess().getProcess();
+//						gemergteSubprocess.setInfilebinary(destStepDir + "/process.pmb");
+//						gemergteSubprocess.setOutfilebinary(destStepDir + "/process.pmb");
+//						gemergteSubprocess.setBaseDir(destStepDir.getAbsolutePath());
+//						gemergteSubprocess.writeBinary();
+					}
+					
+					// dann handelt es sich um einen normalen step
+					else
+					{
+						// das alte bestehende stepdirectory in den neuen prozess (this) kopieren und dabei den neuen stepnamen beruecksichtigen
+						this.log("info", "copying data for step integration. " + sourceStepDir.getAbsolutePath() + " => " + destStepDir.getAbsolutePath());
+						System.err.println("info: copying data for step integration. " + sourceStepDir.getAbsolutePath() + " => " + destStepDir.getAbsolutePath());
+						try
+						{
+							FileUtils.copyDirectory(sourceStepDir, destStepDir, true);
+						}
+						catch (IOException e)
+						{
+							this.log("error", "copying of directory tree failed");
+							System.err.println("error: copying of directory tree failed");
+							// TODO Auto-generated catch block
+							this.log("error", e.getMessage());
+							e.printStackTrace();
+						}
 					}
 				}
 			}
