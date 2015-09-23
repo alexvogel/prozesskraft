@@ -292,6 +292,22 @@ public class Merge
 						{
 							dependentSteps.put(actStepToResetBecauseOfDependency, "dummy");
 						}
+						
+						// der step einen subprocess enthaelt muss der subprocess nach der integration bei pradar gemeldet werden
+						// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
+						if(actStep.getSubprocess() != null && actStep.getSubprocess().getProcess() != null)
+						{
+							String call5 = ini.get("apps", "pradar-attend") + " -instance " + actStep.getSubprocess().getProcess().getInfilebinary(); 
+							System.err.println("info: calling: "+call5);
+							try
+							{
+								java.lang.Process sysproc = Runtime.getRuntime().exec(call5);
+							}
+							catch (IOException e)
+							{
+								System.err.println("error: " + e.getMessage());
+							}
+						}
 					}
 					else
 					{
