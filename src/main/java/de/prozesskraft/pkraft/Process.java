@@ -416,6 +416,7 @@ implements Serializable
 		boolean integrationErfolgreich = true;
 
 		this.log("info", "want to integrate step: " + step.getName());
+		System.err.println("info: want to integrate step: " + step.getName());
 
 		// das alte datenverzeichnis feststellen
 		java.io.File sourceStepDir = new java.io.File(step.getAbsdir());
@@ -443,6 +444,7 @@ implements Serializable
 			// den namen fuer den zu integrierenden step setzen
 			step.setName(rumpf+"@"+zaehler);
 			this.log("info", "renaming step while integrating. new name is: " + step.getName());
+			System.err.println("info: renaming step while integrating. new name is: ");
 			
 			// den neuen step dem process hinzufuegen
 			this.addStep(step);
@@ -457,11 +459,13 @@ implements Serializable
 				if(destStepDir.exists())
 				{
 					this.log("error", "destination step directory does already exist -> no data integration possible.");
+					System.err.println("error: destination step directory does already exist -> no data integration possible.");
 					integrationErfolgreich = false;
 				}
 				else
 				{
 					this.log("info", "copying data for step integration. " + sourceStepDir.getAbsolutePath() + " => " + destStepDir.getAbsolutePath());
+					System.err.println("info: copying data for step integration. " + sourceStepDir.getAbsolutePath() + " => " + destStepDir.getAbsolutePath());
 					try
 					{
 						FileUtils.copyDirectory(sourceStepDir, destStepDir, true);
@@ -469,6 +473,7 @@ implements Serializable
 					catch (IOException e)
 					{
 						this.log("error", "copying of directory tree failed");
+						System.err.println("error: copying of directory tree failed");
 						// TODO Auto-generated catch block
 						this.log("error", e.getMessage());
 						e.printStackTrace();
@@ -478,11 +483,13 @@ implements Serializable
 			else
 			{
 				this.log("info", "source step directory does not exist -> no data integration needed.");
+				System.err.println("info: source step directory does not exist -> no data integration needed.");
 			}
 			
 		}
 		else
 		{
+			this.log("info", "Pattern " + "^(.+)@(.+)$" + " did not match the stepname!!!!!!");
 			System.err.println("Pattern " + "^(.+)@(.+)$" + " did not match the stepname!!!!!!");
 		}
 
