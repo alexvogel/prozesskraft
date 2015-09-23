@@ -1793,6 +1793,7 @@ implements Serializable
 		if(statusAllSteps.contains("error"))
 		{
 			status = "error";
+			this.setTimeOfProcessFinishedOrError(System.currentTimeMillis());
 			return status;
 		}
 
@@ -1825,6 +1826,7 @@ implements Serializable
 		else if(  statusAllSteps.contains("finished") )
 		{
 			status = "finished";
+			this.setTimeOfProcessFinishedOrError(System.currentTimeMillis());
 			
 			return status;
 		}
