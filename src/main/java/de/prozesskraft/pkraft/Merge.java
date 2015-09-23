@@ -223,32 +223,51 @@ public class Merge
 			Process p30 = new Process();
 			p30.setInfilebinary(actPathGuest);
 			Process pGuest = p1.readBinary();
-	
+
 			// testen ob base-instanz und aktuelle guestinstanz vom gleichen typ sind
 			if(!p2.getName().equals(pGuest.getName()))
 			{
 				System.err.println("error: instances are not from the same type (-instance=" + p2.getName() + " != -guest=" + pGuest.getName());
 				exiter();
 			}
-			
+
 			// testen ob base-instanz und aktuelle guestinstanz von gleicher version sind
 			if(!p2.getVersion().equals(pGuest.getVersion()))
 			{
 				System.err.println("error: instances are not from the same version (" + p2.getVersion() + "!=" + pGuest.getVersion());
 				exiter();
 			}
-			
+
 			alleGuests.add(pGuest);
 		}
 
-//		System.err.println("info: cloning instance as base instance to directory: " + baseDir);
-		Process cloneInstance = p2.cloneWithData(baseDir, null);
-		cloneInstance.setOutfilebinary(cloneInstance.getRootdir() + "/process.pmb");
-		System.err.println("info: cloned instance as base instance to directory: " + cloneInstance.getRootdir());
+		// den main-prozess trotzdem nochmal einlesen um subprozesse extrahieren zu koennen
+		Process p3 = new Process();
+		p3.setInfilebinary(pathToInstance);
+		Process process = p3.readBinary();
+		
+		// den main-prozess ueber die static function klonen
+		Process clonedProcess = cloneProcess(process, null);
+
+		// alle steps durchgehen und falls subprocesses existieren auch fuer diese ein cloning durchfuehren
+		for(Step actStep : process.getStep())
+		{
+			if (actStep.getSubprocess() != null)
+			{
+				Process pDummy = new Process();
+				pDummy.setInfilebinary(actStep.getAbsdir() + "/process.pmb");
+				Process processInSubprocess = pDummy.readBinary();
+//				System.err.println("info: reading process freshly from file: " + actStep.getAbsdir() + "/process.pmb");
+				if(processInSubprocess != null)
+				{
+					cloneProcess(processInSubprocess, clonedProcess);
+				}
+			}
+		}
 
 		// weil beim clonen auch beim original felder veraendert werden (zaehler fuer klone, etc.) soll auch das original neu geschrieben werden
-		System.err.println("info: writing original binary file: " + p2.getOutfilebinary());
-		p2.writeBinary();
+		System.err.println("info: writing original binary file: " + process.getOutfilebinary());
+		process.writeBinary();
 		
 		// alle dependent steps der zielinstanz einsammeln
 		// dies wird zum resetten benoetigt, damit steps nicht doppelt resettet werden
@@ -265,11 +284,11 @@ public class Merge
 				if(actStep.isAFannedMultistep())
 				{
 					System.err.println("info: merging from guest instance step " + actStep.getName());
-					if(cloneInstance.integrateStep(actStep.clone()))
+					if(clonedProcess.integrateStep(actStep.clone()))
 					{
 						System.err.println("info: merging step successfully.");
 						// die downstream steps vom merge-punkt merken
-						for(Step actStepToResetBecauseOfDependency : cloneInstance.getStepDependent(actStep.getName()))
+						for(Step actStepToResetBecauseOfDependency : clonedProcess.getStepDependent(actStep.getName()))
 						{
 							dependentSteps.put(actStepToResetBecauseOfDependency, "dummy");
 						}
@@ -293,7 +312,7 @@ public class Merge
 		}
 
 		// speichern der ergebnis instanz
-		cloneInstance.writeBinary();
+		clonedProcess.writeBinary();
 	}
 	
 	private static void exiter()
@@ -302,5 +321,49 @@ public class Merge
 		System.exit(1);
 	}
 
+	/**
+	 * diese funktion wird verwendet in pkraft-clone, pkraft-merge und fast gleich in pradar-gui
+	 * clone Process mit Daten
+	 * returns process-id
+	 * @param entity
+	 */
+	public static Process cloneProcess(Process process, Process parentProcess)
+	{
+
+		// klonen mit data
+		Process clone = null;
+		if(parentProcess == null)
+		{
+			clone = process.cloneWithData(null, null);
+			System.err.println("info: cloning instance: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
+		}
+		else
+		{
+			clone = process.cloneWithData(parentProcess.getRootdir() + "/dir4step_" + process.getStepnameOfParent(), parentProcess.getId());
+			System.err.println("debug: stepname of parentProcess is: " + process.getStepnameOfParent());
+			System.err.println("debug: process.cloneWithData(" + parentProcess.getRootdir() + "/dir4step_" + process.getStepnameOfParent() + ", " + parentProcess.getId());
+			System.err.println("info: cloning instance as a child: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
+		}
+
+//		// das original speichern, weil auch hier aenderungen vorhanden sind (zaehler fuer klone)
+		process.setOutfilebinary(process.getInfilebinary());
+		process.writeBinary();
+
+		// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
+		String call2 = ini.get("apps", "pradar-attend") + " -instance " + clone.getRootdir() + "/process.pmb"; 
+		System.err.println("info: calling: "+call2);
+
+		try
+		{
+			java.lang.Process sysproc = Runtime.getRuntime().exec(call2);
+		}
+		catch (IOException e)
+		{
+			System.err.println("error: " + e.getMessage());
+		}
+		
+		// rueckgabe der id. kann beim klonen von childprozessen verwendet werden
+		return clone;
+	}
 
 }
