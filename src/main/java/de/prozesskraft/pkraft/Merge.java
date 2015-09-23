@@ -304,7 +304,7 @@ public class Merge
 				}
 			}
 		}
-		
+
 		// alle steps downstream der merge-positionen resetten
 		for(Step actStep : dependentSteps.keySet())
 		{
