@@ -451,7 +451,7 @@ implements Serializable
 			
 			// ein evtl. vorhandenes daten verzeichnis einkopieren
 			java.io.File destStepDir = new java.io.File(step.getAbsdir());
-			
+
 			this.log("info", "info: source directory that will be copied: " + sourceStepDir.getAbsolutePath());
 			System.err.println("info: source directory that will be copied: " + sourceStepDir.getAbsolutePath());
 			// gibt es ueberhaupt ein source directory?
@@ -466,6 +466,7 @@ implements Serializable
 				}
 				else
 				{
+					// das alte bestehende stepdirectory in den neuen prozess (this) kopieren und dabei den neuen stepnamen beruecksichtigen
 					this.log("info", "copying data for step integration. " + sourceStepDir.getAbsolutePath() + " => " + destStepDir.getAbsolutePath());
 					System.err.println("info: copying data for step integration. " + sourceStepDir.getAbsolutePath() + " => " + destStepDir.getAbsolutePath());
 					try
@@ -479,6 +480,17 @@ implements Serializable
 						// TODO Auto-generated catch block
 						this.log("error", e.getMessage());
 						e.printStackTrace();
+					}
+					
+					// falls die kopierten stepdirectory ein process.pmb enthaelt, dann handelt es sich um einen prozess
+					// in diesem fall soll das basedir dieses subprocesses auf denselben wert gesetzt werden wie das neue stepdir lauten
+					if(step.getSubprocess() != null && step.getSubprocess().getProcess() != null)
+					{
+						Process gemergteSubprocess = step.getSubprocess().getProcess();
+						gemergteSubprocess.setInfilebinary(destStepDir + "/process.pmb");
+						gemergteSubprocess.setOutfilebinary(destStepDir + "/process.pmb");
+						gemergteSubprocess.setBaseDir(destStepDir.getAbsolutePath());
+						gemergteSubprocess.writeBinary();
 					}
 				}
 			}
