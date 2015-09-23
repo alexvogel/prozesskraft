@@ -450,6 +450,8 @@ implements Serializable
 		try
 		{
 			newProcess.setInfilexml(processDef.getCanonicalPath());
+			newProcess.setInfilebinary(this.getParent().getAbsdir() + "/process.pmb");
+			newProcess.setOutfilebinary(this.getParent().getAbsdir() + "/process.pmb");
 		}
 		catch (IOException e1)
 		{
