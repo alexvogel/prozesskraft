@@ -444,7 +444,7 @@ implements Serializable
 			// den namen fuer den zu integrierenden step setzen
 			step.setName(rumpf+"@"+zaehler);
 			this.log("info", "renaming step while integrating. new name is: " + step.getName());
-			System.err.println("info: renaming step while integrating. new name is: ");
+			System.err.println("info: renaming step while integrating. new name is: " + step.getName());
 			
 			// den neuen step dem process hinzufuegen
 			this.addStep(step);
@@ -452,6 +452,8 @@ implements Serializable
 			// ein evtl. vorhandenes daten verzeichnis einkopieren
 			java.io.File destStepDir = new java.io.File(step.getAbsdir());
 			
+			this.log("info", "info: source directory that will be copied: " + sourceStepDir.getAbsolutePath());
+			System.err.println("info: source directory that will be copied: " + sourceStepDir.getAbsolutePath());
 			// gibt es ueberhaupt ein source directory?
 			if(sourceStepDir.exists() && sourceStepDir.isDirectory())
 			{
