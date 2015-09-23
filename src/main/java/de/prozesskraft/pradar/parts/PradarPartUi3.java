@@ -869,7 +869,7 @@ public class PradarPartUi3 extends ModelObject
 			p1.setInfilebinary(einstellungen.entitySelected.getResource());
 			Process process = p1.readBinary();
 			
-			Process clonedProcess = this.cloneProcess(process, null);
+			Process clone = this.cloneProcess(process, null);
 			
 			// falls children vorhanden, sollen diese auch geklont werden
 			for(Entity possibleChild : entities_filtered)
@@ -881,7 +881,7 @@ public class PradarPartUi3 extends ModelObject
 					Process processChild1 = new Process();
 					processChild1.setInfilebinary(possibleChild.getResource());
 					Process processChild = processChild1.readBinary();
-					this.cloneProcess(processChild, clonedProcess);
+					this.cloneProcess(processChild, clone);
 				}
 			}
 		}
