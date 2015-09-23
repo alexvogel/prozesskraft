@@ -173,7 +173,7 @@ public class Clone
 		{
 			if (actStep.getSubprocess() != null)
 			{
-				Process processInSubprocess = actStep.getSubprocess().getProcess();
+				Process processInSubprocess = actStep.getSubprocess().getProcess().readBinary();
 				if(processInSubprocess != null)
 				{
 					cloneProcess(processInSubprocess, clonedProcess);
