@@ -79,6 +79,12 @@ public class Clone
 //				.isRequired()
 				.create("instance");
 		
+		Option obasedir = OptionBuilder.withArgName("DIR")
+				.hasArg()
+				.withDescription("[optional, default: <basedirOfInstance>] base directory you want to place the root directory of the clone. this directory must exist at call time.")
+//				.isRequired()
+				.create("basedir");
+
 
 		/*----------------------------
 		  create options object
@@ -88,6 +94,7 @@ public class Clone
 		options.addOption( ohelp );
 		options.addOption( ov );
 		options.addOption( oinstance );
+		options.addOption( obasedir );
 		
 		/*----------------------------
 		  create the parser
@@ -109,7 +116,7 @@ public class Clone
 
 		if ( commandline.hasOption("v"))
 		{
-			System.out.println("author:  alexander.vogel@caegroup.de");
+			System.out.println("author:  alexander.vogel@prozesskraft.de");
 			System.out.println("version: [% version %]");
 			System.out.println("date:    [% date %]");
 			System.exit(0);
@@ -152,7 +159,8 @@ public class Clone
 		----------------------------*/
 		String pathToInstance = commandline.getOptionValue("instance");
 		java.io.File fileInstance = new java.io.File(pathToInstance);
-
+		java.io.File fileBaseDir = null;
+		
 		// wenn es nicht vorhanden ist, dann mit fehlermeldung abbrechen
 		if(!fileInstance.exists())
 		{
@@ -160,10 +168,32 @@ public class Clone
 			exiter();
 		}
 
+		// testen ob eventuell vorhandene angaben basedir
+		if(commandline.hasOption("basedir"))
+		{
+			fileBaseDir = new java.io.File(commandline.getOptionValue("basedir"));
+			if(!fileBaseDir.exists())
+			{
+				System.err.println("error: -basedir: directory does not exist");
+				exiter();
+			}
+			if(!fileBaseDir.isDirectory())
+			{
+				System.err.println("error: -basedir: is not a directory");
+				exiter();
+			}
+		}
+		
 		// den main-prozess trotzdem nochmal einlesen um subprozesse extrahieren zu koennen
 		Process p1 = new Process();
 		p1.setInfilebinary(pathToInstance);
 		Process process = p1.readBinary();
+		
+		// directories setzen, falls angegeben
+		if(fileBaseDir != null)
+		{
+			process.setBaseDir(fileBaseDir.getCanonicalPath());
+		}
 
 		// den main-prozess ueber die static function klonen
 		Process clonedProcess = cloneProcess(process, null);
@@ -176,7 +206,7 @@ public class Clone
 				Process pDummy = new Process();
 				pDummy.setInfilebinary(actStep.getAbsdir() + "/process.pmb");
 				Process processInSubprocess = pDummy.readBinary();
-				System.err.println("info: reading process freshly from file: " + actStep.getAbsdir() + "/process.pmb");
+//				System.err.println("info: reading process freshly from file: " + actStep.getAbsdir() + "/process.pmb");
 				if(processInSubprocess != null)
 				{
 					cloneProcess(processInSubprocess, clonedProcess);
