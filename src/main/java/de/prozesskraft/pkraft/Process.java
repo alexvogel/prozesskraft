@@ -219,29 +219,34 @@ implements Serializable
 	{
 		// bisherigen process klonen
 		Process clonedProcess = this.clone();
+		System.err.println("cloning: original process id="+this.getId()+", clone process id="+clonedProcess.getId());
+		// kopieren der daten auf filesystem
+		clonedProcess.log("info", "cloning: original process id="+this.getId()+", clone process id="+clonedProcess.getId());
 
 		// falls angegeben, soll das basedir auf einen bestimmten pfad geaendert werden
 		// falls null, dann bleibt es wie vom Vatter beim klonen erhalten
 		if(baseDir != null)
 		{
+			System.err.println("setting baseDirectory of clone: "+baseDir);
+			clonedProcess.log("info", "setting baseDirectory of clone: "+baseDir);
 			clonedProcess.setBaseDir(baseDir);
 		}
 		else
 		{
 			// bleibt beim gleichen basedir wie im original
+			System.err.println("lieving baseDirectory of clone: "+clonedProcess.getBaseDir());
+			clonedProcess.log("info", "lieving baseDirectory of clone: "+clonedProcess.getBaseDir());
 		}
 
-		System.err.println("copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
-		// kopieren der daten auf filesystem
-		clonedProcess.log("info", "copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir() + " without directories of subprocesses");
-		
 		// falls eine parentId uebergeben wurde soll diese im clonedProcess als parentId gesetzt werden
 		if(parentId != null)
 		{
+			System.err.println("setting new parentId in cloned process to: "+parentId);
 			clonedProcess.setParentid(parentId);
 		}
 		else
 		{
+			System.err.println("setting new parentId in cloned process to: 0");
 			clonedProcess.setParentid("0");
 		}
 
@@ -252,6 +257,10 @@ implements Serializable
 		clonedProcess.setOutfilebinary(clonedProcess.getRootdir() + "/" + "process.pmb");
 		clonedProcess.writeBinary();
 
+		// kopieren der daten auf filesystem
+		System.err.println("copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
+		clonedProcess.log("info", "copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir() + " without directories of subprocesses");
+		
 		try
 		{
 			// kopieren des InputDirs des RootSteps
