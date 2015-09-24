@@ -222,7 +222,7 @@ public class Merge
 		{
 			Process p30 = new Process();
 			p30.setInfilebinary(actPathGuest);
-			Process pGuest = p1.readBinary();
+			Process pGuest = p30.readBinary();
 
 			// testen ob base-instanz und aktuelle guestinstanz vom gleichen typ sind
 			if(!p2.getName().equals(pGuest.getName()))
@@ -350,15 +350,17 @@ public class Merge
 		Process clone = null;
 		if(parentProcess == null)
 		{
+			System.err.println("info: stepname of parentProcess is: " + process.getStepnameOfParent());
+			System.err.println("info: process.cloneWithData(null, null)");
 			clone = process.cloneWithData(null, null);
-			System.err.println("info: cloning instance: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
+			System.err.println("info: instance cloned: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
 		}
 		else
 		{
+			System.err.println("info: stepname of parentProcess is: " + process.getStepnameOfParent());
+			System.err.println("info: process.cloneWithData(" + parentProcess.getRootdir() + "/dir4step_" + process.getStepnameOfParent() + ", " + parentProcess.getId());
 			clone = process.cloneWithData(parentProcess.getRootdir() + "/dir4step_" + process.getStepnameOfParent(), parentProcess.getId());
-			System.err.println("debug: stepname of parentProcess is: " + process.getStepnameOfParent());
-			System.err.println("debug: process.cloneWithData(" + parentProcess.getRootdir() + "/dir4step_" + process.getStepnameOfParent() + ", " + parentProcess.getId());
-			System.err.println("info: cloning instance as a child: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
+			System.err.println("info: instance cloned as a child: original=" + process.getRootdir() + "/process.pmb, clone=" + clone.getRootdir() + "/process.pmb");
 		}
 
 //		// das original speichern, weil auch hier aenderungen vorhanden sind (zaehler fuer klone)
