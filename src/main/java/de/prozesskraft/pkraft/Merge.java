@@ -265,10 +265,6 @@ public class Merge
 			}
 		}
 
-		// weil beim clonen auch beim original felder veraendert werden (zaehler fuer klone, etc.) soll auch das original neu geschrieben werden
-		System.err.println("info: writing original binary file: " + process.getOutfilebinary());
-		process.writeBinary();
-		
 		// alle dependent steps der zielinstanz einsammeln
 		// dies wird zum resetten benoetigt, damit steps nicht doppelt resettet werden
 		Map<Step,String> dependentSteps = new HashMap<Step,String>();
