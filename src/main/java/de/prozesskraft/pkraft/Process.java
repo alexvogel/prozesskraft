@@ -1054,6 +1054,8 @@ implements Serializable
 	
 	public Process readXml() throws JAXBException
 	{
+		Process newProcess = null;
+		
 		if (this.getInfilexml() == null)
 		{
 			throw new NullPointerException();
@@ -1129,12 +1131,16 @@ implements Serializable
 			// alle steps in this loeschen
 			this.removeStepAll();
 			
-			mapper.map(xprocess, this);
+			newProcess = new Process();
+			
+			mapper.map(xprocess, newProcess);
+//			mapper.map(xprocess, this);
 //			System.out.println("processName2: "+this.getName());
 
 			// setzen der parenteintraege aller steps
-			this.affiliate();
-
+//			this.affiliate();
+			newProcess.affiliate();
+			
 			// setzen der step ranks, falls steps hinzugekommen sind
 			// dieser aufruf wird nur fuer den editor benoetigt
 			// setStepRanks muss umformuliert werden, da es viel zu lange laeuft (ab 30 Steps ~ 60 sekunden)
@@ -1159,7 +1165,7 @@ implements Serializable
 			e.printStackTrace();
 		}
 
-		return this;
+		return newProcess;
 	}
 	
 	/*----------------------------
