@@ -293,7 +293,7 @@ public class Merge
 						// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
 						if(actStep.getSubprocess() != null && actStep.getSubprocess().getProcess() != null)
 						{
-							String call5 = ini.get("apps", "pradar-attend") + " -instance " + actStep.getSubprocess().getProcess().getInfilebinary(); 
+							String call5 = ini.get("apps", "pradar-attend") + " -instance " + actStep.getSubprocess().getProcess().getRootdir() + "/process.pmb"; 
 							System.err.println("info: calling: "+call5);
 							try
 							{
