@@ -474,11 +474,17 @@ implements Serializable
 						this.log("error", "step contains a process -> this process will be cloned");
 						System.err.println("error: step contains a process -> this process will be cloned");
 
-						Process subprozessOriginal = step.getSubprocess().getProcess().readBinary();
+						// der Process innerhalb des Supprocesses muss neu eingelesen werden
+						// es koennte sein, dass Daten und Infilebinary-Pfad nicht mehr aktuell sind auf Grund vorangegangener klonierungen
+						Process subprozessOriginal = step.getSubprocess().getProcess();
+						subprozessOriginal.setInfilebinary(step.getAbsdir() + "/process.pmb");
+						subprozessOriginal.readBinary();
+
+						// den gerade eingelesenen Prozess klonen
 						Process subprozessClone = subprozessOriginal.cloneWithData(destStepDir.getAbsolutePath(), this.getParentid());
 
+						// und das original schreiben, da generationszaehler veraendert wurden 
 						subprozessOriginal.writeBinary();
-						subprozessClone.writeBinary();
 						
 //						Process gemergteSubprocess = step.getSubprocess().getProcess();
 //						gemergteSubprocess.setInfilebinary(destStepDir + "/process.pmb");
