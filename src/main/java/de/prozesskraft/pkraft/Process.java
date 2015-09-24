@@ -478,6 +478,7 @@ implements Serializable
 						// es koennte sein, dass Daten und Infilebinary-Pfad nicht mehr aktuell sind auf Grund vorangegangener klonierungen
 						Process subprozessOriginal = step.getSubprocess().getProcess();
 						subprozessOriginal.setInfilebinary(step.getAbsdir() + "/process.pmb");
+						subprozessOriginal.setOutfilebinary(step.getAbsdir() + "/process.pmb");
 						subprozessOriginal.readBinary();
 
 						// den gerade eingelesenen Prozess klonen
