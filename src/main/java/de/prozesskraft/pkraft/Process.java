@@ -221,32 +221,32 @@ implements Serializable
 		Process clonedProcess = this.clone();
 		System.err.println("cloning: original process id="+this.getId()+", clone process id="+clonedProcess.getId());
 		// kopieren der daten auf filesystem
-		clonedProcess.log("info", "cloning: original process id="+this.getId()+", clone process id="+clonedProcess.getId());
+		clonedProcess.log("debug", "cloning: original process id="+this.getId()+", clone process id="+clonedProcess.getId());
 
 		// falls angegeben, soll das basedir auf einen bestimmten pfad geaendert werden
 		// falls null, dann bleibt es wie vom Vatter beim klonen erhalten
 		if(baseDir != null)
 		{
-			System.err.println("setting baseDirectory of clone: "+baseDir);
-			clonedProcess.log("info", "setting baseDirectory of clone: "+baseDir);
+			System.err.println("debug: setting baseDirectory of clone: "+baseDir);
+			clonedProcess.log("debug", "setting baseDirectory of clone: "+baseDir);
 			clonedProcess.setBaseDir(baseDir);
 		}
 		else
 		{
 			// bleibt beim gleichen basedir wie im original
-			System.err.println("lieving baseDirectory of clone: "+clonedProcess.getBaseDir());
-			clonedProcess.log("info", "lieving baseDirectory of clone: "+clonedProcess.getBaseDir());
+			System.err.println("debug: lieving baseDirectory of clone: "+clonedProcess.getBaseDir());
+			clonedProcess.log("debug", "lieving baseDirectory of clone: "+clonedProcess.getBaseDir());
 		}
 
 		// falls eine parentId uebergeben wurde soll diese im clonedProcess als parentId gesetzt werden
 		if(parentId != null)
 		{
-			System.err.println("setting new parentId in cloned process to: "+parentId);
+			System.err.println("debug: setting new parentId in cloned process to: "+parentId);
 			clonedProcess.setParentid(parentId);
 		}
 		else
 		{
-			System.err.println("setting new parentId in cloned process to: 0");
+			System.err.println("debug: setting new parentId in cloned process to: 0");
 			clonedProcess.setParentid("0");
 		}
 
@@ -258,22 +258,24 @@ implements Serializable
 		clonedProcess.writeBinary();
 
 		// kopieren der daten auf filesystem
-		System.err.println("copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
-		clonedProcess.log("info", "copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir() + " without directories of subprocesses");
+		System.err.println("debug: copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
+		clonedProcess.log("debug", "copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir() + " without directories of subprocesses");
 		
 		try
 		{
 			// kopieren des InputDirs des RootSteps
 			if(new java.io.File(this.getRootdir() + "/processInput").exists())
 			{
-				clonedProcess.log("debug", "copying directory of rootStep: source="+this.getRootdir() + "/processInput, target="+clonedProcess.getRootdir() + "/processInput");
+				System.err.println("debug: copying processInput: source="+this.getRootdir()+"/processInput , target="+clonedProcess.getRootdir() + "/processInput");
+				clonedProcess.log("debug", "copying processInput: source="+this.getRootdir()+"/processInput , target="+clonedProcess.getRootdir() + "/processInput");
 				FileUtils.copyDirectory(new java.io.File(this.getRootdir() + "/processInput"), new java.io.File(clonedProcess.getRootdir() + "/processInput"), true);
 			}
 			
 			// kopieren des OutputDirs des RootSteps
 			if(new java.io.File(this.getRootdir() + "/processOutput").exists())
 			{
-				clonedProcess.log("debug", "copying directory of rootStep: source="+this.getRootdir() + "/processOutput, target="+clonedProcess.getRootdir() + "/processOutput");
+				System.err.println("debug: copying processOutput: source="+this.getRootdir()+"/processOutput , target="+clonedProcess.getRootdir() + "/processOutput");
+				clonedProcess.log("debug", "copying processOutput: source="+this.getRootdir()+"/processOutput , target="+clonedProcess.getRootdir() + "/processOutput");
 				FileUtils.copyDirectory(new java.io.File(this.getRootdir() + "/processOutput"), new java.io.File(clonedProcess.getRootdir() + "/processOutput"), true);
 			}
 			// kopieren aller Step-Directories, falls sie existieren (außer rootStep und SubprocessSteps)
@@ -283,7 +285,8 @@ implements Serializable
 				{
 					if(new java.io.File(actStep.getAbsdir()).exists())
 					{
-						clonedProcess.log("debug", "copying directory of a step "+actStep.getName() +": source="+actStep.getAbsdir() +", target="+clonedProcess.getStep(actStep.getName()).getAbsdir());
+						System.err.println("debug: copying stepDirectory "+actStep.getName() +": source="+actStep.getAbsdir() +", target="+clonedProcess.getStep(actStep.getName()).getAbsdir());
+						clonedProcess.log("debug", "copying stepDirectory "+actStep.getName() +": source="+actStep.getAbsdir() +", target="+clonedProcess.getStep(actStep.getName()).getAbsdir());
 						FileUtils.copyDirectory(new java.io.File(actStep.getAbsdir()), new java.io.File(clonedProcess.getStep(actStep.getName()).getAbsdir()), true);
 					}
 				}
