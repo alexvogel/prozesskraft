@@ -219,9 +219,9 @@ implements Serializable
 	{
 		// bisherigen process klonen
 		Process clonedProcess = this.clone();
-		System.err.println("cloning: original process id="+this.getId()+", clone process id="+clonedProcess.getId());
+		System.err.println("debug: cloned: original process id="+this.getId()+", clone process id="+clonedProcess.getId());
 		// kopieren der daten auf filesystem
-		clonedProcess.log("debug", "cloning: original process id="+this.getId()+", clone process id="+clonedProcess.getId());
+		clonedProcess.log("debug", "cloned: original process id="+this.getId()+", clone process id="+clonedProcess.getId());
 
 		// falls angegeben, soll das basedir auf einen bestimmten pfad geaendert werden
 		// falls null, dann bleibt es wie vom Vatter beim klonen erhalten
@@ -435,8 +435,8 @@ implements Serializable
 	{
 		boolean integrationErfolgreich = true;
 
-		this.log("info", "want to integrate step: " + step.getName());
-		System.err.println("info: want to integrate step: " + step.getName());
+		this.log("debug", "want to integrate step: " + step.getName());
+		System.err.println("debug: want to integrate step: " + step.getName());
 
 		// das alte datenverzeichnis feststellen
 		java.io.File sourceStepDir = new java.io.File(step.getAbsdir());
@@ -463,8 +463,8 @@ implements Serializable
 
 			// den namen fuer den zu integrierenden step setzen
 			step.setName(rumpf+"@"+zaehler);
-			this.log("info", "renaming step while integrating. new name is: " + step.getName());
-			System.err.println("info: renaming step while integrating. new name is: " + step.getName());
+			this.log("debug", "renaming step while integrating. new name is: " + step.getName());
+			System.err.println("debug: renaming step while integrating. new name is: " + step.getName());
 			
 			// den neuen step dem process hinzufuegen
 			this.addStep(step);
@@ -472,8 +472,8 @@ implements Serializable
 			// ein evtl. vorhandenes daten verzeichnis einkopieren
 			java.io.File destStepDir = new java.io.File(step.getAbsdir());
 
-			this.log("info", "info: source directory that will be processed: " + sourceStepDir.getAbsolutePath());
-			System.err.println("info: source directory that will be processed: " + sourceStepDir.getAbsolutePath());
+			this.log("info", "debug: source directory that will be processed: " + sourceStepDir.getAbsolutePath());
+			System.err.println("debug: source directory that will be processed: " + sourceStepDir.getAbsolutePath());
 			// gibt es ueberhaupt ein source directory?
 			if(sourceStepDir.exists() && sourceStepDir.isDirectory())
 			{
@@ -491,26 +491,27 @@ implements Serializable
 					// und den step clonen
 					if(step.getSubprocess() != null && step.getSubprocess().getProcess() != null)
 					{
-						this.log("info", "step contains a process -> this process will be cloned");
-						System.err.println("info: step contains a process -> this process will be cloned");
+						this.log("debug", "step contains a process -> this process will be cloned");
+						System.err.println("debug: step contains a process -> this process will be cloned");
 
 						// der Process innerhalb des Supprocesses muss neu eingelesen werden
 						// es koennte sein, dass Daten und Infilebinary-Pfad nicht mehr aktuell sind auf Grund vorangegangener klonierungen
 						Process subprozessOriginal = step.getSubprocess().getProcess();
 						subprozessOriginal.setInfilebinary(sourceStepDir + "/process.pmb");
 						subprozessOriginal.setOutfilebinary(sourceStepDir + "/process.pmb");
-						this.log("info", "original process of subprocess will be reread from here: " + sourceStepDir + "/process.pmb");
-						System.err.println("info: original process of subprocess will be reread from here: " + sourceStepDir + "/process.pmb");
-						subprozessOriginal.readBinary();
+						this.log("debug", "original process of subprocess will be reread from here: " + sourceStepDir + "/process.pmb");
+						System.err.println("debug: original process of subprocess will be reread from here: " + sourceStepDir + "/process.pmb");
+						subprozessOriginal = subprozessOriginal.readBinary();
 
 						// den gerade eingelesenen Prozess klonen
-						this.log("info", "original process of subprocess will be cloned into this basedir: " + destStepDir.getAbsolutePath());
-						System.err.println("info: original process of subprocess will be cloned into this basedir: " + destStepDir.getAbsolutePath());
-						Process subprozessClone = subprozessOriginal.cloneWithData(destStepDir.getAbsolutePath(), this.getParentid() + "M");
+						this.log("debug", "original process of subprocess will be cloned into this basedir: " + destStepDir.getAbsolutePath());
+						System.err.println("debug: original process of subprocess will be cloned into this basedir: " + destStepDir.getAbsolutePath());
+						System.err.println("debug: calling method cloneWithData(" + destStepDir.getAbsolutePath() + ", " + this.getParentid());
+						Process subprozessClone = subprozessOriginal.cloneWithData(destStepDir.getAbsolutePath(), this.getId());
 
 						// und das original schreiben, da generationszaehler veraendert wurden 
-						this.log("info", "original process of subprocess will be written, because of changed counters");
-						System.err.println("info: original process of subprocess will be written, because of changed counters");
+						this.log("debug", "original process of subprocess will be written, because of changed counters");
+						System.err.println("debug: original process of subprocess will be written, because of changed counters");
 						subprozessOriginal.writeBinary();
 
 //						Process gemergteSubprocess = step.getSubprocess().getProcess();
@@ -524,8 +525,8 @@ implements Serializable
 					else
 					{
 						// das alte bestehende stepdirectory in den neuen prozess (this) kopieren und dabei den neuen stepnamen beruecksichtigen
-						this.log("info", "copying data for step integration. " + sourceStepDir.getAbsolutePath() + " => " + destStepDir.getAbsolutePath());
-						System.err.println("info: copying data for step integration. " + sourceStepDir.getAbsolutePath() + " => " + destStepDir.getAbsolutePath());
+						this.log("debug", "copying data for step integration. " + sourceStepDir.getAbsolutePath() + " => " + destStepDir.getAbsolutePath());
+						System.err.println("debug: copying data for step integration. " + sourceStepDir.getAbsolutePath() + " => " + destStepDir.getAbsolutePath());
 						try
 						{
 							FileUtils.copyDirectory(sourceStepDir, destStepDir, true);
@@ -543,8 +544,8 @@ implements Serializable
 			}
 			else
 			{
-				this.log("info", "source step directory does not exist -> no data integration needed.");
-				System.err.println("info: source step directory does not exist -> no data integration needed.");
+				this.log("debug", "source step directory does not exist -> no data integration needed.");
+				System.err.println("debug: source step directory does not exist -> no data integration needed.");
 			}
 			
 		}
