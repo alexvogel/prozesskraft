@@ -1106,6 +1106,7 @@ implements Serializable
 		// das aktuelle xml-file in die jaxb-klassen einlesen
 		try
 		{
+			System.err.println("debug: reading xml from " + this.getInfilexml());
 			de.prozesskraft.jaxb.pkraft.Process xprocess = (de.prozesskraft.jaxb.pkraft.Process) um.unmarshal(new java.io.File(this.getInfilexml()));
 
 //			System.out.println("xprocess variable1 free = "+xprocess.getStep().get(0).getCommit().get(0).getVariable().get(0).isFree());
