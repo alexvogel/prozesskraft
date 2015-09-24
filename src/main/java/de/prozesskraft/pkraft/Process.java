@@ -471,20 +471,26 @@ implements Serializable
 					// und den step clonen
 					if(step.getSubprocess() != null && step.getSubprocess().getProcess() != null)
 					{
-						this.log("error", "step contains a process -> this process will be cloned");
-						System.err.println("error: step contains a process -> this process will be cloned");
+						this.log("info", "step contains a process -> this process will be cloned");
+						System.err.println("info: step contains a process -> this process will be cloned");
 
 						// der Process innerhalb des Supprocesses muss neu eingelesen werden
 						// es koennte sein, dass Daten und Infilebinary-Pfad nicht mehr aktuell sind auf Grund vorangegangener klonierungen
 						Process subprozessOriginal = step.getSubprocess().getProcess();
 						subprozessOriginal.setInfilebinary(step.getAbsdir() + "/process.pmb");
 						subprozessOriginal.setOutfilebinary(step.getAbsdir() + "/process.pmb");
+						this.log("info", "original process of subprocess will be reread from here: " + step.getAbsdir() + "/process.pmb");
+						System.err.println("info: original process of subprocess will be reread from here: " + step.getAbsdir() + "/process.pmb");
 						subprozessOriginal.readBinary();
 
 						// den gerade eingelesenen Prozess klonen
+						this.log("info", "original process of subprocess will be cloned");
+						System.err.println("info: original process of subprocess will be cloned");
 						Process subprozessClone = subprozessOriginal.cloneWithData(destStepDir.getAbsolutePath(), this.getParentid());
 
 						// und das original schreiben, da generationszaehler veraendert wurden 
+						this.log("info", "original process of subprocess will be written, because of changed counters");
+						System.err.println("info: original process of subprocess will be written, because of changed counters");
 						subprozessOriginal.writeBinary();
 						
 //						Process gemergteSubprocess = step.getSubprocess().getProcess();
