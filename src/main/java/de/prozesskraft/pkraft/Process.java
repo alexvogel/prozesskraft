@@ -228,15 +228,21 @@ implements Serializable
 		}
 		else
 		{
-			System.err.println("copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
+			// bleibt beim gleichen basedir wie im original
+		}
+
+		System.err.println("copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
 		// kopieren der daten auf filesystem
 		clonedProcess.log("info", "copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir() + " without directories of subprocesses");
-		}
 		
 		// falls eine parentId uebergeben wurde soll diese im clonedProcess als parentId gesetzt werden
 		if(parentId != null)
 		{
 			clonedProcess.setParentid(parentId);
+		}
+		else
+		{
+			clonedProcess.setParentid("0");
 		}
 
 		// erstellen des zielverzeichnisses (rootDir des clonedProcesses)
@@ -488,13 +494,13 @@ implements Serializable
 						// den gerade eingelesenen Prozess klonen
 						this.log("info", "original process of subprocess will be cloned into this basedir: " + destStepDir.getAbsolutePath());
 						System.err.println("info: original process of subprocess will be cloned into this basedir: " + destStepDir.getAbsolutePath());
-						Process subprozessClone = subprozessOriginal.cloneWithData(destStepDir.getAbsolutePath(), this.getParentid());
+						Process subprozessClone = subprozessOriginal.cloneWithData(destStepDir.getAbsolutePath(), this.getParentid() + "M");
 
 						// und das original schreiben, da generationszaehler veraendert wurden 
 						this.log("info", "original process of subprocess will be written, because of changed counters");
 						System.err.println("info: original process of subprocess will be written, because of changed counters");
 						subprozessOriginal.writeBinary();
-						
+
 //						Process gemergteSubprocess = step.getSubprocess().getProcess();
 //						gemergteSubprocess.setInfilebinary(destStepDir + "/process.pmb");
 //						gemergteSubprocess.setOutfilebinary(destStepDir + "/process.pmb");
