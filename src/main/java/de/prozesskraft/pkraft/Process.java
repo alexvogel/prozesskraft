@@ -484,8 +484,8 @@ implements Serializable
 						subprozessOriginal.readBinary();
 
 						// den gerade eingelesenen Prozess klonen
-						this.log("info", "original process of subprocess will be cloned");
-						System.err.println("info: original process of subprocess will be cloned");
+						this.log("info", "original process of subprocess will be cloned into this basedir: " + destStepDir.getAbsolutePath());
+						System.err.println("info: original process of subprocess will be cloned into this basedir: " + destStepDir.getAbsolutePath());
 						Process subprozessClone = subprozessOriginal.cloneWithData(destStepDir.getAbsolutePath(), this.getParentid());
 
 						// und das original schreiben, da generationszaehler veraendert wurden 
