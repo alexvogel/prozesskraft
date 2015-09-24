@@ -477,10 +477,10 @@ implements Serializable
 						// der Process innerhalb des Supprocesses muss neu eingelesen werden
 						// es koennte sein, dass Daten und Infilebinary-Pfad nicht mehr aktuell sind auf Grund vorangegangener klonierungen
 						Process subprozessOriginal = step.getSubprocess().getProcess();
-						subprozessOriginal.setInfilebinary(step.getAbsdir() + "/process.pmb");
-						subprozessOriginal.setOutfilebinary(step.getAbsdir() + "/process.pmb");
-						this.log("info", "original process of subprocess will be reread from here: " + step.getAbsdir() + "/process.pmb");
-						System.err.println("info: original process of subprocess will be reread from here: " + step.getAbsdir() + "/process.pmb");
+						subprozessOriginal.setInfilebinary(sourceStepDir + "/process.pmb");
+						subprozessOriginal.setOutfilebinary(sourceStepDir + "/process.pmb");
+						this.log("info", "original process of subprocess will be reread from here: " + sourceStepDir + "/process.pmb");
+						System.err.println("info: original process of subprocess will be reread from here: " + sourceStepDir + "/process.pmb");
 						subprozessOriginal.readBinary();
 
 						// den gerade eingelesenen Prozess klonen
