@@ -226,11 +226,13 @@ implements Serializable
 		{
 			clonedProcess.setBaseDir(baseDir);
 		}
-		System.err.println("copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
-
+		else
+		{
+			System.err.println("copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir());
 		// kopieren der daten auf filesystem
 		clonedProcess.log("info", "copying directory tree: source="+this.getRootdir()+", target="+clonedProcess.getRootdir() + " without directories of subprocesses");
-
+		}
+		
 		// falls eine parentId uebergeben wurde soll diese im clonedProcess als parentId gesetzt werden
 		if(parentId != null)
 		{
