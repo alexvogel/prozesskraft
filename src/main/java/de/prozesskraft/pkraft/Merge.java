@@ -248,8 +248,8 @@ public class Merge
 		
 		// den main-prozess ueber die static function klonen
 		// das anmelden bei pradar erfolgt erst ganz zum schluss, denn beim clonen werden nachfolgende steps resettet, die zu diesem zeitpunkt noch intakt sind
-		Process clonedProcess = cloneProcess(process, null);
 		System.exit(0);
+		Process clonedProcess = cloneProcess(process, null);
 
 		// alle steps durchgehen und falls subprocesses existieren auch fuer diese ein cloning durchfuehren
 		for(Step actStep : process.getStep())
