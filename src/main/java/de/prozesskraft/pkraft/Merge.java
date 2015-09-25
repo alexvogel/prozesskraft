@@ -215,7 +215,7 @@ public class Merge
 		p1.setInfilebinary(pathToInstance);
 		p1.setOutfilebinary(pathToInstance);
 		Process p2 = p1.readBinary();
-
+System.exit(0);
 		// alle guests einlesen
 		ArrayList<Process> alleGuests = new ArrayList<Process>();
 		for(String actPathGuest : pathToGuest)
@@ -338,7 +338,7 @@ public class Merge
 		
 		// speichern der ergebnis instanz
 		clonedProcess.writeBinary();
-		
+
 		// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
 		String call2 = ini.get("apps", "pradar-attend") + " -instance " + clonedProcess.getRootdir() + "/process.pmb"; 
 		System.err.println("info: calling: "+call2);
