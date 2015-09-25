@@ -247,6 +247,7 @@ public class Merge
 		Process process = p3.readBinary();
 		
 		// den main-prozess ueber die static function klonen
+		// das anmelden bei pradar erfolgt erst ganz zum schluss, denn beim clonen werden nachfolgende steps resettet, die zu diesem zeitpunkt noch intakt sind
 		Process clonedProcess = cloneProcess(process, null);
 
 		// alle steps durchgehen und falls subprocesses existieren auch fuer diese ein cloning durchfuehren
@@ -260,7 +261,19 @@ public class Merge
 //				System.err.println("info: reading process freshly from file: " + actStep.getAbsdir() + "/process.pmb");
 				if(processInSubprocess != null)
 				{
-					cloneProcess(processInSubprocess, clonedProcess);
+					Process clonedSubprocess = cloneProcess(processInSubprocess, clonedProcess);
+					// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
+					String call2 = ini.get("apps", "pradar-attend") + " -instance " + clonedSubprocess.getRootdir() + "/process.pmb"; 
+					System.err.println("info: calling: "+call2);
+
+					try
+					{
+						java.lang.Process sysproc = Runtime.getRuntime().exec(call2);
+					}
+					catch (IOException e)
+					{
+						System.err.println("error: " + e.getMessage());
+					}
 				}
 			}
 		}
@@ -322,9 +335,23 @@ public class Merge
 		{
 			actStep.resetBecauseOfDependency();
 		}
-
+		
 		// speichern der ergebnis instanz
 		clonedProcess.writeBinary();
+		
+		// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
+		String call2 = ini.get("apps", "pradar-attend") + " -instance " + clonedProcess.getRootdir() + "/process.pmb"; 
+		System.err.println("info: calling: "+call2);
+
+		try
+		{
+			java.lang.Process sysproc = Runtime.getRuntime().exec(call2);
+		}
+		catch (IOException e)
+		{
+			System.err.println("error: " + e.getMessage());
+		}
+
 	}
 	
 	private static void exiter()
@@ -363,19 +390,6 @@ public class Merge
 		process.setOutfilebinary(process.getInfilebinary());
 		process.writeBinary();
 
-		// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
-		String call2 = ini.get("apps", "pradar-attend") + " -instance " + clone.getRootdir() + "/process.pmb"; 
-		System.err.println("info: calling: "+call2);
-
-		try
-		{
-			java.lang.Process sysproc = Runtime.getRuntime().exec(call2);
-		}
-		catch (IOException e)
-		{
-			System.err.println("error: " + e.getMessage());
-		}
-		
 		// rueckgabe der id. kann beim klonen von childprozessen verwendet werden
 		return clone;
 	}
