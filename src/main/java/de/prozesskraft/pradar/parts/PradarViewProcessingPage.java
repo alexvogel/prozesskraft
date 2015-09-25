@@ -300,15 +300,18 @@ public class PradarViewProcessingPage extends PApplet
 		// legende schreiben
 		legend();
 		
-		// ueber alle ProcessingEntities (parents und children) die angezeigt werden sollen iterieren und die visualisierung zeichnen
-
+		// ueber alle ProcessingEntities (nur parents) die angezeigt werden sollen iterieren und die visualisierung zeichnen
 //		System.out.println("Anzahl der Entities : "+this.parent.entities_filtered.size());
 //		System.out.println("Anzahl der Pentities: "+this.pentities_filtered.size());
+		
 		try
 		{
 			for (PradarViewProcessingEntity actualPentity : pentities_filtered)
 			{
-				if (this.parent.getEntityBySuperId(actualPentity.getSuperid()) == null) {break;}
+				if ( actualPentity.getPentity_parent() != null || this.parent.getEntityBySuperId(actualPentity.getSuperid()) == null)
+				{
+					break;
+				}
 				actualPentity.calcNewBogenlaenge();
 				actualPentity.calcPosition();
 				actualPentity.draw();

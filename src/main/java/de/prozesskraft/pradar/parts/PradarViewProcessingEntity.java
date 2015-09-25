@@ -629,6 +629,20 @@ public class PradarViewProcessingEntity
 	{
 		this.fixPosition = fixPosition;
 	}
+
+	/**
+	 * @return the pentity_parent
+	 */
+	public PradarViewProcessingEntity getPentity_parent() {
+		return pentity_parent;
+	}
+
+	/**
+	 * @param pentity_parent the pentity_parent to set
+	 */
+	public void setPentity_parent(PradarViewProcessingEntity pentity_parent) {
+		this.pentity_parent = pentity_parent;
+	}
 	
 
 	

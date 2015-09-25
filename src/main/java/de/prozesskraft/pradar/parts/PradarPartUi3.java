@@ -438,7 +438,7 @@ public class PradarPartUi3 extends ModelObject
 		// ein tabItem fuer radar mit eingebetteten composite erzeugen
 		tabItem_radar = new CTabItem(tabFolder_12, SWT.NONE);
 		tabItem_radar.setText("radar");
-										
+
 		composite_tabItem_radar = new Composite(tabFolder_12, SWT.NO_BACKGROUND | SWT.EMBEDDED);
 		composite_tabItem_radar.setLayout(new GridLayout(1, false));
 		GridData gd_composite_radar = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
@@ -446,7 +446,7 @@ public class PradarPartUi3 extends ModelObject
 		gd_composite_radar.minimumWidth = 10;
 		gd_composite_radar.minimumHeight = 10;
 		composite_tabItem_radar.setLayoutData(gd_composite_radar);
-												
+
 		tabItem_radar.setControl(composite_tabItem_radar);
 		// radar einbinden
 		frame_radar = SWT_AWT.new_Frame(composite_tabItem_radar);
@@ -454,7 +454,7 @@ public class PradarPartUi3 extends ModelObject
 		// ein tabItem fuer tree mit eingebetteten composite erzeugen
 		tabItem_tree = new CTabItem(tabFolder_12, SWT.NONE);
 		tabItem_tree.setText("tree");
-		
+
 		composite_tabItem_tree = new Composite(tabFolder_12, SWT.NONE);
 		composite_tabItem_tree.setLayout(new GridLayout(1, false));
 		GridData gd_composite_tree = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
@@ -465,34 +465,36 @@ public class PradarPartUi3 extends ModelObject
 
 		tabItem_tree.setControl(composite_tabItem_tree);
 		tree = new PradarViewTreePage(this.composite_tabItem_tree, this);
-		
+
 		Composite composite_2 = new Composite(composite, SWT.NONE);
 		composite_2.setLayout(new GridLayout(1, false));
 		GridData gd_composite_2 = new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1);
 		gd_composite_2.heightHint = 164;
 		composite_2.setLayoutData(gd_composite_2);
-		
+
 		text_logging = new StyledText(composite_2, SWT.BORDER | SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
 		text_logging.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
+
 		// Datenbindung der Filter
 		bindingContextFilter = initDataBindingsFilter();
 		bindingContextZoom = initDataBindingsZoom();
-		
+
 		// Datenbindung Processes-Combo
 		initDataBindingsComboItems();
 
 		// select combo_user to 'aktueller user'
 		combo_users.setText(System.getProperty("user.name"));
-		
+
 		// tree einbinden
 		composite_tabItem_tree.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		Label testlab = new Label(composite_tabItem_tree, SWT.NONE);
 
 		frame_radar.add(applet, BorderLayout.CENTER);
 		applet.init();
+
 		frame_radar.pack();
 		frame_radar.setLocation(0, 0);
+
 		updateUserInterface(einstellungen);
 		updateUserInterfaceProcessing(einstellungen);
 		applet_paint_with_new_filter();
