@@ -231,7 +231,7 @@ public class SIInsightCreator
 		buttonKill.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonKill.setToolTipText("kill the program that has been started by this step");
 		buttonKill.addSelectionListener(listener_button_kill);
-		if(step.isRoot()) {buttonKill.setEnabled(false);}
+		if(step.isRoot() || step.getSubprocess() != null) {buttonKill.setEnabled(false);}
 		else {buttonKill.setEnabled(true);}
 
 		Label labelDummy2 = new Label(compositeAction, SWT.NONE);
