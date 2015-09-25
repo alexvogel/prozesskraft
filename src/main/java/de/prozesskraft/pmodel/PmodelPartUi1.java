@@ -682,7 +682,17 @@ public class PmodelPartUi1 extends ModelObject
 		stepInsight = new HashMap();
 		this.actualStepInsight = null;
 		createControlsStepInsight(composite_132);
-		sIInsightCreator.tabFolder.setSelection(indexTabItemSelected);
+		
+		// wenn der step noch existiert (z.B. wurde ein multistep in der zwischenzeit gefanned, dann ist der urspruenglich evtl. markierte step nicht mehr vorhanden)
+		try
+		{
+			sIInsightCreator.tabFolder.setSelection(indexTabItemSelected);
+		}
+		catch (NullPointerException e)
+		{
+			System.err.println("error: step disappered.");
+			System.err.println(e.getMessage());
+		}
 		
 		// die processing darstellung refreshen
 		applet_refresh();
