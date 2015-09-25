@@ -215,7 +215,7 @@ public class Merge
 		p1.setInfilebinary(pathToInstance);
 		p1.setOutfilebinary(pathToInstance);
 		Process p2 = p1.readBinary();
-System.exit(0);
+
 		// alle guests einlesen
 		ArrayList<Process> alleGuests = new ArrayList<Process>();
 		for(String actPathGuest : pathToGuest)
@@ -249,6 +249,7 @@ System.exit(0);
 		// den main-prozess ueber die static function klonen
 		// das anmelden bei pradar erfolgt erst ganz zum schluss, denn beim clonen werden nachfolgende steps resettet, die zu diesem zeitpunkt noch intakt sind
 		Process clonedProcess = cloneProcess(process, null);
+		System.exit(0);
 
 		// alle steps durchgehen und falls subprocesses existieren auch fuer diese ein cloning durchfuehren
 		for(Step actStep : process.getStep())
