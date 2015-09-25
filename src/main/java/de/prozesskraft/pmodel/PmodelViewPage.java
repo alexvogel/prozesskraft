@@ -362,7 +362,18 @@ public class PmodelViewPage extends PApplet
 				{
 					cleanedStepcircles.add(actualStepcircle);
 				}
+				else
+				{
+					// sind der markierte stepcircle in den cleanedStepcircles nicht mehr vorhanden, soll die markierung auf null gesetzt werden
+					if(this.stepcircle_marked.equals(actualStepcircle))
+					{
+						this.stepcircle_marked = null;
+					}
+				}
 			}
+			
+
+			
 			this.stepcircles = cleanedStepcircles;
 		}
 		catch(Exception e)
