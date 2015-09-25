@@ -2551,12 +2551,20 @@ implements Serializable
 
 	public boolean makeRootdir()
 	{
-		java.io.File dir = new java.io.File(this.getRootdir());
-		if (!(dir.exists()))
+		// wenn der prozess noch keinen namen hat, dann soll kein rootDir angelegt werden
+		if(this.getName().equals("unnamed"))
 		{
-			dir.mkdirs();
+			return false;
 		}
-		return true;
+		else
+		{
+			java.io.File dir = new java.io.File(this.getRootdir());
+			if (!(dir.exists()))
+			{
+				dir.mkdirs();
+			}
+			return true;
+		}
 	}
 
 	public void setManagerid(double managerid)
