@@ -671,9 +671,6 @@ public class PmodelPartUi1 extends ModelObject
 		processInsight = null;
 		createControlsProcessInsight(composite_131);
 
-		// feststellen welche karteikarte im aktuellen step markiert ist
-		int indexTabItemSelected = sIInsightCreator.tabFolder.getSelectionIndex();
-		
 		// die stepdarstellungen disposen und den aktuellen neu erstellen lassen
 		for(Composite actualStepInsight : stepInsight.values())
 		{
@@ -686,6 +683,9 @@ public class PmodelPartUi1 extends ModelObject
 		// wenn der step noch existiert (z.B. wurde ein multistep in der zwischenzeit gefanned, dann ist der urspruenglich evtl. markierte step nicht mehr vorhanden)
 		try
 		{
+			// feststellen welche karteikarte im aktuellen step markiert ist
+			int indexTabItemSelected = sIInsightCreator.tabFolder.getSelectionIndex();
+			// und die gleiche karteikarte selektieren
 			sIInsightCreator.tabFolder.setSelection(indexTabItemSelected);
 		}
 		catch (NullPointerException e)
