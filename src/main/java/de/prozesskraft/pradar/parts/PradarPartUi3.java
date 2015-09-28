@@ -1001,6 +1001,24 @@ public class PradarPartUi3 extends ModelObject
 							return;
 						}
 					}
+					
+					java.io.File fileResource = new java.io.File(actEntity.getResource());
+					// testen .. dass die daten existieren
+					if(!fileResource.exists())
+					{
+						log("error", "resource does not exist: "+fileResource.getAbsolutePath());
+						return;
+					}
+					else if(!fileResource.isFile())
+					{
+						log("error", "resource is not a file: "+fileResource.getAbsolutePath());
+						return;
+					}
+					else if(!fileResource.canRead())
+					{
+						log("error", "cannot read resource: "+fileResource.getAbsolutePath());
+						return;
+					}
 				}
 
 				// bestaetigungsdialog
@@ -1025,70 +1043,46 @@ public class PradarPartUi3 extends ModelObject
 				if (returnCode == 32)
 				{
 					// creating and setting a busy cursor
-					shell.setCursor(new Cursor(display, SWT.CURSOR_WAIT));
+					shell.setCursor(new Cursor(event.display, SWT.CURSOR_WAIT));
 
+					// alle selectionen durcharbeiten und sicherstellen...
+					Process cloneOfFirstInstance = null;
+					
 					// alle dependent steps der zielinstanz einsammeln
 					// dies wird zum resetten benoetigt, damit steps nicht doppelt resettet werden
 					Map<Step,String> dependentSteps = new HashMap<Step,String>();
 
-					// alle selectionen durcharbeiten
-					Process cloneOfFirstInstance = null;
+					// den main-prozess einlesen um subprozesse extrahieren zu koennen (obwohl das cloning weiter unten stattfindet)
+					Process p3 = new Process();
+					p3.setInfilebinary(einstellungen.entitiesSelected.get(0).getResource());
+					Process baseProcess = p3.readBinary();
+
 					for(Entity actEntity : einstellungen.entitiesSelected)
 					{
-						java.io.File fileResource = new java.io.File(actEntity.getResource());
-						
-						if(!fileResource.exists())
-						{
-							log("error", "resource does not exist: "+fileResource.getAbsolutePath());
-						}
-						else if(!fileResource.isFile())
-						{
-							log("error", "resource is not a file: "+fileResource.getAbsolutePath());
-						}
-						else if(!fileResource.canRead())
-						{
-							log("error", "cannot read resource: "+fileResource.getAbsolutePath());
-						}
-
-						// die instanz der ersten selection vollstaendig klonen
+						// die instanz der ersten selection vollstaendig klonen (baseProcess)
 						if(cloneOfFirstInstance == null)
 						{
 							log("info", "cloning first selected instance as base instance");
 
-							Process p1 = new Process();
-							p1.setInfilebinary(einstellungen.entitySelected.getResource());
-							Process process = p1.readBinary();
-							
-							cloneOfFirstInstance = cloneProcess(process, null);
-
-							// falls children vorhanden, sollen diese auch geklont werden
-							for(Entity possibleChild : entities_filtered)
-							{
-								// ist es ein child?
-								if(possibleChild.getParentid().equals(einstellungen.entitySelected.getId()))
-								{
-									// Process Object einlesen und clonen
-									Process processChild1 = new Process();
-									processChild1.setInfilebinary(possibleChild.getResource());
-									Process processChild = processChild1.readBinary();
-									cloneProcess(processChild, cloneOfFirstInstance);
-								}
-							}
+							// clone ausfuehren fuer die erste selection der zu mergenden entities
+							execute_clone(actEntity);
 						}
 						// die instanzen aller anderen selektionen sollen in die instanz der ersten selektion gemergt werden
 						else
 						{
+							System.err.println("info: merging guest process " + actEntity.getResource());
+							
 							Process p1 = new Process();
-							p1.setInfilebinary(einstellungen.entitySelected.getResource());
-							Process process = p1.readBinary();
+							p1.setInfilebinary(actEntity.getResource());
+							Process actGuestProcess = p1.readBinary();
 
 							// merge durchfuehren
 							// alle fanned steps (ehemalige multisteps) des zu mergenden prozesses in die fanned multisteps des bestehenden prozesses integrieren
-							for(Step actStep : process.getStep())
+							for(Step actStep : actGuestProcess.getStep())
 							{
 								if(actStep.isAFannedMultistep())
 								{
-									log("info", "merging into base instance the step " + actStep.getName() + " from instance " + process.getInfilebinary());
+									log("info", "merging into base instance the step " + actStep.getName() + " from guest instance " + actGuestProcess.getInfilebinary());
 									if(cloneOfFirstInstance.integrateStep(actStep))
 									{
 										log("info", "merging step successfully.");
@@ -1097,6 +1091,23 @@ public class PradarPartUi3 extends ModelObject
 										{
 											dependentSteps.put(actStepToResetBecauseOfDependency, "dummy");
 										}
+										
+										// der step einen subprocess enthaelt muss der subprocess nach der integration bei pradar gemeldet werden
+										// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
+										if(actStep.getSubprocess() != null && actStep.getSubprocess().getProcess() != null)
+										{
+											String call5 = ini.get("apps", "pradar-attend") + " -instance " + actStep.getAbsdir() + "/process.pmb"; 
+											System.err.println("info: calling: "+call5);
+											try
+											{
+												java.lang.Process sysproc = Runtime.getRuntime().exec(call5);
+											}
+											catch (IOException e)
+											{
+												System.err.println("error: " + e.getMessage());
+											}
+										}
+										
 									}
 									else
 									{
@@ -1108,11 +1119,9 @@ public class PradarPartUi3 extends ModelObject
 									System.err.println("debug: because it's not a multistep, ignoring from external instance step " + actStep.getName());
 								}
 							}
-							
 						}
-						
 					}
-					
+
 					// alle steps downstream der merge-positionen resetten
 					for(Step actStep : dependentSteps.keySet())
 					{
@@ -1121,6 +1130,10 @@ public class PradarPartUi3 extends ModelObject
 
 					// speichern der ergebnis instanz
 					cloneOfFirstInstance.writeBinary();
+
+					// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
+					String call2 = ini.get("apps", "pradar-attend") + " -instance " + cloneOfFirstInstance.getRootdir() + "/process.pmb"; 
+					System.err.println("info: calling: "+call2);
 
 				}
 			}
