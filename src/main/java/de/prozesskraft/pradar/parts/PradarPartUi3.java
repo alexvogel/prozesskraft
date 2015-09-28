@@ -1145,6 +1145,7 @@ public class PradarPartUi3 extends ModelObject
 					}
 
 					// speichern der ergebnis instanz
+					cloneOfBaseInstance.setOutfilebinary(cloneOfBaseInstance.getRootdir() + "/process.pmb");
 					cloneOfBaseInstance.writeBinary();
 
 					// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
