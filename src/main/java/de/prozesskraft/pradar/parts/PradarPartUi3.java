@@ -1072,7 +1072,7 @@ public class PradarPartUi3 extends ModelObject
 						// die instanz der ersten selection vollstaendig klonen (baseProcess)
 						if(cloneOfBaseInstance == null)
 						{
-							log("info", "cloning first selected instance as base instance");
+							log("info", "cloning first selected instance as base instance: " + actEntity.getResource());
 
 							// clone ausfuehren fuer die erste selection der zu mergenden entities
 							String pathToResourceOfClone = execute_clone(actEntity);
