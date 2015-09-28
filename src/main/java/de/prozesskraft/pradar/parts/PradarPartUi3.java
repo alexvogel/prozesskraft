@@ -1076,7 +1076,7 @@ public class PradarPartUi3 extends ModelObject
 
 							// clone ausfuehren fuer die erste selection der zu mergenden entities
 							String pathToResourceOfClone = execute_clone(actEntity);
-							
+
 							Process p33 = new Process();
 							p33.setInfilebinary(pathToResourceOfClone);
 							cloneOfBaseInstance = p33.readBinary();
@@ -1084,8 +1084,8 @@ public class PradarPartUi3 extends ModelObject
 						// die instanzen aller anderen selektionen sollen in die instanz der ersten selektion gemergt werden
 						else
 						{
-							System.err.println("info: merging guest process " + actEntity.getResource());
-							
+							log("info", "merging guest process " + actEntity.getResource());
+
 							Process p1 = new Process();
 							p1.setInfilebinary(actEntity.getResource());
 							Process actGuestProcess = p1.readBinary();
@@ -1105,7 +1105,7 @@ public class PradarPartUi3 extends ModelObject
 										{
 											dependentSteps.put(actStepToResetBecauseOfDependency, "dummy");
 										}
-										
+
 										// der step einen subprocess enthaelt muss der subprocess nach der integration bei pradar gemeldet werden
 										// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
 										if(actStep.getSubprocess() != null && actStep.getSubprocess().getProcess() != null)
@@ -1119,6 +1119,7 @@ public class PradarPartUi3 extends ModelObject
 											catch (IOException e)
 											{
 												System.err.println("error: " + e.getMessage());
+												log("error", e.getMessage());
 											}
 										}
 										
@@ -1147,7 +1148,7 @@ public class PradarPartUi3 extends ModelObject
 
 					// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
 					String call2 = ini.get("apps", "pradar-attend") + " -instance " + cloneOfBaseInstance.getRootdir() + "/process.pmb"; 
-					System.err.println("info: calling: "+call2);
+					log("info", "calling: "+call2);
 
 				}
 			}
