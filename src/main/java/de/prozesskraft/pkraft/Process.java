@@ -193,6 +193,8 @@ implements Serializable
 		clone.setTimeOfProcessCreated(this.getTimeOfProcessCreated());
 		clone.setTimeOfProcessFinishedOrError(this.getTimeOfProcessFinishedOrError());
 
+		// zum clonen der steps wird this uebergeben: dies stellt sicher, dass beim nachfolgenden klonen der files bereits der prozess bekannt ist und
+		// die files in das richtige verzeichnis kopiert werden
 		for(Step actStep : this.getStep())
 		{
 			clone.addStep(actStep.clone());

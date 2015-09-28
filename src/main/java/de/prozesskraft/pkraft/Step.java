@@ -123,6 +123,7 @@ implements Serializable, Cloneable
 	public Step clone()
 	{
 		Step newStep = new Step();
+		newStep.setParent(this.getParent());
 		newStep.setName(this.getName());
 		newStep.setClip(this.getClip());
 		newStep.setType(this.getType());
