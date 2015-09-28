@@ -2265,7 +2265,8 @@ public class PradarPartUi3 extends ModelObject
 					}
 					
 					shell.setLayout(new FillLayout());
-					shell.setSize(1500, 1000);
+//					shell.setSize(1500, 1000);
+					shell.setMaximized(true);
 					Composite composite = new Composite(shell, SWT.NO_FOCUS);
 					GridLayout gl_composite = new GridLayout(2, false);
 					gl_composite.marginWidth = 0;
