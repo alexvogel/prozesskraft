@@ -874,7 +874,7 @@ public class PradarPartUi3 extends ModelObject
 		else
 		{
 			Process p1 = new Process();
-			p1.setInfilebinary(einstellungen.entitySelected.getResource());
+			p1.setInfilebinary(entity.getResource());
 			Process process = p1.readBinary();
 			
 			Process clone = this.cloneProcess(process, null);
@@ -883,7 +883,7 @@ public class PradarPartUi3 extends ModelObject
 			for(Entity possibleChild : entities_filtered)
 			{
 				// ist es ein child?
-				if(possibleChild.getParentid().equals(einstellungen.entitySelected.getId()))
+				if(possibleChild.getParentid().equals(entity.getId()))
 				{
 					// Process Object einlesen und clonen
 					Process processChild1 = new Process();
@@ -1080,6 +1080,7 @@ public class PradarPartUi3 extends ModelObject
 							Process p33 = new Process();
 							p33.setInfilebinary(pathToResourceOfClone);
 							cloneOfBaseInstance = p33.readBinary();
+							log("info", "clone of first base instance: " + pathToResourceOfClone );
 						}
 						// die instanzen aller anderen selektionen sollen in die instanz der ersten selektion gemergt werden
 						else
