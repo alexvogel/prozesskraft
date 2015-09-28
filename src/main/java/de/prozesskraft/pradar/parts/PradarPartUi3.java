@@ -893,7 +893,7 @@ public class PradarPartUi3 extends ModelObject
 				}
 			}
 			
-			return clone.getInfilebinary();
+			return clone.getRootdir() + "/process.pmb";
 		}
 		
 		return null;
@@ -1072,7 +1072,7 @@ public class PradarPartUi3 extends ModelObject
 						// die instanz der ersten selection vollstaendig klonen (baseProcess)
 						if(cloneOfBaseInstance == null)
 						{
-							log("info", "cloning first selected instance as base instance: " + actEntity.getResource());
+							log("info", "start cloning first selected instance as base instance: " + actEntity.getResource());
 
 							// clone ausfuehren fuer die erste selection der zu mergenden entities
 							String pathToResourceOfClone = execute_clone(actEntity);
@@ -1080,7 +1080,7 @@ public class PradarPartUi3 extends ModelObject
 							Process p33 = new Process();
 							p33.setInfilebinary(pathToResourceOfClone);
 							cloneOfBaseInstance = p33.readBinary();
-							log("info", "clone of first base instance: " + pathToResourceOfClone );
+							log("info", "end cloning first selected instance as base instance: " + pathToResourceOfClone );
 						}
 						// die instanzen aller anderen selektionen sollen in die instanz der ersten selektion gemergt werden
 						else
