@@ -1152,6 +1152,14 @@ public class PradarPartUi3 extends ModelObject
 					String call2 = ini.get("apps", "pradar-attend") + " -instance " + cloneOfBaseInstance.getRootdir() + "/process.pmb"; 
 					log("info", "calling: "+call2);
 
+					try
+					{
+						java.lang.Process sysproc = Runtime.getRuntime().exec(call2);
+					}
+					catch (IOException e)
+					{
+						log("error", e.getMessage());
+					}
 				}
 			}
 			
