@@ -846,7 +846,13 @@ public class PradarPartUi3 extends ModelObject
 		}
 	};	
 
-	public void execute_clone(Entity entity)
+	/**
+	 * klont einen Prozess
+	 * 
+	 * @param entity
+	 * @return String pathToResourceOfClone
+	 */
+	public String execute_clone(Entity entity)
 	{
 		log("info", "cloning process");
 
@@ -886,7 +892,11 @@ public class PradarPartUi3 extends ModelObject
 					this.cloneProcess(processChild, clone);
 				}
 			}
+			
+			return clone.getInfilebinary();
 		}
+		
+		return null;
 	}
 	
 	/**
@@ -1046,7 +1056,7 @@ public class PradarPartUi3 extends ModelObject
 					shell.setCursor(new Cursor(event.display, SWT.CURSOR_WAIT));
 
 					// alle selectionen durcharbeiten und sicherstellen...
-					Process cloneOfFirstInstance = null;
+					Process cloneOfBaseInstance = null;
 					
 					// alle dependent steps der zielinstanz einsammeln
 					// dies wird zum resetten benoetigt, damit steps nicht doppelt resettet werden
@@ -1060,12 +1070,16 @@ public class PradarPartUi3 extends ModelObject
 					for(Entity actEntity : einstellungen.entitiesSelected)
 					{
 						// die instanz der ersten selection vollstaendig klonen (baseProcess)
-						if(cloneOfFirstInstance == null)
+						if(cloneOfBaseInstance == null)
 						{
 							log("info", "cloning first selected instance as base instance");
 
 							// clone ausfuehren fuer die erste selection der zu mergenden entities
-							execute_clone(actEntity);
+							String pathToResourceOfClone = execute_clone(actEntity);
+							
+							Process p33 = new Process();
+							p33.setInfilebinary(pathToResourceOfClone);
+							cloneOfBaseInstance = p33.readBinary();
 						}
 						// die instanzen aller anderen selektionen sollen in die instanz der ersten selektion gemergt werden
 						else
@@ -1083,11 +1097,11 @@ public class PradarPartUi3 extends ModelObject
 								if(actStep.isAFannedMultistep())
 								{
 									log("info", "merging into base instance the step " + actStep.getName() + " from guest instance " + actGuestProcess.getInfilebinary());
-									if(cloneOfFirstInstance.integrateStep(actStep))
+									if(cloneOfBaseInstance.integrateStep(actStep))
 									{
 										log("info", "merging step successfully.");
 										// die downstream steps vom merge-punkt merken
-										for(Step actStepToResetBecauseOfDependency : cloneOfFirstInstance.getStepDependent(actStep.getName()))
+										for(Step actStepToResetBecauseOfDependency : cloneOfBaseInstance.getStepDependent(actStep.getName()))
 										{
 											dependentSteps.put(actStepToResetBecauseOfDependency, "dummy");
 										}
@@ -1129,10 +1143,10 @@ public class PradarPartUi3 extends ModelObject
 					}
 
 					// speichern der ergebnis instanz
-					cloneOfFirstInstance.writeBinary();
+					cloneOfBaseInstance.writeBinary();
 
 					// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
-					String call2 = ini.get("apps", "pradar-attend") + " -instance " + cloneOfFirstInstance.getRootdir() + "/process.pmb"; 
+					String call2 = ini.get("apps", "pradar-attend") + " -instance " + cloneOfBaseInstance.getRootdir() + "/process.pmb"; 
 					System.err.println("info: calling: "+call2);
 
 				}
