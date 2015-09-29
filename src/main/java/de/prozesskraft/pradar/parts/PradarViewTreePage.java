@@ -388,7 +388,7 @@ public class PradarViewTreePage
 					}
 					else
 					{
-						if (entity.getExitcode().equals("0"))
+						if (entity.getExitcode().equals("0") || entity.getExitcode().equals(""))
 						{
 							img_ampelmaennchen = img_ampel_steh_gruen;
 						}
