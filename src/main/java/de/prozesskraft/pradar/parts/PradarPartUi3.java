@@ -112,6 +112,8 @@ public class PradarPartUi3 extends ModelObject
 	private Button btnChildren;
 	private Button button_refresh = null;
 	private Button button_log = null;
+	private Button button_run = null;
+	private Button button_stop = null;
 	private Button button_browse = null;
 	private Button button_open = null;
 	private Button button_clean = null;
@@ -340,6 +342,18 @@ public class PradarPartUi3 extends ModelObject
 //		button_log.setToolTipText("shows logfile of selected process instance");
 //		button_log.addSelectionListener(listener_log_button);
 		
+		button_run = new Button(grpFunctionInstance, SWT.NONE);
+		button_run.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_run.setText("run");
+		button_run.setToolTipText("starts a new manager for the selected instance");
+		button_run.addSelectionListener(listener_run_button);
+
+		button_stop = new Button(grpFunctionInstance, SWT.NONE);
+		button_stop.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_stop.setText("stop");
+		button_stop.setToolTipText("stops the manager for the selected instance");
+		button_stop.addSelectionListener(listener_stop_button);
+
 		button_browse = new Button(grpFunctionInstance, SWT.NONE);
 		button_browse.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		button_browse.setText("browse");
@@ -613,7 +627,116 @@ public class PradarPartUi3 extends ModelObject
 			}
 		}
 	};
+
+	SelectionAdapter listener_run_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			if(einstellungen.entitySelected == null)
+			{
+				log("warn", "no instance selected");
+				return;
+			}
+
+			// ist mehr als eine bestimmte zahl markiert
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 1)
+			{
+				log("warn", "run allows max 1 entity at a time");
+				return;
+			}
+
+			// fuer jedes markierte entity einen filebrowser oeffnen
+			for(Entity actEntity : einstellungen.entitiesSelected)
+			{
+				String pathInstanceDir = new File(actEntity.getResource()).getParent();
 	
+				java.io.File stepDir = new java.io.File(pathInstanceDir);
+				if(!stepDir.exists())
+				{
+					log("error", "directory does not exist: "+stepDir.getAbsolutePath());
+				}
+				else if(!stepDir.isDirectory())
+				{
+					log("error", "is not a directory: "+stepDir.getAbsolutePath());
+				}
+				else if(!stepDir.canRead())
+				{
+					log("error", "cannot read directory: "+stepDir.getAbsolutePath());
+				}
+				
+				else
+				{
+					String call = ini.get("apps", "pkraft-manager") + " -instance " + actEntity.getResource(); 
+					log("info", "calling: "+call);
+					
+					try
+					{
+						java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+					}
+					catch (IOException e)
+					{
+						log("error", e.getMessage());
+					}
+				}
+			}
+		}
+	};
+
+	SelectionAdapter listener_stop_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			if(einstellungen.entitySelected == null)
+			{
+				log("warn", "no instance selected");
+				return;
+			}
+
+			// ist mehr als eine bestimmte zahl markiert
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 1)
+			{
+				log("warn", "stop allows max 1 entity at a time");
+				return;
+			}
+
+			// fuer jedes markierte entity einen filebrowser oeffnen
+			for(Entity actEntity : einstellungen.entitiesSelected)
+			{
+				String pathInstanceDir = new File(actEntity.getResource()).getParent();
+	
+				java.io.File stepDir = new java.io.File(pathInstanceDir);
+				if(!stepDir.exists())
+				{
+					log("error", "directory does not exist: "+stepDir.getAbsolutePath());
+				}
+				else if(!stepDir.isDirectory())
+				{
+					log("error", "is not a directory: "+stepDir.getAbsolutePath());
+				}
+				else if(!stepDir.canRead())
+				{
+					log("error", "cannot read directory: "+stepDir.getAbsolutePath());
+				}
+				
+				else
+				{
+					String call = ini.get("apps", "pkraft-manager") + " -stop -instance " + actEntity.getResource(); 
+					log("info", "calling: "+call);
+					
+					try
+					{
+						java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+					}
+					catch (IOException e)
+					{
+						log("error", e.getMessage());
+					}
+				}
+			}
+		}
+	};
+
+
 	SelectionAdapter listener_browse_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
@@ -631,7 +754,7 @@ public class PradarPartUi3 extends ModelObject
 				return;
 			}
 
-			// fuer jedes markierte entity ein pmodel oeffnen
+			// fuer jedes markierte entity einen filebrowser oeffnen
 			for(Entity actEntity : einstellungen.entitiesSelected)
 			{
 				String pathInstanceDir = new File(actEntity.getResource()).getParent();
