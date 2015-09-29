@@ -167,14 +167,14 @@ public class PmodelViewPage extends PApplet
 
 			if(m.matches())
 			{
-				System.err.println("found a step: "+m.group(2));
-				if(stepBasename_count.containsKey(m.group(2)))
+				System.err.println("found a step: "+m.group(1));
+				if(stepBasename_count.containsKey(m.group(1)))
 				{
-					stepBasename_count.put(m.group(2), stepBasename_count.get(m.group(2)) + 1);
+					stepBasename_count.put(m.group(1), stepBasename_count.get(m.group(1)) + 1);
 				}
 				else
 				{
-					stepBasename_count.put(m.group(2), 1);
+					stepBasename_count.put(m.group(1), 1);
 				}
 			}
 		}
