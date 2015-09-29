@@ -464,7 +464,7 @@ public class PradarPartUi3 extends ModelObject
 		tabItem_radar.setControl(composite_tabItem_radar);
 		// radar einbinden
 		frame_radar = SWT_AWT.new_Frame(composite_tabItem_radar);
-
+		
 		// ein tabItem fuer tree mit eingebetteten composite erzeugen
 		tabItem_tree = new CTabItem(tabFolder_12, SWT.NONE);
 		tabItem_tree.setText("tree");
@@ -515,6 +515,9 @@ public class PradarPartUi3 extends ModelObject
 		tabFolder_12.setSelection(0);
 		frame_radar.setVisible(true);
 		tabFolder_12.layout(true);
+		
+		// mit einen selectionListener die ansicht 'radar' erst initialisieren, wenn sie zum ersten mal selektiert wird
+//		tabFolder_12.addSelectionListener(listener_tabitem_selected);
 		
 	}
 
@@ -2277,7 +2280,6 @@ public class PradarPartUi3 extends ModelObject
 		}
 		return tabId;
 	}
-	
 	
 	/**
 	 * reads the content of a file

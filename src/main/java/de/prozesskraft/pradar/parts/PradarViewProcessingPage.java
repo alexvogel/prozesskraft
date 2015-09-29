@@ -308,13 +308,14 @@ public class PradarViewProcessingPage extends PApplet
 		{
 			for (PradarViewProcessingEntity actualPentity : pentities_filtered)
 			{
-				if ( actualPentity.getPentity_parent() != null || this.parent.getEntityBySuperId(actualPentity.getSuperid()) == null)
+				Entity lulu = this.parent.getEntityBySuperId(actualPentity.getSuperid());
+//				if (this.parent.getEntityBySuperId(actualPentity.getSuperid()) != null)
+				if (lulu != null && lulu.getParentid().equals("0"))
 				{
-					break;
+					actualPentity.calcNewBogenlaenge();
+					actualPentity.calcPosition();
+					actualPentity.draw();
 				}
-				actualPentity.calcNewBogenlaenge();
-				actualPentity.calcPosition();
-				actualPentity.draw();
 			}
 			detMouseAndEntity();
 		}
@@ -853,6 +854,5 @@ public class PradarViewProcessingPage extends PApplet
 	{
 		this.bezugsgroesse = bezugsgroesse;
 	}
-
 
 }
