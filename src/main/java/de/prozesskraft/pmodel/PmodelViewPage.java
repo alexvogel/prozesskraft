@@ -158,7 +158,7 @@ public class PmodelViewPage extends PApplet
 		addMouseWheelListener(listener_mousewheel);
 
 		// wenn ein multistep auf mehr als 20 Stueck aufgefaechert wurde, soll das in einem feld markiert werden -> dies ermoeglicht eine erhoehte daempfung einzustellen
-		ArrayList<Step> allSteps = this.getStepcircles().get(0).getStep().getParent().getStep();
+		ArrayList<Step> allSteps = this.einstellungen.getProcess().getStep();
 		Map<String,Integer> stepBasename_count = new HashMap<String,Integer>();
 		for(Step actStep : allSteps)
 		{
