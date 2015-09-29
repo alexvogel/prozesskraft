@@ -127,7 +127,7 @@ public class CreateInstanceGui
 		compositeEntries.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true, 1, 1));
 
 	    Label labelIntro = new Label(compositeEntries, SWT.WRAP);
-	    labelIntro.setText("you are about to create an instance of a process.\nDo not move, copy or delete instance data by hand.\nUse move, clone and delete of application 'pradar'.");
+	    labelIntro.setText("you are about to create an instance of a process.\n\nThe root directory of this instance will be placed in\n"+this.getFather().einstellungen.getBaseDirectory()+"\nDo not move, copy or delete instance data by hand.\nUse clone and delete of application 'pradar'.");
 
 		Composite compositeBtn = new Composite(composite, SWT.NONE);
 		compositeBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
