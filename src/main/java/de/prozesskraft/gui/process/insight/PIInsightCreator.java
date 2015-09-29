@@ -156,7 +156,12 @@ public class PIInsightCreator
 		buttonBrowse.addSelectionListener(listener_button_browse);
 		buttonBrowse.setEnabled(true);
 
-		Label labelDummyA = new Label(compositeAction, SWT.NONE);
+		Button buttonDebug = new Button(compositeAction, SWT.NONE);
+		buttonBrowse.setText("debug");
+		buttonBrowse.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonBrowse.setToolTipText("shows some internal data for debugging purposes");
+		buttonBrowse.addSelectionListener(listener_button_debug);
+		buttonBrowse.setEnabled(true);
 
 		Label labelDummyB = new Label(compositeAction, SWT.NONE);
 		
@@ -194,6 +199,39 @@ public class PIInsightCreator
 
 		return parent;
 	}
+
+	SelectionAdapter listener_button_debug = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			Shell messageShell = new Shell();
+			MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_WARNING | SWT.OK);
+			confirmation.setText("please confirm");
+			
+			String message = "";
+			message += "some fields of the instance\n";
+			message += "id:\t" +process.getId() + "\n";
+			message += "id2:\t" +process.getId2() + "\n";
+			message += "parentId:\t" +process.getParentid() + "\n";
+			message += "cloneGeneration:\t" +process.getCloneGeneration() + "\n";
+			message += "cloneDescendant:\t" +process.getCloneDescendant() + "\n";
+			message += "clonePerformed:\t" +process.getClonePerformed() + "\n";
+			message += "\n";
+
+			confirmation.setMessage(message);
+
+			// open confirmation and wait for user selection
+			int returnCode = confirmation.open();
+//			System.out.println("returnCode is: "+returnCode);
+
+			// ok == 32
+			if (returnCode == 32)
+			{
+				messageShell.dispose();
+			}
+			messageShell.dispose();
+		}
+	};
 
 	SelectionAdapter listener_button_browse = new SelectionAdapter()
 	{
