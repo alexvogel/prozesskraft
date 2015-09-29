@@ -802,6 +802,7 @@ public class PmodelViewPage extends PApplet
 	{
 		if(this.dampOverride != null)
 		{
+			System.err.print("dampOverride: " + dampOverride);
 			return this.dampOverride;
 		}
 		
