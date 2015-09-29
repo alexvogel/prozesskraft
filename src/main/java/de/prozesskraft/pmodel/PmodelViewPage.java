@@ -167,13 +167,13 @@ public class PmodelViewPage extends PApplet
 
 			if(m.matches())
 			{
-				if(stepBasename_count.containsKey(m.group(1)))
+				if(stepBasename_count.containsKey(m.group(2)))
 				{
-					stepBasename_count.put(m.group(1), stepBasename_count.get(m.group(1)) + 1);
+					stepBasename_count.put(m.group(2), stepBasename_count.get(m.group(2)) + 1);
 				}
 				else
 				{
-					stepBasename_count.put(m.group(1), 1);
+					stepBasename_count.put(m.group(2), 1);
 				}
 			}
 		}
@@ -804,7 +804,6 @@ public class PmodelViewPage extends PApplet
 	{
 		if(this.dampOverride != null)
 		{
-			System.err.print("dampOverride: " + dampOverride);
 			return this.dampOverride;
 		}
 		
