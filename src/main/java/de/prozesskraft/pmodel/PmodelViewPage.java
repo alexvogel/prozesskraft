@@ -180,8 +180,10 @@ public class PmodelViewPage extends PApplet
 		//
 		for(Integer actAnzahl : stepBasename_count.values())
 		{
+			System.err.println("anzahl eines steps: " + actAnzahl);
 			if(actAnzahl > 20)
 			{
+				System.err.println("damping override: " + 0.98);
 				dampOverride = 0.98f;
 			}
 		}
