@@ -88,7 +88,7 @@ public class PmodelViewPage extends PApplet
 	int mouse_pressed_x;
 	int mouse_pressed_y;
 
-	Float dampOverride = null;
+	Float dampOverride = 0.99f;
     
 //    private int width = 600;
 //    private int height = 400;
