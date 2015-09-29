@@ -293,7 +293,8 @@ public class Merge
 				if(actStep.isAFannedMultistep())
 				{
 					System.err.println("info: merging from guest instance step " + actStep.getName());
-					if(clonedProcess.integrateStep(actStep.clone()))
+					Step clonedStepForIntegrationInClonedProcess = actStep.clone();
+					if(clonedProcess.integrateStep(clonedStepForIntegrationInClonedProcess))
 					{
 						System.err.println("info: merging step successfully.");
 						// die downstream steps vom merge-punkt merken
@@ -304,9 +305,9 @@ public class Merge
 						
 						// der step einen subprocess enthaelt muss der subprocess nach der integration bei pradar gemeldet werden
 						// den prozess in pradar anmelden durch aufruf des tools: pradar-attend
-						if(actStep.getSubprocess() != null && actStep.getSubprocess().getProcess() != null)
+						if(clonedStepForIntegrationInClonedProcess.getSubprocess() != null && clonedStepForIntegrationInClonedProcess.getSubprocess().getProcess() != null)
 						{
-							String call5 = ini.get("apps", "pradar-attend") + " -instance " + actStep.getAbsdir() + "/process.pmb"; 
+							String call5 = ini.get("apps", "pradar-attend") + " -instance " + clonedStepForIntegrationInClonedProcess.getAbsdir() + "/process.pmb"; 
 							System.err.println("info: calling: "+call5);
 							try
 							{
