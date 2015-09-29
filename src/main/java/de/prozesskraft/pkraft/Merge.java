@@ -293,7 +293,7 @@ public class Merge
 				if(actStep.isAFannedMultistep())
 				{
 					System.err.println("info: merging from guest instance step " + actStep.getName());
-					if(clonedProcess.integrateStep(actStep))
+					if(clonedProcess.integrateStep(actStep.clone()))
 					{
 						System.err.println("info: merging step successfully.");
 						// die downstream steps vom merge-punkt merken
