@@ -206,7 +206,7 @@ implements Serializable
 
 		clone.cloneGeneration++;
 		this.clonePerformed++;
-		clone.cloneDescendant = this.clonePerformed;
+		clone.setCloneDescendant(this.clonePerformed);
 		
 		clone.setClonePerformed(0);
 		
