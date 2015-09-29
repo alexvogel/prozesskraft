@@ -740,17 +740,33 @@ public class PradarPartUi3 extends ModelObject
 				
 				else
 				{
+					// den pkraft-manager stoppen
 					String call = ini.get("apps", "pkraft-manager") + " -stop -instance " + actEntity.getResource(); 
 					log("info", "calling: "+call);
 					
+					// und die daten aktualisieren
+					String call2 = ini.get("apps", "pradar-attend") + " -instance " + actEntity.getResource(); 
+					log("info", "calling: "+call2);
 					try
 					{
 						java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+						java.lang.Process sysproc2 = Runtime.getRuntime().exec(call2);
 					}
 					catch (IOException e)
 					{
 						log("error", e.getMessage());
 					}
+					
+					// daten und anzeige refreshen
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					refresh();
+					tree.refresh();
+
 				}
 			}
 		}
