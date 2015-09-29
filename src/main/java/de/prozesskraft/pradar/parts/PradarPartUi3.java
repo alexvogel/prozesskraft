@@ -686,6 +686,17 @@ public class PradarPartUi3 extends ModelObject
 					{
 						log("error", e.getMessage());
 					}
+					
+					// daten und anzeige refreshen
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					refresh();
+					tree.refresh();
+
 				}
 			}
 		}
