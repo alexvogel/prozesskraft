@@ -88,7 +88,7 @@ public class PmodelViewPage extends PApplet
 	int mouse_pressed_x;
 	int mouse_pressed_y;
 
-	Float dampOverride = 0.99f;
+	Float dampOverride = null;
     
 //    private int width = 600;
 //    private int height = 400;
@@ -178,10 +178,10 @@ public class PmodelViewPage extends PApplet
 			}
 		}
 		//
-		for(Integer actAnzahl : stepBasename_count.values())
+		for(String actStepName : stepBasename_count.keySet())
 		{
-			System.err.println("anzahl eines steps: " + actAnzahl);
-			if(actAnzahl > 20)
+			System.err.println("anzahl des steps "+actStepName+": " + stepBasename_count.get(actStepName));
+			if(stepBasename_count.get(actStepName) > 20)
 			{
 				System.err.println("damping override: " + 0.98);
 				dampOverride = 0.98f;
