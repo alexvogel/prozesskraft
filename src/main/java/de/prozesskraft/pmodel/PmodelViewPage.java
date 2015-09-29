@@ -2,6 +2,8 @@ package de.prozesskraft.pmodel;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.awt.Toolkit;
 import java.awt.Image;
 import java.awt.event.MouseWheelEvent;
@@ -86,6 +88,7 @@ public class PmodelViewPage extends PApplet
 	int mouse_pressed_x;
 	int mouse_pressed_y;
 
+	Float dampOverride = null;
     
 //    private int width = 600;
 //    private int height = 400;
@@ -154,6 +157,34 @@ public class PmodelViewPage extends PApplet
 //   	noLoop();
 		addMouseWheelListener(listener_mousewheel);
 
+		// wenn ein multistep auf mehr als 20 Stueck aufgefaechert wurde, soll das in einem feld markiert werden -> dies ermoeglicht eine erhoehte daempfung einzustellen
+		ArrayList<Step> allSteps = this.getStepcircles().get(0).getStep().getParent().getStep();
+		Map<String,Integer> stepBasename_count = new HashMap<String,Integer>();
+		for(Step actStep : allSteps)
+		{
+			Pattern p = Pattern.compile("^(.+)(@\\d+)?$");
+			Matcher m = p.matcher(actStep.getName());
+
+			if(m.matches())
+			{
+				if(stepBasename_count.containsKey(m.group(1)))
+				{
+					stepBasename_count.put(m.group(1), stepBasename_count.get(m.group(1)) + 1);
+				}
+				else
+				{
+					stepBasename_count.put(m.group(1), 1);
+				}
+			}
+		}
+		//
+		for(Integer actAnzahl : stepBasename_count.values())
+		{
+			if(actAnzahl > 20)
+			{
+				dampOverride = 0.98f;
+			}
+		}
     }
     
 	/*----------------------------
@@ -769,6 +800,11 @@ public class PmodelViewPage extends PApplet
 
 	public float getDamp()
 	{
+		if(this.dampOverride != null)
+		{
+			return this.dampOverride;
+		}
+		
 		float damp;
 		
 		// die ersten sekunden soll die daempfung immer sehr hoch sein
