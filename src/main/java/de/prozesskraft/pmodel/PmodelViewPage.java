@@ -167,6 +167,7 @@ public class PmodelViewPage extends PApplet
 
 			if(m.matches())
 			{
+				System.err.println("found a step: "+m.group(2));
 				if(stepBasename_count.containsKey(m.group(2)))
 				{
 					stepBasename_count.put(m.group(2), stepBasename_count.get(m.group(2)) + 1);
@@ -183,8 +184,8 @@ public class PmodelViewPage extends PApplet
 			System.err.println("anzahl des steps "+actStepName+": " + stepBasename_count.get(actStepName));
 			if(stepBasename_count.get(actStepName) > 20)
 			{
-				System.err.println("damping override: " + 0.98);
-				dampOverride = 0.98f;
+				System.err.println("damping override: " + 0.95);
+				dampOverride = 0.95f;
 			}
 		}
     }
