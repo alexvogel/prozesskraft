@@ -167,7 +167,7 @@ public class PmodelViewPage extends PApplet
 
 			if(m.matches())
 			{
-				System.err.println("found a step: "+m.group(1));
+//				System.err.println("found a step: "+m.group(1));
 				if(stepBasename_count.containsKey(m.group(1)))
 				{
 					stepBasename_count.put(m.group(1), stepBasename_count.get(m.group(1)) + 1);
@@ -181,11 +181,11 @@ public class PmodelViewPage extends PApplet
 		//
 		for(String actStepName : stepBasename_count.keySet())
 		{
-			System.err.println("anzahl des steps "+actStepName+": " + stepBasename_count.get(actStepName));
+//			System.err.println("anzahl des steps "+actStepName+": " + stepBasename_count.get(actStepName));
 			if(stepBasename_count.get(actStepName) > 20)
 			{
-				System.err.println("damping override: " + 0.98);
-				dampOverride = 0.98f;
+				System.err.println("because of the amount of a fanned out multistep the damping override will be set to: " + 0.97);
+				dampOverride = 0.97f;
 			}
 		}
     }
