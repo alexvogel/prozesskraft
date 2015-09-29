@@ -207,6 +207,9 @@ implements Serializable
 		clone.cloneGeneration++;
 		this.clonePerformed++;
 		clone.cloneDescendant = this.clonePerformed;
+		
+		clone.setClonePerformed(0);
+		
 		return clone;
 	}
 
