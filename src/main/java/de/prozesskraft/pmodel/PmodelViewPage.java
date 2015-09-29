@@ -162,7 +162,7 @@ public class PmodelViewPage extends PApplet
 		Map<String,Integer> stepBasename_count = new HashMap<String,Integer>();
 		for(Step actStep : allSteps)
 		{
-			Pattern p = Pattern.compile("^(.+)(@\\d+)?$");
+			Pattern p = Pattern.compile("^([^@]+)(@\\d+)?$");
 			Matcher m = p.matcher(actStep.getName());
 
 			if(m.matches())
@@ -184,8 +184,8 @@ public class PmodelViewPage extends PApplet
 			System.err.println("anzahl des steps "+actStepName+": " + stepBasename_count.get(actStepName));
 			if(stepBasename_count.get(actStepName) > 20)
 			{
-				System.err.println("damping override: " + 0.95);
-				dampOverride = 0.95f;
+				System.err.println("damping override: " + 0.98);
+				dampOverride = 0.98f;
 			}
 		}
     }
