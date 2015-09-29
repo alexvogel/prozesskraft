@@ -648,7 +648,7 @@ public class PradarPartUi3 extends ModelObject
 				return;
 			}
 
-			// fuer jedes markierte entity einen filebrowser oeffnen
+			// fuer das markierte entity inen pkraft-manager starten
 			for(Entity actEntity : einstellungen.entitiesSelected)
 			{
 				String pathInstanceDir = new File(actEntity.getResource()).getParent();
@@ -669,12 +669,18 @@ public class PradarPartUi3 extends ModelObject
 				
 				else
 				{
+					// pkraft-manager starten
 					String call = ini.get("apps", "pkraft-manager") + " -instance " + actEntity.getResource(); 
+					log("info", "calling: "+call);
+					
+					// pradar-attend starten
+					String call2 = ini.get("apps", "pradar-attend") + " -instance " + actEntity.getResource(); 
 					log("info", "calling: "+call);
 					
 					try
 					{
 						java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+						java.lang.Process sysproc2 = Runtime.getRuntime().exec(call2);
 					}
 					catch (IOException e)
 					{
