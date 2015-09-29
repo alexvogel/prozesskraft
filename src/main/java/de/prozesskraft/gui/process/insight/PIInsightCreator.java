@@ -157,11 +157,11 @@ public class PIInsightCreator
 		buttonBrowse.setEnabled(true);
 
 		Button buttonDebug = new Button(compositeAction, SWT.NONE);
-		buttonBrowse.setText("debug");
-		buttonBrowse.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		buttonBrowse.setToolTipText("shows some internal data for debugging purposes");
-		buttonBrowse.addSelectionListener(listener_button_debug);
-		buttonBrowse.setEnabled(true);
+		buttonDebug.setText("debug");
+		buttonDebug.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonDebug.setToolTipText("shows some internal data for debugging purposes");
+		buttonDebug.addSelectionListener(listener_button_debug);
+		buttonDebug.setEnabled(true);
 
 		Label labelDummyB = new Label(compositeAction, SWT.NONE);
 		
