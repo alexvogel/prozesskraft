@@ -250,7 +250,7 @@ my $helptext;
 
 $helptext .= "usage: $filename <subcommand> PARAMETER\n";
 $helptext .= "\n";
-$helptext .= "possible subcommands: startinstance, perlcode, commitit, checkconsistency, createdoc, createdoccron, createmap, syscall, wrap, manager, clone, merge\n";
+$helptext .= "possible subcommands: gui, startinstance, perlcode, commitit, checkconsistency, createdoc, createdoccron, createmap, syscall, wrap, manager, clone, merge\n";
 $helptext .= "\n";
 $helptext .= "Parameter\n";
 
