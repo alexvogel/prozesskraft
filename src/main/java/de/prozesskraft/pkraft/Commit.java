@@ -905,19 +905,20 @@ implements Serializable
 		// wenn der parent ein subprocess ist und subprocesskey definiert ist, soll das value aus dem rootStep des Subprocesses geholt werden
 		else if((master.getValue()==null) && this.getParent().getType().equals("process") && master.getSubprocesskey() != null)
 		{
-			log("info", "value will be extracted from the Variables (key="+master.getSubprocesskey()+") from the rootStep of the subprocess " +this.getParent().getSubprocess().getDomain() + "/" + this.getParent().getSubprocess().getName()+ "/" + this.getParent().getSubprocess().getVersion());
+			log("info", "value will be extracted from the Variables (key="+master.getSubprocesskey()+") from the rootStep of an instance of a subprocess " +this.getParent().getSubprocess().getDomain() + "/" + this.getParent().getSubprocess().getName()+ "/" + this.getParent().getSubprocess().getVersion());
 
 			// process aus subprocess holen
 			Process processInSubprocess = this.getParent().getSubprocess().getProcess();
+			log("debug", "reread binary of subprocess: " + processInSubprocess.getInfilebinary());
 			Process processInSubprocessNeuGeladen = processInSubprocess.readBinary();
 			
 			// debug
-//			ArrayList<Step> stepsOfSubprocess = processInSubprocessNeuGeladen.getStep();
-//			for(Step actStepOfSubprocess : stepsOfSubprocess)
-//			{
-//				log("debug", "this is a step of subprocess: " + actStepOfSubprocess.getName());
-//				log("debug", "variables of subprocess step " + actStepOfSubprocess.getName() + ": " + StringUtils.join(actStepOfSubprocess.getVariableKeys(), ", "));
-//			}
+			ArrayList<Step> stepsOfSubprocess = processInSubprocessNeuGeladen.getStep();
+			for(Step actStepOfSubprocess : stepsOfSubprocess)
+			{
+				log("debug", "this is a step of subprocess: " + actStepOfSubprocess.getName());
+				log("debug", "variables of subprocess step " + actStepOfSubprocess.getName() + ": " + StringUtils.join(actStepOfSubprocess.getVariableKeys(), ", "));
+			}
 
 			// die variablen aus dem subprocess holen, die als schluessel den subprocesskey des masters haben
 			ArrayList<Variable> variablesFromSubprocess = processInSubprocessNeuGeladen.getRootStep().getVariable(master.getSubprocesskey());
