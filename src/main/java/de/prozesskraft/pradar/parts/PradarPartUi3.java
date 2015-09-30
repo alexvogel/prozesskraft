@@ -96,6 +96,7 @@ import de.prozesskraft.pradar.Entity;
 
 import de.prozesskraft.pkraft.*;
 import de.prozesskraft.pkraft.Process;
+import de.prozesskraft.pkraft.IPkraftPartUi1;
 
 public class PradarPartUi3 extends ModelObject
 {
@@ -175,7 +176,7 @@ public class PradarPartUi3 extends ModelObject
 	private boolean userAdmin = false;
 
 	// wird pradar innerhalb einer groesseren application geoeffnet, wird das beherbergende object hier abgelegt
-	private PkraftPartUi1 pkraft = null;
+	private IPkraftPartUi1 pkraft = null;
 
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
@@ -922,7 +923,7 @@ public class PradarPartUi3 extends ModelObject
 					else if(pkraft != null)
 					{
 						log("info", "opening instance file for inspection in new tab");
-						pkraft.openResource(pmbFile.getAbsolutePath());
+						pkraft.openInstance(pmbFile.getAbsolutePath());
 					}
 
 					// wurde pradar standalone geoeffnet, soll pmodel auch standalone geoeffnet werden
@@ -2509,14 +2510,14 @@ public class PradarPartUi3 extends ModelObject
 	/**
 	 * @return the pkraft
 	 */
-	public PkraftPartUi1 getPkraft() {
+	public IPkraftPartUi1 getPkraft() {
 		return pkraft;
 	}
 
 	/**
 	 * @param pkraft the pkraft to set
 	 */
-	public void setPkraft(PkraftPartUi1 pkraft) {
+	public void setPkraft(IPkraftPartUi1 pkraft) {
 		this.pkraft = pkraft;
 	}
 }
