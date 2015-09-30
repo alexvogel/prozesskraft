@@ -381,7 +381,7 @@ public class PradarPartUi3 extends ModelObject
 		button_delete = new Button(grpFunctionInstance, SWT.NONE);
 		button_delete.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		button_delete.setText("delete");
-		button_delete.setToolTipText("deletes a finished (already checked out) process instance from database. includes an implicit 'clean'");
+		button_delete.setToolTipText("deletes an instance with all its data");
 		button_delete.addSelectionListener(listener_delete_button);
 		
 		// den button auf diese weise aktiv/deaktiv zu stellen funktioniert nicht.
