@@ -168,11 +168,14 @@ public class PradarPartUi3 extends ModelObject
 	ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
 //	License license = null;
 //	boolean erster_license_check = true;
-	
+
 	private Text txtTesttext;
 	private Composite composite_3;
 
 	private boolean userAdmin = false;
+
+	// wird pradar innerhalb einer groesseren application geoeffnet, wird das beherbergende object hier abgelegt
+	private PkraftPartUi1 pkraft = null;
 
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
@@ -915,9 +918,17 @@ public class PradarPartUi3 extends ModelObject
 						log("error", "process-model-file does not exist: " + pmbFile.getAbsolutePath());
 					}
 					
+					// wurde pradar-gui im kontext der gesamtapplication geoeffnet?, dann soll pmodel auch dort geoeffnet werden
+					else if(pkraft != null)
+					{
+						log("info", "opening instance file for inspection in new tab");
+						pkraft.openResource(pmbFile.getAbsolutePath());
+					}
+
+					// wurde pradar standalone geoeffnet, soll pmodel auch standalone geoeffnet werden
 					else
 					{
-						log("info", "opening process-model-file for inspection");
+						log("info", "opening instance file for inspection");
 						String aufruf = ini.get("apps",  "pmodel") + " -instance "+pmbFile.getAbsolutePath();
 						log("info", "calling " + aufruf);
 						
@@ -2493,5 +2504,19 @@ public class PradarPartUi3 extends ModelObject
 	 */
 	public boolean isUserAdmin() {
 		return userAdmin;
+	}
+
+	/**
+	 * @return the pkraft
+	 */
+	public PkraftPartUi1 getPkraft() {
+		return pkraft;
+	}
+
+	/**
+	 * @param pkraft the pkraft to set
+	 */
+	public void setPkraft(PkraftPartUi1 pkraft) {
+		this.pkraft = pkraft;
 	}
 }
