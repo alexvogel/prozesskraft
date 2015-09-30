@@ -255,23 +255,11 @@ public class PradarViewTreePage
 				parentData.log("error", "process-model-file does not exist: " + pmbFile.getAbsolutePath());
 			}
 			
+			// oeffnen der instanz
 			else
 			{
+				parentData.log("info", "opening process-model-file for inspection");
 				parentData.openInstance(entity);
-				
-//				parentData.log("info", "opening process-model-file for inspection");
-//				String aufruf = parentData.ini.get("apps",  "pmodel") + " -instance "+pmbFile.getAbsolutePath();
-//				parentData.log("info", "calling " + aufruf);
-//				
-//				try
-//				{
-//					java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-//				}
-//				catch (IOException e)
-//				{
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
 			}
 		}
 	};
