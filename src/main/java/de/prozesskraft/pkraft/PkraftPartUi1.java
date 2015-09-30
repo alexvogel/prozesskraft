@@ -142,7 +142,7 @@ public class PkraftPartUi1
 		new PradarPartUi3(compositePradar);
 		
 		// den focus des tabfolders auf pramp setzen
-		tabItemPramp.setControl(compositePradar);
+		tabItemPradar.setControl(compositePradar);
 		
 		
 	}
