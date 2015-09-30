@@ -257,19 +257,21 @@ public class PradarViewTreePage
 			
 			else
 			{
-				parentData.log("info", "opening process-model-file for inspection");
-				String aufruf = parentData.ini.get("apps",  "pmodel") + " -instance "+pmbFile.getAbsolutePath();
-				parentData.log("info", "calling " + aufruf);
+				parentData.openInstance(entity);
 				
-				try
-				{
-					java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-				}
-				catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				parentData.log("info", "opening process-model-file for inspection");
+//				String aufruf = parentData.ini.get("apps",  "pmodel") + " -instance "+pmbFile.getAbsolutePath();
+//				parentData.log("info", "calling " + aufruf);
+//				
+//				try
+//				{
+//					java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+//				}
+//				catch (IOException e)
+//				{
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			}
 		}
 	};

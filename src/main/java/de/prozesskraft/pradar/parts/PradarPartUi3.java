@@ -918,36 +918,51 @@ public class PradarPartUi3 extends ModelObject
 						log("error", "process-model-file does not exist: " + pmbFile.getAbsolutePath());
 					}
 					
-					// wurde pradar-gui im kontext der gesamtapplication geoeffnet?, dann soll pmodel auch dort geoeffnet werden
-					else if(pkraft != null)
-					{
-						log("info", "opening instance file for inspection in new tab");
-						IPkraftPartUi1 lulu = (IPkraftPartUi1)pkraft;
-						lulu.openInstance(pmbFile.getAbsolutePath());
-					}
-
-					// wurde pradar standalone geoeffnet, soll pmodel auch standalone geoeffnet werden
 					else
 					{
-						log("info", "opening instance file for inspection");
-						String aufruf = ini.get("apps",  "pmodel") + " -instance "+pmbFile.getAbsolutePath();
-						log("info", "calling " + aufruf);
-						
-						try
-						{
-							java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-						}
-						catch (IOException e)
-						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						openInstance(actEntity);
 					}
+					
 				}
 			}
 		}
 	};	
 
+	/**
+	 * oeffnen einer instance mit pmodel
+	 */
+	public void openInstance(Entity entity)
+	{
+		// wurde pradar-gui im kontext der gesamtapplication geoeffnet?, dann soll pmodel auch dort geoeffnet werden
+		if(pkraft != null)
+		{
+			log("info", "opening instance file for inspection in new tab");
+			IPkraftPartUi1 lulu = (IPkraftPartUi1)pkraft;
+			lulu.openInstance(entity.getResource());
+		}
+
+		// wurde pradar standalone geoeffnet, soll pmodel auch standalone geoeffnet werden
+		else
+		{
+			log("debug", "pkraft == null");
+			log("info", "opening instance file for inspection");
+			String aufruf = ini.get("apps",  "pmodel") + " -instance "+entity.getResource();
+			log("info", "calling " + aufruf);
+			
+			try
+			{
+				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	
 	SelectionAdapter listener_clone_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
