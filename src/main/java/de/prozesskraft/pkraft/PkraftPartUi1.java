@@ -138,8 +138,8 @@ public class PkraftPartUi1
 		gl_compositePradar.marginHeight = 0;
 		compositePradar.setLayout(gl_compositePradar);
 
-		// pramp erstellen
-		new PrampPartUi1(compositePramp);
+		// pradar erstellen
+		new PradarPartUi3(compositePradar);
 		
 		// den focus des tabfolders auf pramp setzen
 		tabItemPramp.setControl(compositePramp);
