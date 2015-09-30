@@ -35,7 +35,7 @@ import de.prozesskraft.pramp.parts.PrampPartUi1;
 
 import org.eclipse.swt.custom.CTabItem;
 
-public class PkraftPartUi1 implements IPkraftPartUi1
+public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi1
 {
 	static CommandLine line;
 	
