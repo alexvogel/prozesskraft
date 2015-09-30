@@ -116,15 +116,32 @@ public class PkraftPartUi1
 		// erstellen des items fuer pramp
 		CTabItem tabItemPramp = new CTabItem(tabFolder, SWT.NONE);
 		tabItemPramp.setText("pramp");
-		tabItemPramp.setToolTipText("launch instances");
+		tabItemPramp.setToolTipText("launch");
 
 		Composite compositePramp = new Composite(tabFolder, SWT.NONE);
 		GridLayout gl_compositePramp = new GridLayout(1, false);
 		gl_compositePramp.marginWidth = 0;
 		gl_compositePramp.marginHeight = 0;
 		compositePramp.setLayout(gl_compositePramp);
-		
+
+		// pramp erstellen
 		new PrampPartUi1(compositePramp);
+		
+		// erstellen des items fuer pradar
+		CTabItem tabItemPradar = new CTabItem(tabFolder, SWT.NONE);
+		tabItemPradar.setText("pradar");
+		tabItemPradar.setToolTipText("observe");
+
+		Composite compositePradar = new Composite(tabFolder, SWT.NONE);
+		GridLayout gl_compositePradar = new GridLayout(1, false);
+		gl_compositePradar.marginWidth = 0;
+		gl_compositePradar.marginHeight = 0;
+		compositePradar.setLayout(gl_compositePradar);
+
+		// pramp erstellen
+		new PrampPartUi1(compositePramp);
+		
+		// den focus des tabfolders auf pramp setzen
 		tabItemPramp.setControl(compositePramp);
 		
 		
