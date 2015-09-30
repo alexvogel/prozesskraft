@@ -41,7 +41,7 @@ public class PkraftPartUi1
 	
 	Display display;
 
-	CTabFolder tabFolder_12;
+	CTabFolder tabFolder = null;
 
 	Composite processInsight = null;
 	Map<String,PmodelPartUi1> pmodel_id_item = new HashMap<String,PmodelPartUi1>();
@@ -95,7 +95,7 @@ public class PkraftPartUi1
 //		gd_composite_1.widthHint = 122;
 //		composite_1.setLayoutData(gd_composite_1);
 		
-		CTabFolder tabFolder = new CTabFolder(composite, SWT.BORDER);
+		tabFolder = new CTabFolder(composite, SWT.BORDER);
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 
@@ -111,8 +111,9 @@ public class PkraftPartUi1
 		compositePradar.setLayout(gl_compositePradar);
 
 		// pradar erstellen
-		new PradarPartUi3(compositePradar);
-		
+		PradarPartUi3 pradarUi = new PradarPartUi3(compositePradar);
+		pradarUi.setPkraft(this);
+
 		// das item platzieren
 		tabItemPradar.setControl(compositePradar);
 
@@ -128,12 +129,36 @@ public class PkraftPartUi1
 		compositePramp.setLayout(gl_compositePramp);
 
 		// pramp erstellen
-		new PrampPartUi1(compositePramp);
+		PrampPartUi1 prampUi = new PrampPartUi1(compositePramp);
+//		prampUi.setPkraft(this);
 		
-		// den focus des tabfolders auf pradar setzen
+		// das tabItem dem tabfolder hinzufuegen
 		tabItemPramp.setControl(compositePramp);
 		
 		
+	}
+
+	/**
+	 * opens a process.pmb in a new tabItem
+	 * @param pathToInstance
+	 */
+	public void openResource(String pathToInstance)
+	{
+		// erstellen des items fuer pmodel
+		CTabItem tabItemPmodel = new CTabItem(tabFolder, SWT.NONE);
+		tabItemPmodel.setShowClose(true);
+		
+		Composite compositePmodel = new Composite(tabFolder, SWT.NONE);
+		GridLayout gl_compositePmodel = new GridLayout(1, false);
+		gl_compositePmodel.marginWidth = 0;
+		gl_compositePmodel.marginHeight = 0;
+		compositePmodel.setLayout(gl_compositePmodel);
+
+		PmodelPartUi1 pmodelUi = new PmodelPartUi1(compositePmodel, pathToInstance);
+		tabItemPmodel.setText(pmodelUi.getProcess().getId2() + " " + pmodelUi.getProcess().getId());
+		tabItemPmodel.setToolTipText(pmodelUi.getProcess().getName() + " - " + pmodelUi.getProcess().getVersion() + " - " + pathToInstance);
+		
+		tabItemPmodel.setControl(compositePmodel);
 	}
 	
 	/**
