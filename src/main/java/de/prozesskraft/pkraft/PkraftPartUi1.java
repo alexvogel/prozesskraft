@@ -35,7 +35,7 @@ import de.prozesskraft.pramp.parts.PrampPartUi1;
 
 import org.eclipse.swt.custom.CTabItem;
 
-public class PkraftPartUi1 
+public class PkraftPartUi1 implements IPkraftPartUi1
 {
 	static CommandLine line;
 	
@@ -64,7 +64,7 @@ public class PkraftPartUi1
 	 * constructor als EntryPoint fuer Main oder RCP
 	 */
 	@Inject
-	public PkraftPartUi1(Composite composite)
+	public PkraftPartUi1(Composite composite) 
 	{
 		createControls(composite);
 	}
@@ -142,7 +142,7 @@ public class PkraftPartUi1
 	 * opens a process.pmb in a new tabItem
 	 * @param pathToInstance
 	 */
-	public void openResource(String pathToInstance)
+	public void openInstance(String pathToInstance)
 	{
 		// erstellen des items fuer pmodel
 		CTabItem tabItemPmodel = new CTabItem(tabFolder, SWT.NONE);
