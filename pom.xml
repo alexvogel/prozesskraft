@@ -208,11 +208,11 @@
 			<artifactId>pradar-core</artifactId>
 			<version>0.7.0</version>
 		</dependency>
-		<dependency>
-			<groupId>de.prozesskraft.pkraft</groupId>
-			<artifactId>pkraft-gui</artifactId>
-			<version>0.7.0</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>de.prozesskraft.pkraft</groupId> -->
+<!-- 			<artifactId>pkraft-gui</artifactId> -->
+<!-- 			<version>0.7.0</version> -->
+<!-- 		</dependency> -->
  		<dependency>
 			<groupId>de.prozesskraft.pkraft</groupId>
 			<artifactId>pkraft-core</artifactId>
