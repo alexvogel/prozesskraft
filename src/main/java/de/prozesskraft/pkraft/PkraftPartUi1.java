@@ -204,7 +204,8 @@ public class PkraftPartUi1
 				try
 				{
 					Shell shell = new Shell(display);
-					shell.setSize(1200, 800);
+//					shell.setSize(1200, 800);
+					shell.setMaximized(true);
 					shell.setText("pkraft "+"v[% version %]");
 
 					// set an icon
