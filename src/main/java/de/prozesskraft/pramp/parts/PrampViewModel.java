@@ -80,8 +80,19 @@ public class PrampViewModel extends ModelObject
 	}
 
 	public void setBaseDirectory(String baseDirectory)
-	{
-		firePropertyChange("baseDirectory", this.baseDirectory, this.baseDirectory = baseDirectory);
+	{		
+		String korrBaseDirectory = null;
+		// pfadkorrektur fuer BMW
+		if(baseDirectory.matches("^/net/[^/]+/[^/]/proj/.+$"))
+		{
+			korrBaseDirectory = baseDirectory.replaceFirst("^/net/[^/]+/[^/]/proj/", "/proj/");
+		}
+		else
+		{
+			korrBaseDirectory = baseDirectory;
+		}
+
+		firePropertyChange("baseDirectory", this.baseDirectory, this.baseDirectory = korrBaseDirectory);
 	}
 
 }
