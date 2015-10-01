@@ -188,22 +188,26 @@ implements Serializable
 			log("debug", "amount of working Steps is: " + workingSteps + " maxSimultaneousSteps=" + maxWorkingSteps);
 			if(this.getParent().getParent().getMaxSimultaneousSteps() <= workingSteps)
 			{
-				log("info", "starting of new steps is not allowed at the moment");
+				log("info", "starting of new steps is not allowed at the moment by reference of maxSimultaniousSteps");
 				schrittStarten = false;
 			}
 			else
 			{
-				log("info", "starting of new steps is allowed");
+				log("info", "starting of new steps is allowed at the moment by reference of maxSimultaniousSteps");
 			}
 
 			log("debug", "now in milliseconds: " + System.currentTimeMillis());
-			log("debug", "time of last stepstart in milliseconds: " + this.getParent().getParent().getTimeOfLastStepStart());
 			Integer minutesSinceLastStepStart = (int)((long)(System.currentTimeMillis() - this.getParent().getParent().getTimeOfLastStepStart()) / 60000);
+			log("debug", "time since last step start in minutes: " + minutesSinceLastStepStart + " stepStartDelayMinutes="+this.getParent().getParent().getStepStartDelayMinutes());
 			// 2) der zeitpunkt an dem der letzte schritt gestartet wurde ist weniger minuten her als der mindest-Delay fuer Stepstarts vorschreibt
 			if( minutesSinceLastStepStart < this.getParent().getParent().getStepStartDelayMinutes())
 			{
-				log("debug", "minutes since last Step has been started: " + minutesSinceLastStepStart + " StepStartDelayMinutes=" + this.getParent().getParent().getStepStartDelayMinutes() +". starting of new steps is not allowed at the moment");
+				log("info", "starting of new steps is not allowed at the moment by reference of stepStartDelayMinutes");
 				schrittStarten = false;
+			}
+			else
+			{
+				log("info", "starting of new steps is allowed at the moment by reference of stepStartDelayMinutes");
 			}
 
 			// wenn schritt noch nicht gestartet wurde
