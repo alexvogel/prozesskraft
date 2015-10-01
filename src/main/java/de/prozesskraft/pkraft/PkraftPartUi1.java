@@ -34,6 +34,10 @@ import de.prozesskraft.pradar.parts.PradarPartUi3;
 import de.prozesskraft.pramp.parts.PrampPartUi1;
 
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 
 public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi1
 {
@@ -44,7 +48,7 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 	CTabFolder tabFolder = null;
 
 	Composite processInsight = null;
-	Map<String,PmodelPartUi1> pmodel_id_item = new HashMap<String,PmodelPartUi1>();
+	Map<String,CTabItem> pmodel_id_item = new HashMap<String,CTabItem>();
 
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
@@ -144,24 +148,73 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 	 */
 	public void openInstance(String pathToInstance)
 	{
-		// erstellen des items fuer pmodel
-		CTabItem tabItemPmodel = new CTabItem(tabFolder, SWT.NONE);
-		tabItemPmodel.setShowClose(true);
+		boolean ctabMussNeuErzeugtWerden = true;
 		
-		Composite compositePmodel = new Composite(tabFolder, SWT.NONE);
-		GridLayout gl_compositePmodel = new GridLayout(1, false);
-		gl_compositePmodel.marginWidth = 0;
-		gl_compositePmodel.marginHeight = 0;
-		compositePmodel.setLayout(gl_compositePmodel);
+		// gibt es den CTabItem bereits, soll dieser selektiert werden
+		int counter = 2; // bereits 2 CTabItems vorhanden (pradar, pramp);
+		for(String oldPath : pmodel_id_item.keySet())
+		{
+			if(oldPath.equals(pathToInstance))
+			{
+				counter++;
+				ctabMussNeuErzeugtWerden = false;
+				tabFolder.setSelection(counter-1);
+			}
+		}
 
-		PmodelPartUi1 pmodelUi = new PmodelPartUi1(compositePmodel, pathToInstance);
-		tabItemPmodel.setText(pmodelUi.getProcess().getName() + " " + pmodelUi.getProcess().getId2() + " " + pmodelUi.getProcess().getId());
-		tabItemPmodel.setToolTipText(pmodelUi.getProcess().getName() + " - " + pmodelUi.getProcess().getVersion() + " - " + pathToInstance);
-
-		tabItemPmodel.setControl(compositePmodel);
-		
-		tabFolder.setSelection(tabFolder.getItemCount()-1);
+		// falls eine ansicht neu erzeugt werden muss
+		if(ctabMussNeuErzeugtWerden)
+		{
+			// erstellen des items fuer pmodel
+			CTabItem tabItemPmodel = new CTabItem(tabFolder, SWT.NONE);
+			tabItemPmodel.setShowClose(true);
+	
+			Composite compositePmodel = new Composite(tabFolder, SWT.NONE);
+			GridLayout gl_compositePmodel = new GridLayout(1, false);
+			gl_compositePmodel.marginWidth = 0;
+			gl_compositePmodel.marginHeight = 0;
+			compositePmodel.setLayout(gl_compositePmodel);
+	
+			PmodelPartUi1 pmodelUi = new PmodelPartUi1(compositePmodel, pathToInstance);
+			tabItemPmodel.setText(pmodelUi.getProcess().getName() + " " + pmodelUi.getProcess().getId2() + " " + pmodelUi.getProcess().getId());
+			tabItemPmodel.setToolTipText(pmodelUi.getProcess().getName() + " - " + pmodelUi.getProcess().getVersion() + " - " + pathToInstance);
+	
+			tabItemPmodel.addDisposeListener(entferne_pmodel);
+			
+			// das neue tabItem dem tabFolder hinzufuegen
+			tabItemPmodel.setControl(compositePmodel);
+	
+			// das neueste tabItem selektieren
+			tabFolder.setSelection(tabFolder.getItemCount()-1);
+	
+			// das neue tabItem dem map der bekannten tabItems hinzufuegen
+			this.pmodel_id_item.put(pathToInstance, tabItemPmodel);
+		}
 	}
+	
+	/**
+	 * listener for Disposing a CtabItem
+	 */
+	DisposeListener entferne_pmodel = new DisposeListener()
+	{
+		public void widgetDisposed(DisposeEvent event)
+		{
+			CTabItem zuLoeschendesCTabItem = (CTabItem) event.widget;
+			
+			// die liste bekannter pmodel CTabItems durchgehen und den zu loeschenden eintrag entfernen
+			Map<String,CTabItem> new_pmodel_id_item = new HashMap<String,CTabItem>();
+
+			for(String actPathToInstance : pmodel_id_item.keySet())
+			{
+				if( ! zuLoeschendesCTabItem.equals(pmodel_id_item.get(actPathToInstance)))
+				{
+					new_pmodel_id_item.put(actPathToInstance, pmodel_id_item.get(actPathToInstance));
+				}
+			}
+			
+			pmodel_id_item = new_pmodel_id_item;
+		}
+	};
 	
 	/**
 	 * @param args
