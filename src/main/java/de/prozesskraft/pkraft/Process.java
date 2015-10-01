@@ -1944,11 +1944,6 @@ implements Serializable
 		{
 			this.baseDir = baseDir.replaceFirst("^/net/[^/]+/[^/]+/proj/", "/proj/");
 		}
-		
-		else if(baseDir.matches("^/data/[^/]+/work.+$"))
-		{
-			System.err.println("BLABLABLA");
-		}
 		else
 		{
 			this.baseDir = baseDir;
