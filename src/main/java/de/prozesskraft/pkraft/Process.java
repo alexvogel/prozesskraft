@@ -1939,13 +1939,13 @@ implements Serializable
 	 */
 	public void setBaseDir(String baseDir) {
 		
-		System.err.println("SETBASEDIR: " + baseDir);
-		System.err.println("KORR-PATTERN: " + "^/net/[^/]+/[^/]+/proj/.+$");
+//		System.err.println("SETBASEDIR: " + baseDir);
+//		System.err.println("KORR-PATTERN: " + "^/net/[^/]+/[^/]+/proj/.+$");
 		// pfadkorrektur fuer BMW
 		if(baseDir.matches("^/net/[^/]+/[^/]+/proj/.+$"))
 		{
 			this.baseDir = baseDir.replaceFirst("^/net/[^/]+/[^/]+/proj/", "/proj/");
-			System.err.println("SETBASEDIR: " + this.baseDir);
+//			System.err.println("SETBASEDIR: " + this.baseDir);
 		}
 		else
 		{
