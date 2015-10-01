@@ -1938,7 +1938,16 @@ implements Serializable
 	 * @param baseDir the baseDir to set
 	 */
 	public void setBaseDir(String baseDir) {
-		this.baseDir = baseDir;
+		
+		// pfadkorrektur fuer BMW
+		if(baseDir.matches("^/net/[^/]+/[^/]/proj/.+$"))
+		{
+			this.baseDir = baseDir.replaceFirst("^/net/[^/]+/[^/]/proj/", "/proj/");
+		}
+		else
+		{
+			this.baseDir = baseDir;
+		}
 	}
 
 	/**
