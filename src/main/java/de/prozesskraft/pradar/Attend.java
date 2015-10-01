@@ -193,7 +193,7 @@ public class Attend
 		entity.setCheckout(process.getTimeOfProcessFinishedOrError());
 		
 		// die resource setzen
-		entity.setResource(fileProcessBinary.getAbsolutePath());
+		entity.setResource(process.getRootdir() + "/process.pmb");
 		
 		// setzen des user vom system
 		entity.setUser(System.getProperty("user.name"));
