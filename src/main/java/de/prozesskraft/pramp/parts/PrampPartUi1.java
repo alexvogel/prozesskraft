@@ -305,20 +305,20 @@ public class PrampPartUi1 extends ModelObject
 		button_testrun.addSelectionListener(listener_testrun_button);
 		button_testrun.setEnabled(this.domainUserRights.get("Admin"));
 		
-		// Group apps
-		Group grpApps = new Group(composite_11, SWT.NONE);
-		grpApps.setText("apps");
-		GridData gd_grpApps = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_grpApps.widthHint = 152;
-		grpApps.setLayoutData(gd_grpApps);
-		grpApps.setLayout(new GridLayout(2, false));
-		
-		Button btnNewButton3 = new Button(grpApps, SWT.NONE);
-		GridData gd_btnNewButton3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-		gd_btnNewButton3.widthHint = 141;
-		btnNewButton3.setLayoutData(gd_btnNewButton3);
-		btnNewButton3.setText("pRadar");
-		btnNewButton3.addSelectionListener(listener_pradar_button);
+//		// Group apps
+//		Group grpApps = new Group(composite_11, SWT.NONE);
+//		grpApps.setText("apps");
+//		GridData gd_grpApps = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+//		gd_grpApps.widthHint = 152;
+//		grpApps.setLayoutData(gd_grpApps);
+//		grpApps.setLayout(new GridLayout(2, false));
+//		
+//		Button btnNewButton3 = new Button(grpApps, SWT.NONE);
+//		GridData gd_btnNewButton3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+//		gd_btnNewButton3.widthHint = 141;
+//		btnNewButton3.setLayoutData(gd_btnNewButton3);
+//		btnNewButton3.setText("pRadar");
+//		btnNewButton3.addSelectionListener(listener_pradar_button);
 
 		composite_12 = new Composite(composite_1, SWT.BORDER);
 //		composite_12.setLayout(new GridLayout(1, false));
