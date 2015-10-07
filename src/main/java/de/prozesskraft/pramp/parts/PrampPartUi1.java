@@ -1772,11 +1772,6 @@ public class PrampPartUi1 extends ModelObject
 		}
 	}
 	
-	protected void finalize()
-	{
-		this.writeUserIni();
-	}
-	
 	/**
 	 * checkout License from floatingLicenseServer
 	 * @return void
@@ -1812,8 +1807,10 @@ public class PrampPartUi1 extends ModelObject
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args)
+	public void main(String[] args)
 	{
+		// userIniFile einlesen
+		readUserIni();
 		/*----------------------------
 		  create boolean options
 		----------------------------*/
@@ -1927,6 +1924,7 @@ public class PrampPartUi1 extends ModelObject
 				}
 			}
 		});
+		writeUserIni();
 		System.exit(0);
 	}
 
