@@ -1702,7 +1702,7 @@ public class PrampPartUi1 extends ModelObject
 	{
 		Ini userIni = new Ini();
 		userIni.add("pramp", "baseDirectory", einstellungen.getBaseDirectory());
-		java.io.File fileUserIni = new java.io.File(System.getProperty("user.home") + "/pkraft/pmodel.user.ini");
+		java.io.File fileUserIni = new java.io.File(System.getProperty("user.home") + "/pkraft/pramp.user.ini");
 		
 		// falls das verzeichnis noch nicht existiert, soll es erstellt werden
 		if(!fileUserIni.getParentFile().exists())
