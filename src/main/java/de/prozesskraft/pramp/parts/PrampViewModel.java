@@ -57,9 +57,24 @@ public class PrampViewModel extends ModelObject
 		firePropertyChange("versions", this.versions, this.versions = versions);
 	}
 
+	// field domain
 	public String getDomain()
 	{
 		return domain;
+	}
+
+	// returns die positions-id von domain innerhalb des domain-arrays
+	public int getDomainId()
+	{
+		int zaehler = 0;
+		for(String actDomain : this.getDomains())
+		{
+			if(!actDomain.equals(this.getDomain()))
+			{
+				zaehler++;
+			}
+		}
+		return zaehler;
 	}
 
 	public void setDomain(String domain)
@@ -67,6 +82,7 @@ public class PrampViewModel extends ModelObject
 		firePropertyChange("domain", this.domain, this.domain = domain);
 	}
 
+	// field process
 	public String getProcess()
 	{
 		return process;
@@ -77,6 +93,7 @@ public class PrampViewModel extends ModelObject
 		firePropertyChange("process", this.process, this.process = process);
 	}
 
+	// field version
 	public String getVersion()
 	{
 		return version;

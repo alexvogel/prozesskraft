@@ -318,21 +318,6 @@ public class PrampPartUi1 extends ModelObject
 		button_testrun.addSelectionListener(listener_testrun_button);
 		button_testrun.setEnabled(this.domainUserRights.get("Admin"));
 		
-//		// Group apps
-//		Group grpApps = new Group(composite_11, SWT.NONE);
-//		grpApps.setText("apps");
-//		GridData gd_grpApps = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-//		gd_grpApps.widthHint = 152;
-//		grpApps.setLayoutData(gd_grpApps);
-//		grpApps.setLayout(new GridLayout(2, false));
-//		
-//		Button btnNewButton3 = new Button(grpApps, SWT.NONE);
-//		GridData gd_btnNewButton3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-//		gd_btnNewButton3.widthHint = 141;
-//		btnNewButton3.setLayoutData(gd_btnNewButton3);
-//		btnNewButton3.setText("pRadar");
-//		btnNewButton3.addSelectionListener(listener_pradar_button);
-
 		composite_12 = new Composite(composite_1, SWT.BORDER);
 //		composite_12.setLayout(new GridLayout(1, false));
 		composite_12.setLayout(new FillLayout());
@@ -385,7 +370,7 @@ public class PrampPartUi1 extends ModelObject
 		initDataBindingsInstancedirectory();
 
 		// auswahl der Domains-Combo auf das erste Element setzen
-		combo_domains.select(0);
+		combo_domains.select(einstellungen.getDomainId());
 		// auswahl der Processes-Combo auf das erste Element setzen
 		combo_processes.select(0);
 		new Label(grpFilter, SWT.NONE);
@@ -1500,30 +1485,8 @@ public class PrampPartUi1 extends ModelObject
 	 */
 	void startInstance()
 	{
-					// starten des process-manager remote
-					// ....
-//					if(ini.get("start", "process-manager").equals("true"))
-//					{
-//						log ("info", "launching process instance over ssh on "+System.getProperty("user.name")+"@"+combo_hosts.getText());
-
-//						if(!(DistantHostActions.isHostReachable(combo_hosts.getText())))
-//						{
-//							log ("error", "host "+combo_hosts.getText()+" not reachable");
-//							return false;
-//						}
 						
 						String call = ini.get("apps", "pkraft-manager") +" -instance "+process.getOutfilebinary();
-						
-//						try
-//						{
-//							log ("info", "calling on host " + combo_hosts.getText() + ": "+call);
-//							DistantHostActions.sysCallOnDistantHost(combo_hosts.getText(), call );
-//						}
-//						catch (JSchException e1)
-//						{
-//							log ("error", "cannot launch process on host " + combo_hosts.getText());
-////							e1.printStackTrace();
-//						}
 						
 						log ("info", "calling: " + call);
 						try
@@ -1537,59 +1500,7 @@ public class PrampPartUi1 extends ModelObject
 							e.printStackTrace();
 						}
 
-//						String[] args_for_command = {"ssh", System.getProperty("user.name")+"@"+combo_hosts.getText(), "\"" + ini.get("apps", "pkraft-manager") +" -instance "+process.getOutfilebinary()+"\""};
-
-//						ProcessBuilder pb = new ProcessBuilder(args_for_command);
-//						java.lang.Process sysproc = pb.start();
-	
-//						try
-//						{
-//							java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_command, " "));
-//							log ("debug", "hashCode="+sysproc.hashCode());
-//						} catch (IOException e)
-//						{
-//							// TODO Auto-generated catch block
-//							log ("error", "IOException: problems with executing via ssh");
-//							e.printStackTrace();
-//						}
-//					}
 	}
-	
-//	void load()
-//	{
-//		// inifile parsen
-//		// directory fuer prozesse feststellen
-//		// erzeugen der prozessliste (directory parsen)
-//		// erzeugen der versionslisten (directory parsen)
-//		
-//		File inifile = new File(getIni());
-//		Ini ini;
-//		
-//		ArrayList<String> pradar_server_list = new ArrayList<String>();
-//		
-//		try
-//		{
-//			ini = new Ini(inifile);
-//			for(int x = 1; x <= 5; x++)
-//			{
-//				if (ini.get("pradar-server", "pradar-server-"+x) != null )
-//				{
-//					pradar_server_list.add(ini.get("pradar-server", "pradar-server-"+x));
-//				}
-//			}
-//
-//		}
-//		catch (InvalidFileFormatException e1)
-//		{
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		catch (IOException e1)
-//		{
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//	}
 
 	void setDomainMainDir (String domainMainDir)
 	{
