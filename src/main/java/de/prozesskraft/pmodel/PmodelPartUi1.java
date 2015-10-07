@@ -138,6 +138,9 @@ public class PmodelPartUi1 extends ModelObject
 
 	int logLineCount = 0;
 
+	// wird pmodel innerhalb einer groesseren application geoeffnet, wird das beherbergende object hier abgelegt
+	private Object pkraft = null;
+
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
 	 * @wbp.parser.entryPoint
@@ -1190,5 +1193,19 @@ public class PmodelPartUi1 extends ModelObject
 	 */
 	public void setIni(Ini ini) {
 		this.ini = ini;
+	}
+
+	/**
+	 * @return the pkraft
+	 */
+	public Object getPkraft() {
+		return pkraft;
+	}
+
+	/**
+	 * @param pkraft the pkraft to set
+	 */
+	public void setPkraft(Object pkraft) {
+		this.pkraft = pkraft;
 	}
 }

@@ -432,17 +432,18 @@ public class SIInsightCreator
 					if(processBinaryFile.exists())
 					{
 						// Aufruf taetigen
-						try
-						{
-							String aufruf = father.getIni().get("apps", "pmodel-gui")+" -instance "+processBinaryFile.getCanonicalPath();
-							father.log("info", "opening subprocess of step "+step.getName()+" with call: "+aufruf);
-							java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-						}
-						catch (IOException e)
-						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+//						try
+//						{
+//							String aufruf = father.getIni().get("apps", "pmodel-gui")+" -instance "+processBinaryFile.getCanonicalPath();
+//							father.log("info", "opening subprocess of step "+step.getName()+" with call: "+aufruf);
+//							java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+//						}
+//						catch (IOException e)
+//						{
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+						openInstance(processBinaryFile.getAbsolutePath());
 					}
 					else
 					{
@@ -452,6 +453,39 @@ public class SIInsightCreator
 			}
 		}
 	};
+
+	/**
+	 * oeffnen einer instance mit pmodel
+	 */
+	public void openInstance(String pathToInstance)
+	{
+		// wurde pradar-gui im kontext der gesamtapplication geoeffnet?, dann soll pmodel auch dort geoeffnet werden
+		if(this.getFather().getPkraft() != null)
+		{
+			IPkraftPartUi1 lulu = (IPkraftPartUi1)this.getFather().getPkraft();
+			lulu.openInstance(pathToInstance);
+		}
+
+		// wurde pradar standalone geoeffnet, soll pmodel auch standalone geoeffnet werden
+		else
+		{
+			this.getFather().log("debug", "pkraft == null");
+			this.getFather().log("info", "opening instance file for inspection");
+			String aufruf = this.getFather().getIni().get("apps",  "pmodel") + " -instance "+pathToInstance;
+			this.getFather().log("info", "calling " + aufruf);
+			
+			try
+			{
+				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
 
 	SelectionAdapter listener_button_log = new SelectionAdapter()
 	{
