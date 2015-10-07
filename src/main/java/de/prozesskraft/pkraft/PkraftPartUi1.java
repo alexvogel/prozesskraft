@@ -176,6 +176,7 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 			compositePmodel.setLayout(gl_compositePmodel);
 	
 			PmodelPartUi1 pmodelUi = new PmodelPartUi1(compositePmodel, pathToInstance);
+			pmodelUi.setPkraft(this);
 			tabItemPmodel.setText(pmodelUi.getProcess().getName() + " " + pmodelUi.getProcess().getId2() + " " + pmodelUi.getProcess().getId());
 			tabItemPmodel.setToolTipText(pmodelUi.getProcess().getName() + " - " + pmodelUi.getProcess().getVersion() + " - " + pathToInstance);
 	
