@@ -98,6 +98,28 @@ public class PrampViewModel extends ModelObject
 		return process;
 	}
 
+	// returns die positions-id von domain innerhalb des process-arrays
+	public int getProcessId()
+	{
+		int zaehler = 0;
+		for(String actProcess : this.getProcesses())
+		{
+			if(actProcess.equals(this.getProcess()))
+			{
+				return zaehler;
+			}
+			else
+			{
+				zaehler++;
+				if((zaehler + 1) > this.getProcesses().length)
+				{
+					zaehler = 0;
+				}
+			}
+		}
+		return zaehler;
+	}
+
 	public void setProcess(String process)
 	{
 		firePropertyChange("process", this.process, this.process = process);
