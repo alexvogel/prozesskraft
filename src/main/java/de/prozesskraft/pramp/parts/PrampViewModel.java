@@ -21,10 +21,10 @@ public class PrampViewModel extends ModelObject
 	 */
 	public void setField(String key, String value)
 	{
-		if(key.equals("baseDirectory"))
-		{
-			this.baseDirectory = value;
-		}
+		if(key.equals("baseDirectory"))	{ this.baseDirectory = value;	}
+		if(key.equals("domain"))	{ this.domain = value;	}
+		if(key.equals("process"))	{ this.process = value;	}
+		if(key.equals("version"))	{ this.version = value;	}
 	}
 	
 	public String[] getDomains()
