@@ -369,10 +369,14 @@ public class PrampPartUi1 extends ModelObject
 		// Datenbindung instancedirectory textfeld
 		initDataBindingsInstancedirectory();
 
-		// auswahl der Domains-Combo auf das erste Element setzen
+		// auswahl der Domains-Combo auf das Element aus der UserIni setzen
 		combo_domains.select(einstellungen.getDomainId());
-		// auswahl der Processes-Combo auf das erste Element setzen
-		combo_processes.select(0);
+		// auswahl der Processes-Combo auf das Element aus der UserIni setzen
+		combo_processes.select(einstellungen.getProcessId());
+		// auswahl der Processes-Combo auf das Element aus der UserIni setzen
+		combo_versions.select(einstellungen.getVersionId());
+
+		
 		new Label(grpFilter, SWT.NONE);
 
 		// setzen der random instancedirectory
