@@ -1683,7 +1683,7 @@ public class PrampPartUi1 extends ModelObject
 			Section prampSection = userIni.get("pramp");
 			for(String actKey : prampSection.keySet())
 			{
-				einstellungen.setField("baseDirectory", prampSection.get(actKey));
+				einstellungen.setField(actKey, prampSection.get(actKey));
 			}
 		}
 		// existiert das file noch nicht? - macht nichts
@@ -1701,7 +1701,14 @@ public class PrampPartUi1 extends ModelObject
 	void writeUserIni()
 	{
 		Ini userIni = new Ini();
+
+		// die settings festlegen
+		userIni.add("pramp", "domain", einstellungen.getDomain());
+		userIni.add("pramp", "process", einstellungen.getProcess());
+		userIni.add("pramp", "version", einstellungen.getVersion());
 		userIni.add("pramp", "baseDirectory", einstellungen.getBaseDirectory());
+		
+		// das userIni-file festlegen
 		java.io.File fileUserIni = new java.io.File(System.getProperty("user.home") + "/pkraft/pramp.user.ini");
 		
 		// falls das verzeichnis noch nicht existiert, soll es erstellt werden
