@@ -37,6 +37,8 @@ import org.eclipse.jface.databinding.swt.WidgetProperties;
 //import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -134,7 +136,7 @@ public class PrampPartUi1 extends ModelObject
 		Composite composite = new Composite(shell, SWT.NONE);
 		composite.setLocation(0, 0);
 		setIni("../etc/pramp-gui.ini");
-		setUserIni();
+		readUserIni();
 		loadIni();
 		checkLicense();
 		detInstalledDomainNames();
@@ -153,7 +155,7 @@ public class PrampPartUi1 extends ModelObject
 		setIni("../etc/pramp-gui.ini");
 		loadIni();
 		checkLicense();
-		setUserIni();
+		readUserIni();
 		detInstalledDomainNames();
 		detDomainUserRights();
 		reduceInstalledDomainNamesByRight();
@@ -171,7 +173,7 @@ public class PrampPartUi1 extends ModelObject
 		setIni("../etc/pramp-gui.ini");
 		loadIni();
 		checkLicense();
-		setUserIni();
+		readUserIni();
 //		getProcesses();
 //		refresh();
 	}
@@ -189,6 +191,13 @@ public class PrampPartUi1 extends ModelObject
 		gd_composite.minimumHeight = 10;
 		composite.setLayoutData(gd_composite);
 		composite.setLayout(new GridLayout(1, false));
+		
+		composite.addDisposeListener(new DisposeListener() {
+		      public void widgetDisposed(DisposeEvent event) {
+		          // When the composite gets disposed, the userIniFile should be updated
+		          writeUserIni();
+		        }
+		      });
 		
 		Composite composite_1 = new Composite(composite, SWT.NONE);
 		GridLayout gl_composite_1 = new GridLayout(2, false);
@@ -783,32 +792,6 @@ public class PrampPartUi1 extends ModelObject
 			System.exit(1);
 			// TODO Auto-generated catch block
 //			e1.printStackTrace();
-		}
-	}
-
-	/**
-	 * loads an user-ini-file into the field userIni
-	 */
-	void loadUserIni()
-	{
-		Ini ini;
-		try
-		{
-			ini = new Ini(getUserIniAsFile());
-			if (ini.get("process", "domain-installation-directory") != null )
-			{
-				this.domainMainDir = (ini.get("process", "domain-installation-directory"));
-			}
-		}
-		catch (InvalidFileFormatException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		catch (IOException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
 	}
 
@@ -1641,40 +1624,6 @@ public class PrampPartUi1 extends ModelObject
 		return this.ini;
 	}
 	
-	void setUserIni ()
-	{
-		File file = new File((System.getProperty("user.home")+"/.process/pramp.ini"));
-		if(!(file.exists()))
-		{
-			log("warn", "create user config directory: "+file.getParentFile().getAbsolutePath());
-			file.getParentFile().mkdirs();
-			try
-			{
-				log("warn", "create user ini file: "+file.getAbsolutePath());
-				Ini ini = new Ini();
-//				log("warn", "storing create user ini file: "+file.getAbsolutePath());
-				ini.store(file);
-				
-			} catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				log("error", "cannot create user ini file: "+file.getAbsolutePath());
-				//				e.printStackTrace();
-			}
-		}
-		this.userIniFile = file.getAbsolutePath();
-	}
-
-	String getUserIni ()
-	{
-		return this.userIniFile;
-	}
-
-	File getUserIniAsFile ()
-	{
-		return new File(this.userIniFile);
-	}
-
 	void setProcess (String process)
 	{
 		this.einstellungen.setProcess(process);
@@ -1807,10 +1756,8 @@ public class PrampPartUi1 extends ModelObject
 	/**
 	 * @param args
 	 */
-	public void main(String[] args)
+	public static void main(String[] args)
 	{
-		// userIniFile einlesen
-		readUserIni();
 		/*----------------------------
 		  create boolean options
 		----------------------------*/
@@ -1924,7 +1871,6 @@ public class PrampPartUi1 extends ModelObject
 				}
 			}
 		});
-		writeUserIni();
 		System.exit(0);
 	}
 
