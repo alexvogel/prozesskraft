@@ -156,6 +156,7 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 		{
 			if(oldPath.equals(pathToInstance))
 			{
+				System.err.println("instance already open");
 				counter++;
 				ctabMussNeuErzeugtWerden = false;
 				tabFolder.setSelection(counter-1);
