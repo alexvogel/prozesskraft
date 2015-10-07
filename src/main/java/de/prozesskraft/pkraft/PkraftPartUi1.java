@@ -29,9 +29,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.custom.CTabFolder;
 
 //import de.caegroup.pradar.Init;
-import de.prozesskraft.pmodel.*;
 import de.prozesskraft.pradar.parts.PradarPartUi3;
 import de.prozesskraft.pramp.parts.PrampPartUi1;
+import de.prozesskraft.pmodel.PmodelPartUi1;
 
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.DisposeEvent;
@@ -39,7 +39,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 
-public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi1
+public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi1, de.prozesskraft.gui.step.insight.IPkraftPartUi2
 {
 	static CommandLine line;
 	
