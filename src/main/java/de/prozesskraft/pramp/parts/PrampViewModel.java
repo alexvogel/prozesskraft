@@ -131,6 +131,28 @@ public class PrampViewModel extends ModelObject
 		return version;
 	}
 
+	// returns die positions-id von domain innerhalb des versions-arrays
+	public int getVersionId()
+	{
+		int zaehler = 0;
+		for(String actVersion : this.getVersions())
+		{
+			if(actVersion.equals(this.getVersion()))
+			{
+				return zaehler;
+			}
+			else
+			{
+				zaehler++;
+				if((zaehler + 1) > this.getVersions().length)
+				{
+					zaehler = 0;
+				}
+			}
+		}
+		return zaehler;
+	}
+
 	public void setVersion(String version)
 	{
 		firePropertyChange("version", this.version, this.version = version);
