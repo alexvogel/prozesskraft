@@ -462,7 +462,7 @@ public class SIInsightCreator
 		// wurde pradar-gui im kontext der gesamtapplication geoeffnet?, dann soll pmodel auch dort geoeffnet werden
 		if(this.getFather().getPkraft() != null)
 		{
-			IPkraftPartUi1 lulu = (IPkraftPartUi1)this.getFather().getPkraft();
+			IPkraftPartUi2 lulu = (IPkraftPartUi2)this.getFather().getPkraft();
 			lulu.openInstance(pathToInstance);
 		}
 
