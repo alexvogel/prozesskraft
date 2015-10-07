@@ -259,7 +259,7 @@ public class PrampPartUi1 extends ModelObject
 		
 		text_basedirectory = new Text(grpVisual, SWT.BORDER);
 		text_basedirectory.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		if(einstellungen.getBaseDirectory().equals("") || einstellungen.getBaseDirectory() == null)
+		if(einstellungen.getBaseDirectory() == null)
 		{
 			einstellungen.setBaseDirectory(System.getProperty("user.dir"));
 		}
