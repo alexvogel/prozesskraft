@@ -57,6 +57,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
+import org.ini4j.Profile.Section;
 import org.eclipse.swt.widgets.Combo;
 
 import com.google.common.collect.Multimap;
@@ -1713,6 +1714,69 @@ public class PrampPartUi1 extends ModelObject
 		}
 	}
 
+	/**
+	 * reads user setting from file
+	 *  ~/pkraft/pramp.user.ini
+	 * @return void
+	 */
+	void readUserIni()
+	{
+		Ini userIni = new Ini();
+		userIni.setFile(new java.io.File(System.getProperty("user.home") + "/pkraft/pramp.user.ini"));
+		
+		// userIni laden und die werte in das datenmodell uebertragen
+		try
+		{
+			userIni.load();
+			Section prampSection = userIni.get("pramp");
+			for(String actKey : prampSection.keySet())
+			{
+				einstellungen.setField("baseDirectory", prampSection.get(actKey));
+			}
+		}
+		// existiert das file noch nicht? - macht nichts
+		catch (IOException e)
+		{
+			System.err.println("userIni file does not exist yet.");
+		}
+	}
+	
+	/**
+	 * writes some user settings to the user ini file in
+	 *  ~/pkraft/pramp.user.ini
+	 * @return void
+	 */
+	void writeUserIni()
+	{
+		Ini userIni = new Ini();
+		userIni.add("pramp", "baseDirectory", einstellungen.getBaseDirectory());
+		java.io.File fileUserIni = new java.io.File(System.getProperty("user.home") + "/pkraft/pmodel.user.ini");
+		
+		// falls das verzeichnis noch nicht existiert, soll es erstellt werden
+		if(!fileUserIni.getParentFile().exists())
+		{
+			fileUserIni.getParentFile().mkdirs();
+		}
+
+		// das iniFile schreiben
+		userIni.setFile(fileUserIni);
+		try
+		{
+			userIni.store();
+		}
+		catch
+		(IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	protected void finalize()
+	{
+		this.writeUserIni();
+	}
+	
 	/**
 	 * checkout License from floatingLicenseServer
 	 * @return void

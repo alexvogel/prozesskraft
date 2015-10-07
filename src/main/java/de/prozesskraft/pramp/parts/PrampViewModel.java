@@ -14,6 +14,19 @@ public class PrampViewModel extends ModelObject
 	{
 	}
 	
+	/**
+	 * setzen anonymer felder
+	 * @param key
+	 * @param value
+	 */
+	public void setField(String key, String value)
+	{
+		if(key.equals("baseDirectory"))
+		{
+			this.baseDirectory = value;
+		}
+	}
+	
 	public String[] getDomains()
 	{
 		return domains;
