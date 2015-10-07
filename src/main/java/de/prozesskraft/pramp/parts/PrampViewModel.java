@@ -71,7 +71,7 @@ public class PrampViewModel extends ModelObject
 		{
 			if(actDomain.equals(this.getDomain()))
 			{
-				System.err.println("domain " + actDomain + " PASST! (gesucht ist " + this.getDomain());
+				System.err.println("domain " + actDomain + " PASST! (gesucht ist " + this.getDomain() + ") baseDir ist: " + this.getBaseDirectory());
 				return zaehler;
 			}
 			else
