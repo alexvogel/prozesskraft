@@ -69,9 +69,19 @@ public class PrampViewModel extends ModelObject
 		int zaehler = 0;
 		for(String actDomain : this.getDomains())
 		{
-			if(!actDomain.equals(this.getDomain()))
+			if(actDomain.equals(this.getDomain()))
 			{
+				System.err.println("domain " + actDomain + " PASST! (gesucht ist " + this.getDomain());
+				return zaehler;
+			}
+			else
+			{
+				System.err.println("domain " + actDomain + " passt nicht (gesucht ist " + this.getDomain());
 				zaehler++;
+				if((zaehler + 1) > this.getDomains().length)
+				{
+					zaehler = 0;
+				}
 			}
 		}
 		return zaehler;
