@@ -1950,7 +1950,7 @@ implements Serializable
 		else
 		{
 			this.baseDir = baseDir;
-			System.err.println("SETBASEDIR: " + this.baseDir);
+//			System.err.println("SETBASEDIR: " + this.baseDir);
 		}
 	}
 
