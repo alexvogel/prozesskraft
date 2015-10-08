@@ -1,5 +1,6 @@
 package de.prozesskraft.pkraft;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -150,52 +151,62 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 	{
 		boolean ctabMussNeuErzeugtWerden = true;
 		
-		// gibt es den CTabItem bereits, soll dieser selektiert werden
-		int counter = 2; // bereits 2 CTabItems vorhanden (pradar, pramp);
-		for(String oldPath : pmodel_id_item.keySet())
+		// vereinheitlichter pfad zur instanz
+		try
 		{
-			if(oldPath.equals(pathToInstance))
-			{
-				System.err.println("instance already open: "+pathToInstance);
-				counter++;
-				ctabMussNeuErzeugtWerden = false;
-				tabFolder.setSelection(counter-1);
-			}
-			else
-			{
-				System.err.println("opening instance: " + pathToInstance);
-			}
-		}
-
-		// falls eine ansicht neu erzeugt werden muss
-		if(ctabMussNeuErzeugtWerden)
-		{
-			// erstellen des items fuer pmodel
-			CTabItem tabItemPmodel = new CTabItem(tabFolder, SWT.NONE);
-			tabItemPmodel.setShowClose(true);
-	
-			Composite compositePmodel = new Composite(tabFolder, SWT.NONE);
-			GridLayout gl_compositePmodel = new GridLayout(1, false);
-			gl_compositePmodel.marginWidth = 0;
-			gl_compositePmodel.marginHeight = 0;
-			compositePmodel.setLayout(gl_compositePmodel);
-	
-			PmodelPartUi1 pmodelUi = new PmodelPartUi1(compositePmodel, pathToInstance);
-			pmodelUi.setPkraft(this);
-			tabItemPmodel.setText(pmodelUi.getProcess().getName() + " " + pmodelUi.getProcess().getId2() + " " + pmodelUi.getProcess().getId());
-			tabItemPmodel.setToolTipText(pmodelUi.getProcess().getName() + " - " + pmodelUi.getProcess().getVersion() + " - " + pathToInstance);
-	
-			tabItemPmodel.addDisposeListener(entferne_pmodel);
+			String pathToInstance2 = new java.io.File(pathToInstance).getCanonicalPath();
 			
-			// das neue tabItem dem tabFolder hinzufuegen
-			tabItemPmodel.setControl(compositePmodel);
-	
-			// das neueste tabItem selektieren
-			tabFolder.setSelection(tabFolder.getItemCount()-1);
-	
-			// das neue tabItem dem map der bekannten tabItems hinzufuegen
-			this.pmodel_id_item.put(pathToInstance, tabItemPmodel);
+			// gibt es den CTabItem bereits, soll dieser selektiert werden
+			int counter = 2; // bereits 2 CTabItems vorhanden (pradar, pramp);
+			for(String oldPath : pmodel_id_item.keySet())
+			{
+				if(oldPath.equals(pathToInstance2))
+				{
+					System.err.println("instance already open: "+pathToInstance2);
+					counter++;
+					ctabMussNeuErzeugtWerden = false;
+					tabFolder.setSelection(counter-1);
+				}
+				else
+				{
+					System.err.println("opening instance: " + pathToInstance2);
+				}
+			}
+
+			// falls eine ansicht neu erzeugt werden muss
+			if(ctabMussNeuErzeugtWerden)
+			{
+				// erstellen des items fuer pmodel
+				CTabItem tabItemPmodel = new CTabItem(tabFolder, SWT.NONE);
+				tabItemPmodel.setShowClose(true);
+		
+				Composite compositePmodel = new Composite(tabFolder, SWT.NONE);
+				GridLayout gl_compositePmodel = new GridLayout(1, false);
+				gl_compositePmodel.marginWidth = 0;
+				gl_compositePmodel.marginHeight = 0;
+				compositePmodel.setLayout(gl_compositePmodel);
+		
+				PmodelPartUi1 pmodelUi = new PmodelPartUi1(compositePmodel, pathToInstance2);
+				pmodelUi.setPkraft(this);
+				tabItemPmodel.setText(pmodelUi.getProcess().getName() + " " + pmodelUi.getProcess().getId2() + " " + pmodelUi.getProcess().getId());
+				tabItemPmodel.setToolTipText(pmodelUi.getProcess().getName() + " - " + pmodelUi.getProcess().getVersion() + " - " + pathToInstance2);
+		
+				tabItemPmodel.addDisposeListener(entferne_pmodel);
+				
+				// das neue tabItem dem tabFolder hinzufuegen
+				tabItemPmodel.setControl(compositePmodel);
+		
+				// das neueste tabItem selektieren
+				tabFolder.setSelection(tabFolder.getItemCount()-1);
+		
+				// das neue tabItem dem map der bekannten tabItems hinzufuegen
+				this.pmodel_id_item.put(pathToInstance2, tabItemPmodel);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 	}
 	
 	/**
