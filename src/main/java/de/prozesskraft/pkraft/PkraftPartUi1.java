@@ -1,6 +1,7 @@
 package de.prozesskraft.pkraft;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,11 +28,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.ini4j.Ini;
 import org.eclipse.swt.custom.CTabFolder;
 
 //import de.caegroup.pradar.Init;
 import de.prozesskraft.pradar.parts.PradarPartUi3;
 import de.prozesskraft.pramp.parts.PrampPartUi1;
+import de.prozesskraft.commons.MyLicense;
 import de.prozesskraft.pmodel.PmodelPartUi1;
 
 import org.eclipse.swt.custom.CTabItem;
@@ -42,6 +45,7 @@ import org.eclipse.swt.events.ModifyListener;
 
 public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi1, de.prozesskraft.gui.step.insight.IPkraftPartUi2
 {
+	static Ini ini;
 	static CommandLine line;
 	
 	Display display;
@@ -238,6 +242,7 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 	 */
 	public static void main(String[] args)
 	{
+
 		/*----------------------------
 		  create boolean options
 		----------------------------*/
@@ -289,6 +294,30 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 			System.exit(0);
 		}
 
+		/*----------------------------
+		  die lizenz ueberpruefen und ggf abbrechen
+		----------------------------*/
+
+		// check for valid license
+		ArrayList<String> allPortAtHost = new ArrayList<String>();
+		allPortAtHost.add(ini.get("license-server", "license-server-1"));
+		allPortAtHost.add(ini.get("license-server", "license-server-2"));
+		allPortAtHost.add(ini.get("license-server", "license-server-3"));
+		
+		MyLicense lic = new MyLicense(allPortAtHost, "1", "user-edition", "0.1");
+		
+		// lizenz-logging ausgeben
+		for(String actLine : (ArrayList<String>) lic.getLog())
+		{
+			System.err.println(actLine);
+		}
+
+		// abbruch, wenn lizenz nicht valide
+		if (!lic.isValid())
+		{
+			System.exit(1);
+		}
+		
 		/*----------------------------
 		  other things
 		----------------------------*/
