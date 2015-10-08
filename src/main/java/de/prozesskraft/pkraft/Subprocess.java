@@ -167,9 +167,12 @@ implements Serializable
 			}
 			else
 			{
-				log("info", "subprocess already finished. pid="+pid);
-				log("info", "setting status to 'finished'");
-				this.setStatus("finished");
+				log("info", "subprocess not running anymore. pid="+pid);
+				
+				// den status des subprocesses feststellen und this auf den gleichen setzen
+				this.getProcess().readBinary();
+				this.setStatus(this.getProcess().getStatus());
+				log("info", "setting status to " + this.getStatus());
 			}
 		}
 
