@@ -270,7 +270,7 @@ implements Serializable, Cloneable
 			perlSnippet.add("	exit(1);");
 			perlSnippet.add("}");
 			perlSnippet.add("");
-			perlSnippet.add("&logit(\"debug\", \"command for subprocess in step '" + this.getName() + "' is: \" . $COMMAND{'" + this.getName() + "'}\");");
+			perlSnippet.add("&logit(\"debug\", \"command for subprocess in step '" + this.getName() + "' is: \" . $COMMAND{'" + this.getName() + "'});");
 			perlSnippet.add("");
 			
 		}
@@ -352,8 +352,8 @@ implements Serializable, Cloneable
 			perlSnippet.add("");
 			perlSnippet.add("\t\t# initialize list");
 			perlSnippet.add("\t\t# initlist (1=fromobjecttype 2=returnfield 3=fromstep 4=insertrule 5=minoccur 6=maxoccur 7=refARRAYmatch 8=refARRAYlist 9=refHASHvariable 10=refHASHfile)");
-			perlSnippet.add("\t\t&logit(\"info\", \"step '$stepname' initializes list '"+actInit.getListname()+"' with data from step '"+actInit.getFromstep()+"'\");");
-			perlSnippet.add("\t\t&initlist('"+actInit.getFromobjecttype()+"', '"+actInit.getReturnfield()+"', '"+actInit.getFromstep()+"', '"+actInit.getInsertrule()+"', "+actInit.getMinoccur()+", "+actInit.getMaxoccur()+", \\@matches_"+actInit.getListname()+", \\@"+actInit.getListname()+", $VARIABLE{'"+actInit.getFromstep()+"'}, $FILE{'"+actInit.getFromstep()+"'});");
+			perlSnippet.add("\t\t&logit(\"info\", \"step '" + this.getName() + "' initializes list '"+actInit.getListname()+"' with data from step '"+actInit.getFromstep()+"'\");");
+			perlSnippet.add("\t\t&initlist('"+actInit.getFromobjecttype()+"', '"+actInit.getReturnfield()+"', '"+actInit.getFromstep()+"', '"+actInit.getInsertrule()+"', "+actInit.getMinoccur()+", "+actInit.getMaxoccur()+", \\@matches_list, \\@list, $VARIABLE{'"+actInit.getFromstep()+"'}, $FILE{'"+actInit.getFromstep()+"'});");
 			
 			perlSnippet.add("\t}");
 		}
