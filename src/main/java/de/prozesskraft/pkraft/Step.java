@@ -243,17 +243,37 @@ implements Serializable, Cloneable
 		
 		perlSnippet.add("#-------------------");
 		perlSnippet.add("# Welches Kommando soll fuer Step '" + this.getName() + "' aufgerufen werden?");
+		perlSnippet.add("");
 
-		perlSnippet.add("");
-		perlSnippet.add("if (!($COMMAND{'" + this.getName() + "'} = &commandResolve(\"" + this.getWork().getCommand() + "\")))");
-		perlSnippet.add("{");
-		perlSnippet.add("	&logit(\"fatal\", \"cannot determine what program to call for step '" + this.getName() + "'. " + this.getWork().getCommand() + " neither found in <installdir>/bin nor by calling 'which'.\");");
-		perlSnippet.add("	my $PROCESS_STOP = scalar(localtime());");
-		perlSnippet.add("	exit(1);");
-		perlSnippet.add("}");
-		perlSnippet.add("");
-		perlSnippet.add("&logit(\"debug\", \"command for step '" + this.getName() + "' is: $COMMAND{'" + this.getName() + "'}\");");
-		perlSnippet.add("");
+		// gibts ein work? dann soll das kommando aus der workdefinition uebernommen werden
+		if(this.getWork() != null)
+		{
+			perlSnippet.add("if (!($COMMAND{'" + this.getName() + "'} = &commandResolve(\"" + this.getWork().getCommand() + "\")))");
+			perlSnippet.add("{");
+			perlSnippet.add("	&logit(\"fatal\", \"cannot determine what program to call for step '" + this.getName() + "'. " + this.getWork().getCommand() + " neither found in <installdir>/bin nor by calling 'which'.\");");
+			perlSnippet.add("	my $PROCESS_STOP = scalar(localtime());");
+			perlSnippet.add("	exit(1);");
+			perlSnippet.add("}");
+			perlSnippet.add("");
+			perlSnippet.add("&logit(\"debug\", \"command for step '" + this.getName() + "' is: $COMMAND{'" + this.getName() + "'}\");");
+			perlSnippet.add("");
+		}
+		// gibts ein subprocess? Dann soll der Aufruf auf das entsprechende prozesskommando gehen
+		else if(this.getSubprocess() != null)
+		{
+			perlSnippet.add("$COMMAND{'" + this.getName() + "'} = $domainInstallationDirectory . \"/" + this.getSubprocess().getDomain() + "/" +this.getSubprocess().getName() + "/" +this.getSubprocess().getVersion() + "/"+this.getSubprocess().getName()+"\";");
+			perlSnippet.add("");
+			perlSnippet.add("if(!stat $COMMAND{'" + this.getName() + "'}");
+			perlSnippet.add("{");
+			perlSnippet.add("	&logit(\"fatal\", \"cannot determine what program to call for subprocess in step '" + this.getName() + "'. command not found: $COMMAND{'" + this.getName() + "'});");
+			perlSnippet.add("	my $PROCESS_STOP = scalar(localtime());");
+			perlSnippet.add("	exit(1);");
+			perlSnippet.add("}");
+			perlSnippet.add("");
+			perlSnippet.add("&logit(\"debug\", \"command for subprocess in step '" + this.getName() + "' is: $COMMAND{'" + this.getName() + "'}\");");
+			perlSnippet.add("");
+			
+		}
 		
 		return perlSnippet;
 	}
@@ -344,30 +364,49 @@ implements Serializable, Cloneable
 		perlSnippet.add("\tmy $call = $COMMAND{'" + this.getName() + "'};");
 		perlSnippet.add("");
 		
-		for(Callitem actCallitem : this.getWork().getCallitem())
+		// falls ein work existiert, sol das kommando aus den callitems zusammengesetzt werden
+		if(this.getWork() != null)
 		{
-			// wenn callitem geloopt werden soll?
-			if(!(actCallitem.getLoop() == null))
+			for(Callitem actCallitem : this.getWork().getCallitem())
 			{
-				perlSnippet.add("\tforeach my $loopvar (@{$allLists{'"+actCallitem.getLoop()+"'}})");
-				perlSnippet.add("\t{");
-				String tmpString = actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal();
-				String tmpReplace = tmpString.replaceAll("\\$", "\\\\\\$");
-				perlSnippet.add("\t\tmy $tmpString = \""+tmpReplace+"\";");
-				perlSnippet.add("\t\t$tmpString =~ s/\\{\\$loopvarcallitem\\}/$loopvar/g;");
-				
-				perlSnippet.add("\t\t$call .= \" \" . $tmpString;");
-				perlSnippet.add("\t}");
-			}
-			// wenn callitem nicht geloopt werden soll
-			else
-			{
-				String tmpString = actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal();
-				String tmpReplace = tmpString.replaceAll("\\$", "\\\\\\$");
-				perlSnippet.add("\t$call .= \" \" . \""+tmpReplace+"\";");
+				// wenn callitem geloopt werden soll?
+				if(!(actCallitem.getLoop() == null))
+				{
+					perlSnippet.add("\tforeach my $loopvar (@{$allLists{'"+actCallitem.getLoop()+"'}})");
+					perlSnippet.add("\t{");
+					String tmpString = actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal();
+					String tmpReplace = tmpString.replaceAll("\\$", "\\\\\\$");
+					perlSnippet.add("\t\tmy $tmpString = \""+tmpReplace+"\";");
+					perlSnippet.add("\t\t$tmpString =~ s/\\{\\$loopvarcallitem\\}/$loopvar/g;");
+					
+					perlSnippet.add("\t\t$call .= \" \" . $tmpString;");
+					perlSnippet.add("\t}");
+				}
+				// wenn callitem nicht geloopt werden soll
+				else
+				{
+					String tmpString = actCallitem.getPar()+actCallitem.getDel()+actCallitem.getVal();
+					String tmpReplace = tmpString.replaceAll("\\$", "\\\\\\$");
+					perlSnippet.add("\t$call .= \" \" . \""+tmpReplace+"\";");
+				}
 			}
 		}
-		
+		// falls es ein Subprocess ist, dann soll ueber die commits seines rootsteps geloopt und daraus aufrufparameter erzeugt werden
+		else if(this.getSubprocess() != null)
+		{
+			// fuer jedes commit des rootSteps
+			for(Commit actCommit : this.getSubprocess().getStep().getCommit())
+			{
+				// fuer jedes file des commits
+				for(File actFile : actCommit.getFile())
+				{
+					String tmpString = actFile.getKey()+" "+actFile.getGlob();
+					String tmpReplace = tmpString.replaceAll("\\$", "\\\\\\$");
+					perlSnippet.add("\t$call .= \" \" . \""+tmpReplace+"\";");
+				}
+			}
+		}
+
 		// aufloesen der platzhalter inerhalb des calls
 		perlSnippet.add("\t$call = &resolve($call, \\%allLists);");
 		perlSnippet.add("\t&logit(\"debug\", \"--- call will be: $call\");");
