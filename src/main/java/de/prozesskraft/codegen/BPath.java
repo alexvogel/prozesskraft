@@ -56,6 +56,9 @@ implements Serializable, Cloneable
 			content.add("my $docdir = $installdir . \"/doc\";");
 			content.add("my $bindir = $installdir . \"/bin\";");
 			content.add("");
+			content.add("# feststellen des domain installations verzeichnisses");
+			content.add("my $domainInstallationDirectory = $installdir . \"/../../..\";");
+			content.add("");
 			content.add("# einbinden der avoge module");
 			content.add("# zuerst, falls aus installationsverzeichnis gesucht wird");
 			content.add("use lib $directories . \"../../../myperllib/master/lib\";");
