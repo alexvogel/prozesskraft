@@ -1,5 +1,6 @@
 package de.prozesskraft.pkraft;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,12 +30,14 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.ini4j.Ini;
+import org.ini4j.InvalidFileFormatException;
 import org.eclipse.swt.custom.CTabFolder;
 
 //import de.caegroup.pradar.Init;
 import de.prozesskraft.pradar.parts.PradarPartUi3;
 import de.prozesskraft.pramp.parts.PrampPartUi1;
 import de.prozesskraft.commons.MyLicense;
+import de.prozesskraft.commons.WhereAmI;
 import de.prozesskraft.pmodel.PmodelPartUi1;
 
 import org.eclipse.swt.custom.CTabItem;
@@ -242,6 +245,34 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 	 */
 	public static void main(String[] args)
 	{
+
+		/*----------------------------
+		  get options from ini-file
+		----------------------------*/
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(PkraftPartUi1.class) + "/" + "../etc/pkraft-gui.ini");
+
+		if (inifile.exists())
+		{
+			try
+			{
+				ini = new Ini(inifile);
+			}
+			catch (InvalidFileFormatException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			catch (IOException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		else
+		{
+			System.err.println("ini file does not exist: "+inifile.getAbsolutePath());
+			System.exit(1);
+		}
 
 		/*----------------------------
 		  create boolean options
