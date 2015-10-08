@@ -281,7 +281,7 @@ public class Perlcode
 		
 		for(Step actualStep : process.getStep())
 		{
-			if(! actualStep.getName().matches("^root$"))
+			if(! actualStep.getName().matches("^root$") && actualStep.getType().matches("automatic"))
 			{
 				writeStepAsPerlcode(process, actualStep.getName(), outputDirStep, nolist);
 			}
@@ -302,6 +302,7 @@ public class Perlcode
 			// step ueber den namen heraussuchen
 			Step step = process.getStep(stepname);
 			System.err.println("generating perlcode for step "+stepname);
+			
 			writeFile.writeFile(new java.io.File(outputDir.getCanonicalPath()+"/"+step.getWork().getCommand()), step.getStepAsPerlScript(nolist));
 		}
 		else
