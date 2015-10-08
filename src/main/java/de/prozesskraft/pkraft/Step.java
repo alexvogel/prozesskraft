@@ -263,14 +263,14 @@ implements Serializable, Cloneable
 		{
 			perlSnippet.add("$COMMAND{'" + this.getName() + "'} = $domainInstallationDirectory . \"/" + this.getSubprocess().getDomain() + "/" +this.getSubprocess().getName() + "/" +this.getSubprocess().getVersion() + "/"+this.getSubprocess().getName()+"\";");
 			perlSnippet.add("");
-			perlSnippet.add("if(!stat $COMMAND{'" + this.getName() + "'}");
+			perlSnippet.add("if(!stat $COMMAND{'" + this.getName() + "'})");
 			perlSnippet.add("{");
-			perlSnippet.add("	&logit(\"fatal\", \"cannot determine what program to call for subprocess in step '" + this.getName() + "'. command not found: $COMMAND{'" + this.getName() + "'});");
+			perlSnippet.add("	&logit(\"fatal\", \"cannot determine what program to call for subprocess in step '" + this.getName() + "'. command not found: \" . $COMMAND{'" + this.getName() + "'});");
 			perlSnippet.add("	my $PROCESS_STOP = scalar(localtime());");
 			perlSnippet.add("	exit(1);");
 			perlSnippet.add("}");
 			perlSnippet.add("");
-			perlSnippet.add("&logit(\"debug\", \"command for subprocess in step '" + this.getName() + "' is: $COMMAND{'" + this.getName() + "'}\");");
+			perlSnippet.add("&logit(\"debug\", \"command for subprocess in step '" + this.getName() + "' is: \" . $COMMAND{'" + this.getName() + "'}\");");
 			perlSnippet.add("");
 			
 		}
@@ -331,21 +331,21 @@ implements Serializable, Cloneable
 			{
 				perlSnippet.add("");
 				perlSnippet.add("\t\t# new list");
-				perlSnippet.add("\t\tmy @"+actInit.getListname()+";");
-				perlSnippet.add("\t\t$allLists{'"+actInit.getListname()+"'} = \\@"+actInit.getListname()+";");
+				perlSnippet.add("\t\tmy @list;");
+				perlSnippet.add("\t\t$allLists{'"+actInit.getListname()+"'} = \\@list;");
 			}
 				
 			// ein array of hashes mit allen matches anlegen
 			perlSnippet.add("");
 			perlSnippet.add("\t\t# create an array of hashes with all matches");
-			perlSnippet.add("\t\tmy @matches_"+actInit.getListname()+";");
+			perlSnippet.add("\t\tmy @matches_list;");
 			ArrayList<Match> matchesOfInit = actInit.getMatch();
 			for(int x=0; x < matchesOfInit.size(); x++)
 			{
-				perlSnippet.add("\t\tmy %match_"+actInit.getListname()+"_"+x+";");
-				perlSnippet.add("\t\t$match_"+actInit.getListname()+"_"+x+"{'field'} = \'"+matchesOfInit.get(x).getField()+"\';");
-				perlSnippet.add("\t\t$match_"+actInit.getListname()+"_"+x+"{'pattern'} = \'"+matchesOfInit.get(x).getPattern()+"\';");
-				perlSnippet.add("\t\tpush @matches_"+actInit.getListname()+", \\%match_"+actInit.getListname()+"_"+x+";");
+				perlSnippet.add("\t\tmy %match_list_"+x+";");
+				perlSnippet.add("\t\t$match_list_"+x+"{'field'} = \'"+matchesOfInit.get(x).getField()+"\';");
+				perlSnippet.add("\t\t$match_list_"+x+"{'pattern'} = \'"+matchesOfInit.get(x).getPattern()+"\';");
+				perlSnippet.add("\t\tpush @matches_list, \\%match_list_"+x+";");
 			}
 			
 			// liste initialisieren / anreichern
@@ -480,7 +480,7 @@ implements Serializable, Cloneable
 				// wenn ein value angegeben wird
 				if(!(actVariable.getValue() == null))
 				{
-					perlSnippet.add("\t\tmy $value = \""+actVariable.getValue()+"\";");
+					perlSnippet.add("\t\tmy $value = '"+actVariable.getValue()+"';");
 					perlSnippet.add("\t\t$value = &resolve($value, \\%allLists);");
 					perlSnippet.add("\t\tpush (@{$VARIABLE{'"+this.getName()+"'}}, [\""+actVariable.getKey()+"\", $value]);");
 					perlSnippet.add("\t\t&logit(\"info\", \""+actVariable.getKey()+"=$value\");");
@@ -489,7 +489,7 @@ implements Serializable, Cloneable
 				{
 					String tmpString = actVariable.getGlob();
 					String tmpReplace = tmpString.replaceAll("\\$", "\\\\\\$");
-					perlSnippet.add("\t\tmy $glob = \""+tmpReplace+"\";");
+					perlSnippet.add("\t\tmy $glob = '"+tmpReplace+"';");
 					perlSnippet.add("\t\t$glob = &resolve($glob, \\%allLists);");
 					perlSnippet.add("\t\t&logit(\"debug\", \"--- modified glob is: $glob\");");
 					perlSnippet.add("\t\t&logit(\"debug\", \"---- globbing for files with glob '$glob'\");");
