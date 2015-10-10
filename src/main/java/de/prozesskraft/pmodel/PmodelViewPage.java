@@ -140,8 +140,7 @@ public class PmodelViewPage extends PApplet
 //    	PFont font = this.loadFont("AndaleMono-36.vlw");
      	PFont font = this.loadFont("TheSans-Plain-12.vlw");
     	textFont(font, 12);
-//    	Image icon = Toolkit.getDefaultToolkit().getImage("/data/prog/workspace/larry/icon/process.png");
-    	Image icon = Toolkit.getDefaultToolkit().getImage(PmodelViewPage.class.getClassLoader().getResource("process.png"));
+//    	Image icon = Toolkit.getDefaultToolkit().getImage(PmodelViewPage.class.getClassLoader().getResource("process.png"));
 		textSize(15);
 		size(this.einstellungen.getWidth(), this.einstellungen.getHeight(), JAVA2D);
 //  	size(this.width, this.height, OPENGL);
