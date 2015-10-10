@@ -138,7 +138,7 @@ public class PrampPartUi1 extends ModelObject
 		setIni("../etc/pramp-gui.ini");
 		readUserIni();
 		loadIni();
-		checkLicense();
+//		checkLicense();
 		detInstalledDomainNames();
 		detDomainUserRights();
 		reduceInstalledDomainNamesByRight();
@@ -154,7 +154,7 @@ public class PrampPartUi1 extends ModelObject
 	{
 		setIni("../etc/pramp-gui.ini");
 		loadIni();
-		checkLicense();
+//		checkLicense();
 		readUserIni();
 		detInstalledDomainNames();
 		detDomainUserRights();
@@ -172,7 +172,7 @@ public class PrampPartUi1 extends ModelObject
 //		setIni("target/test-classes/etc/pramp-gui.ini");
 		setIni("../etc/pramp-gui.ini");
 		loadIni();
-		checkLicense();
+//		checkLicense();
 		readUserIni();
 //		getProcesses();
 //		refresh();
