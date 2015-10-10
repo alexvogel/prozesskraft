@@ -112,7 +112,7 @@ public class PmodelPartUi1 extends ModelObject
 	private Button button_stopmanager;
 //	private Process process = new Process();
 	private String iniFile = null;
-	private Ini ini = null;
+	private static Ini ini = null;
 	private ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
 	
 	private Label label_marked = null;
@@ -153,7 +153,7 @@ public class PmodelPartUi1 extends ModelObject
 		composite.setLocation(0, 0);
 		setIni();
 		loadIni();
-		checkLicense();
+//		checkLicense();
 		createControls(composite);
 		this.einstellungen.getProcess().setStepRanks();
 		applet = new PmodelViewPage(einstellungen);
@@ -168,7 +168,7 @@ public class PmodelPartUi1 extends ModelObject
 		shell = composite.getShell();
 		setIni();
 		loadIni();
-		checkLicense();
+//		checkLicense();
 		this.einstellungen.getProcess().setStepRanks();
 		applet = new PmodelViewPage(einstellungen);
 		createControls(composite);
