@@ -111,24 +111,6 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 
-		// erstellen des items fuer pradar
-		CTabItem tabItemPradar = new CTabItem(tabFolder, SWT.NONE);
-		tabItemPradar.setText("pradar");
-		tabItemPradar.setToolTipText("observe");
-
-		Composite compositePradar = new Composite(tabFolder, SWT.NONE);
-		GridLayout gl_compositePradar = new GridLayout(1, false);
-		gl_compositePradar.marginWidth = 0;
-		gl_compositePradar.marginHeight = 0;
-		compositePradar.setLayout(gl_compositePradar);
-
-		// pradar erstellen
-		PradarPartUi3 pradarUi = new PradarPartUi3(compositePradar);
-		pradarUi.setPkraft(this);
-
-		// das item platzieren
-		tabItemPradar.setControl(compositePradar);
-
 		// erstellen des items fuer pramp
 		CTabItem tabItemPramp = new CTabItem(tabFolder, SWT.NONE);
 		tabItemPramp.setText("pramp");
@@ -147,7 +129,26 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 		// das tabItem dem tabfolder hinzufuegen
 		tabItemPramp.setControl(compositePramp);
 		
-		
+		// erstellen des items fuer pradar
+		CTabItem tabItemPradar = new CTabItem(tabFolder, SWT.NONE);
+		tabItemPradar.setText("pradar");
+		tabItemPradar.setToolTipText("observe");
+
+		Composite compositePradar = new Composite(tabFolder, SWT.NONE);
+		GridLayout gl_compositePradar = new GridLayout(1, false);
+		gl_compositePradar.marginWidth = 0;
+		gl_compositePradar.marginHeight = 0;
+		compositePradar.setLayout(gl_compositePradar);
+
+		// pradar erstellen
+		PradarPartUi3 pradarUi = new PradarPartUi3(compositePradar);
+		pradarUi.setPkraft(this);
+
+		// das item platzieren
+		tabItemPradar.setControl(compositePradar);
+
+		// auf pradar selektieren
+		tabFolder.setSelection(1);
 	}
 
 	/**
