@@ -95,7 +95,7 @@ public class PrampPartUi1 extends ModelObject
 	private String processDefinitionPath = null;
 	public Process process = null;
 	private String iniFile = null;
-	private Ini ini = null;
+	static private Ini ini = null;
 	private String userIniFile = null;
 	
 	private Map<String,Boolean> domainUserRights = new HashMap<String,Boolean>();
@@ -1684,6 +1684,35 @@ public class PrampPartUi1 extends ModelObject
 	public static void main(String[] args)
 	{
 		/*----------------------------
+		  get options from ini-file
+		----------------------------*/
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(PrampPartUi1.class) + "/" + "../etc/pramp-gui.ini");
+
+		if (inifile.exists())
+		{
+			try
+			{
+				ini = new Ini(inifile);
+			}
+			catch (InvalidFileFormatException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			catch (IOException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		else
+		{
+			System.err.println("ini file does not exist: "+inifile.getAbsolutePath());
+			System.exit(1);
+		}
+
+
+		/*----------------------------
 		  create boolean options
 		----------------------------*/
 		Option help = new Option("help", "print this message");
@@ -1737,6 +1766,30 @@ public class PrampPartUi1 extends ModelObject
 			System.out.println("version: [% version %]");
 			System.out.println("date:    [% date %]");
 			System.exit(0);
+		}
+		
+		/*----------------------------
+		  die lizenz ueberpruefen und ggf abbrechen
+		----------------------------*/
+
+		// check for valid license
+		ArrayList<String> allPortAtHost = new ArrayList<String>();
+		allPortAtHost.add(ini.get("license-server", "license-server-1"));
+		allPortAtHost.add(ini.get("license-server", "license-server-2"));
+		allPortAtHost.add(ini.get("license-server", "license-server-3"));
+		
+		MyLicense lic = new MyLicense(allPortAtHost, "1", "user-edition", "0.1");
+		
+		// lizenz-logging ausgeben
+		for(String actLine : (ArrayList<String>) lic.getLog())
+		{
+			System.err.println(actLine);
+		}
+
+		// abbruch, wenn lizenz nicht valide
+		if (!lic.isValid())
+		{
+			System.exit(1);
 		}
 		
 
