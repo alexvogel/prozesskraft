@@ -169,10 +169,10 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 		{
 			if(oneExistentId.equals(p2.getId()))
 			{
-				counter++;
 				ctabMussNeuErzeugtWerden = false;
-				tabFolder.setSelection(counter-1);
+				tabFolder.setSelection(counter);
 			}
+			counter++;
 		}
 		
 //			String pathToInstance2 = new java.io.File(pathToInstance).getCanonicalPath();
