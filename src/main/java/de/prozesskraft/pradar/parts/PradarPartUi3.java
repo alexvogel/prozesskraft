@@ -125,7 +125,7 @@ public class PradarPartUi3 extends ModelObject
 	private Frame frame_radar = null;
 	PradarViewModel einstellungen = new PradarViewModel();
 
-	public Ini ini = null;
+	public static Ini ini = null;
 	
 	Entity entity_filter = new Entity();
 	
@@ -2400,6 +2400,34 @@ public class PradarPartUi3 extends ModelObject
 	public static void main(String[] args)
 	{
 		/*----------------------------
+		  get options from ini-file
+		----------------------------*/
+		File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(PradarPartUi3.class) + "/" + "../etc/pradar-gui.ini");
+
+		if (inifile.exists())
+		{
+			try
+			{
+				ini = new Ini(inifile);
+			}
+			catch (InvalidFileFormatException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			catch (IOException e1)
+			{
+			// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		else
+		{
+			System.err.println("ini file does not exist: "+inifile.getAbsolutePath());
+			System.exit(1);
+		}
+
+		/*----------------------------
 		  create boolean options
 		----------------------------*/
 		Option help = new Option("help", "print this message");
@@ -2455,6 +2483,33 @@ public class PradarPartUi3 extends ModelObject
 			System.exit(0);
 		}
 		
+		/*----------------------------
+		  die lizenz ueberpruefen und ggf abbrechen
+		----------------------------*/
+
+		// check for valid license
+		ArrayList<String> allPortAtHost = new ArrayList<String>();
+		allPortAtHost.add(ini.get("license-server", "license-server-1"));
+		allPortAtHost.add(ini.get("license-server", "license-server-2"));
+		allPortAtHost.add(ini.get("license-server", "license-server-3"));
+		
+		MyLicense lic = new MyLicense(allPortAtHost, "1", "user-edition", "0.1");
+		
+		// lizenz-logging ausgeben
+		for(String actLine : (ArrayList<String>) lic.getLog())
+		{
+			System.err.println(actLine);
+		}
+
+		// abbruch, wenn lizenz nicht valide
+		if (!lic.isValid())
+		{
+			System.exit(1);
+		}
+		
+		/*----------------------------
+		  other things
+		----------------------------*/
 
 		// gui
 		final Display display = new Display();
