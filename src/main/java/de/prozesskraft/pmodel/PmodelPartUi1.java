@@ -234,9 +234,11 @@ public class PmodelPartUi1 extends ModelObject
 		applet = new PmodelViewPage(einstellungen);
 		createControls(composite);
 		
-		// den text in der fensterleiste praezisieren
-		composite.getShell().setText(this.einstellungen.getProcess().getId2() + " - " + this.einstellungen.getProcess().getName() + " " + this.einstellungen.getProcess().getVersion() + " - pmodel [% version %]");
-
+		// den text in der fensterleiste praezisieren, falls pmodel im standalone modus gestartet wurde
+		if(this.getPkraft() == null)
+		{
+			composite.getShell().setText(this.einstellungen.getProcess().getId2() + " - " + this.einstellungen.getProcess().getName() + " " + this.einstellungen.getProcess().getVersion() + " - pmodel [% version %]");
+		}
 	}
 
 	/**
