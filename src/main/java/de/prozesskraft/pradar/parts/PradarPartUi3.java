@@ -938,7 +938,15 @@ public class PradarPartUi3 extends ModelObject
 		{
 			log("info", "opening instance file for inspection in new tab");
 			IPkraftPartUi1 lulu = (IPkraftPartUi1)pkraft;
-			lulu.openInstance(entity.getResource());
+			try
+			{
+				lulu.openInstance(entity.getResource());
+			}
+			catch(IOException e)
+			{
+				log("error", "error when reading instance file "+entity.getResource());
+				log("fatal", e.getMessage());
+			}
 		}
 
 		// wurde pradar standalone geoeffnet, soll pmodel auch standalone geoeffnet werden
