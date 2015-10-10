@@ -463,7 +463,15 @@ public class SIInsightCreator
 		if(this.getFather().getPkraft() != null)
 		{
 			IPkraftPartUi2 lulu = (IPkraftPartUi2)this.getFather().getPkraft();
-			lulu.openInstance(pathToInstance);
+			try
+			{
+				lulu.openInstance(pathToInstance);
+			}
+			catch(IOException e)
+			{
+				father.log("error", "error when reading instance file "+pathToInstance);
+				father.log("fatal", e.getMessage());
+			}
 		}
 
 		// wurde pradar standalone geoeffnet, soll pmodel auch standalone geoeffnet werden
