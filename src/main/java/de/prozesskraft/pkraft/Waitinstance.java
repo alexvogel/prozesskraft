@@ -220,7 +220,11 @@ public class Waitinstance
 			// den prozess frisch einlesen
 			p2 = p1.readBinary();
 		}
-			
+		
+		System.err.println("exiting because instance status is: " + p2.getStatus());
+		System.err.println("now is: " + new Timestamp(startInMillis).toString());
+		System.exit(0);
+		
 	}
 	
 	private static void exiter()
