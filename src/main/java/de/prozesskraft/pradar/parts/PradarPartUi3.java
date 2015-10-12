@@ -385,7 +385,7 @@ public class PradarPartUi3 extends ModelObject
 		button_attend = new Button(grpFunctionInstance, SWT.NONE);
 		button_attend.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		button_attend.setText("attend");
-		button_attend.setToolTipText("check status");
+		button_attend.setToolTipText("renew status");
 		button_attend.addSelectionListener(listener_attend_button);
 		
 		button_delete = new Button(grpFunctionInstance, SWT.NONE);
