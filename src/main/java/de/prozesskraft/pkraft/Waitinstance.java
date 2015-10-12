@@ -236,6 +236,7 @@ public class Waitinstance
 		long runTill = System.currentTimeMillis() + (maxrun * 60 * 1000);
 
 		// logging
+		System.err.println("waiting for instance: " + fileInstance.getAbsolutePath() );
 		System.err.println("now is: " + new Timestamp(startInMillis).toString());
 		System.err.println("maxrun till: " + new Timestamp(runTill).toString());
 		
@@ -247,6 +248,9 @@ public class Waitinstance
 		// schleife, die prozess einliest und ueberprueft ob er noch laeuft
 		while( ! (p2.getStatus().equals("error") || p2.getStatus().equals("finished")) )
 		{
+			// logging
+			System.err.println(new Timestamp(System.currentTimeMillis()) + " instance status: " + p2.getStatus());
+
 			// 5 minuten schlafen: 300000 millis
 			try {
 				Thread.sleep(300000);
