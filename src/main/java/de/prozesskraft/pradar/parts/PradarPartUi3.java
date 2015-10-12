@@ -119,6 +119,7 @@ public class PradarPartUi3 extends ModelObject
 	private Button button_clean = null;
 	private Button button_clone = null;
 	private Button button_merge = null;
+	private Button button_attend = null;
 	private Button button_delete = null;
 	private Scale scale_zoom;
 	private StyledText text_logging = null;
@@ -380,6 +381,12 @@ public class PradarPartUi3 extends ModelObject
 		button_merge.setText("merge");
 		button_merge.setToolTipText("merge several instances to a new instance. steps downstream of mergepoints will be resettet, content of upstream steps is taken from the first selected entity");
 		button_merge.addSelectionListener(listener_merge_button);
+		
+		button_attend = new Button(grpFunctionInstance, SWT.NONE);
+		button_attend.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_attend.setText("attend");
+		button_attend.setToolTipText("check status");
+		button_attend.addSelectionListener(listener_attend_button);
 		
 		button_delete = new Button(grpFunctionInstance, SWT.NONE);
 		button_delete.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -952,7 +959,6 @@ public class PradarPartUi3 extends ModelObject
 		// wurde pradar standalone geoeffnet, soll pmodel auch standalone geoeffnet werden
 		else
 		{
-			log("debug", "pkraft == null");
 			log("info", "opening instance file for inspection");
 			String aufruf = ini.get("apps",  "pmodel") + " -instance "+entity.getResource();
 			log("info", "calling " + aufruf);
@@ -1375,6 +1381,55 @@ public class PradarPartUi3 extends ModelObject
 
 	};	
 	
+	
+	SelectionAdapter listener_attend_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			// ist ueberhaupt etwas markiert?
+			if (einstellungen.entitySelected == null)
+			{
+				log("warn", "no instance selected");
+			}
+
+			// ist mehr als eine bestimmte zahl markiert
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 1)
+			{
+				log("warn", "delete allows max 1 entity at a time");
+				return;
+			}
+
+			if ( (einstellungen.entitySelected != null) && (!(einstellungen.entitySelected.getUser().equals(System.getProperty("user.name")))) )
+			{
+				log("error", "you may only attend your instances (user "+System.getProperty("user.name")+")");
+			}
+
+			for(Entity actEntity : einstellungen.entitiesSelected)
+			{
+				String aufruf = ini.get("apps",  "pradar-attend") + " -instance "+actEntity.getResource();
+				log("info", "attending instance file: " + aufruf);
+	
+				try
+				{
+					java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+			
+			// daten und anzeige refreshen
+			refresh();
+			tree.refresh();
+
+		}
+		
+	};	
+	
+			
 	SelectionAdapter listener_delete_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
