@@ -1390,12 +1390,13 @@ public class PradarPartUi3 extends ModelObject
 			if (einstellungen.entitySelected == null)
 			{
 				log("warn", "no instance selected");
+				return;
 			}
 
 			// ist mehr als eine bestimmte zahl markiert
-			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 1)
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 100)
 			{
-				log("warn", "delete allows max 1 entity at a time");
+				log("warn", "attend allows max 100 entity at a time");
 				return;
 			}
 
