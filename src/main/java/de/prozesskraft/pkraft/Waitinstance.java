@@ -213,6 +213,7 @@ public class Waitinstance
 			else
 			{
 				pathInstance = allBinariesOfScanDir.get(0);
+				System.err.println("found instance: "+pathInstance);
 			}
 		}
 		
