@@ -2,10 +2,20 @@ package de.prozesskraft.pkraft;
 
 //import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXBException;
 
@@ -19,6 +29,7 @@ import org.apache.commons.cli.Options;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
+import de.prozesskraft.commons.Md5Checksum;
 import de.prozesskraft.commons.MyLicense;
 import de.prozesskraft.commons.WhereAmI;
 
@@ -77,9 +88,15 @@ public class Waitinstance
 		----------------------------*/
 		Option oinstance = OptionBuilder.withArgName("FILE")
 				.hasArg()
-				.withDescription("[mandatory] instance file (process.pmb) that this program will wait till its status is 'error' or 'finished'")
+				.withDescription("[mandatory if no -scandir] instance file (process.pmb) that this program will wait till its status is 'error' or 'finished'")
 //				.isRequired()
 				.create("instance");
+		
+		Option oscandir = OptionBuilder.withArgName("DIR")
+				.hasArg()
+				.withDescription("[mandatory if no -instance] directory tree with instances (process.pmb). the first instance found will be tracked.")
+//				.isRequired()
+				.create("scandir");
 		
 		Option omaxrun = OptionBuilder.withArgName("INTEGER")
 				.hasArg()
@@ -95,6 +112,7 @@ public class Waitinstance
 		options.addOption( ohelp );
 		options.addOption( ov );
 		options.addOption( oinstance );
+		options.addOption( oscandir );
 		options.addOption( omaxrun );
 		
 		/*----------------------------
@@ -126,19 +144,30 @@ public class Waitinstance
 		  ueberpruefen ob eine schlechte kombination von parametern angegeben wurde
 		----------------------------*/
 		Integer maxrun = new Integer(4320);
+		String pathInstance = null;
+		String pathScandir = null;
 
-		if ( !( commandline.hasOption("instance")) )
+		// instance & scandir
+		if ( !( commandline.hasOption("instance")) &&  !( commandline.hasOption("scandir")) )
 		{
-			System.err.println("option -instance is mandatory");
+			System.err.println("one of the options -instance/-scandir is mandatory");
 			exiter();
 		}
-
-		if ( !( commandline.hasOption("instance")) )
+		else if ( ( commandline.hasOption("instance")) &&  ( commandline.hasOption("scandir")) )
 		{
-			System.err.println("option -instance is mandatory");
+			System.err.println("both options -instance/-scandir are not allowed");
 			exiter();
 		}
-
+		else if(commandline.hasOption("instance"))
+		{
+			pathInstance = commandline.getOptionValue("instance");
+		}
+		else if(commandline.hasOption("scandir"))
+		{
+			pathScandir = commandline.getOptionValue("scandir");
+		}
+		
+		// maxrun
 		if( commandline.hasOption("maxrun"))
 		{
 			maxrun = new Integer(commandline.getOptionValue("maxrun"));
@@ -170,9 +199,25 @@ public class Waitinstance
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
-
+		
+		// scannen nach dem ersten process.pmb 
+		if((pathScandir != null) && (pathInstance == null))
+		{
+			ArrayList<String> allBinariesOfScanDir = getProcessBinaries(pathScandir);
+			
+			if(allBinariesOfScanDir.size() == 0)
+			{
+				System.err.println("no instance (process.pmb) found in directory tree "+pathScandir);
+				exiter();
+			}
+			else
+			{
+				pathInstance = allBinariesOfScanDir.get(0);
+			}
+		}
+		
 		// ueberpruefen ob instance file existiert
-		java.io.File fileInstance = new java.io.File(commandline.getOptionValue("instance"));
+		java.io.File fileInstance = new java.io.File(pathInstance);
 
 		if(!fileInstance.exists())
 		{
@@ -225,6 +270,58 @@ public class Waitinstance
 		System.err.println("now is: " + new Timestamp(startInMillis).toString());
 		System.exit(0);
 		
+	}
+	
+	/**
+	 * ermittelt alle process binaries innerhalb eines directory baumes
+	 * @param pathScandir
+	 * @return
+	 */
+	private static ArrayList<String> getProcessBinaries(String pathScandir)
+	{
+		final ArrayList<String> allProcessBinaries = new ArrayList<String>();
+		
+		// den directory-baum durchgehen und fuer jeden eintrag ein entity erstellen
+		try {
+			Files.walkFileTree(Paths.get(pathScandir), new FileVisitor<Path>()
+			{
+				// called after a directory visit is complete
+				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException
+				{
+					return FileVisitResult.CONTINUE;
+				}
+
+				// called before a directory visit
+				public FileVisitResult preVisitDirectory(Path walkingDir, BasicFileAttributes attrs) throws IOException
+				{
+					return FileVisitResult.CONTINUE;
+				}
+
+				// called for each file visited. the basic file attributes of the file are also available
+				public FileVisitResult visitFile(Path walkingFile, BasicFileAttributes attrs) throws IOException
+				{
+					// ist es ein process.pmb file?
+					if(walkingFile.endsWith("process.pmb"))
+					{
+						allProcessBinaries.add(walkingFile.toString());
+					}
+					
+					return FileVisitResult.CONTINUE;
+				}
+				
+				// called for each file if the visit failed
+				public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException
+				{
+					return FileVisitResult.CONTINUE;
+				}
+
+			});
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return allProcessBinaries;
 	}
 	
 	private static void exiter()
