@@ -203,7 +203,7 @@ public class Waitinstance
 		// scannen nach dem ersten process.pmb 
 		if((pathScandir != null) && (pathInstance == null))
 		{
-			ArrayList<String> allBinariesOfScanDir = getProcessBinaries(pathScandir);
+			ArrayList<String> allBinariesOfScanDir = Waitinstance.getProcessBinaries(pathScandir);
 			
 			if(allBinariesOfScanDir.size() == 0)
 			{
@@ -278,7 +278,7 @@ public class Waitinstance
 	 * @param pathScandir
 	 * @return
 	 */
-	public static ArrayList<String> getProcessBinaries(String pathScandir)
+	private static ArrayList<String> getProcessBinaries(String pathScandir)
 	{
 		final ArrayList<String> allProcessBinaries = new ArrayList<String>();
 		
