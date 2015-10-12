@@ -87,7 +87,6 @@
 					<outjar>${project.name}-${project.version}.jar</outjar>
 					<options>
 						<option>-keep public class de.prozesskraft.pkraft.Waitinstance { *; }</option>
-						<option>-keep public class de.prozesskraft.pkraft.Waitinstance.getProcessBinaries { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>

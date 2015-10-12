@@ -2,22 +2,14 @@ package de.prozesskraft.pkraft;
 
 //import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.xml.bind.JAXBException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -29,7 +21,6 @@ import org.apache.commons.cli.Options;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 
-import de.prozesskraft.commons.Md5Checksum;
 import de.prozesskraft.commons.MyLicense;
 import de.prozesskraft.commons.WhereAmI;
 
@@ -203,7 +194,7 @@ public class Waitinstance
 		// scannen nach dem ersten process.pmb 
 		if((pathScandir != null) && (pathInstance == null))
 		{
-			ArrayList<String> allBinariesOfScanDir = Waitinstance.getProcessBinaries(pathScandir);
+			ArrayList<String> allBinariesOfScanDir = getProcessBinaries(pathScandir);
 			
 			if(allBinariesOfScanDir.size() == 0)
 			{
