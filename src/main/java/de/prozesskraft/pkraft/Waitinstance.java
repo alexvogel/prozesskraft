@@ -237,6 +237,7 @@ public class Waitinstance
 
 		// logging
 		System.err.println("waiting for instance: " + fileInstance.getAbsolutePath() );
+		System.err.println("checking its status every 5 minutes");
 		System.err.println("now is: " + new Timestamp(startInMillis).toString());
 		System.err.println("maxrun till: " + new Timestamp(runTill).toString());
 		
