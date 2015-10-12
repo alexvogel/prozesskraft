@@ -277,7 +277,7 @@ public class Waitinstance
 	 * @param pathScandir
 	 * @return
 	 */
-	private static ArrayList<String> getProcessBinaries(String pathScandir)
+	public static ArrayList<String> getProcessBinaries(String pathScandir)
 	{
 		final ArrayList<String> allProcessBinaries = new ArrayList<String>();
 		
