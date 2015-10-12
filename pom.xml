@@ -87,6 +87,7 @@
 					<outjar>${project.name}-${project.version}.jar</outjar>
 					<options>
 						<option>-keep public class de.prozesskraft.pkraft.Waitinstance { *; }</option>
+						<option>-keepclassmembers class de.prozesskraft.pkraft.Waitinstance { ArrayList getProcessBinaries(String); }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
