@@ -129,7 +129,7 @@ public class Waitinstance
 		if ( commandline.hasOption("help"))
 		{
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("startinstance", options);
+			formatter.printHelp("waitinstance", options);
 			System.exit(0);
 		}
 
