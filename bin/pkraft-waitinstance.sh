@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.prozesskraft.pkraft.Startinstance"
+MAINCLASS="de.prozesskraft.pkraft.Waitinstance"
 BASEDIR=$(dirname $0)
 
 # wenn eine eigene javainstallation vorhanden ist, soll diese verwendet werden
