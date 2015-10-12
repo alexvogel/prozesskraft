@@ -194,16 +194,16 @@ public class Waitinstance
 		// scannen nach dem ersten process.pmb 
 		if((pathScandir != null) && (pathInstance == null))
 		{
-			ArrayList<String> allBinariesOfScanDir = getProcessBinaries(pathScandir);
+			String[] allBinariesOfScanDir = getProcessBinaries(pathScandir);
 			
-			if(allBinariesOfScanDir.size() == 0)
+			if(allBinariesOfScanDir.length == 0)
 			{
 				System.err.println("no instance (process.pmb) found in directory tree "+pathScandir);
 				exiter();
 			}
 			else
 			{
-				pathInstance = allBinariesOfScanDir.get(0);
+				pathInstance = allBinariesOfScanDir[0];
 				System.err.println("found instance: "+pathInstance);
 			}
 		}
@@ -274,10 +274,10 @@ public class Waitinstance
 	 * @param pathScandir
 	 * @return
 	 */
-	private static ArrayList<String> getProcessBinaries(String pathScandir)
+	private static String[] getProcessBinaries(String pathScandir)
 	{
 		final ArrayList<String> allProcessBinaries = new ArrayList<String>();
-		
+
 		// den directory-baum durchgehen und fuer jeden eintrag ein entity erstellen
 		try {
 			Files.walkFileTree(Paths.get(pathScandir), new FileVisitor<Path>()
@@ -318,7 +318,7 @@ public class Waitinstance
 			e.printStackTrace();
 		}
 		
-		return allProcessBinaries;
+		return allProcessBinaries.toArray(new String[allProcessBinaries.size()]);
 	}
 	
 	private static void exiter()
