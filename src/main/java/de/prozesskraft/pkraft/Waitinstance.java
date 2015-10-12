@@ -304,7 +304,7 @@ public class Waitinstance
 					// ist es ein process.pmb file?
 					if(walkingFile.endsWith("process.pmb"))
 					{
-						allProcessBinaries.add(walkingFile.toString());
+						allProcessBinaries.add(new java.io.File(walkingFile.toString()).getAbsolutePath());
 					}
 					
 					return FileVisitResult.CONTINUE;
