@@ -611,7 +611,8 @@ implements Serializable
 		
 		// den eingebetteten process nach fehler abfragen und evtl. den status updaten
 		// dabei wird das feld status neu bestimmt
-		this.refreshProcess();
+		// das fuehrt zu einem einfrieren beim einladen in pmodel -> nicht weiter untersucht
+//		this.refreshProcess();
 		
 		return this.getStatus();
 	}
