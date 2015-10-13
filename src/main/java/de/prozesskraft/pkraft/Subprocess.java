@@ -520,6 +520,8 @@ implements Serializable
 		// wenn es einen Process gibt, dann den Status von this entsprechend des status des Processes updaten
 		if(this.getProcess() != null)
 		{
+			// neues setzen des binary pfads (falls die daten verschoben wurden)
+			this.getProcess().setInfilebinary(this.getProcess().getRootdir() + "/process.pmb");
 			this.log("debug", "refreshing Process from file: " + this.getProcess().getInfilebinary());
 
 			// einen neuen Process erstellen und aus file einlesen
@@ -604,12 +606,14 @@ implements Serializable
 	/**
 	 * @return the status
 	 */
-	public String getStatus() {
+	public String getStatus()
+	{
 		
 		// den eingebetteten process nach fehler abfragen und evtl. den status updaten
-		// this.refreshProcess();
+		// dabei wird das feld status neu bestimmt
+		this.refreshProcess();
 		
-		return status;
+		return this.getStatus();
 	}
 
 	/**
