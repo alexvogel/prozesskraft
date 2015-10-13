@@ -853,6 +853,8 @@ implements Serializable
 						clonedFileToRoot.setCategory("processOutput"+"/"+this.getToroot());
 						log("debug", "adding file to root-Step because commit contains toRoot-instruction");
 						this.getParent().getParent().getRootStep().addFile(clonedFileToRoot);
+						// um dieses rootCommittment bei einem step.reset() auch aus dem rootStep entfernen zu koennen, soll dieses file auch im step abgelegt werden
+						this.getParent().getFileCommittedToRoot().add(clonedFileToRoot);
 					}
 					else
 					{
@@ -1139,6 +1141,8 @@ implements Serializable
 				Step rootStep = this.getParent().getParent().getRootStep();
 				log("debug", "adding "+variablesToCommit.size()+" file(s) to rootStep");
 				rootStep.addVariable(variablesToCommit);
+				// um dieses rootCommittment bei einem step.reset() auch aus dem rootStep entfernen zu koennen, sollen die ermittelten geklonten variablen auch im step abgelegt werden
+				this.getParent().getVariableCommittedToRoot().addAll(variablesToCommit);
 
 				//  variable in root auch in eine textdatei schreiben
 				for(Variable actVar : variablesToCommit)

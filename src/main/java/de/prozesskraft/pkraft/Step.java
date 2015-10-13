@@ -49,6 +49,12 @@ implements Serializable, Cloneable
 
 	private ArrayList<File> file = new ArrayList<File>();
 	private ArrayList<Variable> variable = new ArrayList<Variable>();
+	
+	// diese Variablen und Files wurden ueber 'toroot' in den rootStep committed.
+	// bei einem step.reset() sollen diese committments auch aus dem rootStep entfernt werden
+	private ArrayList<File> fileCommittedToRoot = new ArrayList<File>();
+	private ArrayList<Variable> variableCommittedToRoot = new ArrayList<Variable>();
+	
 //	private String status = "waiting";	// waiting/initializing/working/committing/ finished/error/cancelled
 	private ArrayList<Log> log = new ArrayList<Log>();
 	public String statusOverwrite = null;
@@ -1510,9 +1516,17 @@ implements Serializable, Cloneable
 		// variablen leeren
 		this.getVariable().clear();
 
+		// und alle toRoot committeten aus dem rootStep entfernen
+		this.getParent().getRootStep().removeVariable(this.getVariableCommittedToRoot());
+		this.getVariableCommittedToRoot().clear();
+		
 		// files leeren
 		this.getFile().clear();
 
+		// und alle toRoot committeten aus dem rootStep entfernen
+		this.getParent().getRootStep().removeFile(this.getFileCommittedToRoot());
+		this.getFileCommittedToRoot().clear();
+		
 		// commits reseten
 		for(Commit actCommit : this.getCommit())
 		{
@@ -1624,9 +1638,17 @@ implements Serializable, Cloneable
 			// variablen leeren
 			this.getVariable().clear();
 	
+			// und alle toRoot committeten aus dem rootStep entfernen
+			this.getParent().getRootStep().removeVariable(this.getVariableCommittedToRoot());
+			this.getVariableCommittedToRoot().clear();
+			
 			// files leeren
 			this.getFile().clear();
 	
+			// und alle toRoot committeten aus dem rootStep entfernen
+			this.getParent().getRootStep().removeFile(this.getFileCommittedToRoot());
+			this.getFileCommittedToRoot().clear();
+			
 			// inits reseten
 			for(Init actInit : this.getInit())
 			{
@@ -1850,6 +1872,33 @@ implements Serializable, Cloneable
 		}
 	}
 
+	/**
+	 * entfernen eines files
+	 * @param file
+	 */
+	public void removeFile(File fileToRemove)
+	{
+		this.getFile().remove(fileToRemove);
+		try {
+			Files.delete(Paths.get(fileToRemove.getAbsfilename()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * entfernen mehrerer files
+	 * @param ArrayList<File>
+	 */
+	public void removeFile(ArrayList<File> filesToRemove)
+	{
+		for(File actFileToRemove : filesToRemove)
+		{
+			this.removeFile(actFileToRemove);
+		}
+	}
+
 	public void addVariable(Variable variable)
 	{
 		variable.setParent(this);
@@ -1866,6 +1915,24 @@ implements Serializable, Cloneable
 		}
 	}
 	
+	/**
+	 * entfernen einer variable
+	 * @param variable
+	 */
+	public void removeVariable(Variable variableToRemove)
+	{
+		this.getVariable().remove(variableToRemove);
+	}
+
+	/**
+	 * entfernen mehrerer variablen
+	 * @param ArrayList<Variable>
+	 */
+	public void removeVariable(ArrayList<Variable> variablesToRemove)
+	{
+		this.getVariable().removeAll(variablesToRemove);
+	}
+
 	public String genName()
 	{
 		final Random generator = new Random();
@@ -2810,6 +2877,34 @@ implements Serializable, Cloneable
 	 */
 	public void setLevel(int level) {
 		this.level = level;
+	}
+
+	/**
+	 * @return the fileCommittedToRoot
+	 */
+	public ArrayList<File> getFileCommittedToRoot() {
+		return fileCommittedToRoot;
+	}
+
+	/**
+	 * @param fileCommittedToRoot the fileCommittedToRoot to set
+	 */
+	public void setFileCommittedToRoot(ArrayList<File> fileCommittedToRoot) {
+		this.fileCommittedToRoot = fileCommittedToRoot;
+	}
+
+	/**
+	 * @return the variableCommittedToRoot
+	 */
+	public ArrayList<Variable> getVariableCommittedToRoot() {
+		return variableCommittedToRoot;
+	}
+
+	/**
+	 * @param variableCommittedToRoot the variableCommittedToRoot to set
+	 */
+	public void setVariableCommittedToRoot(ArrayList<Variable> variableCommittedToRoot) {
+		this.variableCommittedToRoot = variableCommittedToRoot;
 	}
 	
 }
