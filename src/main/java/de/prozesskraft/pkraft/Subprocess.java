@@ -614,7 +614,7 @@ implements Serializable
 		// das fuehrt zu einem einfrieren beim einladen in pmodel -> nicht weiter untersucht
 //		this.refreshProcess();
 		
-		return this.getStatus();
+		return this.status;
 	}
 
 	/**
