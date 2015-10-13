@@ -72,6 +72,7 @@ import de.prozesskraft.pkraft.Process;
 import de.prozesskraft.commons.*;
 import de.prozesskraft.gui.process.CommitCreator;
 import de.prozesskraft.pramp.testrun.Testrun;
+import de.prozesskraft.pramp.testsummary.Testsummary;
 
 public class PrampPartUi1 extends ModelObject
 //public class PrampPartUi1
@@ -84,6 +85,7 @@ public class PrampPartUi1 extends ModelObject
 	private Button button_open = null;
 	private Button button_start = null;
 	private Button button_testrun = null;
+	private Button button_testsummary = null;
 	private Button button_doc = null;
 //	private Text text_logging = null;
 	private StyledText text_logging = null;
@@ -317,6 +319,13 @@ public class PrampPartUi1 extends ModelObject
 		button_testrun.setToolTipText("starts an instance of selected process with a sample dataset");;
 		button_testrun.addSelectionListener(listener_testrun_button);
 		button_testrun.setEnabled(this.domainUserRights.get("Admin"));
+		
+		button_testsummary = new Button(grpAdmin, SWT.NONE);
+		button_testsummary.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		button_testsummary.setText("testsummary");
+		button_testsummary.setToolTipText("shows summary results of old testruns");;
+		button_testsummary.addSelectionListener(listener_testsummary_button);
+		button_testsummary.setEnabled(this.domainUserRights.get("Admin"));
 		
 		composite_12 = new Composite(composite_1, SWT.BORDER);
 //		composite_12.setLayout(new GridLayout(1, false));
@@ -605,6 +614,18 @@ public class PrampPartUi1 extends ModelObject
 		{
 //			System.out.println("button start wurde gedrueckt");
 			testrun();
+		}
+	};
+	
+	/**
+	 * listener for Selections in of button 'testsummary'
+	 */
+	SelectionAdapter listener_testsummary_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+//			System.out.println("button start wurde gedrueckt");
+			testsummary();
 		}
 	};
 	
@@ -1339,6 +1360,39 @@ public class PrampPartUi1 extends ModelObject
 		else
 		{
 			this.log("error", "no sample data exists for selected process: "+splDir.getAbsolutePath());
+		}
+	}
+
+	/**
+	 * shows a the summary results of old testruns
+	 */
+	private void testsummary()
+	{
+		
+		try
+		{
+			String domainTestsummaryDir = ini.get("process", "domain-testsummary-directory");
+			java.io.File actualTestsummaryDir = new java.io.File(domainTestsummaryDir + "/"+this.einstellungen.getDomain()+"/"+this.einstellungen.getProcess()+"/"+this.einstellungen.getVersion());
+		
+			if(!actualTestsummaryDir.exists() || actualTestsummaryDir.isFile())
+			{
+				this.log("warn", "testsummary directory does not exist. no logs to show. " + actualTestsummaryDir.getAbsolutePath());
+				return;
+			}
+			else if(actualTestsummaryDir.isDirectory())
+			{
+				this.log("info", "showing available testsummaries of selected process");
+				new Testsummary(this, shell, actualTestsummaryDir.getAbsolutePath());
+			}
+			else
+			{
+				this.log("error", "i don't know");
+			}
+		}
+		catch (Exception e)
+		{
+			this.log("error", e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
