@@ -515,7 +515,7 @@ implements Serializable
 		return newProcess2;
 	}
 	
-	private void refreshProcess()
+	public void refreshProcess()
 	{
 		// wenn es einen Process gibt, dann den Status von this entsprechend des status des Processes updaten
 		if(this.getProcess() != null)
