@@ -228,7 +228,8 @@ public class Manager
 				// pradar checkout
 				if(pradar)
 				{
-					pradarCheckout(p2.getId(), p2.getName(), "0");
+					pradarAttend(p2.getRootdir()+"/process.pmb");
+//					pradarCheckout(p2.getId(), p2.getName(), "0");
 				}
 
 				System.exit(0);
@@ -271,8 +272,9 @@ public class Manager
 			// pradar checkin
 			if(pradar && p2.run && p2.touchInMillis == 0)
 			{
-				p2.log("debug", "pradar-checkin id="+p2.getId()+", process="+p2.getName()+", processversion="+p2.getVersion()+", id2="+p2.getId2()+", parentid="+p2.getParentid()+", resource="+p2.getRootdir()+"/process.pmb");
-				pradarCheckin(p2.getId(), p2.getName(), p2.getVersion(), p2.getId2(), p2.getParentid(), getPid(), p2.getRootdir()+"/process.pmb");
+				pradarAttend(p2.getRootdir()+"/process.pmb");
+//				p2.log("debug", "pradar-checkin id="+p2.getId()+", process="+p2.getName()+", processversion="+p2.getVersion()+", id2="+p2.getId2()+", parentid="+p2.getParentid()+", resource="+p2.getRootdir()+"/process.pmb");
+//				pradarCheckin(p2.getId(), p2.getName(), p2.getVersion(), p2.getId2(), p2.getParentid(), getPid(), p2.getRootdir()+"/process.pmb");
 			}
 				
 			p2.writeBinary();
@@ -304,8 +306,13 @@ public class Manager
 	
 					lastStepcount =  p3.getStep().size();
 					lastStepcountFinishedOrCanceled = p3.getStepFinishedOrCanceled().size();
-					p3.log("info", "manager "+managerid+": pradar progress  "+lastStepcountFinishedOrCanceled+"/"+lastStepcount);
-					pradarProgress(p3.getId(), p3.getName(), getPid(), lastStepcountFinishedOrCanceled, lastStepcount);
+
+					// pradar aktualisieren
+					pradarAttend(p2.getRootdir()+"/process.pmb");
+					
+//					p3.log("info", "manager "+managerid+": pradar progress  "+lastStepcountFinishedOrCanceled+"/"+lastStepcount);
+//					pradarProgress(p3.getId(), p3.getName(), getPid(), lastStepcountFinishedOrCanceled, lastStepcount);
+
 					// evtl. stoeren sich zwei kurz aufeinander folgende aufrufe von pradar...
 					Thread.sleep(500);
 					
@@ -317,9 +324,12 @@ public class Manager
 						p3.log("info", "manager "+managerid+": process instance is finished. goodbye from manager id "+p3.getManagerid());
 						p3.setTimeOfProcessFinishedOrError(System.currentTimeMillis());
 						
-						// pradar checkout
-						p3.log("info", "manager "+managerid+": pradar checkout id="+p3.getId()+", process="+p3.getName()+", exitcode=0");
-						pradarCheckout(p3.getId(), p3.getName(), "0");
+						// pradar aktualisieren
+						pradarAttend(p2.getRootdir()+"/process.pmb");
+
+//						// pradar checkout
+//						p3.log("info", "manager "+managerid+": pradar checkout id="+p3.getId()+", process="+p3.getName()+", exitcode=0");
+//						pradarCheckout(p3.getId(), p3.getName(), "0");
 					}
 					
 					// error
@@ -337,9 +347,12 @@ public class Manager
 							exitCode = exitCode + "," + actStep.getName();
 						}
 
-						// pradar checkout
-						p3.log("debug", "pradar-checkout id="+p3.getId()+", process="+p3.getName()+", exitcode="+exitCode);
-						pradarCheckout(p3.getId(), p3.getName(), exitCode);
+						// pradar aktualisieren
+						pradarAttend(p2.getRootdir()+"/process.pmb");
+
+//						// pradar checkout
+//						p3.log("debug", "pradar-checkout id="+p3.getId()+", process="+p3.getName()+", exitcode="+exitCode);
+//						pradarCheckout(p3.getId(), p3.getName(), exitCode);
 					}
 
 //					// error
@@ -391,9 +404,9 @@ public class Manager
 		}
 	}
 
-	private static void pradarProgress(String instanceId, String processName, String pid, int lastStepcountFinishedOrCanceled, int lastStepcount)
+	private static void pradarAttend(String pathToInstance)
 	{
-		String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+instanceId, "-process="+processName, "-pid="+pid, "-completed="+lastStepcountFinishedOrCanceled, "-stepcount="+lastStepcount};
+		String[] argsForProgress = {ini.get("apps", "pradar-attend"), "-instance "+pathToInstance};
 		try
 		{
 			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
@@ -404,31 +417,44 @@ public class Manager
 		}
 	}
 	
-	private static void pradarCheckin(String instanceId, String processName, String processVersion, String id2, String parentId, String pid, String resource)
-	{
-		String[] argsForProgress = {ini.get("apps", "pradar-checkin"), "-id="+instanceId, "-process="+processName, "-processversion="+processVersion, "-id2="+id2, "-parentid="+parentId, "-pid="+pid, "-resource="+resource};
-		try
-		{
-			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	private static void pradarCheckout(String instanceId, String processName, String exitCode)
-	{
-		String[] argsForProgress = {ini.get("apps", "pradar-checkout"), "-id="+instanceId, "-process="+processName, "-exitcode=\""+exitCode+"\""};
-		try
-		{
-			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
+//	private static void pradarProgress(String instanceId, String processName, String pid, int lastStepcountFinishedOrCanceled, int lastStepcount)
+//	{
+//		String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+instanceId, "-process="+processName, "-pid="+pid, "-completed="+lastStepcountFinishedOrCanceled, "-stepcount="+lastStepcount};
+//		try
+//		{
+//			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
+//		}
+//		catch (IOException e)
+//		{
+//			e.printStackTrace();
+//		}
+//	}
+//	
+//	private static void pradarCheckin(String instanceId, String processName, String processVersion, String id2, String parentId, String pid, String resource)
+//	{
+//		String[] argsForProgress = {ini.get("apps", "pradar-checkin"), "-id="+instanceId, "-process="+processName, "-processversion="+processVersion, "-id2="+id2, "-parentid="+parentId, "-pid="+pid, "-resource="+resource};
+//		try
+//		{
+//			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
+//		}
+//		catch (IOException e)
+//		{
+//			e.printStackTrace();
+//		}
+//	}
+//	
+//	private static void pradarCheckout(String instanceId, String processName, String exitCode)
+//	{
+//		String[] argsForProgress = {ini.get("apps", "pradar-checkout"), "-id="+instanceId, "-process="+processName, "-exitcode=\""+exitCode+"\""};
+//		try
+//		{
+//			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
+//		}
+//		catch (IOException e)
+//		{
+//			e.printStackTrace();
+//		}
+//	}
 	
 	/**
 	 * ermittelt die pid dieses manager-laufs
