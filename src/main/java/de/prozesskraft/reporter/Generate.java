@@ -485,6 +485,7 @@ public class Generate
 				for(String actKey : fieldsTmp.keySet())
 				{
 					recordAsMap.put(actKey, fieldsTmp.get(actKey).get(i));
+					field.add(recordAsMap);
 				}
 			}
 		}
