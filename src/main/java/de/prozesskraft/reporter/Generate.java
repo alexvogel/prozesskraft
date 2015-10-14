@@ -426,6 +426,9 @@ public class Generate
 //					Map<String,String> recordMap = new HashMap<String,String>();
 //					recordMap.put(keyValue[0], keyValue[1]);
 					
+					// logging
+					System.err.println("adding field " + keyValue[0] + "=" + keyValue[1]);
+					
 					// gibts den key schon? dann hinzufuegen
 					if(fieldsTmp.containsKey(keyValue[0]))
 					{
@@ -452,6 +455,8 @@ public class Generate
 			Integer anzahlDerLetztenSpalte = null;
 			for(String actKey : fieldsTmp.keySet())
 			{
+				System.err.println("debug: actKey=" + actKey);
+
 				anzahlZeilen = fieldsTmp.get(actKey).size();
 				if(anzahlDerLetztenSpalte != null)
 				{
