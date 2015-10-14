@@ -63,6 +63,7 @@ import org.ini4j.Profile.Section;
 import org.eclipse.swt.widgets.Combo;
 
 import com.google.common.collect.Multimap;
+import com.google.common.io.Files;
 import com.jcraft.jsch.JSchException;
 import com.license4j.License;
 import com.license4j.LicenseValidator;
@@ -1660,6 +1661,12 @@ public class PrampPartUi1 extends ModelObject
 		{
 			System.err.println("userIni file does not exist yet.");
 		}
+		// existiert das file noch nicht? - macht nichts
+		catch (NullPointerException e)
+		{
+			System.err.println("illegal content in file ~/pkraft/pramp.user.ini");
+			e.printStackTrace();;
+		}
 	}
 	
 	/**
@@ -1677,8 +1684,8 @@ public class PrampPartUi1 extends ModelObject
 		userIni.add("pramp", "version", einstellungen.getVersion());
 		userIni.add("pramp", "baseDirectory", einstellungen.getBaseDirectory());
 		
-		// das userIni-file festlegen
-		java.io.File fileUserIni = new java.io.File(System.getProperty("user.home") + "/pkraft/pramp.user.ini");
+		// temporaeres das userIni-file festlegen
+		java.io.File fileUserIni = new java.io.File(System.getProperty("user.home") + "/pkraft/pramp.user.ini~");
 		
 		// falls das verzeichnis noch nicht existiert, soll es erstellt werden
 		if(!fileUserIni.getParentFile().exists())
@@ -1695,6 +1702,14 @@ public class PrampPartUi1 extends ModelObject
 		catch
 		(IOException e)
 		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// das temporaere userIni auf das richtige moven
+		try {
+			Files.move(new java.io.File(System.getProperty("user.home") + "/pkraft/pramp.user.ini~"), new java.io.File(System.getProperty("user.home") + "/pkraft/pramp.user.ini"));
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
