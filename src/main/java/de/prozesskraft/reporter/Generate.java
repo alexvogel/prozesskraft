@@ -341,6 +341,14 @@ public class Generate
 			// set template
 			reporter.setJrxml(template);
 			
+			// compile
+			try {
+				reporter.compile();
+			} catch (JRException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			// auf stdout ausgeben
 			reporter.printPlaceholder();
 			
