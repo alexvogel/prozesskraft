@@ -302,6 +302,11 @@ public class Compare
 			}
 			refDir.setRespectMd5Recursive(md5);
 		}
+		else if(!refPath.exists())
+		{
+			System.err.println("-ref does not exist! " + refPath.getAbsolutePath());
+			exiter();
+		}
 
 		// einlesen der prueflingsdaten
 		java.io.File examPath = new java.io.File(exam);
@@ -331,6 +336,11 @@ public class Compare
 				e.printStackTrace();
 			}
 			examDir.setRespectMd5Recursive(md5);
+		}
+		else if(!examPath.exists())
+		{
+			System.err.println("-exam does not exist! " + examPath.getAbsolutePath());
+			exiter();
 		}
 
 		// durchfuehren des vergleichs
