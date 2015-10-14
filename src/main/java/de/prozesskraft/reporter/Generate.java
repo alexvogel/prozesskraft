@@ -477,8 +477,10 @@ public class Generate
 			}
 			
 			// hinzufuegen der fields, die ueber aufrufoption kommen zur der gesamt field map
+			System.err.println("debug: hinzufuegen der -field zu der fieldsammlung.");
 			for(int i=0; i<anzahlZeilen; i++)
 			{
+				System.err.println("zeile nr " + i);
 				Map<String,String> recordAsMap = new HashMap<String,String>();
 				for(String actKey : fieldsTmp.keySet())
 				{
