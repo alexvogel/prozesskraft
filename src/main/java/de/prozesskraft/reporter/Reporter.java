@@ -110,32 +110,25 @@ public class Reporter
 			System.out.println("to fill the template use this example call:");
 			System.out.println("reporter generate --template " + this.jrxml + " \\");
 
-			try
+			JRParameter[] parameter = this.jasperReport.getParameters();
+			
+			String zumSchlussAusgeben = "";
+			
+			for(JRParameter actParameter : parameter)
 			{
-				JRParameter[] parameter = this.jasperReport.getParameters();
-				
-				String zumSchlussAusgeben = "";
-				
-				for(JRParameter actParameter : parameter)
+				// wenn parameter mit mit 2 grossbuchstaben anfaengt, soll er auf stderr ausgegeben werden
+				if(actParameter.getName().matches("^[A-Z]{2}.*$"))
 				{
-					// wenn parameter mit mit 2 grossbuchstaben anfaengt, soll er auf stderr ausgegeben werden
-					if(actParameter.getName().matches("^[A-Z]{2}.*$"))
-					{
-						zumSchlussAusgeben += "# skipping -parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\\n";
-					}
-					else
-					{
-						System.out.println("-parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\");
-					}
+					zumSchlussAusgeben += "# skipping -parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\\n";
 				}
-				
-				System.err.println(zumSchlussAusgeben);
+				else
+				{
+					System.out.println("-parameter " + actParameter.getName() + "=" + actParameter.getValueClassName() + " \\");
+				}
+			}
+			
+			System.err.println(zumSchlussAusgeben);
 
-			}
-			catch (NullPointerException e)
-			{
-				System.err.println("no Parameter found in template.");
-			}
 
 			// gibt es fields? dann auch ausgeben
 			if(this.jasperReport.getFields() != null)
