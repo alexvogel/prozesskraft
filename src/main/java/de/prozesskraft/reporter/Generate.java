@@ -476,7 +476,7 @@ public class Generate
 				}
 			}
 			
-			// hinzufuegen der fiels, die ueber aufrufoption kommen zur der gesamt field map
+			// hinzufuegen der fields, die ueber aufrufoption kommen zur der gesamt field map
 			for(int i=0; i<anzahlZeilen; i++)
 			{
 				Map<String,String> recordAsMap = new HashMap<String,String>();
@@ -570,10 +570,13 @@ public class Generate
 		// fuer jede zeile einen map erstellen und im reporter hinzufuegen
 		for(Map<String,String> recordAsMap : field)
 		{
+			System.err.println("neue zeile start ----");
 			for(String actKey : recordAsMap.keySet())
 			{
 				System.err.println("adding field " + actKey + "=" +  recordAsMap.get(actKey));
 			}
+			System.err.println("neue zeile ende ----");
+			
 			// dem report hinzufuegen
 			reporter.addField(recordAsMap);
 		}
