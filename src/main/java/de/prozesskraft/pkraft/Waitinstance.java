@@ -264,7 +264,7 @@ public class Waitinstance
 		}
 		
 		System.err.println("exiting because instance status is: " + p2.getStatus());
-		System.err.println("now is: " + new Timestamp(startInMillis).toString());
+		System.err.println("now is: " + new Timestamp(System.currentTimeMillis()).toString());
 		System.exit(0);
 		
 	}
