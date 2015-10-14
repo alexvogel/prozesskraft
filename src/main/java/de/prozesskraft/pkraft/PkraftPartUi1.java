@@ -216,6 +216,7 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 			PmodelPartUi1 pmodelUi = null;
 			try
 			{
+				// Versuch 1
 				pmodelUi = new PmodelPartUi1(compositePmodel, pathToInstance);
 			}
 			catch (NullPointerException e)
@@ -230,6 +231,7 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				// Versuch 2
 				pmodelUi = new PmodelPartUi1(compositePmodel, pathToInstance);
 			}
 			
