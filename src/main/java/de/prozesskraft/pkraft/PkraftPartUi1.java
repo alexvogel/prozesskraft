@@ -56,7 +56,7 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 	CTabFolder tabFolder = null;
 
 	Composite processInsight = null;
-	Map<String,CTabItem> pmodel_id_item = new HashMap<String,CTabItem>();
+	ArrayList<Map<String,CTabItem>> pmodel_id_item = new ArrayList<Map<String,CTabItem>>();
 
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
@@ -166,16 +166,20 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 		
 		// gibt es den CTabItem bereits, soll dieser selektiert werden
 		int counter = 2; // bereits 2 CTabItems vorhanden (pradar, pramp);
-		for(String oneExistentId : pmodel_id_item.keySet())
+		
+		// jeden eintrag der liste durchgehen und sehen ob das schon der gesuchte Map mit der id -> CTabItem ist
+		for(Map<String,CTabItem> actIdCTabItem : pmodel_id_item)
 		{
-			if(oneExistentId.equals(p2.getId()))
+			for(String oneExistentId : actIdCTabItem.keySet())
 			{
-				ctabMussNeuErzeugtWerden = false;
-				tabFolder.setSelection(counter);
+				if(oneExistentId.equals(p2.getId()))
+				{
+					ctabMussNeuErzeugtWerden = false;
+					tabFolder.setSelection(counter);
+				}
 			}
 			counter++;
 		}
-		
 //			String pathToInstance2 = new java.io.File(pathToInstance).getCanonicalPath();
 //			
 //			// gibt es den CTabItem bereits, soll dieser selektiert werden
@@ -222,7 +226,10 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 			tabFolder.setSelection(tabFolder.getItemCount()-1);
 
 			// das neue tabItem dem map der bekannten tabItems hinzufuegen
-			this.pmodel_id_item.put(p2.getId(), tabItemPmodel);
+			Map<String,CTabItem> newPmodel = new HashMap<String,CTabItem>();
+			newPmodel.put(p2.getId(), tabItemPmodel);
+			this.pmodel_id_item.add(newPmodel);
+			
 		}
 		
 	}
@@ -232,22 +239,42 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 	 */
 	DisposeListener entferne_pmodel = new DisposeListener()
 	{
+		
+//		ArrayList<Map<String,CTabItem>> pmodel_id_item = new ArrayList<HashMap<String,CTabItem>();
+
 		public void widgetDisposed(DisposeEvent event)
 		{
 			CTabItem zuLoeschendesCTabItem = (CTabItem) event.widget;
-			
-			// die liste bekannter pmodel CTabItems durchgehen und den zu loeschenden eintrag entfernen
-			Map<String,CTabItem> new_pmodel_id_item = new HashMap<String,CTabItem>();
 
-			for(String actPathToInstance : pmodel_id_item.keySet())
+			// neues
+			ArrayList<Map<String,CTabItem>> newPmodel_id_item = new ArrayList<Map<String,CTabItem>>();
+
+			// jeden eintrag der liste durchgehen und sehen ob das schon der gesuchte Map mit der id -> CTabItem ist
+			for(Map<String,CTabItem> actIdCTabItem : pmodel_id_item)
 			{
-				if( ! zuLoeschendesCTabItem.equals(pmodel_id_item.get(actPathToInstance)))
+				for(CTabItem oneExistentCTabItem : actIdCTabItem.values())
 				{
-					new_pmodel_id_item.put(actPathToInstance, pmodel_id_item.get(actPathToInstance));
+					if(!oneExistentCTabItem.equals(zuLoeschendesCTabItem))
+					{
+						newPmodel_id_item.add(actIdCTabItem);
+					}
 				}
 			}
+
+			pmodel_id_item = newPmodel_id_item;
 			
-			pmodel_id_item = new_pmodel_id_item;
+//			// die liste bekannter pmodel CTabItems durchgehen und den zu loeschenden eintrag entfernen
+//			Map<String,CTabItem> new_pmodel_id_item = new HashMap<String,CTabItem>();
+//
+//			for(String actPathToInstance : pmodel_id_item.keySet())
+//			{
+//				if( ! zuLoeschendesCTabItem.equals(pmodel_id_item.get(actPathToInstance)))
+//				{
+//					new_pmodel_id_item.put(actPathToInstance, pmodel_id_item.get(actPathToInstance));
+//				}
+//			}
+//			
+//			pmodel_id_item = new_pmodel_id_item;
 		}
 	};
 	
