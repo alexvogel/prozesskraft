@@ -76,6 +76,9 @@ public class Dir {
 	float sizeToleranceDefault = 0F;
 	boolean respectMd5 = true;
 	
+	/*
+	 * constructor
+	 */
 	public Dir()
 	{
 		Random generator = new Random();
