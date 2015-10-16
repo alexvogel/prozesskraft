@@ -35,6 +35,7 @@ import de.prozesskraft.gui.step.insight.SIFileGui;
 import de.prozesskraft.gui.step.insight.SIInsightCreator;
 import de.prozesskraft.gui.step.insight.SIVariableGui;
 import de.prozesskraft.pkraft.*;
+import de.prozesskraft.pmodel.PmodelPartUi1;
 
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.FormLayout;
@@ -319,6 +320,19 @@ public class ResetStep
 			// die veraenderte instanz auf platte schreiben
 			step.getParent().writeBinary();
 
+			// in pradar aktualisieren
+			String call = ((SIInsightCreator)father).getFather().getIni().get("apps", "pradar-attend") + " -instance " + step.getParent().getInfilebinary(); 
+			((SIInsightCreator)father).getFather().log("info", "calling: "+call);
+			
+			try
+			{
+				java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+			}
+			catch (IOException e)
+			{
+				((SIInsightCreator)father).getFather().log("error", e.getMessage());
+			}
+			
 			// den gui update anstossen
 			((SIInsightCreator)father).getFather().refreshAppletAndUi();
 
