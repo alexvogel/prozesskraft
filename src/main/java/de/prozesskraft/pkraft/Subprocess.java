@@ -170,8 +170,9 @@ implements Serializable
 				log("info", "subprocess not running anymore. pid="+pid);
 				
 				// den status des subprocesses feststellen und this auf den gleichen setzen
-				this.getProcess().setInfilebinary(this.getProcess().getRootdir() + "/process.pmb");
-				Process processReread = this.getProcess().readBinary();
+				Process p1 = new Process();
+				p1.setInfilebinary(this.getParent().getAbsdir() + "/process.pmb");
+				Process processReread = p1.readBinary();
 				this.setProcess(processReread);
 				this.setStatus(processReread.getStatus());
 				log("info", "setting status to " + this.getStatus());
