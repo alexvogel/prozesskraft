@@ -56,7 +56,7 @@ implements Serializable, Comparable
 	public void addValue(String value)
 	{
 		this.getSerie().put(System.currentTimeMillis(), value);
-		System.err.println("" + System.currentTimeMillis() + ", " + value);
+		System.err.println("Timeserie: " + System.currentTimeMillis() + ", " + value);
 	}
 	
 	public void addPair(Long time, String value)
