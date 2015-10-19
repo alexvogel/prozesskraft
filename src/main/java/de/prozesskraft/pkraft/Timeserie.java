@@ -2,6 +2,7 @@ package de.prozesskraft.pkraft;
 
 import java.io.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,8 @@ implements Serializable, Comparable
 
 	private String label = "";
 	
-	private Map<Long,String> serie = new HashMap<Long,String>();
+	private ArrayList<Map<Long,String>> serie = new ArrayList<Map<Long,String>>();
+//	private Map<Long,String> serie = new HashMap<Long,String>();
 
 	/*----------------------------
 	  constructors
@@ -47,31 +49,40 @@ implements Serializable, Comparable
 	public void print()
 	{
 		System.out.println("# " + this.getLabel() );
-		for(Long actTime : this.getSerie().keySet())
+		for(Map<Long,String> actPair : this.getSerie())
 		{
-			System.out.println("["+new Timestamp(actTime)+"],"+this.getSerie().get(actTime));
+			for(Long actTime : actPair.keySet())
+			{
+				System.out.println(new Timestamp(actTime)+","+actPair.get(actTime));
+			}
 		}
 	}
 
 	public String sprint()
 	{
 		String out = "# " + this.getLabel();
-		for(Long actTime : this.getSerie().keySet())
+		for(Map<Long,String> actPair : this.getSerie())
 		{
-			out += "["+new Timestamp(actTime)+"],"+this.getSerie().get(actTime);
+			for(Long actTime : actPair.keySet())
+			{
+				out += new Timestamp(actTime)+"],"+actPair.get(actTime);
+			}
 		}
 		return out;
 	}
 
 	public void addValue(String value)
 	{
-		this.getSerie().put(System.currentTimeMillis(), value);
-//		System.err.println("Timeserie: " + System.currentTimeMillis() + ", " + value);
+		Map<Long,String> newPair = new HashMap<Long,String>();
+		newPair.put(System.currentTimeMillis(), value);
+		this.getSerie().add(newPair);
 	}
 	
 	public void addPair(Long time, String value)
 	{
-		this.getSerie().put(time, value);
+		Map<Long,String> newPair = new HashMap<Long,String>();
+		newPair.put(time, value);
+		this.getSerie().add(newPair);
 	}
 	
 	public void writeFile(String path) throws FileNotFoundException, UnsupportedEncodingException
@@ -79,9 +90,12 @@ implements Serializable, Comparable
 		PrintWriter writer = new PrintWriter(path, "UTF-8");
 		
 		writer.println("# " + this.getLabel() );
-		for(Long actTime : this.getSerie().keySet())
+		for(Map<Long,String> actPair : this.getSerie())
 		{
-			writer.println(new Timestamp(actTime).toString().replace(" ", "T")+","+this.getSerie().get(actTime));
+			for(Long actTime : actPair.keySet())
+			{
+				writer.println(new Timestamp(actTime).toString().replace(" ", "T")+","+actPair.get(actTime));
+			}
 		}
 		
 		writer.close();
@@ -109,14 +123,14 @@ implements Serializable, Comparable
 	/**
 	 * @return the serie
 	 */
-	public Map<Long, String> getSerie() {
+	public ArrayList<Map<Long, String>> getSerie() {
 		return serie;
 	}
 
 	/**
 	 * @param serie the serie to set
 	 */
-	public void setSerie(Map<Long, String> serie) {
+	public void setSerie(ArrayList<Map<Long, String>> serie) {
 		this.serie = serie;
 	}
 
