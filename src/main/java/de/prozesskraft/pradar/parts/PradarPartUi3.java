@@ -652,9 +652,9 @@ public class PradarPartUi3 extends ModelObject
 			}
 
 			// ist mehr als eine bestimmte zahl markiert
-			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 1)
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 20)
 			{
-				log("warn", "run allows max 1 entity at a time");
+				log("warn", "run allows max 20 entities at a time");
 				return;
 			}
 
@@ -723,9 +723,9 @@ public class PradarPartUi3 extends ModelObject
 			}
 
 			// ist mehr als eine bestimmte zahl markiert
-			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 1)
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 20)
 			{
-				log("warn", "stop allows max 1 entity at a time");
+				log("warn", "stop allows max 20 entities at a time");
 				return;
 			}
 
