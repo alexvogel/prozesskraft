@@ -53,6 +53,16 @@ implements Serializable, Comparable
 		}
 	}
 
+	public String sprint()
+	{
+		String out = "# " + this.getLabel();
+		for(Long actTime : this.getSerie().keySet())
+		{
+			out += "["+new Timestamp(actTime)+"],"+this.getSerie().get(actTime);
+		}
+		return out;
+	}
+
 	public void addValue(String value)
 	{
 		this.getSerie().put(System.currentTimeMillis(), value);
