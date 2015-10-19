@@ -165,17 +165,20 @@
   		<xs:sequence>
   			<xs:element maxOccurs="unbounded" ref="step" />
   		</xs:sequence>
-  		<xs:attribute name="maxSimultaneousSteps" type="xs:integer" default="100" />
-  		<xs:attribute name="stepStartDelayMinutes" type="xs:integer" default="0" />
-  		<xs:attribute name="initCommitFile" type="xs:string"></xs:attribute>
-  		<xs:attribute name="initCommitVariable" type="xs:string"></xs:attribute>
+  		<xs:attribute name="maxSimultaneousSteps" type="xs:integer"
+  			default="100" />
+  		<xs:attribute name="stepStartDelayMinutes" type="xs:integer"
+  			default="0" />
+  		<xs:attribute name="stepStartLoadAverageBelow" type="xs:double" use="optional" default="20"/>
+  		<xs:attribute name="initCommitFile" type="xs:string"/>
+  		<xs:attribute name="initCommitVariable" type="xs:string"/>
   		<xs:attribute name="architectMail" use="required"
   			type="EmailType" />
-  		<xs:attribute name="architectName" type="xs:string"></xs:attribute>
-  		<xs:attribute name="architectCompany" type="xs:string"></xs:attribute>
-  		<xs:attribute name="customerMail" type="xs:string"></xs:attribute>
-  		<xs:attribute name="customerName" type="xs:string"></xs:attribute>
-  		<xs:attribute name="customerCompany" type="xs:string"></xs:attribute>
+  		<xs:attribute name="architectName" type="xs:string"/>
+  		<xs:attribute name="architectCompany" type="xs:string"/>
+  		<xs:attribute name="customerMail" type="xs:string"/>
+  		<xs:attribute name="customerName" type="xs:string"/>
+  		<xs:attribute name="customerCompany" type="xs:string"/>
   		<xs:attribute name="description" use="required"
   			type="xs:string" />
   		<xs:attribute name="name" use="required" type="xs:string" />
@@ -184,7 +187,8 @@
   			type="xs:string" />
   		<xs:attribute name="version" use="required" type="xs:string" />
   		<xs:attribute name="wrapper" use="required" type="xs:boolean" />
-  		<xs:attribute name="id2Variable" use="optional" type="xs:string"/>
+  		<xs:attribute name="id2Variable" use="optional"
+  			type="xs:string" />
   	</xs:complexType>
   </xs:element>
   <xs:element name="step" type="step"/>

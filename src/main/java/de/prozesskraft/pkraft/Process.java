@@ -13,6 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.lang.management.ManagementFactory;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -75,6 +76,7 @@ implements Serializable
 	private String path = new String();
 	private Integer maxSimultaneousSteps = null;
 	private Integer stepStartDelayMinutes = null;
+	private Double stepStartLoadAverageBelow = null;
 	private String initCommitFile = new String();
 	private String initCommitVariable = new String();
 	private String architectName = new String();
@@ -122,6 +124,9 @@ implements Serializable
 	private Long timeOfLastStepStart = System.currentTimeMillis()-60000;
 	private Long timeOfProcessCreated = System.currentTimeMillis();
 	private Long timeOfProcessFinishedOrError = 0L;
+
+	private Timeserie timeSerieLoadAverage = new Timeserie();
+	
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -152,6 +157,7 @@ implements Serializable
 		clone.setPath(this.getPath());
 		clone.setMaxSimultaneousSteps(this.getMaxSimultaneousSteps());
 		clone.setStepStartDelayMinutes(this.getStepStartDelayMinutes());
+		clone.setStepStartLoadAverageBelow(this.getStepStartLoadAverageBelow());
 		clone.setInitCommitFile(this.getInitCommitFile());
 		clone.setInitCommitVariable(this.getInitCommitVariable());
 		clone.setArchitectName(this.getArchitectName());
@@ -1267,6 +1273,14 @@ implements Serializable
 		}
 	}
 
+	/**
+	 * adds the momentary loadAverage of the System to the TimeSeriesLoadAverage
+	**/
+	public void memorizeLoadAverage()
+	{
+		this.timeSerieLoadAverage.addValue("" + ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
+	}
+	
 	/*----------------------------
 	  method: schreibt den inhalt des prozesses in die konsole
 	----------------------------*/
@@ -2914,6 +2928,34 @@ implements Serializable
 	 */
 	public void setStepnameOfParent(String stepnameOfParent) {
 		this.stepnameOfParent = stepnameOfParent;
+	}
+
+	/**
+	 * @return the stepStartLoadAverageBelow
+	 */
+	public Double getStepStartLoadAverageBelow() {
+		return stepStartLoadAverageBelow;
+	}
+
+	/**
+	 * @param stepStartLoadAverageBelow the stepStartLoadAverageBelow to set
+	 */
+	public void setStepStartLoadAverageBelow(Double stepStartLoadAverageBelow) {
+		this.stepStartLoadAverageBelow = stepStartLoadAverageBelow;
+	}
+
+	/**
+	 * @return the timeSerieLoadAverage
+	 */
+	public Timeserie getTimeSerieLoadAverage() {
+		return timeSerieLoadAverage;
+	}
+
+	/**
+	 * @param timeSerieLoadAverage the timeSerieLoadAverage to set
+	 */
+	public void setTimeSerieLoadAverage(Timeserie timeSerieLoadAverage) {
+		this.timeSerieLoadAverage = timeSerieLoadAverage;
 	}
 
 }

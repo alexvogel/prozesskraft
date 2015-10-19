@@ -1,6 +1,7 @@
 package de.prozesskraft.pkraft;
 
 import java.io.*;
+import java.lang.management.ManagementFactory;
 import java.util.*;
 
 import org.apache.commons.lang3.StringUtils;
@@ -508,32 +509,51 @@ implements Serializable
 			
 			// 1) max. erlaubte laufende stepanzahl bereits erreicht?
 			Integer workingSteps =  this.getParent().getParent().getStepWorking().size();
-			Integer maxWorkingSteps =  this.getParent().getParent().getMaxSimultaneousSteps();
-			log("debug", "amount of working Steps is: " + workingSteps + " maxSimultaneousSteps=" + maxWorkingSteps);
-			if(this.getParent().getParent().getMaxSimultaneousSteps() <= workingSteps)
+			log("debug", "amount of working Steps is: " + workingSteps);
+			if( (this.getParent().getParent().getMaxSimultaneousSteps() != null) && (this.getParent().getParent().getMaxSimultaneousSteps() <= workingSteps) )
 			{
-				log("info", "starting of new steps is not allowed at the moment by reference of maxSimultaniousSteps");
+				log("info", "starting of new steps is not allowed at the moment by reference of maxSimultaniousSteps (" + this.getParent().getParent().getMaxSimultaneousSteps() + ")");
 				schrittStarten = false;
 			}
 			else
 			{
-				log("info", "starting of new steps is allowed at the moment by reference of maxSimultaniousSteps");
+				log("info", "starting of new steps is allowed at the moment by reference of maxSimultaniousSteps (" + this.getParent().getParent().getMaxSimultaneousSteps() + ")");
 			}
 
 			log("debug", "now in milliseconds: " + System.currentTimeMillis());
 			Integer minutesSinceLastStepStart = (int)((long)(System.currentTimeMillis() - this.getParent().getParent().getTimeOfLastStepStart()) / 60000);
-			log("debug", "time since last step start in minutes: " + minutesSinceLastStepStart + " stepStartDelayMinutes="+this.getParent().getParent().getStepStartDelayMinutes());
+			log("debug", "time since last step start in minutes: " + minutesSinceLastStepStart);
+
 			// 2) der zeitpunkt an dem der letzte schritt gestartet wurde ist weniger minuten her als der mindest-Delay fuer Stepstarts vorschreibt
-			if( minutesSinceLastStepStart < this.getParent().getParent().getStepStartDelayMinutes())
+			if( (this.getParent().getParent().getStepStartDelayMinutes() != null) && (minutesSinceLastStepStart < this.getParent().getParent().getStepStartDelayMinutes()) )
 			{
-				log("info", "starting of new steps is not allowed at the moment by reference of stepStartDelayMinutes");
+				log("info", "starting of new steps is not allowed at the moment by reference of stepStartDelayMinutes (" + this.getParent().getParent().getStepStartDelayMinutes() + ")");
 				schrittStarten = false;
 			}
 			else
 			{
-				log("info", "starting of new steps is allowed at the moment by reference of stepStartDelayMinutes");
+				log("info", "starting of new steps is allowed at the moment by reference of stepStartDelayMinutes (" + this.getParent().getParent().getStepStartDelayMinutes() + ")");
 			}
 
+			double actLoadAverage = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
+			log("debug", "the momentarily load average is " + actLoadAverage);
+			this.getParent().getParent().memorizeLoadAverage();
+
+			// 3) das load average unterhalb eines definierten wertes
+			if( (this.getParent().getParent().getStepStartLoadAverageBelow() != null) && (minutesSinceLastStepStart < this.getParent().getParent().getStepStartLoadAverageBelow()) )
+			{
+				
+				if(actLoadAverage > this.getParent().getParent().getStepStartLoadAverageBelow())
+				{
+					log("info", "starting of new steps is not allowed at the moment by reference of stepStartLoadAverageBelow (" + this.getParent().getParent().getStepStartLoadAverageBelow() + ")");
+					schrittStarten = false;
+				}
+				else
+				{
+					log("info", "starting of new steps is allowed at the moment by reference of stepStartLoadAverageBelow (" + this.getParent().getParent().getStepStartLoadAverageBelow() + ")");
+				}
+			}
+			
 			// wenn alle voraussetzungen zum starten eines neuen steps erfuellt sind
 			if(schrittStarten)
 			{
