@@ -506,6 +506,7 @@ implements Serializable
 			
 			// nicht starten, wenn aktuell laufendeSteps >= simultaneousSteps(max=?)
 			// nicht starten, wenn der zeitpunkt des letzten Stepstarts kuerzer zurueckliegt als simultaneousSteps(delay=?)
+			// nicht starten, wenn stepStartLoadAverageBelow niedriger ist als das aktuelle loadAverage
 			
 			// 1) max. erlaubte laufende stepanzahl bereits erreicht?
 			Integer workingSteps =  this.getParent().getParent().getStepWorking().size();
@@ -541,18 +542,14 @@ implements Serializable
 //			log("debug", "all the load averages till now are " + this.getParent().getParent().getTimeSerieLoadAverage().sprint());
 
 			// 3) das load average unterhalb eines definierten wertes
-			if( (this.getParent().getParent().getStepStartLoadAverageBelow() != null) && (minutesSinceLastStepStart < this.getParent().getParent().getStepStartLoadAverageBelow()) )
+			if( (this.getParent().getParent().getStepStartLoadAverageBelow() != null) && (actLoadAverage > this.getParent().getParent().getStepStartLoadAverageBelow()) )
 			{
-				
-				if(actLoadAverage > this.getParent().getParent().getStepStartLoadAverageBelow())
-				{
-					log("info", "starting of new steps is not allowed at the moment by reference of stepStartLoadAverageBelow (" + this.getParent().getParent().getStepStartLoadAverageBelow() + ")");
-					schrittStarten = false;
-				}
-				else
-				{
-					log("info", "starting of new steps is allowed at the moment by reference of stepStartLoadAverageBelow (" + this.getParent().getParent().getStepStartLoadAverageBelow() + ")");
-				}
+				log("info", "starting of new steps is not allowed at the moment by reference of stepStartLoadAverageBelow (" + this.getParent().getParent().getStepStartLoadAverageBelow() + ")");
+				schrittStarten = false;
+			}
+			else
+			{
+				log("info", "starting of new steps is allowed at the moment by reference of stepStartLoadAverageBelow (" + this.getParent().getParent().getStepStartLoadAverageBelow() + ")");
 			}
 			
 			// wenn alle voraussetzungen zum starten eines neuen steps erfuellt sind
