@@ -281,6 +281,9 @@ public class Manager
 			
 			while(weiterlaufen)
 			{
+				// die timeserie rausschreiben
+				p2.getTimeSerieLoadAverage().writeFile(p2.getRootdir() + "/.serieLoadAverage.txt");
+				
 				// prozess instanz frisch einlesen
 				Process p3 = p2.readBinary();
 				actualProcess = p3;
@@ -331,8 +334,8 @@ public class Manager
 //						p3.log("info", "manager "+managerid+": pradar checkout id="+p3.getId()+", process="+p3.getName()+", exitcode=0");
 //						pradarCheckout(p3.getId(), p3.getName(), "0");
 						
-						// die timeserie rausschreiben
-						p2.getTimeSerieLoadAverage().writeFile(p2.getRootdir() + "/.serieLoadAverage.txt");
+//						// die timeserie rausschreiben
+//						p2.getTimeSerieLoadAverage().writeFile(p2.getRootdir() + "/.serieLoadAverage.txt");
 					}
 					
 					// error
@@ -357,8 +360,8 @@ public class Manager
 //						p3.log("debug", "pradar-checkout id="+p3.getId()+", process="+p3.getName()+", exitcode="+exitCode);
 //						pradarCheckout(p3.getId(), p3.getName(), exitCode);
 
-						// die timeserie rausschreiben
-						p2.getTimeSerieLoadAverage().writeFile(p2.getRootdir() + "/.serieLoadAverage.txt");
+//						// die timeserie rausschreiben
+//						p2.getTimeSerieLoadAverage().writeFile(p2.getRootdir() + "/.serieLoadAverage.txt");
 					}
 
 //					// error
