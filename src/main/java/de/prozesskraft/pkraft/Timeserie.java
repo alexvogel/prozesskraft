@@ -81,7 +81,7 @@ implements Serializable, Comparable
 		writer.println("# " + this.getLabel() );
 		for(Long actTime : this.getSerie().keySet())
 		{
-			writer.println(new Timestamp(actTime)+","+this.getSerie().get(actTime));
+			writer.println(new Timestamp(actTime).toString().replace(" ", "T")+","+this.getSerie().get(actTime));
 		}
 		
 		writer.close();
