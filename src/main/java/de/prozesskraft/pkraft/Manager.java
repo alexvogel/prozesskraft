@@ -4,7 +4,9 @@ import de.prozesskraft.commons.MyLicense;
 import de.prozesskraft.commons.WhereAmI;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -281,8 +283,6 @@ public class Manager
 			
 			while(weiterlaufen)
 			{
-				// die timeserie rausschreiben
-				p2.getTimeSerieLoadAverage().writeFile(p2.getRootdir() + "/.serieLoadAverage.txt");
 				
 				// prozess instanz frisch einlesen
 				Process p3 = p2.readBinary();
@@ -484,6 +484,17 @@ public class Manager
 		process.touch();
 		process.detStatus(); 
 		process.writeBinary();
+
+		// die timeserie rausschreiben
+		try {
+			process.getTimeSerieLoadAverage().writeFile(process.getRootdir() + "/.serieLoadAverage.txt");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private static void exiter()
