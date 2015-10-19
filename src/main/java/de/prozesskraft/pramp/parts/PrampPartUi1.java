@@ -99,7 +99,7 @@ public class PrampPartUi1 extends ModelObject
 	public Process process = null;
 	private String iniFile = null;
 	static private Ini ini = null;
-	private String userIniFile = null;
+//	private String userIniFile = null;
 	
 	private Map<String,Boolean> domainUserRights = new HashMap<String,Boolean>();
 	
@@ -1226,66 +1226,66 @@ public class PrampPartUi1 extends ModelObject
 //	}
 	
 	
-	/**
-	 * prueft ob die parameter bereits verwendet wurden
-	 * TODO: erneuern auf Multimap
-	 * @return true if parameter are used the first time
-	 */
-	private boolean parameterAlreadyUsed(Multimap<String,String> content)
-	{
-		boolean result = false;
-
-		Ini userIni;
-		try
-		{
-			userIni = new Ini(new File(this.userIniFile));
-			int processZaehler = 1;
-			while(userIni.containsKey(this.process.getName()+"-"+processZaehler))
-			{
-				Boolean comparison = null;
-				
-				Map<String,String> actualMapIni = userIni.get(this.process.getName()+"-"+processZaehler);
-				
-				// die aktuellen input-daten vergleichen mit dem block aus dem inifile
-				for(String key : content.keySet())
-				{
-//					System.out.println("mapIni:  "+actualMapIni.get(key));
-//					System.out.println("content: "+content.get(key));
-					if ( (actualMapIni.get(key) != null) && (content.get(key) != null) && (!(content.get(key).equals(actualMapIni.get(key)))) )
-					{
-//						log("info", "keine uebereinstimmung fuer section "+this.process.getName()+"-"+processZaehler+" key: "+key+" value-content: "+content.get(key)+" value-ini: "+actualMapIni.get(key));
-						comparison = false;
-						break;
-					}
-					else if (comparison == null)
-					{
-						comparison = true;
-					}
-				}
-				
-				// wenn beide datensaetze uebereinstimmen, dann
-				if (comparison)
-				{
-					result = true;
-					return result;
-				}
-				processZaehler++;
-			}
-
-			
-		} catch (InvalidFileFormatException e)
-		{
-			// TODO Auto-generated catch block
-			log("error", "invalid file format of user-ini file: "+this.userIniFile);
-			//	e.printStackTrace();
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-//			e.printStackTrace();
-			log("error", "problems with reading user-ini file: "+this.userIniFile);
-		}
-		return result;
-	}
+//	/**
+//	 * prueft ob die parameter bereits verwendet wurden
+//	 * TODO: erneuern auf Multimap
+//	 * @return true if parameter are used the first time
+//	 */
+//	private boolean parameterAlreadyUsed(Multimap<String,String> content)
+//	{
+//		boolean result = false;
+//
+//		Ini userIni;
+//		try
+//		{
+//			userIni = new Ini(new File(this.userIniFile));
+//			int processZaehler = 1;
+//			while(userIni.containsKey(this.process.getName()+"-"+processZaehler))
+//			{
+//				Boolean comparison = null;
+//				
+//				Map<String,String> actualMapIni = userIni.get(this.process.getName()+"-"+processZaehler);
+//				
+//				// die aktuellen input-daten vergleichen mit dem block aus dem inifile
+//				for(String key : content.keySet())
+//				{
+////					System.out.println("mapIni:  "+actualMapIni.get(key));
+////					System.out.println("content: "+content.get(key));
+//					if ( (actualMapIni.get(key) != null) && (content.get(key) != null) && (!(content.get(key).equals(actualMapIni.get(key)))) )
+//					{
+////						log("info", "keine uebereinstimmung fuer section "+this.process.getName()+"-"+processZaehler+" key: "+key+" value-content: "+content.get(key)+" value-ini: "+actualMapIni.get(key));
+//						comparison = false;
+//						break;
+//					}
+//					else if (comparison == null)
+//					{
+//						comparison = true;
+//					}
+//				}
+//				
+//				// wenn beide datensaetze uebereinstimmen, dann
+//				if (comparison)
+//				{
+//					result = true;
+//					return result;
+//				}
+//				processZaehler++;
+//			}
+//
+//			
+//		} catch (InvalidFileFormatException e)
+//		{
+//			// TODO Auto-generated catch block
+//			log("error", "invalid file format of user-ini file: "+this.userIniFile);
+//			//	e.printStackTrace();
+//		} catch (IOException e)
+//		{
+//			// TODO Auto-generated catch block
+////			e.printStackTrace();
+//			log("error", "problems with reading user-ini file: "+this.userIniFile);
+//		}
+//		return result;
+//	}
 	
 	
 	/**
@@ -1458,35 +1458,35 @@ public class PrampPartUi1 extends ModelObject
 					log ("info", "all tests passed. performing commit.");
 	//				System.out.println("Anzahl der Files in Step root: "+this.process.getStep("root").getFile().size());
 					
-					// eintragen der parameter ins ini
-					Ini userIni;
-					try
-					{
-						userIni = new Ini(new File(this.userIniFile));
-						int processZaehler = 1;
-						while(userIni.containsKey(this.process.getName()+"-"+processZaehler))
-						{
-							processZaehler++;
-						}
-						
-						for(String key : content.keySet())
-						{
-							userIni.put(this.process.getName()+"-"+processZaehler, key, content.get(key));
-						}
-						// userIni File schreiben
-						userIni.store();
-						
-					} catch (InvalidFileFormatException e)
-					{
-						// TODO Auto-generated catch block
-						log("error", "invalid file format of user-ini file: "+this.userIniFile);
-						//	e.printStackTrace();
-					} catch (IOException e)
-					{
-						// TODO Auto-generated catch block
-//						e.printStackTrace();
-						log("error", "problems with reading user-ini file: "+this.userIniFile);
-					}
+//					// eintragen der parameter ins ini
+//					Ini userIni;
+//					try
+//					{
+//						userIni = new Ini(new File(this.userIniFile));
+//						int processZaehler = 1;
+//						while(userIni.containsKey(this.process.getName()+"-"+processZaehler))
+//						{
+//							processZaehler++;
+//						}
+//						
+//						for(String key : content.keySet())
+//						{
+//							userIni.put(this.process.getName()+"-"+processZaehler, key, content.get(key));
+//						}
+//						// userIni File schreiben
+//						userIni.store();
+//						
+//					} catch (InvalidFileFormatException e)
+//					{
+//						// TODO Auto-generated catch block
+//						log("error", "invalid file format of user-ini file: "+this.userIniFile);
+//						//	e.printStackTrace();
+//					} catch (IOException e)
+//					{
+//						// TODO Auto-generated catch block
+////						e.printStackTrace();
+//						log("error", "problems with reading user-ini file: "+this.userIniFile);
+//					}
 
 					// user input an den Prozess committen
 					this.commitCreatorOld.get(getActualCommitRootName()).commitAll();
