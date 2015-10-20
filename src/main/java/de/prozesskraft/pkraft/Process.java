@@ -96,7 +96,7 @@ implements Serializable
 //	public ArrayList<Step> stepStorageForRemove = new ArrayList<Step>();
 	
 	public boolean run = false;
-	private String status = new String();	// waiting/working/finished/broken/paused
+	private String status = new String();	// waiting/working/finished/broken/paused/abandoned
 	private String baseDir = new java.io.File(".").getAbsolutePath();
 	private double managerid = -1;
 	private Date date = new Date();
@@ -1894,7 +1894,7 @@ implements Serializable
 				// wenn der Prozess seit 5 Minuten nicht mehr beruehrt wurde, dann soll status=error sein
 				if( this.getTouchInMillis() > 0 && (System.currentTimeMillis() - this.getTouchInMillis()) > 300000)
 				{
-					status = "error";
+					status = "abandoned";
 					this.log("error", "instance has been abandoned. last touch has been: " + new Timestamp(this.getTouchInMillis()).toString() + ". now is: " + new Timestamp(System.currentTimeMillis()).toString());
 				}
 				else
