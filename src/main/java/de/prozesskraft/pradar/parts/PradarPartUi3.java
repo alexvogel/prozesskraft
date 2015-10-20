@@ -434,21 +434,6 @@ public class PradarPartUi3 extends ModelObject
 		new Label(composite_1, SWT.NONE);
 		btnNewButton2.addSelectionListener(listener_autoscale_button);
 
-		// Group apps
-		Group grpApps = new Group(composite_11, SWT.NONE);
-		grpApps.setText("apps");
-		GridData gd_grpApps = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_grpApps.widthHint = 152;
-		grpApps.setLayoutData(gd_grpApps);
-		grpApps.setLayout(new GridLayout(2, false));
-		
-		Button btnNewButton3 = new Button(grpApps, SWT.NONE);
-		GridData gd_btnNewButton3 = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-		gd_btnNewButton3.widthHint = 141;
-		btnNewButton3.setLayoutData(gd_btnNewButton3);
-		btnNewButton3.setText("pRamp");
-		btnNewButton3.addSelectionListener(listener_pramp_button);
-
 		// tabFolder erzeugen
 		tabFolder_12 = new CTabFolder(composite_1, SWT.BORDER);
 		tabFolder_12.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -1586,29 +1571,6 @@ public class PradarPartUi3 extends ModelObject
 		{
 //			System.out.println("button wurde gedrueckt");
 			applet_autoscale();
-		}
-	};
-
-	/**
-	 * pramp-button oeffnet die anwendung pramp-gui
-	 **/
-	SelectionAdapter listener_pramp_button = new SelectionAdapter()
-	{
-		public void widgetSelected(SelectionEvent event)
-		{
-			log("info", "starten von pramp");
-			String aufruf = ini.get("apps", "pramp");
-			
-			try
-			{
-				log("info", "calling: " + aufruf);
-				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-			}
-			catch (IOException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 	};
 	
