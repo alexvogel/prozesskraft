@@ -224,7 +224,7 @@ public class PmodelPartUi1 extends ModelObject
 
 		setIni();
 		loadIni();
-		checkLicense();
+//		checkLicense();
 
 //		einstellungen.setRootpositionratiox((float)0.5);
 //		einstellungen.setRootpositionratioy((float)0.1);
