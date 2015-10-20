@@ -515,10 +515,14 @@ implements Serializable
 			{
 				log("info", "starting of new steps is not allowed at the moment by reference of maxSimultaniousSteps (" + this.getParent().getParent().getMaxSimultaneousSteps() + ")");
 				schrittStarten = false;
+				
+				// merken
+				this.getParent().getParent().counterLoadAverageTooHigh++;
 			}
 			else
 			{
 				log("info", "starting of new steps is allowed at the moment by reference of maxSimultaniousSteps (" + this.getParent().getParent().getMaxSimultaneousSteps() + ")");
+				this.getParent().getParent().counterLoadAverageTooHigh = 0;
 			}
 
 			log("debug", "now in milliseconds: " + System.currentTimeMillis());

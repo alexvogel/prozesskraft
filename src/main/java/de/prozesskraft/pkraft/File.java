@@ -2,6 +2,7 @@ package de.prozesskraft.pkraft;
 
 import java.io.*;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 //import java.util.*;
@@ -172,8 +173,13 @@ implements Serializable, Cloneable
 					else
 					{
 						this.log("info", "files are not the same. will copy source="+quellFile.getAbsolutePath()+", destination="+zielFile.getAbsolutePath());
-						FileUtils.copyFile(quellFile, zielFile, true);
 
+						// urspruenglich eine kopie
+//						FileUtils.copyFile(quellFile, zielFile, true);
+
+						// alternativ einen hardlink (geringerer aufwand)
+						Files.createLink(zielFile.toPath(), quellFile.toPath());
+						
 						// vermerken der neuen position als echte fileposition
 						this.setRealposition(this.getAbsfilename());
 						success = true;
@@ -191,8 +197,13 @@ implements Serializable, Cloneable
 				try
 				{
 					this.log("info", "destination file does not exists yet. will copy source="+quellFile.getAbsolutePath()+", destination="+zielFile.getAbsolutePath());
-					FileUtils.copyFile(quellFile, zielFile, true);
 
+					// urspruenglich eine kopie
+//					FileUtils.copyFile(quellFile, zielFile, true);
+
+					// alternativ einen hardlink (geringerer aufwand)
+					Files.createLink(zielFile.toPath(), quellFile.toPath());
+					
 					// vermerken der neuen position als echte fileposition
 					this.setRealposition(this.getAbsfilename());
 					success = true;

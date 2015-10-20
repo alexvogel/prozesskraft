@@ -127,6 +127,7 @@ implements Serializable
 
 	private Timeserie timeSerieLoadAverage = new Timeserie();
 	
+	public int counterLoadAverageTooHigh = 0;
 	/*----------------------------
 	  constructors
 	----------------------------*/
