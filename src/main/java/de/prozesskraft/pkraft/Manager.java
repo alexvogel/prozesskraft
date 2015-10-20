@@ -5,6 +5,7 @@ import de.prozesskraft.commons.WhereAmI;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 //import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -198,7 +200,11 @@ public class Manager
 
 			Process p1 = new Process();
 			
-			long loop_period_seconds = 10;
+			// die dauer des loops festlegen. Dies soll kein standardwert sein, da sonst bei vielen subprozessen die Prozessorlast stark oszilliert
+			// zwischen 25 und 35 sekunden
+			Random rand = new Random(System.currentTimeMillis());
+			int loop_period_seconds = rand.nextInt((35 - 25) + 1) + 25;
+			System.err.println("loop period is randomly set to: "+loop_period_seconds);
 			
 			double managerid = p1.genManagerid();
 	
@@ -402,7 +408,12 @@ public class Manager
 
 				try
 				{
-					Thread.sleep(loop_period_seconds*1000);
+					// der thread soll so lange schlafen, wie die periode lang ist. die schlafdauer wird mit der anzahl multipliziert, wie oft das loadAverage zu hoch war (max 5)
+					int faktorForPeriod = Math.max(5, p3.counterLoadAverageTooHigh + 1);
+					
+					int secondsToSleep = loop_period_seconds * faktorForPeriod;
+					System.err.println("debug: sleeping for " + secondsToSleep + " seconds");
+					Thread.sleep(secondsToSleep*1000);
 				}
 				catch (InterruptedException e)
 				{
@@ -417,8 +428,20 @@ public class Manager
 			{
 				actualProcess.log("fatal", e.getMessage()+"\n"+Arrays.toString(e.getStackTrace()));
 				updateFile(actualProcess);
+				e.printStackTrace();
+				try
+				{
+					java.io.FileWriter writer = new FileWriter(actualProcess.getRootdir() + "/process.pmb.pkraft-manager.stacktrace", true);
+					writer.write(e.getMessage());
+					writer.close();
+				}
+				catch (IOException e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
-			e.printStackTrace();
+
 			System.exit(10);
 		}
 	}
@@ -432,6 +455,17 @@ public class Manager
 		}
 		catch (IOException e)
 		{
+			try
+			{
+				java.io.FileWriter writer = new FileWriter(pathToInstance + ".pkraft-manager.stacktrace", true);
+				writer.write(e.getMessage());
+				writer.close();
+			}
+			catch (IOException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		}
 	}
