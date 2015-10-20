@@ -298,6 +298,7 @@ public class Manager
 				// prozess instanz frisch einlesen
 				System.err.println("debug: rereading instance");
 				Process p3 = p2.readBinary();
+				System.err.println("debug: rereading instance done");
 				actualProcess = p3;
 				
 				weiterlaufen = p3.run;
@@ -329,7 +330,7 @@ public class Manager
 //					pradarProgress(p3.getId(), p3.getName(), getPid(), lastStepcountFinishedOrCanceled, lastStepcount);
 
 					// evtl. stoeren sich zwei kurz aufeinander folgende aufrufe von pradar...
-					Thread.sleep(500);
+//					Thread.sleep(500);
 					
 					// finished
 					if(p3.getStatus().equals("finished"))
@@ -413,7 +414,10 @@ public class Manager
 					
 					int secondsToSleep = loop_period_seconds * faktorForPeriod;
 					System.err.println("debug: sleeping for " + secondsToSleep + " seconds");
-					Thread.sleep(secondsToSleep*1000);
+					
+					int millisecondsToSleep = secondsToSleep*1000;
+					System.err.println("debug: sleeping for " + millisecondsToSleep + " seconds");
+					Thread.sleep(millisecondsToSleep);
 				}
 				catch (InterruptedException e)
 				{
