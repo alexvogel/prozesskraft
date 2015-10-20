@@ -317,7 +317,7 @@ public class Manager
 //					lastStepcountFinishedOrCanceled = p3.getStepFinishedOrCanceled().size();
 
 					// pradar aktualisieren
-					pradarAttend(p2.getRootdir()+"/process.pmb");
+					pradarAttend(p3.getRootdir()+"/process.pmb");
 					
 //					p3.log("info", "manager "+managerid+": pradar progress  "+lastStepcountFinishedOrCanceled+"/"+lastStepcount);
 //					pradarProgress(p3.getId(), p3.getName(), getPid(), lastStepcountFinishedOrCanceled, lastStepcount);
@@ -336,7 +336,7 @@ public class Manager
 						p3.setTimeOfProcessFinishedOrError(System.currentTimeMillis());
 						
 						// pradar aktualisieren
-						pradarAttend(p2.getRootdir()+"/process.pmb");
+//						pradarAttend(p3.getRootdir()+"/process.pmb");
 
 //						// pradar checkout
 //						p3.log("info", "manager "+managerid+": pradar checkout id="+p3.getId()+", process="+p3.getName()+", exitcode=0");
@@ -363,7 +363,7 @@ public class Manager
 						}
 
 						// pradar aktualisieren
-						pradarAttend(p2.getRootdir()+"/process.pmb");
+//						pradarAttend(p2.getRootdir()+"/process.pmb");
 
 //						// pradar checkout
 //						p3.log("debug", "pradar-checkout id="+p3.getId()+", process="+p3.getName()+", exitcode="+exitCode);
