@@ -247,7 +247,7 @@ public class Manager
 			// beim aufruf des programms wird erstmal die instanz occupiert
 			p2.setManagerid(managerid);
 			
-			System.err.println("manager "+managerid+": occupying instance.");
+			System.err.println("debug: manager "+managerid+": occupying instance.");
 			p2.log("info", "manager "+managerid+": occupying instance.");
 			p2.log("debug", "manager "+managerid+": setting new manager-id to signal other running managers that they are not longer needed.");
 	
@@ -268,12 +268,12 @@ public class Manager
 			// wenn es kein wrapper-prozess ist, dann soll die komunikation mit pradar vom manager uebernommen werden
 			boolean pradar =  (!(p2.isWrapper()));
 
-			System.err.println("setting instance to run");
+			System.err.println("debug: setting instance to run");
 			p2.run = true;
 	
 			// die letzten festgestellten werte fuer die abarbeitung
-			int lastStepcount = 0;
-			int lastStepcountFinishedOrCanceled = 0;
+//			int lastStepcount = 0;
+//			int lastStepcountFinishedOrCanceled = 0;
 	
 			// pradar checkin
 			if(pradar && p2.run && p2.touchInMillis == 0)
@@ -283,12 +283,14 @@ public class Manager
 //				pradarCheckin(p2.getId(), p2.getName(), p2.getVersion(), p2.getId2(), p2.getParentid(), getPid(), p2.getRootdir()+"/process.pmb");
 			}
 				
+			System.err.println("debug: writing binary");
 			p2.writeBinary();
 			
 			while(weiterlaufen)
 			{
 				
 				// prozess instanz frisch einlesen
+				System.err.println("debug: rereading instance");
 				Process p3 = p2.readBinary();
 				actualProcess = p3;
 				
@@ -311,8 +313,8 @@ public class Manager
 				if(pradar)
 				{
 	
-					lastStepcount =  p3.getStep().size();
-					lastStepcountFinishedOrCanceled = p3.getStepFinishedOrCanceled().size();
+//					lastStepcount =  p3.getStep().size();
+//					lastStepcountFinishedOrCanceled = p3.getStepFinishedOrCanceled().size();
 
 					// pradar aktualisieren
 					pradarAttend(p2.getRootdir()+"/process.pmb");
@@ -326,6 +328,8 @@ public class Manager
 					// finished
 					if(p3.getStatus().equals("finished"))
 					{
+						System.err.println("debug: status is finished");
+
 						// wenn der prozess den status 'finished' hat, soll dieses programm beendet werden
 						p3.run = false;
 						p3.log("info", "manager "+managerid+": process instance is finished. goodbye from manager id "+p3.getManagerid());
@@ -345,6 +349,7 @@ public class Manager
 					// error
 					else if(p3.getStatus().equals("error"))
 					{
+						System.err.println("debug: status is error");
 						p3.run = false;
 						p3.log("info", "error in process detected. setting run = false");
 						p3.log("info", "stopping manager "+p2.getManagerid());
@@ -391,6 +396,7 @@ public class Manager
 	
 				if(p3.run == false)
 				{
+					System.err.println("debug: exiting");
 					System.exit(0);
 				}
 
