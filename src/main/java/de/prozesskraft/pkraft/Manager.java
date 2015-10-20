@@ -208,10 +208,11 @@ public class Manager
 			if (fileBinary.exists())
 			{
 				pathBinary = fileBinary.getAbsolutePath();
+				System.err.println("file does exist: "+pathBinary);
 			}
 			else
 			{
-				System.out.println("file does not exist: "+fileBinary.getAbsolutePath());
+				System.err.println("file does not exist: "+fileBinary.getAbsolutePath());
 				exiter();
 			}
 
@@ -245,6 +246,8 @@ public class Manager
 			
 			// beim aufruf des programms wird erstmal die instanz occupiert
 			p2.setManagerid(managerid);
+			
+			System.err.println("manager "+managerid+": occupying instance.");
 			p2.log("info", "manager "+managerid+": occupying instance.");
 			p2.log("debug", "manager "+managerid+": setting new manager-id to signal other running managers that they are not longer needed.");
 	
@@ -265,6 +268,7 @@ public class Manager
 			// wenn es kein wrapper-prozess ist, dann soll die komunikation mit pradar vom manager uebernommen werden
 			boolean pradar =  (!(p2.isWrapper()));
 
+			System.err.println("setting instance to run");
 			p2.run = true;
 	
 			// die letzten festgestellten werte fuer die abarbeitung
