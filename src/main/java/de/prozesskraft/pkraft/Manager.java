@@ -411,12 +411,13 @@ public class Manager
 				{
 					// der thread soll so lange schlafen, wie die periode lang ist. die schlafdauer wird mit der anzahl multipliziert, wie oft das loadAverage zu hoch war (max 5)
 					int faktorForPeriod = Math.min(5, p3.counterLoadAverageTooHigh + 1);
-					
+
 					int secondsToSleep = loop_period_seconds * faktorForPeriod;
 					System.err.println("debug: sleeping for " + secondsToSleep + " seconds");
 					
 					int millisecondsToSleep = secondsToSleep*1000;
-					System.err.println("debug: sleeping for " + millisecondsToSleep + " seconds");
+					System.err.println("debug: sleeping for " + millisecondsToSleep + " milliseconds");
+					
 					Thread.sleep(millisecondsToSleep);
 				}
 				catch (InterruptedException e)
