@@ -178,6 +178,7 @@ implements Serializable, Cloneable
 //						FileUtils.copyFile(quellFile, zielFile, true);
 
 						// alternativ einen hardlink (geringerer aufwand)
+						zielFile.getParentFile().mkdirs();
 						Files.createLink(zielFile.toPath(), quellFile.toPath());
 						
 						// vermerken der neuen position als echte fileposition
@@ -202,6 +203,7 @@ implements Serializable, Cloneable
 //					FileUtils.copyFile(quellFile, zielFile, true);
 
 					// alternativ einen hardlink (geringerer aufwand)
+					zielFile.getParentFile().mkdirs();
 					Files.createLink(zielFile.toPath(), quellFile.toPath());
 					
 					// vermerken der neuen position als echte fileposition
