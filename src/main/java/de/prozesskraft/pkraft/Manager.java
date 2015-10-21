@@ -304,12 +304,12 @@ public class Manager
 				
 			System.err.println("debug: writing binary");
 			
-//			// ueberpruefen wie gross das binary ist
-//			java.io.File binaryFile = new java.io.File(p2.getInfilebinary());
-//			if(binaryFile.length() > 5000000)
-//			{
-//				p2.purge();
-//			}
+			// ueberpruefen wie gross das binary ist
+			java.io.File binaryFile = new java.io.File(p2.getInfilebinary());
+			if(binaryFile.length() > 5000000)
+			{
+				p2.logRelocate();
+			}
 
 			p2.writeBinary();
 
