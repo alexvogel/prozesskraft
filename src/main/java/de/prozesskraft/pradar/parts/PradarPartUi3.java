@@ -355,7 +355,7 @@ public class PradarPartUi3 extends ModelObject
 		button_stop = new Button(grpFunctionInstance, SWT.NONE);
 		button_stop.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		button_stop.setText("stop");
-		button_stop.setToolTipText("stops the manager for the selected instance");
+		button_stop.setToolTipText("stops the manager for the selected instance and kills all apps started by its steps");
 		button_stop.addSelectionListener(listener_stop_button);
 
 		button_browse = new Button(grpFunctionInstance, SWT.NONE);
@@ -443,7 +443,7 @@ public class PradarPartUi3 extends ModelObject
 		tabFolder_12.addSelectionListener(listener_tabFolder_selection);
 //		tabFolder_12.setFont(SWTResourceManager.getFont("Sans", 12, SWT.NORMAL));
 //		tabFolder_12.setSimple(false);
-										
+
 		// ein tabItem fuer radar mit eingebetteten composite erzeugen
 		tabItem_radar = new CTabItem(tabFolder_12, SWT.NONE);
 		tabItem_radar.setText("radar");
@@ -713,8 +713,8 @@ public class PradarPartUi3 extends ModelObject
 				log("warn", "stop allows max 20 entities at a time");
 				return;
 			}
-
-			// fuer jedes markierte entity einen filebrowser oeffnen
+			
+			// fuer jedes markierte entity einen manager starten
 			for(Entity actEntity : einstellungen.entitiesSelected)
 			{
 				String pathInstanceDir = new File(actEntity.getResource()).getParent();
@@ -736,7 +736,7 @@ public class PradarPartUi3 extends ModelObject
 				else
 				{
 					// den pkraft-manager stoppen
-					String call = ini.get("apps", "pkraft-manager") + " -stop -instance " + actEntity.getResource(); 
+					String call = ini.get("apps", "pkraft-manager") + " -stop -kill -instance " + actEntity.getResource(); 
 					log("info", "calling: "+call);
 					
 					// und die daten aktualisieren
