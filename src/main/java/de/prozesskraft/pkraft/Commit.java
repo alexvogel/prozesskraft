@@ -902,9 +902,22 @@ implements Serializable
 		log("info", "(value=" +master.getValue()+")");
 		if((master.getValue()!=null) && (!master.getValue().equals("")))
 		{
-			master.setValue(this.getParent().resolveString(master.getValue()));
-			log("info", "(value=" +this.getParent().resolveString(master.getValue())+")");
-			variablesToCommit.add(master);
+			Variable variableClone = master.clone();
+
+			// zuerst $loopvarcommit aufloesen
+			if(!this.getLoopvar().equals(""))
+			{
+				String valueResolvedLoopvar = variableClone.getValue().replaceAll("\\{\\$loopvarcommit\\}", this.getLoopvar());
+				log("debug", "resolving value internally in commit-object '"+master.getValue()+"' to '"+valueResolvedLoopvar+"'");
+				variableClone.setValue(valueResolvedLoopvar);
+			}
+			
+			// dann alle anderen $platzhalter aufloesen
+			variableClone.setValue(this.getParent().resolveString(variableClone.getValue()));
+			log("info", "(value=" +this.getParent().resolveString(variableClone.getValue())+")");
+			
+			// zu den zu committenden variablen hinzufuegen
+			variablesToCommit.add(variableClone);
 		}
 
 		// wenn der parent ein subprocess ist und subprocesskey definiert ist, soll das value aus dem rootStep des Subprocesses geholt werden
