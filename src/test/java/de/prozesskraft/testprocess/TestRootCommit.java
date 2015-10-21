@@ -55,7 +55,7 @@ public class TestRootCommit {
 		// rootCommit durchfuehren
 		rootStep.commit();
 
-		for(Log actLog : rootStep.getLogRecursive())
+		for(Log actLog : rootStep.getLogRecursive(false))
 		{
 			System.err.println(actLog.sprint());
 		}
@@ -136,7 +136,7 @@ public class TestRootCommit {
 		// rootCommit durchfuehren
 		rootStep.commit();
 
-		for(Log actLog : rootStep.getLogRecursive())
+		for(Log actLog : rootStep.getLogRecursive(false))
 		{
 			System.err.println(actLog.sprint());
 		}

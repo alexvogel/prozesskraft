@@ -108,7 +108,7 @@ implements Serializable
 	private String filedoctemplateodf = new String();
 	private String fileDocJrxml = new String();
 	private String rootstepname = "root";
-	private ArrayList<Log> log = new ArrayList<Log>();
+	ArrayList<Log> log = new ArrayList<Log>();
 	private String idRumpf = "noId"; 
 	private String touchAsString = "";
 	public long touchInMillis = 0;
@@ -1424,6 +1424,18 @@ implements Serializable
 	public void log(String loglevel, String logmessage)
 	{
 		this.addLog(new Log("process"+" ["+this.toString()+"]", loglevel, logmessage));
+	}
+	
+	/**
+	 * relocates the logmessages to files
+	 * @param
+	 */
+	public void logRelocate()
+	{
+		for(Step actStep : this.getStep())
+		{
+			actStep.logRelocate();
+		}
 	}
 	
 	/**

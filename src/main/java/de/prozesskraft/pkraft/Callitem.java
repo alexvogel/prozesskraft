@@ -28,7 +28,7 @@ implements Serializable
 	private String status = "";	// waiting/initializing/working/committing/ finished/broken/cancelled
 
 	private Work parent = null;
-	private ArrayList<Log> log = new ArrayList<Log>();
+	ArrayList<Log> log = new ArrayList<Log>();
 
 	/*----------------------------
 	  constructors

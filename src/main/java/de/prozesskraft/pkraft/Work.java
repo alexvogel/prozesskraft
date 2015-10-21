@@ -380,12 +380,14 @@ implements Serializable
 		return this.log;
 	}
 
-	public ArrayList<Log> getLogRecursive()
+	public ArrayList<Log> getLogRecursive(boolean deleteLogsInObjects)
 	{
 		ArrayList<Log> logRecursive = this.log;
+		if(deleteLogsInObjects) {this.log.clear();}
 		for(Callitem actCallitem : this.callitem)
 		{
 			logRecursive.addAll(actCallitem.getLog());
+			if(deleteLogsInObjects) {actCallitem.log.clear();}
 		}
 
 		// sortieren nach Datum

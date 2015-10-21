@@ -17,7 +17,7 @@ implements Serializable
 	private String field = "";
 	private String pattern = "";
 
-	private ArrayList<Log> log = new ArrayList<Log>();
+	ArrayList<Log> log = new ArrayList<Log>();
 
 	// don't clone parent when you clone this
 	private Init parent = null;

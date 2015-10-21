@@ -31,7 +31,7 @@ implements Serializable
 	private String category = null;
 	private String status = "";	// waiting/finished/error
 
-	private ArrayList<Log> log = new ArrayList<Log>();
+	ArrayList<Log> log = new ArrayList<Log>();
 
 	// don't clone parent when you clone this
 	private Step parent = null;

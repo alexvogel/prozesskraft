@@ -36,7 +36,7 @@ implements Serializable, Cloneable
 	private boolean preservePosition = false;
 	private String status = "";	// waiting/finished/error
 
-	private ArrayList<Log> log = new ArrayList<Log>();
+	ArrayList<Log> log = new ArrayList<Log>();
 
 	// don't clone parent when cloning this
 	private Step parent = null;

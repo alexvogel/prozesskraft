@@ -25,7 +25,7 @@ implements Serializable
 
 	private String status = "";	// waiting/finished/error
 
-	private ArrayList<Log> log = new ArrayList<Log>();
+	ArrayList<Log> log = new ArrayList<Log>();
 
 	// das process object
 	private Process process = null;

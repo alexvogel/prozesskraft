@@ -66,8 +66,6 @@ implements Serializable, Cloneable
 
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 
-	private FileWriter logWriter = null;
-	
 	// don't clone parent when cloning this
 	private Process parent = null;
 
@@ -256,26 +254,6 @@ implements Serializable, Cloneable
 			this.log.add(log);
 		}
 		
-		// writer erstellen, falls nicht existent
-		if(this.logWriter == null)
-		{
-			try {
-				this.logWriter =new FileWriter(this.getAbsdir() + "/.debug", true);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		if(this.logWriter != null)
-		{
-			try {
-				this.logWriter.write(log.sprint());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 	}
 	
 	/**
@@ -1653,9 +1631,6 @@ implements Serializable, Cloneable
 		{
 			// log leeren
 			this.getLog().clear();
-	
-			// logWriter resetten
-			this.logWriter = null;
 
 			// alle listen loeschen, die keine defaultitems enthalten
 			// listen mit defaultitems leeren.
@@ -2661,40 +2636,77 @@ implements Serializable, Cloneable
 		return this.log;
 	}
 
-	public ArrayList<Log> getLogRecursive()
+	/**
+	 * relocates the logmessages to files
+	 * @param
+	 */
+	public void logRelocate()
 	{
-		
+		try
+		{
+			// Filewriter initialisieren
+			FileWriter logWriter =new FileWriter(this.getAbsdir() + "/.debug", true);
+			
+			// alle logs aller unterobjekte extrahieren
+			ArrayList<Log> allLogs = this.getLogRecursive(true);
+			
+			// jedes log schreiben
+			for(Log actLog : allLogs)
+			{
+				logWriter.write(actLog.sprint());
+			}
+			
+			// Filewriter schliessen
+			logWriter.close();
+		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * returns all logs from all elements sorted by time
+	 * if deleteLogsInObjects==true the logs will be emptied
+	 * @return
+	 */
+	public ArrayList<Log> getLogRecursive(boolean deleteLogsInObjects)
+	{
 		// zuerst das eigene log kopieren
 		ArrayList<Log> logRecursive = this.getLog();
+		if(deleteLogsInObjects) {this.log.clear();}
 		
 		// wenn this root ist, soll das logging von process mitgenommen werden
-		if(this.getParent().getRootstepname().equals(this.getName()))
+		if(this.isRoot())
 		{
 			logRecursive.addAll(this.getParent().getLog());
+			if(deleteLogsInObjects) {this.getParent().log.clear();}
 		}
 		
 		// die logs aller Inits in die Sammlung uebernehmen
 		for(Init actInit : this.getInit())
 		{
-			logRecursive.addAll(actInit.getLogRecursive());
+			logRecursive.addAll(actInit.getLogRecursive(deleteLogsInObjects));
 		}
 
 		// die logs des Work in die Sammlung uebernehmen
 		if( this.work != null )
 		{
-			logRecursive.addAll(work.getLogRecursive());
+			logRecursive.addAll(work.getLogRecursive(deleteLogsInObjects));
 		}
 
 		// die logs des Subprocess in die Sammlung uebernehmen
 		if( this.subprocess != null )
 		{
 			logRecursive.addAll(subprocess.getLog());
+			if(deleteLogsInObjects) {subprocess.log.clear();}
 		}
 
 		// die logs aller Commits in die Sammlung uebernehmen
 		for(Commit actCommit : this.getCommit())
 		{
-			logRecursive.addAll(actCommit.getLogRecursive());
+			logRecursive.addAll(actCommit.getLogRecursive(deleteLogsInObjects));
 		}
 
 		// sortierte KeyListe erstellen
