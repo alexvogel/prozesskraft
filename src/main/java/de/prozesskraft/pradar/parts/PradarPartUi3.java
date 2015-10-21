@@ -114,6 +114,7 @@ public class PradarPartUi3 extends ModelObject
 	private Button button_log = null;
 	private Button button_run = null;
 	private Button button_stop = null;
+	private Button button_kill = null;
 	private Button button_browse = null;
 	private Button button_open = null;
 	private Button button_clean = null;
@@ -355,8 +356,14 @@ public class PradarPartUi3 extends ModelObject
 		button_stop = new Button(grpFunctionInstance, SWT.NONE);
 		button_stop.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		button_stop.setText("stop");
-		button_stop.setToolTipText("stops the manager for the selected instance and kills all apps started by its steps");
+		button_stop.setToolTipText("stops the manager for the selected instance. already running apps, started by its steps, remain active");
 		button_stop.addSelectionListener(listener_stop_button);
+
+		button_kill = new Button(grpFunctionInstance, SWT.NONE);
+		button_kill.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_kill.setText("kill");
+		button_kill.setToolTipText("stops the manager for the selected instance and kills all apps started by its steps");
+		button_kill.addSelectionListener(listener_kill_button);
 
 		button_browse = new Button(grpFunctionInstance, SWT.NONE);
 		button_browse.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
@@ -736,7 +743,7 @@ public class PradarPartUi3 extends ModelObject
 				else
 				{
 					// den pkraft-manager stoppen
-					String call = ini.get("apps", "pkraft-manager") + " -stop -kill -instance " + actEntity.getResource(); 
+					String call = ini.get("apps", "pkraft-manager") + " -stop -instance " + actEntity.getResource(); 
 					log("info", "calling: "+call);
 					
 					// und die daten aktualisieren
@@ -767,6 +774,75 @@ public class PradarPartUi3 extends ModelObject
 		}
 	};
 
+	SelectionAdapter listener_kill_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			if(einstellungen.entitySelected == null)
+			{
+				log("warn", "no instance selected");
+				return;
+			}
+
+			// ist mehr als eine bestimmte zahl markiert
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 20)
+			{
+				log("warn", "stop allows max 20 entities at a time");
+				return;
+			}
+			
+			// fuer jedes markierte entity einen manager starten
+			for(Entity actEntity : einstellungen.entitiesSelected)
+			{
+				String pathInstanceDir = new File(actEntity.getResource()).getParent();
+	
+				java.io.File stepDir = new java.io.File(pathInstanceDir);
+				if(!stepDir.exists())
+				{
+					log("error", "directory does not exist: "+stepDir.getAbsolutePath());
+				}
+				else if(!stepDir.isDirectory())
+				{
+					log("error", "is not a directory: "+stepDir.getAbsolutePath());
+				}
+				else if(!stepDir.canRead())
+				{
+					log("error", "cannot read directory: "+stepDir.getAbsolutePath());
+				}
+				
+				else
+				{
+					// den pkraft-manager stoppen
+					String call = ini.get("apps", "pkraft-manager") + " -stop -kill -instance " + actEntity.getResource(); 
+					log("info", "calling: "+call);
+					
+					// und die daten aktualisieren
+					String call2 = ini.get("apps", "pradar-attend") + " -instance " + actEntity.getResource(); 
+					log("info", "calling: "+call2);
+					try
+					{
+						java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+						java.lang.Process sysproc2 = Runtime.getRuntime().exec(call2);
+					}
+					catch (IOException e)
+					{
+						log("error", e.getMessage());
+					}
+					
+					// daten und anzeige refreshen
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					refresh();
+					tree.refresh();
+
+				}
+			}
+		}
+	};
 
 	SelectionAdapter listener_browse_button = new SelectionAdapter()
 	{
