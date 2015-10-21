@@ -66,6 +66,8 @@ implements Serializable, Cloneable
 
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 
+	private FileWriter logWriter = null;
+	
 	// don't clone parent when cloning this
 	private Process parent = null;
 
@@ -240,13 +242,20 @@ implements Serializable, Cloneable
 		{
 			this.log.add(log);
 		}
+		
+		// writer erstellen, falls nicht existent
+		if(this.logWriter == null)
+		{
+			try {
+				this.logWriter =new FileWriter(this.getAbsdir() + "/.debug", true);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
-		// immer in das .debug-file ausgeben
-		java.io.FileWriter writer;
 		try {
-			writer = new FileWriter(this.getAbsdir() + "/.debug", true);
-			writer.write(log.sprint());
-			writer.close();
+			this.logWriter.write(log.sprint());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1629,6 +1638,9 @@ implements Serializable, Cloneable
 			// log leeren
 			this.getLog().clear();
 	
+			// logWriter resetten
+			this.logWriter = null;
+
 			// alle listen loeschen, die keine defaultitems enthalten
 			// listen mit defaultitems leeren.
 			ArrayList<List> toPreserve = new ArrayList<List>();
