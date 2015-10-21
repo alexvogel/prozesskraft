@@ -208,9 +208,9 @@ public class Manager
 			Process p1 = new Process();
 			
 			// die dauer des loops festlegen. Dies soll kein standardwert sein, da sonst bei vielen subprozessen die Prozessorlast stark oszilliert
-			// zwischen 25 und 35 sekunden
+			// zwischen 12 und 17 sekunden
 			Random rand = new Random(System.currentTimeMillis());
-			int loop_period_seconds = rand.nextInt((35 - 25) + 1) + 25;
+			int loop_period_seconds = rand.nextInt((17 - 12) + 1) + 12;
 			System.err.println("loop period is randomly set to: "+loop_period_seconds);
 			
 			double managerid = p1.genManagerid();
@@ -431,7 +431,7 @@ public class Manager
 				try
 				{
 					// der thread soll so lange schlafen, wie die periode lang ist. die schlafdauer wird mit der anzahl multipliziert, wie oft das loadAverage zu hoch war (max 5)
-					int faktorForPeriod = Math.min(5, p3.counterLoadAverageTooHigh + 1);
+					int faktorForPeriod = Math.min(10, p3.counterLoadAverageTooHigh + 1);
 
 					int secondsToSleep = loop_period_seconds * faktorForPeriod;
 					System.err.println("debug: sleeping for " + secondsToSleep + " seconds");
