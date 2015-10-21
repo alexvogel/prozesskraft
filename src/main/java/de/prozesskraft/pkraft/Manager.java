@@ -116,6 +116,12 @@ public class Manager
 //				.isRequired()
 				.create("stop");
 				
+		Option kill = OptionBuilder.withArgName("kill")
+//				.hasArg()
+				.withDescription("[optional] kills all applications that have been started by steps")
+//				.isRequired()
+				.create("kill");
+				
 		/*----------------------------
 		  create options object
 		----------------------------*/
@@ -125,6 +131,7 @@ public class Manager
 		options.addOption( v );
 		options.addOption( instance );
 		options.addOption( stop );
+		options.addOption( kill );
 		
 		/*----------------------------
 		  create the parser
@@ -230,7 +237,13 @@ public class Manager
 				p2.setManagerid(0);
 				p2.run = false;
 				p2.setOutfilebinary(pathBinary);
+
 				p2.writeBinary();
+
+				if(line.hasOption("kill"))
+				{
+					p2.kill();
+				}
 				
 				boolean pradar =  (!(p2.isWrapper()));
 
