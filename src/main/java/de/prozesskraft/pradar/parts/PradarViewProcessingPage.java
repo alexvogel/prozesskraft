@@ -552,7 +552,7 @@ public class PradarViewProcessingPage extends PApplet
 		Timestamp timestamp = new Timestamp(calcTimeFromRadius(calcRadiusFromPosition(mouseX, mouseY)).getTimeInMillis());
 		String beschnittener_string_timestamp = timestamp.toString().substring(0, 16);
 		text(beschnittener_string_timestamp, 5, height-5);
-		text("prozesskraft.de", width-125, height-5);
+//		text("prozesskraft.de", width-125, height-5);
 //		if (this.parent.einstellungen.entitySelected != null)
 //		{
 //			text(this.parent.einstellungen.entitySelected.getId(), width/3, height-5);
