@@ -235,7 +235,22 @@ implements Serializable, Cloneable
 
 	public void addLog(Log log)
 	{
-		this.log.add(log);
+		// wenn es kein 'debug' ist, dann in den logs aufnehmen
+		if(!log.getLevel().equals("debug"))
+		{
+			this.log.add(log);
+		}
+
+		// immer in das .debug-file ausgeben
+		java.io.FileWriter writer;
+		try {
+			writer = new FileWriter(this.getAbsdir() + "/.debug", true);
+			writer.write(log.sprint());
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
