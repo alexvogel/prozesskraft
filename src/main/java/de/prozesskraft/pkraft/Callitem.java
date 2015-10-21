@@ -69,6 +69,14 @@ implements Serializable
 	}
 	
 	/**
+	 * addLog
+	 */
+	public void addLog(Log log)
+	{
+		this.log.add(log);
+	}
+	
+	/**
 	 * resolve
 	 * returns an ArrayList of Callitems with
 	 * 1) looped by loop and resolved placeholder 'loopvarcallitem'
@@ -246,7 +254,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("callitem "+this.getPar()+" ["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log("callitem "+this.getPar()+" ["+this.toString()+"]", loglevel, logmessage));
 	}
 	
 

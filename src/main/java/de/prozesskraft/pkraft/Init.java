@@ -302,7 +302,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("init "+this.getListname()+" ["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log("init "+this.getListname()+" ["+this.toString()+"]", loglevel, logmessage));
 	}
 	
 	/**

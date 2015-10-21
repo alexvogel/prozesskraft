@@ -462,7 +462,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("work"+" ["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log("work"+" ["+this.toString()+"]", loglevel, logmessage));
 	}
 	
 	/**

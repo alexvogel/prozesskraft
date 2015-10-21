@@ -1423,7 +1423,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("process"+" ["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log("process"+" ["+this.toString()+"]", loglevel, logmessage));
 	}
 	
 	/**

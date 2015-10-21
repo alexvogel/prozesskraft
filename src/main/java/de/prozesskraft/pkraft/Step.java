@@ -235,7 +235,20 @@ implements Serializable, Cloneable
 		return SerializationUtils.clone(this);
 	}
 
+	/**
+	 * add a log
+	 * @param log
+	 */
 	public void addLog(Log log)
+	{
+		this.log.add(log);
+	}
+
+	/**
+	 * add a log
+	 * @param log
+	 */
+	public void addLogOld(Log log)
 	{
 		// wenn es kein 'debug' ist, dann in den logs aufnehmen
 		if(!log.getLevel().equals("debug"))
@@ -2044,7 +2057,7 @@ implements Serializable, Cloneable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.log.add(new Log("step "+this.getName()+" ["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log("step "+this.getName()+" ["+this.toString()+"]", loglevel, logmessage));
 	}
 
 	/*----------------------------
@@ -2647,7 +2660,7 @@ implements Serializable, Cloneable
 	{
 		return this.log;
 	}
-	
+
 	public ArrayList<Log> getLogRecursive()
 	{
 		
