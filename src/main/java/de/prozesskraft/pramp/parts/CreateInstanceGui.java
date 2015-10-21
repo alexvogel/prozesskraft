@@ -139,13 +139,9 @@ public class CreateInstanceGui
 		btnCancel.setText("cancel");
 		btnCancel.addSelectionListener(listenerButtonCancel);
 
-		Button btnCreateAndOpen = new Button(compositeBtn, SWT.NONE);
-		btnCreateAndOpen.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnCreateAndOpen.setText("create and open");
-		btnCreateAndOpen.setToolTipText("create instance and open with pmodel. you can start it from there.");
-		btnCreateAndOpen.addSelectionListener(listenerButtonCreateAndOpen);
+	    Label labelDummy = new Label(compositeBtn, SWT.NONE);
 
-		Button btnCreateAndStart = new Button(compositeBtn, SWT.NONE);
+	    Button btnCreateAndStart = new Button(compositeBtn, SWT.NONE);
 		btnCreateAndStart.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		btnCreateAndStart.setText("create and start");
 		btnCreateAndStart.setToolTipText("create instance and start it");
@@ -161,28 +157,6 @@ public class CreateInstanceGui
 			shell.dispose();
 		}
 	};	
-
-	/**
-	 * listener for Selections in of button 'create and open'
-	 */
-	SelectionAdapter listenerButtonCreateAndOpen = new SelectionAdapter()
-	{
-		public void widgetSelected(SelectionEvent event)
-		{
-			father.createInstance();
-			// kurz schlafen damit der schreibvorgang beendet werden kann
-//			try
-//			{
-//				Thread.sleep(100);
-//			} catch (InterruptedException e1)
-//			{
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-			father.showInstance();
-			shell.dispose();
-		}
-	};
 
 	/**
 	 * listener for Selections in of button 'create and start'

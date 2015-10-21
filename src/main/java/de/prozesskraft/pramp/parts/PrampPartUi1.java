@@ -557,31 +557,6 @@ public class PrampPartUi1 extends ModelObject
 		}
 	};
 	
-	
-	/**
-	 * listener for Selections in of button 'open'
-	 */
-	SelectionAdapter listener_open_button = new SelectionAdapter()
-	{
-		public void widgetSelected(SelectionEvent event)
-		{
-//			System.out.println("button show wurde gedrueckt");
-			createInstance();
-			
-			// kurz schlafen damit der schreibvorgang beendet werden kann
-//			try
-//			{
-//				Thread.sleep(100);
-//			} catch (InterruptedException e1)
-//			{
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-
-			showInstance();
-		}
-	};
-	
 	/**
 	 * listener for Selections in of button 'start'
 	 */
@@ -1516,29 +1491,6 @@ public class PrampPartUi1 extends ModelObject
 	}
 
 
-	/**
-	 * open instance with pmodel
-	 */
-	void showInstance()
-	{
-		// starten des pmodel gui lokal
-		log ("info", "launching pmodel viewer");
-
-		String[] args_for_command2 = {ini.get("apps", "pmodel"), "-instance", process.getOutfilebinary()};
-
-		log ("info", "calling: " + StringUtils.join(args_for_command2, " "));
-		try
-		{
-			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_command2, " "));
-			log ("debug", "hashCode="+sysproc.hashCode());
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			log ("error", "IOException: problems with execution");
-			e.printStackTrace();
-		}
-	}
-	
 	/**
 	 * start instance with pkraft-manager
 	 */
