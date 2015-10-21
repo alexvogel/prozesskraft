@@ -254,11 +254,14 @@ implements Serializable, Cloneable
 			}
 		}
 
-		try {
-			this.logWriter.write(log.sprint());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(this.logWriter != null)
+		{
+			try {
+				this.logWriter.write(log.sprint());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
