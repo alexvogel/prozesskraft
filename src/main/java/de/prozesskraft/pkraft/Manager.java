@@ -280,7 +280,7 @@ public class Manager
 			// die letzten festgestellten werte fuer die abarbeitung
 //			int lastStepcount = 0;
 //			int lastStepcountFinishedOrCanceled = 0;
-	
+
 			// pradar checkin
 			if(pradar && p2.run && p2.touchInMillis == 0)
 			{
@@ -290,8 +290,16 @@ public class Manager
 			}
 				
 			System.err.println("debug: writing binary");
-			p2.writeBinary();
 			
+//			// ueberpruefen wie gross das binary ist
+//			java.io.File binaryFile = new java.io.File(p2.getInfilebinary());
+//			if(binaryFile.length() > 5000000)
+//			{
+//				p2.purge();
+//			}
+
+			p2.writeBinary();
+
 			while(weiterlaufen)
 			{
 				
@@ -299,7 +307,7 @@ public class Manager
 				System.err.println("debug: rereading instance");
 				Process p3 = p2.readBinary();
 				System.err.println("debug: rereading instance done");
-				actualProcess = p3;
+				
 				
 				weiterlaufen = p3.run;
 				
