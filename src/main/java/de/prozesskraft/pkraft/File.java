@@ -175,11 +175,11 @@ implements Serializable, Cloneable
 						this.log("info", "files are not the same. will copy source="+quellFile.getAbsolutePath()+", destination="+zielFile.getAbsolutePath());
 
 						// urspruenglich eine kopie
-//						FileUtils.copyFile(quellFile, zielFile, true);
+						FileUtils.copyFile(quellFile, zielFile, true);
 
 						// alternativ einen hardlink (geringerer aufwand)
-						zielFile.getParentFile().mkdirs();
-						Files.createLink(zielFile.toPath(), quellFile.toPath());
+//						zielFile.getParentFile().mkdirs();
+//						Files.createLink(zielFile.toPath(), quellFile.toPath());
 						
 						// vermerken der neuen position als echte fileposition
 						this.setRealposition(this.getAbsfilename());
@@ -200,11 +200,11 @@ implements Serializable, Cloneable
 					this.log("info", "destination file does not exists yet. will copy source="+quellFile.getAbsolutePath()+", destination="+zielFile.getAbsolutePath());
 
 					// urspruenglich eine kopie
-//					FileUtils.copyFile(quellFile, zielFile, true);
+					FileUtils.copyFile(quellFile, zielFile, true);
 
 					// alternativ einen hardlink (geringerer aufwand)
-					zielFile.getParentFile().mkdirs();
-					Files.createLink(zielFile.toPath(), quellFile.toPath());
+//					zielFile.getParentFile().mkdirs();
+//					Files.createLink(zielFile.toPath(), quellFile.toPath());
 					
 					// vermerken der neuen position als echte fileposition
 					this.setRealposition(this.getAbsfilename());
