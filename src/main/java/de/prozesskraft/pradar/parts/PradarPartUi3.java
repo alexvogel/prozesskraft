@@ -130,8 +130,9 @@ public class PradarPartUi3 extends ModelObject
 	
 	Entity entity_filter = new Entity();
 	
-	public ArrayList<Entity> entities_all = new ArrayList<Entity>();
-	public ArrayList<Entity> entities_filtered = new ArrayList<Entity>();
+//	public ArrayList<Entity> entities_all = new ArrayList<Entity>();
+	public Map<String,Entity> idEntities_all = new HashMap<String,Entity>();
+	public Map<String,Entity> idEntities_filtered = new HashMap<String,Entity>();
 //	public Entity entity_marked = null;
 	
 	private int refresh_min_interval = 2000;
@@ -1076,7 +1077,7 @@ public class PradarPartUi3 extends ModelObject
 			Process clone = this.cloneProcess(process, null);
 
 			// falls children vorhanden, sollen diese auch geklont werden
-			for(Entity possibleChild : entities_filtered)
+			for(Entity possibleChild : idEntities_filtered.values())
 			{
 				// ist es ein child?
 				if(possibleChild.getParentid().equals(entity.getId()))
@@ -1746,7 +1747,7 @@ public class PradarPartUi3 extends ModelObject
 			// die liste der moegliche process-auswahl feststellen
 			Map<String, String> processNames = new HashMap<String, String>();
 			processNames.put("", "");
-			for (Entity entity : this.entities_all)
+			for (Entity entity : this.idEntities_all.values())
 			{
 				if (!(processNames.containsKey(entity.getProcess())) && entity.getParentid().equals("0"))
 				{
@@ -1758,7 +1759,7 @@ public class PradarPartUi3 extends ModelObject
 			// die liste der moegliche user-auswahl feststellen
 			Map<String, String> userNames = new HashMap<String, String>();
 			userNames.put("", "");
-			for (Entity entity : this.entities_all)
+			for (Entity entity : this.idEntities_all.values())
 			{
 				if (!(userNames.containsKey(entity.getUser())) && entity.getParentid().equals("0"))
 				{
@@ -1767,22 +1768,10 @@ public class PradarPartUi3 extends ModelObject
 			}
 			einstellungen.users = userNames.keySet().toArray(new String[userNames.size()]);
 			
-			// die liste der moegliche host-auswahl feststellen
-			Map<String, String> hostNames = new HashMap<String, String>();
-			hostNames.put("", "");
-			for (Entity entity : this.entities_all)
-			{
-				if (!(hostNames.containsKey(entity.getUser())) && entity.getParentid().equals("0"))
-				{
-					hostNames.put(entity.getHost(), "");
-				}
-			}
-			einstellungen.hosts = hostNames.keySet().toArray(new String[hostNames.size()]);
-			
 			// die liste der moeglichen exitcode-auswahl feststellen
 			Map<String, String> exitcodes = new HashMap<String, String>();
 			exitcodes.put("", "");
-			for (Entity entity : this.entities_all)
+			for (Entity entity : this.idEntities_all.values())
 			{
 				if (!(exitcodes.containsKey(entity.getExitcode())) && entity.getParentid().equals("0"))
 				{
@@ -1808,12 +1797,10 @@ public class PradarPartUi3 extends ModelObject
 	 */
 	void loadData()
 	{
-		Iterator<String> iterPradarServer = this.pradar_server_port_at_hostname.iterator();
-		while(iterPradarServer.hasNext())
+		for(String portAtMachineAsString : this.pradar_server_port_at_hostname)
 		{
-			String portAtMachineAsString = iterPradarServer.next();
 			String [] port_and_machine = portAtMachineAsString.split("@");
-			
+
 			int portNumber = Integer.parseInt(port_and_machine[0]);
 			String machineName = port_and_machine[1];
 			log("info", "want to load data from pradar-server");
@@ -1839,7 +1826,7 @@ public class PradarPartUi3 extends ModelObject
 
 //				log("debug", "objectOutputStream  flushen");
 				objectToServer.flush();
-				
+
 				// Objekte zum server uebertragen
 //				log("debug", "write: getall");
 				objectToServer.writeObject("getall");
@@ -1878,13 +1865,19 @@ public class PradarPartUi3 extends ModelObject
 						serverAnswer2 = (ArrayList<Object>) serverAnswer;
 					}
 
-					this.entities_all.clear();
+					// alle existierenden entities loeschen
+					this.idEntities_all.clear();
+					
+					// die neuen entities casten und in einem map unterbringen id->Entities erstellen um die children bei ihren parents einsortieren zu koennen
+					Map<String,Entity> entities_all = new HashMap<String,Entity>();
 					for(Object actObject : serverAnswer2)
 					{
+						// einen map mit allen id->Entities erstellen um die children bei ihren parents einsortieren zu koennen
 						if(actObject instanceof Entity)
 						{
 //							log("debug", "item of ArrayList<Object> is an Entity  --->  adding to ArrayList<Entity>");
-							this.entities_all.add((Entity) actObject);
+							Entity newEntity = (Entity) actObject;
+							this.idEntities_all.put(newEntity.getId(), newEntity);
 						}
 					}
 
@@ -2121,17 +2114,17 @@ public class PradarPartUi3 extends ModelObject
 	{
 		System.err.println("called filter");
 //		System.out.println("children is: "+this.einstellungen.getChildren());
-		this.entities_filtered = entity_filter.getAllMatches(this.entities_all);
-		
+		this.idEntities_filtered = entity_filter.getAllMatches(this.idEntities_all);
+
 		// falls auch children angezeigt werden sollen
 		if (einstellungen.getChildren())
 		{
-			for(int x=0; x<this.entities_filtered.size(); x++)
+			for(int x=0; x<this.idEntities_filtered.size(); x++)
 			{
-				Entity actualEntity = this.entities_filtered.get(x);
-				for(int y=0; y<this.entities_all.size(); y++)
+				Entity actualEntity = this.idEntities_filtered.get(x);
+				for(int y=0; y<this.idEntities_all.size(); y++)
 				{
-					Entity actualEntityPossibleChild = this.entities_all.get(y);
+					Entity actualEntityPossibleChild = this.idEntities_all.get(y);
 //					if (possible_child.getParentid().equals(entity.getId()))
 //					Entity possible_child = this.entities_all.get(y);
 					if ( (actualEntityPossibleChild.getParentid().equals(actualEntity.getId())) && (actualEntityPossibleChild.getHost().equals(actualEntity.getHost())) && (actualEntityPossibleChild.getUser().equals(actualEntity.getUser())) && (actualEntityPossibleChild.getCheckinInMillis() > actualEntity.getCheckinInMillis()) )
@@ -2140,21 +2133,21 @@ public class PradarPartUi3 extends ModelObject
 //					if (actualEntityPossibleChild.getParentid().equals(actualEntity.getId())  )
 					{
 //						if(!(this.entities_filtered.contains(actualEntityPossibleChild)))
-						this.entities_filtered.add(actualEntityPossibleChild);
+						this.idEntities_filtered.put(actualEntityPossibleChild.getId(), actualEntityPossibleChild);
 //						System.out.println("another child found");
 					}
 				}
 			}
 		}
 		log("info", "setting filter...");
-		log("info", "total amount of entities: "+this.entities_all.size());
-		log("info", "amount of entities passing filter: "+this.entities_filtered.size());
+		log("info", "total amount of entities: "+this.idEntities_all.size());
+		log("info", "amount of entities passing filter: "+this.idEntities_filtered.size());
 	}
 
 	Entity getEntityBySuperId(String superId)
 	{
 		Entity entityWithSuperId = null;
-		for(Entity actualEntity : entities_all)
+		for(Entity actualEntity : idEntities_all.values())
 		{
 			if ( actualEntity.getSuperid().equals(superId) )
 			{

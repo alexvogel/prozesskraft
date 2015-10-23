@@ -197,7 +197,7 @@ public class PradarViewTreePage
 		myTreeViewer.setLabelProvider(new TableLabelProvider());
 //		myTreeViewer.setLabelProvider(new ColumnLabelProvider());
 
-		List<Entity> entities = (List<Entity>) parentData.entities_filtered;
+		List<Entity> entities = new ArrayList<Entity>(parentData.idEntities_filtered.values());
 //		entities.add(new Entity());
 		myTreeViewer.setInput(entities);
 //		myTreeViewer.expandAll();
@@ -297,9 +297,9 @@ public class PradarViewTreePage
 				
 				Entity filter_entity = new Entity();
 				filter_entity.setParentid(parentEntity.getId());
-				
+
 //				Object[] entities = filter_entity.getAllMatches(parentData.entities_filtered).toArray();
-				Object[] entities = filter_entity.getAllMatches(parentData.entities_filtered).toArray();
+				Object[] entities = filter_entity.getAllMatches((ArrayList<Entity>)parentData.idEntities_filtered.values()).toArray();
 				return entities;
 			}
 			return new Object[0];
@@ -310,14 +310,9 @@ public class PradarViewTreePage
 			if (element instanceof Entity)
 			{
 				Entity entity = ((Entity) element);
-				Entity filter_entity = new Entity();
-				filter_entity.setId(entity.getParentid());
 				
-				Object parentEntity = null;
-				if (filter_entity.getAllMatches(parentData.entities_filtered).size() > 0)
-				{
-					parentEntity = filter_entity.getAllMatches(parentData.entities_filtered).get(0);
-				}
+				Object parentEntity = parentData.idEntities_filtered.get(entity.getParentid());
+
 				return parentEntity;
 			}
 			return null;
@@ -331,18 +326,18 @@ public class PradarViewTreePage
 				Entity filter_entity = new Entity();
 				filter_entity.setParentid(entity.getId());
 				
-				int amountChildren = filter_entity.getAllMatches(parentData.entities_filtered).size();
+				int amountChildren = filter_entity.getAllMatches(parentData.idEntities_filtered).size();
 				return amountChildren > 0;
 			}
 			return false;
 		}
 		
-		public Object[] getElements(Object entities)
+		public Object[] getElements(Object element)
 		{
-//			Object[] objects = (Object[]) parentData.entities_filtered.toArray();
+//			Object[] objects = (Object[]) parentData.idEntities_filtered.values().toArray();
 			Entity filter_entity = new Entity();
 			filter_entity.setParentidAsBoolean(false);
-			Object[] objects = filter_entity.getAllMatches(parentData.entities_filtered).toArray();
+			Object[] objects = filter_entity.getAllMatches(new ArrayList<Entity>(parentData.idEntities_filtered.values())).toArray();
 			return objects;
 		}
 		

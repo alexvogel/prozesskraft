@@ -364,14 +364,11 @@ public class PradarViewProcessingPage extends PApplet
 		
 		// ueber alle entities, die angezeigt werden sollen iterieren
 		// - fuer diejenigen, die noch keine entsprechung (pentity) haben, soll eine erstellt werden
-		Iterator<Entity> iterentity = this.parent.entities_filtered.iterator();
-		while (iterentity.hasNext())
+		for(Entity actEntity : this.parent.idEntities_filtered.values())
 		{
-			Entity entity = iterentity.next();
-			
-			if ( !(isPentityPresent(entity)) )
+			if ( !(isPentityPresent(actEntity)) )
 			{
-				PradarViewProcessingEntity newProcessingEntity = new PradarViewProcessingEntity(this, entity);
+				PradarViewProcessingEntity newProcessingEntity = new PradarViewProcessingEntity(this, actEntity);
 				this.pentities_filtered.add(newProcessingEntity);
 			}
 		}
@@ -415,11 +412,9 @@ public class PradarViewProcessingPage extends PApplet
 	{
 		boolean isPresent = false;
 	
-		Iterator<Entity> iterentity = this.parent.entities_filtered.iterator();
-		while (iterentity.hasNext())
+		for(Entity actEntity : this.parent.idEntities_filtered.values())
 		{
-			Entity entity = iterentity.next();
-			if ( entity.getSuperid().equals(pentity.getSuperid()) )
+			if ( actEntity.getSuperid().equals(pentity.getSuperid()) )
 			{
 				isPresent = true;
 				return isPresent;
