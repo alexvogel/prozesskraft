@@ -45,6 +45,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 
 public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi1, de.prozesskraft.gui.step.insight.IPkraftPartUi2
 {
@@ -56,7 +57,9 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 	CTabFolder tabFolder = null;
 
 	Composite processInsight = null;
-	ArrayList<Map<String,CTabItem>> pmodel_id_item = new ArrayList<Map<String,CTabItem>>();
+
+	ArrayList<Map<String,CTabItem>> processId_CTabItem = new ArrayList<Map<String,CTabItem>>();
+	Map<CTabItem,PmodelPartUi1> CTabItem_pModel = new HashMap<CTabItem,PmodelPartUi1>();
 
 	/**
 	 * constructor als EntryPoint fuer WindowBuilder
@@ -111,6 +114,26 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 
+		// einen selectionListener einrichten um nur das pmodel des aktiven tabs zu aktivieren
+		tabFolder.addSelectionListener(new SelectionAdapter() {
+			
+			public void widgetSelected(org.eclipse.swt.events.SelectionEvent event)
+			{
+				// alle CTabItems, die eine pmodel Animation enthalten sollen auf sleep gesetzt werden
+				for(CTabItem actCTabItem : CTabItem_pModel.keySet())
+				{
+					CTabItem_pModel.get(actCTabItem).einstellungen.setSleep(true);
+				}
+				
+				// das pmodel im selectierten CTabitem soll aufgeweckt werden
+				CTabItem selektiertesCTabItem = tabFolder.getSelection();
+				if(CTabItem_pModel.containsKey(selektiertesCTabItem))
+				{
+					CTabItem_pModel.get(tabFolder.getSelection()).einstellungen.setSleep(false);
+				}
+			}
+		});
+		
 		// erstellen des items fuer pramp
 		CTabItem tabItemPramp = new CTabItem(tabFolder, SWT.NONE);
 		tabItemPramp.setText("pramp");
@@ -168,7 +191,7 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 		int counter = 2; // bereits 2 CTabItems vorhanden (pradar, pramp);
 		
 		// jeden eintrag der liste durchgehen und sehen ob das schon der gesuchte Map mit der id -> CTabItem ist
-		for(Map<String,CTabItem> actIdCTabItem : pmodel_id_item)
+		for(Map<String,CTabItem> actIdCTabItem : processId_CTabItem)
 		{
 			for(String oneExistentId : actIdCTabItem.keySet())
 			{
@@ -240,8 +263,8 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 			tabItemPmodel.setText(pmodelUi.getProcess().getName() + " " + pmodelUi.getProcess().getId2() + " " + pmodelUi.getProcess().getId());
 			tabItemPmodel.setToolTipText(pmodelUi.getProcess().getName() + " - " + pmodelUi.getProcess().getVersion() + " - " + pathToInstance);
 
-			tabItemPmodel.addDisposeListener(entferne_pmodel);
-			
+			tabItemPmodel.addDisposeListener(entferne_ctabitem);
+
 			// das neue tabItem dem tabFolder hinzufuegen
 			tabItemPmodel.setControl(compositePmodel);
 
@@ -251,8 +274,12 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 			// das neue tabItem dem map der bekannten tabItems hinzufuegen
 			Map<String,CTabItem> newPmodel = new HashMap<String,CTabItem>();
 			newPmodel.put(p2.getId(), tabItemPmodel);
-			this.pmodel_id_item.add(newPmodel);
+
+			// der liste der bekannten CTabItems hinzufuegen
+			this.processId_CTabItem.add(newPmodel);
 			
+			// das pmodel der liste der geoeffneten pmodels hinzufuegen
+			this.CTabItem_pModel.put(tabItemPmodel, pmodelUi);
 		}
 		
 	}
@@ -260,7 +287,7 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 	/**
 	 * listener for Disposing a CtabItem
 	 */
-	DisposeListener entferne_pmodel = new DisposeListener()
+	DisposeListener entferne_ctabitem = new DisposeListener()
 	{
 		
 //		ArrayList<Map<String,CTabItem>> pmodel_id_item = new ArrayList<HashMap<String,CTabItem>();
@@ -269,11 +296,14 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 		{
 			CTabItem zuLoeschendesCTabItem = (CTabItem) event.widget;
 
+			// zuerst aus dem map entfernen
+			CTabItem_pModel.remove(zuLoeschendesCTabItem);
+
 			// neues
 			ArrayList<Map<String,CTabItem>> newPmodel_id_item = new ArrayList<Map<String,CTabItem>>();
 
 			// jeden eintrag der liste durchgehen und sehen ob das schon der gesuchte Map mit der id -> CTabItem ist
-			for(Map<String,CTabItem> actIdCTabItem : pmodel_id_item)
+			for(Map<String,CTabItem> actIdCTabItem : processId_CTabItem)
 			{
 				for(CTabItem oneExistentCTabItem : actIdCTabItem.values())
 				{
@@ -284,20 +314,8 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 				}
 			}
 
-			pmodel_id_item = newPmodel_id_item;
+			processId_CTabItem = newPmodel_id_item;
 			
-//			// die liste bekannter pmodel CTabItems durchgehen und den zu loeschenden eintrag entfernen
-//			Map<String,CTabItem> new_pmodel_id_item = new HashMap<String,CTabItem>();
-//
-//			for(String actPathToInstance : pmodel_id_item.keySet())
-//			{
-//				if( ! zuLoeschendesCTabItem.equals(pmodel_id_item.get(actPathToInstance)))
-//				{
-//					new_pmodel_id_item.put(actPathToInstance, pmodel_id_item.get(actPathToInstance));
-//				}
-//			}
-//			
-//			pmodel_id_item = new_pmodel_id_item;
 		}
 	};
 	
