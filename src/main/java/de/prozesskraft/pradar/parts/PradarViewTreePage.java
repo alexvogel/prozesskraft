@@ -312,8 +312,6 @@ public class PradarViewTreePage
 				Entity entity = ((Entity) element);
 				Entity filter_entity = new Entity();
 				filter_entity.setId(entity.getParentid());
-				filter_entity.setUser(entity.getUser());
-				filter_entity.setHost(entity.getHost());
 				
 				Object parentEntity = null;
 				if (filter_entity.getAllMatches(parentData.entities_filtered).size() > 0)
