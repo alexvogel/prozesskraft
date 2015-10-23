@@ -72,26 +72,6 @@ implements Serializable
 //		String time_as_string = "" + time;
 		this.setId(""+time);
 	}
-
-	/**
-	 * matches itself (this) against every item of the given ArrayList<Entity>
-	 * @param Map<String,Entity>
-	 * @return Map<String,Entity> of matched Entities
-	 */
-	public Map <String,Entity> getAllMatches(Map<String,Entity> allEntities)
-	{
-		Map <String,Entity> allMatches = new HashMap <String,Entity>();
-
-		for(Entity actEntity : allEntities.values())
-		{
-			if (this.doesItMatch(actEntity))
-			{
-				allMatches.put(actEntity.getId(), actEntity);
-			}
-		}
-
-		return allMatches;
-	}
 	
 	/**
 	 * matches itself (this) against every item of the given ArrayList<Entity>
