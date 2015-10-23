@@ -83,6 +83,7 @@ implements Serializable
 		
 		for(Entity actEntity : allEntities)
 		{
+			System.out.println("assessed host "+actEntity.getHost()+" / filter host"+this.host+" ( " + actEntity.getResource());
 			if (this.doesItMatch(actEntity))
 			{
 				allMatches.add(actEntity);
@@ -124,7 +125,7 @@ implements Serializable
 		if (!(this.host.equals("") ) && (!(assessedEntity.getHost().matches(Pattern.quote(this.host)))) )
 		{
 			matchStatus = false;
-			System.out.println("assessed host "+assessedEntity.getHost()+" does not match filter host"+this.host);
+			System.err.println("assessed host "+assessedEntity.getHost()+" does not match filter host"+this.host);
 		}
 		
 		if (!(this.user.equals("") ) && (!(assessedEntity.getUser().matches(Pattern.quote(this.user)))) )
