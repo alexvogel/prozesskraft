@@ -299,7 +299,7 @@ public class PradarViewTreePage
 				filter_entity.setParentid(parentEntity.getId());
 
 //				Object[] entities = filter_entity.getAllMatches(parentData.entities_filtered).toArray();
-				Object[] entities = filter_entity.getAllMatches((ArrayList<Entity>)parentData.idEntities_filtered.values()).toArray();
+				Object[] entities = filter_entity.getAllMatches(new ArrayList<Entity>(parentData.idEntities_filtered.values())).toArray();
 				return entities;
 			}
 			return new Object[0];

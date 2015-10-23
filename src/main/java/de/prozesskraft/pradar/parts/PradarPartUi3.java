@@ -2112,32 +2112,35 @@ public class PradarPartUi3 extends ModelObject
 
 	void filter()
 	{
-		System.err.println("called filter");
-//		System.out.println("children is: "+this.einstellungen.getChildren());
+		// die entities die streng nach dem filter ausgesiebt werden
 		this.idEntities_filtered = entity_filter.getAllMatches(this.idEntities_all);
 
 		// falls auch children angezeigt werden sollen
 		if (einstellungen.getChildren())
 		{
-			for(int x=0; x<this.idEntities_filtered.size(); x++)
+			Map<String,Entity> newIdEntities_filtered = new HashMap<String,Entity>();
+			for(Entity actEntity : this.idEntities_filtered.values())
 			{
-				Entity actualEntity = this.idEntities_filtered.get(x);
-				for(int y=0; y<this.idEntities_all.size(); y++)
+				// die bisherigen nicht vergessen
+				newIdEntities_filtered.put(actEntity.getId(), actEntity);
+
+				// und alle ihre kinder
+				for(Entity actEntityPossibleChild : this.idEntities_all.values())
 				{
-					Entity actualEntityPossibleChild = this.idEntities_all.get(y);
 //					if (possible_child.getParentid().equals(entity.getId()))
 //					Entity possible_child = this.entities_all.get(y);
-					if ( (actualEntityPossibleChild.getParentid().equals(actualEntity.getId())) && (actualEntityPossibleChild.getHost().equals(actualEntity.getHost())) && (actualEntityPossibleChild.getUser().equals(actualEntity.getUser())) && (actualEntityPossibleChild.getCheckinInMillis() > actualEntity.getCheckinInMillis()) )
+					if(actEntityPossibleChild.getParentid().equals(actEntity.getId()) )
 //					if ( (actualEntityPossibleChild.getParentid().equals(actualEntity.getId())) && (actualEntityPossibleChild.getHost().equals(actualEntity.getHost())) && (actualEntityPossibleChild.getUser().equals(actualEntity.getUser()))  )
 //					if (actualEntityPossibleChild.getParentid().equals(actualEntity.getId()) && actualEntityPossibleChild.getUser().equals(actualEntity.getUser()) )
 //					if (actualEntityPossibleChild.getParentid().equals(actualEntity.getId())  )
 					{
 //						if(!(this.entities_filtered.contains(actualEntityPossibleChild)))
-						this.idEntities_filtered.put(actualEntityPossibleChild.getId(), actualEntityPossibleChild);
+						newIdEntities_filtered.put(actEntityPossibleChild.getId(), actEntityPossibleChild);
 //						System.out.println("another child found");
 					}
 				}
 			}
+			this.idEntities_filtered = newIdEntities_filtered;
 		}
 		log("info", "setting filter...");
 		log("info", "total amount of entities: "+this.idEntities_all.size());
