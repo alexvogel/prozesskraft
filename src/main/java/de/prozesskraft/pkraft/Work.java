@@ -20,6 +20,7 @@ implements Serializable
 	private String name = "unnamed";
 	private String description = "no description";
 	private Integer maxrun = 5; // minuten
+	private String precall = null; // dieser aufruf wird unmittelbar vor dem eigentlichen work-command abgesetzt. dient z.B. zum starten von Xvfb o.ae.
 	private String env = null; // environment definitionen getrennt durch diese zeichenfolge [trenner]. z.B. "DISPLAY=:77[trenner]HOME=/home/avoge"
 	private String interpreter = "";
 	private String command = "";
@@ -60,6 +61,7 @@ implements Serializable
 		newWork.setName(this.getName());
 		newWork.setDescription(this.getDescription());
 		newWork.setMaxrun(this.getMaxrun());
+		newWork.setPrecall(this.getPrecall());
 		newWork.setEnv(this.getEnv());
 		newWork.setInterpreter(this.getInterpreter());
 		newWork.setCommand(this.getCommand());
@@ -651,8 +653,17 @@ implements Serializable
 	//				java.lang.Process superpro = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
 	//				p3.waitFor();
 					
+					// aufruf des precalls
+					if(this.getPrecall() != null)
+					{
+							// erstellen prozessbuilder fuer precall
+						ProcessBuilder pbPrecall = new ProcessBuilder(this.getPrecall());
+						log ("info", "calling preCall: " + pbPrecall.command());
+						pbPrecall.start();
+					}
+
 					log ("info", "calling: " + pb.command());
-	
+					
 					// starten des prozesses
 					java.lang.Process sysproc = pb.start();
 	
@@ -803,5 +814,19 @@ implements Serializable
 	 */
 	public void setEnv(String env) {
 		this.env = env;
+	}
+
+	/**
+	 * @return the precall
+	 */
+	public String getPrecall() {
+		return precall;
+	}
+
+	/**
+	 * @param precall the precall to set
+	 */
+	public void setPrecall(String precall) {
+		this.precall = precall;
 	}
 }

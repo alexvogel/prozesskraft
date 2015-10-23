@@ -57,7 +57,8 @@
     			ref="callitem" />
     		<xs:element minOccurs="0" maxOccurs="unbounded" ref="exit" />
     	</xs:sequence>
-    	<xs:attribute name="env" use="optional" type="xs:string"/>
+    	<xs:attribute name="precall" use="optional" type="xs:string"/>
+    	<xs:attribute name="env" use="optional" type="xs:string" />
     	<xs:attribute name="interpreter" type="xs:string" />
     	<xs:attribute name="command" use="required" />
     	<xs:attribute name="description" use="required" />
