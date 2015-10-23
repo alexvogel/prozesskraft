@@ -106,7 +106,6 @@ public class PradarPartUi3 extends ModelObject
 	private DataBindingContext bindingContextZoom;
 	private Combo combo_processes;
 	private Combo combo_users;
-	private Combo combo_hosts;
 	private Combo combo_exitcodes;
 	private Spinner spinner_period;
 	private Button btnChildren;
@@ -277,14 +276,6 @@ public class PradarPartUi3 extends ModelObject
 		{
 			combo_users.setEnabled(false);
 		}
-		
-		Label lblHost = new Label(grpFilter, SWT.NONE);
-		lblHost.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
-		lblHost.setText("host");
-		new Label(grpFilter, SWT.NONE);
-		
-		combo_hosts = new Combo(grpFilter, SWT.NONE | SWT.READ_ONLY);
-		combo_hosts.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		
 		Label lblActive = new Label(grpFilter, SWT.NONE);
 		lblActive.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
@@ -537,7 +528,6 @@ public class PradarPartUi3 extends ModelObject
 	{
 		entity_filter.setProcess(einstellungen.getProcess());
 		entity_filter.setUser(einstellungen.getUser());
-		entity_filter.setHost(einstellungen.getHost());
 		entity_filter.setExitcode(einstellungen.getExitcode());
 		entity_filter.setPeriodInHours(einstellungen.getPeriod());
 		// nur entities, die keine eltern haben
@@ -898,63 +888,6 @@ public class PradarPartUi3 extends ModelObject
 		}
 	};
 
-	SelectionAdapter listener_clean_button = new SelectionAdapter()
-	{
-		public void widgetSelected(SelectionEvent event)
-		{
-			Iterator<String> iterPradarServer = pradar_server_port_at_hostname.iterator();
-			while(iterPradarServer.hasNext())
-			{
-				String portAtMachineAsString = iterPradarServer.next();
-				String [] port_and_machine = portAtMachineAsString.split("@");
-		
-				int portNumber = Integer.parseInt(port_and_machine[0]);
-				String machineName = port_and_machine[1];
-				log("info", "want to clean database");
-				log("info", "trying pradar-server "+portNumber+"@"+machineName);
-				try
-				{
-					// socket einrichten und Out/Input-Streams setzen
-					Socket server = new Socket(machineName, portNumber);
-					OutputStream out = server.getOutputStream();
-					InputStream in = server.getInputStream();
-					ObjectOutputStream objectOut = new ObjectOutputStream(out);
-					ObjectInputStream  objectIn  = new ObjectInputStream(in);
-					
-					// Objekte zum server uebertragen
-					objectOut.writeObject("cleandb_user");
-					objectOut.writeObject(System.getProperty("user.name"));
-		
-					// daten holen aus db
-					log("info", "checking out active instances which appear to be disappeared");
-					server.close();
-				}
-				catch (UnknownHostException e)
-				{
-					// TODO Auto-generated catch block
-					log("warn", "unknown host "+machineName);
-					pradar_server_port_at_hostname = null;
-		//					e.printStackTrace();
-				}
-		//		catch (ConnectException e)
-		//		{
-		//			log("warn", "no pradar-server found at "+portNumber+"@"+machineName);
-		////					e.printStackTrace();
-		//		}
-				catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					log("warn", "input / output problems at "+portNumber+"@"+machineName);
-							e.printStackTrace();
-				}
-			}
-			
-			// daten und anzeige refreshen
-			refresh();
-			tree.refresh();
-
-		}
-	};	
 	
 	SelectionAdapter listener_open_button = new SelectionAdapter()
 	{
@@ -1738,10 +1671,6 @@ public class PradarPartUi3 extends ModelObject
 		IObservableValue modelObservableUser = BeanProperties.value("user").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservableUser, modelObservableUser, null, null);
 		//
-		IObservableValue targetObservableHost = WidgetProperties.text().observe(combo_hosts);
-		IObservableValue modelObservableHost = BeanProperties.value("host").observe(einstellungen);
-		bindingContextFilter.bindValue(targetObservableHost, modelObservableHost, null, null);
-		//
 		IObservableValue targetObservableExitcode = WidgetProperties.text().observe(combo_exitcodes);
 		IObservableValue modelObservableExitcode = BeanProperties.value("exitcode").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservableExitcode, modelObservableExitcode, null, null);
@@ -1771,10 +1700,6 @@ public class PradarPartUi3 extends ModelObject
 		IObservableList targetObservableUsers = WidgetProperties.items().observe(combo_users);
 		IObservableList modelObservableUsers = BeanProperties.list("users").observe(einstellungen);
 		bindingContextComboItems.bindList(targetObservableUsers, modelObservableUsers, null, null);
-		//
-		IObservableList targetObservableHosts = WidgetProperties.items().observe(combo_hosts);
-		IObservableList modelObservableHosts = BeanProperties.list("hosts").observe(einstellungen);
-		bindingContextComboItems.bindList(targetObservableHosts, modelObservableHosts, null, null);
 		//
 		IObservableList targetObservableExitcodes = WidgetProperties.items().observe(combo_exitcodes);
 		IObservableList modelObservableExitcodes = BeanProperties.list("exitcodes").observe(einstellungen);
