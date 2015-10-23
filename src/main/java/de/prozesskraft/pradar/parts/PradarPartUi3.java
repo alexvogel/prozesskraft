@@ -534,6 +534,7 @@ public class PradarPartUi3 extends ModelObject
 		entity_filter.setParentid("0");
 		filter();
 	}
+
 	public void applet_paint_with_new_zoom()
 	{
 		applet.setZoomfaktor(einstellungen.getZoom());
@@ -2118,6 +2119,7 @@ public class PradarPartUi3 extends ModelObject
 
 	void filter()
 	{
+		System.err.println("called filter");
 //		System.out.println("children is: "+this.einstellungen.getChildren());
 		this.entities_filtered = entity_filter.getAllMatches(this.entities_all);
 		

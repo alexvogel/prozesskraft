@@ -298,8 +298,8 @@ public class PradarViewTreePage
 				Entity filter_entity = new Entity();
 				filter_entity.setParentid(parentEntity.getId());
 				
+//				Object[] entities = filter_entity.getAllMatches(parentData.entities_filtered).toArray();
 				Object[] entities = filter_entity.getAllMatches(parentData.entities_filtered).toArray();
-//				Object[] objects = filter_entity.getAllMatches(parent.entities_filtered).toArray();
 				return entities;
 			}
 			return new Object[0];
@@ -332,8 +332,6 @@ public class PradarViewTreePage
 				Entity entity = ((Entity) element);
 				Entity filter_entity = new Entity();
 				filter_entity.setParentid(entity.getId());
-				filter_entity.setUser(entity.getUser());
-				filter_entity.setHost(entity.getHost());
 				
 				int amountChildren = filter_entity.getAllMatches(parentData.entities_filtered).size();
 				return amountChildren > 0;
