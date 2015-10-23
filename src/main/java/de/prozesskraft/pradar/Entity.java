@@ -81,13 +81,11 @@ implements Serializable
 	{
 		ArrayList<Entity> allMatches = new ArrayList<Entity>();
 		
-		Iterator<Entity> iterEntity = allEntities.iterator();
-		while (iterEntity.hasNext())
+		for(Entity actEntity : allEntities)
 		{
-			Entity entity = iterEntity.next();
-			if (this.doesItMatch(entity))
+			if (this.doesItMatch(actEntity))
 			{
-				allMatches.add(entity);
+				allMatches.add(actEntity);
 			}
 		}
 
@@ -126,7 +124,7 @@ implements Serializable
 		if (!(this.host.equals("") ) && (!(assessedEntity.getHost().matches(Pattern.quote(this.host)))) )
 		{
 			matchStatus = false;
-//			System.out.println("host does not match");
+			System.out.println("assessed host "+assessedEntity.getHost()+" does not match filter host"+this.host);
 		}
 		
 		if (!(this.user.equals("") ) && (!(assessedEntity.getUser().matches(Pattern.quote(this.user)))) )
