@@ -337,7 +337,7 @@ public class PradarViewTreePage
 //			Object[] objects = (Object[]) parentData.idEntities_filtered.values().toArray();
 			Entity filter_entity = new Entity();
 			filter_entity.setParentidAsBoolean(false);
-			Object[] objects = filter_entity.getAllMatches(new ArrayList<Entity>(parentData.idEntities_filtered.values())).toArray();
+			Object[] objects = filter_entity.getAllMatches(parentData.entities_filtered).toArray();
 			return objects;
 		}
 		
