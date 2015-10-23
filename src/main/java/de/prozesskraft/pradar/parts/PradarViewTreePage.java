@@ -197,7 +197,7 @@ public class PradarViewTreePage
 		myTreeViewer.setLabelProvider(new TableLabelProvider());
 //		myTreeViewer.setLabelProvider(new ColumnLabelProvider());
 
-		List<Entity> entities = new ArrayList<Entity>(parentData.idEntities_filtered.values());
+		List<Entity> entities = new ArrayList<Entity>(parentData.entities_filtered);
 //		entities.add(new Entity());
 		myTreeViewer.setInput(entities);
 //		myTreeViewer.expandAll();
@@ -299,7 +299,7 @@ public class PradarViewTreePage
 				filter_entity.setParentid(parentEntity.getId());
 
 //				Object[] entities = filter_entity.getAllMatches(parentData.entities_filtered).toArray();
-				Object[] entities = filter_entity.getAllMatches(new ArrayList<Entity>(parentData.idEntities_filtered.values())).toArray();
+				Object[] entities = filter_entity.getAllMatches(parentData.entities_filtered).toArray();
 				return entities;
 			}
 			return new Object[0];
@@ -326,7 +326,7 @@ public class PradarViewTreePage
 				Entity filter_entity = new Entity();
 				filter_entity.setParentid(entity.getId());
 				
-				int amountChildren = filter_entity.getAllMatches(parentData.idEntities_filtered).size();
+				int amountChildren = filter_entity.getAllMatches(parentData.entities_filtered).size();
 				return amountChildren > 0;
 			}
 			return false;
