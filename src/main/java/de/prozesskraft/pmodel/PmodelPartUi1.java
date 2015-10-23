@@ -110,6 +110,8 @@ public class PmodelPartUi1 extends ModelObject
 	private Button button_refresh;
 	private Button button_startmanager;
 	private Button button_stopmanager;
+	private Button button_stopAnimation;
+	private Button button_resumeAnimation;
 //	private Process process = new Process();
 	private String iniFile = null;
 	private static Ini ini = null;
@@ -138,6 +140,8 @@ public class PmodelPartUi1 extends ModelObject
 
 	int logLineCount = 0;
 
+	private Thread animationThread = null;
+	
 	// wird pmodel innerhalb einer groesseren application geoeffnet, wird das beherbergende object hier abgelegt
 	private Object pkraft = null;
 
@@ -346,7 +350,35 @@ public class PmodelPartUi1 extends ModelObject
 //		spinner_refreshinterval.setMaximum(999);
 //		spinner_refreshinterval.setSelection(20);
 //		spinner_refreshinterval.setMinimum(10);
-//		
+
+//		button_stopAnimation = new Button(grpFunction, SWT.NONE);
+//		button_stopAnimation.setSelection(true);
+//		GridData gd_btnNewButtonX = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+//		gd_btnNewButtonX.widthHint = 69;
+//		button_stopAnimation.setLayoutData(gd_btnNewButtonX);
+//		button_stopAnimation.setText("stop animation");
+//		button_stopAnimation.addSelectionListener(new SelectionAdapter()
+//		{
+//			public void widgetSelected(SelectionEvent event)
+//			{
+//				einstellungen.setSleep(true);
+//			}
+//		});
+		
+//		button_resumeAnimation = new Button(grpFunction, SWT.NONE);
+//		button_resumeAnimation.setSelection(true);
+//		GridData gd_btnNewButtonY = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+//		gd_btnNewButtonY.widthHint = 69;
+//		button_resumeAnimation.setLayoutData(gd_btnNewButtonY);
+//		button_resumeAnimation.setText("resume animation");
+//		button_resumeAnimation.addSelectionListener(new SelectionAdapter()
+//		{
+//			public void widgetSelected(SelectionEvent event)
+//			{
+//				einstellungen.setSleep(false);
+//			}
+//		});
+		
 		button_startmanager = new Button(grpFunction, SWT.NONE);
 		button_startmanager.setSelection(true);
 		GridData gd_btnNewButton = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
@@ -354,7 +386,7 @@ public class PmodelPartUi1 extends ModelObject
 		button_startmanager.setLayoutData(gd_btnNewButton);
 		button_startmanager.setText("start new manager");
 		button_startmanager.addSelectionListener(listener_startmanager_button);
-		
+
 		button_stopmanager = new Button(grpFunction, SWT.NONE);
 		button_stopmanager.setSelection(true);
 		GridData gd_button_stopmanager = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
@@ -387,7 +419,7 @@ public class PmodelPartUi1 extends ModelObject
 		frame.pack();
 		frame.setLocation(0, 0);
 		frame.setVisible(true);
-
+		
 		Composite composite_13 = new Composite(sashForm, SWT.NONE);
 		composite_13.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		GridLayout gl_composite_13 = new GridLayout(1, false);

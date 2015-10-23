@@ -124,7 +124,7 @@ public class PmodelViewPage extends PApplet
 	{
 		this.einstellungen = einstellungen;
 	}
-	
+
 	public PmodelViewPage(String pathToProcessFile, PmodelViewModel einstellungen)
 	{
 		this.einstellungen = einstellungen;
@@ -135,6 +135,7 @@ public class PmodelViewPage extends PApplet
 	----------------------------*/
 	public void setup()
     {
+		
 //    	this.dataPath("/data/prog/workspace/larry");
 //    	PFont font = this.loadFont("Univers45.vlw");
 //    	PFont font = this.loadFont("AndaleMono-36.vlw");
@@ -143,6 +144,8 @@ public class PmodelViewPage extends PApplet
 //    	Image icon = Toolkit.getDefaultToolkit().getImage(PmodelViewPage.class.getClassLoader().getResource("process.png"));
 		textSize(15);
 		size(this.einstellungen.getWidth(), this.einstellungen.getHeight(), JAVA2D);
+//		size(this.einstellungen.getWidth(), this.einstellungen.getHeight(), OPENGL);
+//		size(this.einstellungen.getWidth(), this.einstellungen.getHeight(), P2D);
 //  	size(this.width, this.height, OPENGL);
 //    	size(this.width, this.height, P2D);
     	background(this.mybackground);
@@ -187,6 +190,7 @@ public class PmodelViewPage extends PApplet
 				dampOverride = 0.97f;
 			}
 		}
+		
     }
     
 	/*----------------------------
@@ -194,6 +198,16 @@ public class PmodelViewPage extends PApplet
 	----------------------------*/
 	public void draw()
 	{
+
+		if(einstellungen.getSleep())
+		{
+			frameRate(5);
+			return;
+		}
+		else
+		{
+			frameRate(50);
+		}
 		
 		// zoom from the center of the scetch
 //		translate(width/2, height/2); // use translate around scale

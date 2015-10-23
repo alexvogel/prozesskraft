@@ -30,6 +30,9 @@ public class PmodelViewModel extends ModelObject
 	private boolean rootReposition = true;
 	private boolean fix = false;
 	
+	// soll animation schlafen?
+	private boolean sleep = false;
+	
 	public PmodelViewModel()
 	{
 	}
@@ -268,5 +271,15 @@ public class PmodelViewModel extends ModelObject
 	public void setFix(boolean fix)
 	{
 		firePropertyChange("fix", this.fix, this.fix = fix);
+	}
+
+	public boolean getSleep()
+	{
+		return this.sleep;
+	}
+
+	public void setSleep(boolean sleep)
+	{
+		firePropertyChange("sleep", this.sleep, this.sleep = sleep);
 	}
 }
