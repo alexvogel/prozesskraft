@@ -2120,7 +2120,7 @@ public class PradarPartUi3 extends ModelObject
 	{
 //		System.out.println("children is: "+this.einstellungen.getChildren());
 		this.entities_filtered = entity_filter.getAllMatches(this.entities_all);
-
+		
 		// falls auch children angezeigt werden sollen
 		if (einstellungen.getChildren())
 		{
