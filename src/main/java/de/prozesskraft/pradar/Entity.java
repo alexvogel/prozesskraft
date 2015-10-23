@@ -7,7 +7,9 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,8 +42,7 @@ implements Serializable
 	public String stepcountcompleted = "";
 	public String exitcode = "";
 	public String resource = "";
-	
-	
+
 	public long period = 9999999999999L;
 
 	/*----------------------------
@@ -74,13 +75,33 @@ implements Serializable
 
 	/**
 	 * matches itself (this) against every item of the given ArrayList<Entity>
+	 * @param Map<String,Entity>
+	 * @return Map<String,Entity> of matched Entities
+	 */
+	public Map <String,Entity> getAllMatches(Map<String,Entity> allEntities)
+	{
+		Map <String,Entity> allMatches = new HashMap <String,Entity>();
+
+		for(Entity actEntity : allEntities.values())
+		{
+			if (this.doesItMatch(actEntity))
+			{
+				allMatches.put(actEntity.getId(), actEntity);
+			}
+		}
+
+		return allMatches;
+	}
+	
+	/**
+	 * matches itself (this) against every item of the given ArrayList<Entity>
 	 * @param ArrayList<Entity>
 	 * @return ArrayList<Entity> of matched Entities
 	 */
 	public ArrayList<Entity> getAllMatches(ArrayList<Entity> allEntities)
 	{
 		ArrayList<Entity> allMatches = new ArrayList<Entity>();
-		
+
 		for(Entity actEntity : allEntities)
 		{
 			if (this.doesItMatch(actEntity))
