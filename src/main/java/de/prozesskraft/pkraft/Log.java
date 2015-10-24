@@ -43,7 +43,7 @@ implements Serializable, Comparable
 
 	public String sprint()
 	{
-		return "["+this.getTimestamp()+"]:"+this.getLevel()+":"+this.getMsg();
+		return "["+this.getTimestamp()+"]:"+this.getLabel()+":"+this.getLevel()+":"+this.getMsg();
 	}
 
 	public Log clone()
