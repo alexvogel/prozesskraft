@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 //import org.w3c.dom.*;
@@ -304,23 +305,18 @@ public class Manager
 				
 			System.err.println("debug: writing binary");
 			
-			// ueberpruefen wie gross das binary ist
-			java.io.File binaryFile = new java.io.File(p2.getInfilebinary());
-			if(binaryFile.length() > 5000000)
-			{
-				p2.logRelocate();
-			}
-
 			p2.writeBinary();
 
 			while(weiterlaufen)
 			{
-				
 				// prozess instanz frisch einlesen
 				System.err.println("debug: rereading instance");
 				Process p3 = p2.readBinary();
 				System.err.println("debug: rereading instance done");
 				
+				// die groesse des binary-files festhalten
+				p3.getTimeSerieBinarySize().addValue("" + (fileBinary.length() / 1024));
+				//p3.fileBinary.length() / 1024;
 				
 				weiterlaufen = p3.run;
 				
@@ -445,6 +441,9 @@ public class Manager
 				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+
+					// ausgabe in das debugLogFile
+					exiterException(actualProcess.getOutfilebinary(), e.getMessage());
 				}
 			}
 		}
@@ -455,17 +454,10 @@ public class Manager
 				actualProcess.log("fatal", e.getMessage()+"\n"+Arrays.toString(e.getStackTrace()));
 				updateFile(actualProcess);
 				e.printStackTrace();
-				try
-				{
-					java.io.FileWriter writer = new FileWriter(actualProcess.getRootdir() + "/process.pmb.pkraft-manager.stacktrace", true);
-					writer.write(e.getMessage());
-					writer.close();
-				}
-				catch (IOException e1)
-				{
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+	
+				// ausgabe in das debugLogFile
+				exiterException(actualProcess.getOutfilebinary(), e.getMessage());
+
 			}
 
 			System.exit(10);
@@ -481,18 +473,10 @@ public class Manager
 		}
 		catch (IOException e)
 		{
-			try
-			{
-				java.io.FileWriter writer = new FileWriter(pathToInstance + ".pkraft-manager.stacktrace", true);
-				writer.write(e.getMessage());
-				writer.close();
-			}
-			catch (IOException e1)
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 			e.printStackTrace();
+			
+			// ausgabe in das debugLogFile
+			exiterException(pathToInstance, e.getMessage());
 		}
 	}
 	
@@ -550,17 +534,27 @@ public class Manager
 	
 	private static void updateFile(Process process)
 	{
+		// alle log-eintraege in die entsprechenden files auslagern (und aus den elementen entfernen)
+		process.logRelocate();
+
 		process.setDatetonow();
 		process.touch();
-		process.detStatus(); 
+		process.detStatus();
 		process.writeBinary();
 
-		// die timeserie rausschreiben
-		try {
+		// die timeserie(n) rausschreiben
+		try
+		{
 			process.getTimeSerieLoadAverage().writeFile(process.getRootdir() + "/.serieLoadAverage.txt");
-		} catch (FileNotFoundException e) {
+			process.getTimeSerieBinarySize().writeFile(process.getRootdir() + "/.serieBinarySizeInKB.txt");
+		}
+		catch (FileNotFoundException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
+			// ausgabe in das debugLogFile
+			exiterException(process.getOutfilebinary(), e.getMessage());
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -570,6 +564,24 @@ public class Manager
 	private static void exiter()
 	{
 		System.out.println("try -help for help.");
+		System.exit(1);
+	}
+
+	private static void exiterException(String pathToInstance, String eMessage)
+	{
+		try
+		{
+			java.io.FileWriter writer = new FileWriter(pathToInstance + ".pkraft-manager.stacktrace", true);
+			writer.write(new Timestamp(System.currentTimeMillis()).toString());
+			writer.write(eMessage);
+			writer.write("--------------");
+			writer.close();
+		}
+		catch (IOException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		System.exit(1);
 	}
 
