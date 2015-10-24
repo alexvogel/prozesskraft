@@ -85,7 +85,7 @@ public class SIDebugGui
 		viewer.setContentProvider(new MyContentProvider());
 		viewer.setLabelProvider(new MyLabelProvider());
 		
-		viewer.setInput(step.getLogRecursive(false));
+		viewer.setInput(step.getLogRecursive());
 
 		viewer.addDoubleClickListener(listener_double_click);
 
