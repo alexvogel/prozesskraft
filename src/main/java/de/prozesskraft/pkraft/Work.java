@@ -382,14 +382,13 @@ implements Serializable
 		return this.log;
 	}
 
-	public ArrayList<Log> getLogRecursive(boolean deleteLogsInObjects)
+	public ArrayList<Log> getLogRecursive()
 	{
 		ArrayList<Log> logRecursive = this.log;
-		if(deleteLogsInObjects) {this.log.clear();}
+
 		for(Callitem actCallitem : this.callitem)
 		{
 			logRecursive.addAll(actCallitem.getLog());
-			if(deleteLogsInObjects) {actCallitem.log.clear();}
 		}
 
 		// sortieren nach Datum
@@ -657,7 +656,7 @@ implements Serializable
 					if(this.getPrecall() != null)
 					{
 							// erstellen prozessbuilder fuer precall
-						ProcessBuilder pbPrecall = new ProcessBuilder(this.getPrecall());
+						ProcessBuilder pbPrecall = new ProcessBuilder(this.getPrecall().split(" "));
 						log ("info", "calling preCall: " + pbPrecall.command());
 						pbPrecall.start();
 					}

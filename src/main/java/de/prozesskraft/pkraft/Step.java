@@ -2648,7 +2648,7 @@ implements Serializable, Cloneable
 			FileWriter logWriter =new FileWriter(this.getAbsdir() + "/.debug", true);
 			
 			// alle logs aller unterobjekte extrahieren
-			ArrayList<Log> allLogs = this.getLogRecursive(true);
+			ArrayList<Log> allLogs = this.getLogRecursive();
 			
 			// jedes log schreiben
 			for(Log actLog : allLogs)
@@ -2671,42 +2671,39 @@ implements Serializable, Cloneable
 	 * if deleteLogsInObjects==true the logs will be emptied
 	 * @return
 	 */
-	public ArrayList<Log> getLogRecursive(boolean deleteLogsInObjects)
+	public ArrayList<Log> getLogRecursive()
 	{
 		// zuerst das eigene log kopieren
 		ArrayList<Log> logRecursive = this.getLog();
-		if(deleteLogsInObjects) {this.log.clear();}
 		
 		// wenn this root ist, soll das logging von process mitgenommen werden
 		if(this.isRoot())
 		{
 			logRecursive.addAll(this.getParent().getLog());
-			if(deleteLogsInObjects) {this.getParent().log.clear();}
 		}
 		
 		// die logs aller Inits in die Sammlung uebernehmen
 		for(Init actInit : this.getInit())
 		{
-			logRecursive.addAll(actInit.getLogRecursive(deleteLogsInObjects));
+			logRecursive.addAll(actInit.getLogRecursive());
 		}
 
 		// die logs des Work in die Sammlung uebernehmen
 		if( this.work != null )
 		{
-			logRecursive.addAll(work.getLogRecursive(deleteLogsInObjects));
+			logRecursive.addAll(work.getLogRecursive());
 		}
 
 		// die logs des Subprocess in die Sammlung uebernehmen
 		if( this.subprocess != null )
 		{
 			logRecursive.addAll(subprocess.getLog());
-			if(deleteLogsInObjects) {subprocess.log.clear();}
 		}
 
 		// die logs aller Commits in die Sammlung uebernehmen
 		for(Commit actCommit : this.getCommit())
 		{
-			logRecursive.addAll(actCommit.getLogRecursive(deleteLogsInObjects));
+			logRecursive.addAll(actCommit.getLogRecursive());
 		}
 
 		// sortierte KeyListe erstellen

@@ -191,15 +191,13 @@ implements Serializable
 		return this.log;
 	}
 
-	public ArrayList<Log> getLogRecursive(boolean deleteLogsInObjects)
+	public ArrayList<Log> getLogRecursive()
 	{
 		ArrayList<Log> logRecursive = this.log;
 		for(Match actMatch : this.match)
 		{
 			logRecursive.addAll(actMatch.getLog());
-			if(deleteLogsInObjects) {actMatch.log.clear();}
 		}
-		if(deleteLogsInObjects) {this.log.clear();}
 
 		// sortieren nach Datum
 		Collections.sort(logRecursive);

@@ -363,17 +363,16 @@ implements Serializable
 		return this.log;
 	}
 
-	public ArrayList<Log> getLogRecursive(boolean deleteLogsInObjects)
+	public ArrayList<Log> getLogRecursive()
 	{
 		ArrayList<Log> logRecursive = this.log;
-		if(deleteLogsInObjects) {this.log.clear();}
 
 		// alle logs der geloopten commits hinzufuegen
 		if(this.loopedCommits != null)
 		{
 			for(Commit actCommit : this.loopedCommits)
 			{
-				logRecursive.addAll(actCommit.getLogRecursive(deleteLogsInObjects));
+				logRecursive.addAll(actCommit.getLogRecursive());
 			}
 		}
 		
@@ -381,14 +380,12 @@ implements Serializable
 		for(Variable actVariable : this.variable)
 		{
 			logRecursive.addAll(actVariable.getLog());
-			if(deleteLogsInObjects) {actVariable.log.clear();}
 		}
 		// alle logs aller Files hinzufuegen
 		for(File actFile : this.file)
 		{
 			//System.err.println("actual Step: "+this.getParent().getName()+" | actual Commit: "+this.getName()+" | actual File is: "+actFile.getKey()+" | size of File-log: "+actFile.getLog().size());
 			logRecursive.addAll(actFile.getLog());
-			if(deleteLogsInObjects) {actFile.log.clear();}
 		}
 
 		// sortieren nach Datum
