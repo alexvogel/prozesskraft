@@ -18,7 +18,7 @@ implements Serializable, Comparable
 	private long time = System.currentTimeMillis();
 	private String level = "default";
 	private String msg = "";
-
+	
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -27,20 +27,8 @@ implements Serializable, Comparable
 
 	}
 
-	public Log(String label)
+	public Log(String level, String msg)
 	{
-		this.label = label;
-	}
-
-	public Log(String label, String msg)
-	{
-		this.label = label;
-		this.msg = msg;
-	}
-
-	public Log(String label, String level, String msg)
-	{
-		this.label = label;
 		this.level = level;
 		this.msg = msg;
 	}
@@ -50,7 +38,7 @@ implements Serializable, Comparable
 
 	public void print()
 	{
-		System.out.println("["+this.getTimestamp()+"]:"+this.getLevel()+":"+this.getMsg());
+		System.out.println("["+this.getTimestamp()+"]:"+this.getLabel()+":"+this.getLevel()+":"+this.getMsg());
 	}
 
 	public String sprint()

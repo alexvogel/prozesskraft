@@ -239,23 +239,10 @@ implements Serializable, Cloneable
 	 */
 	public void addLog(Log log)
 	{
+		log.setLabel("step "+this.getName());
 		this.log.add(log);
 	}
 
-	/**
-	 * add a log
-	 * @param log
-	 */
-	public void addLogOld(Log log)
-	{
-		// wenn es kein 'debug' ist, dann in den logs aufnehmen
-		if(!log.getLevel().equals("debug"))
-		{
-			this.log.add(log);
-		}
-		
-	}
-	
 	/**
 	 * getCommandResolveAsPerlCode()
 	 * generates perlcode for resolving a command
@@ -2032,7 +2019,7 @@ implements Serializable, Cloneable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.addLog(new Log("step "+this.getName()+" ["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log(loglevel, logmessage));
 	}
 
 	/*----------------------------
@@ -2637,6 +2624,52 @@ implements Serializable, Cloneable
 	}
 
 	/**
+	 * clears all the logs from the object and subobjects
+	 * @param
+	 */
+	public void clearLogRecursive()
+	{
+		// in diesem step die logs entfernen
+		this.getLog().clear();
+		
+		// alle logs aller Variablen clearen
+		for(Variable actVariable : this.variable)
+		{
+			actVariable.getLog().clear();
+		}
+		// alle logs aller Files clearen
+		for(File actFile : this.file)
+		{
+			actFile.getLog().clear();
+		}
+
+		// die logs aller Inits clearen
+		for(Init actInit : this.getInit())
+		{
+			actInit.clearLogRecursive();
+		}
+
+		// die logs des Work clearen
+		if( this.work != null )
+		{
+			work.clearLogRecursive();
+		}
+
+		// die logs des Subprocess clearen
+		if( this.subprocess != null )
+		{
+			subprocess.getLog().clear();
+		}
+
+		// die logs aller Commits clearen
+		for(Commit actCommit : this.getCommit())
+		{
+			actCommit.clearLogRecursive();
+		}
+
+	}	
+	
+	/**
 	 * relocates the logmessages to files
 	 * @param
 	 */
@@ -2658,6 +2691,9 @@ implements Serializable, Cloneable
 			
 			// Filewriter schliessen
 			logWriter.close();
+			
+			// die logs recursiv aus allen objekten entfernen
+			this.clearLogRecursive();
 		}
 		catch (IOException e)
 		{
@@ -2676,6 +2712,17 @@ implements Serializable, Cloneable
 		// zuerst das eigene log kopieren
 		ArrayList<Log> logRecursive = this.getLog();
 		
+		// alle logs aller Variablen hinzufuegen
+		for(Variable actVariable : this.variable)
+		{
+			logRecursive.addAll(actVariable.getLog());
+		}
+		// alle logs aller Files hinzufuegen
+		for(File actFile : this.file)
+		{
+			logRecursive.addAll(actFile.getLog());
+		}
+
 		// wenn this root ist, soll das logging von process mitgenommen werden
 		if(this.isRoot())
 		{

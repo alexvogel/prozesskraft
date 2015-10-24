@@ -125,6 +125,7 @@ implements Serializable
 	
 	public void addLog(Log log)
 	{
+		log.setLabel("subprocess "+this.getName());
 		this.log.add(log);
 	}
 
@@ -135,7 +136,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.addLog(new Log("subprocess-"+this.getName()+"-"+this.getVersion()+"["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log(loglevel, logmessage));
 	}
 
 	/**

@@ -132,6 +132,7 @@ implements Serializable
 
 	public void addLog(Log log)
 	{
+		log.setLabel("commit "+this.getName());
 		this.log.add(log);
 	}
 
@@ -363,6 +364,36 @@ implements Serializable
 		return this.log;
 	}
 
+	/**
+	 * clears all the logs from the object and subobjects
+	 * @param
+	 */
+	public void clearLogRecursive()
+	{
+		// in diesem object die logs entfernen
+		this.getLog().clear();
+
+		// alle logs der geloopten commits hinzufuegen
+		if(this.loopedCommits != null)
+		{
+			for(Commit actCommit : this.loopedCommits)
+			{
+				actCommit.clearLogRecursive();
+			}
+		}
+
+		// alle logs aller Variablen clearen
+		for(Variable actVariable : this.variable)
+		{
+			actVariable.getLog().clear();
+		}
+		// alle logs aller Files clearen
+		for(File actFile : this.file)
+		{
+			actFile.getLog().clear();
+		}
+	}	
+
 	public ArrayList<Log> getLogRecursive()
 	{
 		ArrayList<Log> logRecursive = this.log;
@@ -518,7 +549,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.addLog(new Log("commit "+this.getName()+"["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log(loglevel, logmessage));
 	}
 
 //	// den inhalt eines ganzen directories in den aktuellen step committen

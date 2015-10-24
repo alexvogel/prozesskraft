@@ -133,6 +133,7 @@ implements Serializable, Cloneable
 	
 	private void addLog(Log log)
 	{
+		log.setLabel("file (key="+this.getKey() + ")");
 		this.log.add(log);
 	}
 	
@@ -376,7 +377,7 @@ implements Serializable, Cloneable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.addLog(new Log("file "+this.getKey()+" ["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log(loglevel, logmessage));
 	}
 
 /*----------------------------

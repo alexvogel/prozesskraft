@@ -73,6 +73,7 @@ implements Serializable
 	 */
 	public void addLog(Log log)
 	{
+		log.setLabel("callitem (seq="+this.getSequence() + ", par="+this.getPar());
 		this.log.add(log);
 	}
 	
@@ -254,7 +255,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.addLog(new Log("callitem "+this.getPar()+" ["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log(loglevel, logmessage));
 	}
 	
 

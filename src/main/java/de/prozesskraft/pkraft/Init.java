@@ -92,6 +92,7 @@ implements Serializable
 	
 	public void addLog(Log log)
 	{
+		log.setLabel("init "+this.getListname());
 		this.log.add(log);
 	}
 	
@@ -190,6 +191,21 @@ implements Serializable
 	{
 		return this.log;
 	}
+
+	/**
+	 * clears all the logs from the object and subobjects
+	 * @param
+	 */
+	public void clearLogRecursive()
+	{
+		// in diesem object die logs entfernen
+		this.getLog().clear();
+		
+		for(Match actMatch : this.match)
+		{
+			actMatch.getLog().clear();
+		}
+	}	
 
 	public ArrayList<Log> getLogRecursive()
 	{
@@ -302,7 +318,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.addLog(new Log("init "+this.getListname()+" ["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log(loglevel, logmessage));
 	}
 	
 	/**

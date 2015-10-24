@@ -335,6 +335,7 @@ implements Serializable
 	
 	private void addLog(Log log)
 	{
+		log.setLabel("process "+this.getName());
 		this.log.add(log);
 	}
 	
@@ -390,6 +391,19 @@ implements Serializable
 		}
 		
 		return returnStringInfoAboutKills;
+	}
+	
+	/**
+	 * kills all steps
+	 */
+	public void clearLogRecursive()
+	{
+		this.getLog().clear();
+		
+		for(Step actStep : this.getStep())
+		{
+			actStep.clearLogRecursive();
+		}
 	}
 	
 	/**
@@ -1423,7 +1437,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.addLog(new Log("process"+" ["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log(loglevel, logmessage));
 	}
 	
 	/**

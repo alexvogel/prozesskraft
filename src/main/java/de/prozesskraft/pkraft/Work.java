@@ -382,6 +382,21 @@ implements Serializable
 		return this.log;
 	}
 
+	/**
+	 * clears all the logs from the object and subobjects
+	 * @param
+	 */
+	public void clearLogRecursive()
+	{
+		// in diesem object die logs entfernen
+		this.getLog().clear();
+		
+		for(Callitem actCallitem : this.callitem)
+		{
+			actCallitem.getLog().clear();
+		}
+	}	
+
 	public ArrayList<Log> getLogRecursive()
 	{
 		ArrayList<Log> logRecursive = this.log;
@@ -465,7 +480,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.addLog(new Log("work"+" ["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log(loglevel, logmessage));
 	}
 	
 	/**

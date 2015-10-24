@@ -57,6 +57,7 @@ implements Serializable
 	
 	public void addLog(Log log)
 	{
+		log.setLabel("match (field="+this.getField()+", pattern="+this.getPattern());
 		this.log.add(log);
 	}
 	
@@ -100,7 +101,7 @@ implements Serializable
 	 */
 	public void log(String loglevel, String logmessage)
 	{
-		this.addLog(new Log("match "+this.getField()+" ["+this.toString()+"]", loglevel, logmessage));
+		this.addLog(new Log(loglevel, logmessage));
 	}
 
 
