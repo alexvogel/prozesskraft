@@ -500,6 +500,12 @@ public class SIInsightCreator
 		public void widgetSelected(SelectionEvent event)
 		{
 			java.io.File logFile = new java.io.File(step.getAbsdir() + "/.log");
+			java.io.File debugFile = new java.io.File(step.getAbsdir() + "/.debug");
+			String pathLogFile = ""; 
+			String pathDebugFile = ""; 
+			boolean einesVonBeidenFilesVorhanden = false; 
+					
+			// verfuegbarkeit des .log files uebrpruefen
 			if(!logFile.exists())
 			{
 				father.log("error", ".log file does not exist: "+logFile.getAbsolutePath());
@@ -512,8 +518,34 @@ public class SIInsightCreator
 			{
 				father.log("error", "cannot read .log file: "+logFile.getAbsolutePath());
 			}
-			
 			else
+			{
+				pathLogFile = logFile.getAbsolutePath();
+				einesVonBeidenFilesVorhanden = true;
+			}
+			
+			// verfuegbarkeit des .debug files uebrpruefen
+			if(!debugFile.exists())
+			{
+				father.log("warn", ".debug file does not exist: "+debugFile.getAbsolutePath());
+			}
+			else if(!debugFile.isFile())
+			{
+				father.log("warn", "is not a file: "+debugFile.getAbsolutePath());
+			}
+			else if(!debugFile.canRead())
+			{
+				father.log("warn", "cannot read .debug file: "+debugFile.getAbsolutePath());
+			}
+			else
+			{
+				pathDebugFile = debugFile.getAbsolutePath();
+				einesVonBeidenFilesVorhanden = true;
+			}
+			
+			
+			
+			if(einesVonBeidenFilesVorhanden)
 			{
 				// ist der step ein unterprozess, so soll der prozess in einem eigenen pmodelfenster geoeffnet werden
 				if(step.getType().equals("process"))
@@ -523,7 +555,7 @@ public class SIInsightCreator
 				// ist step kein unterprozess
 				else
 				{
-					String call = father.getIni().get("apps", "editor") + " " + logFile.getAbsolutePath(); 
+					String call = father.getIni().get("apps", "editor") + " " + pathLogFile + " " + pathDebugFile; 
 					father.log("info", "calling: "+call);
 					
 					try
