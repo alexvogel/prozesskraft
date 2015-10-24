@@ -535,8 +535,11 @@ public class Manager
 	private static void updateFile(Process process)
 	{
 		// alle log-eintraege in die entsprechenden files auslagern (und aus den elementen entfernen)
+		System.err.println("relocating all logs to .debug files in the step directories");
 		process.logRelocate();
+		System.err.println("relocation done");
 
+		
 		process.setDatetonow();
 		process.touch();
 		process.detStatus();
@@ -558,6 +561,8 @@ public class Manager
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			// ausgabe in das debugLogFile
+			exiterException(process.getOutfilebinary(), e.getMessage());
 		}
 	}
 
