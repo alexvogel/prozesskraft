@@ -315,7 +315,11 @@ public class Manager
 				System.err.println("debug: rereading instance done");
 				
 				// die groesse des binary-files festhalten
-				p3.getTimeSerieBinarySize().addValue("" + (fileBinary.length() / 1024));
+				long fileSizeInKB = fileBinary.length() / 1024;
+				
+				System.err.println("debug: file size is now " + String.valueOf(fileSizeInKB) + " kB");
+				p3.getTimeSerieBinarySize().addValue(String.valueOf(fileSizeInKB));
+				System.err.println("debug: after the timeseries");
 				//p3.fileBinary.length() / 1024;
 				
 				weiterlaufen = p3.run;
