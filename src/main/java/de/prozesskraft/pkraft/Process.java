@@ -125,7 +125,8 @@ implements Serializable
 	private Long timeOfProcessCreated = System.currentTimeMillis();
 	private Long timeOfProcessFinishedOrError = 0L;
 
-	private Timeserie timeSerieLoadAverage = new Timeserie();
+	private Timeserie timeSerieLoadAverage = new Timeserie("load average of client machine");
+	private Timeserie timeSerieBinarySize = new Timeserie("size of binary file in kB");
 	
 	public int counterLoadAverageTooHigh = 0;
 	/*----------------------------
@@ -2983,6 +2984,20 @@ implements Serializable
 	 */
 	public void setTimeSerieLoadAverage(Timeserie timeSerieLoadAverage) {
 		this.timeSerieLoadAverage = timeSerieLoadAverage;
+	}
+
+	/**
+	 * @return the timeSerieBinarySize
+	 */
+	public Timeserie getTimeSerieBinarySize() {
+		return timeSerieBinarySize;
+	}
+
+	/**
+	 * @param timeSerieBinarySize the timeSerieBinarySize to set
+	 */
+	public void setTimeSerieBinarySize(Timeserie timeSerieBinarySize) {
+		this.timeSerieBinarySize = timeSerieBinarySize;
 	}
 
 }
