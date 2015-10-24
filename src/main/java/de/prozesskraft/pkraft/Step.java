@@ -1739,7 +1739,7 @@ implements Serializable, Cloneable
 
 				// log
 				this.log("info", "call killcommand: " + StringUtils.join(callToKill, " "));
-				returnStringInfoAboutKills += ", " + StringUtils.join(callToKill, " ");
+				returnStringInfoAboutKills += StringUtils.join(callToKill, " ");
 				
 				// erstellen prozessbuilder
 				ProcessBuilder pb = new ProcessBuilder(callToKill);
@@ -1777,6 +1777,7 @@ implements Serializable, Cloneable
 		{
 			ArrayList<String> callToKill = new ArrayList<String>();
 			callToKill.add("kill");
+			callToKill.add("-9");
 			callToKill.add(allLines.get(0));
 			
 			// log
@@ -2686,7 +2687,7 @@ implements Serializable, Cloneable
 			// jedes log schreiben
 			for(Log actLog : allLogs)
 			{
-				logWriter.write(actLog.sprint());
+				logWriter.write(actLog.sprint() + "\n");
 			}
 			
 			// Filewriter schliessen
