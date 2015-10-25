@@ -555,7 +555,7 @@ public class SIInsightCreator
 				// ist step kein unterprozess
 				else
 				{
-					String call = father.getIni().get("apps", "editor") + " " + pathLogFile + " " + pathDebugFile; 
+					String call = father.getIni().get("apps", "editor") + " " + pathDebugFile + " " + pathLogFile; 
 					father.log("info", "calling: "+call);
 					
 					try
