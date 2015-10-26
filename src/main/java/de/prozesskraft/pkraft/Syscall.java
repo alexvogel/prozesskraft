@@ -310,7 +310,7 @@ public class Syscall {
 				// ist ein whitespace vorhanden?, dann mit hochkomma maskieren
 				else if(actArg.matches("^.*\\s.*$"))
 				{
-					processSyscallWithArgs.add("'" + actArg + "''" );
+					processSyscallWithArgs.add("'" + actArg + "'" );
 				}
 				else
 				{
