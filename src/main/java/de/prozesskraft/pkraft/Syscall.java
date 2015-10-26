@@ -298,27 +298,27 @@ public class Syscall {
 			
 			// in diesem array sollen die endgueltig verarbeiteten parameter gehalten werden
 			ArrayList<String> processSyscallWithArgs = new ArrayList<String>();
-			// noch vorhandene blanks in argumenten maskieren
-			writerLog.println("all values with whitespaces have been surrounded by single-quotes to 'mask' them");
-			int nr = 0;
-			for(String actArg : processSyscallWithArgsTmp)
-			{
-				if(nr == 0)
-				{
-					processSyscallWithArgs.add(actArg);
-				}
-				// ist ein whitespace vorhanden?, dann mit hochkomma maskieren
-				else if(actArg.matches("^.*\\s.*$"))
-				{
-					processSyscallWithArgs.add("'" + actArg + "'" );
-				}
-				else
-				{
-					processSyscallWithArgs.add(actArg);
-				}
-				nr++;
-			}
-//			processSyscallWithArgs = processSyscallWithArgsTmp;
+//			// noch vorhandene blanks in argumenten maskieren
+//			writerLog.println("all values with whitespaces have been surrounded by single-quotes to 'mask' them");
+//			int nr = 0;
+//			for(String actArg : processSyscallWithArgsTmp)
+//			{
+//				if(nr == 0)
+//				{
+//					processSyscallWithArgs.add(actArg);
+//				}
+//				// ist ein whitespace vorhanden?, dann mit hochkomma maskieren
+//				else if(actArg.matches("^.*\\s.*$"))
+//				{
+//					processSyscallWithArgs.add("'" + actArg + "'" );
+//				}
+//				else
+//				{
+//					processSyscallWithArgs.add(actArg);
+//				}
+//				nr++;
+//			}
+			processSyscallWithArgs = processSyscallWithArgsTmp;
 
 			writerLog.println("pkraft-syscall has called this...");
 			writerLog.println("------------------------------------------------------");
