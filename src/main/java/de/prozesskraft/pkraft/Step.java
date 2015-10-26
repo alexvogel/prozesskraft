@@ -2671,11 +2671,17 @@ implements Serializable, Cloneable
 	}	
 	
 	/**
-	 * relocates the logmessages to files
+	 * relocates the logmessages to files if stepdirectory already exists
 	 * @param
 	 */
 	public void logRelocate()
 	{
+		java.io.File stepDir = new java.io.File(this.getAbsdir());
+		if(!stepDir.exists())
+		{
+			return;
+		}
+				
 		try
 		{
 			// Filewriter initialisieren
