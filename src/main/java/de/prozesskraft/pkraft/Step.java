@@ -2700,7 +2700,13 @@ implements Serializable, Cloneable
 			logWriter.close();
 			
 			// die logs recursiv aus allen objekten entfernen
+			// bei root zusaetzlich das processlogging
+			if(this.isRoot())
+			{
+				this.getParent().getLog().clear();
+			}
 			this.clearLogRecursive();
+			
 		}
 		catch (IOException e)
 		{
