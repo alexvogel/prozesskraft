@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.prozesskraft.pradar</groupId>
 	<artifactId>pradar-progress</artifactId>
-	<packaging>jar</packaging>
 	<version>0.7.0</version>
+	<packaging>jar</packaging>
 	<name>pradar-progress</name>
 	<url>http://maven.apache.org</url>
 	<build>
