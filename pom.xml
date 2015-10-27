@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.prozesskraft.reporter</groupId>
 	<artifactId>reporter-generate</artifactId>
-	<packaging>jar</packaging>
 	<version>0.3.0</version>
+	<packaging>jar</packaging>
 	<name>reporter-generate</name>
 	<url>http://maven.apache.org</url>
 	<build>
