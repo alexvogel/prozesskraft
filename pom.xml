@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.prozesskraft.pmodel</groupId>
 	<artifactId>pmodel-gui</artifactId>
-	<packaging>jar</packaging>
 	<version>0.7.0</version>
+	<packaging>jar</packaging>
 	<name>pmodel-gui</name>
 	<url>http://maven.apache.org</url>
 	<build>
