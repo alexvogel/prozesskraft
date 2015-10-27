@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.prozesskraft.ptest</groupId>
 	<artifactId>ptest-core</artifactId>
-	<packaging>jar</packaging>
 	<version>0.7.0</version>
+	<packaging>jar</packaging>
 	<name>ptest-core</name>
 	<url>http://maven.apache.org</url>
 	
