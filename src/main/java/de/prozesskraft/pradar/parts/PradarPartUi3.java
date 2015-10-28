@@ -671,7 +671,7 @@ public class PradarPartUi3 extends ModelObject
 					
 					// pradar-attend starten
 					String call2 = ini.get("apps", "pradar-attend") + " -instance " + actEntity.getResource(); 
-					log("info", "calling: "+call);
+					log("info", "calling: "+call2);
 					
 					try
 					{
