@@ -12,15 +12,11 @@ import java.lang.management.ManagementFactory;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-//import org.w3c.dom.*;
-//import org.xml.sax.*;
-//import javax.xml.parsers.*;
-//import java.io.*;
-//import java.io.NotSerializableException;
+
 import java.util.Calendar;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
-//import java.util.Date;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -33,9 +29,11 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang3.StringUtils;
-//import org.apache.xerces.impl.xpath.regex.ParseException;
+
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
+
+import com.google.caliper.memory.ObjectGraphMeasurer;
 
 public class Manager
 {
@@ -322,6 +320,16 @@ public class Manager
 				System.err.println("debug: after the timeseries");
 				//p3.fileBinary.length() / 1024;
 				
+				// DEBUGGING
+				// die groesse der einzelnen steps festhalten
+				String dieGroessenAlsString = "";
+				for(Step actStep : p3.getStep())
+				{
+					dieGroessenAlsString += "   " + actStep.getName() + "=" + ObjectGraphMeasurer.measure(actStep);
+				}
+				p3.getTimeSerieStepSize().addValue(dieGroessenAlsString);
+				// DEBUGGING
+				
 				weiterlaufen = p3.run;
 				
 				p3.log("debug", "manager "+managerid+": actual infilexml is: "+p3.getInfilexml());
@@ -543,7 +551,7 @@ public class Manager
 		process.logRelocate();
 		System.err.println("relocation done");
 
-		
+		// die prozess instanz schreiben
 		process.setDatetonow();
 		process.touch();
 		process.detStatus();
@@ -554,6 +562,7 @@ public class Manager
 		{
 			process.getTimeSerieLoadAverage().writeFile(process.getRootdir() + "/.serieLoadAverage.txt");
 			process.getTimeSerieBinarySize().writeFile(process.getRootdir() + "/.serieBinarySizeInKB.txt");
+			process.getTimeSerieStepSize().writeFile(process.getRootdir() + "/.serieStepSize.txt");
 		}
 		catch (FileNotFoundException e)
 		{
@@ -568,6 +577,9 @@ public class Manager
 			// ausgabe in das debugLogFile
 			exiterException(process.getOutfilebinary(), e.getMessage());
 		}
+		
+		// debugging
+		// die groesse aller steps rausschreiben 
 	}
 
 	private static void exiter()
