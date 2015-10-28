@@ -1403,23 +1403,25 @@ public class PradarPartUi3 extends ModelObject
 				log("error", "you may only attend your instances (user "+System.getProperty("user.name")+")");
 			}
 
+			// den aufruf zusammenstellen
+			String aufruf = ini.get("apps",  "pradar-attend");
 			for(Entity actEntity : einstellungen.entitiesSelected)
 			{
-				String aufruf = ini.get("apps",  "pradar-attend") + " -instance "+actEntity.getResource();
-				log("info", "attending instance file: " + aufruf);
-	
-				try
-				{
-					java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-				}
-				catch (IOException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
+				aufruf += " -instance " + actEntity.getResource();
 			}
-			
+
+			log("info", "attending instance file: " + aufruf);
+	
+			try
+			{
+				java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 			// daten und anzeige refreshen
 			refresh();
 			tree.refresh();
