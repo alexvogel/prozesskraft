@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.prozesskraft.pmodel</groupId>
 	<artifactId>pmodel-gui</artifactId>
-	<version>0.7.0</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 	<name>pmodel-gui</name>
 	<url>http://maven.apache.org</url>
@@ -180,7 +180,7 @@
 		<dependency>
 			<groupId>de.prozesskraft.pkraft</groupId>
 			<artifactId>pkraft-core</artifactId>
-			<version>0.7.0</version>
+			<version>1.0.0</version>
 		</dependency>
     	<dependency>
 			<groupId>org.processing</groupId>
