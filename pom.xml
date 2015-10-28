@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.prozesskraft.ptest</groupId>
 	<artifactId>ptest-core</artifactId>
-	<version>0.7.0</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 	<name>ptest-core</name>
 	<url>http://maven.apache.org</url>
@@ -143,7 +143,7 @@
 		<dependency>
 			<groupId>de.prozesskraft.commons</groupId>
 			<artifactId>avoge-commons</artifactId>
-			<version>0.3.0</version>
+			<version>0.4.0</version>
 		</dependency>
 <!-- diese dependencies sind fuer andere module start -->
 	    <dependency>
