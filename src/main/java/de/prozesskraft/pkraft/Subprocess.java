@@ -24,7 +24,7 @@ implements Serializable
 	private String domain = "unknown";
 	private String name = "unnamed";
 	private String version = "noversion";
-	private int maxrun = 100;
+	private int maxrun = 10000;
 
 	private String status = "";	// waiting/finished/error/unknown
 
