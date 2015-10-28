@@ -1542,7 +1542,6 @@ implements Serializable, Cloneable
 		// wenn es einen subProcess gibt, dann soll dessen status frisch eingelesen werden
 		if(this.getSubprocess() != null)
 		{
-			this.getSubprocess().renewStatus();
 			this.getSubprocess().getStatus();
 		}
 	}

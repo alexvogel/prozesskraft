@@ -26,8 +26,10 @@ implements Serializable
 	private String version = "noversion";
 	private int maxrun = 10000;
 
-	private String status = "";	// waiting/finished/error/unknown
-
+//	private String status = "";	// waiting/finished/error/unknown
+	private String delayedStatus = "waiting";
+	private long LastTimeDelayedStatusSet = System.currentTimeMillis();
+	
 	ArrayList<Log> log = new ArrayList<Log>();
 
 	// der step, der in subprocess eingebettet ist und dessen commits auf den rootStep des neuen Processes gemapped werden sollen
@@ -79,7 +81,7 @@ implements Serializable
 		newSubprocess.setName(this.getName());
 		newSubprocess.setVersion(this.getVersion());
 		newSubprocess.setMaxrun(this.getMaxrun());
-		newSubprocess.setStatus(this.getStatus());
+//		newSubprocess.setStatus(this.getStatus());
 		for(Log actLog : this.getLog())
 		{
 			newSubprocess.addLog(actLog.clone());
@@ -108,7 +110,7 @@ implements Serializable
 	public void reset()
 	{
 		this.getLog().clear();
-		this.setStatus("");
+//		this.setStatus("");
 	}
 	
 	/**
@@ -157,7 +159,7 @@ implements Serializable
 		{
 			// den status des subprocesses feststellen
 			
-			this.renewStatus();
+			this.getStatus();
 		}
 
 		// wenn schritt noch nicht gestartet wurde
@@ -213,7 +215,6 @@ implements Serializable
 					if(!this.getParent().mkdir(stepDir.getCanonicalPath()))
 					{
 						log("error", "could not create directory: "+stepDir.getCanonicalPath());
-						this.setStatus("error");
 					}
 				}
 	
@@ -312,9 +313,7 @@ implements Serializable
 				catch (Exception e2)
 				{
 					log("error", e2.getMessage());
-					this.setStatus("error");
 				}
-				this.setStatus("working");
 			}
 		}
 	}
@@ -407,7 +406,6 @@ implements Serializable
 		else
 		{
 			log("error", "domain-installation-directory does NOT exist: "+domainDir);
-			this.setStatus("error");
 			return null;
 		}
 
@@ -420,7 +418,6 @@ implements Serializable
 		else
 		{
 			log("error", "process-installation-directory does not exist: "+processDir);
-			this.setStatus("error");
 			return null;
 		}
 		
@@ -433,7 +430,6 @@ implements Serializable
 		else
 		{
 			log("error", "processversion-installation-directory does not exist: "+versionDir);
-			this.setStatus("error");
 			return null;
 		}
 		
@@ -446,7 +442,6 @@ implements Serializable
 		else
 		{
 			log("error", "process.xml does not exist: "+processDef);
-			this.setStatus("error");
 			return null;
 		}
 		
@@ -601,51 +596,62 @@ implements Serializable
 		return this.log;
 	}
 
-	public void renewStatus() throws IOException
+	private void renewDelayedStatus() throws IOException
 	{
-//		// 1) alte methode: durch einlesen des prozessmodells
-//		//    diese methode kommt wieder in Mode, falls es gewuenscht ist, einen ganzen prozessbaum aktuell zu halten
-//		//    und dafuer langsamkeit in kauf nimmt
+
+		// 1) alte methode: durch einlesen des prozessmodells
+		//    diese methode kommt wieder in Mode, falls es gewuenscht ist, einen ganzen prozessbaum aktuell zu halten
+		//    und dafuer langsamkeit in kauf nimmt
 //		Process p1 = new Process();
 //		p1.setInfilebinary(this.getParent().getAbsdir() + "/process.pmb");
 //		Process processReread = p1.readBinary();
-//		this.setStatus(processReread.getStatus());
+//		this.setDelayedStatus(processReread.getStatus());
+//		this.setLastTimeDelayedStatusSet(System.currentTimeMillis());
 //		log("info", "setting status to " + this.getStatus());
 
-		// 2) neue methode: durch auswerten des .status files
+		String status = "";
 		java.util.List<String> statusInhalt = Files.readAllLines(Paths.get(this.getParent().getAbsdir() + "/.processStatus"), Charset.defaultCharset());
 		
 		if(statusInhalt.size() > 0)
 		{
-			this.setStatus(statusInhalt.get(0));
+			status = statusInhalt.get(0);
 		}
 		else
 		{
-			this.setStatus("");
+			status = "";
 		}
-		log("info", "setting status to " + this.getStatus());
+		log("info", "setting status to " + status);
+		this.setDelayedStatus(status);
+		this.setLastTimeDelayedStatusSet(System.currentTimeMillis());
 
 	}
 	
 	/**
 	 * @return the status
+	 * @throws IOException 
 	 */
 	public String getStatus()
 	{
-		
+		if((System.currentTimeMillis() - this.getLastTimeDelayedStatusSet()) < 10000)
+		{
+			return this.getDelayedStatus();
+		}
 		// den eingebetteten process nach fehler abfragen und evtl. den status updaten
 		// dabei wird das feld status neu bestimmt
 		// das fuehrt zu einem einfrieren beim einladen in pmodel -> nicht weiter untersucht
 //		this.refreshProcess();
 		
-		return this.status;
-	}
-
-	/**
-	 * @param status the status to set
-	 */
-	public void setStatus(String status) {
-		this.status = status;
+		// 2) neue methode: durch auswerten des .status files
+		else
+		{
+			try {
+				this.renewDelayedStatus();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return this.getDelayedStatus();
+		}
 	}
 
 	/**
@@ -721,6 +727,34 @@ implements Serializable
 	 */
 	public void setStep(Step step) {
 		this.step = step;
+	}
+
+	/**
+	 * @return the delayedStatus
+	 */
+	public String getDelayedStatus() {
+		return delayedStatus;
+	}
+
+	/**
+	 * @param delayedStatus the delayedStatus to set
+	 */
+	public void setDelayedStatus(String delayedStatus) {
+		this.delayedStatus = delayedStatus;
+	}
+
+	/**
+	 * @return the lastTimeDelayedStatusSet
+	 */
+	public long getLastTimeDelayedStatusSet() {
+		return LastTimeDelayedStatusSet;
+	}
+
+	/**
+	 * @param lastTimeDelayedStatusSet the lastTimeDelayedStatusSet to set
+	 */
+	public void setLastTimeDelayedStatusSet(long lastTimeDelayedStatusSet) {
+		LastTimeDelayedStatusSet = lastTimeDelayedStatusSet;
 	}
 	
 }
