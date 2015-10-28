@@ -581,9 +581,9 @@ public class Manager
 		try
 		{
 			java.io.FileWriter writer = new FileWriter(pathToInstance + ".pkraft-manager.stacktrace", true);
-			writer.write(new Timestamp(System.currentTimeMillis()).toString());
-			writer.write(eMessage);
-			writer.write("--------------");
+			writer.write(new Timestamp(System.currentTimeMillis()).toString() + "\n");
+			writer.write(eMessage + "\n");
+			writer.write("--------------" + "\n");
 			writer.close();
 		}
 		catch (IOException e1)
