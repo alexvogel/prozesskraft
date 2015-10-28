@@ -1,6 +1,9 @@
 package de.prozesskraft.pkraft;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 //import java.util.*;
 //import org.apache.solr.common.util.NamedList;
 import java.util.ArrayList;
@@ -23,13 +26,10 @@ implements Serializable
 	private String version = "noversion";
 	private int maxrun = 100;
 
-	private String status = "";	// waiting/finished/error
+	private String status = "";	// waiting/finished/error/unknown
 
 	ArrayList<Log> log = new ArrayList<Log>();
 
-	// das process object
-	private Process process = null;
-	
 	// der step, der in subprocess eingebettet ist und dessen commits auf den rootStep des neuen Processes gemapped werden sollen
 	// dieser step wird automatisch initialisiert durch die daten im xml
 	private Step step = null;
@@ -88,10 +88,6 @@ implements Serializable
 		{
 			newSubprocess.setStep(this.getStep().clone());
 		}
-		if(this.getProcess() != null)
-		{
-			newSubprocess.setProcess(this.getProcess().clone());
-		}
 
 		return newSubprocess;
 	}
@@ -120,7 +116,10 @@ implements Serializable
 	 */
 	public void kill()
 	{
-		this.getProcess().kill();
+		Process p1 = new Process();
+		p1.setInfilebinary(this.getParent().getAbsdir() + "/process.pmb");
+		Process p2 = p1.readBinary();
+		p2.kill();
 	}
 	
 	public void addLog(Log log)
@@ -153,31 +152,12 @@ implements Serializable
 
 //		this.resolve();
 
-		// wenn schritt schon gestartet wurde
-		if (this.isPidfileexistent())
+		// wenn schritt schon gestartet wurde, muss das Prozessbinary vorhanden sein
+		if (this.isProcessBinaryFileExistent())
 		{
-			String pid = this.getPid();	// aus der absdir des steps soll aus der Datei '.pid' die pid ermittelt werden. wenn noch keine existiert, wurde der schritt noch nicht gestartet
-			log("info", "subprocess already executed pid="+pid);
-//			System.out.println("PROCESS-STEP BEREITS GESTARTET: "+pid);
-
-			if (isPidalive(pid))
-			{
-				log("info", "subprocess still running. pid="+pid);
-//				System.out.println("PROCESS-STEP LAEUFT NOCH: "+pid);
-				this.setStatus("working");
-			}
-			else
-			{
-				log("info", "subprocess not running anymore. pid="+pid);
-				
-				// den status des subprocesses feststellen und this auf den gleichen setzen
-				Process p1 = new Process();
-				p1.setInfilebinary(this.getParent().getAbsdir() + "/process.pmb");
-				Process processReread = p1.readBinary();
-				this.setProcess(processReread);
-				this.setStatus(processReread.getStatus());
-				log("info", "setting status to " + this.getStatus());
-			}
+			// den status des subprocesses feststellen
+			
+			this.renewStatus();
 		}
 
 		// wenn schritt noch nicht gestartet wurde
@@ -262,8 +242,8 @@ implements Serializable
 				log("info", "writing the binary-instance-file of subprocess...");
 				newProcess.writeBinary();
 				
-				// und das process object in subprocess ablegen
-				this.setProcess(newProcess);
+//				// und das process object in subprocess ablegen
+//				this.setProcess(newProcess);
 	
 				// das logfile des Syscalls (zum debuggen des programms "process syscall" gedacht)
 				String AbsLogSyscallWrapper = new java.io.File(new java.io.File(this.getParent().getAbspid()).getParent()).getAbsolutePath()+"/.log";
@@ -327,7 +307,7 @@ implements Serializable
 	//				log("info", "call executed. pid="+sysproc.hashCode());
 	
 					// wait 2 seconds for becoming the pid-file visible
-					Thread.sleep(2000);
+//					Thread.sleep(2000);
 				}
 				catch (Exception e2)
 				{
@@ -339,17 +319,32 @@ implements Serializable
 		}
 	}
 
-	public boolean isPidfileexistent()
+//	public boolean isPidfileexistent()
+//	{
+//		java.io.File pidfile = new java.io.File(this.getParent().getAbspid());
+//		if (pidfile.canRead())
+//		{
+//			log("debug", "pidfile found: "+pidfile.getAbsolutePath());
+//			return true;
+//		}
+//		else
+//		{
+//			log("debug", "pidfile NOT found: "+pidfile.getAbsolutePath());
+//			return false;
+//		}
+//	}
+	
+	public boolean isProcessBinaryFileExistent()
 	{
-		java.io.File pidfile = new java.io.File(this.getParent().getAbspid());
-		if (pidfile.canRead())
+		java.io.File processBinaryFile = new java.io.File(this.getParent().getAbsdir() + "/process.pmb");
+		if (processBinaryFile.canRead())
 		{
-			log("debug", "pidfile found: "+pidfile.getAbsolutePath());
+			log("debug", "processBinaryFile found: "+processBinaryFile.getAbsolutePath());
 			return true;
 		}
 		else
 		{
-			log("debug", "pidfile NOT found: "+pidfile.getAbsolutePath());
+			log("debug", "processBinaryFile NOT found: "+processBinaryFile.getAbsolutePath());
 			return false;
 		}
 	}
@@ -518,45 +513,45 @@ implements Serializable
 		return newProcess2;
 	}
 	
-	public void refreshProcess()
-	{
-		// wenn es einen Process gibt, dann den Status von this entsprechend des status des Processes updaten
-		if(this.getProcess() != null)
-		{
-			// neues setzen des binary pfads (falls die daten verschoben wurden)
-			this.getProcess().setInfilebinary(this.getProcess().getRootdir() + "/process.pmb");
-			this.log("debug", "refreshing Process from file: " + this.getProcess().getInfilebinary());
-
-			// einen neuen Process erstellen und aus file einlesen
-			Process updatedProcess = this.getProcess().readBinary();
-			
-			// status setzen
-			// ist Process == finished => status=worked
-			// ist Process == error => status=error
-			this.log("debug", "status of the process (triggered by subprocess): " + updatedProcess.getStatus());
-			
-			if(updatedProcess.getStatus().equals("finished"))
-			{
-				this.setStatus("finished");
-			}
-			else if(updatedProcess.getStatus().equals("error"))
-			{
-				this.setStatus("error");
-			}
-			else if(updatedProcess.getStatus().equals("rolling"))
-			{
-				this.setStatus("working");
-			}
-			
-			this.log("debug", "status of subprocess: " + updatedProcess.getStatus());
-			
-			// die binaerfiles setzen
-			updatedProcess.setInfilebinary(this.getProcess().getInfilebinary());
-			updatedProcess.setOutfilebinary(this.getProcess().getOutfilebinary());
-			
-			this.setProcess(updatedProcess);
-		}
-	}
+//	public void refreshProcess()
+//	{
+//		// wenn es einen Process gibt, dann den Status von this entsprechend des status des Processes updaten
+//		if(this.getProcess() != null)
+//		{
+//			// neues setzen des binary pfads (falls die daten verschoben wurden)
+//			this.getProcess().setInfilebinary(this.getProcess().getRootdir() + "/process.pmb");
+//			this.log("debug", "refreshing Process from file: " + this.getProcess().getInfilebinary());
+//
+//			// einen neuen Process erstellen und aus file einlesen
+//			Process updatedProcess = this.getProcess().readBinary();
+//			
+//			// status setzen
+//			// ist Process == finished => status=worked
+//			// ist Process == error => status=error
+//			this.log("debug", "status of the process (triggered by subprocess): " + updatedProcess.getStatus());
+//			
+//			if(updatedProcess.getStatus().equals("finished"))
+//			{
+//				this.setStatus("finished");
+//			}
+//			else if(updatedProcess.getStatus().equals("error"))
+//			{
+//				this.setStatus("error");
+//			}
+//			else if(updatedProcess.getStatus().equals("rolling"))
+//			{
+//				this.setStatus("working");
+//			}
+//			
+//			this.log("debug", "status of subprocess: " + updatedProcess.getStatus());
+//			
+//			// die binaerfiles setzen
+//			updatedProcess.setInfilebinary(this.getProcess().getInfilebinary());
+//			updatedProcess.setOutfilebinary(this.getProcess().getOutfilebinary());
+//			
+//			this.setProcess(updatedProcess);
+//		}
+//	}
 
 	/*----------------------------
 	  methods get
@@ -606,6 +601,32 @@ implements Serializable
 		return this.log;
 	}
 
+	public void renewStatus() throws IOException
+	{
+//		// 1) alte methode: durch einlesen des prozessmodells
+//		//    diese methode kommt wieder in Mode, falls es gewuenscht ist, einen ganzen prozessbaum aktuell zu halten
+//		//    und dafuer langsamkeit in kauf nimmt
+//		Process p1 = new Process();
+//		p1.setInfilebinary(this.getParent().getAbsdir() + "/process.pmb");
+//		Process processReread = p1.readBinary();
+//		this.setStatus(processReread.getStatus());
+//		log("info", "setting status to " + this.getStatus());
+
+		// 2) neue methode: durch auswerten des .status files
+		java.util.List<String> statusInhalt = Files.readAllLines(Paths.get(this.getParent().getAbsdir() + "/.processStatus"), Charset.defaultCharset());
+		
+		if(statusInhalt.size() > 0)
+		{
+			this.setStatus(statusInhalt.get(0));
+		}
+		else
+		{
+			this.setStatus("");
+		}
+		log("info", "setting status to " + this.getStatus());
+
+	}
+	
 	/**
 	 * @return the status
 	 */
@@ -658,16 +679,21 @@ implements Serializable
 	/**
 	 * @return the process
 	 */
-	public Process getProcess() {
-		return process;
+	public Process getProcess()
+	{
+		Process p1 = new Process();
+		p1.setInfilebinary(this.getParent().getAbsdir() + "/process.pmb");
+		Process p2 = p1.readBinary();
+
+		return p2; 
 	}
 
-	/**
-	 * @param process the process to set
-	 */
-	public void setProcess(Process process) {
-		this.process = process;
-	}
+//	/**
+//	 * @param process the process to set
+//	 */
+//	public void setProcess(Process process) {
+//		this.process = process;
+//	}
 
 	/**
 	 * @return the maxrun

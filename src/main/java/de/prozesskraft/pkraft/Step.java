@@ -1514,8 +1514,9 @@ implements Serializable, Cloneable
 	 * 1) clear variables
 	 * 2) clear files
 	 * 3) reset commits
+	 * @throws IOException 
 	 */
-	public void resetCommit()
+	public void resetCommit() throws IOException
 	{
 		this.log("info", "performing a resetCommit");
 		// variablen leeren
@@ -1541,7 +1542,8 @@ implements Serializable, Cloneable
 		// wenn es einen subProcess gibt, dann soll dessen status frisch eingelesen werden
 		if(this.getSubprocess() != null)
 		{
-			this.getSubprocess().refreshProcess();
+			this.getSubprocess().renewStatus();
+			this.getSubprocess().getStatus();
 		}
 	}
 

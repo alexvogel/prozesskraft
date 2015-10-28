@@ -363,8 +363,9 @@ implements Serializable
 	/**
 	 * reset only the commit of a certain step and perform a full reset for all subsequent steps (the steps who have an Init, that link to a fromstep that has been reset)
 	 * @param Step
+	 * @throws IOException 
 	 */
-	public void resetCommitStep(String stepname)
+	public void resetCommitStep(String stepname) throws IOException
 	{
 		// zuerst alle dependent steps reseten
 		ArrayList<Step> stepsToReset = this.getStepDependent(stepname);
