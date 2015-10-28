@@ -3,6 +3,7 @@ package de.prozesskraft.pradar;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -26,7 +27,7 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 
-
+import de.prozesskraft.pkraft.Log;
 import de.prozesskraft.pkraft.Process;
 import de.prozesskraft.pradar.Entity;
 import de.prozesskraft.commons.WhereAmI;
@@ -152,136 +153,155 @@ public class Attend
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
-		String pathProcessBinary = commandline.getOptionValue("instance");
 		
-		// ist die datei vorhanden?
-		java.io.File fileProcessBinary = new java.io.File(pathProcessBinary);
-		if(!fileProcessBinary.exists())
+		// fuer alle angegebenen instanzen einen attend durchfuehren
+		for(String pathProcessBinary : commandline.getOptionValues("instance"))
 		{
-			System.err.println("error: process instance file does not exist: " + pathProcessBinary);
-			exiter();
-		}
-
-		// instanz einlesen
-		Process p1 = new Process();
-		p1.setInfilebinary(fileProcessBinary.getAbsolutePath());
-		Process process = p1.readBinary();
-		process.setOutfilebinary(fileProcessBinary.getAbsolutePath());
-		
-		// ein pradar entity erstellen
-		Entity entity = new Entity();
-
-		// die felder des pradar entities mit den daten befuellen
-		entity.setProcess(process.getName());
-		entity.setId(process.getId());
-		entity.setVersion(process.getVersion());
-		entity.setId2(process.getId2());
-		entity.setParentid(process.getParentid());
-
-		// setzen des hosts vom system
-		try
-		{
-			InetAddress addr = InetAddress.getLocalHost();
-			entity.setHost(addr.getHostName());
-		} catch (UnknownHostException e)
-		{
-			// mache nichts, dann greift der default 'HAL'
-		}
-
-		// die zeiten aus dem process setzen
-		entity.setCheckin(process.getTimeOfProcessCreated());
-		entity.setCheckout(process.getTimeOfProcessFinishedOrError());
-		
-		// die resource setzen
-		entity.setResource(process.getRootdir() + "/process.pmb");
-		
-		// setzen des user vom system
-		entity.setUser(System.getProperty("user.name"));
-		
-		// setzen von active auf 'true'
-		if(process.getStatus().equals("working"))
-		{
-			entity.setActive("true");
-		}
-		else
-		{
-			entity.setActive("false");
-		}
-
-		// stepcounts setzen
-		entity.setStepcount("" + process.getStep().size());
-		entity.setStepcountcompleted("" + process.getStepFinishedOrCanceled().size());
-		
-		// exitcode setzen
-		if(process.getStatus().equals("finished"))
-		{
-			entity.setExitcode("0");
-		}
-		else if(process.getStatus().equals("working") || process.getStatus().equals("waiting") || process.getStatus().equals("paused"))
-		{
-			// belassen bei ""
-		}
-		else
-		{
-			entity.setExitcode(process.getStatus());
-		}
-
-		// debugging
-//		entity.print();
-		
-		// eintragen in die DB
-		Socket server = null;
-
-		boolean pradar_server_not_found = true;
-
-		// ueber alle server aus ini-file iterieren und dem ersten den auftrag erteilen
-		Iterator<String> iter_pradar_server = pradar_server_list.iterator();
-		while(pradar_server_not_found && iter_pradar_server.hasNext())
-		{
-			String port_and_machine_as_string = iter_pradar_server.next();
-			String [] port_and_machine = port_and_machine_as_string.split("@");
-
-			int portNumber = Integer.parseInt(port_and_machine[0]);
-			String machineName = port_and_machine[1];
-			System.err.println("trying pradar-server "+portNumber+"@"+machineName);
+			// ist die datei vorhanden?
+			java.io.File fileProcessBinary = new java.io.File(pathProcessBinary);
+			if(!fileProcessBinary.exists())
+			{
+				System.err.println("error: process instance file does not exist: " + pathProcessBinary);
+				exiter();
+			}
+	
+			// instanz einlesen
+			Process p1 = new Process();
+			p1.setInfilebinary(fileProcessBinary.getAbsolutePath());
+			Process process = p1.readBinary();
+			process.setOutfilebinary(fileProcessBinary.getAbsolutePath());
+	
+			// 1) .status file schreiben
+			// Filewriter initialisieren
+			FileWriter logWriter;
 			try
 			{
-				// socket einrichten und Out/Input-Streams setzen
-				server = new Socket(machineName, portNumber);
-				OutputStream out = server.getOutputStream();
-				InputStream in = server.getInputStream();
-				ObjectOutputStream objectOut = new ObjectOutputStream(out);
-				ObjectInputStream  objectIn  = new ObjectInputStream(in);
-				
-				// Objekte zum server uebertragen
-				objectOut.writeObject("attend");
-				objectOut.writeObject(entity);
-
-				// nachricht wurde erfolgreich an server gesendet --> schleife beenden
-				pradar_server_not_found = false;
-				
-				System.out.println("<id>"+entity.getId()+"<id>");
+				logWriter = new FileWriter(process.getRootdir() + "/.status", false);
+				logWriter.write(process.getStatus());
+				logWriter.close();
 			}
-			catch (UnknownHostException e)
+			catch (IOException e1)
 			{
 				// TODO Auto-generated catch block
-				System.err.println("unknown host "+machineName+" (UnknownHostException)");
+				e1.printStackTrace();
+				System.err.println("error: cannot update .status file " + process.getRootdir() + "/.status");
 			}
-			catch (ConnectException e)
+			
+			// ein pradar entity erstellen
+			Entity entity = new Entity();
+	
+			// die felder des pradar entities mit den daten befuellen
+			entity.setProcess(process.getName());
+			entity.setId(process.getId());
+			entity.setVersion(process.getVersion());
+			entity.setId2(process.getId2());
+			entity.setParentid(process.getParentid());
+	
+			// setzen des hosts vom system
+			try
 			{
-				System.err.println("no pradar-server found at "+portNumber+"@"+machineName);
-	//			e.printStackTrace();
-			}
-			catch (IOException e)
+				InetAddress addr = InetAddress.getLocalHost();
+				entity.setHost(addr.getHostName());
+			} catch (UnknownHostException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// mache nichts, dann greift der default 'HAL'
 			}
-		}
-		
-		if (pradar_server_not_found)
-		{
-			System.out.println("no pradar-server found.");
+	
+			// die zeiten aus dem process setzen
+			entity.setCheckin(process.getTimeOfProcessCreated());
+			entity.setCheckout(process.getTimeOfProcessFinishedOrError());
+	
+			// die resource setzen
+			entity.setResource(process.getRootdir() + "/process.pmb");
+	
+			// setzen des user vom system
+			entity.setUser(System.getProperty("user.name"));
+	
+			// setzen von active auf 'true'
+			if(process.getStatus().equals("working"))
+			{
+				entity.setActive("true");
+			}
+			else
+			{
+				entity.setActive("false");
+			}
+	
+			// stepcounts setzen
+			entity.setStepcount("" + process.getStep().size());
+			entity.setStepcountcompleted("" + process.getStepFinishedOrCanceled().size());
+	
+			// exitcode setzen
+			if(process.getStatus().equals("finished"))
+			{
+				entity.setExitcode("0");
+			}
+			else if(process.getStatus().equals("working") || process.getStatus().equals("waiting") || process.getStatus().equals("paused"))
+			{
+				// belassen bei ""
+			}
+			else
+			{
+				entity.setExitcode(process.getStatus());
+			}
+	
+			// debugging
+	//		entity.print();
+			
+			// eintragen in die DB
+			Socket server = null;
+	
+			boolean pradar_server_not_found = true;
+	
+			// ueber alle server aus ini-file iterieren und dem ersten den auftrag erteilen
+			Iterator<String> iter_pradar_server = pradar_server_list.iterator();
+			while(pradar_server_not_found && iter_pradar_server.hasNext())
+			{
+				String port_and_machine_as_string = iter_pradar_server.next();
+				String [] port_and_machine = port_and_machine_as_string.split("@");
+	
+				int portNumber = Integer.parseInt(port_and_machine[0]);
+				String machineName = port_and_machine[1];
+				System.err.println("trying pradar-server "+portNumber+"@"+machineName);
+				try
+				{
+					// socket einrichten und Out/Input-Streams setzen
+					server = new Socket(machineName, portNumber);
+					OutputStream out = server.getOutputStream();
+					InputStream in = server.getInputStream();
+					ObjectOutputStream objectOut = new ObjectOutputStream(out);
+					ObjectInputStream  objectIn  = new ObjectInputStream(in);
+					
+					// Objekte zum server uebertragen
+					objectOut.writeObject("attend");
+					objectOut.writeObject(entity);
+	
+					// nachricht wurde erfolgreich an server gesendet --> schleife beenden
+					pradar_server_not_found = false;
+					
+					System.out.println("<id>"+entity.getId()+"<id>");
+				}
+				catch (UnknownHostException e)
+				{
+					// TODO Auto-generated catch block
+					System.err.println("unknown host "+machineName+" (UnknownHostException)");
+				}
+				catch (ConnectException e)
+				{
+					System.err.println("no pradar-server found at "+portNumber+"@"+machineName);
+		//			e.printStackTrace();
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			if (pradar_server_not_found)
+			{
+				System.out.println("no pradar-server found.");
+			}
 		}
 	}
 	
