@@ -310,7 +310,15 @@ public class ResetStep
 				System.err.println("performing a resetCommit on step " + step.getName() + " and afull reset on all downstream steps");
 
 				// den step resetten und alle von diesem step abhaengigen steps
-				step.getParent().resetCommitStep(step.getName());
+				try
+				{
+					step.getParent().resetCommitStep(step.getName());
+				}
+				catch (IOException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			else
 			{
