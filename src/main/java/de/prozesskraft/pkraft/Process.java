@@ -1291,14 +1291,6 @@ implements Serializable
 		}
 	}
 
-	/**
-	 * adds the momentary loadAverage of the System to the TimeSeriesLoadAverage
-	**/
-	public void memorizeLoadAverage()
-	{
-		this.timeSerieLoadAverage.addValue("" + ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage());
-	}
-	
 	/*----------------------------
 	  method: schreibt den inhalt des prozesses in die konsole
 	----------------------------*/

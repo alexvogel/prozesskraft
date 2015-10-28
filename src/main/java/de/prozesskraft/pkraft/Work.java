@@ -560,7 +560,6 @@ implements Serializable
 
 			double actLoadAverage = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
 			log("debug", "the present load average is " + actLoadAverage);
-			this.getParent().getParent().memorizeLoadAverage();
 //			log("debug", "all the load averages till now are " + this.getParent().getParent().getTimeSerieLoadAverage().sprint());
 
 			// 3) das load average unterhalb eines definierten wertes
