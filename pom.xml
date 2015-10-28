@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.prozesskraft.reporter</groupId>
   <artifactId>reporter-core</artifactId>
-  <version>0.3.0</version>
+  <version>0.4.0</version>
   <name>reporter-core</name>
 	<build>
 		<plugins>
@@ -126,10 +126,5 @@
 			<artifactId>itext</artifactId>
 			<version>2.1.7</version>
 	    </dependency>
-<!-- 	    <dependency> -->
-<!-- 			<groupId>de.prozesskraft.pkraft</groupId> -->
-<!-- 			<artifactId>pkraft-core</artifactId> -->
-<!-- 			<version>0.6.0</version> -->
-<!-- 	    </dependency> -->
 	</dependencies>
 </project>
