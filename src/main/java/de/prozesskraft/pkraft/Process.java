@@ -127,6 +127,7 @@ implements Serializable
 
 	private Timeserie timeSerieLoadAverage = new Timeserie("load average of client machine");
 	private Timeserie timeSerieBinarySize = new Timeserie("size of binary file in kB");
+	private Timeserie timeSerieStepSize = new Timeserie("footprint of all steps");
 	
 	public int counterLoadAverageTooHigh = 0;
 	/*----------------------------
@@ -2999,6 +3000,20 @@ implements Serializable
 	 */
 	public void setTimeSerieBinarySize(Timeserie timeSerieBinarySize) {
 		this.timeSerieBinarySize = timeSerieBinarySize;
+	}
+
+	/**
+	 * @return the timeSerieStepSize
+	 */
+	public Timeserie getTimeSerieStepSize() {
+		return timeSerieStepSize;
+	}
+
+	/**
+	 * @param timeSerieStepSize the timeSerieStepSize to set
+	 */
+	public void setTimeSerieStepSize(Timeserie timeSerieStepSize) {
+		this.timeSerieStepSize = timeSerieStepSize;
 	}
 
 }
