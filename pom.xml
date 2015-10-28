@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.prozesskraft.pkraft</groupId>
 	<artifactId>pkraft-createmap</artifactId>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
-	<version>0.7.0</version>
 	<name>pkraft-createmap</name>
 	<url>http://maven.apache.org</url>
 	<build>
@@ -131,7 +131,7 @@
 		<dependency>
 			<groupId>de.prozesskraft.pkraft</groupId>
 			<artifactId>pkraft-core</artifactId>
-			<version>0.7.0</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -142,7 +142,7 @@
 		<dependency>
 			<groupId>de.prozesskraft.commons</groupId>
 			<artifactId>avoge-commons</artifactId>
-			<version>0.3.0</version>
+			<version>0.4.0</version>
 		</dependency>
 	</dependencies>
 </project>
