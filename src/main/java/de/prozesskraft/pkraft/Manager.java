@@ -312,16 +312,19 @@ public class Manager
 				Process p3 = p2.readBinary();
 				System.err.println("debug: rereading instance done");
 				
-				// die groesse des binary-files festhalten
+				// 1) timeSerie loadAverage
+				double actLoadAverage = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
+				p3.getTimeSerieLoadAverage().addValue(String.valueOf(actLoadAverage));
+				
+				// 2) die groesse des binary-files festhalten
 				long fileSizeInKB = fileBinary.length() / 1024;
 				
 				System.err.println("debug: file size is now " + String.valueOf(fileSizeInKB) + " kB");
 				p3.getTimeSerieBinarySize().addValue(String.valueOf(fileSizeInKB));
-				System.err.println("debug: after the timeseries");
 				//p3.fileBinary.length() / 1024;
 				
 				// DEBUGGING
-				// die groesse der einzelnen steps festhalten
+				// 3) die groesse der einzelnen steps festhalten
 				String dieGroessenAlsString = "";
 				for(Step actStep : p3.getStep())
 				{
