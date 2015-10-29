@@ -637,6 +637,18 @@ public class PmodelPartUi1 extends ModelObject
 		{
 			log("info", "process binary file does exist: "+this.einstellungen.process.getInfilebinary());
 			p = this.einstellungen.getProcess().readBinary();
+
+			// refreshen aller evtl vorhandenen subprocess stati, da diese nicht direkt ueber die getStatus() funktion erneuert werden
+			try
+			{
+				p.refreshSubprocessStatus();
+			}
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				log("error", "failed to refresh status of subprocesses. " + e.getMessage());
+				e.printStackTrace();
+			}
 			inputFormat = "binary";
 		}
 		// wenn das xml-file existiert, dann soll das eingelesen werden
