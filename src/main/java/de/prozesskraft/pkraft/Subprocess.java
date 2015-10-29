@@ -27,6 +27,8 @@ implements Serializable
 	private int maxrun = 10000;
 
 	private String status = "waiting";	// waiting/finished/error
+
+	private boolean subprocessNeverStartet = true;
 	
 	ArrayList<Log> log = new ArrayList<Log>();
 
@@ -298,7 +300,8 @@ implements Serializable
 					// starten des prozesses
 					java.lang.Process sysproc = pb.start();
 	
-	
+					// flag markiert, dass dieser subprocess schon mal gestartet wurde
+					subprocessNeverStartet = false;
 					
 	//				alternativer aufruf
 	//				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
@@ -596,6 +599,11 @@ implements Serializable
 
 	void refreshStatus() throws IOException
 	{
+		if(this.subprocessNeverStartet)
+		{
+			return;
+		}
+		
 		// 1) alte methode: durch einlesen des prozessmodells
 		//    diese methode kommt wieder in Mode, falls es gewuenscht ist, einen ganzen prozessbaum aktuell zu halten
 		//    und dafuer langsamkeit in kauf nimmt
@@ -606,14 +614,12 @@ implements Serializable
 //		this.setLastTimeDelayedStatusSet(System.currentTimeMillis());
 //		log("info", "setting status to " + this.getStatus());
 
-		String status = "";
 		java.util.List<String> statusInhalt = Files.readAllLines(Paths.get(this.getParent().getAbsdir() + "/.status"), Charset.defaultCharset());
 		
 		if(statusInhalt.size() > 0)
 		{
-			status = statusInhalt.get(0);
-			log("info", "setting status to " + status);
-			this.setStatus(status);
+			this.setStatus(statusInhalt.get(0));
+			log("info", "setting status to " + this.status);
 		}
 	}
 	
