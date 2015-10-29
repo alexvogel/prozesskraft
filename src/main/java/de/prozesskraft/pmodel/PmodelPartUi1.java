@@ -646,7 +646,7 @@ public class PmodelPartUi1 extends ModelObject
 			catch (IOException e)
 			{
 				// TODO Auto-generated catch block
-				log("error", "failed to refresh status of subprocesses. " + e.getMessage());
+				log("warn", "failed to refresh status of min. one subprocesses. " + e.getMessage());
 				e.printStackTrace();
 			}
 			inputFormat = "binary";
