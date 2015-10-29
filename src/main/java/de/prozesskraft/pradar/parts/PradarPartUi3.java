@@ -1030,17 +1030,17 @@ public class PradarPartUi3 extends ModelObject
 					// creating and setting an arrow cursor
 					shell.setCursor(new Cursor(display, SWT.CURSOR_ARROW));
 				}
+
+				// daten und anzeige refreshen
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				refresh();
+				tree.refresh();
 			}
-			
-			// daten und anzeige refreshen
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			refresh();
-			tree.refresh();
 		}
 	};	
 
