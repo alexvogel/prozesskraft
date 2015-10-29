@@ -607,7 +607,7 @@ implements Serializable
 //		log("info", "setting status to " + this.getStatus());
 
 		String status = "";
-		java.util.List<String> statusInhalt = Files.readAllLines(Paths.get(this.getParent().getAbsdir() + "/.processStatus"), Charset.defaultCharset());
+		java.util.List<String> statusInhalt = Files.readAllLines(Paths.get(this.getParent().getAbsdir() + "/.status"), Charset.defaultCharset());
 		
 		if(statusInhalt.size() > 0)
 		{
