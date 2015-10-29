@@ -4,42 +4,10 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.awt.Toolkit;
-import java.awt.Image;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.io.IOException;
 
-
-
-
-
-
-
-
-//import java.io.InputStream;
-//
-import javax.xml.bind.JAXBException;
-
-
-
-
-
-
-
-
-//
-//import org.apache.commons.cli.CommandLine;
-//import org.apache.commons.cli.CommandLineParser;
-//import org.apache.commons.cli.GnuParser;
-//import org.apache.commons.cli.HelpFormatter;
-//import org.apache.commons.cli.Option;
-//import org.apache.commons.cli.OptionBuilder;
-//import org.apache.commons.cli.Options;
-//import org.apache.xerces.impl.xpath.regex.ParseException;
 import processing.core.*;
-import de.prozesskraft.jaxb.pkraft.File;
-import de.prozesskraft.pkraft.Process;
 import de.prozesskraft.pkraft.Step;
 
 public class PmodelViewPage extends PApplet
@@ -68,14 +36,9 @@ public class PmodelViewPage extends PApplet
     private int legendsize = (10);
     private String legend_processname = new String();
     private String legend_processlastrevision = new String();
-    private String legend_visualrefresh = new String();
     private String legend_processstatus = new String();
-    private String legend_framerate = new String();
     private int mybackground = 255;
-    private Map<String,String> statuscolors = new HashMap<String,String>();
-//	private boolean initial_resized = false;	// ohne erstmaligen resize stellt der renderer 'JAVA2D' den fensterinhalt nicht korrekt dar.
-//	public int width = 1200;
-//	public int height = 800;
+
 	public int framerate = 50;
 	float bezugsgroesse = (float) 1.0;
 	boolean saveActualPic = false;
@@ -90,11 +53,7 @@ public class PmodelViewPage extends PApplet
 
 	Float dampOverride = null;
     
-//    private int width = 600;
-//    private int height = 400;
-//	String textfont = new String("Univers.vlw");
-
-// die stepcircles, die startingpoints repraesentieren, werden nach einer kurzen wartezeit 'gepinned', d.h. ihre position nicht mehr neu bestimmt
+	// die stepcircles, die startingpoints repraesentieren, werden nach einer kurzen wartezeit 'gepinned', d.h. ihre position nicht mehr neu bestimmt
 	public int timetopin = 2;
 	
 //    private PApplet parent;
@@ -108,17 +67,6 @@ public class PmodelViewPage extends PApplet
 	{
 		this.einstellungen = new PmodelViewModel();
 	}
-	
-//	public PmodelViewPage(Process process)
-//	{
-//		this.einstellungen = new PmodelViewModel();
-//	}
-	
-//	public PmodelViewPage(PmodelPartUi1 parent, PmodelViewModel einstellungen)
-//	{
-//		this.einstellungen = einstellungen;
-//		this.parent = parent;
-//	}
 	
 	public PmodelViewPage(PmodelViewModel einstellungen)
 	{

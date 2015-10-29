@@ -17,17 +17,13 @@ public class PmodelViewStepSym
 	/*----------------------------
 	  structure
 	----------------------------*/
-//	private double maxspeed = 0;
 	private long nanoTime = System.nanoTime();
-	private Random generator = new Random();
 	private String name = "";
 	private int[] color = {255,255,255}; // (Gruen / Rot / Blau) nicht RGB!
 	private int radius = 40;
 	private float[] position = new float[3];
-//	private float[] textposition = {this.position[0] + (this.radius / 2) + this.textdistance, this.position[1] + (this.textsize / 2), this.position[2]};
 
 	private float[] speed = {0,0,0};
-//	private float maxspeed = 50;
 	private float mass = (float)1;
 	private float attraction = (float)5;
 	private float spring = 10;
@@ -37,10 +33,7 @@ public class PmodelViewStepSym
     private int strokethickness = 1;
 
 	private int textdistance = 2;
-//	private float[] textposition = new float[3];
 	private int[] textcolor = {50,50,50};
-//    private int textsize = (this.radius / 2);
-//    private boolean isastartingpoint = false;
     private boolean nochvorhanden = true;	// bei jedem durchlauf wird geprueft ob fuer den stepcircle noch ein step existiert.
    
     private String rank = "";

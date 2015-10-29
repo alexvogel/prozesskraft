@@ -171,8 +171,6 @@ public class SIInsightCreator
 		buttonFileBrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonFileBrowser.setToolTipText("show step-directory with a filebrowser");
 		buttonFileBrowser.addSelectionListener(listener_button_browse);
-		if(step.isRoot()) {buttonFileBrowser.setEnabled(false);}
-		else {buttonFileBrowser.setEnabled(true);}
 
 		Button buttonOpen = new Button(compositeAction, SWT.NONE);
 		buttonOpen.setText("open");
@@ -191,9 +189,9 @@ public class SIInsightCreator
 		Button buttonLog = new Button(compositeAction, SWT.NONE);
 		buttonLog.setText(".log");
 		buttonLog.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		buttonLog.setToolTipText("opens .log (contains stdout/stderr of work command) file of step with an editor");
+		buttonLog.setToolTipText("opens .log (contains stdout/stderr of work command) and .debug (contains internal logging) with an editor");
 		buttonLog.addSelectionListener(listener_button_log);
-		if(step.isRoot() || this.step.getType().equals("process"))
+		if(this.step.getType().equals("process"))
 		{
 			buttonLog.setEnabled(false);
 		}
@@ -231,7 +229,7 @@ public class SIInsightCreator
 		buttonKill.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonKill.setToolTipText("kill the program that has been started by this step");
 		buttonKill.addSelectionListener(listener_button_kill);
-		if(step.isRoot() || step.getSubprocess() != null) {buttonKill.setEnabled(false);}
+		if(step.getParent().getStatus().equals("waiting") || step.isRoot() || step.getSubprocess() != null) {buttonKill.setEnabled(false);}
 		else {buttonKill.setEnabled(true);}
 
 		Label labelDummy2 = new Label(compositeAction, SWT.NONE);

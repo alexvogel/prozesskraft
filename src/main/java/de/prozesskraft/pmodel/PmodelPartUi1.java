@@ -2,13 +2,9 @@ package de.prozesskraft.pmodel;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
-import java.awt.event.MouseWheelEvent;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,25 +24,15 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeanProperties;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.core.databinding.beans.PojoProperties;
 import org.eclipse.core.databinding.observable.ChangeEvent;
 import org.eclipse.core.databinding.observable.IChangeListener;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.list.IObservableList;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.core.databinding.validation.IValidator;
-import org.eclipse.core.databinding.validation.ValidationStatus;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
-import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.fieldassist.FieldDecoration;
-import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
-import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -55,7 +41,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseWheelListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
@@ -65,26 +50,17 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.ExpandBar;
-import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
-
-import com.license4j.License;
-import com.license4j.LicenseValidator;
 
 //import de.caegroup.pradar.Init;
 import de.prozesskraft.pkraft.Process;
@@ -104,15 +80,12 @@ public class PmodelPartUi1 extends ModelObject
 	private Scale scale_size;
 	private Scale scale_zoom;
 	private Spinner spinner_textsize;
-	private Spinner spinner_refreshinterval;
 
 	private Button button_fix;
 	private Button button_refresh;
 	private Button button_startmanager;
 	private Button button_stopmanager;
-	private Button button_stopAnimation;
-	private Button button_resumeAnimation;
-//	private Process process = new Process();
+
 	private String iniFile = null;
 	private static Ini ini = null;
 	private ArrayList<String> license_server_port_at_hostname = new ArrayList<String>();
@@ -130,7 +103,7 @@ public class PmodelPartUi1 extends ModelObject
 	SIInsightCreator sIInsightCreator = null;
 	
 	Composite processInsight = null;
-	Map<String,Composite> stepInsight = new HashMap();
+	Map<String,Composite> stepInsight = new HashMap<String,Composite>();
 	private Composite composite_131;
 	private Composite composite_132;
 
@@ -140,8 +113,6 @@ public class PmodelPartUi1 extends ModelObject
 
 	int logLineCount = 0;
 
-	private Thread animationThread = null;
-	
 	// wird pmodel innerhalb einer groesseren application geoeffnet, wird das beherbergende object hier abgelegt
 	private Object pkraft = null;
 
@@ -563,16 +534,6 @@ public class PmodelPartUi1 extends ModelObject
 		
 	}
 	
-	private static class ContentProvider implements IStructuredContentProvider {
-		public Object[] getElements(Object inputElement) {
-			return new Object[0];
-		}
-		public void dispose() {
-		}
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		}
-	}
-
 	public void applet_paint_with_new_visual()
 	{
 //		applet.setSizefaktor(einstellungen.getSize());
@@ -598,23 +559,6 @@ public class PmodelPartUi1 extends ModelObject
 	{
 //		table.setFocus();
 	}
-	
-//	IChangeListener listener_visual = new IChangeListener()
-//	{
-//		public void handleChange(ChangeEvent event)
-//		{
-////			System.out.println("Active ist im Filter (abgefragt aus dem listener heraus): "+filter.getActive());
-//			applet_paint_with_new_visual();
-//		}
-//	};
-	
-//	SelectionAdapter listener_refresh_button = new SelectionAdapter()
-//	{
-//		public void widgetSelected(SelectionEvent event)
-//		{
-//			refreshAppletAndUi();
-//		}
-//	};
 	
 	Listener listener_refresh_button = new Listener()
 	{

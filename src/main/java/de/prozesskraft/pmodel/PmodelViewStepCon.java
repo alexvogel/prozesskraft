@@ -1,11 +1,6 @@
 package de.prozesskraft.pmodel;
 
-//import java.io.*;
-//import java.util.*;
 import processing.core.*;
-//import de.caegroup.process.*;
-//import org.apache.solr.common.util.NamedList;
-import java.lang.Math;
 
 public class PmodelViewStepCon
 {
@@ -18,11 +13,6 @@ public class PmodelViewStepCon
 	private float thickness = 0;
 	private float[] positionfrom = new float[3];
 	private float[] positionto = new float[3];
-	private float[] positionarrowhead = new float[3];
-//	private float[] positionarrowarmleft = new float[3];
-//	private float[] positionarrowarmright = new float[3];
-	private float arrowangle = 30;
-	private float arrowarmlength = 10;
 	private double arrowpos = 0.50;
 	
 	private PmodelViewStepSym stepcirclefrom = new PmodelViewStepSym();
