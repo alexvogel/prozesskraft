@@ -1988,6 +1988,15 @@ implements Serializable
 	}
 
 	/**
+	 * @return
+	 * returns the canonical path of the statistics directory.
+	 */
+	public String getStatisticsdir()
+	{
+		return this.getRootdir()+"/statistics";
+	}
+
+	/**
 	 * @return the baseDir
 	 */
 	public String getBaseDir() {
