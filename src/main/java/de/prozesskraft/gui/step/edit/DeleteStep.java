@@ -174,18 +174,21 @@ public class DeleteStep
 		public void widgetSelected(SelectionEvent event)
 		{
 
-			// 1) in pradar loeschen
-			String call = ((SIInsightCreator)father).getFather().getIni().get("apps", "pradar-delete") + " -instance " + step.getParent().getInfilebinary(); 
-			((SIInsightCreator)father).getFather().log("info", "calling: "+call);
-			
-			try
+			// 1) falls der zu loeschende step einen subprocess enthaelt, soll dieser aus pradar geloescht werden
+			if(step.getSubprocess() != null)
 			{
-				java.lang.Process sysproc = Runtime.getRuntime().exec(call);
-			}
-			catch (IOException e)
-			{
-				((SIInsightCreator)father).getFather().log("error", e.getMessage());
-				return;
+				String call = ((SIInsightCreator)father).getFather().getIni().get("apps", "pradar-delete") + " -instance " + step.getAbsdir() + "/process.pmb"; 
+				((SIInsightCreator)father).getFather().log("info", "calling: "+call);
+
+				try
+				{
+					java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+				}
+				catch (IOException e)
+				{
+					((SIInsightCreator)father).getFather().log("error", e.getMessage());
+					return;
+				}
 			}
 
 			// 2) einen reset durchfuehren. damit werden Daten geloescht und alle downstream steps anstossen resettet.
