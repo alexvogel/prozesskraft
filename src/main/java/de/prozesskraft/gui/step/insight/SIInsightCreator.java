@@ -429,19 +429,27 @@ public class SIInsightCreator
 					
 					if(processBinaryFile.exists())
 					{
-						// Aufruf taetigen
-//						try
-//						{
-//							String aufruf = father.getIni().get("apps", "pmodel-gui")+" -instance "+processBinaryFile.getCanonicalPath();
-//							father.log("info", "opening subprocess of step "+step.getName()+" with call: "+aufruf);
-//							java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-//						}
-//						catch (IOException e)
-//						{
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-						openInstance(processBinaryFile.getAbsolutePath());
+						// ist das pmodel im kontext pkraft geoeffnet?, dann auch das neue pmodel im selben kontext oeffnen
+						if(father.getPkraft() != null)
+						{
+							openInstance(processBinaryFile.getAbsolutePath());
+						}
+						// ansonsten ein standalone pmodel oeffnen
+						else
+						{
+							// Aufruf taetigen
+							try
+							{
+								String aufruf = father.getIni().get("apps", "pmodel-gui")+" -instance "+processBinaryFile.getCanonicalPath();
+								father.log("info", "opening subprocess of step "+step.getName()+" with call: "+aufruf);
+								java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
+							}
+							catch (IOException e)
+							{
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
 					}
 					else
 					{
