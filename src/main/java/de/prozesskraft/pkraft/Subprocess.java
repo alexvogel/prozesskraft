@@ -157,7 +157,7 @@ implements Serializable
 		{
 			// den status des subprocesses feststellen
 			
-			this.getStatus();
+			this.refreshStatus();
 		}
 
 		// wenn schritt noch nicht gestartet wurde
