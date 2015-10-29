@@ -341,9 +341,6 @@ public class ResetStep
 				((SIInsightCreator)father).getFather().log("error", e.getMessage());
 			}
 			
-			// den gui update anstossen
-			((SIInsightCreator)father).getFather().refreshAppletAndUi();
-
 			// nachfragefenster schliessen
 			shell.dispose();
 		}

@@ -39,6 +39,7 @@ import de.prozesskraft.pkraft.Step;
 import de.prozesskraft.pkraft.Variable;
 import de.prozesskraft.pkraft.Process;
 import de.prozesskraft.gui.step.edit.CloneStep;
+import de.prozesskraft.gui.step.edit.DeleteStep;
 import de.prozesskraft.gui.step.edit.EditFile;
 import de.prozesskraft.gui.step.edit.EditVariable;
 import de.prozesskraft.gui.step.edit.ResetStep;
@@ -200,7 +201,21 @@ public class SIInsightCreator
 			buttonLog.setEnabled(true);
 		}
 
-		Label labelDummy1 = new Label(compositeAction, SWT.NONE);
+//		Label labelDummy1 = new Label(compositeAction, SWT.NONE);
+		Button buttonDelete = new Button(compositeAction, SWT.NONE);
+		buttonDelete.setText("delete");
+		buttonDelete.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		buttonDelete.setToolTipText("delete this step");
+		buttonDelete.addSelectionListener(listener_button_delete);
+		if(step.isAFannedMultistep() && !step.getParent().getStatus().equals("working"))
+		{
+			buttonDelete.setEnabled(true);
+		}
+		else
+		{
+			buttonDelete.setEnabled(false);
+		}
+
 //		Button buttonClone = new Button(compositeAction, SWT.NONE);
 //		buttonClone.setText("clone");
 //		buttonClone.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -577,10 +592,74 @@ public class SIInsightCreator
 		}
 	};
 
+	SelectionAdapter listener_button_delete = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			// die prozess daten aktualisieren
+			This.getFather().refreshAppletAndUi();
+
+			// aussteigen falls was net stimmt
+			if(step.getParent().getStatus().equals("rolling"))
+				//|| !step.isAFannedMultistep() || step.isAFannedMultistepLast())
+			{
+				Shell messageShell = new Shell();
+				MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_CANCEL | SWT.CANCEL);
+//				confirmation.setText("please confirm");
+				String message = "";
+				message += "you have to stop instance before resetting.\n";
+
+				confirmation.setMessage(message);
+
+				// open confirmation and wait for user selection
+				confirmation.open();
+//				System.out.println("returnCode is: "+returnCode);
+
+				messageShell.dispose();
+			}
+			else if(!step.isAFannedMultistep())
+			{
+				Shell messageShell = new Shell();
+				MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_CANCEL | SWT.CANCEL);
+//				confirmation.setText("please confirm");
+				String message = "";
+				message += "you only may delete multisteps\n";
+
+				confirmation.setMessage(message);
+
+				// open confirmation and wait for user selection
+				confirmation.open();
+				messageShell.dispose();
+			}
+			else if(step.isAFannedMultistepLast())
+			{
+				Shell messageShell = new Shell();
+				MessageBox confirmation = new MessageBox(messageShell, SWT.ICON_CANCEL | SWT.CANCEL);
+//				confirmation.setText("please confirm");
+				String message = "";
+				message += "you must not delete the last multisteps\n";
+
+				confirmation.setMessage(message);
+
+				// open confirmation and wait for user selection
+				confirmation.open();
+				messageShell.dispose();
+			}
+			else
+			{
+//				delete_execute();
+				new DeleteStep(shell, This, step);
+			}
+		}
+	};
+
 	SelectionAdapter listener_button_reset = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
+			// den gui update anstossen
+			This.getFather().refreshAppletAndUi();
+
 			if(step.getParent().getStatus().equals("rolling"))
 			{
 				reset_decline();
