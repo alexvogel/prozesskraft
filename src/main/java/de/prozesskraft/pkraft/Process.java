@@ -588,6 +588,21 @@ implements Serializable
 	}
 	
 	/**
+	 * triggers the refreshStatus of every present subprocess
+	 * @throws IOException 
+	 */
+	public void refreshSubprocessStatus() throws IOException
+	{
+		for(Step actStep : this.getStep())
+		{
+			if(actStep.getSubprocess() != null)
+			{
+				actStep.getSubprocess().refreshStatus();
+			}
+		}
+	}
+	
+	/**
 	 * generates a ArrayList that represents a graph in the format 'dot'
 	 * @return ArrayList<String>
 	 */

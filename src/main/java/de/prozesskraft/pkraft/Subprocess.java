@@ -26,9 +26,7 @@ implements Serializable
 	private String version = "noversion";
 	private int maxrun = 10000;
 
-//	private String status = "";	// waiting/finished/error/unknown
-	private String delayedStatus = "waiting";
-	private long LastTimeDelayedStatusSet = System.currentTimeMillis();
+	private String status = "waiting";	// waiting/finished/error
 	
 	ArrayList<Log> log = new ArrayList<Log>();
 
@@ -596,9 +594,8 @@ implements Serializable
 		return this.log;
 	}
 
-	private void renewDelayedStatus() throws IOException
+	void refreshStatus() throws IOException
 	{
-
 		// 1) alte methode: durch einlesen des prozessmodells
 		//    diese methode kommt wieder in Mode, falls es gewuenscht ist, einen ganzen prozessbaum aktuell zu halten
 		//    und dafuer langsamkeit in kauf nimmt
@@ -615,43 +612,27 @@ implements Serializable
 		if(statusInhalt.size() > 0)
 		{
 			status = statusInhalt.get(0);
+			log("info", "setting status to " + status);
+			this.setStatus(status);
 		}
-		else
-		{
-			status = "";
-		}
-		log("info", "setting status to " + status);
-		this.setDelayedStatus(status);
-		this.setLastTimeDelayedStatusSet(System.currentTimeMillis());
-
 	}
 	
 	/**
 	 * @return the status
 	 * @throws IOException 
 	 */
+	public void setStatus(String newStatus)
+	{
+		this.status = newStatus;
+	}
+
+	/**
+	 * @return the status
+	 * @throws IOException 
+	 */
 	public String getStatus()
 	{
-		if((System.currentTimeMillis() - this.getLastTimeDelayedStatusSet()) < 10000)
-		{
-			return this.getDelayedStatus();
-		}
-		// den eingebetteten process nach fehler abfragen und evtl. den status updaten
-		// dabei wird das feld status neu bestimmt
-		// das fuehrt zu einem einfrieren beim einladen in pmodel -> nicht weiter untersucht
-//		this.refreshProcess();
-		
-		// 2) neue methode: durch auswerten des .status files
-		else
-		{
-			try {
-				this.renewDelayedStatus();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return this.getDelayedStatus();
-		}
+		return this.status;
 	}
 
 	/**
@@ -729,32 +710,4 @@ implements Serializable
 		this.step = step;
 	}
 
-	/**
-	 * @return the delayedStatus
-	 */
-	public String getDelayedStatus() {
-		return delayedStatus;
-	}
-
-	/**
-	 * @param delayedStatus the delayedStatus to set
-	 */
-	public void setDelayedStatus(String delayedStatus) {
-		this.delayedStatus = delayedStatus;
-	}
-
-	/**
-	 * @return the lastTimeDelayedStatusSet
-	 */
-	public long getLastTimeDelayedStatusSet() {
-		return LastTimeDelayedStatusSet;
-	}
-
-	/**
-	 * @param lastTimeDelayedStatusSet the lastTimeDelayedStatusSet to set
-	 */
-	public void setLastTimeDelayedStatusSet(long lastTimeDelayedStatusSet) {
-		LastTimeDelayedStatusSet = lastTimeDelayedStatusSet;
-	}
-	
 }
