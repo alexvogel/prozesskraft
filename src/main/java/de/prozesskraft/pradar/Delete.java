@@ -1,9 +1,5 @@
 package de.prozesskraft.pradar;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -13,7 +9,6 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.sql.SQLException;
 import java.util.*;
 
 import org.apache.commons.cli.CommandLine;
@@ -27,14 +22,13 @@ import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
 //import org.apache.xerces.impl.xpath.regex.ParseException;
 
-import de.prozesskraft.pkraft.Log;
 import de.prozesskraft.pkraft.Process;
 import de.prozesskraft.pradar.Entity;
 import de.prozesskraft.commons.WhereAmI;
 
 //import de.prozesskraft.pradar.*;
 
-public class Attend
+public class Delete
 {
 
 	/*----------------------------
@@ -52,7 +46,7 @@ public class Attend
 		/*----------------------------
 		  get options from ini-file
 		----------------------------*/
-		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Attend.class) + "/" + "../etc/pradar-attend.ini");
+		java.io.File inifile = new java.io.File(WhereAmI.getInstallDirectoryAbsolutePath(Delete.class) + "/" + "../etc/pradar-delete.ini");
 		
 		ArrayList<String> pradar_server_list = new ArrayList<String>();
 		
@@ -103,11 +97,11 @@ public class Attend
 		  create options object
 		----------------------------*/
 		Options options = new Options();
-		
+
 		options.addOption( help );
 		options.addOption( v );
 		options.addOption( oinstance );
-		
+
 		/*----------------------------
 		  create the parser
 		----------------------------*/
@@ -129,7 +123,7 @@ public class Attend
 		if ( commandline.hasOption("help"))
 		{
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("attend", options);
+			formatter.printHelp("delete", options);
 			System.exit(0);
 		}
 		
@@ -140,7 +134,7 @@ public class Attend
 			System.out.println("date:    [% date %]");
 			System.exit(0);
 		}
-		
+
 		/*----------------------------
 		  ueberpruefen ob eine schlechte kombination von parametern angegeben wurde
 		----------------------------*/
@@ -154,7 +148,7 @@ public class Attend
 		  die eigentliche business logic
 		----------------------------*/
 		
-		// fuer alle angegebenen instanzen einen attend durchfuehren
+		// fuer alle angegebenen instanzen einen delete durchfuehren
 		for(String pathProcessBinary : commandline.getOptionValues("instance"))
 		{
 			// ist die datei vorhanden?
@@ -164,38 +158,13 @@ public class Attend
 				System.err.println("error: process instance file does not exist: " + pathProcessBinary);
 				exiter();
 			}
-	
+
 			// instanz einlesen
 			Process p1 = new Process();
 			p1.setInfilebinary(fileProcessBinary.getAbsolutePath());
 			Process process = p1.readBinary();
 			process.setOutfilebinary(fileProcessBinary.getAbsolutePath());
-	
-			// den status evtl. vorhandener subprocesses refreshen
-			try {
-				process.refreshSubprocessStatus();
-			} catch (IOException e2) {
-				// TODO Auto-generated catch block
-				System.err.println("error: could not refresh status of subprocesses. " + e2.getMessage());
-				e2.printStackTrace();
-			}
-			
-			// 1) .status file schreiben
-			// Filewriter initialisieren
-			FileWriter logWriter;
-			try
-			{
-				logWriter = new FileWriter(process.getRootdir() + "/.status", false);
-				logWriter.write(process.getStatus());
-				logWriter.close();
-			}
-			catch (IOException e1)
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				System.err.println("error: cannot update .status file " + process.getRootdir() + "/.status");
-			}
-			
+
 			// 2) daten einsammeln und an den pradarserver senden
 			// ein pradar entity erstellen
 			Entity entity = new Entity();
@@ -206,7 +175,7 @@ public class Attend
 			entity.setVersion(process.getVersion());
 			entity.setId2(process.getId2());
 			entity.setParentid(process.getParentid());
-	
+
 			// setzen des hosts vom system
 			try
 			{
@@ -217,43 +186,11 @@ public class Attend
 				// mache nichts, dann greift der default 'HAL'
 			}
 	
-			// die zeiten aus dem process setzen
-			entity.setCheckin(process.getTimeOfProcessCreated());
-			entity.setCheckout(process.getTimeOfProcessFinishedOrError());
-	
 			// die resource setzen
 			entity.setResource(process.getRootdir() + "/process.pmb");
 	
 			// setzen des user vom system
 			entity.setUser(System.getProperty("user.name"));
-	
-			// setzen von active auf 'true'
-			if(process.getStatus().equals("working"))
-			{
-				entity.setActive("true");
-			}
-			else
-			{
-				entity.setActive("false");
-			}
-	
-			// stepcounts setzen
-			entity.setStepcount("" + process.getStep().size());
-			entity.setStepcountcompleted("" + process.getStepFinishedOrCanceled().size());
-	
-			// exitcode setzen
-			if(process.getStatus().equals("finished"))
-			{
-				entity.setExitcode("0");
-			}
-			else if(process.getStatus().equals("working") || process.getStatus().equals("waiting") || process.getStatus().equals("paused"))
-			{
-				// belassen bei ""
-			}
-			else
-			{
-				entity.setExitcode(process.getStatus());
-			}
 	
 			// debugging
 	//		entity.print();
@@ -283,13 +220,11 @@ public class Attend
 					ObjectInputStream  objectIn  = new ObjectInputStream(in);
 					
 					// Objekte zum server uebertragen
-					objectOut.writeObject("attend");
+					objectOut.writeObject("delete");
 					objectOut.writeObject(entity);
 	
 					// nachricht wurde erfolgreich an server gesendet --> schleife beenden
 					pradar_server_not_found = false;
-					
-					System.out.println("<id>"+entity.getId()+"<id>");
 				}
 				catch (UnknownHostException e)
 				{

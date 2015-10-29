@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.prozesskraft.pradar.Attend"
+MAINCLASS="de.prozesskraft.pradar.Delete"
 BASEDIR=$(dirname $0)
 
 # wenn eine eigene javainstallation vorhanden ist, soll diese verwendet werden

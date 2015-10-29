@@ -1,6 +1,6 @@
 #!/bin/sh
 
-MAINCLASS="de.prozesskraft.pradar.Checkin"
+MAINCLASS="de.prozesskraft.pradar.Attend"
 BASEDIR=$(dirname $0)
 
 # wenn eine eigene javainstallation vorhanden ist, soll diese verwendet werden

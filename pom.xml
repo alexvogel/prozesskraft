@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.prozesskraft.pradar</groupId>
-	<artifactId>pradar-attend</artifactId>
+	<artifactId>pradar-delete</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
-	<name>pradar-attend</name>
+	<name>pradar-delete</name>
 	<url>http://maven.apache.org</url>
 	<build>
 
@@ -57,7 +57,7 @@
 						<configuration>
 							<archive>
 								<manifest>
-									<mainClass>de.prozesskraft.pradar.Attend</mainClass>
+									<mainClass>de.prozesskraft.pradar.Delete</mainClass>
 								</manifest>
 							</archive>
 							<outputDirectory>${project.build.directory}</outputDirectory>
@@ -86,7 +86,7 @@
 					<injar>${project.name}-${project.version}.jar</injar>
 					<outjar>${project.name}-${project.version}.jar</outjar>
 					<options>
-						<option>-keep public class de.prozesskraft.pradar.Attend { *; }</option>
+						<option>-keep public class de.prozesskraft.pradar.Delete { *; }</option>
 					</options>
 					<libs>
 						<lib>${java.home}/lib/rt.jar</lib>
