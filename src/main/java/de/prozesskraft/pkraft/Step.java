@@ -2621,6 +2621,42 @@ implements Serializable, Cloneable
 		}
 	}
 	
+	/**
+	 * is this a fanned multistep?
+	 * and is it the only one?
+	 * both yes? -> then true
+	 * @return
+	 */
+	public boolean isAFannedMultistepLast()
+	{
+		Pattern p = Pattern.compile("^([^@]+)@.+$");
+		Matcher m = p.matcher(this.getName());
+
+		if(m.matches())
+		{
+			// alle verfuegbaren steps durchgehen, falls es noch einen gibt mit dem gleichen basename -> return false
+			for(Step actStep : this.getParent().getStep())
+			{
+				if(!actStep.equals(this))
+				{
+					Matcher m2 = p.matcher(actStep.getName());
+					if(m.group(1).equals(m2.group(1)))
+					{
+						return false;
+					}
+				}
+			}
+			
+			// gab keinen mit gleichem namen -> return true
+			return true;
+		}
+		// kein fanned multistep -> return false
+		else
+		{
+			return false;
+		}
+	}
+	
 	public ArrayList<Log> getLog()
 	{
 		return this.log;
