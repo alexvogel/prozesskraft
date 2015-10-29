@@ -91,9 +91,9 @@ public class PmodelViewPage extends PApplet
     	textFont(font, 12);
 //    	Image icon = Toolkit.getDefaultToolkit().getImage(PmodelViewPage.class.getClassLoader().getResource("process.png"));
 		textSize(15);
-		size(this.einstellungen.getWidth(), this.einstellungen.getHeight(), JAVA2D);
+//		size(this.einstellungen.getWidth(), this.einstellungen.getHeight(), JAVA2D);
 //		size(this.einstellungen.getWidth(), this.einstellungen.getHeight(), OPENGL);
-//		size(this.einstellungen.getWidth(), this.einstellungen.getHeight(), P2D);
+		size(this.einstellungen.getWidth(), this.einstellungen.getHeight(), P2D);
 //  	size(this.width, this.height, OPENGL);
 //    	size(this.width, this.height, P2D);
     	background(this.mybackground);
