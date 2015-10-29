@@ -1,0 +1,227 @@
+Return-Path: <support@license4j.com>
+Received: from mail-wm0-f41.google.com ([74.125.82.41]) by mx.kundenserver.de
+ (mxeue004) with ESMTPS (Nemesis) id 0LsJw4-1acD0c3gHw-0120XY for
+ <alexander.vogel@caegroup.de>; Thu, 29 Oct 2015 12:27:30 +0100
+Received: by wmll128 with SMTP id l128so22981451wml.0
+        for <alexander.vogel@caegroup.de>; Thu, 29 Oct 2015 04:27:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=license4j_com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=uAV4y7AVcLZub02X4B6JdqSjy0ukgEdhmFZcetHLexY=;
+        b=KDg251SeFEcTjKRcIzp9o4iVrpUYxpmQ7MSt7sFzm/mglCBSIfGrQx5d1x2nnBCjke
+         yDpek33Fb0tLND817z+AmWY4Tzvk9x9g/nmrKRNiZsFlB+UpBNC15o6GqgSndh94i7eb
+         bFKRoewlbXs3CAttKWUoXfldXW1Dasfqf3Vc1iYLIMPCuOuaD0c866k/IWvFGnQ4hgax
+         TMmDztRTGMvviOL2J/JCLep3nrmhOm5e+rKQoX5OHYQuOXBLHkmZrkgeQg0LWUGqhlKG
+         oGQz4zvTC1rMzFPrWqjDhL/1jmz4BL40uYcEE4Ckns7dPf/brB3loIXEfr4u7sAyqcmC
+         eYKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20130820;
+        h=x-gm-message-state:mime-version:in-reply-to:references:date
+         :message-id:subject:from:to:content-type;
+        bh=uAV4y7AVcLZub02X4B6JdqSjy0ukgEdhmFZcetHLexY=;
+        b=PN3nybKF32j8c0Qv0AMHslVUpMZ+2tjnRr0JeDlc6z9QizJK1kcmzC6KV6V34nh7j+
+         JiRRuMbFGmoL9hSsPI0MCyIODua7XzbR26+wAgzPzd+jrTsvsuxMGhRLFhUWitBV6744
+         1NeyZ6/wOguBn//85tyW02zGUnwRx2gIa+xaabZwdLnZL01n+2zE/jPvNEKSnbzLHya1
+         B8QclpeUzDnVWdtdeiAhhLefwbOe1VjlmE97u15VGy25cJWHOGh/w8enDqQ7TyXSNZ+9
+         oz0POrPlhdE11Z5UzZKIYijATWVyXYqWhp8SrULz1UcPZsZdRoysZkrpcP6j9gMy1Cff
+         dpFA==
+X-Gm-Message-State: ALoCoQlXwZJzA4IEGYiSynNqIXXz78enx4xbQXbhX4+MMl2+UPE5Dfpoi/sX7frNvKlmEX2GuVXG
+MIME-Version: 1.0
+X-Received: by 10.28.10.13 with SMTP id 13mr3176272wmk.30.1446118050324; Thu,
+ 29 Oct 2015 04:27:30 -0700 (PDT)
+Received: by 10.28.12.137 with HTTP; Thu, 29 Oct 2015 04:27:30 -0700 (PDT)
+X-Originating-IP: [176.40.162.6]
+In-Reply-To: <005901d1122e$f36e9040$da4bb0c0$@caegroup.de>
+References: <005901d1122e$f36e9040$da4bb0c0$@caegroup.de>
+Date: Thu, 29 Oct 2015 13:27:30 +0200
+Message-ID: <CAKL4cA-mE5Pj8y-7gZOXU74WddwdA7htOD7mSxybkMOW8Az2gQ@mail.gmail.com>
+Subject: Re: derby.log full of stackTraces
+From: License4J Support <support@license4j.com>
+To: Alexander Vogel <alexander.vogel@caegroup.de>
+Content-Type: multipart/alternative; boundary=001a11444b38b1a8be05233c980f
+Envelope-To: <alexander.vogel@caegroup.de>
+X-UI-Filterresults: notjunk:1;V01:K0:+Ta+AFLI+70=:4H4/KU71QCjB7ooDZWpU2QVgK6
+ ZYN2/V+1cDx/Yw5/VkQKDLS5cQRCKBKGTS2+xZyA7dfVci+fvlaFnyygC8eknj8w42iTGvy8Y
+ zmYr+5yjHzysN7GaC5b9+q6ksTF00H4qEk1M0KVwQG3mCxQXwLmxUvitzyfkQQJqQWNGjGndD
+ yH5egJUVmBM4+gEPAbo4Ys3wI+jJE+a3iUaW1qZtC0pODhfQA8dKtZ5Gx/EDroJzNG0CsI1/U
+ iYd6eng70tbPzFtwdoAtXwzBaUZicNqZeWTPRxx1F1P0diGL62n3b8D9q6jriO41Bkv/hFMQd
+ ZZwAf5cUwM+6o9/e9ma2FRvy5mapk6jpTbJejI1ppuK692e+x0i75uwwpd115/LZ6W2DDoVON
+ ymW/1EO/iKVxedgq4jaZUF7x2cie8ADfvTNSvXOx/H0RrZ0c67vWYA09hxswAdWc5MLHDUdQY
+ sNbB0ucyhuk4deYfkd1KPepE40Iqx6h2HG2OQSolavFP/lzhF30ih8+ytHnMKLuh406Lmm5w0
+ eMPiCsUmRjvDrTejbMVXcDA0Rt+xFyJCLqFvsmOi7EfEGmtocnUvuKUUiSoeHOSizzESplE5H
+ GAGT9E9mFUBEJo330W3MYa5p+fS9P9HMSG4COYfACqypXpBe7hQFqxDQDqC7rhzB/HkXVwZ0x
+ Qerq/2szBDf3DwvOzhmpge12W67kavHNwxEUziJhST1WcceMuKxESb9eGaCuc0aVR/0/CN3Hl
+ i7hXxI4TwkxEIFpqe4Z8hTzFnOZlpwDNglGy2UX94SGNH/bJTj8/QQiX7EcPGk4CDRaomdcQF
+ m1B4FrTotoAajymHuaeqK/g6/FfU2Mjxs3azpe2ZdNRr8VaET6q3WaYgjB6qklNMwfkpP9NA4
+ ZN5YHJCCW0l6jSiTCiTwMaDLgN4o5iUzehNnh9fzftiPE6XNOuvdtzb7pvdBjfVTRIv69H5Ac
+ cdeEH4/fOj1jV8Cnpb9YmjaGlyXd9S5VMWnX+lCGSbq6AKQNVCnxU1g80vghsloFljJz1PjyK
+ +MqJ9hpEc9NhnhW0pOZlhtki0t9MGN4n29YK6QCyD+qC2FFTJKfiSO8ygwOyXT4SE5e6rpDi9
+ ZH18L+LoT4eVlgzvQu1ZlTjN6xmkg0JPu5HAxAZdogkuPrI4f5cklFWylIAdGovvX0BLGHvLu
+ HLCGJAxN6kzlGZbn0945Dab83a2Am0tgl6qm27AV2IY+e4JKBGRtB6mTWqOFzDM2U=
+
+--001a11444b38b1a8be05233c980f
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+It throws error because it cannot open database due to a changed hardware
+ID (hostname, Ethernet etc). We were using hardwareIDs as local derby
+encryption password until version 4.5.4.
+
+If you don't use =E2=80=8Blicense statistics you can safely delete (or rena=
+me)
+*/net/nv01500202/mnt_share/f00146/t001644/SNK/qxb0117/install/license4j-ser=
+ver/4.5.2/bin/config/configdb100*
+folder (server should be stopped to delete). IT will create a new database
+when started.
+
+=E2=80=8BIn the latest version (4.5.4), it does not use hardwareIDs as pass=
+word and
+also auto-creates new database when it cannot opened.=E2=80=8B
+
+
+Regards,
+
+LICENSE4J Support
+support@license4j.com <myilmaz@license4j.com>
+
+*[ www.license4j.com <http://www.license4j.com> - Software Licensing
+Solutions ]*
+
+
+On Thu, Oct 29, 2015 at 11:48 AM, Alexander Vogel <
+alexander.vogel@caegroup.de> wrote:
+
+> Hello license4j-Support,
+>
+>
+>
+> I am using License4j Version 4.5.2.
+>
+>
+>
+> The License-Server I installed throws an Exception every 2 seconds and
+> writes the stackTrace to the derby.log.
+>
+> I restart the Server every Night, but over the day the file becomes very
+> big (10h =3D> 400MB).
+>
+>
+>
+> What can I do about it?
+>
+>
+>
+> The file attached contains the first lines of this derby.log.
+>
+>
+>
+> Thank You
+>
+> Bye
+>
+> Alex
+>
+> --
+>
+> Dipl.-Ing.
+> Alexander Vogel
+>
+> Automatisierung CAE-Prozesse
+>
+> Beratung und Ausf=C3=BChrung
+>
+>
+> caegroup Ingenieure Hauck & Vogel Partnerschaft
+>
+> Frankfurter Ring 193a
+> 80807 M=C3=BCnchen
+>
+>
+> Telefon  +49 (0)89 53 88 74-75
+> Telefax   +49 (0)89 53 88 74-10
+> Mobil      +49 (0)171 42 777 11
+>
+> E-Mail: Alexander.Vogel@caegroup.de
+>
+> PartG | Sitz: M=C3=BCnchen | Registergericht: Amtsgericht M=C3=BCnchen | =
+PR 1010
+>
+>
+>
+
+--001a11444b38b1a8be05233c980f
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-family:verdana,=
+sans-serif">Hello,</div><div class=3D"gmail_default" style=3D"font-family:v=
+erdana,sans-serif"><br></div><div class=3D"gmail_default" style=3D"font-fam=
+ily:verdana,sans-serif">It throws error because it cannot open database due=
+ to a changed hardware ID (hostname, Ethernet etc). We were using hardwareI=
+Ds as local derby encryption password until version 4.5.4. </div><div class=
+=3D"gmail_default" style=3D"font-family:verdana,sans-serif"><br></div><div =
+class=3D"gmail_default" style=3D"font-family:verdana,sans-serif">If you don=
+&#39;t use =E2=80=8Blicense statistics you can safely delete (or rename) <e=
+m>/net/nv01500202/mnt_share/f00146/t001644/SNK/qxb0117/install/license4j-se=
+rver/4.5.2/bin/config/configdb100</em> folder (server should be stopped to =
+delete). IT will create a new database when started.</div><div class=3D"gma=
+il_extra"><br></div><div class=3D"gmail_extra"><div class=3D"gmail_default"=
+ style=3D"font-family:verdana,sans-serif">=E2=80=8BIn the latest version (4=
+.5.4), it does not use hardwareIDs as password and also auto-creates new da=
+tabase when it cannot opened.=E2=80=8B</div><br clear=3D"all"><div><div cla=
+ss=3D"gmail_signature"><div dir=3D"ltr"><div><br></div><div><font face=3D"v=
+erdana,sans-serif">Regards,</font></div><div><font face=3D"Verdana"><br></f=
+ont></div><div><font face=3D"Verdana">LICENSE4J Support</font></div><div><f=
+ont face=3D"Verdana"><a href=3D"mailto:myilmaz@license4j.com" target=3D"_bl=
+ank">support@license4j.com</a></font></div><div><font face=3D"Verdana"><br>=
+</font></div><div><strong><font size=3D"1"><font face=3D"Verdana">[ </font>=
+<font face=3D"Verdana"><a href=3D"http://www.license4j.com" target=3D"_blan=
+k">www.license4j.com</a> - Software Licensing Solutions ]</font></font></st=
+rong></div><div><font face=3D"Verdana"><br></font></div></div></div></div>
+<br><div class=3D"gmail_quote">On Thu, Oct 29, 2015 at 11:48 AM, Alexander =
+Vogel <span dir=3D"ltr">&lt;<a href=3D"mailto:alexander.vogel@caegroup.de" =
+target=3D"_blank">alexander.vogel@caegroup.de</a>&gt;</span> wrote:<br><blo=
+ckquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;padding-lef=
+t:1ex;border-left-color:rgb(204,204,204);border-left-width:1px;border-left-=
+style:solid"><div lang=3D"DE" vlink=3D"#954F72" link=3D"#0563C1"><div><p cl=
+ass=3D"MsoNormal">Hello license4j-Support,<u></u><u></u></p><p class=3D"Mso=
+Normal"><u></u>=C2=A0<u></u></p><p class=3D"MsoNormal"><span lang=3D"EN-US"=
+>I am using License4j Version 4.5.2.<u></u><u></u></span></p><p class=3D"Ms=
+oNormal"><span lang=3D"EN-US"><u></u>=C2=A0<u></u></span></p><p class=3D"Ms=
+oNormal"><span lang=3D"EN-US">The License-Server I installed throws an Exce=
+ption every 2 seconds and writes the stackTrace to the derby.log.<u></u><u>=
+</u></span></p><p class=3D"MsoNormal"><span lang=3D"EN-US">I restart the Se=
+rver every Night, but over the day the file becomes very big (10h =3D&gt; 4=
+00MB).<u></u><u></u></span></p><p class=3D"MsoNormal"><span lang=3D"EN-US">=
+<u></u>=C2=A0<u></u></span></p><p class=3D"MsoNormal"><span lang=3D"EN-US">=
+What can I do about it?<u></u><u></u></span></p><p class=3D"MsoNormal"><spa=
+n lang=3D"EN-US"><u></u>=C2=A0<u></u></span></p><p class=3D"MsoNormal"><spa=
+n lang=3D"EN-US">The file attached contains the first lines of this derby.l=
+og.<u></u><u></u></span></p><p class=3D"MsoNormal"><span lang=3D"EN-US"><u>=
+</u>=C2=A0<u></u></span></p><p class=3D"MsoNormal"><span lang=3D"EN-US">Tha=
+nk You<u></u><u></u></span></p><p class=3D"MsoNormal"><span lang=3D"EN-US">=
+Bye<u></u><u></u></span></p><p class=3D"MsoNormal"><span lang=3D"EN-US">Ale=
+x<u></u><u></u></span></p><p class=3D"MsoNormal"><span>--<u></u><u></u></sp=
+an></p><p class=3D"MsoNormal"><span>Dipl.-Ing.<br>Alexander Vogel<br><br><u=
+></u><u></u></span></p><p class=3D"MsoNormal"><span>Automatisierung CAE-Pro=
+zesse<u></u><u></u></span></p><p class=3D"MsoNormal"><span>Beratung und Aus=
+f=C3=BChrung<u></u><u></u></span></p><p class=3D"MsoNormal"><span><br>caegr=
+oup Ingenieure Hauck &amp; Vogel Partnerschaft</span><span><u></u><u></u></=
+span></p><p class=3D"MsoNormal"><span>Frankfurter Ring 193a<br>80807 M=C3=
+=BCnchen<u></u><u></u></span></p><p class=3D"MsoNormal"><span><br>Telefon=
+=C2=A0=C2=A0<a href=3D"tel:%2B49%20%280%2989%2053%2088%2074-75" target=3D"_=
+blank" value=3D"+498953887475">+49 (0)89 53 88 74-75</a><br>Telefax=C2=A0=
+=C2=A0=C2=A0<a href=3D"tel:%2B49%20%280%2989%2053%2088%2074-10" target=3D"_=
+blank" value=3D"+498953887410">+49 (0)89 53 88 74-10</a><br>Mobil=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0<a href=3D"tel:%2B49%20%280%29171%2042%20777%201=
+1" target=3D"_blank" value=3D"+491714277711">+49 (0)171 42 777 11</a><br><b=
+r>E-Mail:=C2=A0<a href=3D"mailto:Alexander.Vogel@caegroup.de" target=3D"_bl=
+ank">Alexander.Vogel@caegroup.de</a><br><br>PartG | Sitz: M=C3=BCnchen | Re=
+gistergericht: Amtsgericht M=C3=BCnchen | PR 1010<u></u><u></u></span></p><=
+p class=3D"MsoNormal"><u></u>=C2=A0<u></u></p></div></div></blockquote></di=
+v><br></div></div>
+
+--001a11444b38b1a8be05233c980f--
