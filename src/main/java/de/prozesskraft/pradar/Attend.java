@@ -171,6 +171,15 @@ public class Attend
 			Process process = p1.readBinary();
 			process.setOutfilebinary(fileProcessBinary.getAbsolutePath());
 	
+			// den status evtl. vorhandener subprocesses refreshen
+			try {
+				process.refreshSubprocessStatus();
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				System.err.println("error: could not refresh status of subprocesses. " + e2.getMessage());
+				e2.printStackTrace();
+			}
+			
 			// 1) .status file schreiben
 			// Filewriter initialisieren
 			FileWriter logWriter;
@@ -187,6 +196,7 @@ public class Attend
 				System.err.println("error: cannot update .status file " + process.getRootdir() + "/.status");
 			}
 			
+			// 2) daten einsammeln und an den pradarserver senden
 			// ein pradar entity erstellen
 			Entity entity = new Entity();
 	
