@@ -2640,9 +2640,12 @@ implements Serializable, Cloneable
 				if(!actStep.equals(this))
 				{
 					Matcher m2 = p.matcher(actStep.getName());
-					if(m.group(1).equals(m2.group(1)))
+					if(m2.matches())
 					{
-						return false;
+						if(m.group(1).equals(m2.group(1)))
+						{
+							return false;
+						}
 					}
 				}
 			}
