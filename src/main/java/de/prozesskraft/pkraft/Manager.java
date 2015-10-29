@@ -563,9 +563,9 @@ public class Manager
 		// die timeserie(n) rausschreiben
 		try
 		{
-			process.getTimeSerieLoadAverage().writeFile(process.getRootdir() + "/.serieLoadAverage.txt");
-			process.getTimeSerieBinarySize().writeFile(process.getRootdir() + "/.serieBinarySizeInKB.txt");
-			process.getTimeSerieStepSize().writeFile(process.getRootdir() + "/.serieStepSize.txt");
+			process.getTimeSerieLoadAverage().writeFile(process.getStatisticsdir() + "/.serieLoadAverage.txt");
+			process.getTimeSerieBinarySize().writeFile(process.getStatisticsdir() + "/.serieBinarySizeInKB.txt");
+			process.getTimeSerieStepSize().writeFile(process.getStatisticsdir() + "/.serieStepSize.txt");
 		}
 		catch (FileNotFoundException e)
 		{
