@@ -35,6 +35,7 @@ implements Serializable
 
 	private String status = "waiting";	// waiting/initializing/finished/error
 
+	// don't clone parent when you clone this
 	private Step parent = null;
 	/*----------------------------
 	  constructors

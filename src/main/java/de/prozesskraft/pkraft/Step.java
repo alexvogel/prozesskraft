@@ -129,7 +129,6 @@ implements Serializable, Cloneable
 	public Step clone()
 	{
 		Step newStep = new Step();
-		newStep.setParent(this.getParent());
 		newStep.setName(this.getName());
 		newStep.setClip(this.getClip());
 		newStep.setType(this.getType());
@@ -150,10 +149,12 @@ implements Serializable, Cloneable
 		if(this.getWork() != null)
 		{
 			newStep.setWork(this.getWork().clone());
+			newStep.getWork().setParent(this);
 		}
 		if(this.getSubprocess() != null)
 		{
 			newStep.setSubprocess(this.getSubprocess().clone());
+			newStep.getSubprocess().setParent(this);
 		}
 		for(Commit actCommit : this.getCommit())
 		{
