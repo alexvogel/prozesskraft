@@ -564,16 +564,16 @@ public class Manager
 		try
 		{
 			// statistics verzeichnis erstellen, falls noch nicht existent
-			java.io.File statisticsDirectory = new java.io.File(process.getStatisticsdir());
+			java.io.File statisticsDirectory = new java.io.File(process.getStatisticDir());
 			if(!statisticsDirectory.exists())
 			{
 				statisticsDirectory.mkdirs();
 			}
 			
 			// die statisticsfiles rausschreiben
-			process.getTimeSerieLoadAverage().writeFile(process.getStatisticsdir() + "/.serieLoadAverage.txt");
-			process.getTimeSerieBinarySize().writeFile(process.getStatisticsdir() + "/.serieBinarySizeInKB.txt");
-			process.getTimeSerieStepSize().writeFile(process.getStatisticsdir() + "/.serieStepSize.txt");
+			process.getTimeSerieLoadAverage().writeFile(process.getStatisticDir() + "/serieLoadAverage.txt");
+			process.getTimeSerieBinarySize().writeFile(process.getStatisticDir() + "/serieBinarySizeInKB.txt");
+			process.getTimeSerieStepSize().writeFile(process.getStatisticDir() + "/serieStepSize.txt");
 		}
 		catch (FileNotFoundException e)
 		{
