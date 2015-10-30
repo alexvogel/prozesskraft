@@ -458,7 +458,7 @@ public class Manager
 					e.printStackTrace();
 
 					// ausgabe in das debugLogFile
-					exiterException(actualProcess.getOutfilebinary(), e.getMessage());
+					exiterException(actualProcess.getOutfilebinary(), e);
 				}
 			}
 		}
@@ -471,7 +471,7 @@ public class Manager
 				e.printStackTrace();
 	
 				// ausgabe in das debugLogFile
-				exiterException(actualProcess.getOutfilebinary(), e.getMessage());
+				exiterException(actualProcess.getOutfilebinary(), e);
 
 			}
 
@@ -491,7 +491,7 @@ public class Manager
 			e.printStackTrace();
 			
 			// ausgabe in das debugLogFile
-			exiterException(pathToInstance, e.getMessage());
+			exiterException(pathToInstance, e);
 		}
 	}
 	
@@ -581,12 +581,12 @@ public class Manager
 			e.printStackTrace();
 			
 			// ausgabe in das debugLogFile
-			exiterException(process.getOutfilebinary(), e.getMessage());
+			exiterException(process.getOutfilebinary(), e);
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			// ausgabe in das debugLogFile
-			exiterException(process.getOutfilebinary(), e.getMessage());
+			exiterException(process.getOutfilebinary(), e);
 		}
 		
 		// debugging
@@ -599,13 +599,14 @@ public class Manager
 		System.exit(1);
 	}
 
-	private static void exiterException(String pathToInstance, String eMessage)
+	private static void exiterException(String pathToInstance, Exception e)
 	{
 		try
 		{
 			java.io.FileWriter writer = new FileWriter(pathToInstance + ".pkraft-manager.stacktrace", true);
 			writer.write(new Timestamp(System.currentTimeMillis()).toString() + "\n");
-			writer.write(eMessage + "\n");
+			writer.write(e.getMessage() + "\n");
+			writer.write(e.getStackTrace() + "\n");
 			writer.write("--------------" + "\n");
 			writer.close();
 		}
