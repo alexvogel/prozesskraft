@@ -625,6 +625,7 @@ implements Serializable
 		}
 		catch (ExceptionInInitializerError e)
 		{
+			System.err.println("trying to write file: " + this.getParent().getAbsdir() + "/.status");
 			e.printStackTrace();
 		}
 		
