@@ -919,6 +919,7 @@ implements Serializable, Cloneable
 	 */
 	public void doIt(String aufrufProcessSyscall, String aufrufProcessStartinstance, String domainInstallationDirectory)
 	{
+		
 		if(this.getStatus().equals("finished"))
 		{
 			return;

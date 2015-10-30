@@ -1496,23 +1496,7 @@ implements Serializable
 					actStep.doIt(aufrufProcessSyscall, aufrufProcessManager, domainInstallationDirectory);
 				}
 			}
-			
-//			// sollen steps aus dem prozess rausfliegen
-//			for(Step actStep : this.stepStorageForRemove)
-//			{
-//				this.step.remove(actStep);
-//				this.stepStorageForRemove.remove(actStep);
-//			}
-//			
-//			// sollen steps dem prozess hinzugefuegt werden?
-//			for(Step actStep : this.stepStorageForAdd)
-//			{
-//				this.step.add(actStep);
-//				this.stepStorageForAdd.remove(actStep);
-//			}
-			
 		}
-		
 	}
 	
 	
@@ -1991,9 +1975,9 @@ implements Serializable
 	 * @return
 	 * returns the canonical path of the statistics directory.
 	 */
-	public String getStatisticsdir()
+	public String getStatisticDir()
 	{
-		return this.getRootdir()+"/statistics";
+		return this.getRootdir()+"/processStatistic";
 	}
 
 	/**
