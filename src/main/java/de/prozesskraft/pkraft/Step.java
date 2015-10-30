@@ -2377,11 +2377,24 @@ implements Serializable, Cloneable
 
 //		this.log("debug", "actual status is: "+status);
 
-		// in der timeSerie festhalten
-		if( ((java.util.List<String>)this.getTimeSerieStatus().getLastPair().values()).get(0).equals(status) )
+		// in der timeSerie festhalten, falls status sich veraendert hat
+		Map<Long,String> lastPair = this.getTimeSerieStatus().getLastPair();
+		if(lastPair != null)
+		{
+			for(String alterStatus : lastPair.values())
+			{
+				if(alterStatus.equals(status))
+				{
+					this.getTimeSerieStatus().addValue(status);
+				}
+				break;
+			}
+		}
+		else
 		{
 			this.getTimeSerieStatus().addValue(status);
 		}
+		
 		return status;
 	}
 

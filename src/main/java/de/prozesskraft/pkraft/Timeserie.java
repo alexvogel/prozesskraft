@@ -78,7 +78,14 @@ implements Serializable, Comparable
 	
 	public Map<Long,String> getLastPair()
 	{
-		return serie.get(serie.size()-1);
+		if(serie.size() > 0)
+		{
+			return serie.get(serie.size()-1);
+		}
+		else
+		{
+			return null;
+		}
 	}
 	
 	public void addValue(String value)
