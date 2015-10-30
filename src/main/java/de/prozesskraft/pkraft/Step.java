@@ -66,6 +66,8 @@ implements Serializable, Cloneable
 
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 
+	private Timeserie timeSerieStatus = new Timeserie("status");
+
 	// don't clone parent when cloning this
 	private Process parent = null;
 
@@ -149,12 +151,10 @@ implements Serializable, Cloneable
 		if(this.getWork() != null)
 		{
 			newStep.setWork(this.getWork().clone());
-			newStep.getWork().setParent(this);
 		}
 		if(this.getSubprocess() != null)
 		{
 			newStep.setSubprocess(this.getSubprocess().clone());
-			newStep.getSubprocess().setParent(this);
 		}
 		for(Commit actCommit : this.getCommit())
 		{
@@ -2376,6 +2376,12 @@ implements Serializable, Cloneable
 		}
 
 //		this.log("debug", "actual status is: "+status);
+
+		// in der timeSerie festhalten
+		if( ((java.util.List<String>)this.getTimeSerieStatus().getLastPair().values()).get(0).equals(status) )
+		{
+			this.getTimeSerieStatus().addValue(status);
+		}
 		return status;
 	}
 
@@ -2983,6 +2989,7 @@ implements Serializable, Cloneable
 	 */
 	public void setSubprocess(Subprocess subprocess) {
 		this.subprocess = subprocess;
+		subprocess.setParent(this);
 	}
 
 	/**
@@ -3060,6 +3067,20 @@ implements Serializable, Cloneable
 	 */
 	public void setVariableCommittedToRoot(ArrayList<Variable> variableCommittedToRoot) {
 		this.variableCommittedToRoot = variableCommittedToRoot;
+	}
+
+	/**
+	 * @return the timeSerieStatus
+	 */
+	public Timeserie getTimeSerieStatus() {
+		return timeSerieStatus;
+	}
+
+	/**
+	 * @param timeSerieStatus the timeSerieStatus to set
+	 */
+	public void setTimeSerieStatus(Timeserie timeSerieStatus) {
+		this.timeSerieStatus = timeSerieStatus;
 	}
 	
 }

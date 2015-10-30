@@ -71,6 +71,16 @@ implements Serializable, Comparable
 		return out;
 	}
 
+	/**
+	 * returns the last key-value-pair
+	 * @return
+	 */
+	
+	public Map<Long,String> getLastPair()
+	{
+		return serie.get(serie.size()-1);
+	}
+	
 	public void addValue(String value)
 	{
 		Map<Long,String> newPair = new HashMap<Long,String>();
