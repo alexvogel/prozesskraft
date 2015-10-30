@@ -563,6 +563,14 @@ public class Manager
 		// die timeserie(n) rausschreiben
 		try
 		{
+			// statistics verzeichnis erstellen, falls noch nicht existent
+			java.io.File statisticsDirectory = new java.io.File(process.getStatisticsdir());
+			if(!statisticsDirectory.exists())
+			{
+				statisticsDirectory.mkdirs();
+			}
+			
+			// die statisticsfiles rausschreiben
 			process.getTimeSerieLoadAverage().writeFile(process.getStatisticsdir() + "/.serieLoadAverage.txt");
 			process.getTimeSerieBinarySize().writeFile(process.getStatisticsdir() + "/.serieBinarySizeInKB.txt");
 			process.getTimeSerieStepSize().writeFile(process.getStatisticsdir() + "/.serieStepSize.txt");
