@@ -5,6 +5,16 @@ import java.awt.Frame;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
+import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -313,42 +323,74 @@ public class PmodelPartUi1 extends ModelObject
 		button_refresh = new Button(grpFunction, SWT.NONE | SWT.PUSH);
 		button_refresh.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		button_refresh.setText("refresh");
-//		button_refresh.addSelectionListener(listener_refresh_button);
 		button_refresh.addListener(SWT.Selection, (Listener) listener_refresh_button);
+		button_refresh.setEnabled(true);
 		
-//		spinner_refreshinterval = new Spinner(grpFunction, SWT.BORDER);
-//		spinner_refreshinterval.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
-//		spinner_refreshinterval.setMaximum(999);
-//		spinner_refreshinterval.setSelection(20);
-//		spinner_refreshinterval.setMinimum(10);
+//		button_refresh.getDisplay().asyncExec( new Runnable()
+//		{
+//			public void run()
+//			{
+//				// das Prozess Binary File ueberwachen
+//				// Wenn modifiziert wurde? dann soll Enable=true gesetzt werden
+//		//		Path processRootDir = Paths.get(einstellungen.getProcess().getRootdir());
+//				Path processRootDir = Paths.get("/localhome/avoge/Desktop");
+//		
+//				System.err.println("watching directory " + processRootDir);
+//				
+//				try {
+//					// Watch Service erstellen
+//					WatchService service = FileSystems.getDefault().newWatchService();
+//		
+//					// Watch key erstellen
+//					WatchKey key = processRootDir.register(service, ENTRY_MODIFY);
+//					
+//					while(true)
+//					{
+//						try {
+//							Thread.sleep(500);
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//						WatchKey key1;
+//						try
+//						{
+//							key1 = service.take();
+//						}
+//						catch (InterruptedException x)
+//						{
+//							break;
+//						}
+//						
+//						for(WatchEvent<?> event: key1.pollEvents())
+//						{
+//							WatchEvent.Kind<?> kind = event.kind();
+//							
+//							if(kind == OVERFLOW)
+//							{
+//								continue;
+//							}
+//							
+//							WatchEvent<Path> ev = (WatchEvent<Path>) event;
+//							Path filename = ev.context();
+//							Path child = processRootDir.resolve(filename);
+//							log("debug", "directory modified");
+//		//					if(child.equals(Paths.get(einstellungen.getProcess().getRootdir() + "/process.pmb")))
+////							if(child.equals(Paths.get("/localhome/avoge/Desktop/testfileNotification")))
+//							{
+//								button_refresh.setEnabled(true);
+//								log("debug", "binary modified");
+//							}
+//						}
+//					}
+//		
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		});
 
-//		button_stopAnimation = new Button(grpFunction, SWT.NONE);
-//		button_stopAnimation.setSelection(true);
-//		GridData gd_btnNewButtonX = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-//		gd_btnNewButtonX.widthHint = 69;
-//		button_stopAnimation.setLayoutData(gd_btnNewButtonX);
-//		button_stopAnimation.setText("stop animation");
-//		button_stopAnimation.addSelectionListener(new SelectionAdapter()
-//		{
-//			public void widgetSelected(SelectionEvent event)
-//			{
-//				einstellungen.setSleep(true);
-//			}
-//		});
-		
-//		button_resumeAnimation = new Button(grpFunction, SWT.NONE);
-//		button_resumeAnimation.setSelection(true);
-//		GridData gd_btnNewButtonY = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
-//		gd_btnNewButtonY.widthHint = 69;
-//		button_resumeAnimation.setLayoutData(gd_btnNewButtonY);
-//		button_resumeAnimation.setText("resume animation");
-//		button_resumeAnimation.addSelectionListener(new SelectionAdapter()
-//		{
-//			public void widgetSelected(SelectionEvent event)
-//			{
-//				einstellungen.setSleep(false);
-//			}
-//		});
 		
 		button_startmanager = new Button(grpFunction, SWT.NONE);
 		button_startmanager.setSelection(true);
@@ -710,16 +752,18 @@ public class PmodelPartUi1 extends ModelObject
 			log("info", aufruf);
 			java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
 			
-			try
-			{
-				log("info", "waiting 3 second for process become available on disk");
-				Thread.sleep(3000);
-			} catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			refreshAppletAndUi();
+//			try
+//			{
+//				log("info", "waiting 3 second for process become available on disk");
+//				Thread.sleep(3000);
+//			} catch (InterruptedException e)
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			
+//			// update der daten und UI
+//			refreshAppletAndUi();
 		}
 		catch (IOException e)
 		{
@@ -750,16 +794,19 @@ public class PmodelPartUi1 extends ModelObject
 		{
 			log("info", aufruf);
 			java.lang.Process sysproc = Runtime.getRuntime().exec(aufruf);
-			try
-			{
-				log("info", "waiting 3 seconds for process become available on disk");
-				Thread.sleep(3000);
-			} catch (InterruptedException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			refreshAppletAndUi();
+
+//			try
+//			{
+//				log("info", "waiting 3 seconds for process become available on disk");
+//				Thread.sleep(3000);
+//			} catch (InterruptedException e)
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+
+			//			// update der daten und UI
+//			refreshAppletAndUi();
 		}
 		catch (IOException e)
 		{
@@ -1109,7 +1156,8 @@ public class PmodelPartUi1 extends ModelObject
 		// gui
 		final Display display = new Display();
 		
-		Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable() {
+		Realm.runWithDefault(SWTObservables.getRealm(display), new Runnable()
+		{
 			public void run()
 			{
 				try
@@ -1146,7 +1194,7 @@ public class PmodelPartUi1 extends ModelObject
 					try
 					{
 						shell.open();
-
+						
 						while (!shell.isDisposed())
 						{
 							if( ! display.readAndDispatch())
@@ -1170,6 +1218,8 @@ public class PmodelPartUi1 extends ModelObject
 				}
 			}
 		});
+		
+
 		System.exit(0);
 	}
 
