@@ -614,13 +614,20 @@ implements Serializable
 //		this.setLastTimeDelayedStatusSet(System.currentTimeMillis());
 //		log("info", "setting status to " + this.getStatus());
 
-		java.util.List<String> statusInhalt = Files.readAllLines(Paths.get(this.getParent().getAbsdir() + "/.status"), Charset.defaultCharset());
-		
-		if(statusInhalt.size() > 0)
+		try
 		{
-			this.setStatus(statusInhalt.get(0));
-			log("info", "setting status to " + this.status);
+			java.util.List<String> statusInhalt = Files.readAllLines(Paths.get(this.getParent().getAbsdir() + "/.status"), Charset.defaultCharset());
+			if(statusInhalt.size() > 0)
+			{
+				this.setStatus(statusInhalt.get(0));
+				log("info", "setting status to " + this.status);
+			}
 		}
+		catch (ExceptionInInitializerError e)
+		{
+			e.printStackTrace();
+		}
+		
 	}
 	
 	/**
