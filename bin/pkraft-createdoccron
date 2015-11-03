@@ -679,7 +679,7 @@ if ($error_anzahl + $error_patternchecks)
 				# das generieren ausfuehren
 				unless(getOption("dry"))
 				{
-					my $rueck = system($call);
+					my $rueck = system(split(" ", $call));
 
 					# fehlerhandling - setzen des zeitstempels auf 0
 					if($rueck)
