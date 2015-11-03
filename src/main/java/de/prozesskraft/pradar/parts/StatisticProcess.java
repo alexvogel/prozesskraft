@@ -241,7 +241,7 @@ public class StatisticProcess
     					endTime = System.currentTimeMillis();
     				}
     				
-    				statusTaskseries.get(status).add(new Task(actStep.getName(), new SimpleTimePeriod(date(timeInMillis), date(actStep.getTimeSerieStatus().getNextTime(timeInMillis)))));
+    				statusTaskseries.get(status).add(new Task(actStep.getName(), new SimpleTimePeriod(date(timeInMillis), date(endTime))));
     		
     			}
     		}
