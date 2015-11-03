@@ -2378,22 +2378,7 @@ implements Serializable, Cloneable
 //		this.log("debug", "actual status is: "+status);
 
 		// in der timeSerie festhalten, falls status sich veraendert hat
-		Map<Long,String> lastPair = this.getTimeSerieStatus().getLastPair();
-		if(lastPair != null)
-		{
-			for(String alterStatus : lastPair.values())
-			{
-				if(alterStatus.equals(status))
-				{
-					this.getTimeSerieStatus().addValue(status);
-				}
-				break;
-			}
-		}
-		else
-		{
-			this.getTimeSerieStatus().addValue(status);
-		}
+		this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 		
 		return status;
 	}

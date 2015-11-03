@@ -18,6 +18,7 @@ implements Serializable, Comparable
 
 	private String label = "";
 	
+//	private ArrayList<Map<Long,String>> serie = new ArrayList<Map<Long,String>>();
 	private ArrayList<Map<Long,String>> serie = new ArrayList<Map<Long,String>>();
 //	private Map<Long,String> serie = new HashMap<Long,String>();
 
@@ -88,6 +89,83 @@ implements Serializable, Comparable
 		}
 	}
 	
+	/**
+	 * returns the first key-value-pair
+	 * @return
+	 */
+	
+	public Map<Long,String> getFirstPair()
+	{
+		if(serie.size() > 0)
+		{
+			return serie.get(0);
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	/**
+	 * returns the first time point of time series
+	 * if no next time point found -> null
+	 * @param time
+	 * @return time
+	 */
+	public Long getFirstTime()
+	{
+		if(this.getSerie().size()>0)
+		{
+			return (Long)this.getSerie().get(0).keySet().toArray()[0];
+		}
+		return null;
+	}
+	
+	/**
+	 * returns the next time point of given time point
+	 * if no next time point found
+	 * @param time
+	 * @return time
+	 */
+	public Long getNextTime(Long time)
+	{
+		boolean flag = false;
+		for(Map<Long,String> actPair : this.getSerie())
+		{
+			for(Long actTime : actPair.keySet())
+			{
+				if(flag)
+				{
+					return actTime;
+				}
+				if(time == actTime)
+				{
+					flag = true;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * add only a new pair actualTimeInMillis -> value, if the value of the last pair is a different one
+	 * @param value
+	 */
+	public void addValueIfDiffersFromLast(String value)
+	{
+		if(serie.size() > 0)
+		{
+			if(!(serie.get(serie.size()-1).containsValue(value)))
+			{
+				this.addValue(value);
+			}
+		}
+		else
+		{
+			this.addValue(value);
+		}
+	}
+	
 	public void addValue(String value)
 	{
 		Map<Long,String> newPair = new HashMap<Long,String>();
@@ -116,6 +194,18 @@ implements Serializable, Comparable
 		}
 		
 		writer.close();
+	}
+	
+	public ArrayList<String> getValues()
+	{
+		ArrayList<String> allValues = new ArrayList<String>();
+		
+		for(Map<Long,String> actPair : serie)
+		{
+			allValues.addAll(actPair.values());
+		}
+
+		return allValues;
 	}
 	
 	/*----------------------------
