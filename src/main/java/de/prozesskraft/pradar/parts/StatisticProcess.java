@@ -135,7 +135,7 @@ public class StatisticProcess
 	public void createControls(Composite composite)
 	{
 		// breite, hoehe
-		shell.setSize(800, 600);
+		shell.setSize(1200, 900);
 		
 		composite.setLayout(new GridLayout(1, false));
 		
