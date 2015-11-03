@@ -232,6 +232,15 @@ public class StatisticProcess
     					statusTaskseries.put(status, new TaskSeries(status));
     					
     				}
+    				
+    				// hinzufuegen eines neuen tasks
+    				Long endTime = actStep.getTimeSerieStatus().getNextTime(timeInMillis);
+    				// falls es noch keine endZeit fuer den aktuellen status gibt, soll die aktuelle zeit gesetzt werden
+    				if(endTime == null)
+    				{
+    					endTime = System.currentTimeMillis();
+    				}
+    				
     				statusTaskseries.get(status).add(new Task(actStep.getName(), new SimpleTimePeriod(date(timeInMillis), date(actStep.getTimeSerieStatus().getNextTime(timeInMillis)))));
     		
     			}
