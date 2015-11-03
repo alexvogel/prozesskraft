@@ -2204,6 +2204,7 @@ implements Serializable, Cloneable
 		if((this.getStatusOverwrite() != null) && (!this.getStatusOverwrite().equals("")))
 		{
 			this.log("debug", "actual status (because of statusOverwrite) is: "+this.statusOverwrite);
+			this.getTimeSerieStatus().addValueIfDiffersFromLast(this.statusOverwrite);
 			return this.statusOverwrite;
 		}
 		
@@ -2213,7 +2214,9 @@ implements Serializable, Cloneable
 		List cancelList = this.getList("_cancel");
 		if(cancelList != null && cancelList.itemCount() > 0)
 		{
-			return "canceled";
+			status = "canceled";
+			this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
+			return status;
 		}
 
 		// Die Inits untersuchen
@@ -2229,6 +2232,7 @@ implements Serializable, Cloneable
 		{
 			status = "error";
 //			this.log("debug", "actual status is: "+status);
+			this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 			return status;
 		}
 
@@ -2237,6 +2241,7 @@ implements Serializable, Cloneable
 		{
 			status = "initializing";
 //			this.log("debug", "actual status is: "+status);
+			this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 			return status;
 		}
 
@@ -2245,6 +2250,7 @@ implements Serializable, Cloneable
 		{
 			status = "waiting";
 //			this.log("debug", "actual status is: "+status);
+			this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 			return status;
 		}
 		
@@ -2262,6 +2268,7 @@ implements Serializable, Cloneable
 			{
 				status = "error";
 //				this.log("debug", "actual status is: "+status);
+				this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 				return status;
 			}
 	
@@ -2270,6 +2277,7 @@ implements Serializable, Cloneable
 			{
 				status = "working";
 //				this.log("debug", "actual status is: "+status);
+				this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 				return status;
 			}
 
@@ -2278,6 +2286,7 @@ implements Serializable, Cloneable
 			{
 				status = "waiting";
 //				this.log("debug", "actual status is: "+status);
+				this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 				return status;
 			}
 
@@ -2302,6 +2311,7 @@ implements Serializable, Cloneable
 			{
 				status = "error";
 //				this.log("debug", "actual status is: "+status);
+				this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 				return status;
 			}
 	
@@ -2310,6 +2320,7 @@ implements Serializable, Cloneable
 			{
 				status = "working";
 //				this.log("debug", "actual status is: "+status);
+				this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 				return status;
 			}
 
@@ -2318,6 +2329,7 @@ implements Serializable, Cloneable
 			{
 				status = "waiting";
 //				this.log("debug", "actual status is: "+status);
+				this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 				return status;
 			}
 
@@ -2332,6 +2344,7 @@ implements Serializable, Cloneable
 			else if(  this.subprocess.getStatus().equals("finished") && this.getCommit().isEmpty())
 			{
 				status = "finished";
+				this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 				return status;
 			}
 			
@@ -2350,6 +2363,7 @@ implements Serializable, Cloneable
 		{
 			status = "error";
 //			this.log("debug", "actual status is: "+status);
+			this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 			return status;
 		}
 
@@ -2358,6 +2372,7 @@ implements Serializable, Cloneable
 		{
 			status = "committing";
 //			this.log("debug", "actual status is: "+status);
+			this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 			return status;
 		}
 
@@ -2366,6 +2381,7 @@ implements Serializable, Cloneable
 		{
 			status = "waiting";
 //			this.log("debug", "actual status is: "+status);
+			this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
 			return status;
 		}
 
@@ -2379,7 +2395,6 @@ implements Serializable, Cloneable
 
 		// in der timeSerie festhalten, falls status sich veraendert hat
 		this.getTimeSerieStatus().addValueIfDiffersFromLast(status);
-		
 		return status;
 	}
 
