@@ -190,7 +190,9 @@ public class Syscall {
 		    filesKeyPath.put("pid", sPid);
 		    filesKeyPath.put("stdout", sStdout);
 		    filesKeyPath.put("stderr", sStderr);
-
+		    filesKeyPath.put("exit", new java.io.File(sPid).getParentFile().getAbsolutePath() + ".exit");
+		    
+		    
 			// wenn die auch nur eines von den ausgabefiles mylog, stderr, stdout, pid bereits existieren, sollen alle ausgabefiles eine um 1 hochgezaehlte nummer erhalten
 		    int zaehler = 0;
 
@@ -514,6 +516,11 @@ public class Syscall {
 			System.out.println("exitvalue: "+exitValue);
 
 			sysproc.destroy();
+
+			// Schreiben einer .exit Datei
+			PrintWriter writerExit = new PrintWriter(filesKeyPath.get("exit"));
+			writerExit.println(exitValue);
+			writerExit.close();
 
 			System.exit(exitValue);
 			
