@@ -222,11 +222,17 @@ public class StatisticProcess
     	Map<String,TaskSeries> statusTaskseries = new HashMap<String,TaskSeries>();
     	for(Step actStep : stepsOrdered)
     	{
+    		if(actStep.isRoot())
+    		{
+    			// wenn root, dann mit naechster iteration weitermachen
+    			continue;
+    		}
     		for(Map<Long,String> actPair : actStep.getTimeSerieStatus().getSerie())
     		{
     			for(Long timeInMillis : actPair.keySet())
     			{
     				String status = actPair.get(timeInMillis);
+    				
     				if(!statusTaskseries.containsKey(status))
     				{
     					statusTaskseries.put(status, new TaskSeries(status));
