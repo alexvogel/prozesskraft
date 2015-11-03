@@ -121,6 +121,7 @@ public class PradarPartUi3 extends ModelObject
 	private Button button_merge = null;
 	private Button button_attend = null;
 	private Button button_delete = null;
+	private Button button_statistic = null;
 	private Scale scale_zoom;
 	private StyledText text_logging = null;
 	private Frame frame_radar = null;
@@ -178,6 +179,8 @@ public class PradarPartUi3 extends ModelObject
 
 	private boolean userAdmin = false;
 
+	private PradarPartUi3 This = this;
+	
 	// wird pradar innerhalb einer groesseren application geoeffnet, wird das beherbergende object hier abgelegt
 	private Object pkraft = null;
 
@@ -394,6 +397,12 @@ public class PradarPartUi3 extends ModelObject
 		button_delete.setText("delete");
 		button_delete.setToolTipText("deletes an instance with all its data");
 		button_delete.addSelectionListener(listener_delete_button);
+		
+		button_statistic = new Button(grpFunctionInstance, SWT.NONE);
+		button_statistic.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		button_statistic.setText("statistic");
+		button_statistic.setToolTipText("shows details about the run");
+		button_statistic.addSelectionListener(listener_statistic_button);
 		
 		// den button auf diese weise aktiv/deaktiv zu stellen funktioniert nicht.
 		// muss ueber databinding realisiert werden
@@ -1429,8 +1438,46 @@ public class PradarPartUi3 extends ModelObject
 		}
 		
 	};	
-	
+
+
+	SelectionAdapter listener_statistic_button = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+			// ist ueberhaupt etwas markiert?
+			if (einstellungen.entitySelected == null)
+			{
+				log("warn", "no instance selected");
+			}
+
+			// ist mehr als eine bestimmte zahl markiert
+			else if(einstellungen.entitiesSelected != null && einstellungen.entitiesSelected.size() > 1)
+			{
+				log("warn", "statistic allows max 1 entity at a time");
+				return;
+			}
+
+			else if (einstellungen.entitySelected != null)
+			{
+				// Prozess einladen
+				java.io.File processBinary = new java.io.File(einstellungen.entitySelected.getResource());
+				if(!processBinary.exists() || processBinary.isDirectory())
+				{
+					log("error", "process instance file does not exist: " + processBinary.getAbsolutePath());
+					return;
+				}
+				
+				Process p1 = new Process();
+				p1.setInfilebinary(processBinary.getAbsolutePath());
+				Process p2 = p1.readBinary();
+				
+				new StatisticProcess(shell, This, p2);
+			}
 			
+		}
+	};	
+	
+	
 	SelectionAdapter listener_delete_button = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
