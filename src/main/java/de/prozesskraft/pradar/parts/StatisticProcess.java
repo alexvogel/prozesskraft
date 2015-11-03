@@ -4,6 +4,8 @@ import java.awt.Frame;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -46,12 +48,22 @@ import org.eclipse.swt.layout.FormLayout;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.labels.StandardXYToolTipGenerator;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.IntervalCategoryDataset;
 import org.jfree.data.gantt.Task;
 import org.jfree.data.gantt.TaskSeries;
 import org.jfree.data.gantt.TaskSeriesCollection;
-import org.jfree.data.time.SimpleTimePeriod;  
+import org.jfree.data.time.Day;
+import org.jfree.data.time.Millisecond;
+import org.jfree.data.time.Month;
+import org.jfree.data.time.RegularTimePeriod;
+import org.jfree.data.time.SimpleTimePeriod;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.time.TimeSeriesDataItem;
+import org.jfree.data.xy.XYDataset;  
 
 public class StatisticProcess
 {
@@ -145,23 +157,51 @@ public class StatisticProcess
 ////		gd_composite.minimumHeight = 10;
 //		compositeGantt.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true, 1, 1));
 
-		final IntervalCategoryDataset dataset = createDatasetGantt();  
-		final JFreeChart chart = createChart(dataset);  
-		chart.setTitle("Process History");
-  
-		Composite embeddedComposite = new Composite(composite, SWT.EMBEDDED);
-		embeddedComposite.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.FILL_HORIZONTAL));
-		Frame fileTableFrame = SWT_AWT.new_Frame(embeddedComposite);
-		ChartPanel panel = new ChartPanel(chart);
-		panel.setPopupMenu(null);
-		fileTableFrame.add(panel);
-		
+		// Gantt Diagramm ueber den gesamten Prozess
+		final IntervalCategoryDataset datasetGantt = createDatasetGantt();  
+		final JFreeChart chartGantt = createChartGantt(datasetGantt);  
+		chartGantt.setTitle("Process History");
+
+		Composite embeddedCompositeGantt = new Composite(composite, SWT.EMBEDDED);
+		embeddedCompositeGantt.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.FILL_HORIZONTAL));
+		Frame frameGantt = SWT_AWT.new_Frame(embeddedCompositeGantt);
+		ChartPanel panelGantt = new ChartPanel(chartGantt);
+		panelGantt.setMouseZoomable(true, false);
+		panelGantt.setPopupMenu(null);
+		frameGantt.add(panelGantt);
+
+		// loadAverage uebr die Prozesslaufzeit
+		final XYDataset datasetLoadAverage = createDatasetLoadAverage();
+		final JFreeChart chartLoadAverage = createChartLoadAverage(datasetLoadAverage);
+		chartLoadAverage.setTitle("Client Load Average");
+
+		Composite embeddedCompositeLoadAverage = new Composite(composite, SWT.EMBEDDED);
+		embeddedCompositeLoadAverage.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.FILL_HORIZONTAL));
+		Frame frameLoadAverage = SWT_AWT.new_Frame(embeddedCompositeLoadAverage);
+		ChartPanel panelLoadAverage = new ChartPanel(chartLoadAverage);
+		panelLoadAverage.setMouseZoomable(true, false);
+		panelLoadAverage.setPopupMenu(null);
+		frameLoadAverage.add(panelLoadAverage);
+
+		// binarySize in MB
+		final XYDataset datasetBinarySize = createDatasetBinarySize();
+		final JFreeChart chartBinarySize = createChartBinarySize(datasetBinarySize);
+		chartBinarySize.setTitle("Binary Size");
+
+		Composite embeddedCompositeBinarySize = new Composite(composite, SWT.EMBEDDED);
+		embeddedCompositeBinarySize.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.FILL_HORIZONTAL));
+		Frame frameBinarySize = SWT_AWT.new_Frame(embeddedCompositeBinarySize);
+		ChartPanel panelBinarySize = new ChartPanel(chartBinarySize);
+		panelBinarySize.setMouseZoomable(true, false);
+		panelBinarySize.setPopupMenu(null);
+		frameBinarySize.add(panelBinarySize);
+
 		// Ok Button
 		Composite compositeBtn = new Composite(composite, SWT.NONE);
 		compositeBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		GridLayout sss = new GridLayout(3, true);
 		compositeBtn.setLayout(sss);
-		
+
 		Label dummyLabel = new Label(compositeBtn, SWT.NONE);
 
 		Button btnOk = new Button(compositeBtn, SWT.NONE);
@@ -266,29 +306,30 @@ public class StatisticProcess
     	{
     		collection.add(actTaskSerie);
     	}
-        return collection;
+    	return collection;
 
-     }
+	}
 
-    /**
-     * Utility method for creating <code>Date</code> objects.
-     *
-     * @param day  the date.
-     * @param month  the month.
-     * @param year  the year.
-     *
-     * @return a date.
-     */
-    private static Date date(long timeInMillis) {
+	/**
+	* Utility method for creating <code>Date</code> objects.
+	*
+	* @param day  the date.
+	* @param month  the month.
+	* @param year  the year.
+	*
+	* @return a date.
+	*/
+	private static Date date(long timeInMillis) {
 
-        final Calendar calendar = Calendar.getInstance();
+		final Calendar calendar = Calendar.getInstance();
         
-        calendar.setTimeInMillis(timeInMillis);
-        final Date result = calendar.getTime();
-        return result;
+		calendar.setTimeInMillis(timeInMillis);
+		final Date result = calendar.getTime();
+		return result;
 
-    }
+	}
 
+   
     /**
      * Creates a chart.
      * 
@@ -296,11 +337,11 @@ public class StatisticProcess
      * 
      * @return The chart.
      */
-    private JFreeChart createChart(final IntervalCategoryDataset dataset) {
+    private JFreeChart createChartGantt(final IntervalCategoryDataset dataset) {
         final JFreeChart chart = ChartFactory.createGanttChart(
-            "Gantt Chart Demo",  // chart title
-            "Task",              // domain axis label
-            "Date",              // range axis label
+            "Process History",  // chart title
+            "Step",              // domain axis label
+            "Time",              // range axis label
             dataset,             // data
             true,                // include legend
             true,                // tooltips
@@ -310,6 +351,107 @@ public class StatisticProcess
         return chart;    
     }
 	
+	/**
+	* Creates a sample dataset.
+	* 
+	* @return a sample dataset.
+	*/
+	private XYDataset createDatasetLoadAverage()
+	{
+		final TimeSeries loadAverage = new TimeSeries("load average");
+
+		for(Map<Long,String> actPair : process.getTimeSerieLoadAverage().getSerie())
+		{
+			for(Long actTime : actPair.keySet())
+			{
+				RegularTimePeriod t = new Millisecond(new Date(actTime));
+				loadAverage.add(t, Double.parseDouble(actPair.get(actTime)));
+			}
+		}
+
+		final TimeSeriesCollection dataset = new TimeSeriesCollection();
+		dataset.addSeries(loadAverage);
+		return dataset;
+    }
+    
+	/**
+	* Creates a chart.
+	* 
+	* @param dataset  the dataset.
+	* 
+	* @return a chart.
+	*/
+	private JFreeChart createChartLoadAverage(final XYDataset dataset)
+	{
+		final JFreeChart chart = ChartFactory.createTimeSeriesChart(
+            "Load Average Of Client Machine", 
+            "Time", 
+            "Load Average",
+            dataset, 
+            true, 
+            true, 
+            false
+        );
+        final XYItemRenderer renderer = chart.getXYPlot().getRenderer();
+        final StandardXYToolTipGenerator g = new StandardXYToolTipGenerator(
+            StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
+            new SimpleDateFormat("d-MMM-yyyy"), new DecimalFormat("0.00")
+        );
+        renderer.setToolTipGenerator(g);
+        return chart;
+    }
+ 
+	/**
+	* Creates a sample dataset.
+	* 
+	* @return a sample dataset.
+	*/
+	private XYDataset createDatasetBinarySize()
+	{
+		final TimeSeries loadAverage = new TimeSeries("binary size");
+
+		for(Map<Long,String> actPair : process.getTimeSerieBinarySize().getSerie())
+		{
+			for(Long actTime : actPair.keySet())
+			{
+				RegularTimePeriod t = new Millisecond(new Date(actTime));
+				loadAverage.add(t, Double.parseDouble(actPair.get(actTime)));
+			}
+		}
+
+		final TimeSeriesCollection dataset = new TimeSeriesCollection();
+		dataset.addSeries(loadAverage);
+		return dataset;
+    }
+    
+	/**
+	* Creates a chart.
+	* 
+	* @param dataset  the dataset.
+	* 
+	* @return a chart.
+	*/
+	private JFreeChart createChartBinarySize(final XYDataset dataset)
+	{
+		final JFreeChart chart = ChartFactory.createTimeSeriesChart(
+            "Binary Size", 
+            "Time", 
+            "Size[kB]",
+            dataset, 
+            true, 
+            true, 
+            false
+        );
+        final XYItemRenderer renderer = chart.getXYPlot().getRenderer();
+        final StandardXYToolTipGenerator g = new StandardXYToolTipGenerator(
+            StandardXYToolTipGenerator.DEFAULT_TOOL_TIP_FORMAT,
+            new SimpleDateFormat("d-MMM-yyyy"), new DecimalFormat("0.00")
+        );
+        renderer.setToolTipGenerator(g);
+        return chart;
+    }
+ 
+    
 	/**
 	 * @return the father
 	 */
