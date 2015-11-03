@@ -224,35 +224,40 @@ public class StatisticProcess
     	Map<String,TaskSeries> statusTaskseries = new HashMap<String,TaskSeries>();
     	for(Step actStep : stepsOrdered)
     	{
-    		if(actStep.isRoot())
-    		{
-    			// wenn root, dann mit naechster iteration weitermachen
-    			continue;
-    		}
-    		for(Map<Long,String> actPair : actStep.getTimeSerieStatus().getSerie())
-    		{
-    			for(Long timeInMillis : actPair.keySet())
-    			{
-    				String status = actPair.get(timeInMillis);
+			if(actStep.isRoot())
+			{
+				// wenn root, dann mit naechster iteration weitermachen
+				continue;
+			}
+			for(Map<Long,String> actPair : actStep.getTimeSerieStatus().getSerie())
+			{
+				for(Long timeInMillis : actPair.keySet())
+				{
+					String status = actPair.get(timeInMillis);
     				
-    				if(!statusTaskseries.containsKey(status))
-    				{
-    					statusTaskseries.put(status, new TaskSeries(status));
-    					
-    				}
+					// wenn status waiting|finished, dann auch mit naechster iteration weitermachen
+					if(status.equals("waiting") || status.equals("finished"))
+					{
+						continue;
+					}
+
+					if(!statusTaskseries.containsKey(status))
+					{
+						statusTaskseries.put(status, new TaskSeries(status));
+					}
     				
     				// hinzufuegen eines neuen tasks
-    				Long endTime = actStep.getTimeSerieStatus().getNextTime(timeInMillis);
+					Long endTime = actStep.getTimeSerieStatus().getNextTime(timeInMillis);
     				// falls es noch keine endZeit fuer den aktuellen status gibt, soll die aktuelle zeit gesetzt werden
-    				if(endTime == null)
-    				{
-    					endTime = System.currentTimeMillis();
-    				}
+					if(endTime == null)
+					{
+						endTime = System.currentTimeMillis();
+					}
     				
-    				statusTaskseries.get(status).add(new Task(actStep.getName(), new SimpleTimePeriod(date(timeInMillis), date(endTime))));
+					statusTaskseries.get(status).add(new Task(actStep.getName(), new SimpleTimePeriod(date(timeInMillis), date(endTime))));
     		
-    			}
-    		}
+				}
+			}
     	}
     	
     	// alle timeSeries einer collection hinzufuegen
