@@ -63,7 +63,7 @@ public class Manager
 	static WatchService watcher = null;
 	private static final Kind<?> ENTRY_CREATE = null;
 	private static final Kind<?> ENTRY_MODIFY = null;
-	static Map<WatchKey,Path> keys = new HashMap<WatchKey,Path>();
+	static Map<WatchKey,Path> keys = null;
 
 	
 	/*----------------------------
@@ -551,6 +551,8 @@ public class Manager
 	 */
 	private static void createWatchKeysForAllRunningSteps(Process process)
 	{
+		// einen neuen map erzeugen fuer die watchKeys
+		keys = new HashMap<WatchKey,Path>();
 		
 		// Anlegen der WatchKeys fuer jeden laufenden Step
 		for(Step actStep : process.getStep())
@@ -561,8 +563,11 @@ public class Manager
 				Path stepDir = Paths.get(actStep.getAbsdir());
 				try
 				{
+					System.err.println("debug: creating...");
 					WatchKey key = stepDir.register(watcher, ENTRY_CREATE);
+					System.err.println("debug: creating...done. putting to the map");
 					keys.put(key, stepDir);
+					System.err.println("debug: creating...done. putting to the map...done");
 				}
 				catch(IOException e)
 				{
