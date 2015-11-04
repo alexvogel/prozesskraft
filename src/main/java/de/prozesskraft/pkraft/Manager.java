@@ -571,6 +571,8 @@ public class Manager
 			}
 		}
 		
+		process.log("info", "now into the watchloop");
+
 		// aufwachen nach spaetestens...
 		int minutes = 5;
 		double abbruchzeitpunkt = System.currentTimeMillis() + (minutes * 60 * 1000);
@@ -578,6 +580,7 @@ public class Manager
 		// warten auf ein Signal von einem WatchKey
 		for(;;)
 		{
+			process.log("info", "i'm in the watchloop");
 			if(System.currentTimeMillis() > abbruchzeitpunkt)
 			{
 				process.log("info", "waking up, because " + minutes + " minutes passed without any action");
