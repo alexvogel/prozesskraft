@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import de.prozesskraft.pkraft.*;
+import de.prozesskraft.pkraft.Process;
 
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.layout.FormLayout;
@@ -139,7 +140,11 @@ public class CreateInstanceGui
 		btnCancel.setText("cancel");
 		btnCancel.addSelectionListener(listenerButtonCancel);
 
-	    Label labelDummy = new Label(compositeBtn, SWT.NONE);
+	    Button btnCreate = new Button(compositeBtn, SWT.NONE);
+	    btnCreate.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+	    btnCreate.setText("create");
+	    btnCreate.setToolTipText("create instance");
+	    btnCreate.addSelectionListener(listenerButtonCreate);
 
 	    Button btnCreateAndStart = new Button(compositeBtn, SWT.NONE);
 		btnCreateAndStart.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
@@ -157,6 +162,33 @@ public class CreateInstanceGui
 			shell.dispose();
 		}
 	};	
+
+	/**
+	 * listener for Selections in of button 'create'
+	 */
+	SelectionAdapter listenerButtonCreate = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+//			System.out.println("button show wurde gedrueckt");
+			Process newProcess = father.createInstance();
+			
+			// pradar-attend starten
+			String call = father.getIni().get("apps", "pradar-attend") + " -instance " + newProcess.getInfilebinary(); 
+			father.log("info", "calling: "+call);
+			
+			try
+			{
+				java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+			}
+			catch (IOException e)
+			{
+				father.log("error", e.getMessage());
+			}
+
+			shell.dispose();
+		}
+	};
 
 	/**
 	 * listener for Selections in of button 'create and start'

@@ -1375,7 +1375,7 @@ public class PrampPartUi1 extends ModelObject
 	/**
 	 * commit all the defined data to the process
 	 */
-	void createInstance()
+	Process createInstance()
 	{
 
 		if (this.commitCreatorOld.containsKey((getActualCommitRootName())))
@@ -1384,7 +1384,7 @@ public class PrampPartUi1 extends ModelObject
 			if ( ! (this.commitCreatorOld.get(getActualCommitRootName()).doAllTestsPass()))
 			{
 				log ("error", "not all tests passed. commit refused. check input.");
-				return;
+				return null;
 			}
 			// ist prozess konsistent?
 			else if(!(process.isProcessConsistent()))
@@ -1395,7 +1395,7 @@ public class PrampPartUi1 extends ModelObject
 				{
 					log (actualLog.getLevel(), actualLog.getMsg());
 				}
-				return;
+				return null;
 			}
 			else
 			{
@@ -1421,7 +1421,7 @@ public class PrampPartUi1 extends ModelObject
 					// ok == 32
 					if (!(returnCode == 32))
 					{
-						return;
+						return null;
 					}
 				}
 				
@@ -1479,15 +1479,17 @@ public class PrampPartUi1 extends ModelObject
 				else
 				{
 					log ("error", "problems handling instance directory."+process.getRootdir()+". doing nothing.");
-					return;
+					return null;
 				}
 			}
 		}
 		else
 		{
 			log ("error", "nothing to commit.");
-			return;
+			return null;
 		}
+		
+		return process;
 	}
 
 
