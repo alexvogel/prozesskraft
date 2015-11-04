@@ -457,6 +457,7 @@ public class Manager
 		if(!process.run)
 		{
 			System.err.println("info: process manager exits, because process.run is false");
+			System.exit(0);
 		}
 			
 		// 1) timeSerie loadAverage
