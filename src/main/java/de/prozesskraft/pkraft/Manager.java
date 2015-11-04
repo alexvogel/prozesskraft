@@ -453,6 +453,12 @@ public class Manager
 		Process process = p.readBinary();
 		System.err.println("debug: rereading instance done");
 		
+		// beenden, falls process.run == false ist
+		if(!process.run)
+		{
+			System.err.println("info: process manager exits, because process.run is false");
+		}
+			
 		// 1) timeSerie loadAverage
 		double actLoadAverage = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
 		process.getTimeSerieLoadAverage().addValue(String.valueOf(actLoadAverage));
@@ -486,7 +492,6 @@ public class Manager
 
 		boolean imProzessHatSichWasGeaendert = true;
 		System.err.println("debug: variable imProzessHatSichWasGeaendert manuell gesetzt auf " + imProzessHatSichWasGeaendert);
-
 
 		while(process.run && imProzessHatSichWasGeaendert)
 		{
