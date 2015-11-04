@@ -596,7 +596,7 @@ public class Manager
 			}
 			else
 			{
-				System.err.println("info: do not wake up, because " + minutes + " minutes passed without any action");
+				System.err.println("info: do not wake up, because less than " + minutes + " minutes passed without any action");
 			}
 			
 			WatchKey key;
