@@ -9,12 +9,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchEvent.Kind;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import java.util.Calendar;
 import java.util.ConcurrentModificationException;
+import java.util.Date;
 import java.util.HashMap;
 
 import java.util.Iterator;
@@ -38,12 +46,21 @@ import com.google.caliper.memory.ObjectGraphMeasurer;
 public class Manager
 {
 
+	private static final Kind<?> ENTRY_CREATE = null;
 	/*----------------------------
 	  structure
 	----------------------------*/
 	static CommandLine line;
 	static Ini ini;
 	static boolean weiterlaufen = true;
+	static boolean pradar = true;
+	
+	static Double managerid = null;
+	
+	static java.io.File fileBinary = null;
+	
+	static WatchService watcher = null;
+	static Map<WatchKey,Path> keys = new HashMap<WatchKey,Path>();
 
 	
 	/*----------------------------
@@ -212,9 +229,7 @@ public class Manager
 			int loop_period_seconds = rand.nextInt((17 - 12) + 1) + 12;
 			System.err.println("loop period is randomly set to: "+loop_period_seconds);
 			
-			double managerid = p1.genManagerid();
-	
-			java.io.File fileBinary = new java.io.File(line.getOptionValue("instance"));
+			fileBinary = new java.io.File(line.getOptionValue("instance"));
 			String pathBinary = "";
 			
 			if (fileBinary.exists())
@@ -259,6 +274,8 @@ public class Manager
 			// prozessinstanz einlesen
 			p1.setInfilebinary(pathBinary);
 			
+			managerid = p1.genManagerid();
+
 			Process p2;
 			p2 = p1.readBinary();
 			
@@ -289,10 +306,6 @@ public class Manager
 			System.err.println("debug: setting instance to run");
 			p2.run = true;
 	
-			// die letzten festgestellten werte fuer die abarbeitung
-//			int lastStepcount = 0;
-//			int lastStepcountFinishedOrCanceled = 0;
-
 			// pradar checkin
 			if(pradar && p2.run && p2.touchInMillis == 0)
 			{
@@ -305,162 +318,33 @@ public class Manager
 			
 			p2.writeBinary();
 
-			while(weiterlaufen)
-			{
-				// prozess instanz frisch einlesen
-				System.err.println("debug: rereading instance");
-				Process p3 = p2.readBinary();
-				System.err.println("debug: rereading instance done");
-				
-				// 1) timeSerie loadAverage
-				double actLoadAverage = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
-				p3.getTimeSerieLoadAverage().addValue(String.valueOf(actLoadAverage));
-				
-				// 2) die groesse des binary-files festhalten
-				long fileSizeInKB = fileBinary.length() / 1024;
-				
-				System.err.println("debug: file size is now " + String.valueOf(fileSizeInKB) + " kB");
-				p3.getTimeSerieBinarySize().addValue(String.valueOf(fileSizeInKB));
-				//p3.fileBinary.length() / 1024;
-				
-				// DEBUGGING
-				// 3) die groesse der einzelnen steps festhalten
-				String dieGroessenAlsString = "";
-				for(Step actStep : p3.getStep())
-				{
-					dieGroessenAlsString += "   " + actStep.getName() + "=" + ObjectGraphMeasurer.measure(actStep);
-				}
-				p3.getTimeSerieStepSize().addValue(dieGroessenAlsString);
-				// DEBUGGING
-				
-				weiterlaufen = p3.run;
-				
-				p3.log("debug", "manager "+managerid+": actual infilexml is: "+p3.getInfilexml());
-				p3.log("debug", "manager "+managerid+": reading binary file: "+p2.getInfilebinary());
-				// die manager-id mit eigener vergleichen. wenn nicht gleich, dann beenden.
-				if (!(p3.getManagerid() == managerid))
-				{
-	//					p3.log("warn", "manager "+managerid+": it appears that another manager (id: "+p3.getManagerid()+") took over. killing myself. bye.");
-					System.err.println("it appears another instance of manager (id: "+p3.getManagerid()+") took over. so i'm (id: "+managerid+") not longer needed. killing myself. byebye.");
-					System.exit(0);
-				}
-	
-				// prozess laufen lassen
-				p3.doIt(ini.get("apps", "pkraft-syscall"), ini.get("apps", "pkraft-manager"), ini.get("process", "domain-installation-directory"));
+			// einen neuen Watchservice erstellen
+			watcher = FileSystems.getDefault().newWatchService();
 
-				// pradar aktualisieren
-				if(pradar)
-				{
-	
-//					lastStepcount =  p3.getStep().size();
-//					lastStepcountFinishedOrCanceled = p3.getStepFinishedOrCanceled().size();
+			// process weiter schubsen
+			pushProcessAsFarAsPossible(p2);
 
-					// pradar aktualisieren
-					pradarAttend(p3.getRootdir()+"/process.pmb");
-					
-//					p3.log("info", "manager "+managerid+": pradar progress  "+lastStepcountFinishedOrCanceled+"/"+lastStepcount);
-//					pradarProgress(p3.getId(), p3.getName(), getPid(), lastStepcountFinishedOrCanceled, lastStepcount);
-
-					// evtl. stoeren sich zwei kurz aufeinander folgende aufrufe von pradar...
-//					Thread.sleep(500);
-					
-					// finished
-					if(p3.getStatus().equals("finished"))
-					{
-						System.err.println("debug: status is finished");
-
-						// wenn der prozess den status 'finished' hat, soll dieses programm beendet werden
-						p3.run = false;
-						p3.log("info", "manager "+managerid+": process instance is finished. goodbye from manager id "+p3.getManagerid());
-						p3.setTimeOfProcessFinishedOrError(System.currentTimeMillis());
-						
-						// pradar aktualisieren
-//						pradarAttend(p3.getRootdir()+"/process.pmb");
-
-//						// pradar checkout
-//						p3.log("info", "manager "+managerid+": pradar checkout id="+p3.getId()+", process="+p3.getName()+", exitcode=0");
-//						pradarCheckout(p3.getId(), p3.getName(), "0");
-						
-//						// die timeserie rausschreiben
-//						p2.getTimeSerieLoadAverage().writeFile(p2.getRootdir() + "/.serieLoadAverage.txt");
-					}
-					
-					// error
-					else if(p3.getStatus().equals("error"))
-					{
-						System.err.println("debug: status is error");
-						p3.run = false;
-						p3.log("info", "error in process detected. setting run = false");
-						p3.log("info", "stopping manager "+p2.getManagerid());
-						p3.setTimeOfProcessFinishedOrError(System.currentTimeMillis());
-
-						// errorcode string erzeugen
-						String exitCode = "error-in-steps:";
-						for(Step actStep : p3.getStepError())
-						{
-							exitCode = exitCode + "," + actStep.getName();
-						}
-
-						// pradar aktualisieren
-//						pradarAttend(p2.getRootdir()+"/process.pmb");
-
-//						// pradar checkout
-//						p3.log("debug", "pradar-checkout id="+p3.getId()+", process="+p3.getName()+", exitcode="+exitCode);
-//						pradarCheckout(p3.getId(), p3.getName(), exitCode);
-
-//						// die timeserie rausschreiben
-//						p2.getTimeSerieLoadAverage().writeFile(p2.getRootdir() + "/.serieLoadAverage.txt");
-					}
-
-//					// error
-//					else if(p3.getStatus().equals("paused"))
-//					{
-//						p3.run = false;
-//						p3.log("info", "process has been paused. setting run = false");
-//						p2.log("info", "stopping manager "+p2.getManagerid());
+//			try
+//			{
+//				// der thread soll so lange schlafen, wie die periode lang ist. die schlafdauer wird mit der anzahl multipliziert, wie oft das loadAverage zu hoch war (max 5)
+//				int faktorForPeriod = Math.min(10, p2.counterLoadAverageTooHigh + 1);
 //
-//						// errorcode string erzeugen
-//						String exitCode = "error in step(s):";
-//						for(Step actStep : p3.getStepError())
-//						{
-//							exitCode = exitCode + " " + actStep.getName();
-//						}
+//				int secondsToSleep = loop_period_seconds * faktorForPeriod;
+//				System.err.println("debug: sleeping for " + secondsToSleep + " seconds");
+//				
+//				int millisecondsToSleep = secondsToSleep*1000;
+//				System.err.println("debug: sleeping for " + millisecondsToSleep + " milliseconds");
+//				
+//				Thread.sleep(millisecondsToSleep);
+//			}
+//			catch (InterruptedException e)
+//			{
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
 //
-//						// pradar checkout
-//						pradarCheckout(p3.getId(), p3.getName(), exitCode);
-//					}
-				}
-				
-				updateFile(p3);
-	
-				if(p3.run == false)
-				{
-					System.err.println("debug: exiting");
-					System.exit(0);
-				}
-
-				try
-				{
-					// der thread soll so lange schlafen, wie die periode lang ist. die schlafdauer wird mit der anzahl multipliziert, wie oft das loadAverage zu hoch war (max 5)
-					int faktorForPeriod = Math.min(10, p3.counterLoadAverageTooHigh + 1);
-
-					int secondsToSleep = loop_period_seconds * faktorForPeriod;
-					System.err.println("debug: sleeping for " + secondsToSleep + " seconds");
-					
-					int millisecondsToSleep = secondsToSleep*1000;
-					System.err.println("debug: sleeping for " + millisecondsToSleep + " milliseconds");
-					
-					Thread.sleep(millisecondsToSleep);
-				}
-				catch (InterruptedException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-
-					// ausgabe in das debugLogFile
-					exiterException(actualProcess.getOutfilebinary(), e);
-				}
-			}
+//				// ausgabe in das debugLogFile
+//				exiterException(actualProcess.getOutfilebinary(), e);
+//			}
 		}
 		catch(Exception e)
 		{
@@ -494,45 +378,6 @@ public class Manager
 			exiterException(pathToInstance, e);
 		}
 	}
-	
-//	private static void pradarProgress(String instanceId, String processName, String pid, int lastStepcountFinishedOrCanceled, int lastStepcount)
-//	{
-//		String[] argsForProgress = {ini.get("apps", "pradar-progress"), "-id="+instanceId, "-process="+processName, "-pid="+pid, "-completed="+lastStepcountFinishedOrCanceled, "-stepcount="+lastStepcount};
-//		try
-//		{
-//			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
-//		}
-//		catch (IOException e)
-//		{
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	private static void pradarCheckin(String instanceId, String processName, String processVersion, String id2, String parentId, String pid, String resource)
-//	{
-//		String[] argsForProgress = {ini.get("apps", "pradar-checkin"), "-id="+instanceId, "-process="+processName, "-processversion="+processVersion, "-id2="+id2, "-parentid="+parentId, "-pid="+pid, "-resource="+resource};
-//		try
-//		{
-//			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
-//		}
-//		catch (IOException e)
-//		{
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	private static void pradarCheckout(String instanceId, String processName, String exitCode)
-//	{
-//		String[] argsForProgress = {ini.get("apps", "pradar-checkout"), "-id="+instanceId, "-process="+processName, "-exitcode=\""+exitCode+"\""};
-//		try
-//		{
-//			java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(argsForProgress, " "));
-//		}
-//		catch (IOException e)
-//		{
-//			e.printStackTrace();
-//		}
-//	}
 	
 	/**
 	 * ermittelt die pid dieses manager-laufs
@@ -593,6 +438,196 @@ public class Manager
 		// die groesse aller steps rausschreiben 
 	}
 
+	/**
+	 * es soll so lange der process weitergetrieben werden, bis es keine veraenderung in den stati mehr gibt
+	 */
+	private static void pushProcessAsFarAsPossible(Process p)
+	{
+		// falls managerIds nicht zusammenpassen, soll beendet werden
+		if(!managerid.equals(p.getManagerid()))
+		{
+			System.err.println("i'm manager "+managerid+" - another instance of pkraft-manager took over " + p.getManagerid() + ". killing myself.");
+			System.exit(0);
+		}
+		
+		// prozess instanz frisch einlesen
+		System.err.println("debug: rereading instance");
+		Process process = p.readBinary();
+		System.err.println("debug: rereading instance done");
+		
+		// 1) timeSerie loadAverage
+		double actLoadAverage = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
+		process.getTimeSerieLoadAverage().addValue(String.valueOf(actLoadAverage));
+		
+		// 2) die groesse des binary-files festhalten
+		long fileSizeInKB = fileBinary.length() / 1024;
+		
+		System.err.println("debug: file size is now " + String.valueOf(fileSizeInKB) + " kB");
+		process.getTimeSerieBinarySize().addValue(String.valueOf(fileSizeInKB));
+		//p3.fileBinary.length() / 1024;
+		
+		// DEBUGGING
+		// 3) die groesse der einzelnen steps festhalten
+		String dieGroessenAlsString = "";
+		for(Step actStep : process.getStep())
+		{
+			dieGroessenAlsString += "   " + actStep.getName() + "=" + ObjectGraphMeasurer.measure(actStep);
+		}
+		process.getTimeSerieStepSize().addValue(dieGroessenAlsString);
+		// DEBUGGING
+		
+		process.log("debug", "manager "+managerid+": actual infilexml is: "+process.getInfilexml());
+		process.log("debug", "manager "+managerid+": reading binary file: "+process.getInfilebinary());
+		// die manager-id mit eigener vergleichen. wenn nicht gleich, dann beenden.
+		if (!(process.getManagerid() == managerid))
+		{
+//					p3.log("warn", "manager "+managerid+": it appears that another manager (id: "+p3.getManagerid()+") took over. killing myself. bye.");
+			System.err.println("it appears another instance of manager (id: "+process.getManagerid()+") took over. so i'm (id: "+managerid+") not longer needed. killing myself. byebye.");
+			System.exit(0);
+		}
+
+		boolean imProzessHatSichWasGeaendert = true;
+
+		while(process.run && imProzessHatSichWasGeaendert)
+		{
+			// prozess laufen lassen
+			process.doIt(ini.get("apps", "pkraft-syscall"), ini.get("apps", "pkraft-manager"), ini.get("process", "domain-installation-directory"));
+
+			// hat sich was geaendert?
+			imProzessHatSichWasGeaendert = process.isStepStatusChangedWhileLastDoIt();
+			
+			// pradar aktualisieren
+			pradarAttend(process.getRootdir()+"/process.pmb");
+			
+			// finished
+			if(process.getStatus().equals("finished"))
+			{
+				System.err.println("debug: status is finished");
+
+				// wenn der prozess den status 'finished' hat, soll dieses programm beendet werden
+				process.run = false;
+				process.log("info", "manager "+managerid+": process instance is finished. goodbye from manager id "+process.getManagerid());
+				process.setTimeOfProcessFinishedOrError(System.currentTimeMillis());
+			}
+			
+			// error
+			else if(process.getStatus().equals("error"))
+			{
+				System.err.println("debug: status is error");
+				process.run = false;
+				process.log("info", "error in process detected. setting run = false");
+				process.log("info", "stopping manager "+process.getManagerid());
+				process.setTimeOfProcessFinishedOrError(System.currentTimeMillis());
+
+				// errorcode string erzeugen
+				String exitCode = "error-in-steps:";
+				for(Step actStep : process.getStepError())
+				{
+					exitCode = exitCode + "," + actStep.getName();
+				}
+			}
+		}
+
+		// pradar updaten
+		pradarAttend(process.getInfilebinary());
+		
+		// binary und statistik files updaten
+		updateFile(process);
+
+		// da prozess nicht mehr weiterging, werden watchKeys auf laufende steps erstellt
+		process.log("info", "creating WatchKeys on every working step");
+		createWatchKeysForAllRunningSteps(process);
+	}
+
+	/**
+	 * erstellt fuer jeden running step einen watchkey
+	 * es soll jedes stepverzeichnis mit dem status 'working' observiert werden bis das file ".exit" erscheint
+	 * @param process
+	 */
+	private static void createWatchKeysForAllRunningSteps(Process process)
+	{
+		
+		// Anlegen der WatchKeys fuer jeden laufenden Step
+		for(Step actStep : process.getStep())
+		{
+			if(actStep.getStatus().equals("working"))
+			{
+				Path stepDir = Paths.get(actStep.getAbsdir());
+				try
+				{
+					WatchKey key = stepDir.register(watcher, ENTRY_CREATE);
+					keys.put(key, stepDir);
+				}
+				catch(IOException e)
+				{
+					System.err.println(e);
+				}
+			}
+		}
+		
+		// aufwachen nach spaetestens...
+		int minutes = 5;
+		double abbruchzeitpunkt = System.currentTimeMillis() + (minutes * 60 * 1000);
+		
+		// warten auf ein Signal von einem WatchKey
+		for(;;)
+		{
+			if(System.currentTimeMillis() > abbruchzeitpunkt)
+			{
+				process.log("info", "waking up, because " + minutes + " minutes passed without any action");
+				System.err.println("info: waking up, because " + minutes + " minutes passed without any action");
+				
+				// alle keys loeschen
+				keys = null;
+				
+				// den prozess weiter pushen
+				pushProcessAsFarAsPossible(process);
+				
+				return;
+			}
+			
+			WatchKey key;
+			try
+			{
+				key = watcher.take();
+			}
+			catch (InterruptedException e)
+			{
+				return;
+			}
+			
+			Path dir = keys.get(key);
+			if(dir == null)
+			{
+				System.err.println("WatchKey not recognized!!");
+				continue;
+			}
+			
+			for(WatchEvent<?> event : key.pollEvents())
+			{
+				WatchEvent.Kind kind = event.kind();
+				
+				WatchEvent<Path> ev = (WatchEvent<Path>)event;
+				Path name = ev.context();
+				Path child = dir.resolve(name);
+				
+				if(kind == ENTRY_CREATE)
+				{
+					if(child.endsWith(".exit"))
+					{
+						// alle keys loeschen
+						keys = null;
+
+						// den prozess weiter pushen
+						pushProcessAsFarAsPossible(process);
+						
+						return;
+					}
+				}
+			}
+		}
+	}
+	
 	private static void exiter()
 	{
 		System.out.println("try -help for help.");
