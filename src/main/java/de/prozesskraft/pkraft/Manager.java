@@ -587,6 +587,25 @@ public class Manager
 			if(actStep.getStatus().equals("working"))
 			{
 				Path stepDir = Paths.get(actStep.getAbsdir());
+				try
+				{
+					System.err.println("info: step " + actStep.getName() + " is working -> creating a watchkey for its path " + actStep.getAbsdir());
+					System.err.println("debug: creating...");
+					WatchKey key = stepDir.register(watcher, ENTRY_CREATE);
+					System.err.println("debug: creating...done. putting to the map");
+					keys.put(key, stepDir);
+					System.err.println("debug: creating...done. putting to the map...done");
+				}
+				catch(IOException e)
+				{
+					System.err.println(e);
+				}
+				catch(Exception e)
+				{
+					System.err.println(e);
+				}
+				
+				
 				java.io.File stepDirExitFile = new java.io.File(actStep.getAbsdir() + "/.exit");
 				java.io.File stepDirStatusFile = new java.io.File(actStep.getAbsdir() + "/.status");
 				
@@ -641,24 +660,7 @@ public class Manager
 					}
 				}
 				
-				try
-				{
-					System.err.println("info: step " + actStep.getName() + " is working -> creating a watchkey for its path " + actStep.getAbsdir());
-					System.err.println("debug: creating...");
-					WatchKey key = stepDir.register(watcher, ENTRY_CREATE);
-					System.err.println("debug: creating...done. putting to the map");
-					keys.put(key, stepDir);
-					System.err.println("debug: creating...done. putting to the map...done");
-				}
-				catch(IOException e)
-				{
-					System.err.println(e);
-				}
-				catch(Exception e)
-				{
-					System.err.println(e);
-				}
-				
+
 			}
 		}
 		
