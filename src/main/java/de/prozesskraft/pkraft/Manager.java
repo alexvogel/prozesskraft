@@ -60,7 +60,6 @@ public class Manager
 	
 	static java.io.File fileBinary = null;
 	
-	static WatchService watcher = null;
 	private static final Kind<?> ENTRY_CREATE = null;
 	private static final Kind<?> ENTRY_MODIFY = null;
 	static Map<WatchKey,Path> keys = null;
@@ -321,9 +320,6 @@ public class Manager
 			
 			p2.writeBinary();
 
-			// einen neuen Watchservice erstellen
-			watcher = FileSystems.getDefault().newWatchService();
-
 			// process weiter schubsen
 			pushProcessAsFarAsPossible(p2);
 
@@ -541,18 +537,40 @@ public class Manager
 		// da prozess nicht mehr weiterging, werden watchKeys auf laufende steps erstellt
 		process.log("info", "creating WatchKeys on every working step");
 		System.err.println("info: creating WatchKeys on every working step");
-		createWatchKeysForAllRunningSteps(process);
+		try
+		{
+			createWatchKeysForAllRunningSteps(process);
+		}
+		// falls das scheitert, soll einfach 1 minute gewartet werden
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			System.err.println("error: failed to register file watchers. sleeping 1 minute instead");
+			try {
+				Thread.sleep(60000);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+			
+			// den prozess weiter pushen
+			pushProcessAsFarAsPossible(process);
+		}
 	}
 
 	/**
 	 * erstellt fuer jeden running step einen watchkey
 	 * es soll jedes stepverzeichnis mit dem status 'working' observiert werden bis das file ".exit" erscheint
 	 * @param process
+	 * @throws IOException 
 	 */
-	private static void createWatchKeysForAllRunningSteps(Process process)
+	private static void createWatchKeysForAllRunningSteps(Process process) throws IOException
 	{
 		// einen neuen map erzeugen fuer die watchKeys
 		keys = new HashMap<WatchKey,Path>();
+		
+		WatchService watcher = FileSystems.getDefault().newWatchService();
 		
 		// Anlegen der WatchKeys fuer jeden laufenden Step
 		for(Step actStep : process.getStep())
