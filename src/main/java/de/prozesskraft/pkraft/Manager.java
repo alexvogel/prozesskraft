@@ -591,6 +591,11 @@ public class Manager
 				{
 					System.err.println(e);
 				}
+				catch(Exception e)
+				{
+					System.err.println(e);
+				}
+				
 			}
 		}
 		
