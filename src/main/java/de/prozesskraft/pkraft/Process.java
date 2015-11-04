@@ -99,7 +99,6 @@ implements Serializable
 	private String status = new String();	// waiting/working/finished/broken/paused/abandoned
 	private String baseDir = new java.io.File(".").getAbsolutePath();
 	private double managerid = -1;
-	private Date date = new Date();
 	private String infilebinary = "";
 	private String infilexml = "";
 	private String outfilebinary = "";
@@ -179,7 +178,6 @@ implements Serializable
 		clone.setStatus(this.getStatus());
 		clone.setBaseDir(this.getBaseDir());
 		clone.setManagerid(this.getManagerid());
-		clone.setDate(this.getDate());
 		clone.setInfilebinary(this.getInfilebinary());
 		clone.setInfilexml(this.getInfilexml());
 		clone.setOutfilebinary(this.getOutfilebinary());
@@ -1401,34 +1399,34 @@ implements Serializable
 		return generator.nextDouble();
 	}
 	
-	/*----------------------------
-	  method: stellt den status des prozesses fest. dieser ist abhaengig vom status aller steps
-	  alle steps=finished|cancelled => prozess=finished
-	  step=working => prozess=working
-  	  step=error => prozess=error
-	----------------------------*/
-	public void detStatus ()
-	{
-		String newstatus = "finished";
-		Iterator<Step> iterstep = this.step.iterator();
-		while(iterstep.hasNext())
-		{
-			Step step = iterstep.next();
-			if ((step.getStatus().matches("waiting")) && (!(newstatus.matches("error|working"))))
-			{
-				newstatus = "waiting";
-			}
-			else if ((step.getStatus().matches("initializing|initialized|initialization failed|fanning|fanned|committing|comitted|working|worked")) && (!(newstatus.equals("error"))))
-			{
-				newstatus = "working";
-			}
-			else if (step.getStatus().matches("error"))
-			{
-				newstatus = "error";
-			}
-		}
-		this.setStatus(newstatus);
-	}
+//	/*----------------------------
+//	  method: stellt den status des prozesses fest. dieser ist abhaengig vom status aller steps
+//	  alle steps=finished|cancelled => prozess=finished
+//	  step=working => prozess=working
+//  	  step=error => prozess=error
+//	----------------------------*/
+//	public void detStatus()
+//	{
+//		String newstatus = "finished";
+//		Iterator<Step> iterstep = this.step.iterator();
+//		while(iterstep.hasNext())
+//		{
+//			Step step = iterstep.next();
+//			if ((step.getStatus().matches("waiting")) && (!(newstatus.matches("error|working"))))
+//			{
+//				newstatus = "waiting";
+//			}
+//			else if ((step.getStatus().matches("initializing|initialized|initialization failed|fanning|fanned|committing|comitted|working|worked")) && (!(newstatus.equals("error"))))
+//			{
+//				newstatus = "working";
+//			}
+//			else if (step.getStatus().matches("error"))
+//			{
+//				newstatus = "error";
+//			}
+//		}
+//		this.setStatus(newstatus);
+//	}
 
 	/*----------------------------
 	  method: entferne step aus prozess
@@ -1922,8 +1920,8 @@ implements Serializable
 		{
 			if(this.run)
 			{
-				// wenn der Prozess seit 5 Minuten nicht mehr beruehrt wurde, dann soll status=error sein
-				if( this.getTouchInMillis() > 0 && (System.currentTimeMillis() - this.getTouchInMillis()) > 300000)
+				// wenn der Prozess seit 10 Minuten nicht mehr beruehrt wurde, dann soll status=error sein
+				if( this.getTouchInMillis() > 0 && (System.currentTimeMillis() - this.getTouchInMillis()) > 600000)
 				{
 					status = "abandoned";
 					this.log("error", "instance has been abandoned. last touch has been: " + new Timestamp(this.getTouchInMillis()).toString() + ". now is: " + new Timestamp(System.currentTimeMillis()).toString());
@@ -2043,11 +2041,6 @@ implements Serializable
 	public double getManagerid()
 	{
 		return this.managerid;
-	}
-
-	public Date getDate()
-	{
-		return this.date;
 	}
 
 	public String getInfilebinary()
@@ -2653,11 +2646,11 @@ implements Serializable
 		this.managerid = managerid;
 	}
 
-	public void setDatetonow()
-	{
-		
-		this.date = new Date();
-	}
+//	public void setDatetonow()
+//	{
+//		
+//		this.date = new Date();
+//	}
 
 	public void setInfilebinary(String file)
 	{
@@ -2919,13 +2912,6 @@ implements Serializable
 	 */
 	public void setIdRumpf(String idRumpf) {
 		this.idRumpf = idRumpf;
-	}
-
-	/**
-	 * @param date the date to set
-	 */
-	public void setDate(Date date) {
-		this.date = date;
 	}
 
 	/**
