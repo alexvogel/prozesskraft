@@ -992,7 +992,7 @@ implements Serializable, Cloneable
 		}
 
 		// falls sich nach diesem doIt() der status geaendert hat, soll dies geflaggt werden
-		if(this.getStatus().equals(statusAtBeginOfDoIt))
+		if(!this.getStatus().equals(statusAtBeginOfDoIt))
 		{
 			this.setStatusChangedWhileLastDoIt(true);
 		}
