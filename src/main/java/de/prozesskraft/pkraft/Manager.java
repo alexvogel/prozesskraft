@@ -495,6 +495,7 @@ public class Manager
 
 			// hat sich was geaendert?
 			imProzessHatSichWasGeaendert = process.isStepStatusChangedWhileLastDoIt();
+			System.err.println("debug: did some step changed its status? " + imProzessHatSichWasGeaendert);
 			
 			// pradar aktualisieren
 			pradarAttend(process.getRootdir()+"/process.pmb");
