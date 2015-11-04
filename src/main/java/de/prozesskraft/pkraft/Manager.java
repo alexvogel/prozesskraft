@@ -591,6 +591,10 @@ public class Manager
 				
 				return;
 			}
+			else
+			{
+				System.err.println("info: do not wake up, because " + minutes + " minutes passed without any action");
+			}
 			
 			WatchKey key;
 			try
@@ -611,6 +615,8 @@ public class Manager
 			
 			for(WatchEvent<?> event : key.pollEvents())
 			{
+				System.err.println("debug: poll event " + event.toString());
+
 				WatchEvent.Kind kind = event.kind();
 				
 				WatchEvent<Path> ev = (WatchEvent<Path>)event;
