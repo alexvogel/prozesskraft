@@ -9,7 +9,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
+import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
@@ -46,7 +48,6 @@ import com.google.caliper.memory.ObjectGraphMeasurer;
 public class Manager
 {
 
-	private static final Kind<?> ENTRY_CREATE = null;
 	/*----------------------------
 	  structure
 	----------------------------*/
@@ -60,6 +61,8 @@ public class Manager
 	static java.io.File fileBinary = null;
 	
 	static WatchService watcher = null;
+	private static final Kind<?> ENTRY_CREATE = null;
+	private static final Kind<?> ENTRY_MODIFY = null;
 	static Map<WatchKey,Path> keys = new HashMap<WatchKey,Path>();
 
 	
@@ -225,9 +228,9 @@ public class Manager
 			
 			// die dauer des loops festlegen. Dies soll kein standardwert sein, da sonst bei vielen subprozessen die Prozessorlast stark oszilliert
 			// zwischen 12 und 17 sekunden
-			Random rand = new Random(System.currentTimeMillis());
-			int loop_period_seconds = rand.nextInt((17 - 12) + 1) + 12;
-			System.err.println("loop period is randomly set to: "+loop_period_seconds);
+//			Random rand = new Random(System.currentTimeMillis());
+//			int loop_period_seconds = rand.nextInt((17 - 12) + 1) + 12;
+//			System.err.println("loop period is randomly set to: "+loop_period_seconds);
 			
 			fileBinary = new java.io.File(line.getOptionValue("instance"));
 			String pathBinary = "";
@@ -623,6 +626,46 @@ public class Manager
 						pushProcessAsFarAsPossible(process);
 						
 						return;
+					}
+				}
+				if(kind == ENTRY_CREATE || kind == ENTRY_MODIFY)
+				{
+					if(child.endsWith(".status"))
+					{
+						try
+						{
+							java.util.List<String> statusInhalt = Files.readAllLines(child, Charset.defaultCharset());
+							if(statusInhalt.size() > 0)
+							{
+								String firstLine = statusInhalt.get(0);
+								System.err.println("info: status changed to: " + firstLine);
+
+							
+								// wenn ein finaler status, dann soll manager aufgeweckt werden
+								if(firstLine.equals("error") || firstLine.equals("finished"))
+								{
+									// alle keys loeschen
+									keys = null;
+			
+									// den prozess weiter pushen
+									pushProcessAsFarAsPossible(process);
+									
+									return;
+								}
+							}
+						}
+						catch (IOException e)
+						{
+							// TODO Auto-generated catch block
+							System.err.println("IOException: trying to read file: " + child.toString());
+							e.printStackTrace();
+						}
+						catch (ExceptionInInitializerError e)
+						{
+							System.err.println("ExceptionInInitializerError: trying to read file: " + child.toString());
+							e.printStackTrace();
+						}
+						
 					}
 				}
 			}
