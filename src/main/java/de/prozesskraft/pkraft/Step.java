@@ -66,6 +66,8 @@ implements Serializable, Cloneable
 
 //	private static Logger jlog = Logger.getLogger("de.caegroup.process.step");
 
+	private boolean statusChangedWhileLastDoIt = false;
+	
 	private Timeserie timeSerieStatus = new Timeserie("status");
 
 	// don't clone parent when cloning this
@@ -919,6 +921,11 @@ implements Serializable, Cloneable
 	 */
 	public void doIt(String aufrufProcessSyscall, String aufrufProcessStartinstance, String domainInstallationDirectory)
 	{
+		// status merken
+		String statusAtBeginOfDoIt = this.getStatus();
+		
+		// den flag fuer aenderungen zuruecksetzen
+		this.setStatusChangedWhileLastDoIt(false);
 		
 		if(this.getStatus().equals("finished"))
 		{
@@ -984,6 +991,11 @@ implements Serializable, Cloneable
 			this.commit();
 		}
 
+		// falls sich nach diesem doIt() der status geaendert hat, soll dies geflaggt werden
+		if(this.getStatus().equals(statusAtBeginOfDoIt))
+		{
+			this.setStatusChangedWhileLastDoIt(true);
+		}
 	}
 
 	public void initialize()
@@ -3094,6 +3106,20 @@ implements Serializable, Cloneable
 	 */
 	public void setTimeSerieStatus(Timeserie timeSerieStatus) {
 		this.timeSerieStatus = timeSerieStatus;
+	}
+
+	/**
+	 * @return the statusChangedWhileLastDoIt
+	 */
+	public boolean isStatusChangedWhileLastDoIt() {
+		return statusChangedWhileLastDoIt;
+	}
+
+	/**
+	 * @param statusChangedWhileLastDoIt the statusChangedWhileLastDoIt to set
+	 */
+	public void setStatusChangedWhileLastDoIt(boolean statusChangedWhileLastDoIt) {
+		this.statusChangedWhileLastDoIt = statusChangedWhileLastDoIt;
 	}
 	
 }

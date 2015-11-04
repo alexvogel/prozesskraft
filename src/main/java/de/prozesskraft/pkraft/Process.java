@@ -121,6 +121,8 @@ implements Serializable
 	private String parentid = "0";
 	public String stepnameOfParent = null;
 	
+	private boolean stepStatusChangedWhileLastDoIt = true;
+	
 	private Long timeOfLastStepStart = System.currentTimeMillis()-60000;
 	private Long timeOfProcessCreated = System.currentTimeMillis();
 	private Long timeOfProcessFinishedOrError = 0L;
@@ -1481,6 +1483,8 @@ implements Serializable
 	 */
 	public void doIt(String aufrufProcessSyscall, String aufrufProcessManager, String domainInstallationDirectory)
 	{
+		this.setStepStatusChangedWhileLastDoIt(false);
+		
 		if(this.run)
 		{
 			if(this.getStatus().equals("error") || this.getStatus().equals("finished"))
@@ -1494,6 +1498,12 @@ implements Serializable
 				if(!(actStep.getStatus().equals("finished"))  ||  !(actStep.getStatus().equals("cancelled")) ||  !(actStep.getStatus().equals("error")))
 				{
 					actStep.doIt(aufrufProcessSyscall, aufrufProcessManager, domainInstallationDirectory);
+					
+					// aktualisieren des floags ob sich etwas veraendert hat im letzten durchlauf
+					if(actStep.isStatusChangedWhileLastDoIt())
+					{
+						this.setStepStatusChangedWhileLastDoIt(true);
+					}
 				}
 			}
 		}
@@ -3014,6 +3024,20 @@ implements Serializable
 	 */
 	public void setTimeSerieStepSize(Timeserie timeSerieStepSize) {
 		this.timeSerieStepSize = timeSerieStepSize;
+	}
+
+	/**
+	 * @return the stepStatusChangedWhileLastDoIt
+	 */
+	public boolean isStepStatusChangedWhileLastDoIt() {
+		return stepStatusChangedWhileLastDoIt;
+	}
+
+	/**
+	 * @param stepStatusChangedWhileLastDoIt the stepStatusChangedWhileLastDoIt to set
+	 */
+	public void setStepStatusChangedWhileLastDoIt(boolean stepStatusChangedWhileLastDoIt) {
+		this.stepStatusChangedWhileLastDoIt = stepStatusChangedWhileLastDoIt;
 	}
 
 }
