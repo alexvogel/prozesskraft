@@ -18,6 +18,7 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import static java.nio.file.StandardWatchEventKinds.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,8 +61,6 @@ public class Manager
 	
 	static java.io.File fileBinary = null;
 	
-	private static final Kind<?> ENTRY_CREATE = null;
-	private static final Kind<?> ENTRY_MODIFY = null;
 	static Map<WatchKey,Path> keys = null;
 
 	
