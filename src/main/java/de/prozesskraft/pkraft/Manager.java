@@ -578,6 +578,56 @@ public class Manager
 			{
 				System.err.println("info: step " + actStep.getName() + " is working -> creating a watchkey for its path " + actStep.getAbsdir());
 				Path stepDir = Paths.get(actStep.getAbsdir());
+				java.io.File stepDirExitFile = new java.io.File(actStep.getAbsdir() + "/.exit");
+				java.io.File stepDirStatusFile = new java.io.File(actStep.getAbsdir() + "/.status");
+				
+				// falls die datei bereits existiert, wird sofort erneut der Prozess weitergeschoben
+				// dies ist dann der fall, wenn ein step gestartet wurde, und danach der manager neu gestartet wurde
+				if(stepDirExitFile.exists())
+				{
+					// alle keys loeschen
+					keys = null;
+
+					// den prozess weiter pushen
+					pushProcessAsFarAsPossible(process);
+				}
+				// falls der step ein process ist, bibts dort kein .exit file sondern ein .status file
+				else if(stepDirStatusFile.exists())
+				{
+					try
+					{
+						java.util.List<String> statusInhalt = Files.readAllLines(stepDirStatusFile.toPath(), Charset.defaultCharset());
+						if(statusInhalt.size() > 0)
+						{
+							String firstLine = statusInhalt.get(0);
+							System.err.println("info: status changed to: " + firstLine);
+
+						
+							// wenn ein finaler status, dann soll manager aufgeweckt werden
+							if(firstLine.equals("error") || firstLine.equals("finished"))
+							{
+								System.err.println("info: waking up, because status changed to: " + firstLine);
+								// alle keys loeschen
+								keys = null;
+		
+								// den prozess weiter pushen
+								pushProcessAsFarAsPossible(process);
+							}
+						}
+					}
+					catch (IOException e)
+					{
+						// TODO Auto-generated catch block
+						System.err.println("IOException: trying to read file: " + stepDirStatusFile.getAbsolutePath());
+						e.printStackTrace();
+					}
+					catch (ExceptionInInitializerError e)
+					{
+						System.err.println("ExceptionInInitializerError: trying to read file: " + stepDirStatusFile.getAbsolutePath());
+						e.printStackTrace();
+					}
+				}
+				
 				try
 				{
 					System.err.println("debug: creating...");
@@ -603,7 +653,7 @@ public class Manager
 		// aufwachen nach spaetestens...
 		int minutes = 5;
 		double abbruchzeitpunkt = System.currentTimeMillis() + (minutes * 60 * 1000);
-		
+
 		// warten auf ein Signal von einem WatchKey
 		for(;;)
 		{
@@ -618,8 +668,6 @@ public class Manager
 				
 				// den prozess weiter pushen
 				pushProcessAsFarAsPossible(process);
-				
-				return;
 			}
 			else
 			{
@@ -645,14 +693,16 @@ public class Manager
 			
 			for(WatchEvent<?> event : key.pollEvents())
 			{
-				System.err.println("debug: poll event " + event.toString());
+				System.err.println("debug: poll event " + event);
 
 				WatchEvent.Kind kind = event.kind();
 				
 				WatchEvent<Path> ev = (WatchEvent<Path>)event;
 				Path name = ev.context();
+				System.err.println("debug: poll context " + name);
 				Path child = dir.resolve(name);
-				
+				System.err.println("debug: poll child " + child);
+
 				if(kind == ENTRY_CREATE)
 				{
 					if(child.endsWith(".exit"))
@@ -664,8 +714,6 @@ public class Manager
 
 						// den prozess weiter pushen
 						pushProcessAsFarAsPossible(process);
-						
-						return;
 					}
 				}
 				if(kind == ENTRY_CREATE || kind == ENTRY_MODIFY)
@@ -690,8 +738,6 @@ public class Manager
 			
 									// den prozess weiter pushen
 									pushProcessAsFarAsPossible(process);
-									
-									return;
 								}
 							}
 						}
