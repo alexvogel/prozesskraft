@@ -398,9 +398,9 @@ public class Manager
 		System.err.println("relocation done");
 
 		// die prozess instanz schreiben
-		process.setDatetonow();
+//		process.setDatetonow();
 		process.touch();
-		process.detStatus();
+//		process.detStatus();
 		process.writeBinary();
 
 		// die timeserie(n) rausschreiben
