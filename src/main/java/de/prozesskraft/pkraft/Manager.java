@@ -485,9 +485,13 @@ public class Manager
 		}
 
 		boolean imProzessHatSichWasGeaendert = true;
+		System.err.println("debug: variable imProzessHatSichWasGeaendert manuell gesetzt auf " + imProzessHatSichWasGeaendert);
+
 
 		while(process.run && imProzessHatSichWasGeaendert)
 		{
+			System.err.println("debug: deshalb wird die while schleife erst mal durchlaufen");
+
 			// prozess laufen lassen
 			process.doIt(ini.get("apps", "pkraft-syscall"), ini.get("apps", "pkraft-manager"), ini.get("process", "domain-installation-directory"));
 
@@ -576,7 +580,6 @@ public class Manager
 		{
 			if(actStep.getStatus().equals("working"))
 			{
-				System.err.println("info: step " + actStep.getName() + " is working -> creating a watchkey for its path " + actStep.getAbsdir());
 				Path stepDir = Paths.get(actStep.getAbsdir());
 				java.io.File stepDirExitFile = new java.io.File(actStep.getAbsdir() + "/.exit");
 				java.io.File stepDirStatusFile = new java.io.File(actStep.getAbsdir() + "/.status");
@@ -585,6 +588,8 @@ public class Manager
 				// dies ist dann der fall, wenn ein step gestartet wurde, und danach der manager neu gestartet wurde
 				if(stepDirExitFile.exists())
 				{
+					System.err.println("info: .exit file already exists -> shortcutting to pushing the process");
+
 					// alle keys loeschen
 					keys = null;
 
@@ -594,6 +599,7 @@ public class Manager
 				// falls der step ein process ist, bibts dort kein .exit file sondern ein .status file
 				else if(stepDirStatusFile.exists())
 				{
+					System.err.println("info: .status file already exists.");
 					try
 					{
 						java.util.List<String> statusInhalt = Files.readAllLines(stepDirStatusFile.toPath(), Charset.defaultCharset());
@@ -603,10 +609,11 @@ public class Manager
 							System.err.println("info: status changed to: " + firstLine);
 
 						
+							System.err.println("info: .status file contains status " + firstLine);
 							// wenn ein finaler status, dann soll manager aufgeweckt werden
 							if(firstLine.equals("error") || firstLine.equals("finished"))
 							{
-								System.err.println("info: waking up, because status changed to: " + firstLine);
+								System.err.println("info: --> shortcutting to pushing process");
 								// alle keys loeschen
 								keys = null;
 		
@@ -630,6 +637,7 @@ public class Manager
 				
 				try
 				{
+					System.err.println("info: step " + actStep.getName() + " is working -> creating a watchkey for its path " + actStep.getAbsdir());
 					System.err.println("debug: creating...");
 					WatchKey key = stepDir.register(watcher, ENTRY_CREATE);
 					System.err.println("debug: creating...done. putting to the map");
