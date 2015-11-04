@@ -540,6 +540,7 @@ public class Manager
 
 		// da prozess nicht mehr weiterging, werden watchKeys auf laufende steps erstellt
 		process.log("info", "creating WatchKeys on every working step");
+		System.err.println("info: creating WatchKeys on every working step");
 		createWatchKeysForAllRunningSteps(process);
 	}
 
@@ -556,6 +557,7 @@ public class Manager
 		{
 			if(actStep.getStatus().equals("working"))
 			{
+				System.err.println("info: step " + actStep.getName() + " is working -> creating a watchkey for its path " + actStep.getAbsdir());
 				Path stepDir = Paths.get(actStep.getAbsdir());
 				try
 				{
@@ -619,6 +621,8 @@ public class Manager
 				{
 					if(child.endsWith(".exit"))
 					{
+						System.err.println("info: waking up, because file created: " + child.toString());
+
 						// alle keys loeschen
 						keys = null;
 
@@ -644,6 +648,7 @@ public class Manager
 								// wenn ein finaler status, dann soll manager aufgeweckt werden
 								if(firstLine.equals("error") || firstLine.equals("finished"))
 								{
+									System.err.println("info: waking up, because status changed to: " + firstLine);
 									// alle keys loeschen
 									keys = null;
 			
