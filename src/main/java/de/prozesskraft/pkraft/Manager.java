@@ -246,9 +246,7 @@ public class Manager
 					System.err.println(new Timestamp(System.currentTimeMillis()) + ":----- waking timerthread -----");
 					System.err.println("last process push was: " + new Timestamp(lastRun));
 					
-					Process p = new Process();
-					p.setInfilebinary(line.getOptionValue("instance"));
-					pushProcessAsFarAsPossible(p, true);
+					pushProcessAsFarAsPossible(line.getOptionValue("instance"), true);
 					
 					System.err.println(new Timestamp(System.currentTimeMillis()) + ":----- end timerthread -----");
 				}
@@ -365,7 +363,7 @@ public class Manager
 			p2.writeBinary();
 
 			// process weiter schubsen
-			pushProcessAsFarAsPossible(p2, false);
+			pushProcessAsFarAsPossible(pathBinary, false);
 
 //			try
 //			{
@@ -485,23 +483,25 @@ public class Manager
 	/**
 	 * es soll so lange der process weitergetrieben werden, bis es keine veraenderung in den stati mehr gibt
 	 */
-	private static void pushProcessAsFarAsPossible(Process p, boolean onlyPush)
+	private static void pushProcessAsFarAsPossible(String pathBinary, boolean onlyPush)
 	{
 		// zeitmarker setzen fuer timerThread
 		lastRun = System.currentTimeMillis();
 		
+		// prozess instanz frisch einlesen
+		System.err.println("debug: rereading instance");
+		Process p1 = new Process();
+		p1.setInfilebinary(pathBinary);
+		Process process = p1.readBinary();
+		System.err.println("debug: rereading instance done");
+		
 		// falls managerIds nicht zusammenpassen, soll beendet werden
-		if(!managerid.equals(p.getManagerid()))
+		if(!managerid.equals(process.getManagerid()))
 		{
-			System.err.println("i'm manager "+managerid+" - another instance of pkraft-manager took over " + p.getManagerid() + ". killing myself.");
+			System.err.println("i'm manager "+managerid+" - another instance of pkraft-manager took over " + process.getManagerid() + ". killing myself.");
 			exit = true;
 			System.exit(0);
 		}
-		
-		// prozess instanz frisch einlesen
-		System.err.println("debug: rereading instance");
-		Process process = p.readBinary();
-		System.err.println("debug: rereading instance done");
 		
 		// beenden, falls process.run == false ist
 		if(!process.run)
@@ -668,7 +668,7 @@ public class Manager
 					keys = null;
 
 					// den prozess weiter pushen
-					pushProcessAsFarAsPossible(process, false);
+					pushProcessAsFarAsPossible(process.getRootdir()+"/process.pmb", false);
 				}
 				// falls der step ein process ist, bibts dort kein .exit file sondern ein .status file
 				else if(stepDirStatusFile.exists())
@@ -692,7 +692,7 @@ public class Manager
 								keys = null;
 		
 								// den prozess weiter pushen
-								pushProcessAsFarAsPossible(process, false);
+								pushProcessAsFarAsPossible(process.getRootdir()+"/process.pmb", false);
 							}
 						}
 					}
@@ -758,7 +758,7 @@ public class Manager
 						keys = null;
 
 						// den prozess weiter pushen
-						pushProcessAsFarAsPossible(process, false);
+						pushProcessAsFarAsPossible(process.getRootdir()+"/process.pmb", false);
 					}
 				}
 				if(kind == ENTRY_CREATE || kind == ENTRY_MODIFY)
@@ -782,7 +782,7 @@ public class Manager
 									keys = null;
 			
 									// den prozess weiter pushen
-									pushProcessAsFarAsPossible(process, false);
+									pushProcessAsFarAsPossible(process.getRootdir()+"/process.pmb", false);
 								}
 							}
 						}
