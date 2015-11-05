@@ -228,7 +228,8 @@ public class Manager
 			public void run() {
 				try
 				{
-					Thread.sleep(10 * 60 * 1000);
+					System.err.println(new Timestamp(System.currentTimeMillis()) + ":----- start timerthread -----");
+					Thread.sleep(1 * 60 * 1000);
 				}
 				catch (NumberFormatException e)
 				{
@@ -240,9 +241,9 @@ public class Manager
 				}
 
 				// war der letzte zugriff laenger als 10 minuten her? Dann Prozess pushen
-				if((System.currentTimeMillis() - lastRun) > (10 * 60 * 1000) )
+//				if((System.currentTimeMillis() - lastRun) > (1 * 60 * 1000) )
 				{
-					System.err.println(new Timestamp(System.currentTimeMillis()) + ":----- start timerthread -----");
+					System.err.println(new Timestamp(System.currentTimeMillis()) + ":----- waking timerthread -----");
 					System.err.println("last process push was: " + new Timestamp(lastRun));
 					
 					Process p = new Process();
