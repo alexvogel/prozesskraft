@@ -175,12 +175,30 @@ implements Serializable, Cloneable
 					{
 						this.log("info", "files are not the same. will copy source="+quellFile.getAbsolutePath()+", destination="+zielFile.getAbsolutePath());
 
-						// urspruenglich eine kopie
-						FileUtils.copyFile(quellFile, zielFile, true);
+						// 1a) urspruenglich eine kopie
+//						FileUtils.copyFile(quellFile, zielFile, true);
 
-						// alternativ einen hardlink (geringerer aufwand)
+						// 1b) alternativ einen hardlink (geringerer aufwand)
+						// funktioniert nicht zwischen files auf verschiedenen filesystemen
+						// z.B. beim committen der hinterlegten Files nach rootStep werden die files nicht ins rootdir kopiert, sondern an ihrem ort belassen
+						// diese files befinden sich im installationsverzeichnis //share/ams/..... dies ist ein anderes filesystem!
 //						zielFile.getParentFile().mkdirs();
 //						Files.createLink(zielFile.toPath(), quellFile.toPath());
+						
+						// 1c) alternativ mit softlinks
+						try
+						{
+							Files.createSymbolicLink(quellFile.toPath(), zielFile.toPath());
+						}
+						catch (IOException x)
+						{
+							System.err.println(x);
+						}
+						catch (UnsupportedOperationException x)
+						{
+							// Some file systems do not support symbolic links.
+							System.err.println(x);
+						}
 						
 						// vermerken der neuen position als echte fileposition
 						this.setRealposition(this.getAbsfilename());
