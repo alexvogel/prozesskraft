@@ -231,7 +231,7 @@ public class Manager
 					try
 					{
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: start");
-						Thread.sleep(10 * 60 * 1000);
+						Thread.sleep(1 * 60 * 1000);
 					}
 					catch (NumberFormatException e)
 					{
@@ -243,9 +243,9 @@ public class Manager
 					}
 	
 					// war der letzte zugriff laenger als 10 minuten her? Dann Prozess pushen
-					if((System.currentTimeMillis() - lastRun) > (10 * 60 * 1000) )
+					if((System.currentTimeMillis() - lastRun) > (1 * 60 * 1000) )
 					{
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 10 minutes ago at " + new Timestamp(lastRun));
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 1 minutes ago at " + new Timestamp(lastRun));
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: waking up");
 						System.err.println("last process push was: " + new Timestamp(lastRun));
 						
@@ -255,7 +255,7 @@ public class Manager
 					}
 					else
 					{
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been LESS than 10 minutes ago at " + new Timestamp(lastRun));
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been LESS than 1 minutes ago at " + new Timestamp(lastRun));
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: going to sleep again");
 						
 					}
