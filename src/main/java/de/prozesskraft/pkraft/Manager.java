@@ -492,6 +492,7 @@ public class Manager
 		System.err.println("debug: rereading instance");
 		Process p1 = new Process();
 		p1.setInfilebinary(pathBinary);
+		p1.setOutfilebinary(pathBinary);
 		Process process = p1.readBinary();
 		System.err.println("debug: rereading instance done");
 		
