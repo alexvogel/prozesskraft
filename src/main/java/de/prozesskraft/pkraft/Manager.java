@@ -58,7 +58,8 @@ public class Manager
 	static boolean pradar = true;
 	
 	static Double managerid = null;
-	
+	volatile static Long lastRun = null;
+	volatile static boolean exit = false;
 	static java.io.File fileBinary = null;
 	
 	static Map<WatchKey,Path> keys = null;
@@ -110,6 +111,7 @@ public class Manager
 		{
 			System.err.println("ini file does not exist: "+inifile.getAbsolutePath());
 			System.exit(1);
+			exit = true;
 		}
 
 		/*----------------------------
@@ -174,6 +176,7 @@ public class Manager
 		{
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("manager", options);
+			exit = true;
 			System.exit(0);
 		}
 		
@@ -182,6 +185,7 @@ public class Manager
 			System.out.println("author:  info@prozesskraft.de");
 			System.out.println("version: [% version %]");
 			System.out.println("date:    [% date %]");
+			exit = true;
 			System.exit(0);
 		}
 		
@@ -211,6 +215,7 @@ public class Manager
 		// abbruch, wenn lizenz nicht valide
 		if (!lic.isValid())
 		{
+			exit = true;
 			System.exit(1);
 		}
 		
@@ -218,12 +223,50 @@ public class Manager
 		  business logic
 		----------------------------*/
 		
+		// einen timer thread erstellen, der regelmaessig den prozess aufweckt, auch wenn sehr langlaufende steps gerade aktiv sind
+		new Thread(new Runnable() {
+			public void run() {
+				try
+				{
+					Thread.sleep(10 * 60 * 1000);
+				}
+				catch (NumberFormatException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				// war der letzte zugriff laenger als 10 minuten her? Dann Prozess pushen
+				if((System.currentTimeMillis() - lastRun) > (10 * 60 * 1000) )
+				{
+					System.out.println(new Timestamp(System.currentTimeMillis()) + ":----- start timerthread -----");
+					System.out.println("last process push was: " + new Timestamp(lastRun));
+					
+					Process p = new Process();
+					p.setInfilebinary(line.getOptionValue("instance"));
+					pushProcessAsFarAsPossible(p, true);
+					
+					System.out.println(new Timestamp(System.currentTimeMillis()) + ":----- end timerthread -----");
+				}
+
+				if(exit)
+				{
+					System.exit(0);
+				}
+			}
+		}).start();
+				
+		
+		
 		Process actualProcess = null;
 		try
 		{
 
 			Process p1 = new Process();
-			
+
 			// die dauer des loops festlegen. Dies soll kein standardwert sein, da sonst bei vielen subprozessen die Prozessorlast stark oszilliert
 			// zwischen 12 und 17 sekunden
 //			Random rand = new Random(System.currentTimeMillis());
@@ -269,6 +312,7 @@ public class Manager
 //					pradarCheckout(p2.getId(), p2.getName(), "0");
 				}
 
+				exit = true;
 				System.exit(0);
 			}
 			
@@ -320,7 +364,7 @@ public class Manager
 			p2.writeBinary();
 
 			// process weiter schubsen
-			pushProcessAsFarAsPossible(p2);
+			pushProcessAsFarAsPossible(p2, false);
 
 //			try
 //			{
@@ -356,6 +400,7 @@ public class Manager
 				exiterException(actualProcess.getOutfilebinary(), e);
 
 			}
+			exit = true;
 
 			System.exit(10);
 		}
@@ -439,12 +484,16 @@ public class Manager
 	/**
 	 * es soll so lange der process weitergetrieben werden, bis es keine veraenderung in den stati mehr gibt
 	 */
-	private static void pushProcessAsFarAsPossible(Process p)
+	private static void pushProcessAsFarAsPossible(Process p, boolean onlyPush)
 	{
+		// zeitmarker setzen fuer timerThread
+		lastRun = System.currentTimeMillis();
+		
 		// falls managerIds nicht zusammenpassen, soll beendet werden
 		if(!managerid.equals(p.getManagerid()))
 		{
 			System.err.println("i'm manager "+managerid+" - another instance of pkraft-manager took over " + p.getManagerid() + ". killing myself.");
+			exit = true;
 			System.exit(0);
 		}
 		
@@ -457,6 +506,7 @@ public class Manager
 		if(!process.run)
 		{
 			System.err.println("info: process manager exits, because process.run is false");
+			exit = true;
 			System.exit(0);
 		}
 			
@@ -488,6 +538,7 @@ public class Manager
 		{
 //					p3.log("warn", "manager "+managerid+": it appears that another manager (id: "+p3.getManagerid()+") took over. killing myself. bye.");
 			System.err.println("it appears another instance of manager (id: "+process.getManagerid()+") took over. so i'm (id: "+managerid+") not longer needed. killing myself. byebye.");
+			exit = true;
 			System.exit(0);
 		}
 
@@ -544,27 +595,21 @@ public class Manager
 		updateFile(process);
 
 		// da prozess nicht mehr weiterging, werden watchKeys auf laufende steps erstellt
-		process.log("info", "creating WatchKeys on every working step");
-		System.err.println("info: creating WatchKeys on every working step");
-		try
+		if(!onlyPush)
 		{
-			createWatchKeysForAllRunningSteps(process);
-		}
-		// falls das scheitert, soll einfach 1 minute gewartet werden
-		catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			System.err.println("error: failed to register file watchers. sleeping 1 minute instead");
-			try {
-				Thread.sleep(60000);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			process.log("info", "creating WatchKeys on every working step");
+			System.err.println("info: creating WatchKeys on every working step");
+			try
+			{
+				createWatchKeysForAllRunningSteps(process);
 			}
-			e.printStackTrace();
-			
-			// den prozess weiter pushen
-			pushProcessAsFarAsPossible(process);
+			// falls das scheitert, soll einfach 1 minute gewartet werden
+			catch (IOException e)
+			{
+				// TODO Auto-generated catch block
+				System.err.println("error: failed to register file watchers. sleeping 1 minute instead");
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -619,7 +664,7 @@ public class Manager
 					keys = null;
 
 					// den prozess weiter pushen
-					pushProcessAsFarAsPossible(process);
+					pushProcessAsFarAsPossible(process, false);
 				}
 				// falls der step ein process ist, bibts dort kein .exit file sondern ein .status file
 				else if(stepDirStatusFile.exists())
@@ -643,7 +688,7 @@ public class Manager
 								keys = null;
 		
 								// den prozess weiter pushen
-								pushProcessAsFarAsPossible(process);
+								pushProcessAsFarAsPossible(process, false);
 							}
 						}
 					}
@@ -666,30 +711,10 @@ public class Manager
 		
 		process.log("info", "now into the watchloop");
 
-		// aufwachen nach spaetestens...
-		int minutes = 5;
-		double abbruchzeitpunkt = System.currentTimeMillis() + (minutes * 60 * 1000);
-
 		// warten auf ein Signal von einem WatchKey
 		for(;;)
 		{
-			process.log("info", "i'm in the watchloop");
-			if(System.currentTimeMillis() > abbruchzeitpunkt)
-			{
-				process.log("info", "waking up, because " + minutes + " minutes passed without any action");
-				System.err.println("info: waking up, because " + minutes + " minutes passed without any action");
-				
-				// alle keys loeschen
-				keys = null;
-				
-				// den prozess weiter pushen
-				pushProcessAsFarAsPossible(process);
-			}
-			else
-			{
-				System.err.println("info: do not wake up, because less than " + minutes + " minutes passed without any action");
-			}
-			
+
 			WatchKey key;
 			try
 			{
@@ -729,7 +754,7 @@ public class Manager
 						keys = null;
 
 						// den prozess weiter pushen
-						pushProcessAsFarAsPossible(process);
+						pushProcessAsFarAsPossible(process, false);
 					}
 				}
 				if(kind == ENTRY_CREATE || kind == ENTRY_MODIFY)
@@ -753,7 +778,7 @@ public class Manager
 									keys = null;
 			
 									// den prozess weiter pushen
-									pushProcessAsFarAsPossible(process);
+									pushProcessAsFarAsPossible(process, false);
 								}
 							}
 						}
@@ -778,6 +803,7 @@ public class Manager
 	private static void exiter()
 	{
 		System.out.println("try -help for help.");
+		exit = true;
 		System.exit(1);
 	}
 
@@ -797,6 +823,7 @@ public class Manager
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		exit = true;
 		System.exit(1);
 	}
 
