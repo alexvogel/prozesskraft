@@ -226,33 +226,43 @@ public class Manager
 		// einen timer thread erstellen, der regelmaessig den prozess aufweckt, auch wenn sehr langlaufende steps gerade aktiv sind
 		new Thread(new Runnable() {
 			public void run() {
-				try
+				while(!exit)
 				{
-					System.err.println(new Timestamp(System.currentTimeMillis()) + ":----- start timerthread -----");
-					Thread.sleep(1 * 60 * 1000);
+					try
+					{
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: start");
+						Thread.sleep(10 * 60 * 1000);
+					}
+					catch (NumberFormatException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	
+					// war der letzte zugriff laenger als 10 minuten her? Dann Prozess pushen
+					if((System.currentTimeMillis() - lastRun) > (10 * 60 * 1000) )
+					{
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 10 minutes ago at " + new Timestamp(lastRun));
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: waking up");
+						System.err.println("last process push was: " + new Timestamp(lastRun));
+						
+						pushProcessAsFarAsPossible(line.getOptionValue("instance"), true);
+						
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ----- alternative thread: end");
+					}
+					else
+					{
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been LESS than 10 minutes ago at " + new Timestamp(lastRun));
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: going to sleep again");
+						
+					}
 				}
-				catch (NumberFormatException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				// war der letzte zugriff laenger als 10 minuten her? Dann Prozess pushen
-//				if((System.currentTimeMillis() - lastRun) > (1 * 60 * 1000) )
-				{
-					System.err.println(new Timestamp(System.currentTimeMillis()) + ":----- waking timerthread -----");
-					System.err.println("last process push was: " + new Timestamp(lastRun));
-					
-					pushProcessAsFarAsPossible(line.getOptionValue("instance"), true);
-					
-					System.err.println(new Timestamp(System.currentTimeMillis()) + ":----- end timerthread -----");
-				}
-
 				if(exit)
 				{
+					System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: exit");
 					System.exit(0);
 				}
 			}
