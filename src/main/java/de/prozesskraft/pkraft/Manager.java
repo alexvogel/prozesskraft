@@ -242,14 +242,14 @@ public class Manager
 				// war der letzte zugriff laenger als 10 minuten her? Dann Prozess pushen
 				if((System.currentTimeMillis() - lastRun) > (10 * 60 * 1000) )
 				{
-					System.out.println(new Timestamp(System.currentTimeMillis()) + ":----- start timerthread -----");
-					System.out.println("last process push was: " + new Timestamp(lastRun));
+					System.err.println(new Timestamp(System.currentTimeMillis()) + ":----- start timerthread -----");
+					System.err.println("last process push was: " + new Timestamp(lastRun));
 					
 					Process p = new Process();
 					p.setInfilebinary(line.getOptionValue("instance"));
 					pushProcessAsFarAsPossible(p, true);
 					
-					System.out.println(new Timestamp(System.currentTimeMillis()) + ":----- end timerthread -----");
+					System.err.println(new Timestamp(System.currentTimeMillis()) + ":----- end timerthread -----");
 				}
 
 				if(exit)
@@ -556,9 +556,6 @@ public class Manager
 			imProzessHatSichWasGeaendert = process.isStepStatusChangedWhileLastDoIt();
 			System.err.println("debug: did some step changed its status? " + imProzessHatSichWasGeaendert);
 			
-			// pradar aktualisieren
-			pradarAttend(process.getRootdir()+"/process.pmb");
-			
 			// finished
 			if(process.getStatus().equals("finished"))
 			{
@@ -588,12 +585,18 @@ public class Manager
 			}
 		}
 
-		// pradar updaten
-		pradarAttend(process.getInfilebinary());
-		
 		// binary und statistik files updaten
 		updateFile(process);
 
+		// pradar updaten
+		pradarAttend(process.getInfilebinary());
+		
+		if(!process.run)
+		{
+			exit = true;
+			System.exit(0);
+		}
+		
 		// da prozess nicht mehr weiterging, werden watchKeys auf laufende steps erstellt
 		if(!onlyPush)
 		{
