@@ -226,11 +226,12 @@ public class Manager
 		// einen timer thread erstellen, der regelmaessig den prozess aufweckt, auch wenn sehr langlaufende steps gerade aktiv sind
 		new Thread(new Runnable() {
 			public void run() {
+				System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: start");
 				while(!exit)
 				{
 					try
 					{
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: start");
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: sleeping 1 minutes");
 						Thread.sleep(1 * 60 * 1000);
 					}
 					catch (NumberFormatException e)
@@ -247,7 +248,6 @@ public class Manager
 					{
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 1 minutes ago at " + new Timestamp(lastRun));
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: waking up");
-						System.err.println("last process push was: " + new Timestamp(lastRun));
 						
 						pushProcessAsFarAsPossible(line.getOptionValue("instance"), true);
 						
@@ -260,11 +260,10 @@ public class Manager
 						
 					}
 				}
-				if(exit)
-				{
-					System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: exit");
-					System.exit(0);
-				}
+
+				// thread beenden
+				System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: exit");
+				System.exit(0);
 			}
 		}).start();
 				
