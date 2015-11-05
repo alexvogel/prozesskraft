@@ -176,7 +176,7 @@ implements Serializable, Cloneable
 						this.log("info", "files are not the same. will copy source="+quellFile.getAbsolutePath()+", destination="+zielFile.getAbsolutePath());
 
 						// 1a) urspruenglich eine kopie
-//						FileUtils.copyFile(quellFile, zielFile, true);
+						FileUtils.copyFile(quellFile, zielFile, true);
 
 						// 1b) alternativ einen hardlink (geringerer aufwand)
 						// funktioniert nicht zwischen files auf verschiedenen filesystemen
@@ -186,19 +186,19 @@ implements Serializable, Cloneable
 //						Files.createLink(zielFile.toPath(), quellFile.toPath());
 						
 						// 1c) alternativ mit softlinks
-						try
-						{
-							Files.createSymbolicLink(quellFile.toPath(), zielFile.toPath());
-						}
-						catch (IOException x)
-						{
-							System.err.println(x);
-						}
-						catch (UnsupportedOperationException x)
-						{
-							// Some file systems do not support symbolic links.
-							System.err.println(x);
-						}
+//						try
+//						{
+//							Files.createSymbolicLink(quellFile.toPath(), zielFile.toPath());
+//						}
+//						catch (IOException x)
+//						{
+//							System.err.println(x);
+//						}
+//						catch (UnsupportedOperationException x)
+//						{
+//							// Some file systems do not support symbolic links.
+//							System.err.println(x);
+//						}
 						
 						// vermerken der neuen position als echte fileposition
 						this.setRealposition(this.getAbsfilename());
