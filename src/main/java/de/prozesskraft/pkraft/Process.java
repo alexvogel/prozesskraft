@@ -1920,8 +1920,8 @@ implements Serializable
 		{
 			if(this.run)
 			{
-				// wenn der Prozess seit 10 Minuten nicht mehr beruehrt wurde, dann soll status=error sein
-				if( this.getTouchInMillis() > 0 && (System.currentTimeMillis() - this.getTouchInMillis()) > 600000)
+				// wenn der Prozess seit 12 Minuten nicht mehr beruehrt wurde, dann soll status=error sein
+				if( this.getTouchInMillis() > 0 && (System.currentTimeMillis() - this.getTouchInMillis()) > 720000)
 				{
 					status = "abandoned";
 					this.log("error", "instance has been abandoned. last touch has been: " + new Timestamp(this.getTouchInMillis()).toString() + ". now is: " + new Timestamp(System.currentTimeMillis()).toString());
