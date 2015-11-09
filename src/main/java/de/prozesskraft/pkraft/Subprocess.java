@@ -303,7 +303,10 @@ implements Serializable
 					// flag markiert, dass dieser subprocess schon mal gestartet wurde
 					subprocessNeverStartet = false;
 					
-	//				alternativer aufruf
+					// den zeitpunkt des starts festhalten
+					this.getParent().getParent().setTimeOfLastStepStart(System.currentTimeMillis());
+
+//				alternativer aufruf
 	//				java.lang.Process sysproc = Runtime.getRuntime().exec(StringUtils.join(args_for_syscall, " "));
 					
 	//				log("info", "call executed. pid="+sysproc.hashCode());
