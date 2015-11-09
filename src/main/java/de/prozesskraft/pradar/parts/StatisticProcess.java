@@ -26,6 +26,9 @@ import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
@@ -151,18 +154,28 @@ public class StatisticProcess
 		
 		composite.setLayout(new GridLayout(1, false));
 		
-//		Composite compositeGantt = new Composite(composite, SWT.NONE);
-//		compositeGantt.setLayout(new GridLayout(1, false));
-////		gd_composite.minimumWidth = 10;
-////		gd_composite.minimumHeight = 10;
-//		compositeGantt.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true, 1, 1));
+		// Erstellen des tabFolders
+		CTabFolder tabFolder = new CTabFolder(composite, SWT.BORDER);
+		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
+
+		// erstellen des tabItems fuer gantt
+		CTabItem tabItemGantt = new CTabItem(tabFolder, SWT.NONE);
+		tabItemGantt.setText("gantt");
+//		tabItemGantt.setToolTipText("launch");
+
+//		Composite compositeGantt = new Composite(tabFolder, SWT.NONE);
+//		GridLayout gl_compositeGantt = new GridLayout(1, false);
+//		gl_compositeGantt.marginWidth = 0;
+//		gl_compositeGantt.marginHeight = 0;
+//		compositeGantt.setLayout(gl_compositeGantt);
 
 		// Gantt Diagramm ueber den gesamten Prozess
 		final IntervalCategoryDataset datasetGantt = createDatasetGantt();  
 		final JFreeChart chartGantt = createChartGantt(datasetGantt);  
 		chartGantt.setTitle("Process History");
 
-		Composite embeddedCompositeGantt = new Composite(composite, SWT.EMBEDDED);
+		Composite embeddedCompositeGantt = new Composite(tabFolder, SWT.EMBEDDED);
 		embeddedCompositeGantt.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.FILL_HORIZONTAL));
 		Frame frameGantt = SWT_AWT.new_Frame(embeddedCompositeGantt);
 		ChartPanel panelGantt = new ChartPanel(chartGantt);
@@ -170,12 +183,25 @@ public class StatisticProcess
 		panelGantt.setPopupMenu(null);
 		frameGantt.add(panelGantt);
 
+		// das item platzieren
+		tabItemGantt.setControl(embeddedCompositeGantt);
+
+		// erstellen des tabItems fuer misc
+		CTabItem tabItemMisc = new CTabItem(tabFolder, SWT.NONE);
+		tabItemMisc.setText("misc");
+
+		Composite compositeMisc = new Composite(tabFolder, SWT.NONE);
+		GridLayout gl_compositeMisc = new GridLayout(1, false);
+		gl_compositeMisc.marginWidth = 0;
+		gl_compositeMisc.marginHeight = 0;
+		compositeMisc.setLayout(gl_compositeMisc);
+
 		// loadAverage uebr die Prozesslaufzeit
 		final XYDataset datasetLoadAverage = createDatasetLoadAverage();
 		final JFreeChart chartLoadAverage = createChartLoadAverage(datasetLoadAverage);
 		chartLoadAverage.setTitle("Client Load Average");
-
-		Composite embeddedCompositeLoadAverage = new Composite(composite, SWT.EMBEDDED);
+		
+		Composite embeddedCompositeLoadAverage = new Composite(compositeMisc, SWT.EMBEDDED);
 		embeddedCompositeLoadAverage.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.FILL_HORIZONTAL));
 		Frame frameLoadAverage = SWT_AWT.new_Frame(embeddedCompositeLoadAverage);
 		ChartPanel panelLoadAverage = new ChartPanel(chartLoadAverage);
@@ -183,18 +209,24 @@ public class StatisticProcess
 		panelLoadAverage.setPopupMenu(null);
 		frameLoadAverage.add(panelLoadAverage);
 
+		// das item platzieren
+		tabItemMisc.setControl(compositeMisc);
+
 		// binarySize in MB
 		final XYDataset datasetBinarySize = createDatasetBinarySize();
 		final JFreeChart chartBinarySize = createChartBinarySize(datasetBinarySize);
 		chartBinarySize.setTitle("Binary Size");
 
-		Composite embeddedCompositeBinarySize = new Composite(composite, SWT.EMBEDDED);
+		Composite embeddedCompositeBinarySize = new Composite(compositeMisc, SWT.EMBEDDED);
 		embeddedCompositeBinarySize.setLayoutData(new GridData(GridData.FILL_VERTICAL | GridData.FILL_HORIZONTAL));
 		Frame frameBinarySize = SWT_AWT.new_Frame(embeddedCompositeBinarySize);
 		ChartPanel panelBinarySize = new ChartPanel(chartBinarySize);
 		panelBinarySize.setMouseZoomable(true, false);
 		panelBinarySize.setPopupMenu(null);
 		frameBinarySize.add(panelBinarySize);
+
+		// auf pradar selektieren
+		tabFolder.setSelection(0);
 
 		// Ok Button
 		Composite compositeBtn = new Composite(composite, SWT.NONE);
