@@ -122,7 +122,7 @@ implements Serializable
 	
 	private boolean stepStatusChangedWhileLastDoIt = true;
 	
-	private Long timeOfLastStepStart = System.currentTimeMillis()-60000;
+	private Long timeOfLastStepStart = System.currentTimeMillis()-600000;
 	private Long timeOfProcessCreated = System.currentTimeMillis();
 	private Long timeOfProcessFinishedOrError = 0L;
 
