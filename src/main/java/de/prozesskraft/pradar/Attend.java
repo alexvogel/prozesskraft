@@ -172,7 +172,7 @@ public class Attend
 		if(commandline.hasOption("wait"))
 		{
 			Integer wait = Integer.parseInt(commandline.getOptionValue("wait"));
-			System.err.println("waiting "+commandline.hasOption("wait")+" seconds before performing attend.");
+			System.err.println("waiting "+commandline.getOptionValue("wait")+" seconds before performing attend.");
 			
 			try {
 				Thread.sleep(1000 * wait);
