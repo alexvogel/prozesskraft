@@ -105,6 +105,12 @@ public class Attend
 //				.isRequired()
 				.create("dir");
 		
+		Option owait = OptionBuilder.withArgName("INTEGER")
+				.hasArg()
+				.withDescription("[optional] amount of seconds to wait before attend. sometimes the processBinary needs some time to appear.")
+//				.isRequired()
+				.create("wait");
+		
 		/*----------------------------
 		  create options object
 		----------------------------*/
@@ -114,6 +120,7 @@ public class Attend
 		options.addOption( v );
 		options.addOption( oinstance );
 		options.addOption( odir );
+		options.addOption( owait );
 		
 		/*----------------------------
 		  create the parser
@@ -160,6 +167,20 @@ public class Attend
 		/*----------------------------
 		  die eigentliche business logic
 		----------------------------*/
+		
+		// soll gewartet werden, wird gewartet
+		if(commandline.hasOption("wait"))
+		{
+			Integer wait = Integer.parseInt(commandline.getOptionValue("wait"));
+			System.err.println("waiting "+commandline.hasOption("wait")+" seconds before performing attend.");
+			
+			try {
+				Thread.sleep(1000 * wait);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		// hier sollen alle processBinaries  (aus -instance und -dir) gesammelt werden
 		ArrayList<java.io.File> allProcessBinaries = new ArrayList<java.io.File>();
