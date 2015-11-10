@@ -196,7 +196,10 @@ public class TestrunItem {
 		{
 
 			// erstelle instanz, kopiere spl-daten, und starte NICHT
-			createInstanceAndStart(false);
+			de.prozesskraft.pkraft.Process newProcess = createInstanceAndStart(false);
+
+			// durchfuehren eines pradar-attend
+			pradarAttend(newProcess.getRootdir() + "/process.pmb");
 
 			// schliessen des fensters
 			getFather().shell.dispose();
@@ -209,7 +212,10 @@ public class TestrunItem {
 		{
 
 			// erstelle instanz, kopiere spl-daten, und starte
-			createInstanceAndStart(true);
+			de.prozesskraft.pkraft.Process newProcess = createInstanceAndStart(true);
+
+			// durchfuehren eines pradar-attend
+			pradarAttend(newProcess.getRootdir() + "/process.pmb");
 
 			// schliessen des fensters
 			getFather().shell.dispose();
@@ -221,10 +227,13 @@ public class TestrunItem {
 		public void widgetSelected(SelectionEvent event)
 		{
 			// erstelle instanz, kopiere spl-daten, und starte
-			de.prozesskraft.pkraft.Process dummyProcess = createInstanceAndStart(true);
+			de.prozesskraft.pkraft.Process newProcess = createInstanceAndStart(true);
 			
+			// durchfuehren eines pradar-attend
+			pradarAttend(newProcess.getRootdir() + "/process.pmb");
+
 			// ermitteln des instanceVerzeichnisses
-			String instanceDir = dummyProcess.getRootdir();
+			String instanceDir = newProcess.getRootdir();
 			
 			try
 			{
@@ -238,7 +247,7 @@ public class TestrunItem {
 	
 				// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist (das wird mit pkraft-startinstance erstellt) muss das erst herausgefunden werden
 				// das rootDir von ptest-launch ist das basedir des prozesses, der mit startinstance angeschoben wird
-				java.io.File baseDirOfStartinstance = new java.io.File(dummyProcess.getRootdir());
+				java.io.File baseDirOfStartinstance = new java.io.File(newProcess.getRootdir());
 	
 				ArrayList<File> allFoundProcessBinaries = new ArrayList<File>();
 				
@@ -320,6 +329,29 @@ public class TestrunItem {
 	};
 
 	/**
+	 * durchfuehren eines attend auf das angegebenen prozessBinary
+	 * @param pfadBinary
+	 */
+	private void pradarAttend(String processBinary)
+	{
+		String pradarAttendCall = father.getFather().getIni().get("apps", "pradar-attend") + " -instance " + processBinary;
+		ArrayList<String> pradarAttendCallAsArray = new ArrayList<String>(Arrays.asList(pradarAttendCall.split(" ")));
+		ProcessBuilder pb2 = new ProcessBuilder(pradarAttendCallAsArray);
+
+		father.getFather().log("info", "calling: " + pb2.command());
+		// starten des pmodel
+		try {
+			java.lang.Process sysproc2 = pb2.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			father.getFather().log("error", "exception: " + e.getMessage());
+		}
+
+	}
+	
+	
+	/**
 	 * creates an instance with creating instance directory, copying the spl-data
 	 * if(start==true) the instance will be started immediately
 	 * @param start
@@ -347,9 +379,11 @@ public class TestrunItem {
 
 			// die sonstigen argumente hinzufuegen
 			processSyscallWithArgs.add("-call");
+			
+			// wenn nicht gestartet werden soll, dann soll der parameter -addopt -nostart mitgegeben werden
 			if(!start)
 			{
-				processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir + " -addopt '-nostart'");
+				processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir + " -addopt -nostart");
 			}
 			else
 			{
