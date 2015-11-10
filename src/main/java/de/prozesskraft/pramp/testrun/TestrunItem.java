@@ -367,12 +367,6 @@ public class TestrunItem {
 			// ~2 Tage
 			processSyscallWithArgs.add("3000");
 			
-			if(!start)
-			{
-				processSyscallWithArgs.add("-addopt");
-				processSyscallWithArgs.add("'-nostart'");
-			}
-
 			// erstellen prozessbuilder
 			ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
 
