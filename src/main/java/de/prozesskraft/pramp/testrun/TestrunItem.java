@@ -196,10 +196,10 @@ public class TestrunItem {
 		{
 
 			// erstelle instanz, kopiere spl-daten, und starte NICHT
-			de.prozesskraft.pkraft.Process newProcess = createInstanceAndStart(false);
+			de.prozesskraft.pkraft.Process dummyProcessAufTestrunKeinEchtesBinary = createInstanceAndStart(false);
 
 			// durchfuehren eines pradar-attend
-			pradarAttend(newProcess.getRootdir() + "/process.pmb");
+			pradarAttend(dummyProcessAufTestrunKeinEchtesBinary.getRootdir());
 
 			// schliessen des fensters
 			getFather().shell.dispose();
@@ -212,10 +212,10 @@ public class TestrunItem {
 		{
 
 			// erstelle instanz, kopiere spl-daten, und starte
-			de.prozesskraft.pkraft.Process newProcess = createInstanceAndStart(true);
+			de.prozesskraft.pkraft.Process dummyProcessAufTestrunKeinEchtesBinary = createInstanceAndStart(true);
 
 			// durchfuehren eines pradar-attend
-			pradarAttend(newProcess.getRootdir() + "/process.pmb");
+			pradarAttend(dummyProcessAufTestrunKeinEchtesBinary.getRootdir());
 
 			// schliessen des fensters
 			getFather().shell.dispose();
@@ -227,13 +227,13 @@ public class TestrunItem {
 		public void widgetSelected(SelectionEvent event)
 		{
 			// erstelle instanz, kopiere spl-daten, und starte
-			de.prozesskraft.pkraft.Process newProcess = createInstanceAndStart(true);
+			de.prozesskraft.pkraft.Process dummyProcessAufTestrunKeinEchtesBinary = createInstanceAndStart(true);
 			
 			// durchfuehren eines pradar-attend
-			pradarAttend(newProcess.getRootdir() + "/process.pmb");
+			pradarAttend(dummyProcessAufTestrunKeinEchtesBinary.getRootdir());
 
 			// ermitteln des instanceVerzeichnisses
-			String instanceDir = newProcess.getRootdir();
+			String instanceDir = dummyProcessAufTestrunKeinEchtesBinary.getRootdir();
 			
 			try
 			{
@@ -247,7 +247,7 @@ public class TestrunItem {
 	
 				// da an dieser stelle das genaue verzeichnis des prozesses nicht bekannt ist (das wird mit pkraft-startinstance erstellt) muss das erst herausgefunden werden
 				// das rootDir von ptest-launch ist das basedir des prozesses, der mit startinstance angeschoben wird
-				java.io.File baseDirOfStartinstance = new java.io.File(newProcess.getRootdir());
+				java.io.File baseDirOfStartinstance = new java.io.File(dummyProcessAufTestrunKeinEchtesBinary.getRootdir());
 	
 				ArrayList<File> allFoundProcessBinaries = new ArrayList<File>();
 				
@@ -334,7 +334,7 @@ public class TestrunItem {
 	 */
 	private void pradarAttend(String processBinary)
 	{
-		String pradarAttendCall = father.getFather().getIni().get("apps", "pradar-attend") + " -instance " + processBinary + " -wait 10";
+		String pradarAttendCall = father.getFather().getIni().get("apps", "pradar-attend") + " -dir " + processBinary + " -wait 10";
 		ArrayList<String> pradarAttendCallAsArray = new ArrayList<String>(Arrays.asList(pradarAttendCall.split(" ")));
 		ProcessBuilder pb2 = new ProcessBuilder(pradarAttendCallAsArray);
 
