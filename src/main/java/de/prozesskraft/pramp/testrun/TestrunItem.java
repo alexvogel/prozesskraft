@@ -370,7 +370,7 @@ public class TestrunItem {
 			if(!start)
 			{
 				processSyscallWithArgs.add("-addopt");
-				processSyscallWithArgs.add("-nostart");
+				processSyscallWithArgs.add("'-nostart'");
 			}
 
 			// erstellen prozessbuilder
