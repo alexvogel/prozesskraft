@@ -256,6 +256,18 @@ public class Startinstance
 			System.err.println(e1.getMessage());
 		}
 
+		// das processBinary vorneweg schon mal erstellen, da es sein kann das das committen laenger dauert und ein pradar-attend den neuen prozess schon mal aufnehmen will
+		// root-verzeichnis erstellen
+		p2.makeRootdir();
+		
+		// den pfad fuers binary setzen
+		p2.setOutfilebinary(p2.getRootdir() + "/process.pmb");
+
+		System.err.println("info: writing process instance "+p2.getOutfilebinary());
+		
+		// binary schreiben
+		p2.writeBinary();
+		
 		// step, an den die commits gehen, soll 'root' sein.
 		Step stepRoot = p2.getStep(p2.getRootstepname());
 			
@@ -476,7 +488,7 @@ public class Startinstance
 		p2.makeRootdir();
 		
 		// den pfad fuers binary setzen
-		p2.setOutfilebinary(p2.getRootdir() + "/process.pmb");
+//		p2.setOutfilebinary(p2.getRootdir() + "/process.pmb");
 
 		System.err.println("info: writing process instance "+p2.getOutfilebinary());
 		
