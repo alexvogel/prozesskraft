@@ -158,7 +158,7 @@ public class TestrunItem {
 		// button
 		Composite compositeBtn = new Composite(composite, SWT.NONE);
 		compositeBtn.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		GridLayout sss = new GridLayout(3, true);
+		GridLayout sss = new GridLayout(4, true);
 		compositeBtn.setLayout(sss);
 		
 //		Label dummyLabel = new Label(compositeBtn, SWT.NONE);
@@ -169,105 +169,49 @@ public class TestrunItem {
 		btnCancel.setText("cancel");
 		btnCancel.addSelectionListener(listenerButtonCancel);
 		
+		Button btnCreate = new Button(compositeBtn, SWT.NONE);
+		btnCreate.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		btnCreate.setText("create");
+		btnCreate.setToolTipText("creates an instance directory, copies all files from the spl-directory to the instance directory and creates an instance");
+		btnCreate.addSelectionListener(listenerButtonCreate);
+		
 		Button btnStart = new Button(compositeBtn, SWT.NONE);
 		btnStart.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnStart.setText("create and start");
+		btnStart.setText("create,start");
 		btnStart.setToolTipText("creates an instance directory, copies all files from the spl-directory to the instance directory, creates an instance and starts it");
 		btnStart.addSelectionListener(listenerButtonStart);
 		
 		Button btnStartOpen = new Button(compositeBtn, SWT.NONE);
 		btnStartOpen.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		btnStartOpen.setText("create, start and open");
+		btnStartOpen.setText("create,start,open");
 		btnStartOpen.setToolTipText("creates an instance directory, copies all files from the spl-directory to the instance directory, creates an instance and starts it. opens the instance with pmodel");
 		btnStartOpen.addSelectionListener(listenerButtonStartOpen);
 		
 		compositeBtn.layout();
 	}
 
+	SelectionAdapter listenerButtonCreate = new SelectionAdapter()
+	{
+		public void widgetSelected(SelectionEvent event)
+		{
+
+			// erstelle instanz, kopiere spl-daten, und starte NICHT
+			createInstanceAndStart(false);
+
+			// schliessen des fensters
+			getFather().shell.dispose();
+		}
+	};
+
 	SelectionAdapter listenerButtonStart = new SelectionAdapter()
 	{
 		public void widgetSelected(SelectionEvent event)
 		{
 
-//			father.getFather().process.setBaseDir(father.getFather().einstellungen.getBaseDirectory());
-//			father.getFather().process.genRandomId();
-//			father.getFather().process.makeRootdir();
+			// erstelle instanz, kopiere spl-daten, und starte
+			createInstanceAndStart(true);
 
-			de.prozesskraft.pkraft.Process dummyProcess = new de.prozesskraft.pkraft.Process();
-			dummyProcess.setName("testrun-"+name);
-			dummyProcess.setVersion("Intern");
-			dummyProcess.setBaseDir(father.getFather().einstellungen.getBaseDirectory());
-			dummyProcess.makeRootdir();
-
-//			String schalterPmodelLaunch = father.getFather().getIni().get("start", "pmodel");
-//			String schalterManagerLaunch = father.getFather().getIni().get("start", "pkraft-manager");
-//
-			String instanceDir = dummyProcess.getRootdir();
-			String syscall = father.getFather().getIni().get("apps", "pkraft-syscall");
-
-			try
-			{
-				// den Aufrufstring fuer die externe App (process syscall --version 0.6.0)) splitten
-				// beim aufruf muss das erste argument im path zu finden sein, sonst gibt die fehlermeldung 'no such file or directory'
-				ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(syscall.split(" ")));
-
-				// die sonstigen argumente hinzufuegen
-				processSyscallWithArgs.add("-call");
-//				if(schalterManagerLaunch.equals("true"))
-//				{
-					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir);
-//				}
-//				else
-//				{
-//					processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir + " -addopt '-nostart'");
-//				}
-				processSyscallWithArgs.add("-stdout");
-				processSyscallWithArgs.add(instanceDir+"/.stdout.ptest-launch.txt");
-				processSyscallWithArgs.add("-stderr");
-				processSyscallWithArgs.add(instanceDir+"/.stderr.ptest-launch.txt");
-				processSyscallWithArgs.add("-pid");
-				processSyscallWithArgs.add(instanceDir+"/.pid.ptest-launch");
-				processSyscallWithArgs.add("-mylog");
-				processSyscallWithArgs.add(instanceDir+"/.log.ptest-launch");
-				processSyscallWithArgs.add("-maxrun");
-				// ~2 Tage
-				processSyscallWithArgs.add("3000");
-
-				// erstellen prozessbuilder
-				ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
-
-				// erweitern des PATHs um den prozesseigenen path
-//				Map<String,String> env = pb.environment();
-//				String path = env.get("PATH");
-//				log("debug", "$PATH="+path);
-//				path = this.parent.getAbsPath()+":"+path;
-//				env.put("PATH", path);
-//				log("info", "path: "+path);
-				
-				// setzen der aktuellen directory
-				java.io.File directory = new java.io.File(instanceDir);
-				father.getFather().log("info", "setting execution directory to: "+directory.getAbsolutePath());
-				pb.directory(directory);
-
-				// zum debuggen ein paar ausgaben
-//				java.lang.Process p1 = Runtime.getRuntime().exec("date >> ~/tmp.debug.work.txt");
-//				p1.waitFor();
-//				java.lang.Process p2 = Runtime.getRuntime().exec("ls -la "+this.getParent().getAbsdir()+" >> ~/tmp.debug.work.txt");
-//				p2.waitFor();
-//				java.lang.Process pro = Runtime.getRuntime().exec("nautilus");
-//				java.lang.Process superpro = Runtime.getRuntime().exec(processSyscallWithArgs.toArray(new String[processSyscallWithArgs.size()]));
-//				p3.waitFor();
-				
-				father.getFather().log("info", "calling: " + pb.command());
-
-				// starten des prozesses
-				java.lang.Process sysproc = pb.start();
-				
-			}
-			catch (Exception e)
-			{
-				father.getFather().log("error", e.getMessage());
-			}
+			// schliessen des fensters
 			getFather().shell.dispose();
 		}
 	};
@@ -277,7 +221,7 @@ public class TestrunItem {
 		public void widgetSelected(SelectionEvent event)
 		{
 			// erstelle instanz, kopiere spl-daten, und starte
-			de.prozesskraft.pkraft.Process dummyProcess = createInstanceAndStart();
+			de.prozesskraft.pkraft.Process dummyProcess = createInstanceAndStart(true);
 			
 			// ermitteln des instanceVerzeichnisses
 			String instanceDir = dummyProcess.getRootdir();
@@ -375,7 +319,13 @@ public class TestrunItem {
 		}
 	};
 
-	private de.prozesskraft.pkraft.Process createInstanceAndStart()
+	/**
+	 * creates an instance with creating instance directory, copying the spl-data
+	 * if(start==true) the instance will be started immediately
+	 * @param start
+	 * @return
+	 */
+	private de.prozesskraft.pkraft.Process createInstanceAndStart(boolean start)
 	{
 		de.prozesskraft.pkraft.Process dummyProcess = new de.prozesskraft.pkraft.Process();
 		dummyProcess.setName("testrun-"+name);
@@ -416,6 +366,12 @@ public class TestrunItem {
 			processSyscallWithArgs.add("-maxrun");
 			// ~2 Tage
 			processSyscallWithArgs.add("3000");
+			
+			if(!start)
+			{
+				processSyscallWithArgs.add("-addopt");
+				processSyscallWithArgs.add("-nostart");
+			}
 
 			// erstellen prozessbuilder
 			ProcessBuilder pb = new ProcessBuilder(processSyscallWithArgs);
