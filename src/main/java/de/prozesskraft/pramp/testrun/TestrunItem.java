@@ -198,6 +198,14 @@ public class TestrunItem {
 			// erstelle instanz, kopiere spl-daten, und starte NICHT
 			de.prozesskraft.pkraft.Process newProcess = createInstanceAndStart(false);
 
+			// kurz schlafen, damit der prozess erstellt werden kann
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			// durchfuehren eines pradar-attend
 			pradarAttend(newProcess.getRootdir() + "/process.pmb");
 
@@ -214,6 +222,14 @@ public class TestrunItem {
 			// erstelle instanz, kopiere spl-daten, und starte
 			de.prozesskraft.pkraft.Process newProcess = createInstanceAndStart(true);
 
+			// kurz schlafen, damit der prozess erstellt werden kann
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			// durchfuehren eines pradar-attend
 			pradarAttend(newProcess.getRootdir() + "/process.pmb");
 
@@ -228,6 +244,14 @@ public class TestrunItem {
 		{
 			// erstelle instanz, kopiere spl-daten, und starte
 			de.prozesskraft.pkraft.Process newProcess = createInstanceAndStart(true);
+			
+			// kurz schlafen, damit der prozess erstellt werden kann
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			// durchfuehren eines pradar-attend
 			pradarAttend(newProcess.getRootdir() + "/process.pmb");
