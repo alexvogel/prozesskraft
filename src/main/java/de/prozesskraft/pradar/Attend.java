@@ -95,9 +95,15 @@ public class Attend
 		
 		Option oinstance = OptionBuilder.withArgName("FILE")
 				.hasArg()
-				.withDescription("[mandatory] process instance file you want to enter / update in pradar")
+				.withDescription("[optional] process instance file you want to enter / update in pradar")
 //				.isRequired()
 				.create("instance");
+		
+		Option odir = OptionBuilder.withArgName("DIR")
+				.hasArg()
+				.withDescription("[optional] all process instance files that are found in this directory (recursively), will be attended")
+//				.isRequired()
+				.create("dir");
 		
 		/*----------------------------
 		  create options object
@@ -107,6 +113,7 @@ public class Attend
 		options.addOption( help );
 		options.addOption( v );
 		options.addOption( oinstance );
+		options.addOption( odir );
 		
 		/*----------------------------
 		  create the parser
@@ -144,9 +151,9 @@ public class Attend
 		/*----------------------------
 		  ueberpruefen ob eine schlechte kombination von parametern angegeben wurde
 		----------------------------*/
-		if ( !( commandline.hasOption("instance")))
+		if ( !( commandline.hasOption("instance")) && !( commandline.hasOption("dir")))
 		{
-			System.err.println("option -instance is mandatory");
+			System.err.println("at least one of the options -instance, -dir is mandatory");
 			exiter();
 		}
 
@@ -154,17 +161,82 @@ public class Attend
 		  die eigentliche business logic
 		----------------------------*/
 		
-		// fuer alle angegebenen instanzen einen attend durchfuehren
-		for(String pathProcessBinary : commandline.getOptionValues("instance"))
+		// hier sollen alle processBinaries  (aus -instance und -dir) gesammelt werden
+		ArrayList<java.io.File> allProcessBinaries = new ArrayList<java.io.File>();
+		
+		// alle -instance eintraege uebernehmen
+		if( commandline.hasOption("instance"))
 		{
-			// ist die datei vorhanden?
-			java.io.File fileProcessBinary = new java.io.File(pathProcessBinary);
-			if(!fileProcessBinary.exists())
+			for(String actInstance : commandline.getOptionValues("instance"))
 			{
-				System.err.println("error: process instance file does not exist: " + pathProcessBinary);
+				// ist die datei vorhanden?
+				java.io.File fileProcessBinary = new java.io.File(actInstance);
+				if(!fileProcessBinary.exists())
+				{
+					System.err.println("error: process instance file does not exist: " + actInstance);
+					exiter();
+				}
+				else
+				{
+					allProcessBinaries.add(fileProcessBinary);
+				}
+			}
+		}
+
+		// falls ein directory angegeben wurde, soll en alle process.pmb files darin aufgesammelt werden
+		if( commandline.hasOption("dir"))
+		{
+			java.io.File dirFile = new java.io.File(commandline.getOptionValue("dir"));
+
+			// CHECKS
+			if(!dirFile.exists())
+			{
+				System.err.println("error: directory does not exist: " + dirFile.getAbsolutePath());
 				exiter();
 			}
-	
+			else if(!dirFile.isDirectory())
+			{
+				System.err.println("error: is not a directory: " + dirFile.getAbsolutePath());
+				exiter();
+			}
+			
+			ArrayList<java.io.File> directoriesToSearch = new ArrayList<java.io.File>();
+			directoriesToSearch.add(dirFile);
+			
+			while(!directoriesToSearch.isEmpty())
+			{
+				// falls unterverzeichnisse gefunden werden, werden sie hier aufgesammelt
+				ArrayList<java.io.File> newDirectoriesToSearch = new ArrayList<java.io.File>();
+				
+				// alle directories durchgehen
+				for(java.io.File actDir : directoriesToSearch)
+				{
+					// alle files ueberpruefen ob sie auf process.pmb enden
+					
+					// alle process.pmb in unterverzeichnissen finden
+					for(java.io.File actFile : actDir.listFiles())
+					{
+						if(actFile.isDirectory())
+						{
+							newDirectoriesToSearch.add(actFile);
+						}
+						else if(actFile.isFile() && actFile.getName().equals("process.pmb"))
+						{
+							System.err.println("found process.pmb: " + actFile.getAbsolutePath());
+							allProcessBinaries.add(actFile);
+						}
+					}
+				}
+
+				// unterdirectories sollen weiterdurchsucht werden
+				directoriesToSearch = newDirectoriesToSearch;
+			}
+		}
+		
+		// fuer alle processBinaries (aus -instance und -dir) einen attend durchfuehren
+		for(java.io.File fileProcessBinary : allProcessBinaries)
+		{
+			
 			// instanz einlesen
 			Process p1 = new Process();
 			p1.setInfilebinary(fileProcessBinary.getAbsolutePath());
