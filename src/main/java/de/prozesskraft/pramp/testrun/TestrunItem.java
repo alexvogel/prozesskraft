@@ -347,14 +347,14 @@ public class TestrunItem {
 
 			// die sonstigen argumente hinzufuegen
 			processSyscallWithArgs.add("-call");
-//			if(nolaunch)
-//			{
-//				processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir + " -nolaunch");
-//			}
-//			else
-//			{
+			if(!start)
+			{
+				processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir + " -addopt '-nostart'");
+			}
+			else
+			{
 				processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir);
-//			}
+			}
 			processSyscallWithArgs.add("-stdout");
 			processSyscallWithArgs.add(instanceDir+"/.stdout.ptest-launch.txt");
 			processSyscallWithArgs.add("-stderr");
