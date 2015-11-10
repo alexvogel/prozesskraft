@@ -258,6 +258,11 @@ public class Startinstance
 
 		// das processBinary vorneweg schon mal erstellen, da es sein kann das das committen laenger dauert und ein pradar-attend den neuen prozess schon mal aufnehmen will
 		// root-verzeichnis erstellen
+		if (commandline.hasOption("basedir"))
+		{
+			p2.setBaseDir(commandline.getOptionValue("basedir"));
+		}
+
 		p2.makeRootdir();
 		
 		// den pfad fuers binary setzen
@@ -269,7 +274,7 @@ public class Startinstance
 		p2.writeBinary();
 		
 		// step, an den die commits gehen, soll 'root' sein.
-		Step stepRoot = p2.getStep(p2.getRootstepname());
+		Step stepRoot = p2.getRootStep();
 			
 		// committen von files (ueber einen glob)
 		if (commandline.hasOption("commitfile"))
@@ -476,10 +481,10 @@ public class Startinstance
 			}
 		}
 
-		if (commandline.hasOption("basedir"))
-		{
-			p2.setBaseDir(commandline.getOptionValue("basedir"));
-		}
+//		if (commandline.hasOption("basedir"))
+//		{
+//			p2.setBaseDir(commandline.getOptionValue("basedir"));
+//		}
 
 //			commit.doIt();
 		stepRoot.commit();
