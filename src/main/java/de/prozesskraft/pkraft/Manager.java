@@ -60,7 +60,7 @@ public class Manager
 	static Double managerid = null;
 	volatile static Long lastRun = null;
 	volatile static boolean exit = false;
-	volatile static int sleepMinutes = 5;
+	volatile static int sleepMinutes = 1;
 	static java.io.File fileBinary = null;
 	
 	static Map<WatchKey,Path> keys = null;
@@ -505,6 +505,7 @@ public class Manager
 		p1.setOutfilebinary(pathBinary);
 		Process process = p1.readBinary();
 		System.err.println("debug: rereading instance done");
+		process.log("debug", "rereading instance done");
 		
 		// falls managerIds nicht zusammenpassen, soll beendet werden
 		if(!managerid.equals(process.getManagerid()))
@@ -559,13 +560,19 @@ public class Manager
 		{
 			sleepMinutes = process.getStepStartDelayMinutes();
 		}
+		else
+		{
+			sleepMinutes = 5;
+		}
 		
 		boolean imProzessHatSichWasGeaendert = true;
 		System.err.println("debug: variable imProzessHatSichWasGeaendert manuell gesetzt auf " + imProzessHatSichWasGeaendert);
+		process.log("debug", "variable imProzessHatSichWasGeaendert manuell gesetzt auf " + imProzessHatSichWasGeaendert);
 
 		while(process.run && imProzessHatSichWasGeaendert)
 		{
 			System.err.println("debug: deshalb wird die while schleife erst mal durchlaufen");
+			process.log("debug", "deshalb wird die while schleife erst mal durchlaufen");
 
 			// prozess laufen lassen
 			process.doIt(ini.get("apps", "pkraft-syscall"), ini.get("apps", "pkraft-manager"), ini.get("process", "domain-installation-directory"));
@@ -573,6 +580,7 @@ public class Manager
 			// hat sich was geaendert?
 			imProzessHatSichWasGeaendert = process.isStepStatusChangedWhileLastDoIt();
 			System.err.println("debug: did some step changed its status? " + imProzessHatSichWasGeaendert);
+			process.log("debug", "did some step changed its status? " + imProzessHatSichWasGeaendert);
 			
 			// finished
 			if(process.getStatus().equals("finished"))
