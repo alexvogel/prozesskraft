@@ -198,14 +198,6 @@ public class TestrunItem {
 			// erstelle instanz, kopiere spl-daten, und starte NICHT
 			de.prozesskraft.pkraft.Process newProcess = createInstanceAndStart(false);
 
-			// kurz schlafen, damit der prozess erstellt werden kann
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
 			// durchfuehren eines pradar-attend
 			pradarAttend(newProcess.getRootdir() + "/process.pmb");
 
@@ -222,14 +214,6 @@ public class TestrunItem {
 			// erstelle instanz, kopiere spl-daten, und starte
 			de.prozesskraft.pkraft.Process newProcess = createInstanceAndStart(true);
 
-			// kurz schlafen, damit der prozess erstellt werden kann
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
 			// durchfuehren eines pradar-attend
 			pradarAttend(newProcess.getRootdir() + "/process.pmb");
 
@@ -244,14 +228,6 @@ public class TestrunItem {
 		{
 			// erstelle instanz, kopiere spl-daten, und starte
 			de.prozesskraft.pkraft.Process newProcess = createInstanceAndStart(true);
-			
-			// kurz schlafen, damit der prozess erstellt werden kann
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
 			// durchfuehren eines pradar-attend
 			pradarAttend(newProcess.getRootdir() + "/process.pmb");
@@ -358,7 +334,7 @@ public class TestrunItem {
 	 */
 	private void pradarAttend(String processBinary)
 	{
-		String pradarAttendCall = father.getFather().getIni().get("apps", "pradar-attend") + " -instance " + processBinary;
+		String pradarAttendCall = father.getFather().getIni().get("apps", "pradar-attend") + " -instance " + processBinary + " -wait 10";
 		ArrayList<String> pradarAttendCallAsArray = new ArrayList<String>(Arrays.asList(pradarAttendCall.split(" ")));
 		ProcessBuilder pb2 = new ProcessBuilder(pradarAttendCallAsArray);
 
