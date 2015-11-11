@@ -559,7 +559,7 @@ implements Serializable
 			{
 				stepStartDelayMinutes = this.getParent().getParent().getStepStartDelayMinutes();
 			}
-
+			// und damit entscheiden, ob der schritt gestartet werden soll
 			if( (stepStartDelayMinutes != null) && (minutesSinceLastStepStart < stepStartDelayMinutes) )
 			{
 				log("info", "starting of new steps is not allowed at the moment by reference of stepStartDelayMinutes (" + this.getParent().getParent().getStepStartDelayMinutes() + ")");
