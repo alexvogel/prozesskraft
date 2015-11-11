@@ -35,6 +35,9 @@ implements Serializable
 
 	private int exitvalue;
 	
+	// is this object a dummy?
+	private boolean dummy = false;
+	
 	// don't clone parent when you clone this
 	public Step parent = null;
 	/*----------------------------
@@ -42,7 +45,9 @@ implements Serializable
 	----------------------------*/
 	public Work()
 	{
-		this.parent = new Step();
+		Step dummyStep = new Step();
+		dummyStep.setDummy(true);
+		this.parent = dummyStep;
 	}
 
 	public Work(Step step)
@@ -853,5 +858,19 @@ implements Serializable
 	 */
 	public void setPrecall(String precall) {
 		this.precall = precall;
+	}
+
+	/**
+	 * @return the dummy
+	 */
+	public boolean isDummy() {
+		return dummy;
+	}
+
+	/**
+	 * @param dummy the dummy to set
+	 */
+	public void setDummy(boolean dummy) {
+		this.dummy = dummy;
 	}
 }

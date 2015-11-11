@@ -71,6 +71,9 @@ implements Serializable, Cloneable
 	
 	private Timeserie timeSerieStatus = new Timeserie("status");
 
+	// is this object a dummy?
+	private boolean dummy = false;
+	
 	// don't clone parent when cloning this
 	private Process parent = null;
 
@@ -91,34 +94,13 @@ implements Serializable, Cloneable
 	/**
 	 * constructs a step with
 	 * a new parent
-	 * a given name
-	 */
-	public Step(String stepname)
-	{
-//		this.setParent(new Process());
-		this.setName(stepname);
-	}
-
-	/**
-	 * constructs a step with
-	 * a given parent
-	 * a given name
-	 */
-
-	public Step(Process p, String stepname)
-	{
-		this.setParent(p);
-		this.setName(stepname);
-	}
-
-	/**
-	 * constructs a step with
-	 * a new parent
 	 * a random name
 	 */
 	public Step()
 	{
-		this.setParent(new Process());
+		Process dummyProcess = new Process();
+		dummyProcess.setDummy(true);
+		this.setParent(dummyProcess);
 		this.setName(this.genName());
 	}
 
@@ -3136,6 +3118,20 @@ implements Serializable, Cloneable
 	 */
 	public void setStepStartDelayMinutes(Integer stepStartDelayMinutes) {
 		this.stepStartDelayMinutes = stepStartDelayMinutes;
+	}
+
+	/**
+	 * @return the dummy
+	 */
+	public boolean isDummy() {
+		return dummy;
+	}
+
+	/**
+	 * @param dummy the dummy to set
+	 */
+	public void setDummy(boolean dummy) {
+		this.dummy = dummy;
 	}
 	
 }

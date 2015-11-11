@@ -29,20 +29,15 @@ implements Serializable
 	----------------------------*/
 	public List()
 	{
-		this.parent = new Step();
+		Step dummyStep = new Step();
+		dummyStep.setDummy(true);
+		this.parent = dummyStep;
 	}
 
-	public List(String listname)
-	{
-		this.parent = new Step();
-		this.name = listname;
-	}
-
-	public List(Step step, String listname)
+	public List(Step step)
 	{
 		step.addList(this);
 		this.parent = step;
-		this.name = listname;
 	}
 	/*----------------------------
 	  methods

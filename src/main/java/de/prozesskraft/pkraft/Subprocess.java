@@ -44,7 +44,9 @@ implements Serializable
 	----------------------------*/
 	public Subprocess()
 	{
-		this.parent = new Step();
+		Step dummyStep = new Step();
+		dummyStep.setDummy(true);
+		this.parent = dummyStep;
 	}
 
 //	public Subprocess(Step parent)

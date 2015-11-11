@@ -44,7 +44,8 @@ public class TestRootCommit {
 			e.printStackTrace();
 		}
 		
-		Step rootStep = new Step("root");
+		Step rootStep = new Step();
+		rootStep.setName("root");
 		process.addStep(rootStep);
 		// ueberschreiben der initCommitVariable
 		process.setInitCommitVariable("etc/variable.name:etc/variable.spl:etc/variable.call:etc/variable.result");
@@ -86,7 +87,8 @@ public class TestRootCommit {
 			e.printStackTrace();
 		}
 
-		Step rootStep = new Step("root");
+		Step rootStep = new Step();
+		rootStep.setName("root");
 		process.addStep(rootStep);
 
 		process.setInitCommitVariable("etc:etc/nochEinOrdnerMitVariablen");
@@ -123,7 +125,8 @@ public class TestRootCommit {
 		process.setInfilexml("src/test/resources/definitions/Admin/multiappshake/0.0.1/process.xml");
 		process.setBaseDir("/tmp");
 		
-		Step rootStep = new Step("root");
+		Step rootStep = new Step();
+		rootStep.setName("root");
 		process.addStep(rootStep);
 
 		process.setInitCommitFile("files");

@@ -41,7 +41,9 @@ implements Serializable
 	----------------------------*/
 	public Variable()
 	{
-		this.parent = new Step();
+		Step dummyStep = new Step();
+		dummyStep.setDummy(true);
+		this.parent = dummyStep;
 		log("info", "variable created with an unknown parent");
 	}
 

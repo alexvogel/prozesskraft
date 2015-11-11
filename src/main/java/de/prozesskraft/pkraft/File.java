@@ -46,7 +46,9 @@ implements Serializable, Cloneable
 	----------------------------*/
 	public File()
 	{
-		this.parent = new Step();
+		Step dummyStep = new Step();
+		dummyStep.setDummy(true);
+		this.parent = dummyStep;
 		log("info", "object created with an unknown parent");
 	}
 

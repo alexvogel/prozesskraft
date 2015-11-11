@@ -32,20 +32,23 @@ public class TestStringResolve {
 	@Before
 	public void setUp()
 	{
-		Step stepRoot = new Step("root");
+		Step stepRoot = new Step();
+		stepRoot.setName("root");
 		process.addStep(stepRoot);
 		List listRoot = new List();
 		listRoot.setName("irgendEinListennamen");
 		listRoot.addItem("ersterEintrag-bla");
 		stepRoot.addList(listRoot);
 		
-		Step step1 = new Step("appshake");
+		Step step1 = new Step();
+		step1.setName("appshake");
 		step1.setLoop("index(name)");
 		step1.setType("process");
 		step1.setDescription("startet den prozess appshake mit dem daten eines testlaufs");
 		process.addStep(step1);
 
-		List listName = new List(step1, "name");
+		List listName = new List(step1);
+		listName.setName("name");
 		listName.addItem("cb2nvh_makesimpackbset");
 		listName.addItem("cb2nvh_makeadamsaset");
 		listName.addItem("cb2nvh_makeadamssetdload");
@@ -53,7 +56,8 @@ public class TestStringResolve {
 		nameDatenFuerTest.add("cb2nvh_makeadamsaset");
 		nameDatenFuerTest.add("cb2nvh_makeadamssetdload");
 
-		List listSpl = new List(step1, "spl");
+		List listSpl = new List(step1);
+		listSpl.setName("spl");
 		listSpl.addItem("/data/localsoft/deploy/install/cb2nvh_makesimpackbset/3.1.0/spl/1");
 		listSpl.addItem("/data/localsoft/deploy/install/cb2nvh_makeadamsaset/1.1.0/spl/1");
 		listSpl.addItem("/data/localsoft/deploy/install/cb2nvh_makeadamssetdload/2.0.1/spl/1");
@@ -61,7 +65,8 @@ public class TestStringResolve {
 		splDatenFuerTest.add("/data/localsoft/deploy/install/cb2nvh_makeadamsaset/1.1.0/spl/1");
 		splDatenFuerTest.add("/data/localsoft/deploy/install/cb2nvh_makeadamssetdload/2.0.1/spl/1");
 
-		List listCall = new List(step1, "call");
+		List listCall = new List(step1);
+		listCall.setName("call");
 		listCall.addItem("/data/localsoft/deploy/install/cb2nvh_makesimpackbset/3.1.0/spl/1/.call.a.txt");
 		listCall.addItem("/data/localsoft/deploy/install/cb2nvh_makeadamsaset/1.1.0/spl/1/.call.1.txt");
 		listCall.addItem("/data/localsoft/deploy/install/cb2nvh_makeadamssetdload/2.0.1/spl/1/.call.1.txt");
@@ -69,7 +74,8 @@ public class TestStringResolve {
 		callDatenFuerTest.add("/data/localsoft/deploy/install/cb2nvh_makeadamsaset/1.1.0/spl/1/.call.1.txt");
 		callDatenFuerTest.add("/data/localsoft/deploy/install/cb2nvh_makeadamssetdload/2.0.1/spl/1/.call.1.txt");
 
-		List listResult = new List(step1, "result");
+		List listResult = new List(step1);
+		listResult.setName("result");
 		listResult.addItem("/data/localsoft/deploy/install/cb2nvh_makesimpackbset/3.1.0/spl/1/.result.a.fpr");
 		listResult.addItem("/data/localsoft/deploy/install/cb2nvh_makeadamsaset/1.1.0/spl/1/.result.1.fpr");
 		listResult.addItem("/data/localsoft/deploy/install/cb2nvh_makeadamssetdload/2.0.1/spl/1/.result.1.fpr");

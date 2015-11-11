@@ -20,7 +20,8 @@ public class TestFile {
 	@Before
 	public void setUp()
 	{
-		Step step = new Step("root");
+		Step step = new Step();
+		step.setName("root");
 		step.setLoopvar("1");
 
 	//	process.setBaseDir(System.getProperty("user.dir")+"/src/test/resources");

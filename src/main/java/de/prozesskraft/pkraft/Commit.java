@@ -51,6 +51,9 @@ implements Serializable
 	private ArrayList<Commit> loopedCommits = null;
 	private String statusOverwrite = null;
 
+	// is this object a dummy?
+	private boolean dummy = false;
+	
 	// don't clone parent when cloning this
 	private Step parent = null;
 
@@ -59,7 +62,9 @@ implements Serializable
 	----------------------------*/
 	public Commit()
 	{
-		parent = new Step();
+		Step dummyStep = new Step();
+		dummyStep.setDummy(true);
+		this.parent = dummyStep;
 	}
 
 	public Commit(Step s)
@@ -1575,5 +1580,19 @@ implements Serializable
 	 */
 	public void setRefactor(String refactor) {
 		this.refactor = refactor;
+	}
+
+	/**
+	 * @return the dummy
+	 */
+	public boolean isDummy() {
+		return dummy;
+	}
+
+	/**
+	 * @param dummy the dummy to set
+	 */
+	public void setDummy(boolean dummy) {
+		this.dummy = dummy;
 	}
 }

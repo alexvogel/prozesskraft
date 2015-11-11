@@ -131,6 +131,9 @@ implements Serializable
 	private Timeserie timeSerieStepSize = new Timeserie("footprint of all steps");
 	
 	public int counterLoadAverageTooHigh = 0;
+
+	private boolean dummy = false;
+	
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -428,7 +431,8 @@ implements Serializable
 	 */
 	public void addStep(String stepname)
 	{
-		Step step = new Step(this, stepname);
+		Step step = new Step();
+		step.setName(stepname);
 		this.addStep(step);
 	}
 	
@@ -670,7 +674,8 @@ implements Serializable
 		// erstellen eines steps mit dem namen des prozesses und dem wrapperProcess hinzufuegen
 //		Step wrapStep = new Step(this.getName());
 //		wrapperProcess.addStep(new Step(this.getName()));
-		Step step = new Step(this.getName());
+		Step step = new Step();
+		step.setName(this.getName());
 		step.setDescription(this.getDescription());
 		wrapperProcess.addStep(step);
 
@@ -2859,28 +2864,26 @@ implements Serializable
 	}
 
 	/**
-	 * @return the stepStartDelayMinutesFutureMinimum
+	 * @return the stepStartDelayMinutesMinimumOfWorkingSteps
 	 */
-	public Integer getStepStartDelayMinutesFutureMinimum()
+	public Integer stepStartDelayMinutesMinimumOfWorkingSteps()
 	{
 		ArrayList<Integer> allStepStartDelayMinutes = new ArrayList<Integer>();
 		
-		// stepStartDelayMinutes des Processes hinzufuegen falls vorhanden
-		if(this.getStepStartDelayMinutes() != null)
-		{
-			allStepStartDelayMinutes.add(this.getStepStartDelayMinutes());
-		}
-		else
-		{
-			allStepStartDelayMinutes.add(0);
-		}
-		
 		// aller steps, die noch verarbeitet werden muessen, falls vorhanden
-		for(Step actStepWorking : this.getStepTogo())
+		for(Step actStepWorking : this.getStepWorking())
 		{
 			if(actStepWorking.getStepStartDelayMinutes() != null)
 			{
 				allStepStartDelayMinutes.add(actStepWorking.getStepStartDelayMinutes());
+			}
+			else if(this.getStepStartDelayMinutes() != null)
+			{
+				allStepStartDelayMinutes.add(this.getStepStartDelayMinutes());
+			}
+			else
+			{
+				allStepStartDelayMinutes.add(0);
 			}
 		}
 		
@@ -3061,6 +3064,20 @@ implements Serializable
 	 */
 	public void setStepStatusChangedWhileLastDoIt(boolean stepStatusChangedWhileLastDoIt) {
 		this.stepStatusChangedWhileLastDoIt = stepStatusChangedWhileLastDoIt;
+	}
+
+	/**
+	 * @return the dummy
+	 */
+	public boolean isDummy() {
+		return dummy;
+	}
+
+	/**
+	 * @param dummy the dummy to set
+	 */
+	public void setDummy(boolean dummy) {
+		this.dummy = dummy;
 	}
 
 }
