@@ -36,7 +36,7 @@ implements Serializable
 	public Callitem()
 	{
 		Work dummyWork = new Work();
-		dummyWork.setDummy(true);
+		dummyWork.setName("dummy");
 		this.parent = dummyWork;
 		this.parent.addCallitem(this);
 	}

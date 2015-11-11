@@ -35,9 +35,6 @@ implements Serializable
 
 	private String status = "waiting";	// waiting/initializing/finished/error
 
-	// is this object a dummy?
-	private boolean dummy = false;
-	
 	// don't clone parent when you clone this
 	private Step parent = null;
 	/*----------------------------
@@ -46,7 +43,7 @@ implements Serializable
 	public Init()
 	{
 		Step dummyStep = new Step();
-		dummyStep.setDummy(true);
+		dummyStep.setName("dummy");
 		this.parent = dummyStep;
 		listname = "unnamed";
 	}
@@ -538,20 +535,5 @@ implements Serializable
 		
 		return result;
 	}
-
-	/**
-	 * @return the dummy
-	 */
-	public boolean isDummy() {
-		return dummy;
-	}
-
-	/**
-	 * @param dummy the dummy to set
-	 */
-	public void setDummy(boolean dummy) {
-		this.dummy = dummy;
-	}
-
 
 }

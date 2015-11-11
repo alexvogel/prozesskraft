@@ -30,7 +30,7 @@ implements Serializable
 	public List()
 	{
 		Step dummyStep = new Step();
-		dummyStep.setDummy(true);
+		dummyStep.setName("dummy");
 		this.parent = dummyStep;
 	}
 

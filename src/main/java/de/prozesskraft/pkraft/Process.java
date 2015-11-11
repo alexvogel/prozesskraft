@@ -132,8 +132,6 @@ implements Serializable
 	
 	public int counterLoadAverageTooHigh = 0;
 
-	private boolean dummy = false;
-	
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -410,30 +408,6 @@ implements Serializable
 		{
 			actStep.clearLogRecursive();
 		}
-	}
-	
-	/**
-	 * generates a new step with a random name and adds it to this.
-	 */
-	public void addStep()
-	{
-		int zaehler = 1;
-		String basename = "default_";
-		while(this.isStep(basename+zaehler))
-		{
-			zaehler++;
-		}
-		this.addStep(basename+zaehler);
-	}
-	
-	/**
-	 * generates a new step with a certain name and adds it to this.
-	 */
-	public void addStep(String stepname)
-	{
-		Step step = new Step();
-		step.setName(stepname);
-		this.addStep(step);
 	}
 	
 	/**
@@ -3064,20 +3038,6 @@ implements Serializable
 	 */
 	public void setStepStatusChangedWhileLastDoIt(boolean stepStatusChangedWhileLastDoIt) {
 		this.stepStatusChangedWhileLastDoIt = stepStatusChangedWhileLastDoIt;
-	}
-
-	/**
-	 * @return the dummy
-	 */
-	public boolean isDummy() {
-		return dummy;
-	}
-
-	/**
-	 * @param dummy the dummy to set
-	 */
-	public void setDummy(boolean dummy) {
-		this.dummy = dummy;
 	}
 
 }

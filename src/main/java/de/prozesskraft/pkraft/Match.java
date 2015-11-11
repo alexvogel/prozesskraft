@@ -28,7 +28,7 @@ implements Serializable
 	public Match()
 	{
 		Init dummyInit = new Init();
-		dummyInit.setDummy(true);
+		dummyInit.setListname("dummy");
 		this.parent = dummyInit;
 	}
 

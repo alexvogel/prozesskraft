@@ -34,11 +34,26 @@ public class TestStepReset {
 		step.addInit(init3);
 		
 		process.addStep(step);
-		process.addStep("root");
-		process.addStep("somestep");
-		process.addStep("anotherstep@1");
-		process.addStep("anotherstep@2");
-		process.addStep("tuvalu");
+
+		Step newStep1 = new Step();
+		newStep1.setName("root");
+		process.addStep(newStep1);
+		
+		Step newStep2 = new Step();
+		newStep2.setName("somestep");
+		process.addStep(newStep2);
+		
+		Step newStep3 = new Step();
+		newStep3.setName("anotherstep@1");
+		process.addStep(newStep3);
+		
+		Step newStep4 = new Step();
+		newStep4.setName("anotherstep@2");
+		process.addStep(newStep4);
+		
+		Step newStep5 = new Step();
+		newStep5.setName("tuvalu");
+		process.addStep(newStep5);
 		
 		
 	}
