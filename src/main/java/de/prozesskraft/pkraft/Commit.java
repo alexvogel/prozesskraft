@@ -59,9 +59,9 @@ implements Serializable
 	----------------------------*/
 	public Commit()
 	{
-		Step dummyStep = new Step();
-		dummyStep.setName("dummy");
-		this.parent = dummyStep;
+//		Step dummyStep = new Step();
+//		dummyStep.setName("dummy");
+//		this.parent = dummyStep;
 	}
 
 	public Commit(Step s)

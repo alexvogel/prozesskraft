@@ -41,10 +41,10 @@ implements Serializable
 	----------------------------*/
 	public Variable()
 	{
-		Step dummyStep = new Step();
-		dummyStep.setName("dummy");
-		this.parent = dummyStep;
-		log("info", "variable created with an unknown parent");
+//		Step dummyStep = new Step();
+//		dummyStep.setName("dummy");
+//		this.parent = dummyStep;
+//		log("info", "variable created with an unknown parent");
 	}
 
 //	public Variable(String key)

@@ -42,9 +42,9 @@ implements Serializable
 	----------------------------*/
 	public Init()
 	{
-		Step dummyStep = new Step();
-		dummyStep.setName("dummy");
-		this.parent = dummyStep;
+//		Step dummyStep = new Step();
+//		dummyStep.setName("dummy");
+//		this.parent = dummyStep;
 		listname = "unnamed";
 	}
 

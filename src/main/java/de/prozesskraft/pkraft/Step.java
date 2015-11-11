@@ -95,9 +95,10 @@ implements Serializable, Cloneable
 	 */
 	public Step()
 	{
-		Process dummyProcess = new Process();
-		dummyProcess.setName("dummy");
-		this.setParent(dummyProcess);
+//		Process dummyProcess = new Process();
+//		dummyProcess.setName("dummy");
+//		this.setParent(dummyProcess);
+
 		this.setName(this.genName());
 	}
 
