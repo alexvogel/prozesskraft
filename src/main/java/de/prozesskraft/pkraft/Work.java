@@ -548,7 +548,19 @@ implements Serializable
 			log("debug", "time since last step start in minutes: " + minutesSinceLastStepStart);
 
 			// 2) der zeitpunkt an dem der letzte schritt gestartet wurde ist weniger minuten her als der mindest-Delay fuer Stepstarts vorschreibt
-			if( (this.getParent().getParent().getStepStartDelayMinutes() != null) && (minutesSinceLastStepStart < this.getParent().getParent().getStepStartDelayMinutes()) )
+			Integer stepStartDelayMinutes = null;
+			
+			// feststellen welche stepStartDelayMinutes -Angabe gilt, falls ueberhaupt vorhanden
+			if(this.getParent().getStepStartDelayMinutes() != null)
+			{
+				stepStartDelayMinutes = this.getParent().getStepStartDelayMinutes();
+			}
+			else if(this.getParent().getParent().getStepStartDelayMinutes() != null)
+			{
+				stepStartDelayMinutes = this.getParent().getParent().getStepStartDelayMinutes();
+			}
+
+			if( (stepStartDelayMinutes != null) && (minutesSinceLastStepStart < stepStartDelayMinutes) )
 			{
 				log("info", "starting of new steps is not allowed at the moment by reference of stepStartDelayMinutes (" + this.getParent().getParent().getStepStartDelayMinutes() + ")");
 				schrittStarten = false;

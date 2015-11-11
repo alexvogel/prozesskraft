@@ -7,29 +7,33 @@
       </xs:sequence>
     </xs:complexType>
 
-  	<xs:complexType name="step">
-		<xs:sequence>
-			<xs:element maxOccurs="unbounded" ref="list" minOccurs="0" />
-			<xs:element maxOccurs="unbounded" ref="init" minOccurs="0" />
-			<xs:element ref="work" minOccurs="0" maxOccurs="1" />
-			<xs:element ref="subprocess" maxOccurs="1" minOccurs="0"/>
-			<xs:element maxOccurs="unbounded" ref="commit" minOccurs="0" />
-		</xs:sequence>
-		<xs:attribute name="name" use="required" type="xs:string">
-		</xs:attribute>
-		<xs:attribute name="clip" type="xs:string" use="optional"/>
-		<xs:attribute name="loop" type="xs:string" use="optional"/>
-		<xs:attribute name="description" use="optional">
-			<xs:simpleType>
-				<xs:restriction base="xs:string">
-					<xs:minLength value="0"></xs:minLength>
-				</xs:restriction>
-			</xs:simpleType>
-		</xs:attribute>
-		<xs:attribute name="type" use="optional" type="SteptypeType" />
-	</xs:complexType>
+      <xs:complexType name="step">
+      	<xs:sequence>
+      		<xs:element maxOccurs="unbounded" ref="list"
+      			minOccurs="0" />
+      		<xs:element maxOccurs="unbounded" ref="init"
+      			minOccurs="0" />
+      		<xs:element ref="work" minOccurs="0" maxOccurs="1" />
+      		<xs:element ref="subprocess" maxOccurs="1" minOccurs="0" />
+      		<xs:element maxOccurs="unbounded" ref="commit"
+      			minOccurs="0" />
+      	</xs:sequence>
+      	<xs:attribute name="name" use="required" type="xs:string">
+      	</xs:attribute>
+      	<xs:attribute name="clip" type="xs:string" use="optional" />
+      	<xs:attribute name="loop" type="xs:string" use="optional" />
+      	<xs:attribute name="description" use="optional">
+      		<xs:simpleType>
+      			<xs:restriction base="xs:string">
+      				<xs:minLength value="0"></xs:minLength>
+      			</xs:restriction>
+      		</xs:simpleType>
+      	</xs:attribute>
+      	<xs:attribute name="type" use="optional" type="SteptypeType" />
+      	<xs:attribute name="stepStartDelayMinutes" type="xs:integer" use="optional"/>
+      </xs:complexType>
 
-    <xs:complexType name="init">
+      <xs:complexType name="init">
     	<xs:sequence>
     		<xs:element minOccurs="0" maxOccurs="unbounded" ref="match" />
     		<xs:element name="value" type="xs:string"

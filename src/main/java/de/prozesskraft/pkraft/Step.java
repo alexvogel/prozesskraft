@@ -36,6 +36,7 @@ implements Serializable, Cloneable
 	private String clip = null;
 	private String type = "automatic";
 	private String description = new String();
+	private Integer stepStartDelayMinutes = null;
 	private ArrayList<List> list = new ArrayList<List>();
 	private ArrayList<List> defaultlist = new ArrayList<List>();
 
@@ -3120,6 +3121,20 @@ implements Serializable, Cloneable
 	 */
 	public void setStatusChangedWhileLastDoIt(boolean statusChangedWhileLastDoIt) {
 		this.statusChangedWhileLastDoIt = statusChangedWhileLastDoIt;
+	}
+
+	/**
+	 * @return the stepStartDelayMinutes
+	 */
+	public Integer getStepStartDelayMinutes() {
+		return stepStartDelayMinutes;
+	}
+
+	/**
+	 * @param stepStartDelayMinutes the stepStartDelayMinutes to set
+	 */
+	public void setStepStartDelayMinutes(Integer stepStartDelayMinutes) {
+		this.stepStartDelayMinutes = stepStartDelayMinutes;
 	}
 	
 }
