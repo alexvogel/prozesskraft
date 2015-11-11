@@ -26,9 +26,9 @@ implements Serializable
 	----------------------------*/
 	public Exit()
 	{
-//		Work dummyWork = new Work();
-//		dummyWork.setName("dummy");
-//		this.parent = dummyWork;
+		Work dummyWork = new Work();
+		dummyWork.setName("dummy");
+		this.parent = dummyWork;
 	}
 
 	public Exit(Work parent)

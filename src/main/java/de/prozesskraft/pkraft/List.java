@@ -29,9 +29,9 @@ implements Serializable
 	----------------------------*/
 	public List()
 	{
-//		Step dummyStep = new Step();
-//		dummyStep.setName("dummy");
-//		this.parent = dummyStep;
+		Step dummyStep = new Step();
+		dummyStep.setName("dummy");
+		this.parent = dummyStep;
 	}
 
 	public List(Step step)

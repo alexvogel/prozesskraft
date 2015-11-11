@@ -46,10 +46,10 @@ implements Serializable, Cloneable
 	----------------------------*/
 	public File()
 	{
-//		Step dummyStep = new Step();
-//		dummyStep.setName("dummy");
-//		this.parent = dummyStep;
-//		log("info", "object created with an unknown parent");
+		Step dummyStep = new Step();
+		dummyStep.setName("dummy");
+		this.parent = dummyStep;
+		log("info", "object created with an unknown parent");
 	}
 
 	public File( Step step)
