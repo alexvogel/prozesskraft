@@ -825,6 +825,9 @@ public class Manager
 						
 					}
 				}
+				
+				// reset the triggered key
+				key.reset();
 			}
 		}
 	}
