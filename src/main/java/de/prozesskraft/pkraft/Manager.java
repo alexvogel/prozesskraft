@@ -244,10 +244,10 @@ public class Manager
 						e.printStackTrace();
 					}
 	
-					// war der letzte zugriff laenger als 10 minuten her? Dann Prozess pushen
-					if((System.currentTimeMillis() - lastRun) > (sleepMinutes * 60 * 1000) )
+					// war der letzte zugriff laenger als der haelfte der regulaeren wartezeit her? Dann Prozess pushen
+					if((System.currentTimeMillis() - lastRun) > (0.5 * sleepMinutes * 60 * 1000) )
 					{
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than "+sleepMinutes+" minutes ago at " + new Timestamp(lastRun));
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 0.5 * "+sleepMinutes+" minutes ago at " + new Timestamp(lastRun));
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: waking up");
 						
 						pushProcessAsFarAsPossible(line.getOptionValue("instance"), false);
@@ -556,9 +556,13 @@ public class Manager
 		}
 
 		// setzen der schlafdauer sleepMinutes. richtet sich nach dem feld stepStartDelayMinutes falls dieses existiert
-		if(process.getStepStartDelayMinutes() != null)
+		if(process.getStepStartDelayMinutesFutureMinimum() != null)
 		{
 			sleepMinutes = process.getStepStartDelayMinutes();
+			if(sleepMinutes < 1)
+			{
+				sleepMinutes = 1;
+			}
 		}
 		else
 		{
