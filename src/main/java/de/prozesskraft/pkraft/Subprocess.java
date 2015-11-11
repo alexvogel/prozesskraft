@@ -629,21 +629,25 @@ implements Serializable
 //		this.setLastTimeDelayedStatusSet(System.currentTimeMillis());
 //		log("info", "setting status to " + this.getStatus());
 
-		try
+		java.io.File statusFile = new java.io.File(this.getParent().getAbsdir() + "/.status");
+		
+		if(statusFile.exists())
 		{
-			java.util.List<String> statusInhalt = Files.readAllLines(Paths.get(this.getParent().getAbsdir() + "/.status"), Charset.defaultCharset());
-			if(statusInhalt.size() > 0)
+			try
 			{
-				this.setStatus(statusInhalt.get(0));
-				log("info", "setting status to " + this.status);
+				java.util.List<String> statusInhalt = Files.readAllLines(statusFile.toPath(), Charset.defaultCharset());
+				if(statusInhalt.size() > 0)
+				{
+					this.setStatus(statusInhalt.get(0));
+					log("info", "setting status to " + this.status);
+				}
+			}
+			catch (ExceptionInInitializerError e)
+			{
+				System.err.println("trying to write file: " + this.getParent().getAbsdir() + "/.status");
+				e.printStackTrace();
 			}
 		}
-		catch (ExceptionInInitializerError e)
-		{
-			System.err.println("trying to write file: " + this.getParent().getAbsdir() + "/.status");
-			e.printStackTrace();
-		}
-		
 	}
 	
 	/**
