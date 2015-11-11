@@ -137,6 +137,7 @@ implements Serializable, Cloneable
 		newStep.setName(this.getName());
 		newStep.setClip(this.getClip());
 		newStep.setType(this.getType());
+		newStep.setStepStartDelayMinutes(this.getStepStartDelayMinutes());
 		newStep.setDescription(this.getDescription());
 		
 		for(List actList : this.getList())
