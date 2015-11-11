@@ -1053,7 +1053,7 @@ implements Serializable, Cloneable
 				newstep.addList(listLoop);
 
 				// den neuen step (klon von this) dem prozess hinzufuegen
-				this.parent.getStep().add(newstep);
+				this.getParent().getStep().add(newstep);
 				x++;
 			}
 
@@ -2403,15 +2403,15 @@ implements Serializable, Cloneable
 
 		if (this.isRoot())
 		{
-			absDir = this.parent.getRootdir();
+			absDir = this.getParent().getRootdir();
 		}
 		else if (this.getParent().isWrapper())
 		{
-			absDir = this.parent.getRootdir();
+			absDir = this.getParent().getRootdir();
 		}
 		else
 		{
-			absDir = this.parent.getRootdir()+"/dir4step_"+this.getName();
+			absDir = this.getParent().getRootdir()+"/dir4step_"+this.getName();
 			if(this.reset > 0)
 			{
 				absDir += "_r" + this.reset;
@@ -2508,7 +2508,7 @@ implements Serializable, Cloneable
 		{
 			// und diese steps in einem arraylist aufsammeln
 //			System.out.println("anzahl aller steps im aktuellen prozess: "+this.parent.getStep().size());
-			ArrayList<Step> steps = this.parent.getSteps(actualInit.getFromstep());
+			ArrayList<Step> steps = this.getParent().getSteps(actualInit.getFromstep());
 //			System.out.println("my parent is: "+this.parent.toString());
 //			System.out.println("anzahl der fromsteps im aktuellen init: "+steps.size());
 //			System.out.println("actualInit: "+actualInit.getName()+" || fromStep: "+actualInit.getFromstep());
@@ -2978,7 +2978,7 @@ implements Serializable, Cloneable
 		// check all inits
 		for (Init actualInit : this.getInit())
 		{
-			if ( !actualInit.isInitConsistent() ) {result = false;	this.parent.log("error", "error in init '"+actualInit.getListname()+"'");}
+			if ( !actualInit.isInitConsistent() ) {result = false;	this.getParent().log("error", "error in init '"+actualInit.getListname()+"'");}
 		}
 		
 		return result;
