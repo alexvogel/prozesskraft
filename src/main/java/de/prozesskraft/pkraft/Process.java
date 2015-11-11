@@ -2870,6 +2870,10 @@ implements Serializable
 		{
 			allStepStartDelayMinutes.add(this.getStepStartDelayMinutes());
 		}
+		else
+		{
+			allStepStartDelayMinutes.add(0);
+		}
 		
 		// aller steps, die noch verarbeitet werden muessen, falls vorhanden
 		for(Step actStepWorking : this.getStepTogo())
