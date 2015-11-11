@@ -250,7 +250,7 @@ public class Manager
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 0.5 * "+sleepMinutes+" minutes ago at " + new Timestamp(lastRun));
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: waking up");
 						
-						pushProcessAsFarAsPossible(line.getOptionValue("instance"), false);
+						pushProcessAsFarAsPossible(line.getOptionValue("instance"), true);
 						
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ----- alternative thread: end");
 					}
