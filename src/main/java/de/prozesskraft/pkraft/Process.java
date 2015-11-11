@@ -2859,6 +2859,39 @@ implements Serializable
 	}
 
 	/**
+	 * @return the stepStartDelayMinutesFutureMinimum
+	 */
+	public Integer getStepStartDelayMinutesFutureMinimum()
+	{
+		ArrayList<Integer> allStepStartDelayMinutes = new ArrayList<Integer>();
+		
+		// stepStartDelayMinutes des Processes hinzufuegen falls vorhanden
+		if(this.getStepStartDelayMinutes() != null)
+		{
+			allStepStartDelayMinutes.add(this.getStepStartDelayMinutes());
+		}
+		
+		// aller steps, die noch verarbeitet werden muessen, falls vorhanden
+		for(Step actStepWorking : this.getStepTogo())
+		{
+			if(actStepWorking.getStepStartDelayMinutes() != null)
+			{
+				allStepStartDelayMinutes.add(actStepWorking.getStepStartDelayMinutes());
+			}
+		}
+		
+		// rueckgabe
+		if(allStepStartDelayMinutes.size() == 0)
+		{
+			return null;
+		}
+		else
+		{
+			return Collections.min(allStepStartDelayMinutes);
+		}
+	}
+
+	/**
 	 * @return the stepStartDelayMinutes
 	 */
 	public Integer getStepStartDelayMinutes() {
