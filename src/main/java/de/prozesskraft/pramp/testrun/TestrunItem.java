@@ -334,7 +334,7 @@ public class TestrunItem {
 	 */
 	private void pradarAttend(String processBinary)
 	{
-		String pradarAttendCall = father.getFather().getIni().get("apps", "pradar-attend") + " -dir " + processBinary + " -wait 10";
+		String pradarAttendCall = father.getFather().getIni().get("apps", "pradar-attend") + " -dir " + processBinary + " -wait 15";
 		ArrayList<String> pradarAttendCallAsArray = new ArrayList<String>(Arrays.asList(pradarAttendCall.split(" ")));
 		ProcessBuilder pb2 = new ProcessBuilder(pradarAttendCallAsArray);
 
