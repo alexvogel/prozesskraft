@@ -558,7 +558,7 @@ public class Manager
 		// setzen der schlafdauer sleepMinutes. richtet sich nach dem feld stepStartDelayMinutes falls dieses existiert
 		if(process.stepStartDelayMinutesMinimumOfWorkingSteps() != null)
 		{
-			sleepMinutes = process.getStepStartDelayMinutes();
+			sleepMinutes = process.stepStartDelayMinutesMinimumOfWorkingSteps();
 			if(sleepMinutes < 1)
 			{
 				sleepMinutes = 1;
