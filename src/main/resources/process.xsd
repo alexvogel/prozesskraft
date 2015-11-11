@@ -30,7 +30,7 @@
       		</xs:simpleType>
       	</xs:attribute>
       	<xs:attribute name="type" use="optional" type="SteptypeType" />
-      	<xs:attribute name="stepStartDelayMinutes" type="xs:integer" use="optional"/>
+      	<xs:attribute name="stepStartDelayMinutes" type="xs:integer" default="0"/>
       </xs:complexType>
 
       <xs:complexType name="init">

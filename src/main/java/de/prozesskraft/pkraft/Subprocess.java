@@ -195,10 +195,12 @@ implements Serializable
 			if(this.getParent().getStepStartDelayMinutes() != null)
 			{
 				stepStartDelayMinutes = this.getParent().getStepStartDelayMinutes();
+				log("debug", "stepStartDelayMinutes from stepScope " + stepStartDelayMinutes);
 			}
 			else if(this.getParent().getParent().getStepStartDelayMinutes() != null)
 			{
 				stepStartDelayMinutes = this.getParent().getParent().getStepStartDelayMinutes();
+				log("debug", "stepStartDelayMinutes from processScope " + stepStartDelayMinutes);
 			}
 			// und damit entscheiden, ob der schritt gestartet werden soll
 			if( (stepStartDelayMinutes != null) && (minutesSinceLastStepStart < stepStartDelayMinutes) )
