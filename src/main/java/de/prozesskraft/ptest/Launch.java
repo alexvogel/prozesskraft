@@ -325,6 +325,16 @@ public class Launch
 		String AbsStderr = actSplInstanceDir.getCanonicalPath()+"/.stderr.txt";
 		String AbsPid = actSplInstanceDir.getCanonicalPath()+"/.pid";
 		
+		// beim starten von syscall werden parameter mit whitespaces an diesen auseinandergeschnitten und der nachfolgende aufruf schlaeft fehl
+		// deshalb sollen whitespaces durch eine 'zeichensequenz' ersetzt werden
+		// syscall ersetzt die zeichensequenz wieder zurueck in ein " "
+		ArrayList<String> callFuerSyscall = actSpl.getCallAsArrayList();
+		ArrayList<String> callFuerSyscallMitTrennzeichen = new ArrayList<String>();
+		for(String actString : callFuerSyscall)
+		{
+			callFuerSyscallMitTrennzeichen.add(actString.replaceAll("\\s+", "%WHITESPACE%"));
+		}
+		
 		try
 		{
 			// den Aufrufstring fuer die externe App (process syscall --version 0.6.0)) splitten
@@ -333,8 +343,7 @@ public class Launch
 
 			// die sonstigen argumente hinzufuegen
 			processSyscallWithArgs.add("-call");
-			System.err.println("DEBUG: "+String.join(" ", actSpl.getCallAsArrayList()));
-			processSyscallWithArgs.add(String.join(" ", actSpl.getCallAsArrayList()));
+			processSyscallWithArgs.add(String.join(" ", callFuerSyscallMitTrennzeichen));
 //			processSyscallWithArgs.add("\""+call+"\"");
 			processSyscallWithArgs.add("-stdout");
 			processSyscallWithArgs.add(AbsStdout);
