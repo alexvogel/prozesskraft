@@ -228,51 +228,6 @@ public class Manager
 		  business logic
 		----------------------------*/
 
-		// einen timer thread erstellen, der regelmaessig den prozess aufweckt, auch wenn sehr langlaufende steps gerade aktiv sind
-		new Thread(new Runnable() {
-			public void run() {
-				System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: start");
-				while(!exit)
-				{
-					long tatsaechlicheSleepDauer = (long) (factorSleepBecauseOfLoadAverage * ((loopMinutes * 60 * 1000) + fuzzyness));
-					try
-					{
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: sleeping "+ tatsaechlicheSleepDauer + " minutes (loopMinutes="+loopMinutes+", faktorSleepBecauseOfLoadAverage="+factorSleepBecauseOfLoadAverage+", fuzzyness="+fuzzyness+")");
-						Thread.sleep(tatsaechlicheSleepDauer);
-					}
-					catch (NumberFormatException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	
-					// war der letzte zugriff laenger als der haelfte der regulaeren wartezeit her? Dann Prozess pushen
-					if((System.currentTimeMillis() - lastRun) > (0.5 * tatsaechlicheSleepDauer) )
-					{
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 0.5 * "+tatsaechlicheSleepDauer+" minutes ago at " + new Timestamp(lastRun));
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: waking up");
-						
-						pushProcessAsFarAsPossible(line.getOptionValue("instance"), true);
-						
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ----- alternative thread: end");
-					}
-					else
-					{
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been LESS than 0.5 * "+tatsaechlicheSleepDauer+" minutes ago at " + new Timestamp(lastRun));
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: going to sleep again");
-						
-					}
-				}
-
-				// thread beenden
-				System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: exit");
-				System.exit(0);
-			}
-		}).start();
-				
 		
 		
 		Process actualProcess = null;
@@ -301,11 +256,13 @@ public class Manager
 				exiter();
 			}
 
-			if ( line.hasOption("stop") )
+			if ( line.hasOption("stop") || line.hasOption("kill"))
 			{
 				p1.setInfilebinary(pathBinary);
 				Process p2 = p1.readBinary();
 				p2.log("debug", "setting new manager-Id (0) to signal actual manager ("+p2.getManagerid()+") that he is no longer in charge ");
+				System.err.println("info: stopping instance");
+				System.err.println("debug: setting new manager-Id (0) to signal actual manager ("+p2.getManagerid()+") that he is no longer in charge ");
 				p2.setManagerid(0);
 				p2.run = false;
 				p2.setOutfilebinary(pathBinary);
@@ -314,7 +271,9 @@ public class Manager
 
 				if(line.hasOption("kill"))
 				{
-					p2.kill();
+					System.err.println("info: killing all steps of instance");
+					String returnStringOfKills = p2.kill();
+					System.err.println("info: killing returns: " + returnStringOfKills);
 				}
 				
 				boolean pradar =  (!(p2.isWrapper()));
@@ -330,6 +289,51 @@ public class Manager
 				System.exit(0);
 			}
 			
+			// einen timer thread erstellen, der regelmaessig den prozess aufweckt, auch wenn sehr langlaufende steps gerade aktiv sind
+			new Thread(new Runnable() {
+				public void run() {
+					System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: start");
+					while(!exit)
+					{
+						long tatsaechlicheSleepDauer = (long) (factorSleepBecauseOfLoadAverage * ((loopMinutes * 60 * 1000) + fuzzyness));
+						try
+						{
+							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: sleeping "+ tatsaechlicheSleepDauer + " minutes (loopMinutes="+loopMinutes+", faktorSleepBecauseOfLoadAverage="+factorSleepBecauseOfLoadAverage+", fuzzyness="+fuzzyness+")");
+							Thread.sleep(tatsaechlicheSleepDauer);
+						}
+						catch (NumberFormatException e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		
+						// war der letzte zugriff laenger als der haelfte der regulaeren wartezeit her? Dann Prozess pushen
+						if((System.currentTimeMillis() - lastRun) > (0.5 * tatsaechlicheSleepDauer) )
+						{
+							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 0.5 * "+tatsaechlicheSleepDauer+" minutes ago at " + new Timestamp(lastRun));
+							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: waking up");
+							
+							pushProcessAsFarAsPossible(line.getOptionValue("instance"), true);
+							
+							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ----- alternative thread: end");
+						}
+						else
+						{
+							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been LESS than 0.5 * "+tatsaechlicheSleepDauer+" minutes ago at " + new Timestamp(lastRun));
+							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: going to sleep again");
+							
+						}
+					}
+
+					// thread beenden
+					System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: exit");
+					System.exit(0);
+				}
+			}).start();
+					
 			// prozessinstanz einlesen
 			p1.setInfilebinary(pathBinary);
 			
