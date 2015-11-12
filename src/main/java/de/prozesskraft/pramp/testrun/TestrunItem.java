@@ -359,7 +359,7 @@ public class TestrunItem {
 	 */
 	private de.prozesskraft.pkraft.Process createInstanceAndStart(boolean start)
 	{
-		father.getFather().log("debug", "nostart="+start);
+		father.getFather().log("debug", "nostart="+!start);
 		de.prozesskraft.pkraft.Process dummyProcess = new de.prozesskraft.pkraft.Process();
 		dummyProcess.setName("testrun-"+name);
 		dummyProcess.setVersion("Intern");
