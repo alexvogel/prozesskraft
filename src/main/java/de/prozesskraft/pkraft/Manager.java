@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -65,6 +66,7 @@ public class Manager
 	
 	static Map<WatchKey,Path> keys = null;
 
+	static int fuzzyness = ThreadLocalRandom.current().nextInt(-2000, 2000+1);
 	
 	/*----------------------------
 	  constructors
@@ -223,7 +225,7 @@ public class Manager
 		/*----------------------------
 		  business logic
 		----------------------------*/
-		
+
 		// einen timer thread erstellen, der regelmaessig den prozess aufweckt, auch wenn sehr langlaufende steps gerade aktiv sind
 		new Thread(new Runnable() {
 			public void run() {
@@ -233,7 +235,7 @@ public class Manager
 					try
 					{
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: sleeping "+ sleepMinutes + " minutes");
-						Thread.sleep(sleepMinutes * 60 * 1000);
+						Thread.sleep((sleepMinutes * 60 * 1000) + fuzzyness);
 					}
 					catch (NumberFormatException e)
 					{
