@@ -359,6 +359,7 @@ public class TestrunItem {
 	 */
 	private de.prozesskraft.pkraft.Process createInstanceAndStart(boolean start)
 	{
+		father.getFather().log("debug", "nostart="+start);
 		de.prozesskraft.pkraft.Process dummyProcess = new de.prozesskraft.pkraft.Process();
 		dummyProcess.setName("testrun-"+name);
 		dummyProcess.setVersion("Intern");
@@ -385,7 +386,7 @@ public class TestrunItem {
 			{
 				processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir + " -addopt -nostart");
 			}
-			else
+			else if(start)
 			{
 				processSyscallWithArgs.add(father.getFather().getIni().get("apps", "ptest-launch") + " -spl "+getSplDir().getAbsolutePath()+" -call "+callFile+" -instancedir "+instanceDir);
 			}
