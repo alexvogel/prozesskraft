@@ -35,7 +35,8 @@ implements Serializable
 
 	// don't clone parent when you clone this
 	private Step parent = null;
-	
+	transient private Step parentDummy = null;
+
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -43,7 +44,7 @@ implements Serializable
 	{
 		Step dummyStep = new Step();
 		dummyStep.setName("dummy");
-		this.parent = dummyStep;
+		this.parentDummy = dummyStep;
 		log("info", "variable created with an unknown parent");
 	}
 
@@ -107,6 +108,23 @@ implements Serializable
 	public Variable oldClone()
 	{
 		return SerializationUtils.clone(this);
+	}
+	
+	/**
+	 * deserialize not in a standard way
+	 * @param stream
+	 * @throws java.io.IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(java.io.ObjectInputStream stream) throws java.io.IOException, ClassNotFoundException
+	{
+		stream.defaultReadObject();
+
+		// erstellen eines parentDummies, falls notwendig
+		if(parent == null)
+		{
+			parentDummy = new Step();
+		}
 	}
 	
 	/**
@@ -386,8 +404,16 @@ implements Serializable
 	/**
 	 * @return the parent
 	 */
-	public Step getParent() {
-		return parent;
+	public Step getParent()
+	{
+		if(this.parent != null)
+		{
+			return this.parent;
+		}
+		else
+		{
+			return parentDummy;
+		}
 	}
 
 	/**

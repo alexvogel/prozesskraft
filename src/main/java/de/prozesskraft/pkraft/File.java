@@ -40,6 +40,7 @@ implements Serializable, Cloneable
 
 	// don't clone parent when cloning this
 	private Step parent = null;
+	transient private Step parentDummy = null;
 	
 	/*----------------------------
 	  constructors
@@ -48,13 +49,13 @@ implements Serializable, Cloneable
 	{
 		Step dummyStep = new Step();
 		dummyStep.setName("dummy");
-		this.parent = dummyStep;
+		this.parentDummy = dummyStep;
 		log("info", "object created with an unknown parent");
 	}
 
-	public File( Step step)
+	public File(Step step)
 	{
-		this.parent = step;
+		this.setParent(step);
 		log("info", "object created with parent step="+step.getName());
 	}
 
@@ -103,6 +104,23 @@ implements Serializable, Cloneable
 	public File oldClone()
 	{
 		return SerializationUtils.clone(this);
+	}
+	
+	/**
+	 * deserialize not in a standard way
+	 * @param stream
+	 * @throws java.io.IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(java.io.ObjectInputStream stream) throws java.io.IOException, ClassNotFoundException
+	{
+		stream.defaultReadObject();
+
+		// erstellen eines parentDummies, falls notwendig
+		if(parent == null)
+		{
+			parentDummy = new Step();
+		}
 	}
 	
 	public boolean match(Match match)
@@ -633,8 +651,16 @@ implements Serializable, Cloneable
 	/**
 	 * @return the parent
 	 */
-	public Step getParent() {
-		return parent;
+	public Step getParent()
+	{
+		if(this.parent != null)
+		{
+			return this.parent;
+		}
+		else
+		{
+			return parentDummy;
+		}
 	}
 
 	/**
