@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Spl {
@@ -113,13 +114,26 @@ public class Spl {
 		
 		ArrayList<String> callAsArrayList = new ArrayList<String>();
 
-		// zu einem string joinen  (trennzeichen=" ")
+		// zu einem arraylist umgestalten
+		// 1) trennen der ersten zeile an allen " "
+		boolean ersteZeileGesehen = false;
 		for(String actLine : allLines)
 		{
-			// wenn zeile kein commentar
-			if(!actLine.matches("^\\s*#.+$"))
+			// kommentare ignorieren
+			if(actLine.matches("^\\s*#.+$"))
 			{
-				callAsArrayList.add(actLine);
+				// ignorieren
+			}
+			// erste zeile an whitespaces splitten
+			else if(!ersteZeileGesehen)
+			{
+				callAsArrayList.addAll(new ArrayList<String>(Arrays.asList(actLine.split(" +"))));
+				ersteZeileGesehen = true;
+			}
+			// alle weiteren zeilen an erstem whitespace splitten
+			else
+			{
+				callAsArrayList.addAll(new ArrayList<String>(Arrays.asList(actLine.split(" +", 2))));
 			}
 		}
 		
