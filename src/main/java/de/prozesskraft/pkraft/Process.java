@@ -2118,6 +2118,24 @@ implements Serializable
 	}
 	
 	/**
+	 * liefert alle steps, die momentan im status 'initialized' sind
+	 * @param 
+	 * @return ArrayList<Step>
+	 */
+	public ArrayList<Step> getStepInitialized()
+	{
+		ArrayList<Step> steps = new ArrayList<Step>();
+		for(Step actStep : this.getStep())
+		{
+			if(actStep.getStatus().equals("initialized"))
+			{
+				steps.add(actStep);
+			}
+		}
+		return steps;
+	}
+	
+	/**
 	 * liefert alle steps, die momentan im status 'working' sind
 	 * @param 
 	 * @return ArrayList<Step>
@@ -2838,18 +2856,18 @@ implements Serializable
 	}
 
 	/**
-	 * @return the stepStartDelayMinutesMinimumOfWorkingSteps
+	 * @return the stepStartDelayMinutesMinimumOfInitializedSteps
 	 */
-	public Integer stepStartDelayMinutesMinimumOfWorkingSteps()
+	public Integer stepStartDelayMinutesMinimumOfInitializedSteps()
 	{
 		ArrayList<Integer> allStepStartDelayMinutes = new ArrayList<Integer>();
 		
 		// aller steps, die noch verarbeitet werden muessen, falls vorhanden
-		for(Step actStepWorking : this.getStepWorking())
+		for(Step actStep : this.getStepInitialized())
 		{
-			if(actStepWorking.getStepStartDelayMinutes() != null)
+			if(actStep.getStepStartDelayMinutes() != null)
 			{
-				allStepStartDelayMinutes.add(actStepWorking.getStepStartDelayMinutes());
+				allStepStartDelayMinutes.add(actStep.getStepStartDelayMinutes());
 			}
 			else if(this.getStepStartDelayMinutes() != null)
 			{
