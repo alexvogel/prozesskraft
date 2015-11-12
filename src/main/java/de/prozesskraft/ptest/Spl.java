@@ -29,11 +29,11 @@ public class Spl {
 	 * reads the call-file
 	 * 1) the first line is the app-call
 	 * 2) every following line is a parameter
-	 * the callString is: all lines, joined together without "\newLines"
-	 * @return the call
+	 * the callString in the spl file is: all lines, joined together without "\newLines"
+	 * @return call
 	 * @throws IOException 
 	 */
-	public String getCallAsString() throws IOException
+	public ArrayList<String> getCallAsArrayList() throws IOException
 	{
 		// das call-file einlesen
 		List<String> allLines = Files.readAllLines(this.getCall().toPath(), Charset.defaultCharset());
@@ -111,7 +111,7 @@ public class Spl {
 			allLines = allLinesModified;
 		}
 		
-		String callAsString = "";
+		ArrayList<String> callAsArrayList = new ArrayList<String>();
 
 		// zu einem string joinen  (trennzeichen=" ")
 		for(String actLine : allLines)
@@ -119,14 +119,7 @@ public class Spl {
 			// wenn zeile kein commentar
 			if(!actLine.matches("^\\s*#.+$"))
 			{
-				if(callAsString.equals(""))
-				{
-					callAsString += actLine;
-				}
-				else
-				{
-					callAsString += " " + actLine;
-				}
+				callAsArrayList.add(actLine);
 			}
 		}
 		
@@ -135,11 +128,10 @@ public class Spl {
 		{
 			for(String actString : this.getAddopt())
 			{
-				callAsString += " " + actString;
+				callAsArrayList.add(actString);
 			}
 		}
-
-		return callAsString;
+		return callAsArrayList;
 	}
 
 	/**
