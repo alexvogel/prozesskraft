@@ -146,12 +146,12 @@ public class Spl {
 			}
 		}
 		
-		System.err.println("this call is returned to caller ---- start ----:");
-		for(String actString : callAsArrayList)
-		{
-			System.err.println(actString +" \\");
-		}
-		System.err.println("this call is returned to caller ---- end ----:");
+//		System.err.println("this call is returned to caller ---- start ----:");
+//		for(String actString : callAsArrayList)
+//		{
+//			System.err.println(actString +" \\");
+//		}
+//		System.err.println("this call is returned to caller ---- end ----:");
 		
 		return callAsArrayList;
 	}
