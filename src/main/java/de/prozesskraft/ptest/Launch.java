@@ -333,7 +333,7 @@ public class Launch
 
 			// die sonstigen argumente hinzufuegen
 			processSyscallWithArgs.add("-call");
-			processSyscallWithArgs.add(actSpl.getCallAsString());
+			processSyscallWithArgs.addAll(actSpl.getCallAsArrayList());
 //			processSyscallWithArgs.add("\""+call+"\"");
 			processSyscallWithArgs.add("-stdout");
 			processSyscallWithArgs.add(AbsStdout);
