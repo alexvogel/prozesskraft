@@ -332,7 +332,7 @@ public class Launch
 			ArrayList<String> processSyscallWithArgs = new ArrayList<String>(Arrays.asList(ini.get("apps", "pkraft-syscall").split(" ")));
 
 			// die sonstigen argumente hinzufuegen
-			processSyscallWithArgs.add("-call");
+			processSyscallWithArgs.add("-calla");
 			System.err.println("DEBUG: "+String.join(" ", actSpl.getCallAsArrayList()));
 			processSyscallWithArgs.add(String.join(" ", actSpl.getCallAsArrayList()));
 //			processSyscallWithArgs.add("\""+call+"\"");
