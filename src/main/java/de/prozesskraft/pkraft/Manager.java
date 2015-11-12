@@ -61,12 +61,14 @@ public class Manager
 	static Double managerid = null;
 	volatile static Long lastRun = null;
 	volatile static boolean exit = false;
-	volatile static int sleepMinutes = 1;
+	volatile static int loopMinutes = 1;
+	static int fuzzyness = ThreadLocalRandom.current().nextInt(-2000, 2000+1);
+	static float factorSleepBecauseOfLoadAverage = 1.0f;
+	
 	static java.io.File fileBinary = null;
 	
 	static Map<WatchKey,Path> keys = null;
 
-	static int fuzzyness = ThreadLocalRandom.current().nextInt(-2000, 2000+1);
 	
 	/*----------------------------
 	  constructors
@@ -232,10 +234,11 @@ public class Manager
 				System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: start");
 				while(!exit)
 				{
+					long tatsaechlicheSleepDauer = (long) (factorSleepBecauseOfLoadAverage * ((loopMinutes * 60 * 1000) + fuzzyness));
 					try
 					{
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: sleeping "+ sleepMinutes + " minutes");
-						Thread.sleep((sleepMinutes * 60 * 1000) + fuzzyness);
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: sleeping "+ tatsaechlicheSleepDauer + " minutes (loopMinutes="+loopMinutes+", faktorSleepBecauseOfLoadAverage="+factorSleepBecauseOfLoadAverage+", fuzzyness="+fuzzyness+")");
+						Thread.sleep(tatsaechlicheSleepDauer);
 					}
 					catch (NumberFormatException e)
 					{
@@ -247,9 +250,9 @@ public class Manager
 					}
 	
 					// war der letzte zugriff laenger als der haelfte der regulaeren wartezeit her? Dann Prozess pushen
-					if((System.currentTimeMillis() - lastRun) > (0.5 * sleepMinutes * 60 * 1000) )
+					if((System.currentTimeMillis() - lastRun) > (0.5 * tatsaechlicheSleepDauer) )
 					{
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 0.5 * "+sleepMinutes+" minutes ago at " + new Timestamp(lastRun));
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 0.5 * "+tatsaechlicheSleepDauer+" minutes ago at " + new Timestamp(lastRun));
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: waking up");
 						
 						pushProcessAsFarAsPossible(line.getOptionValue("instance"), true);
@@ -258,7 +261,7 @@ public class Manager
 					}
 					else
 					{
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been LESS than 0.5 * "+sleepMinutes+" minutes ago at " + new Timestamp(lastRun));
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been LESS than 0.5 * "+tatsaechlicheSleepDauer+" minutes ago at " + new Timestamp(lastRun));
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: going to sleep again");
 						
 					}
@@ -529,6 +532,17 @@ public class Manager
 		double actLoadAverage = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
 		process.getTimeSerieLoadAverage().addValue(String.valueOf(actLoadAverage));
 		
+		if( (process.getStepStartLoadAverageBelow() != null) && (actLoadAverage > process.getStepStartLoadAverageBelow()) )
+		{
+			// warte-faktor erhoehen
+			factorSleepBecauseOfLoadAverage += 0.5;
+		}
+		else
+		{
+			// warte faktor resetten
+			factorSleepBecauseOfLoadAverage = 1.0f;
+		}
+		
 		// 2) die groesse des binary-files festhalten
 		long fileSizeInKB = fileBinary.length() / 1024;
 		
@@ -560,15 +574,15 @@ public class Manager
 		// setzen der schlafdauer sleepMinutes. richtet sich nach dem feld stepStartDelayMinutes falls dieses existiert
 		if(process.stepStartDelayMinutesMinimumOfInitializedSteps() != null)
 		{
-			sleepMinutes = process.stepStartDelayMinutesMinimumOfInitializedSteps();
-			if(sleepMinutes < 1)
+			loopMinutes = process.stepStartDelayMinutesMinimumOfInitializedSteps();
+			if(loopMinutes < 1)
 			{
-				sleepMinutes = 1;
+				loopMinutes = 1;
 			}
 		}
 		else
 		{
-			sleepMinutes = 5;
+			loopMinutes = 5;
 		}
 		
 		boolean imProzessHatSichWasGeaendert = true;
