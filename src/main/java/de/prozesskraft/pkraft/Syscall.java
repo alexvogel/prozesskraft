@@ -298,6 +298,14 @@ public class Syscall {
 				}
 			}
 			
+			// Zeichenfolge %WHITESPACE% ersetzen durch " "
+			ArrayList<String> processSyscallWithArgsTmp2 = new ArrayList<String>();
+			writerLog.println("placeholder %WHITESPACE% replaced with a single blank");
+			for(String actString : processSyscallWithArgsTmp)
+			{
+				processSyscallWithArgsTmp2.add(actString.replace("%WHITESPACE%", " "));
+			}
+			
 			// in diesem array sollen die endgueltig verarbeiteten parameter gehalten werden
 			ArrayList<String> processSyscallWithArgs = new ArrayList<String>();
 //			// noch vorhandene blanks in argumenten maskieren
@@ -320,7 +328,7 @@ public class Syscall {
 //				}
 //				nr++;
 //			}
-			processSyscallWithArgs = processSyscallWithArgsTmp;
+			processSyscallWithArgs = processSyscallWithArgsTmp2;
 
 			writerLog.println("pkraft-syscall has called this...");
 			writerLog.println("------------------------------------------------------");
