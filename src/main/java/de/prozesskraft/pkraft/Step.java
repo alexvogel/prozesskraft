@@ -1744,7 +1744,7 @@ implements Serializable, Cloneable
 		// wenn es ein explizites killcommand im work-object gibt, soll dieses ausgefuehrt werden
 		// dies wird benoetigt um ein kill programm zu triggern, dass bsplw. eine analyse auf dem hpc abschiesst
 		// <killcommand> <killpid>
-		if(this.getWork().getKillcommand() != null)
+		if((this.getWork() != null) && (this.getWork().getKillcommand() != null))
 		{
 			for(Variable actKillPid : this.getVariable("killpid"))
 			{
@@ -1776,50 +1776,55 @@ implements Serializable, Cloneable
 		// die pid des gestarteten programms feststellen (inhalt des .pid-files)
 		java.util.List<String> allLines = null;
 		
-		try
+		java.io.File pidFile = new java.io.File(this.getAbspid());
+		
+		// wenn pid-file existiert, soll ein kill darauf erzeugt werden
+		if(pidFile.exists())
 		{
-			allLines = org.apache.commons.io.FileUtils.readLines(new java.io.File(this.getAbspid()));
-		}
-		catch (IOException e1)
-		{
-			this.log("error", e1.getMessage());
-			e1.printStackTrace();
+			try
+			{
+				allLines = org.apache.commons.io.FileUtils.readLines(new java.io.File(this.getAbspid()));
+			}
+			catch (IOException e1)
+			{
+				this.log("error", e1.getMessage());
+				e1.printStackTrace();
+			}
+			
+			// kill aufruf erzeugen (kill <pid>)
+			// array das den aufruf beherbergt
+			if(allLines != null && allLines.size() > 0)
+			{
+				ArrayList<String> callToKill = new ArrayList<String>();
+				callToKill.add("kill");
+				callToKill.add("-9");
+				callToKill.add(allLines.get(0));
+				
+				// log
+				this.log("info", "killing program that has been launched by this step");
+				this.log("info", "call: " + StringUtils.join(callToKill, " "));
+				returnStringInfoAboutKills += ", " + StringUtils.join(callToKill, " ");
+	
+				// erstellen prozessbuilder
+				ProcessBuilder pb = new ProcessBuilder(callToKill);
+	
+				// Aufruf taetigen
+				try {
+					final java.lang.Process sysproc = pb.start();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					this.log("error", e.getMessage());
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				this.log("error", "tried to kill, but file does not have the expected content: "+this.getAbspid());
+				returnStringInfoAboutKills += ", kill failed";
+			}
 		}
 		
-		// kill aufruf erzeugen (kill <pid>)
-		// array das den aufruf beherbergt
-		if(allLines != null && allLines.size() > 0)
-		{
-			ArrayList<String> callToKill = new ArrayList<String>();
-			callToKill.add("kill");
-			callToKill.add("-9");
-			callToKill.add(allLines.get(0));
-			
-			// log
-			this.log("info", "killing program that has been launched by this step");
-			this.log("info", "call: " + StringUtils.join(callToKill, " "));
-			returnStringInfoAboutKills += ", " + StringUtils.join(callToKill, " ");
-
-			// erstellen prozessbuilder
-			ProcessBuilder pb = new ProcessBuilder(callToKill);
-
-			// Aufruf taetigen
-			try {
-				final java.lang.Process sysproc = pb.start();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				this.log("error", e.getMessage());
-				e.printStackTrace();
-			}
-			return returnStringInfoAboutKills;
-		}
-		else
-		{
-			this.log("error", "tried to kill, but file does not have the expected content: "+this.getAbspid());
-			returnStringInfoAboutKills += ", kill failed";
-			return returnStringInfoAboutKills;
-		}
-
+		return returnStringInfoAboutKills;
 	}
 
 	/*----------------------------
