@@ -529,6 +529,10 @@ public class Startinstance
 			java.lang.Process p = pb.start();
 			System.err.println("pid: "+p.hashCode());
 		}
+		else
+		{
+			System.err.println("info: NOT starting processmanager for instance "+p2.getOutfilebinary());
+		}
 			
 	}
 	
