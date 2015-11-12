@@ -37,6 +37,7 @@ implements Serializable
 	
 	// don't clone parent when you clone this
 	public Step parent = null;
+	transient private Step parentDummy = null;
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -44,7 +45,7 @@ implements Serializable
 	{
 		Step dummyStep = new Step();
 		dummyStep.setName("dummy");
-		this.parent = dummyStep;
+		this.parentDummy = dummyStep;
 	}
 
 	public Work(Step step)
@@ -86,6 +87,23 @@ implements Serializable
 		
 		return newWork;
 		
+	}
+	
+	/**
+	 * deserialize not in a standard way
+	 * @param stream
+	 * @throws java.io.IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(java.io.ObjectInputStream stream) throws java.io.IOException, ClassNotFoundException
+	{
+		stream.defaultReadObject();
+
+		// erstellen eines parentDummies, falls notwendig
+		if(parent == null)
+		{
+			parentDummy = new Step();
+		}
 	}
 	
 	public void addExit(Exit exit)
@@ -371,14 +389,24 @@ implements Serializable
 	
 	public ArrayList<String> getListItems(String listname)
 	{
-		return this.parent.getListItems(listname);
+		return this.getParent().getListItems(listname);
 	}
 	
+	/**
+	 * @return the parent
+	 */
 	public Step getParent()
 	{
-		return this.parent;
+		if(this.parent != null)
+		{
+			return this.parent;
+		}
+		else
+		{
+			return parentDummy;
+		}
 	}
-	
+
 	public ArrayList<Log> getLog()
 	{
 		return this.log;

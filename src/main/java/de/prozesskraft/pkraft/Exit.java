@@ -20,7 +20,7 @@ implements Serializable
 
 	// don't clone parent when you clone this
 	private Work parent = null;
-
+	transient private Work parentDummy = null;
 	/*----------------------------
 	  constructors
 	----------------------------*/
@@ -28,7 +28,7 @@ implements Serializable
 	{
 		Work dummyWork = new Work();
 		dummyWork.setName("dummy");
-		this.parent = dummyWork;
+		this.parentDummy = dummyWork;
 	}
 
 	public Exit(Work parent)
@@ -48,13 +48,40 @@ implements Serializable
 		return newExit;
 	}
 	
+	/**
+	 * deserialize not in a standard way
+	 * @param stream
+	 * @throws java.io.IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(java.io.ObjectInputStream stream) throws java.io.IOException, ClassNotFoundException
+	{
+		stream.defaultReadObject();
+
+		// erstellen eines parentDummies, falls notwendig
+		if(parent == null)
+		{
+			parentDummy = new Work();
+		}
+	}
+	
 	/*----------------------------
 	  methods getter / setter
 	----------------------------*/
 	
+	/**
+	 * @return the parent
+	 */
 	public Work getParent()
 	{
-		return this.parent;
+		if(this.parent != null)
+		{
+			return this.parent;
+		}
+		else
+		{
+			return parentDummy;
+		}
 	}
 
 	public void setParent(Work work)

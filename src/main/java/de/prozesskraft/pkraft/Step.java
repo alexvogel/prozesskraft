@@ -73,21 +73,11 @@ implements Serializable, Cloneable
 
 	// don't clone parent when cloning this
 	private Process parent = null;
+	transient private Process parentDummy = null;
 
 	/*----------------------------
 	  constructors
 	----------------------------*/
-	/**
-	 * constructs a step with
-	 * a given parent
-	 * a random name
-	 */
-	public Step(Process p)
-	{
-		this.setParent(p);
-		this.setName(this.genName());
-	}
-
 	/**
 	 * constructs a step with
 	 * a new parent
@@ -97,8 +87,19 @@ implements Serializable, Cloneable
 	{
 		Process dummyProcess = new Process();
 		dummyProcess.setName("dummy");
-		this.setParent(dummyProcess);
+		this.parentDummy = dummyProcess;
 
+		this.setName(this.genName());
+	}
+
+	/**
+	 * constructs a step with
+	 * a given parent
+	 * a random name
+	 */
+	public Step(Process p)
+	{
+		this.setParent(p);
 		this.setName(this.genName());
 	}
 
@@ -218,6 +219,23 @@ implements Serializable, Cloneable
 		return SerializationUtils.clone(this);
 	}
 
+	/**
+	 * deserialize not in a standard way
+	 * @param stream
+	 * @throws java.io.IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(java.io.ObjectInputStream stream) throws java.io.IOException, ClassNotFoundException
+	{
+		stream.defaultReadObject();
+
+		// erstellen eines parentDummies, falls notwendig
+		if(parent == null)
+		{
+			parentDummy = new Process();
+		}
+	}
+	
 	/**
 	 * add a log
 	 * @param log
@@ -1058,13 +1076,13 @@ implements Serializable, Cloneable
 			}
 
 			// den urspruenglichen step (this) aus dem prozess entfernen
-			this.parent.getStep().remove(this);
+			this.getParent().getStep().remove(this);
 
 			// parents neu setzen
-			this.parent.affiliate();
+			this.getParent().affiliate();
 			
 			// die ranks neu setzen
-			this.parent.setStepRanks();
+			this.getParent().setStepRanks();
 		}
 
 //		System.out.println("anzahl der Steps im Prozess nach dem fanning: "+this.parent.getSteps().size());
@@ -2392,9 +2410,19 @@ implements Serializable, Cloneable
 		return status;
 	}
 
+	/**
+	 * @return the parent
+	 */
 	public Process getParent()
 	{
-		return this.parent;
+		if(this.parent != null)
+		{
+			return this.parent;
+		}
+		else
+		{
+			return parentDummy;
+		}
 	}
 
 	public String getAbsdir()

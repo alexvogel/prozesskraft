@@ -21,6 +21,7 @@ implements Serializable
 
 	// don't clone parent when you clone this
 	private Init parent = null;
+	transient private Init parentDummy = null;
 	
 	/*----------------------------
 	  constructors
@@ -29,7 +30,7 @@ implements Serializable
 	{
 		Init dummyInit = new Init();
 		dummyInit.setListname("dummy");
-		this.parent = dummyInit;
+		this.parentDummy = dummyInit;
 	}
 
 	public Match(Init parent)
@@ -55,6 +56,23 @@ implements Serializable
 		}
 		
 		return newMatch;
+	}
+	
+	/**
+	 * deserialize not in a standard way
+	 * @param stream
+	 * @throws java.io.IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(java.io.ObjectInputStream stream) throws java.io.IOException, ClassNotFoundException
+	{
+		stream.defaultReadObject();
+
+		// erstellen eines parentDummies, falls notwendig
+		if(parent == null)
+		{
+			parentDummy = new Init();
+		}
 	}
 	
 	public void addLog(Log log)
@@ -106,14 +124,20 @@ implements Serializable
 		this.addLog(new Log(loglevel, logmessage));
 	}
 
-
 	/**
 	 * @return the parent
 	 */
-	public Init getParent() {
-		return parent;
+	public Init getParent()
+	{
+		if(this.parent != null)
+		{
+			return this.parent;
+		}
+		else
+		{
+			return parentDummy;
+		}
 	}
-
 
 	/**
 	 * @param parent the parent to set

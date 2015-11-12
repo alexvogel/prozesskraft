@@ -131,7 +131,7 @@ implements Serializable
 
 		else
 		{
-			List loopList = this.parent.parent.getList(this.getLoop());
+			List loopList = this.parent.getParent().getList(this.getLoop());
 			
 			if(loopList == null)
 			{

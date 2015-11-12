@@ -23,6 +23,7 @@ implements Serializable
 
 	// don't clone this, when cloning this List
 	private Step parent = null;
+	transient private Step parentDummy = null;
 
 	/*----------------------------
 	  constructors
@@ -31,7 +32,7 @@ implements Serializable
 	{
 		Step dummyStep = new Step();
 		dummyStep.setName("dummy");
-		this.parent = dummyStep;
+		this.parentDummy = dummyStep;
 	}
 
 	public List(Step step)
@@ -63,6 +64,23 @@ implements Serializable
 		return newList;
 	}
 
+	/**
+	 * deserialize not in a standard way
+	 * @param stream
+	 * @throws java.io.IOException
+	 * @throws ClassNotFoundException
+	 */
+	private void readObject(java.io.ObjectInputStream stream) throws java.io.IOException, ClassNotFoundException
+	{
+		stream.defaultReadObject();
+
+		// erstellen eines parentDummies, falls notwendig
+		if(parent == null)
+		{
+			parentDummy = new Step();
+		}
+	}
+	
 	/**
 	 * clears the list
 	 */
@@ -187,6 +205,20 @@ implements Serializable
 		this.parent = step;
 	}
 	
+	/**
+	 * @return the parent
+	 */
+	public Step getParent()
+	{
+		if(this.parent != null)
+		{
+			return this.parent;
+		}
+		else
+		{
+			return parentDummy;
+		}
+	}
 
 	/**
 	 * @param itemcount
