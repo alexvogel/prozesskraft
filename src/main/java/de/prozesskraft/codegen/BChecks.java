@@ -79,7 +79,7 @@ implements Serializable, Cloneable
 			content.add("	my $anzahl = 0;");
 			content.add("	if ( (ref($OPT{$key}) eq \"SCALAR\") && ( defined(${$OPT{$key}}) ) )");
 			content.add("	{");
-			content.add("		unless (${$OPT{$key}} =~ m/${$OPTIONS_TABLE{$key}}{'check'}/)");
+			content.add("		if ( (${$OPTIONS_TABLE{$key}}{'check'} ne '') && (!(${$OPT{$key}} =~ m/${$OPTIONS_TABLE{$key}}{'check'}/)) )");
 			content.add("		{");
 			content.add("			logit('error', 'option --'.$key.'='.${$OPT{$key}}.' is not a ' . ${$OPTIONS_TABLE{$key}}{'definition'}.  ' (does not match the expected pattern /'.${$OPTIONS_TABLE{$key}}{'check'}.'/).');");
 			content.add("			$error_patternchecks++;");
@@ -90,7 +90,7 @@ implements Serializable, Cloneable
 			content.add("	{");
 			content.add("		foreach my $value (@{$OPT{$key}})");
 			content.add("		{");
-			content.add("			unless ($value =~ m/${$OPTIONS_TABLE{$key}}{'check'}/)");
+			content.add("			if ( (${$OPTIONS_TABLE{$key}}{'check'} ne '') && (!($value =~ m/${$OPTIONS_TABLE{$key}}{'check'}/)) )");
 			content.add("			{");
 			content.add("				logit('error', 'option --'.$key.'='.$value.' is not a ' . ${$OPTIONS_TABLE{$key}}{'definition'}.  ' (does not match the expected pattern /'.${$OPTIONS_TABLE{$key}}{'check'}.'/).');");
 			content.add("				$error_patternchecks++;");
