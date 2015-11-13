@@ -865,7 +865,7 @@ implements Serializable, Cloneable
 						reihenfolge = act_callitem.getSequence();
 					}
 					
-					String par = act_callitem.getPar().replaceAll("-", "");
+					String par = act_callitem.getPar().replaceAll("^-+", "");
 					if(par.equals(name))
 					{
 						if(act_callitem.getVal() == null || !(act_callitem.getVal().matches(".+")))
@@ -907,7 +907,7 @@ implements Serializable, Cloneable
 		// 2) Optionen aus callitems, fuer die kein gleichnamiges Init existiert
 		for(Callitem actCallitem : this.getWork().getCallitem())
 		{
-			if(!optionenAusInits.contains(actCallitem.getPar().replaceAll("-", "")))
+			if(!optionenAusInits.contains(actCallitem.getPar().replaceAll("^-+", "")))
 			{
 				String definition = "";
 				int minoccur = 0;
