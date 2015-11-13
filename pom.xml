@@ -101,38 +101,37 @@
 			</plugin>
 
 <!-- Obfuskieren des jars. das output ueberschreibt das default-jar, welches durch 'maven-jar-plugin' id=default produziert wurde -->
-			<plugin>
-				<groupId>com.github.wvengen</groupId>
-				<artifactId>proguard-maven-plugin</artifactId>
-				<version>2.0.8</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>proguard</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-<!--  					<includeDependency>true</includeDependency> -->
-					<obfuscate>true</obfuscate>
-					<outputDirectory>${project.build.directory}</outputDirectory>
-					<injar>${project.name}-${project.version}.jar</injar>
-					<outjar>${project.name}-${project.version}.jar</outjar>
-					<options>
-						<option>-keep public class de.prozesskraft.pradar.parts.PradarPartUi3 { *; }</option>
-						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewModel { *; }</option>
-						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewProcessingPage { *; }</option>
-						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewProcessingEntity { *; }</option>
-						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewTreePage { *; }</option>
-						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewLogPage { *; }</option>
-					</options>
-					<libs>
-						<lib>${java.home}/lib/rt.jar</lib>
-					</libs>
-					<proguardVersion>5.2.1</proguardVersion>
-				</configuration>
-			</plugin>
+<!-- 			<plugin> -->
+<!-- 				<groupId>com.github.wvengen</groupId> -->
+<!-- 				<artifactId>proguard-maven-plugin</artifactId> -->
+<!-- 				<version>2.0.8</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<phase>package</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>proguard</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 				<configuration> -->
+<!-- 					<obfuscate>true</obfuscate> -->
+<!-- 					<outputDirectory>${project.build.directory}</outputDirectory> -->
+<!-- 					<injar>${project.name}-${project.version}.jar</injar> -->
+<!-- 					<outjar>${project.name}-${project.version}.jar</outjar> -->
+<!-- 					<options> -->
+<!-- 						<option>-keep public class de.prozesskraft.pradar.parts.PradarPartUi3 { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewModel { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewProcessingPage { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewProcessingEntity { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewTreePage { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pradar.parts.PradarViewLogPage { *; }</option> -->
+<!-- 					</options> -->
+<!-- 					<libs> -->
+<!-- 						<lib>${java.home}/lib/rt.jar</lib> -->
+<!-- 					</libs> -->
+<!-- 					<proguardVersion>5.2.1</proguardVersion> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
 			
 <!-- Alle unter dependency definierten Abhaengigkeiten werden aus dem maven-repo in ein eigenes lib-verzeichnis kopiert -->
 			<plugin>
