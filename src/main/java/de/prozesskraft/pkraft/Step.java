@@ -1007,6 +1007,24 @@ implements Serializable, Cloneable
 			actList.addItem(actList.getDefaultitem());
 		}
 		
+		// standardvariablen setzen
+		this.log("info", "setting standard variables");
+
+		// ist _dir variable bereits vorhanden?, dann soll sie geloescht werden
+		if(this.getVariable("_dir") != null)
+		{
+			this.removeVariable(this.getVariable("_dir"));
+		}
+
+		// das stepdir als variable "_dir" ablegen
+		Variable var = new Variable();
+		var.setKey("_dir");
+		var.setValue(this.getAbsdir());
+		this.addVariable(var);
+		this.log("info", "setting standard variable _dir=" + var.getValue());
+
+		this.log("info", "setting standard variables done");
+
 		// ueber alle inits iterieren und ausfuehren
 		for( Init actualInit : this.getInits())
 		{
@@ -1038,7 +1056,7 @@ implements Serializable, Cloneable
 			looplist.addItem(this.getListItems(this.loop));
 		}
 
-		// wenn die loopliste mindestens 1 wert enthaelt, ueber dioe liste iterieren und fuer jeden wert den aktuellen step clonen
+		// wenn die loopliste mindestens 1 wert enthaelt, ueber die liste iterieren und fuer jeden wert den aktuellen step clonen
 		if (looplist.size() > 0)
 		{
 			System.err.println("size of looplist: "+looplist.size());
@@ -1121,18 +1139,6 @@ implements Serializable, Cloneable
 	 */
 	public void commit()
 	{
-
-		this.log("info", "commit standard entries");
-
-		ArrayList<String> existKeysInVariables = this.getVariableKeys();
-		// das stepdir als variable "_dir" ablegen, falls noch nicht vorhanden
-		if(!existKeysInVariables.contains("_dir"))
-		{
-			Variable var = new Variable();
-			var.setKey("_dir");
-			var.setValue(this.getAbsdir());
-			this.addVariable(var);
-		}
 
 		this.log("info", "commit standard entries finished");
 
@@ -1403,8 +1409,16 @@ implements Serializable, Cloneable
 					fehlerGrund = "step "+stepname+" not found in process ";
 					return stringToResolve;
 				}
-				list = this.getParent().getStep(stepname).getList(listname);
-				
+				// ist es die spezialliste '_dir', soll eine list on-the-fly erstellt und mit dem directory des steps bestueckt werden
+				if(listname.equals("_dir"))
+				{
+					list = new List();
+					list.addItem(this.getAbsdir());
+				}
+				else
+				{
+					list = this.getParent().getStep(stepname).getList(listname);
+				}
 				if(list == null)
 				{
 					log("error", "list "+listname+"(in step "+stepname+") not found");
