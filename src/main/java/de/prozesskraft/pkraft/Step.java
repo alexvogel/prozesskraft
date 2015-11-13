@@ -714,6 +714,11 @@ implements Serializable, Cloneable
 	 */
 	public ArrayList<String> getStepAsPerlScript(boolean nolist)
 	{
+		if(this.getWork() == null)
+		{
+			return new ArrayList<String>();
+		}
+		
 		Boolean allowIntegratedListIfMultiOption = !nolist;
 		
 		Script script = new Script();
@@ -724,7 +729,9 @@ implements Serializable, Cloneable
 		
 //		System.out.println(" options : "+callitem.size());
 
+		// 1) Optionen aus Inits, fuer die ein gleichnamiges Callitem existiert. (Inits ohne Callitem werden ignoriert) 
 		int reihenfolge = 0;
+		ArrayList<String> optionenAusInits = new ArrayList<String>();
 		for(Init actInit : this.getInit())
 		{
 			// daten aus der init-definition
@@ -851,7 +858,7 @@ implements Serializable, Cloneable
 				
 				// wenn in einem callitem ein Par existiert, dass genauso heisst wie dieses init, wird
 				// falls ein val existiert 'string' gesetzt, falls kein val existiert 'flag' gesetzt
-				for(Callitem act_callitem : this.work.getCallitem())
+				for(Callitem act_callitem : this.getWork().getCallitem())
 				{
 					if(act_callitem.getSequence() != null && !act_callitem.getSequence().equals(""))
 					{
@@ -892,10 +899,44 @@ implements Serializable, Cloneable
 				}
 				
 				script.addOption(name, reihenfolge, minoccur, maxoccur, definition, check, def, text1, text2, allowIntegratedListIfMultiOption);
+				optionenAusInits.add(name);
 			}
 //			System.out.println("addoption mit diesen parametern: "+name+minoccur+maxoccur+definition+check+def+text1+text2);
 		}
 		
+		// 2) Optionen aus callitems, fuer die kein gleichnamiges Init existiert
+		for(Callitem actCallitem : this.getWork().getCallitem())
+		{
+			if(!optionenAusInits.contains(actCallitem.getPar().replaceAll("-", "")))
+			{
+				String definition = "";
+				int minoccur = 0;
+				int maxoccur = 1;
+				String check = "";
+				String def = ""; // default value
+				String text1 = "";
+				String text2 = "";
+				
+				// gibts ein Val, dann ist string (vereinfacht)
+				if(actCallitem.getVal() == null)
+				{
+					definition = "flag";
+				}
+				// ansonsten ein flag
+				else
+				{
+					definition = "string";
+				}
+				
+				// gibts einen loop, ist maxoccur = 99
+				if( (actCallitem.getLoop() != null) && (!actCallitem.getLoop().equals("")) )
+				{
+					maxoccur = 99;
+				}
+				script.addOption(actCallitem.getPar().replaceAll("-", ""), ++reihenfolge, minoccur, maxoccur, definition, check, def, text1, text2, allowIntegratedListIfMultiOption);
+			}
+		}
+
 		return script.getAll();
 	}
 	
