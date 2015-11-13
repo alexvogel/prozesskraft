@@ -1048,24 +1048,6 @@ implements Serializable, Cloneable
 			actList.addItem(actList.getDefaultitem());
 		}
 		
-		// standardvariablen setzen
-		this.log("info", "setting standard variables");
-
-		// ist _dir variable bereits vorhanden?, dann soll sie geloescht werden
-		if(this.getVariable("_dir") != null)
-		{
-			this.removeVariable(this.getVariable("_dir"));
-		}
-
-		// das stepdir als variable "_dir" ablegen
-		Variable var = new Variable();
-		var.setKey("_dir");
-		var.setValue(this.getAbsdir());
-		this.addVariable(var);
-		this.log("info", "setting standard variable _dir=" + var.getValue());
-
-		this.log("info", "setting standard variables done");
-
 		// ueber alle inits iterieren und ausfuehren
 		for( Init actualInit : this.getInits())
 		{
@@ -1180,6 +1162,22 @@ implements Serializable, Cloneable
 	 */
 	public void commit()
 	{
+
+		// standardvariablen setzen
+		this.log("info", "commit standard variables");
+
+		// ist _dir variable bereits vorhanden?, dann soll sie geloescht werden
+		if(this.getVariable("_dir") != null)
+		{
+			this.removeVariable(this.getVariable("_dir"));
+		}
+
+		// das stepdir als variable "_dir" ablegen
+		Variable var = new Variable();
+		var.setKey("_dir");
+		var.setValue(this.getAbsdir());
+		this.addVariable(var);
+		this.log("info", "commit standard variable _dir=" + var.getValue());
 
 		this.log("info", "commit standard entries finished");
 
