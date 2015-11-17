@@ -1221,6 +1221,12 @@ implements Serializable, Cloneable
 		Commit rootCommit = new Commit(this);
 		rootCommit.setName("rootCommit");
 		
+		// variable _dir
+		Variable variableRootDirectory = new Variable();
+		variableRootDirectory.setKey("_dir");
+		variableRootDirectory.setValue(this.getAbsdir());
+		rootCommit.addVariable(variableRootDirectory);
+
 		// variable _processName
 		Variable variableProcessName = new Variable();
 		variableProcessName.setKey("_processName");
