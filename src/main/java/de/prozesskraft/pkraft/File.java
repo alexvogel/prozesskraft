@@ -180,6 +180,9 @@ implements Serializable, Cloneable
 		java.io.File quellFile = new java.io.File(this.getRealposition());
 		java.io.File zielFile = new java.io.File(this.getAbsfilename());
 
+		this.log("debug", "source: " + quellFile.toPath());
+		this.log("debug", "destination: " + zielFile.toPath());
+		
 		if(quellFile.exists())
 		{
 			this.log("info", "source file exists: " + quellFile.getAbsolutePath());
