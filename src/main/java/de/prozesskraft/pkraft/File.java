@@ -199,7 +199,7 @@ implements Serializable, Cloneable
 						// soll soft gelinkt werden?
 						if(this.isLinkInsteadOfCopy())
 						{
-							zielFile.mkdirs();
+							zielFile.getParentFile().mkdirs();
 							this.log("info", "files are not the same. will link="+zielFile.toPath()+", destination="+zielFile.getParentFile().toPath().relativize(quellFile.toPath()));
 							Files.createSymbolicLink(zielFile.toPath(), zielFile.getParentFile().toPath().relativize(quellFile.toPath()));
 						}
@@ -252,7 +252,7 @@ implements Serializable, Cloneable
 					// soll soft gelinkt werden?
 					if(this.isLinkInsteadOfCopy())
 					{
-						zielFile.mkdirs();
+						zielFile.getParentFile().mkdirs();
 						this.log("info", "file does not exist yet. will link="+zielFile.toPath()+", destination="+zielFile.getParentFile().toPath().relativize(quellFile.toPath()));
 						Files.createSymbolicLink(zielFile.toPath(), zielFile.getParentFile().toPath().relativize(quellFile.toPath()));
 					}
