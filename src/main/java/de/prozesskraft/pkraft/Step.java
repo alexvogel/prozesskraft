@@ -1468,16 +1468,9 @@ implements Serializable, Cloneable
 					fehlerGrund = "step "+stepname+" not found in process ";
 					return stringToResolve;
 				}
-				// ist es die spezialliste '_dir', soll eine list on-the-fly erstellt und mit dem directory des steps bestueckt werden
-				if(listname.equals("_dir"))
-				{
-					list = new List();
-					list.addItem(this.getAbsdir());
-				}
-				else
-				{
-					list = this.getParent().getStep(stepname).getList(listname);
-				}
+
+				list = this.getParent().getStep(stepname).getList(listname);
+
 				if(list == null)
 				{
 					log("error", "list "+listname+"(in step "+stepname+") not found");
