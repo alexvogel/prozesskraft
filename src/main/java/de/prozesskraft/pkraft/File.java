@@ -248,18 +248,16 @@ implements Serializable, Cloneable
 			{
 				try
 				{
-					this.log("info", "destination file does not exists yet. will copy source="+quellFile.getAbsolutePath()+", destination="+zielFile.getAbsolutePath());
-
 					// soll soft gelinkt werden?
 					if(this.isLinkInsteadOfCopy())
 					{
-						this.log("info", "files are not the same. will link="+zielFile.toPath()+", destination="+zielFile.toPath().relativize(quellFile.toPath()));
+						this.log("info", "file does not exist yet. will link="+zielFile.toPath()+", destination="+zielFile.toPath().relativize(quellFile.toPath()));
 						Files.createSymbolicLink(zielFile.toPath(), zielFile.toPath().relativize(quellFile.toPath()));
 					}
 					// oder soll kopiert werden?
 					else
 					{
-						this.log("info", "files are not the same. will copy source="+quellFile.getAbsolutePath()+", destination="+zielFile.getAbsolutePath());
+						this.log("info", "file does not exist yet. will copy source="+quellFile.getAbsolutePath()+", destination="+zielFile.getAbsolutePath());
 						FileUtils.copyFile(quellFile, zielFile, true);
 					}
 

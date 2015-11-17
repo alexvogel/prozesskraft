@@ -1948,7 +1948,7 @@ implements Serializable, Cloneable
 		
 		// falls das file ueber ein glob definiert ist, soll dieser aufgeloest und das file entsprechend des globs geclont werden
 		file.copyIfNeeded();
-		this.log("debug", "adding File (key="+file.getKey()+", glob="+file.getGlob()+", filename="+file.getFilename()+", path="+file.getRealposition()+")");
+		this.log("debug", "adding to step "+this.getName()+" File (key="+file.getKey()+", glob="+file.getGlob()+", filename="+file.getFilename()+", path="+file.getRealposition()+")");
 		this.file.add(file);
 	}
 
