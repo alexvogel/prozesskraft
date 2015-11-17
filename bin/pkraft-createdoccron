@@ -644,6 +644,10 @@ if ($error_anzahl + $error_patternchecks)
 			if(@statPdf && $statPdf[9] > $statXml[9])
 			{
 				&logit("info", "process.pdf is older than the process.xml");
+				
+				# ein X framebuffer falls das hier headless gestartet wurde
+				my $precall = "Xvfb :77 > /dev/null &";
+				
 				my $call = &getConfig("pkraft-createdoc") . " -definition " . $domainProcessVersionDir . "/process.xml -output " . $domainProcessVersionDir . "/process.pdf";
 				
 				&logit("info", "deleting existent process.pdf: " . $domainProcessVersionDir . "/process.pdf");
@@ -655,6 +659,10 @@ if ($error_anzahl + $error_patternchecks)
 				# das generieren ausfuehren
 				unless(getOption("dry"))
 				{
+					# starten framebuffer
+					my $rueckPrecall = system($precall);
+					
+					# starten createdoc
 					my $rueck = system($call);
 
 					# fehlerhandling - setzen des zeitstempels auf 0
