@@ -199,8 +199,8 @@ implements Serializable, Cloneable
 						// soll soft gelinkt werden?
 						if(this.isLinkInsteadOfCopy())
 						{
-							this.log("info", "files are not the same. will link="+zielFile.toPath()+", destination="+zielFile.toPath().relativize(quellFile.toPath()));
-							Files.createSymbolicLink(zielFile.toPath(), zielFile.toPath().relativize(quellFile.toPath()));
+							this.log("info", "files are not the same. will link="+zielFile.toPath()+", destination="+zielFile.getParentFile().toPath().relativize(quellFile.toPath()));
+							Files.createSymbolicLink(zielFile.toPath(), zielFile.getParentFile().toPath().relativize(quellFile.toPath()));
 						}
 						// oder soll kopiert werden?
 						else
@@ -251,8 +251,8 @@ implements Serializable, Cloneable
 					// soll soft gelinkt werden?
 					if(this.isLinkInsteadOfCopy())
 					{
-						this.log("info", "file does not exist yet. will link="+zielFile.toPath()+", destination="+zielFile.toPath().relativize(quellFile.toPath()));
-						Files.createSymbolicLink(zielFile.toPath(), zielFile.toPath().relativize(quellFile.toPath()));
+						this.log("info", "file does not exist yet. will link="+zielFile.toPath()+", destination="+zielFile.getParentFile().toPath().relativize(quellFile.toPath()));
+						Files.createSymbolicLink(zielFile.toPath(), zielFile.getParentFile().toPath().relativize(quellFile.toPath()));
 					}
 					// oder soll kopiert werden?
 					else
