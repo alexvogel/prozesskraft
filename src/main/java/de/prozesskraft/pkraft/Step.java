@@ -1041,6 +1041,9 @@ implements Serializable, Cloneable
 
 	public void initialize()
 	{
+		
+		this.createStandardEntries();
+
 		// alle listen leeren (damit machen wir den letzten initialization versuch rueckgaengig)
 		for(List actList : this.getList())
 		{
@@ -1056,6 +1059,31 @@ implements Serializable, Cloneable
 
 	}
 
+	/**
+	 * loescht evtl vorhandene Standardenries und erzeugt sie neu
+	 * z.B. eine Variable _dir haelt das verzeichnis des steps
+	 */
+	private void createStandardEntries()
+	{
+		// standardvariablen setzen
+		this.log("info", "create standard variables");
+
+		// ist _dir variable bereits vorhanden?, dann soll sie geloescht werden
+		if(this.getVariable("_dir") != null)
+		{
+			this.removeVariable(this.getVariable("_dir"));
+		}
+
+		// das stepdir als variable "_dir" ablegen
+		Variable var = new Variable();
+		var.setKey("_dir");
+		var.setValue(this.getAbsdir());
+		this.addVariable(var);
+		this.log("info", "create standard variable _dir=" + var.getValue());
+
+		this.log("info", "creation of standard entries finished");
+	}
+	
 	public void fan()
 	{
 		// lokale liste zur zwischenspeicherung der items
@@ -1096,6 +1124,10 @@ implements Serializable, Cloneable
 //				Step newstep = cloner.deepClone(this);
 				Step newstep = this.clone();
 
+				// setzen der standardentries (die setzung aus der initialisierung ist nicht mehr gueltig,
+				// da beim fannen eines steps sich der wert von _dir entsprechend aendern muss
+				this.createStandardEntries();
+				
 				newstep.setLoopvar(loopVariable);
 				// den loop fuer einen evtl. spaeteren reset merken
 				newstep.setLoopOld(newstep.getLoop());
@@ -1162,24 +1194,6 @@ implements Serializable, Cloneable
 	 */
 	public void commit()
 	{
-
-		// standardvariablen setzen
-		this.log("info", "commit standard variables");
-
-		// ist _dir variable bereits vorhanden?, dann soll sie geloescht werden
-		if(this.getVariable("_dir") != null)
-		{
-			this.removeVariable(this.getVariable("_dir"));
-		}
-
-		// das stepdir als variable "_dir" ablegen
-		Variable var = new Variable();
-		var.setKey("_dir");
-		var.setValue(this.getAbsdir());
-		this.addVariable(var);
-		this.log("info", "commit standard variable _dir=" + var.getValue());
-
-		this.log("info", "commit standard entries finished");
 
 		// wenn der step der rootstep ist, dann soll ein spezielles commit durchgefuehrt werden
 		if(this.isRoot())

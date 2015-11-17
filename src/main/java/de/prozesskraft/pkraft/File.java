@@ -38,6 +38,8 @@ implements Serializable, Cloneable
 
 	ArrayList<Log> log = new ArrayList<Log>();
 
+	boolean linkInsteadOfCopy = false;
+	
 	// don't clone parent when cloning this
 	private Step parent = null;
 	transient private Step parentDummy = null;
@@ -177,7 +179,7 @@ implements Serializable, Cloneable
 		// ueberpruefen ob an beiden positionen das gleiche file ist, wenn nicht, dann soll es dorthin kopiert werden
 		java.io.File quellFile = new java.io.File(this.getRealposition());
 		java.io.File zielFile = new java.io.File(this.getAbsfilename());
-		
+
 		if(quellFile.exists())
 		{
 			this.log("info", "source file exists: " + quellFile.getAbsolutePath());
@@ -195,13 +197,22 @@ implements Serializable, Cloneable
 					{
 						this.log("info", "files are not the same. will copy source="+quellFile.getAbsolutePath()+", destination="+zielFile.getAbsolutePath());
 
-						// 1a) urspruenglich eine kopie
-						FileUtils.copyFile(quellFile, zielFile, true);
+						// soll soft gelinkt werden?
+						if(this.isLinkInsteadOfCopy())
+						{
+							Files.createSymbolicLink(zielFile.toPath(), zielFile.toPath().relativize(quellFile.toPath()));
+						}
+						// oder soll kopiert werden?
+						else
+						{
+							FileUtils.copyFile(quellFile, zielFile, true);
+						}
 
 						// 1b) alternativ einen hardlink (geringerer aufwand)
 						// funktioniert nicht zwischen files auf verschiedenen filesystemen
 						// z.B. beim committen der hinterlegten Files nach rootStep werden die files nicht ins rootdir kopiert, sondern an ihrem ort belassen
 						// diese files befinden sich im installationsverzeichnis //share/ams/..... dies ist ein anderes filesystem!
+						// Problem: beim clonen einer Instanz wird aus den hardlinks wieder normale files und der platzvorteil verpufft
 //						zielFile.getParentFile().mkdirs();
 //						Files.createLink(zielFile.toPath(), quellFile.toPath());
 						
@@ -731,6 +742,20 @@ implements Serializable, Cloneable
 	 */
 	public void setSubprocesskey(String subprocesskey) {
 		this.subprocesskey = subprocesskey;
+	}
+
+	/**
+	 * @return the linkInsteadOfCopy
+	 */
+	public boolean isLinkInsteadOfCopy() {
+		return linkInsteadOfCopy;
+	}
+
+	/**
+	 * @param linkInsteadOfCopy the linkInsteadOfCopy to set
+	 */
+	public void setLinkInsteadOfCopy(boolean linkInsteadOfCopy) {
+		this.linkInsteadOfCopy = linkInsteadOfCopy;
 	}
 
 }

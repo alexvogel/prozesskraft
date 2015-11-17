@@ -910,6 +910,8 @@ implements Serializable
 					{
 						log("debug", "yes there is a toRoot entry in actual commit");
 						File clonedFileToRoot = actFile.clone();
+						// files, die toRoot committet werden, sollen gelinkt werden
+						clonedFileToRoot.setLinkInsteadOfCopy(true);
 						clonedFileToRoot.setCategory("processOutput"+"/"+this.getToroot());
 						log("debug", "adding file to root-Step because commit contains toRoot-instruction");
 						this.getParent().getParent().getRootStep().addFile(clonedFileToRoot);
