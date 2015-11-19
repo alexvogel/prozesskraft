@@ -180,8 +180,8 @@ implements Serializable, Cloneable
 		java.io.File quellFile = new java.io.File(this.getRealposition());
 		java.io.File zielFile = new java.io.File(this.getAbsfilename());
 
-		this.log("debug", "source: " + quellFile.toPath());
-		this.log("debug", "destination: " + zielFile.toPath());
+		this.log("debug", "source: " + quellFile.toPath().normalize());
+		this.log("debug", "destination: " + zielFile.toPath().normalize());
 		
 		if(quellFile.exists())
 		{
@@ -203,8 +203,8 @@ implements Serializable, Cloneable
 						if(this.isLinkInsteadOfCopy())
 						{
 							zielFile.getParentFile().mkdirs();
-							this.log("info", "files are not the same. will link="+zielFile.toPath()+", destination="+zielFile.getParentFile().toPath().relativize(quellFile.toPath()));
-							Files.createSymbolicLink(zielFile.toPath(), zielFile.getParentFile().toPath().relativize(quellFile.toPath()));
+							this.log("info", "files are not the same. will link="+zielFile.toPath().normalize()+", destination="+zielFile.getParentFile().toPath().normalize().relativize(quellFile.toPath().normalize()));
+							Files.createSymbolicLink(zielFile.toPath().normalize(), zielFile.getParentFile().toPath().normalize().relativize(quellFile.toPath().normalize()));
 						}
 						// oder soll kopiert werden?
 						else
@@ -256,8 +256,8 @@ implements Serializable, Cloneable
 					if(this.isLinkInsteadOfCopy())
 					{
 						zielFile.getParentFile().mkdirs();
-						this.log("info", "file does not exist yet. will link="+zielFile.toPath()+", destination="+zielFile.getParentFile().toPath().relativize(quellFile.toPath()));
-						Files.createSymbolicLink(zielFile.toPath(), zielFile.getParentFile().toPath().relativize(quellFile.toPath()));
+						this.log("info", "file does not exist yet. will link="+zielFile.toPath().normalize()+", destination="+zielFile.getParentFile().toPath().normalize().relativize(quellFile.toPath().normalize()));
+						Files.createSymbolicLink(zielFile.toPath().normalize(), zielFile.getParentFile().toPath().normalize().relativize(quellFile.toPath().normalize()));
 					}
 					// oder soll kopiert werden?
 					else
