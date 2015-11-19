@@ -648,6 +648,9 @@ if ($error_anzahl + $error_patternchecks)
 				# ein X framebuffer falls das hier headless gestartet wurde
 				my $precall = "Xvfb :77 > /dev/null &";
 				
+				# change env DISPLAY
+				$ENV{DISPLAY} = ":77";
+				
 				my $call = &getConfig("pkraft-createdoc") . " -definition " . $domainProcessVersionDir . "/process.xml -output " . $domainProcessVersionDir . "/process.pdf";
 				
 				&logit("info", "deleting existent process.pdf: " . $domainProcessVersionDir . "/process.pdf");
