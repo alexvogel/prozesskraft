@@ -312,7 +312,6 @@ public class Attend
 	
 			// die zeiten aus dem process setzen
 			entity.setCheckin(process.getTimeOfProcessCreated());
-			entity.setCheckout(process.getTimeOfProcessFinishedOrError());
 	
 			// die resource setzen
 			entity.setResource(process.getRootdir() + "/process.pmb");
@@ -328,6 +327,7 @@ public class Attend
 			else
 			{
 				entity.setActive("false");
+				entity.setCheckout(process.getTouchInMillis());
 			}
 	
 			// stepcounts setzen
