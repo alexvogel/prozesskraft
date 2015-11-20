@@ -3067,4 +3067,11 @@ implements Serializable
 		this.stepStatusChangedWhileLastDoIt = stepStatusChangedWhileLastDoIt;
 	}
 
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 }
