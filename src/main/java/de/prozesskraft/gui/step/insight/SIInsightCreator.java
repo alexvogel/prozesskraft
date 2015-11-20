@@ -192,14 +192,14 @@ public class SIInsightCreator
 		buttonLog.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		buttonLog.setToolTipText("opens .log (contains stdout/stderr of work command) and .debug (contains internal logging) with an editor");
 		buttonLog.addSelectionListener(listener_button_log);
-		if(this.step.getType().equals("process"))
-		{
-			buttonLog.setEnabled(false);
-		}
-		else
-		{
-			buttonLog.setEnabled(true);
-		}
+//		if(this.step.getType().equals("process"))
+//		{
+//			buttonLog.setEnabled(false);
+//		}
+//		else
+//		{
+//			buttonLog.setEnabled(true);
+//		}
 
 //		Label labelDummy1 = new Label(compositeAction, SWT.NONE);
 		Button buttonDelete = new Button(compositeAction, SWT.NONE);
