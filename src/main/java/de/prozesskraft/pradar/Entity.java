@@ -42,6 +42,7 @@ implements Serializable
 	public String stepcountcompleted = "";
 	public String exitcode = "";
 	public String resource = "";
+	public String serialVersionUID = "";
 
 	public long period = 9999999999999L;
 
@@ -151,6 +152,12 @@ implements Serializable
 //			System.out.println("resource does not match");
 		}
 		
+		if (!(this.serialVersionUID.equals("") ) && (!(assessedEntity.getSerialVersionUID().matches(Pattern.quote(this.serialVersionUID)))) )
+		{
+			matchStatus = false;
+//			System.out.println("resource does not match");
+		}
+		
 		// wenn es dem pattern nicht entspricht UND nicht "" ist (leer)
 		if ( (!(assessedEntity.getParentid().matches(this.parentid))) && (!(this.parentid.equals(""))) )
 		{
@@ -188,6 +195,7 @@ implements Serializable
 		System.out.println("stepcountcompleted:"+this.getStepcountcompleted());
 		System.out.println("exitcode:"+this.exitcode);
 		System.out.println("resource:"+this.resource);
+		System.out.println("serialVersionUID:"+this.resource);
 		System.out.println("period:  "+this.resource);
 	}
 
@@ -717,6 +725,32 @@ implements Serializable
 	 */
 	public void setPid(String pid) {
 		this.pid = pid;
+	}
+
+	/**
+	 * @return the serialVersionUID
+	 */
+	public String getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	/**
+	 * @param serialVersionUID the serialVersionUID to set
+	 */
+	public void setSerialVersionUID(String serialVersionUID) {
+		this.serialVersionUID = serialVersionUID;
+	}
+
+	public String getSerialVersionUIDSqlPattern()
+	{
+		if (this.serialVersionUID.matches("all") || this.serialVersionUID.matches(""))
+		{
+			return "%";
+		}
+		else
+		{
+			return "%"+this.serialVersionUID+"%";
+		}
 	}
 
 }

@@ -101,7 +101,7 @@ public class Db
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
-			sql = "create table radar (id TEXT, id2 TEXT, pid TEXT, parentid TEXT, process TEXT, version TEXT, host TEXT, user TEXT, checkin TEXT, checkout TEXT, active TEXT, stepcount TEXT, stepcountcompleted Text, exitcode TEXT, resource TEXT)";
+			sql = "create table radar (id TEXT, id2 TEXT, pid TEXT, parentid TEXT, process TEXT, version TEXT, host TEXT, user TEXT, checkin TEXT, checkout TEXT, active TEXT, stepcount TEXT, stepcountcompleted Text, exitcode TEXT, resource TEXT, serialVersionUID TEXT)";
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 			
@@ -187,7 +187,7 @@ public class Db
 			Statement statement = this.connection.createStatement();
 
 			statement.setQueryTimeout(10);
-			String sql = "INSERT INTO radar (id, id2, pid, parentid, process, version, host, user, checkin, checkout, active, stepcount, stepcountcompleted, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getId2()+"', '"+entity.getPid()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getVersion()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getStepcount()+"', '"+entity.getStepcountcompleted()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
+			String sql = "INSERT INTO radar (id, id2, pid, parentid, process, version, host, user, checkin, checkout, active, stepcount, stepcountcompleted, exitcode, resource, serialVersionUID) VALUES ('"+entity.getId()+"', '"+entity.getId2()+"', '"+entity.getPid()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getVersion()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '0', '"+entity.getActive()+"', '"+entity.getStepcount()+"', '"+entity.getStepcountcompleted()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"', '"+entity.getSerialVersionUID()+"')"; 
 			System.out.println(sql);
 			statement.executeUpdate(sql);
 
@@ -342,7 +342,7 @@ public class Db
 			this.getConnection();
 			Statement statement = this.connection.createStatement();
 			statement.setQueryTimeout(10);
-			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND id2 LIKE '"+entity.getId2SqlPattern()+"' AND parentid LIKE '"+entity.getParentidSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND version LIKE '"+entity.getVersionSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"' AND resource LIKE '"+entity.getResourceSqlPattern()+"' AND ( checkin > '"+grenzzeitInMillis+"' OR checkout > '"+grenzzeitInMillis+"')";
+			String sql = "SELECT * FROM radar WHERE id LIKE '"+entity.getIdSqlPattern()+"' AND id2 LIKE '"+entity.getId2SqlPattern()+"' AND parentid LIKE '"+entity.getParentidSqlPattern()+"' AND host LIKE '"+entity.getHostSqlPattern()+"' AND user LIKE '"+entity.getUserSqlPattern()+"' AND process LIKE '"+entity.getProcessSqlPattern()+"' AND version LIKE '"+entity.getVersionSqlPattern()+"' AND active LIKE '"+entity.getActiveSqlPattern()+"' AND exitcode LIKE '"+entity.getExitcodeSqlPattern()+"' AND resource LIKE '"+entity.getResourceSqlPattern()+"' AND serialVersionUID LIKE '"+entity.getSerialVersionUIDSqlPattern()+"' AND ( checkin > '"+grenzzeitInMillis+"' OR checkout > '"+grenzzeitInMillis+"')";
 //			System.out.println(sql);
 			ResultSet rs = statement.executeQuery(sql);
 		
@@ -363,6 +363,7 @@ public class Db
 				matched_entity.setStepcountcompleted(rs.getString("stepcountcompleted"));
 				matched_entity.setExitcode(rs.getString("exitcode"));
 				matched_entity.setResource(rs.getString("resource"));
+				matched_entity.setSerialVersionUID(rs.getString("serialVersionUID"));
 				matches.add(matched_entity);
 			}
 			this.connection.close();
@@ -443,6 +444,9 @@ public class Db
 				
 //				System.out.println(rs.getString("resource"));
 				matched_entity.setResource(rs.getString("resource"));
+				
+//				System.out.println(rs.getString("serialVersionUID"));
+				matched_entity.setSerialVersionUID(rs.getString("serialVersionUID"));
 				
 				allEntities.add(matched_entity);
 			}
