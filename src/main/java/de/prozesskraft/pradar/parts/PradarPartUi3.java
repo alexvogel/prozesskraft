@@ -544,6 +544,8 @@ public class PradarPartUi3 extends ModelObject
 		entity_filter.setPeriodInHours(einstellungen.getPeriod());
 		// nur entities, die keine eltern haben
 		entity_filter.setParentid("0");
+		// nur entities, deren serailVersionUID kleiner oder gleich ist als 1
+		entity_filter.setSerialVersionUID("1");
 		filter();
 	}
 
