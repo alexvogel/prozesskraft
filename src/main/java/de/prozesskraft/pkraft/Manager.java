@@ -679,6 +679,12 @@ public class Manager
 		
 		WatchService watcher = FileSystems.getDefault().newWatchService();
 		
+		// Anlegen des WatchKeys fuer den Prozess (falls er gestoppt wird, erfolgt die Komunikation mit diesem manager ueber das binaerfile)
+		Path processDir = Paths.get(process.getRootdir());
+		System.err.println("info: creating a watchkey for the process path " + process.getRootdir());
+		WatchKey keyProcess = processDir.register(watcher, ENTRY_MODIFY);
+		keys.put(keyProcess, processDir);
+		
 		// Anlegen der WatchKeys fuer jeden laufenden Step
 		for(Step actStep : process.getStep())
 		{
@@ -809,6 +815,16 @@ public class Manager
 						// den prozess weiter pushen
 						pushProcessAsFarAsPossible(process.getRootdir()+"/process.pmb", false);
 					}
+				}
+				if((kind == ENTRY_MODIFY) && (child.endsWith("process.pmb")))
+				{
+					System.err.println("info: waking up, because process binary file has been modified: " + child.toString());
+
+					// alle keys loeschen
+					keys = null;
+
+					// den prozess weiter pushen
+					pushProcessAsFarAsPossible(process.getRootdir()+"/process.pmb", false);
 				}
 				if(kind == ENTRY_CREATE || kind == ENTRY_MODIFY)
 				{
