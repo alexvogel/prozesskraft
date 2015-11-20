@@ -298,7 +298,7 @@ public class Manager
 						long tatsaechlicheSleepDauer = (long) (factorSleepBecauseOfLoadAverage * ((loopMinutes * 60 * 1000) + fuzzyness));
 						try
 						{
-							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: sleeping "+ tatsaechlicheSleepDauer + " minutes (loopMinutes="+loopMinutes+", faktorSleepBecauseOfLoadAverage="+factorSleepBecauseOfLoadAverage+", fuzzyness="+fuzzyness+")");
+							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: sleeping "+ tatsaechlicheSleepDauer/1000 + " minutes (loopMinutes="+loopMinutes+", faktorSleepBecauseOfLoadAverage="+factorSleepBecauseOfLoadAverage+", fuzzyness="+fuzzyness+")");
 							Thread.sleep(tatsaechlicheSleepDauer);
 						}
 						catch (NumberFormatException e)
@@ -313,7 +313,7 @@ public class Manager
 						// war der letzte zugriff laenger als der haelfte der regulaeren wartezeit her? Dann Prozess pushen
 						if((System.currentTimeMillis() - lastRun) > (0.5 * tatsaechlicheSleepDauer) )
 						{
-							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 0.5 * "+tatsaechlicheSleepDauer+" minutes ago at " + new Timestamp(lastRun));
+							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 0.5 * "+tatsaechlicheSleepDauer/1000+" minutes ago at " + new Timestamp(lastRun));
 							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: waking up");
 							
 							pushProcessAsFarAsPossible(line.getOptionValue("instance"), true);
@@ -322,7 +322,7 @@ public class Manager
 						}
 						else
 						{
-							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been LESS than 0.5 * "+tatsaechlicheSleepDauer+" minutes ago at " + new Timestamp(lastRun));
+							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been LESS than 0.5 * "+tatsaechlicheSleepDauer/1000+" minutes ago at " + new Timestamp(lastRun));
 							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: going to sleep again");
 							
 						}
