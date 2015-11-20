@@ -152,7 +152,8 @@ implements Serializable
 //			System.out.println("resource does not match");
 		}
 		
-		if (!(this.serialVersionUID.equals("") ) && (!(assessedEntity.getSerialVersionUID().matches(Pattern.quote(this.serialVersionUID)))) )
+		if (!(this.serialVersionUID.equals("") ) &&
+			(!(assessedEntity.getSerialVersionUID().matches(Pattern.quote(this.serialVersionUID)))) )
 		{
 			matchStatus = false;
 //			System.out.println("resource does not match");
@@ -195,7 +196,7 @@ implements Serializable
 		System.out.println("stepcountcompleted:"+this.getStepcountcompleted());
 		System.out.println("exitcode:"+this.exitcode);
 		System.out.println("resource:"+this.resource);
-		System.out.println("serialVersionUID:"+this.resource);
+		System.out.println("serialVersionUID:"+this.serialVersionUID);
 		System.out.println("period:  "+this.resource);
 	}
 
