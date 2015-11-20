@@ -153,12 +153,12 @@ public class Db
 			// gibt es das entity schon? => dann soll upgedatet werden (alle felder updaten im entity, welches mit id und process uebereinstimmt)
 			if(rs.next())
 			{
-				sql = "UPDATE OR REPLACE radar SET id2='"+entity.getId2()+"', parentid='"+entity.getParentid()+"', version='"+entity.getVersion()+"', host='"+entity.getHost()+"', user='"+entity.getUser()+"', checkin='"+entity.getCheckinInMillis()+"', checkout='"+entity.getCheckoutInMillis()+"', active='"+entity.getActive()+"', stepcount='"+entity.getStepcount()+"', stepcountcompleted='"+entity.getStepcountcompleted()+"', exitcode='"+entity.getExitcode()+"', resource='"+entity.getResource()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"'";
+				sql = "UPDATE OR REPLACE radar SET id2='"+entity.getId2()+"', parentid='"+entity.getParentid()+"', version='"+entity.getVersion()+"', host='"+entity.getHost()+"', user='"+entity.getUser()+"', checkin='"+entity.getCheckinInMillis()+"', checkout='"+entity.getCheckoutInMillis()+"', active='"+entity.getActive()+"', stepcount='"+entity.getStepcount()+"', stepcountcompleted='"+entity.getStepcountcompleted()+"', exitcode='"+entity.getExitcode()+"', resource='"+entity.getResource()+"', serialVersionUID='"+entity.getSerialVersionUID()+"' WHERE id IS '"+entity.getId()+"' AND process IS '"+entity.getProcess()+"'";
 			}
 			// gibt es dieses entity noch nicht, dann soll es eingetragen werden
 			else
 			{
-				sql = "INSERT INTO radar (id, id2, pid, parentid, process, version, host, user, checkin, checkout, active, stepcount, stepcountcompleted, exitcode, resource) VALUES ('"+entity.getId()+"', '"+entity.getId2()+"', '"+entity.getPid()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getVersion()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '"+entity.getCheckout().getTimeInMillis()+"', '"+entity.getActive()+"', '"+entity.getStepcount()+"', '"+entity.getStepcountcompleted()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"')"; 
+				sql = "INSERT INTO radar (id, id2, pid, parentid, process, version, host, user, checkin, checkout, active, stepcount, stepcountcompleted, exitcode, resource, serialVersionUID) VALUES ('"+entity.getId()+"', '"+entity.getId2()+"', '"+entity.getPid()+"', '"+entity.getParentid()+"', '"+entity.getProcess()+"', '"+entity.getVersion()+"', '"+entity.getHost()+"', '"+entity.getUser()+"', '"+entity.getCheckin().getTimeInMillis()+"', '"+entity.getCheckout().getTimeInMillis()+"', '"+entity.getActive()+"', '"+entity.getStepcount()+"', '"+entity.getStepcountcompleted()+"', '"+entity.getExitcode()+"', '"+entity.getResource()+"', '"+entity.getSerialVersionUID()+"')"; 
 			}
 			
 			System.out.println(sql);
