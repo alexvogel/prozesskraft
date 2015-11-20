@@ -180,6 +180,9 @@ implements Serializable, Cloneable
 		java.io.File quellFile = new java.io.File(this.getRealposition());
 		java.io.File zielFile = new java.io.File(this.getAbsfilename());
 
+		// fuer BMW: pfade haben oft einen fuehrenden teil, der weggeschnitten gehoert
+		
+		
 		this.log("debug", "source: " + quellFile.toPath().normalize());
 		this.log("debug", "destination: " + zielFile.toPath().normalize());
 		
@@ -474,16 +477,17 @@ implements Serializable, Cloneable
 
 	public String getAbsfilename()
 	{
+		String absfilename = null;
 		// wenn das file in den step integriert werden soll (defaultverhalten)
 		if(!this.preservePosition)
 		{
 			if(category != null)
 			{
-				return this.getParent().getAbsdir() + "/" + this.category +"/"+ this.getFilename();
+				absfilename = this.getParent().getAbsdir() + "/" + this.category +"/"+ this.getFilename();
 			}
 			else
 			{
-				return this.getParent().getAbsdir() + "/" + this.getFilename();
+				absfilename = this.getParent().getAbsdir() + "/" + this.getFilename();
 			}
 		}
 		// wenn das file an seiner urspruenglichen position belassen werden soll (bei zentral in prozessdefinition hinterlegten daten der fall)
@@ -491,13 +495,15 @@ implements Serializable, Cloneable
 		{
 			if(this.getRealposition() != null)
 			{
-				return this.getRealposition();
+				absfilename = this.getRealposition();
 			}
 			else
 			{
-				return null;
+				absfilename = null;
 			}
 		}
+		
+		return this.getParent().getParent().modPathForBmw(absfilename);
 	}
 
 	public int getMinoccur()
@@ -664,8 +670,9 @@ implements Serializable, Cloneable
 	/**
 	 * @param absposition the absposition to set
 	 */
-	public void setRealposition(String realposition) {
-		this.realposition = realposition;
+	public void setRealposition(String realposition)
+	{
+		this.realposition = this.getParent().getParent().modPathForBmw(realposition);
 		this.setFilename(new java.io.File(realposition).getName());
 	}
 

@@ -1977,21 +1977,30 @@ implements Serializable
 	/**
 	 * @param baseDir the baseDir to set
 	 */
-	public void setBaseDir(String baseDir) {
-		
-//		System.err.println("SETBASEDIR: " + baseDir);
-//		System.err.println("KORR-PATTERN: " + "^/net/[^/]+/[^/]+/proj/.+$");
+	public void setBaseDir(String baseDir)
+	{
 		// pfadkorrektur fuer BMW
-		if(baseDir.matches("^/net/[^/]+/[^/]+/proj/.+$"))
+		this.baseDir = this.modPathForBmw(baseDir);
+	}
+	
+	/**
+	 * only for bmw infrastructure: some parts of the path must be cut away
+	 * @return modifiedPath
+	 */
+	public String modPathForBmw(String orgpath)
+	{
+		String modpath = "";
+		if(orgpath.matches("^/net/[^/]+/[^/]+/proj/.+$"))
 		{
-			this.baseDir = baseDir.replaceFirst("^/net/[^/]+/[^/]+/proj/", "/proj/");
+			modpath = orgpath.replaceFirst("^/net/[^/]+/[^/]+/proj/", "/proj/");
 //			System.err.println("SETBASEDIR: " + this.baseDir);
 		}
 		else
 		{
-			this.baseDir = baseDir;
+			modpath = orgpath;
 //			System.err.println("SETBASEDIR: " + this.baseDir);
 		}
+		return modpath;
 	}
 
 	/**
