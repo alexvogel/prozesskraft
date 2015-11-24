@@ -405,6 +405,7 @@ public class FileOccurGui
 			commit.log("debug", "setting the path for file ("+file.getKey()+") to the pramp-entry: "+data.getContent());
 			// setzen des pfades
 			File newFile = file.clone();
+			newFile.setCategory("processInput");
 			newFile.setRealposition(this.data.getContent());
 
 			commit.getParent().addFile(newFile);
