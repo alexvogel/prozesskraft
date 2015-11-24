@@ -1239,11 +1239,6 @@ implements Serializable
 					proc = (de.prozesskraft.pkraft.Process)is.readObject();
 				}
 				
-				else if(triedVersion.equals("1"))
-				{
-					de.prozesskraft.pkraft.Process proc1 = (de.prozesskraft.pkraft.Process)is.readObject();
-				}
-				
 				else if(triedVersion.equals("07"))
 				{
 //					de.prozesskraft.pkraft.old07.Process proc07 = (de.prozesskraft.pkraft.old07.Process)is.readObject();
@@ -1288,7 +1283,8 @@ implements Serializable
 			}
 			catch(InvalidClassException e)
 			{
-				
+				System.err.println("not the tried version serialVersionUID");
+//				System.err.println(e.toString());
 			}
 			catch(ClassNotFoundException e)
 			{
