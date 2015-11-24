@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
@@ -1209,53 +1210,99 @@ implements Serializable
 	----------------------------*/
 	public Process readBinary()
 	{
-//		Process proc1 = new Process();
-		try
-		{
-			FileInputStream fs = new FileInputStream(this.infilebinary);
-			ObjectInputStream is = new ObjectInputStream(fs);
-			Process proc = (Process)is.readObject();
-			// den parent eintrag aller steps auf das neue objekt erneuern, da die referenz noch die alte ist
-			for(Step actualStep : proc.getStep())
-			{				
-				actualStep.setParent(proc);
-			}
-			is.close();
-//			proc1 = proc;
-//			System.out.println("NAMEN des Prozesses proc: "+proc.getName());
-//			System.out.println("NAMEN des Prozesses proc1: "+proc1.getName());
+		String actualVersion = "1";
 
-			// wenn der eingelesene prozess in den file-feldern inhalte hat, sollen diese beibehalten werden
-			// ansonsten sollen die inhalte von 'this' uebernommen werden
-			
-			proc.setInfilebinary(this.getInfilebinary());
-			proc.setOutfilebinary(this.getOutfilebinary());
-			
-			if (proc.getInfilexml().equals(""))
-			{
-				proc.setInfilexml(this.getInfilexml());
-			}
-			
-			if (proc.getOutfilexml().equals(""))
-			{
-				proc.setOutfilexml(this.getOutfilexml());
-			}
-			
-			return proc;
-		}
-		catch (ClassNotFoundException e)
-		{
-			System.err.println(e.toString());
-		}
-		catch (FileNotFoundException e)
-		{
-			System.err.println(e.toString());
-		}
-		catch (IOException e)
-		{
-			System.err.println(e.toString());
-		}
+		// bekannte Versionen von pkraft.core
+		Map<String,Object> allPkraftCoreImplementations = new HashMap<String,Object>();
+		
+		allPkraftCoreImplementations.put("1", new de.prozesskraft.pkraft.Process());
+//		allPkraftCoreImplementations.put("07", new de.prozesskraft.pkraft.old07.Process());
 
+		ArrayList<String> sortiertNachAktualitaet = new ArrayList<String>();
+		sortiertNachAktualitaet.add("1");
+//		sortiertNachAktualitaet.add("07");
+
+		for(String triedVersion : sortiertNachAktualitaet)
+		{
+
+	//		Process proc1 = new Process();
+			try
+			{
+				FileInputStream fs = new FileInputStream(this.infilebinary);
+				ObjectInputStream is = new ObjectInputStream(fs);
+
+				de.prozesskraft.pkraft.Process proc = null;
+
+				// ist es die aktuellste version?
+				if(triedVersion.equals(actualVersion))
+				{
+					proc = (de.prozesskraft.pkraft.Process)is.readObject();
+				}
+				
+				else if(triedVersion.equals("1"))
+				{
+					de.prozesskraft.pkraft.Process proc1 = (de.prozesskraft.pkraft.Process)is.readObject();
+				}
+				
+				else if(triedVersion.equals("07"))
+				{
+//					de.prozesskraft.pkraft.old07.Process proc07 = (de.prozesskraft.pkraft.old07.Process)is.readObject();
+//					
+//					DozerBeanMapper mapper = new DozerBeanMapper();
+//					mapper.map(proc07, proc);
+					
+				}
+				
+				// setzen der parenteintraege aller steps
+				proc.affiliate();
+
+//				Process proc = (Process)is.readObject();
+//				// den parent eintrag aller steps auf das neue objekt erneuern, da die referenz noch die alte ist
+//				for(Step actualStep : processImplementation.getStep())
+//				{				
+//					actualStep.setParent(processImplementation);
+//				}
+
+				is.close();
+	//			proc1 = proc;
+	//			System.out.println("NAMEN des Prozesses proc: "+proc.getName());
+	//			System.out.println("NAMEN des Prozesses proc1: "+proc1.getName());
+	
+				// wenn der eingelesene prozess in den file-feldern inhalte hat, sollen diese beibehalten werden
+				// ansonsten sollen die inhalte von 'this' uebernommen werden
+				
+				proc.setInfilebinary(this.getInfilebinary());
+				proc.setOutfilebinary(this.getOutfilebinary());
+				
+				if (proc.getInfilexml().equals(""))
+				{
+					proc.setInfilexml(this.getInfilexml());
+				}
+				
+				if (proc.getOutfilexml().equals(""))
+				{
+					proc.setOutfilexml(this.getOutfilexml());
+				}
+				
+				return proc;
+			}
+			catch(InvalidClassException e)
+			{
+				
+			}
+			catch(ClassNotFoundException e)
+			{
+				System.err.println(e.toString());
+			}
+			catch(FileNotFoundException e)
+			{
+				System.err.println(e.toString());
+			}
+			catch(IOException e)
+			{
+				System.err.println(e.toString());
+			}
+		}
 //		System.out.println("NAMEN des Prozesses proc1: "+proc1.getName());
 		return null;
 	}
