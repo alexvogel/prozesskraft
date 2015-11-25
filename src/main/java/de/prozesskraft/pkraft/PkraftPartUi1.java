@@ -457,12 +457,18 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 					// SPLASHSCREEN
 					
 //				    final Image image = new Image(display, 300, 300);
-				    final Image image = new Image(display, "logo_beschnitten_transparent_small.png");
-//				    GC gc = new GC(image);
-//				    gc.setForeground(display.getSystemColor(SWT.COLOR_WHITE));
-//				    gc.fillRectangle(image.getBounds());
-//				    gc.drawText("Splash Screen", 10, 10);
-//				    gc.dispose();
+				    Image image = null;
+
+					// set an image. die 2 versionen sind dazu da um von eclipse aus und in der installierten version zu funktionieren
+					if(this.getClass().getResourceAsStream("/logo_beschnitten_transparent_small.png") != null)
+					{
+						image = new Image(display, this.getClass().getResourceAsStream("/logo_beschnitten_transparent_small.png"));
+					}
+					else if((new java.io.File("logo_beschnitten_transparent_small.png")).exists())
+					{
+						image = new Image(display, "logo_beschnitten_transparent_small.png");
+					}
+
 				    final Shell splash = new Shell(SWT.ON_TOP);
 				    splash.setLayout(new GridLayout(1, false));
 				    splash.setSize(300, 300);
@@ -532,7 +538,7 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 					shell.setMaximized(true);
 					shell.setText("pkraft "+"v[% version %]");
 
-					// set an icon
+					// set an icon. die 2 versionen sind dazu da um von eclipse aus und in der installierten version zu funktionieren
 					if(this.getClass().getResourceAsStream("/logoSymbol50Transp.png") != null)
 					{
 						shell.setImage(new Image(display, this.getClass().getResourceAsStream("/logoSymbol50Transp.png")));
