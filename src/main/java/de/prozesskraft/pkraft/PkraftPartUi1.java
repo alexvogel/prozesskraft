@@ -428,7 +428,8 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 		allPortAtHost.add(ini.get("license-server", "license-server-2"));
 		allPortAtHost.add(ini.get("license-server", "license-server-3"));
 		
-		MyLicense lic = new MyLicense(allPortAtHost, "1", "user-edition", "0.1");
+		// muss final sein - wird sonst beim installieren mit maven angemeckert (nicht so aus eclipse heraus)
+		final MyLicense lic = new MyLicense(allPortAtHost, "1", "user-edition", "0.1");
 		
 		// lizenz-logging ausgeben
 		for(String actLine : (ArrayList<String>) lic.getLog())
