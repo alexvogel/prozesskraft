@@ -145,4 +145,18 @@ public class MyLicense {
 		return this.log;
 	}
 
+	/**
+	 * @return the license
+	 */
+	public License getLicense() {
+		return license;
+	}
+
+	/**
+	 * @param license the license to set
+	 */
+	public void setLicense(License license) {
+		this.license = license;
+	}
+
 }
