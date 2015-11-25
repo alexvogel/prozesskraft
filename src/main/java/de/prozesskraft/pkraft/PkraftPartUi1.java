@@ -1,7 +1,10 @@
 package de.prozesskraft.pkraft;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,10 +23,17 @@ import org.apache.commons.cli.Options;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
@@ -31,6 +41,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.ini4j.Ini;
 import org.ini4j.InvalidFileFormatException;
+
+import com.license4j.LicenseValidator;
+
 import org.eclipse.swt.custom.CTabFolder;
 
 //import de.caegroup.pradar.Init;
@@ -46,6 +59,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi1, de.prozesskraft.gui.step.insight.IPkraftPartUi2
 {
@@ -439,6 +453,79 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 			{
 				try
 				{
+					// SPLASHSCREEN
+					
+//				    final Image image = new Image(display, 300, 300);
+				    final Image image = new Image(display, "logo_beschnitten_transparent_small.png");
+//				    GC gc = new GC(image);
+//				    gc.setForeground(display.getSystemColor(SWT.COLOR_WHITE));
+//				    gc.fillRectangle(image.getBounds());
+//				    gc.drawText("Splash Screen", 10, 10);
+//				    gc.dispose();
+				    final Shell splash = new Shell(SWT.ON_TOP);
+				    splash.setLayout(new GridLayout(1, false));
+				    splash.setSize(300, 300);
+				    splash.setBackground(new Color(display, 255, 255, 255)); // Weiss
+				    
+				    Label labelImage = new Label(splash, SWT.NONE);
+				    labelImage.setImage(image);
+//				    labelImage.setLayout(new GridLayout(1, false));
+					GridData gd_labelImage = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+					gd_labelImage.widthHint = 300;
+					gd_labelImage.minimumWidth = 300;
+//					gd_labelImage.minimumHeight = 10;
+					labelImage.setLayoutData(gd_labelImage);
+
+				    Label labelZeile1 = new Label(splash, SWT.NONE | SWT.BORDER | SWT.CENTER);
+				    String text = "version [% version %]";
+				    text += "\nlicense status: " + lic.getLicense().getValidationStatus();
+				    
+					switch(lic.getLicense().getValidationStatus())
+					{
+						case LICENSE_VALID:
+							
+							text += "\nlicensee: "+lic.getLicense().getLicenseText().getUserEMail();
+							text += "\nexpires in: "+lic.getLicense().getLicenseText().getLicenseExpireDaysRemaining(null)+" day(s).";
+							break;
+						case LICENSE_INVALID:
+							break;
+						default:
+							text += "\nno valid license found";
+					}
+				    text += "\nsupport: support@prozesskraft.de";
+
+					Button buttonOk = new Button(splash, SWT.NONE);
+					GridData gd_buttonOk = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+					gd_buttonOk.widthHint = 62;
+					buttonOk.setLayoutData(gd_buttonOk);
+					buttonOk.setText("Ok");
+					buttonOk.addSelectionListener(new SelectionAdapter()
+					{
+						public void widgetSelected(SelectionEvent event)
+						{
+							splash.close();
+						}
+					});
+					
+				    labelZeile1.setText(text);
+//				    labelImage.setLayout(new GridLayout(1, false));
+					GridData gd_labelZeile1 = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+					gd_labelZeile1.horizontalAlignment = SWT.CENTER;
+					gd_labelZeile1.widthHint = 300;
+					gd_labelZeile1.minimumWidth = 300;
+//					gd_labelImage.minimumHeight = 10;
+					labelZeile1.setLayoutData(gd_labelZeile1);
+				    
+				    splash.pack();
+				    Rectangle splashRect = splash.getBounds();
+				    Rectangle displayRect = display.getBounds();
+				    int x = (displayRect.width - splashRect.width) / 2;
+				    int y = (displayRect.height - splashRect.height) / 2;
+				    splash.setLocation(x, y);
+				    splash.open();
+					
+					// DAS HAUPTFENSTER
+				    
 					Shell shell = new Shell(display);
 //					shell.setSize(1200, 800);
 					shell.setMaximized(true);
@@ -489,6 +576,7 @@ public class PkraftPartUi1 implements de.prozesskraft.pradar.parts.IPkraftPartUi
 			}
 		});
 		System.exit(0);
+		
 	}
 
 }
