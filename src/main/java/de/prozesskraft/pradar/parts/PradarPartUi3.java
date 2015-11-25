@@ -796,54 +796,78 @@ public class PradarPartUi3 extends ModelObject
 				return;
 			}
 			
-			// fuer jedes markierte entity einen manager starten
-			for(Entity actEntity : einstellungen.entitiesSelected)
+			else if (einstellungen.entitySelected != null)
 			{
-				String pathInstanceDir = new File(actEntity.getResource()).getParent();
-	
-				java.io.File stepDir = new java.io.File(pathInstanceDir);
-				if(!stepDir.exists())
-				{
-					log("error", "directory does not exist: "+stepDir.getAbsolutePath());
-				}
-				else if(!stepDir.isDirectory())
-				{
-					log("error", "is not a directory: "+stepDir.getAbsolutePath());
-				}
-				else if(!stepDir.canRead())
-				{
-					log("error", "cannot read directory: "+stepDir.getAbsolutePath());
-				}
-				
-				else
-				{
-					// den pkraft-manager stoppen
-					String call = ini.get("apps", "pkraft-manager") + " -stop -kill -instance " + actEntity.getResource(); 
-					log("info", "calling: "+call);
-					
-					// und die daten aktualisieren
-					String call2 = ini.get("apps", "pradar-attend") + " -instance " + actEntity.getResource(); 
-					log("info", "calling: "+call2);
-					try
-					{
-						java.lang.Process sysproc = Runtime.getRuntime().exec(call);
-						java.lang.Process sysproc2 = Runtime.getRuntime().exec(call2);
-					}
-					catch (IOException e)
-					{
-						log("error", e.getMessage());
-					}
-					
-					// daten und anzeige refreshen
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					refresh();
-					tree.refresh();
+				// bestaetigungsdialog
+				Shell diaShell = new Shell();
+				MessageBox confirmation = new MessageBox(diaShell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+				String message = "";
 
+				message += "you are about to kill selected instance(s).\n\n";
+				message += "this will kill\n";
+				message += "- running programs that have been launched by this instance(s)\n";
+				message += "- running calculations on an HPC that are related to this instance(s)";
+
+				confirmation.setMessage(message);
+
+				// open confirmation and wait for user selection
+				int returnCode = confirmation.open();
+//					System.out.println("returnCode is: "+returnCode);
+
+				// ok == 32
+				if (returnCode == 32)
+				{
+			
+					// fuer jedes markierte entity einen manager starten
+					for(Entity actEntity : einstellungen.entitiesSelected)
+					{
+						String pathInstanceDir = new File(actEntity.getResource()).getParent();
+			
+						java.io.File stepDir = new java.io.File(pathInstanceDir);
+						if(!stepDir.exists())
+						{
+							log("error", "directory does not exist: "+stepDir.getAbsolutePath());
+						}
+						else if(!stepDir.isDirectory())
+						{
+							log("error", "is not a directory: "+stepDir.getAbsolutePath());
+						}
+						else if(!stepDir.canRead())
+						{
+							log("error", "cannot read directory: "+stepDir.getAbsolutePath());
+						}
+						
+						else
+						{
+							// den pkraft-manager stoppen
+							String call = ini.get("apps", "pkraft-manager") + " -stop -kill -instance " + actEntity.getResource(); 
+							log("info", "calling: "+call);
+							
+							// und die daten aktualisieren
+							String call2 = ini.get("apps", "pradar-attend") + " -instance " + actEntity.getResource(); 
+							log("info", "calling: "+call2);
+							try
+							{
+								java.lang.Process sysproc = Runtime.getRuntime().exec(call);
+								java.lang.Process sysproc2 = Runtime.getRuntime().exec(call2);
+							}
+							catch (IOException e)
+							{
+								log("error", e.getMessage());
+							}
+							
+							// daten und anzeige refreshen
+							try {
+								Thread.sleep(2000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							refresh();
+							tree.refresh();
+		
+						}
+					}
 				}
 			}
 		}
