@@ -533,20 +533,6 @@ public class Manager
 			System.exit(0);
 		}
 
-		// setzen der schlafdauer sleepMinutes. richtet sich nach dem feld stepStartDelayMinutes falls dieses existiert
-		if(process.stepStartDelayMinutesMinimumOfInitializedSteps() != null)
-		{
-			loopMinutes = process.stepStartDelayMinutesMinimumOfInitializedSteps();
-			if(loopMinutes < 1)
-			{
-				loopMinutes = 1;
-			}
-		}
-		else
-		{
-			loopMinutes = 5;
-		}
-		
 		boolean imProzessHatSichWasGeaendert = true;
 		System.err.println("debug: variable imProzessHatSichWasGeaendert manuell gesetzt auf " + imProzessHatSichWasGeaendert);
 		process.log("debug", "variable imProzessHatSichWasGeaendert manuell gesetzt auf " + imProzessHatSichWasGeaendert);
@@ -559,6 +545,20 @@ public class Manager
 			// prozess laufen lassen
 			process.doIt(ini.get("apps", "pkraft-syscall"), ini.get("apps", "pkraft-manager"), ini.get("process", "domain-installation-directory"));
 
+			// setzen der schlafdauer sleepMinutes. richtet sich nach dem feld stepStartDelayMinutes falls dieses existiert
+			if(process.stepStartDelayMinutesMinimumOfInitializedSteps() != null)
+			{
+				loopMinutes = process.stepStartDelayMinutesMinimumOfInitializedSteps();
+				if(loopMinutes < 1)
+				{
+					loopMinutes = 1;
+				}
+			}
+			else
+			{
+				loopMinutes = 5;
+			}
+			
 			// hat sich was geaendert?
 			imProzessHatSichWasGeaendert = process.isStepStatusChangedWhileLastDoIt();
 			System.err.println("debug: did some step changed its status? " + imProzessHatSichWasGeaendert);
@@ -856,7 +856,7 @@ public class Manager
 					long tatsaechlicheSleepDauer = (long) (factorSleepBecauseOfLoadAverage * ((loopMinutes * 60 * 1000) + fuzzyness));
 					try
 					{
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: sleeping "+ tatsaechlicheSleepDauer/1000 + " minutes (loopMinutes="+loopMinutes+", faktorSleepBecauseOfLoadAverage="+factorSleepBecauseOfLoadAverage+", fuzzyness="+fuzzyness+")");
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: sleeping "+ tatsaechlicheSleepDauer/1000 + " seconds (loopMinutes="+loopMinutes+", faktorSleepBecauseOfLoadAverage="+factorSleepBecauseOfLoadAverage+", fuzzyness="+fuzzyness+")");
 						Thread.sleep(tatsaechlicheSleepDauer);
 					}
 					catch (NumberFormatException e)
@@ -871,7 +871,7 @@ public class Manager
 					// war der letzte zugriff laenger als der haelfte der regulaeren wartezeit her? Dann Prozess pushen
 					if((System.currentTimeMillis() - lastRun) > (0.5 * tatsaechlicheSleepDauer) )
 					{
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 0.5 * "+tatsaechlicheSleepDauer/1000+" minutes ago at " + new Timestamp(lastRun));
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 0.5 * "+tatsaechlicheSleepDauer/1000+" seconds ago at " + new Timestamp(lastRun));
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: waking up");
 						
 						if(watcherThread != null)
@@ -889,7 +889,7 @@ public class Manager
 					}
 					else
 					{
-						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been LESS than 0.5 * "+tatsaechlicheSleepDauer/1000+" minutes ago at " + new Timestamp(lastRun));
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been LESS than 0.5 * "+tatsaechlicheSleepDauer/1000+" seconds ago at " + new Timestamp(lastRun));
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: going to sleep again");
 						
 					}
