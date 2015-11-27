@@ -69,6 +69,7 @@ public class Manager
 	
 	static Map<WatchKey,Path> keys = null;
 
+	static Thread watcherThread = null;
 	
 	/*----------------------------
 	  constructors
@@ -289,51 +290,8 @@ public class Manager
 				System.exit(0);
 			}
 			
-//			// einen timer thread erstellen, der regelmaessig den prozess aufweckt, auch wenn sehr langlaufende steps gerade aktiv sind
-//			new Thread(new Runnable() {
-//				public void run() {
-//					System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: start");
-//					while(!exit)
-//					{
-//						long tatsaechlicheSleepDauer = (long) (factorSleepBecauseOfLoadAverage * ((loopMinutes * 60 * 1000) + fuzzyness));
-//						try
-//						{
-//							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: sleeping "+ tatsaechlicheSleepDauer/1000 + " minutes (loopMinutes="+loopMinutes+", faktorSleepBecauseOfLoadAverage="+factorSleepBecauseOfLoadAverage+", fuzzyness="+fuzzyness+")");
-//							Thread.sleep(tatsaechlicheSleepDauer);
-//						}
-//						catch (NumberFormatException e)
-//						{
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						} catch (InterruptedException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//		
-//						// war der letzte zugriff laenger als der haelfte der regulaeren wartezeit her? Dann Prozess pushen
-//						if((System.currentTimeMillis() - lastRun) > (0.5 * tatsaechlicheSleepDauer) )
-//						{
-//							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 0.5 * "+tatsaechlicheSleepDauer/1000+" minutes ago at " + new Timestamp(lastRun));
-//							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: waking up");
-//							
-//							pushProcessAsFarAsPossible(line.getOptionValue("instance"), true);
-//							
-//							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ----- alternative thread: end");
-//						}
-//						else
-//						{
-//							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been LESS than 0.5 * "+tatsaechlicheSleepDauer/1000+" minutes ago at " + new Timestamp(lastRun));
-//							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: going to sleep again");
-//							
-//						}
-//					}
-//
-//					// thread beenden
-//					System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: exit");
-//					System.exit(0);
-//				}
-//			}).start();
-//					
+			startZyklischerThread(0);
+			
 			// prozessinstanz einlesen
 			p1.setInfilebinary(pathBinary);
 			
@@ -674,6 +632,9 @@ public class Manager
 	 */
 	private static void createWatchKeysForAllRunningSteps(Process process) throws IOException
 	{
+		// diesen Thread ablegen, damit er vom zyklischen thread gekillt werden kann
+		watcherThread = Thread.currentThread();
+		
 		// einen neuen map erzeugen fuer die watchKeys
 		keys = new HashMap<WatchKey,Path>();
 		
@@ -871,6 +832,74 @@ public class Manager
 				key.reset();
 			}
 		}
+	}
+	
+	/**
+	 * startet einen thread, der zeitgesteuert aufwacht und den prozess weiterschiebt
+	 */
+	private static void startZyklischerThread(int initialWaitSecond)
+	{
+		// falls dieser thread von hier aus gestartet wird, soll kurz gewartet werden
+		try {
+			Thread.sleep(initialWaitSecond * 1000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		// einen timer thread erstellen, der regelmaessig den prozess aufweckt, auch wenn sehr langlaufende steps gerade aktiv sind
+		new Thread(new Runnable() {
+			public void run() {
+				System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: start");
+				while(!exit)
+				{
+					long tatsaechlicheSleepDauer = (long) (factorSleepBecauseOfLoadAverage * ((loopMinutes * 60 * 1000) + fuzzyness));
+					try
+					{
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: sleeping "+ tatsaechlicheSleepDauer/1000 + " minutes (loopMinutes="+loopMinutes+", faktorSleepBecauseOfLoadAverage="+factorSleepBecauseOfLoadAverage+", fuzzyness="+fuzzyness+")");
+						Thread.sleep(tatsaechlicheSleepDauer);
+					}
+					catch (NumberFormatException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	
+					// war der letzte zugriff laenger als der haelfte der regulaeren wartezeit her? Dann Prozess pushen
+					if((System.currentTimeMillis() - lastRun) > (0.5 * tatsaechlicheSleepDauer) )
+					{
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been MORE than 0.5 * "+tatsaechlicheSleepDauer/1000+" minutes ago at " + new Timestamp(lastRun));
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: waking up");
+						
+						if(watcherThread != null)
+						{
+							watcherThread.interrupt();
+							watcherThread = null;
+						}
+						
+						// ein neuer 
+						startZyklischerThread(5);
+						
+						pushProcessAsFarAsPossible(line.getOptionValue("instance"), false);
+						
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ----- alternative thread: end");
+					}
+					else
+					{
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: last process push has been LESS than 0.5 * "+tatsaechlicheSleepDauer/1000+" minutes ago at " + new Timestamp(lastRun));
+						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: going to sleep again");
+						
+					}
+				}
+
+				// thread beenden
+				System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: exit");
+//				System.exit(0);
+			}
+		}).start();
 	}
 	
 	private static void exiter()
