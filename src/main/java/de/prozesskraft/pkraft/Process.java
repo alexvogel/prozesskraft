@@ -2917,6 +2917,7 @@ implements Serializable
 		// aller steps, die noch verarbeitet werden muessen, falls vorhanden
 		for(Step actStep : this.getStepInitialized())
 		{
+			System.err.println("debug: this step is initialized: " + actStep.getName());
 			if(actStep.getStepStartDelayMinutes() != null)
 			{
 				allStepStartDelayMinutes.add(actStep.getStepStartDelayMinutes());
