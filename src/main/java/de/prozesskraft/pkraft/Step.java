@@ -1007,7 +1007,6 @@ implements Serializable, Cloneable
 			// AUSNAHME bei fan, weil der eigentliche step (this) beim fan() aus dem prozess entfernt wird
 			// und der Prozess damit nicht erfahren wuerde, dass sich ein stepstatus geaendert hat
 			this.setStatusChangedWhileLastDoIt(true);
-			this.getParent().setStepStatusChangedWhileLastDoIt(true);
 			
 			this.fan();
 			return;
