@@ -1124,6 +1124,12 @@ implements Serializable, Cloneable
 //				Step newstep = cloner.deepClone(this);
 				Step newstep = this.clone();
 
+				// flag setzen, dass sich im step etwas geaendert hat
+				// dies wird normalerweise automatisch im this.doIt() erledigt
+				// AUSNAHME bei fan, weil der eigentliche step weiter unten aus dem prozess entfernt wird
+				// und der Prozess damit nicht erfahren wuerde, dass sich ein stepstatus geaendert hat
+				newstep.setStatusChangedWhileLastDoIt(true);
+				
 				// setzen der standardentries (die setzung aus der initialisierung ist nicht mehr gueltig,
 				// da beim fannen eines steps sich der wert von _dir entsprechend aendern muss
 				this.createStandardEntries();
@@ -1156,6 +1162,7 @@ implements Serializable, Cloneable
 			
 			// die ranks neu setzen
 			this.getParent().setStepRanks();
+			
 		}
 
 //		System.out.println("anzahl der Steps im Prozess nach dem fanning: "+this.parent.getSteps().size());
