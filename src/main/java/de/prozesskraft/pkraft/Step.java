@@ -1007,6 +1007,7 @@ implements Serializable, Cloneable
 			// AUSNAHME bei fan, weil der eigentliche step (this) beim fan() aus dem prozess entfernt wird
 			// und der Prozess damit nicht erfahren wuerde, dass sich ein stepstatus geaendert hat
 			this.setStatusChangedWhileLastDoIt(true);
+			this.getParent().setStepStatusChangedWhileLastDoIt(true);
 			
 			this.fan();
 			return;
@@ -1152,12 +1153,12 @@ implements Serializable, Cloneable
 				newstep.addList(listLoop);
 
 				// den neuen step (klon von this) dem prozess hinzufuegen
-				this.getParent().getStep().add(newstep);
+				this.getParent().addStep(newstep);
 				x++;
 			}
 
 			// den urspruenglichen step (this) aus dem prozess entfernen
-			this.getParent().getStep().remove(this);
+			this.getParent().removeStep(this);
 
 			// parents neu setzen
 			this.getParent().affiliate();
