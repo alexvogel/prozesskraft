@@ -799,9 +799,10 @@ public class Manager
 				
 				WatchEvent<Path> ev = (WatchEvent<Path>)event;
 				Path name = ev.context();
-				System.err.println("debug: poll context " + name);
+				// dieses logging fuehrt zur aenderung von stderr.txt und .log, was wiederum ein ENTRY_MODIFY ausloest etc. endlosschleife bis platte volllaeuft
+//				System.err.println("debug: poll context " + name);
 				Path child = dir.resolve(name);
-				System.err.println("debug: poll child " + child);
+//				System.err.println("debug: poll child " + child);
 
 				if(kind == ENTRY_CREATE)
 				{
@@ -818,7 +819,7 @@ public class Manager
 				}
 				if((kind == ENTRY_MODIFY) && (child.endsWith("process.pmb")))
 				{
-					System.err.println("info: waking up, because process binary file has been modified: " + child.toString());
+//					System.err.println("info: waking up, because process binary file has been modified: " + child.toString());
 
 					// alle keys loeschen
 					keys = null;
