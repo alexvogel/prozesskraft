@@ -910,6 +910,9 @@ implements Serializable
 					{
 						log("debug", "yes there is a toRoot entry in actual commit");
 						File clonedFileToRoot = actFile.clone();
+						// falls das urspruengliche file nicht in den step kopiert werden sollte ist der preservePosition flag gesetzt
+						// in diesem fall den flag des clones entfernen, damit ein toRoot commit ordnungsgemaess ablauft
+						clonedFileToRoot.setPreservePosition(false);
 						// files, die toRoot committet werden, sollen gelinkt werden
 						clonedFileToRoot.setLinkInsteadOfCopy(true);
 						
