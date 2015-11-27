@@ -114,12 +114,15 @@
 		<xs:sequence>
 			<xs:element maxOccurs="unbounded" ref="test" minOccurs="0" />
 		</xs:sequence>
-		<xs:attribute name="description" use="optional" type="xs:string" />
+		<xs:attribute name="description" use="optional"
+			type="xs:string" />
 		<xs:attribute name="key" use="required" type="xs:string" />
-		<xs:attribute name="subprocesskey" use="optional" type="xs:string"/>
-		<xs:attribute name="glob" type="xs:string"/>
+		<xs:attribute name="subprocesskey" use="optional"
+			type="xs:string" />
+		<xs:attribute name="glob" type="xs:string" />
 		<xs:attribute name="maxoccur" type="xs:integer" />
 		<xs:attribute name="minoccur" type="xs:integer" />
+		<xs:attribute name="preservePosition" type="xs:boolean" use="optional" default="false"/>
 	</xs:complexType>
 
 	<xs:complexType name="variable">
