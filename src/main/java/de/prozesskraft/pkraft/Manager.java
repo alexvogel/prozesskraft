@@ -793,7 +793,7 @@ public class Manager
 			
 			for(WatchEvent<?> event : key.pollEvents())
 			{
-				System.err.println("debug: poll event " + event);
+//				System.err.println("debug: poll event " + event);
 
 				WatchEvent.Kind kind = event.kind();
 				
