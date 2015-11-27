@@ -475,6 +475,7 @@ public class Manager
 		process.log("debug", "rereading instance done");
 		
 		// falls managerIds nicht zusammenpassen, soll beendet werden
+		// und dem alternativen thread mit flag signalisieren, dass es vorbei ist
 		if(!managerid.equals(process.getManagerid()))
 		{
 			System.err.println("i'm manager "+managerid+" - another instance of pkraft-manager took over " + process.getManagerid() + ". killing myself.");
@@ -897,7 +898,7 @@ public class Manager
 
 				// thread beenden
 				System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: exit");
-//				System.exit(0);
+				System.exit(0);
 			}
 		}).start();
 	}
