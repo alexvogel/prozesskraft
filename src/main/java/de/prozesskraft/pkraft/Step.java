@@ -161,6 +161,7 @@ implements Serializable, Cloneable
 			newStep.addLog(actLog.clone());
 		}
 		newStep.setStatusOverwrite(this.getStatusOverwrite());
+		newStep.setStatusChangedWhileLastDoIt(this.isStatusChangedWhileLastDoIt());
 		newStep.setRank(this.getRank());
 		newStep.setReset(this.getReset());
 		newStep.setLevel(this.getLevel());
@@ -1001,7 +1002,14 @@ implements Serializable, Cloneable
 		else if (this.getStatus().equals("initialized") && this.loop!=null && !(this.loop.equals("")))
 		{
 			log("debug", "there is a loop -> fanning multistep");
+			// flag setzen, dass sich im step etwas geaendert hat
+			// dies wird normalerweise automatisch am Ende des this.doIt() erledigt
+			// AUSNAHME bei fan, weil der eigentliche step (this) beim fan() aus dem prozess entfernt wird
+			// und der Prozess damit nicht erfahren wuerde, dass sich ein stepstatus geaendert hat
+			this.setStatusChangedWhileLastDoIt(true);
+			
 			this.fan();
+			return;
 		}
 
 		else if(this.getStatus().equals("initialized") && (this.loop==null || this.loop.equals("")))
@@ -1124,12 +1132,6 @@ implements Serializable, Cloneable
 //				Step newstep = cloner.deepClone(this);
 				Step newstep = this.clone();
 
-				// flag setzen, dass sich im step etwas geaendert hat
-				// dies wird normalerweise automatisch im this.doIt() erledigt
-				// AUSNAHME bei fan, weil der eigentliche step weiter unten aus dem prozess entfernt wird
-				// und der Prozess damit nicht erfahren wuerde, dass sich ein stepstatus geaendert hat
-				newstep.setStatusChangedWhileLastDoIt(true);
-				
 				// setzen der standardentries (die setzung aus der initialisierung ist nicht mehr gueltig,
 				// da beim fannen eines steps sich der wert von _dir entsprechend aendern muss
 				this.createStandardEntries();
