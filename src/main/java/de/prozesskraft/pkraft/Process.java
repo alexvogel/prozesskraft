@@ -1236,9 +1236,9 @@ implements Serializable
 				// ist es die aktuellste version?
 				if(triedVersion.equals(actualVersion))
 				{
-					System.err.println("debug: binary version is newest version: "+actualVersion);
+//					System.err.println("debug: binary version is newest version: "+actualVersion);
 					proc = (de.prozesskraft.pkraft.Process)is.readObject();
-					System.err.println("debug: reading done");
+//					System.err.println("debug: reading done");
 				}
 				
 				else if(triedVersion.equals("07"))
