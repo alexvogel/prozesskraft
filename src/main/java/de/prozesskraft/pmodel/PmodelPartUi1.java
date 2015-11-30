@@ -176,9 +176,12 @@ public class PmodelPartUi1 extends ModelObject
 			{
 				log("warn", "assuming binary format.");
 //				System.out.println(inFile.getAbsolutePath());
-				this.einstellungen.getProcess().setInfilebinary(inFile.getAbsolutePath());
-				this.einstellungen.getProcess().setOutfilebinary(inFile.getAbsolutePath());
-				this.einstellungen.setProcess(this.einstellungen.getProcess().readBinary());
+				
+				Process p1 = new Process();
+				p1.setInfilebinary(inFile.getAbsolutePath());
+				p1.setOutfilebinary(inFile.getAbsolutePath());
+				
+				this.einstellungen.setProcess(p1.readBinary());
 			}
 		
 			// xml-format einlesen
