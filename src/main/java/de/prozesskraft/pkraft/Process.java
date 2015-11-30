@@ -1236,11 +1236,15 @@ implements Serializable
 				// ist es die aktuellste version?
 				if(triedVersion.equals(actualVersion))
 				{
+					System.err.println("debug: binary version is newest version: "+actualVersion);
 					proc = (de.prozesskraft.pkraft.Process)is.readObject();
+					System.err.println("debug: reading done");
 				}
 				
 				else if(triedVersion.equals("07"))
 				{
+
+					System.err.println("debug: binary version: 07");
 //					de.prozesskraft.pkraft.old07.Process proc07 = (de.prozesskraft.pkraft.old07.Process)is.readObject();
 //					
 //					DozerBeanMapper mapper = new DozerBeanMapper();
