@@ -663,9 +663,11 @@ if ($error_anzahl + $error_patternchecks)
 				unless(getOption("dry"))
 				{
 					# starten framebuffer
+					logit("info", "calling: " . $precall);
 					my $rueckPrecall = system($precall);
 					
 					# starten createdoc
+					logit("info", "calling: " . $call);
 					my $rueck = system($call);
 
 					# fehlerhandling - setzen des zeitstempels auf 0
