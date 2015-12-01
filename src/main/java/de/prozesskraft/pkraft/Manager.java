@@ -851,9 +851,15 @@ public class Manager
 		// einen timer thread erstellen, der regelmaessig den prozess aufweckt, auch wenn sehr langlaufende steps gerade aktiv sind
 		new Thread(new Runnable() {
 			public void run() {
+
+				// flag, ob dieser thread einen neuen gestartet hat
+				boolean spawn = false;
+
 				System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: start");
-				while(!exit)
+				while(!exit && !spawn)
 				{
+					
+					
 					long tatsaechlicheSleepDauer = (long) (factorSleepBecauseOfLoadAverage * ((loopMinutes * 60 * 1000) + fuzzyness));
 					try
 					{
@@ -883,6 +889,7 @@ public class Manager
 						
 						// ein neuer 
 						startZyklischerThread(5);
+						spawn = true;
 						
 						pushProcessAsFarAsPossible(line.getOptionValue("instance"), false);
 						
@@ -894,11 +901,11 @@ public class Manager
 						System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: going to sleep again");
 						
 					}
+					
 				}
 
 				// thread beenden
 				System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: exit");
-				System.exit(0);
 			}
 		}).start();
 	}
