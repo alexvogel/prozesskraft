@@ -743,6 +743,7 @@ public class Manager
 			}
 			catch (InterruptedException e)
 			{
+				System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- watcher thread: interrupted! returning to alternativer Thread");
 				return;
 			}
 			
@@ -883,6 +884,8 @@ public class Manager
 						
 						if(watcherThread != null)
 						{
+							System.err.println(new Timestamp(System.currentTimeMillis()) + ": ---- alternative thread: interrupting watcherThread");
+							
 							watcherThread.interrupt();
 							watcherThread = null;
 						}
