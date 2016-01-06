@@ -105,7 +105,7 @@ public class PradarPartUi3 extends ModelObject
 	private DataBindingContext bindingContextFilter;
 	private DataBindingContext bindingContextZoom;
 	private Combo combo_processes;
-	private Combo combo_users;
+//	private Combo combo_users;
 	private Combo combo_exitcodes;
 	private Spinner spinner_period;
 	private Button btnChildren;
@@ -271,17 +271,17 @@ public class PradarPartUi3 extends ModelObject
 		combo_processes = new Combo(grpFilter, SWT.BORDER | SWT.READ_ONLY);
 		combo_processes.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		
-		Label lblNewLabel_1 = new Label(grpFilter, SWT.NONE);
-		lblNewLabel_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
-		lblNewLabel_1.setText("user");
-		new Label(grpFilter, SWT.NONE);
-		
-		combo_users = new Combo(grpFilter, SWT.BORDER | SWT.READ_ONLY);
-		combo_users.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
-		if(!this.isUserAdmin())
-		{
-			combo_users.setEnabled(false);
-		}
+//		Label lblNewLabel_1 = new Label(grpFilter, SWT.NONE);
+//		lblNewLabel_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
+//		lblNewLabel_1.setText("user");
+//		new Label(grpFilter, SWT.NONE);
+//		
+//		combo_users = new Combo(grpFilter, SWT.BORDER | SWT.READ_ONLY);
+//		combo_users.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+//		if(!this.isUserAdmin())
+//		{
+//			combo_users.setEnabled(false);
+//		}
 		
 		Label lblActive = new Label(grpFilter, SWT.NONE);
 		lblActive.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
@@ -501,8 +501,8 @@ public class PradarPartUi3 extends ModelObject
 		// Datenbindung Processes-Combo
 		initDataBindingsComboItems();
 
-		// select combo_user to 'aktueller user'
-		combo_users.setText(System.getProperty("user.name"));
+//		// select combo_user to 'aktueller user'
+//		combo_users.setText(System.getProperty("user.name"));
 
 		// tree einbinden
 		composite_tabItem_tree.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
@@ -1746,9 +1746,9 @@ public class PradarPartUi3 extends ModelObject
 		IObservableValue modelObservableProcess = BeanProperties.value("process").observe(einstellungen);
 		bindingContextFilter.bindValue(targetObservableProcess, modelObservableProcess, null, null);
 		//
-		IObservableValue targetObservableUser = WidgetProperties.text().observe(combo_users);
-		IObservableValue modelObservableUser = BeanProperties.value("user").observe(einstellungen);
-		bindingContextFilter.bindValue(targetObservableUser, modelObservableUser, null, null);
+//		IObservableValue targetObservableUser = WidgetProperties.text().observe(combo_users);
+//		IObservableValue modelObservableUser = BeanProperties.value("user").observe(einstellungen);
+//		bindingContextFilter.bindValue(targetObservableUser, modelObservableUser, null, null);
 		//
 		IObservableValue targetObservableExitcode = WidgetProperties.text().observe(combo_exitcodes);
 		IObservableValue modelObservableExitcode = BeanProperties.value("exitcode").observe(einstellungen);
@@ -1776,9 +1776,9 @@ public class PradarPartUi3 extends ModelObject
 		IObservableList modelObservableProcesses = BeanProperties.list("processes").observe(einstellungen);
 		bindingContextComboItems.bindList(targetObservableProcesses, modelObservableProcesses, null, null);
 		//
-		IObservableList targetObservableUsers = WidgetProperties.items().observe(combo_users);
-		IObservableList modelObservableUsers = BeanProperties.list("users").observe(einstellungen);
-		bindingContextComboItems.bindList(targetObservableUsers, modelObservableUsers, null, null);
+//		IObservableList targetObservableUsers = WidgetProperties.items().observe(combo_users);
+//		IObservableList modelObservableUsers = BeanProperties.list("users").observe(einstellungen);
+//		bindingContextComboItems.bindList(targetObservableUsers, modelObservableUsers, null, null);
 		//
 		IObservableList targetObservableExitcodes = WidgetProperties.items().observe(combo_exitcodes);
 		IObservableList modelObservableExitcodes = BeanProperties.list("exitcodes").observe(einstellungen);
