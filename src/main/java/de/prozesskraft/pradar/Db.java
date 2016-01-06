@@ -462,6 +462,91 @@ public class Db
 	}
 	
 	/**
+	 * get all rows of table 'radar' that belongs to a certain user
+	 * @return ArrayList<Entity> of all rows of table 'radar' that belong to a certain user.
+	 */
+	public ArrayList<Entity> getAllEntitiesFromCertainUser(String user)
+	{
+		ArrayList<Entity> allEntitiesFromCertainUser = new ArrayList<Entity>();
+		this.sqlvoodoo();
+		this.connection = null;
+		try
+		{
+			this.getConnection();
+			Statement statement = this.connection.createStatement();
+
+			statement.setQueryTimeout(10);
+			String sql = "SELECT * FROM radar WHERE user LIKE '"+user+"'";
+//			System.out.println(sql);
+			ResultSet rs = statement.executeQuery(sql);
+		
+			while (rs.next())
+			{
+				Entity matched_entity = new Entity();
+
+//				System.out.println(rs.getString("id"));
+				matched_entity.setId(rs.getString("id"));
+				
+//				System.out.println(rs.getString("id2"));
+				matched_entity.setId2(rs.getString("id2"));
+				
+//				System.out.println(rs.getString("parentid"));
+				matched_entity.setParentid(rs.getString("parentid"));
+				
+//				System.out.println(rs.getString("process"));
+				matched_entity.setProcess(rs.getString("process"));
+				
+//				System.out.println(rs.getString("version"));
+				matched_entity.setVersion(rs.getString("version"));
+				
+//				System.out.println(rs.getString("user"));
+				matched_entity.setUser(rs.getString("user"));
+				
+//				System.out.println(rs.getString("host"));
+				matched_entity.setHost(rs.getString("host"));
+				
+				String checkin = rs.getString("checkin");
+				if (checkin.matches("")) {checkin = "0";}
+//				System.out.println(rs.getString("checkin"));
+				matched_entity.setCheckin(Long.valueOf(checkin).longValue());
+				
+				String checkout = rs.getString("checkout");
+				if (checkout.matches("")) {checkout = "0";}
+//				System.out.println(rs.getString("checkout"));
+				matched_entity.setCheckout(Long.valueOf(checkout).longValue());
+
+//				System.out.println(rs.getString("active"));
+				matched_entity.setActive(rs.getString("active"));
+				
+//				System.out.println(rs.getString("stepcount"));
+				matched_entity.setStepcount(rs.getString("stepcount"));
+				
+//				System.out.println(rs.getString("stepcount"));
+				matched_entity.setStepcountcompleted(rs.getString("stepcountcompleted"));
+				
+//				System.out.println(rs.getString("exitcode"));
+				matched_entity.setExitcode(rs.getString("exitcode"));
+				
+//				System.out.println(rs.getString("resource"));
+				matched_entity.setResource(rs.getString("resource"));
+				
+//				System.out.println(rs.getString("serialVersionUID"));
+				matched_entity.setSerialVersionUID(rs.getString("serialVersionUID"));
+				
+				allEntitiesFromCertainUser.add(matched_entity);
+			}
+			this.connection.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			System.err.println("no processes.");
+		}
+
+		return allEntitiesFromCertainUser;
+	}
+	
+	/**
 	 * print all rows to stdout of table 'radar' which match the Entity
 	 * @param Entity
 	 */

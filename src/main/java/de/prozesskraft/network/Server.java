@@ -137,6 +137,26 @@ public class Server
 //				objectToClient.close();
 			}
 
+			// wenn der befehl vom client 'getallfromuser' lautet, sollen alle Entities eines bestimmten users aus der DB geliefert werden
+			else if (type.equals("getallfromuser"))
+			{
+				log("debug", "anforderung von client lautet 'getallfromuser'");
+
+				log("info", "obtaining information about all entities from a certain user");
+
+				// dieser string enthaelt den user, dessen entities zurueckgegeben werden sollen
+				String user = (String) objectFromClient.readObject();
+				
+				ArrayList<Entity> allEntitiesFromUser = this.parent.db.getAllEntitiesFromCertainUser(user);
+				log("info", "plan" + allEntitiesFromUser.size()+" entities written to objectOutputStream");
+				objectToClient.writeObject(allEntitiesFromUser);
+				objectToClient.flush();
+				log("info", "all entities written to objectOutputStream");
+				
+				log("debug", "objectOutputStream schliessen");
+//				objectToClient.close();
+			}
+
 			else if (type.equals("stop"))
 			{
 				log("info", "stopping pradar-server");
