@@ -139,10 +139,20 @@ implements Serializable, Cloneable
 		else
 		{
 			content.add("#");
-			content.add("# to deal with configuration variables, use...");
+			content.add("# if a config-file ../etc/<basename>.conf exists, you can deal with its varaibles ...");
+			content.add("# this config-file is labeled as 'default' ");
+			content.add("#");
 			content.add("# getConfig(<key>) to obtain information defined in the config file");
 			content.add("# setConfig(<key>, <value>) to set a configuration value");
 			content.add("# getConfigKeys() to obtain all keys used in the config file");
+			content.add("#");
+			content.add("# if additional config-files needed to be read in...");
+			content.add("# &readConf(<label> <pathRelativeToScript>);");
+			content.add("# if you need variables from this config-files you need to switch to this config-file first with");
+			content.add("# switchConf(<label>);");
+			content.add("#");
+			content.add("# to switch back to the variables from default configfile...");
+			content.add("# switchConf('default');");
 			content.add("#");
 			content.add("# to deal with user call options, use...");
 			content.add("# getOption(<key>) to get the value of a certain option");

@@ -52,9 +52,9 @@ implements Serializable, Cloneable
 			content.add("");
 			content.add("# feststellen des installationsortes des programmes");
 			content.add("my $installdir = File::Spec->rel2abs($directories);");
-			content.add("my $etcdir = $installdir . \"/etc\";");
-			content.add("my $docdir = $installdir . \"/doc\";");
-			content.add("my $bindir = $installdir . \"/bin\";");
+			content.add("my $etcdir = $INSTALLDIR . \"/etc\";");
+			content.add("my $docdir = $INSTALLDIR . \"/doc\";");
+			content.add("my $bindir = $INSTALLDIR . \"/bin\";");
 			content.add("");
 			content.add("# feststellen des domain installations verzeichnisses");
 			content.add("my $domainInstallationDirectory = $installdir . \"/../../..\";");
@@ -102,8 +102,8 @@ implements Serializable, Cloneable
 			content.add("");
 			content.add("# feststellen des installationsortes des programmes");
 			content.add("my $installdir = File::Spec->rel2abs($directories);");
-			content.add("my $etcdir = $installdir . \"/../etc\";");
-			content.add("my $docdir = $installdir . \"/../doc\";");
+			content.add("my $etcdir = $INSTALLDIR . \"/../etc\";");
+			content.add("my $docdir = $INSTALLDIR . \"/../doc\";");
 			content.add("my $bindir = $directories;");
 			content.add("");
 			content.add("# einbinden der avoge module");
@@ -131,6 +131,12 @@ implements Serializable, Cloneable
 			content.add("");
 			content.add("# das aufrufverzeichnis (basedir)");
 			content.add("my $_basedir = cwd();");
+			content.add("");
+			content.add("# das aktuelle configfile");
+			content.add("my %ALLCONFS;");
+			content.add("my $SELECTED_CONF_LABEL = 'default';");
+			content.add("my %SELECTED_CONF;");
+
 		}
 		
 		this.block.setOrigin("auto");

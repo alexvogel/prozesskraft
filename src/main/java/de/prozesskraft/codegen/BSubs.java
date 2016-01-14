@@ -19,6 +19,10 @@ implements Serializable, Cloneable
 	ArrayList<String> code_printHtmlOverview = new ArrayList<String>();
 	ArrayList<String> code_logit = new ArrayList<String>();
 	ArrayList<String> code_logitProcess = new ArrayList<String>();
+	ArrayList<String> code_readConf = new ArrayList<String>();
+	ArrayList<String> code_switchConf = new ArrayList<String>();
+	ArrayList<String> code_readconf = new ArrayList<String>();
+	ArrayList<String> code_switchconf = new ArrayList<String>();
 	ArrayList<String> code_getvars = new ArrayList<String>();
 	ArrayList<String> code_initlist = new ArrayList<String>();
 	ArrayList<String> code_girlande = new ArrayList<String>();
@@ -36,6 +40,8 @@ implements Serializable, Cloneable
 		this.initPrintHtmlOverview();
 		this.initCodeLogit();
 		this.initCodeLogitProcess();
+		this.initCodeReadConf();
+		this.initCodeSwitchConf();
 		this.initCodeGetvars();
 		this.initCodeInitlist();
 		this.initCodeGirlande();
@@ -72,6 +78,8 @@ implements Serializable, Cloneable
 		// default
 		else
 		{
+			content.addAll(this.code_readconf);
+			content.addAll(this.code_switchconf);
 			content.addAll(this.code_getvars);
 			content.addAll(this.code_logit);
 			content.addAll(this.code_getsetoptionsconfigs);
@@ -404,6 +412,75 @@ implements Serializable, Cloneable
 		code.add("");
 
 		this.code_logitProcess = code;
+	}
+
+	private void initCodeReadConf()
+	{
+		ArrayList<String> code = new ArrayList<String>();
+		
+		code.add("sub readConf");
+		code.add("{");
+		code.add("	my $label = shift;");
+		code.add("	my $pathFromUser = shift;");
+		code.add("	");
+		code.add("	my $pathRelToInstalDir = $INSTALLDIR . '/' . $pathFromUser;");
+		code.add("	");
+		code.add("	my $path;");
+		code.add("	");
+		code.add("	# ist der Pfad absolut?");
+		code.add("	if($pathFromUser =~ m/^\\//)");
+		code.add("	{");
+		code.add("		if (stat $pathFromUser)");
+		code.add("		{");
+		code.add("			$path = $pathFromUser;");
+		code.add("		}");
+		code.add("		else");
+		code.add("		{");
+		code.add("			&logit('error', 'cannot read file ' . $pathFromUser);");
+		code.add("			exit(1);");
+		code.add("		}");
+		code.add("	}");
+		code.add("	# ist der Pfad relativ?");
+		code.add("	else");
+		code.add("	{");
+		code.add("		if (stat $pathRelToInstalDir)");
+		code.add("		{");
+		code.add("			$path = $pathFromUser;");
+		code.add("		}");
+		code.add("		else");
+		code.add("		{");
+		code.add("			&logit('error', 'cannot read file ' . $pathRelToInstalDir);");
+		code.add("			exit(1);");
+		code.add("		}");
+		code.add("	}");
+		code.add("	");
+		code.add("	my %userConfig = getvars($path);");
+		code.add("	$ALLCONFS{$label} = \\%userConfig;");
+		code.add("}");
+
+		this.code_readconf = code;
+	}
+
+	private void initCodeSwitchConf()
+	{
+		ArrayList<String> code = new ArrayList<String>();
+		
+		code.add("sub switchConf");
+		code.add("{");
+		code.add("	my $label = shift;");
+		code.add("	");
+		code.add("	if(grep {$_ eq $label} keys %ALLCONFS)");
+		code.add("	{");
+		code.add("		$SELECTED_CONF_LABEL = $label;");
+		code.add("	}");
+		code.add("	else");
+		code.add("	{");
+		code.add("		&logit('error', 'config labeled ' . $label . ' is unknown. use one of these: ' . join(', ', keys %ALLCONFS));");
+		code.add("	}");
+		code.add("}");
+		code.add("");
+
+		this.code_switchconf = code;
 	}
 
 	private void initCodeGetvars()
@@ -874,15 +951,15 @@ implements Serializable, Cloneable
 		code.add("");
 		code.add("sub getConfigKeys");
 		code.add("{");
-		code.add("	return sort keys %CONF;");
+		code.add("	return sort keys %{$ALLCONFS{$SELECTED_CONF_LABEL}};");
 		code.add("}");
 		code.add("");
 		code.add("sub getConfig");
 		code.add("{");
 		code.add("	my $key = shift;");
-		code.add("	if (defined $CONF{$key})");
+		code.add("	if (defined ${$ALLCONFS{$SELECTED_CONF_LABEL}}{$key})");
 		code.add("	{");
-		code.add("		return $CONF{$key};");
+		code.add("		return ${$ALLCONFS{$SELECTED_CONF_LABEL}}{$key};");
 		code.add("	}");
 		code.add("}");
 		code.add("");
@@ -891,7 +968,7 @@ implements Serializable, Cloneable
 		code.add("	my $key = shift;");
 		code.add("	my $value = shift;");
 		code.add("	");
-		code.add("	$CONF{$key} = $value;");
+		code.add("	${$ALLCONFS{$SELECTED_CONF_LABEL}}{$key} = $value;");
 		code.add("}");
 		code.add("");
 		code.add("sub importOptionToHash");
