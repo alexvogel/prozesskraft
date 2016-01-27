@@ -445,7 +445,7 @@ implements Serializable, Cloneable
 		code.add("	{");
 		code.add("		if (stat $pathRelToInstalDir)");
 		code.add("		{");
-		code.add("			$path = $pathFromUser;");
+		code.add("			$path = $pathRelToInstalDir;");
 		code.add("		}");
 		code.add("		else");
 		code.add("		{");
