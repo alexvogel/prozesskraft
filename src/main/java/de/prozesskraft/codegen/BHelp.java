@@ -82,7 +82,7 @@ implements Serializable, Cloneable
 			content.add("			{");
 			content.add("				$helptext .= \", default: \" . ${$OPTHELP{$_}}{'textfordefault'} . \")\";");
 			content.add("			}");
-			content.add("			elsif (${$OPTHELP{$_}}{'default'})");
+			content.add("			elsif (exists ${$OPTHELP{$_}}{'default'})");
 			content.add("			{");
 			content.add("				$helptext .= \", default: \" . ${$OPTHELP{$_}}{'default'} . \")\";");
 			content.add("			}");
