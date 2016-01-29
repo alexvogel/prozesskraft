@@ -728,6 +728,12 @@ implements Serializable, Cloneable
 		script.setDescription(this.getDescription());
 		script.genContent();
 		
+		// interpreter setzen, falls in work vorhanden
+		if((this.getWork() != null) && (this.getWork().getInterpreter() != null) )
+		{
+			script.setInterpreter(this.getWork().getInterpreter());
+		}
+		
 //		System.out.println(" options : "+callitem.size());
 
 		// 1) Optionen aus Inits, fuer die ein gleichnamiges Callitem existiert. (Inits ohne Callitem werden ignoriert) 
