@@ -206,6 +206,20 @@ implements Serializable, Cloneable
 	public void setAuthorMail(String authorMail) {
 		this.authorMail = authorMail;
 	}
+
+	/**
+	 * @return the interpreter
+	 */
+	public String getInterpreter() {
+		return interpreter;
+	}
+
+	/**
+	 * @param interpreter the interpreter to set
+	 */
+	public void setInterpreter(String interpreter) {
+		this.interpreter = interpreter;
+	}
 	
 //	public void setContent(String block, ArrayList<String> content) throws UnknownCodeBlockException
 //	{
