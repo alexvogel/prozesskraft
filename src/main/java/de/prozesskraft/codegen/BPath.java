@@ -51,10 +51,10 @@ implements Serializable, Cloneable
 			content.add("$|=1;");
 			content.add("");
 			content.add("# feststellen des installationsortes des programmes");
-			content.add("my $INSTALLDIR = File::Spec->rel2abs($directories);");
-			content.add("my $etcdir = $INSTALLDIR . \"/etc\";");
-			content.add("my $docdir = $INSTALLDIR . \"/doc\";");
-			content.add("my $bindir = $INSTALLDIR . \"/bin\";");
+			content.add("my $installdir = File::Spec->rel2abs($directories);");
+			content.add("my $etcdir = $installdir . \"/etc\";");
+			content.add("my $docdir = $installdir . \"/doc\";");
+			content.add("my $bindir = $installdir . \"/bin\";");
 			content.add("");
 			content.add("# feststellen des domain installations verzeichnisses");
 			content.add("my $domainInstallationDirectory = $installdir . \"/../../..\";");
