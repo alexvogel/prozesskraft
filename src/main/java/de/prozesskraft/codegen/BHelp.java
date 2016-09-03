@@ -68,12 +68,12 @@ implements Serializable, Cloneable
 			content.add("			}");
 			content.add("	");
 			content.add("			# wenn der default==true und es sich um einen flag-parameter handelt");
-			content.add("			if ( (${$OPTHELP{$_}}{'default'} eq \"1\") && (${$OPTIONS_TABLE{$_}}{'definition'} eq \"flag\") )");
+			content.add("			if ( (${$OPTHELP{$_}}{'default'}) && (${$OPTHELP{$_}}{'default'} eq \"1\") && (${$OPTIONS_TABLE{$_}}{'definition'} eq \"flag\") )");
 			content.add("			{");
 			content.add("				$helptext .= \", default: on)\";");
 			content.add("			}");
 			content.add("			# wenn der default==false und es sich um einen flag-parameter handelt");
-			content.add("			elsif ( (${$OPTHELP{$_}}{'default'} eq \"0\") && (${$OPTIONS_TABLE{$_}}{'definition'} eq \"flag\") )");
+			content.add("			elsif ( (${$OPTHELP{$_}}{'default'}) && (${$OPTHELP{$_}}{'default'} eq \"0\") && (${$OPTIONS_TABLE{$_}}{'definition'} eq \"flag\") )");
 			content.add("			{");
 			content.add("				$helptext .= \", default: off)\";");
 			content.add("			}");
