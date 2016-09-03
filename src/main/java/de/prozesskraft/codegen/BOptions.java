@@ -386,7 +386,7 @@ implements Serializable, Cloneable
 			content.add("		}");
 			content.add("		else");
 			content.add("		{");
-			content.add("			$OPTHELP{$par}{'default'} = 0;");
+			content.add("			$OPTHELP{$par}{'default'} = undef;");
 			content.add("		}");
 			content.add("	}");
 			content.add("	else");
@@ -430,7 +430,7 @@ implements Serializable, Cloneable
 			content.add("		}");
 			content.add("		else");
 			content.add("		{");
-			content.add("			$OPTHELP{$par}{'default'} = 0;");
+			content.add("			$OPTHELP{$par}{'default'} = undef;");
 			content.add("		}");
 			content.add("	}");
 			content.add("}");
