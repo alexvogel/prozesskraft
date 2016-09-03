@@ -725,7 +725,14 @@ implements Serializable, Cloneable
 		Script script = new Script();
 		script.setAuthorMail(this.getParent().getArchitectMail().replaceAll("@", "\\\\@"));
 		script.setType("step");
-		script.setDescription(this.getDescription());
+		if(this.getWork() != null)
+		{
+			script.setDescription(this.getWork().getDescription());
+		}
+		else
+		{
+			script.setDescription("no description in 'work' found");
+		}
 		script.genContent();
 		
 		// interpreter setzen, falls in work vorhanden
