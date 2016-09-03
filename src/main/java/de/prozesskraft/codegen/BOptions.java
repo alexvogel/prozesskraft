@@ -144,7 +144,7 @@ implements Serializable, Cloneable
 			content.add("		}");
 			content.add("		else");
 			content.add("		{");
-			content.add("			$OPTHELP{$par}{'default'} = 0;");
+			content.add("			$OPTHELP{$par}{'default'} = undef;");
 			content.add("		}");
 			content.add("		");
 			content.add("		if ( (exists ${$OPTIONS_TABLE{$par}}{'textfordefault'}) && (${$OPTIONS_TABLE{$par}}{'textfordefault'} =~ m/.+/) )");
@@ -194,7 +194,7 @@ implements Serializable, Cloneable
 			content.add("		}");
 			content.add("		else");
 			content.add("		{");
-			content.add("			$OPTHELP{$par}{'default'} = 0;");
+			content.add("			$OPTHELP{$par}{'default'} = undef;");
 			content.add("		}");
 			content.add("		if ( (exists ${$OPTIONS_TABLE{$par}}{'textfordefault'}) && (${$OPTIONS_TABLE{$par}}{'textfordefault'} =~ m/.+/) )");
 			content.add("		{");
