@@ -44,25 +44,22 @@ implements Serializable, Cloneable
 		else
 		{
 			content.add("{");
-			content.add("	my %CONF;");
-			content.add("	my %CONF_ORG;");
-			content.add("	$ALLCONFS{'default'} = \\%CONF;");
 			content.add("");
 			content.add("	# einlesen des config-files");
 			content.add("	if (stat $conf_path1)");
 			content.add("	{");
 			content.add("		logit(\"debug\", \"config-file found: $conf_path1\");");
-			content.add("		%CONF_ORG = &getvars($conf_path1);");
+			content.add("		&readConf('default', $conf_path1);");
 			content.add("	}");
 			content.add("	elsif (stat $conf_path2)");
 			content.add("	{");
 			content.add("		logit(\"debug\", \"config-file found: $conf_path2\");");
-			content.add("		%CONF_ORG = &getvars($conf_path2);");
+			content.add("		&readConf('default', $conf_path2);");
 			content.add("	}");
 			content.add("	elsif (stat $conf_path3)");
 			content.add("	{");
 			content.add("		logit(\"debug\", \"config-file found: $conf_path3\");");
-			content.add("		%CONF_ORG = &getvars($conf_path3);");
+			content.add("		&readConf('default', $conf_path3);");
 			content.add("	}");
 			content.add("	else");
 			content.add("	{");
@@ -92,20 +89,7 @@ implements Serializable, Cloneable
 			content.add("");
 			content.add("	# viele parameter im parameterfile enthalten pfade relativ zum installationsverzeichnis");
 			content.add("	# diese pfade sollen auf absolute pfade expandiert werden");
-			content.add("	logit(\"debug\", \"expanding config parameter to absolute path\");");
-			content.add("	foreach my $param (sort keys %CONF_ORG)");
-			content.add("	{");
-			content.add("	# gibts da ein file? Ja? Dann soll auf den absoluten Pfad expandiert werden");
-			content.add("		if ((($CONF_ORG{$param} ne \"\") && (stat $bindir.\"/\".$CONF_ORG{$param})))");
-			content.add("		{");
-			content.add("			$CONF{$param} = File::Spec->rel2abs($bindir.\"/\".$CONF_ORG{$param});");
-			content.add("			logit(\"debug\", \"parameter $param (value=\" . $CONF_ORG{$param} .\") expanding to (new_value=\".$CONF{$param}.\")\");");
-			content.add("		}");
-			content.add("		else");
-			content.add("		{");
-			content.add("			$CONF{$param} = $CONF_ORG{$param};");
-			content.add("		}");
-			content.add("	}");
+			content.add("	&expandConfigToPath(\"default\")");
 			content.add("}");
 		}
 		

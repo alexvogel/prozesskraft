@@ -22,6 +22,7 @@ implements Serializable, Cloneable
 	ArrayList<String> code_readConf = new ArrayList<String>();
 	ArrayList<String> code_switchConf = new ArrayList<String>();
 	ArrayList<String> code_readconf = new ArrayList<String>();
+	ArrayList<String> code_expandConfigToPath = new ArrayList<String>();
 	ArrayList<String> code_switchconf = new ArrayList<String>();
 	ArrayList<String> code_getvars = new ArrayList<String>();
 	ArrayList<String> code_initlist = new ArrayList<String>();
@@ -41,6 +42,7 @@ implements Serializable, Cloneable
 		this.initCodeLogit();
 		this.initCodeLogitProcess();
 		this.initCodeReadConf();
+		this.initCodeExpandConfigToPath();
 		this.initCodeSwitchConf();
 		this.initCodeGetvars();
 		this.initCodeInitlist();
@@ -66,6 +68,7 @@ implements Serializable, Cloneable
 		if(type.matches("process"))
 		{
 			content.addAll(this.code_printHtmlOverview);
+			content.addAll(this.code_expandConfigToPath);
 			content.addAll(this.code_getvars);
 			content.addAll(this.code_logitProcess);
 			content.addAll(this.code_initlist);
@@ -79,6 +82,7 @@ implements Serializable, Cloneable
 		else
 		{
 			content.addAll(this.code_readconf);
+			content.addAll(this.code_expandConfigToPath);
 			content.addAll(this.code_switchconf);
 			content.addAll(this.code_getvars);
 			content.addAll(this.code_logit);
@@ -459,6 +463,30 @@ implements Serializable, Cloneable
 		code.add("}");
 
 		this.code_readconf = code;
+	}
+
+	private void initCodeExpandConfigToPath()
+	{
+		ArrayList<String> code = new ArrayList<String>();
+		
+		code.add("sub expandConfigToPath");
+		code.add("{");
+		code.add("	my $label = shift;");
+		code.add("");
+		code.add("	logit(\"debug\", \"expanding config parameter to absolute path\");");
+		code.add("	foreach my $param (sort keys %{$ALLCONFS{$label}})");
+		code.add("	{");
+		code.add("	# gibts da ein file? Ja? Dann soll auf den absoluten Pfad expandiert werden");
+		code.add("		if (((${$ALLCONFS{$label}}{$param} ne \"\") && (stat $bindir.\"/\".${$ALLCONFS{$label}}{$param})))");
+		code.add("		{");
+		code.add("			my $orgValue = ${$ALLCONFS{$label}}{$param};");
+		code.add("			${$ALLCONFS{$label}}{$param} = File::Spec->rel2abs($bindir.\"/\".${$ALLCONFS{$label}}{$param});");
+		code.add("			logit(\"debug\", \"parameter $param (value=\" . $orgValue .\") expanding to (new_value=\".${$ALLCONFS{$label}}{$param}.\")\");");
+		code.add("		}");
+		code.add("	}");
+		code.add("}");
+
+		this.code_expandConfigToPath = code;
 	}
 
 	private void initCodeSwitchConf()
