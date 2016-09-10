@@ -460,6 +460,11 @@ implements Serializable, Cloneable
 		code.add("	");
 		code.add("	my %userConfig = getvars($path);");
 		code.add("	$ALLCONFS{$label} = \\%userConfig;");
+		code.add("	");
+		code.add("	# pfade auf absolut erweitern");
+		code.add("	expandConfigToPath($label);");
+		code.add("	");
+		code.add("	");
 		code.add("}");
 
 		this.code_readconf = code;
@@ -473,7 +478,7 @@ implements Serializable, Cloneable
 		code.add("{");
 		code.add("	my $label = shift;");
 		code.add("");
-		code.add("	logit(\"debug\", \"expanding config parameter to absolute path\");");
+		code.add("	logit(\"debug\", \"expanding config parameter (\" . $label . \") to absolute path\");");
 		code.add("	foreach my $param (sort keys %{$ALLCONFS{$label}})");
 		code.add("	{");
 		code.add("	# gibts da ein file? Ja? Dann soll auf den absoluten Pfad expandiert werden");
