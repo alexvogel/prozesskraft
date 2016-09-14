@@ -145,6 +145,7 @@ implements Serializable, Cloneable
 			content.add("# getConfig(<key>) to obtain information defined in the config file");
 			content.add("# setConfig(<key>, <value>) to set a configuration value");
 			content.add("# getConfigKeys() to obtain all keys used in the config file");
+			content.add("# getConfigKeys(\"^salut_\") to obtain all keys used in the config file that start with \"^salut_\". You may use any pattern.");
 			content.add("#");
 			content.add("# if additional config-files needed to be read in...");
 			content.add("# &readConf(<label>, <pathRelativeToScript>);");
