@@ -523,8 +523,9 @@ foreach my $refh_stackline (@CONFIG)
 	if(exists $CONF{"gateway_" . $now_targetmachine})
 	{
 		my $gateway = $CONF{"gateway_" . $now_targetmachine};
-		print "info: host " . $now_targetmachine . " is only reachable through a gateway (" . $gateway . "). every ssh-call will be chained/hopped through tjis machine.";
+		print "info: host " . $now_targetmachine . " is only reachable through a gateway (" . $gateway . "). every ssh-call will be chained/hopped through tjis machine.\n";
 		$sshPrefixBecauseGateway = "ssh -A -t " . $now_targetuser . "\@" . $gateway;
+		print "info: sshPrefix: " . $sshPrefixBecauseGateway . "\n";
 	}
 
 	# das targetverzeichnis erstellen
