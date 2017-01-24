@@ -518,29 +518,38 @@ foreach my $refh_stackline (@CONFIG)
 	}
 	print "refined: '".join(":", @branches)."'\n";
 
+	# falls die zielmachine nicht direkt, sondern ueber ein gateway zu erreichen ist muss das gateway als erster punkt in jeden ssh aufruf integriert werden
+	my $sshPrefixBecauseGateway = "";
+	if(exists $CONF{"gateway_" . $now_targetmachine})
+	{
+		my $gateway = $CONF{"gateway_" . $now_targetmachine};
+		print "info: host " . $now_targetmachine . " is only reachable through a gateway (" . $gateway . "). every ssh-call will be chained/hopped through tjis machine.";
+		$sshPrefixBecauseGateway = "ssh -A -t " . $now_targetuser . "\@" . $gateway;
+	}
+
 	# das targetverzeichnis erstellen
 	print "info: creating directory target $now_targetdir\n";
-	print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetdir\"\n"; 
-	system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetdir\"";
+	print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetdir\"\n"; 
+	system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetdir\"";
 	
 	print "info: creating directory targetbin ".$now_targetbin."\n";
-	print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbin\"\n"; 
-	system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbin\"";
+	print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbin\"\n"; 
+	system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbin\"";
 	
 	print "info: creating directory targetbulk ".$now_targetbulk."\n";
-	print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulk\"\n"; 
-	system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulk\"";
+	print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulk\"\n"; 
+	system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulk\"";
 	
 	if ($cleanapp)
 	{
 		print "info: deleting directory targetbulkapp (if exists) ".$now_targetbulkapp."\n";
-		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkapp\"\n"; 
-		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkapp\"";
+		print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkapp\"\n"; 
+		system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkapp\"";
 	}
 	
 	print "info: creating directory targetbulkapp ".$now_targetbulkapp."\n";
-	print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulkapp\"\n"; 
-	system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulkapp\"";
+	print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulkapp\"\n"; 
+	system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulkapp\"";
 
 	#-------------------
 	# sonderzeichen und whitespaces aus den branchnamen entfernen
@@ -995,17 +1004,17 @@ foreach my $refh_stackline (@CONFIG)
 		if ($cleanbranch)
 		{
 			print "info: deleting directory (if exists) ".$now_targetbulkappbranch."\n";
-			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch\"\n"; 
-			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch\"";
+			print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch\"\n"; 
+			system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch\"";
 		}
 	
 		print "info: creating target directory ".$now_targetbulkappbranch."\n";
-		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulkappbranch\"\n"; 
-		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulkappbranch\"";
+		print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulkappbranch\"\n"; 
+		system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mkdir $now_targetbulkappbranch\"";
 		
 		print "info: setting actual timestamp to target directory if its an old one ".$now_targetbulkappbranch."\n";
-		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"touch $now_targetbulkappbranch\"\n"; 
-		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"touch $now_targetbulkappbranch\"";
+		print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"touch $now_targetbulkappbranch\"\n"; 
+		system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"touch $now_targetbulkappbranch\"";
 
 		
 
@@ -1076,11 +1085,11 @@ foreach my $refh_stackline (@CONFIG)
 			{
 				print "info: $deploytargetrename. renaming $zeile[0] to $zeile[1]\n";
 				print "info: $deploytargetrename. in case there exists already a file/dir called '$zeile[1]', i will send a 'remove' first.\n";
-				print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch/$zeile[1]\"\n";
-				system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch/$zeile[1]\"";
+				print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch/$zeile[1]\"\n";
+				system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch/$zeile[1]\"";
 				print "info: $deploytargetrename. and now the 'move'.\n";
-				print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkappbranch/$zeile[0] $now_targetbulkappbranch/$zeile[1]\"\n";
-				system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkappbranch/$zeile[0] $now_targetbulkappbranch/$zeile[1]\"";
+				print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkappbranch/$zeile[0] $now_targetbulkappbranch/$zeile[1]\"\n";
+				system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkappbranch/$zeile[0] $now_targetbulkappbranch/$zeile[1]\"";
 			}
 		}
 
@@ -1088,8 +1097,8 @@ foreach my $refh_stackline (@CONFIG)
 		if($now_app eq "builder")
 		{
 			print "info: vorab setting rights in targetbulkappbranch to 755 (dies ist nur notwendig, wenn now_app == builder ist, schadet aber bei anderen nicht)\n";
-			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulkappbranch\"\n"; 
-			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulkappbranch\"";
+			print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulkappbranch\"\n"; 
+			system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulkappbranch\"";
 		}
 
 		# den allgemeinen commondriver in das temporaere verzeichnis kopieren
@@ -1171,46 +1180,46 @@ foreach my $refh_stackline (@CONFIG)
 		if($setdefault)
 		{
 			print "info: set default version of app to $setdefault/\n";
-			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
-			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
+			print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
+			system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"echo $setdefault > $now_targetbulk/version.$now_app\"\n"; 
 		}
 
 		# rechte in zielverzeichnis setzen auf 755
 		print "info: setting rights in targetbulkappbranch to 755\n";
-		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulkappbranch\"\n"; 
-		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulkappbranch\"";
+		print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulkappbranch\"\n"; 
+		system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbulkappbranch\"";
 		print "info: setting rights in targetbin to 755\n";
-		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbin\"\n"; 
-		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbin\"";
+		print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbin\"\n"; 
+		system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"chmod -R 755 $now_targetbin\"";
 
 		# rechte aller files, die mit "Makefile.PL" enden, sollen auf 444 (nur lesen) gesetzt werden
 		print "info: setting rights in targetbulkappbranch to 444 for all files/dirs matching /*Makefile.PL/\n";
-		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*Makefile.PL' -exec chmod -R 444 {} \\;\"\n"; 
-		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*Makefile.PL' -exec chmod -R 444 {} \\;\""; 
+		print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*Makefile.PL' -exec chmod -R 444 {} \\;\"\n"; 
+		system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*Makefile.PL' -exec chmod -R 444 {} \\;\""; 
 
 		# rechte aller files und verzeichnisse, die mit ".source" enden, sollen auf 750 gesetzt werden
 		print "info: setting rights in targetbulkappbranch to 750 for all files/dirs matching /.source*/\n";
-		print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\"\n"; 
-		system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\""; 
+		print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\"\n"; 
+		system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"find $now_targetbulkappbranch -depth -regex '.*\\.source' -exec chmod -R 750 {} \\;\""; 
 
 		# wenn das flag --pack gesetzt wurde, soll das installationsverzeichnis in ein *.tar.gz archiv gepackt werden
 		if($pack)
 		{
 			print "info: renaming destination directory to create a fine tarball\n";
-			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkappbranch $now_targetbulkapp/" . $app . "-" . $actBranch . "\"\n"; 
-			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkappbranch $now_targetbulkapp/" . $app . "-" . $actBranch . "\"";
+			print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkappbranch $now_targetbulkapp/" . $app . "-" . $actBranch . "\"\n"; 
+			system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkappbranch $now_targetbulkapp/" . $app . "-" . $actBranch . "\"";
 			print "info: if a tarball with the desired name already exists, it shoul be deleted\n";
-			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz\"\n"; 
-			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz\"";
+			print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz\"\n"; 
+			system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz\"";
 			print "info: packing the destination in a tar.gz-archiv\n";
-			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz -C $now_targetbulkapp " . $app . "-" . $actBranch . "\"\n"; 
-			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz -C $now_targetbulkapp " . $app . "-" . $actBranch . "\"";
+			print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz -C $now_targetbulkapp " . $app . "-" . $actBranch . "\"\n"; 
+			system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"tar -cvzf $now_targetbulkapp/" . $app . "-" . $actBranch . ".tar.gz -C $now_targetbulkapp " . $app . "-" . $actBranch . "\"";
 			print "info: renaming tarball-destination to its previous name \n";
-			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkapp/" . $app . "-" . $actBranch . " $now_targetbulkappbranch\"\n"; 
-			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkapp/" . $app . "-" . $actBranch . " $now_targetbulkappbranch\"";
+			print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkapp/" . $app . "-" . $actBranch . " $now_targetbulkappbranch\"\n"; 
+			system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"mv $now_targetbulkapp/" . $app . "-" . $actBranch . " $now_targetbulkappbranch\"";
 			print "info: delete directory \n";
-			print "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch\"\n"; 
-			system "ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch\"";
+			print $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch\"\n"; 
+			system $sshPrefixBecauseGateway . " ssh " . $now_targetuser . "\@" . $now_targetmachine . " -C \"rm -rf $now_targetbulkappbranch\"";
 		}
 	}
 }

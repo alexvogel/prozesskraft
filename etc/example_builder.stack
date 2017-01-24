@@ -1,6 +1,6 @@
 # first non-comment-line is header
-# app-name;repodirectory(abs);target;targetuser;targetmachine;targetdirectory(abs);amount_last_full_versions(newest(head) and betas (younger than full versions) are always on);deployment script;actiontag;actiontag;actiontag;actiontag
-app;repodir;target;targetuser;targetmachine;targetdir;ybranches;deployscript;action;action;action
+# app-name;repodirectory(abs);target;targetuser;gateway;targetmachine;targetdirectory(abs);amount_last_full_versions(newest(head) and betas (younger than full versions) are always on);deployment script;actiontag;actiontag;actiontag;actiontag
+app;repodir;target;targetuser;gateway;targetmachine;targetdir;ybranches;deployscript;action;action;action
 #
 # git_caegroup to lpcagw13.muc /share/xscaeapps/SNK/qxb0117
 myperllib;/data/prog/gits/git_caegroup/myperllib.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;;searchreplace
