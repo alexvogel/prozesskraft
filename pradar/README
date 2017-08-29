@@ -1,0 +1,28 @@
+1) go to the directory where you want to install the toolbox and unpack
+	tar -xvf pradar-0.5.0.tar.gz
+
+2) link the launch script "bin/pradar" from a PATH-directory. for example
+	cd ~/bin
+	ln -s <installdirectory>/bin/pradar
+
+3) edit the configuration file of the server etc/pradar-server.ini
+	define a <port> for the pradar-server (default: port=37889)
+	define a path for the database-file: pradar-db-path=<pathToDbFile>. if this file does not exist yet is this perfectly fine.
+
+4) change to the machine you want to be the pradar server
+	ssh <me>@<server>
+
+5) start the pradar server
+	pradar server
+
+5) edit all other etc/pradar-*.ini
+	define at least one pradar-server. "pradar-server-1=<port>@<server>"
+
+5) initialize database-file
+	pradar init
+
+now the pradar server listens to calls from running processes.
+if a process calls "pradar checkin ..." or "pradar checkout" or "pradar progress" this will be notices in the database-file.
+you can visualize the content of the database file with "pradar gui"
+
+checkout www.prozesskraft.de for further informations or even more tools.
