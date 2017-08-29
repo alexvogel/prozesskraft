@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="LICENSE4J-QuickStartLicensing" default="default" basedir=".">
+    <description>Builds, tests, and runs the project LICENSE4J-QuickStartLicensing.</description>
+    <import file="nbproject/build-impl.xml"/>
+   
+    <!-- ZIP All -->
+    <target description="_zip_all" name="_zip_all" depends="clean, jar" />
+    
+</project>
