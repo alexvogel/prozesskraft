@@ -1,0 +1,227 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.caegroup.pradar.parts</groupId>
+	<artifactId>pradar-gui</artifactId>
+	<packaging>jar</packaging>
+	<version>0.1</version>
+	<name>pradar-gui</name>
+	<url>http://maven.apache.org</url>
+	<build>
+
+<!-- setzen des outputDirectories fuer die *.class-Files (die von maven-compiler-plugin erzeugt werden) -->
+<!-- 		<outputDirectory>target/classes</outputDirectory> -->
+
+		<plugins>
+
+<!-- compiliert alle *.java files zu *.class files-->
+<!-- 			<plugin> -->
+<!-- 				<artifactId>maven-compiler-plugin</artifactId> -->
+<!-- 				<version>3.0</version> -->
+<!-- 				<configuration> -->
+<!-- 					<includes> -->
+<!-- 						<include>${project.build.outputDirectory}/../src/de/caegroup/pradar/parts/*.java</include> -->
+<!-- 					</includes> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
+
+<!-- packt alle class-Files in ein jar legt es im classDirectory ab-->
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<id>installation-caegroup-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<archive>
+								<manifest>
+									<mainClass>de.caegroup.pradar.parts.PradarPartUi2</mainClass>
+									<addClasspath>true</addClasspath>
+								</manifest>
+							</archive>
+<!-- ${project.build.outputDirectory} = ./target/classes -->
+<!-- 							<classesDirectory>/target</classesDirectory> -->
+<!-- 							<classesDirectory>/src/de/caegroup/pradar/parts</classesDirectory> -->
+<!-- 							<outputDirectory>/tmp/pradar/bin-klar</outputDirectory> -->
+<!-- 							<outputDirectory>${project.build.outputDirectory}</outputDirectory> -->
+<!-- 							<includes> -->
+<!-- 								<include>*</include> -->
+<!-- 							</includes> -->
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.pyx4me</groupId>
+				<artifactId>proguard-maven-plugin</artifactId>
+				<version>2.0.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>proguard</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<obfuscate>true</obfuscate>
+<!-- 					<outputDirectory>/tmp/pradar</outputDirectory> -->
+					<outputDirectory>${project.build.directory}</outputDirectory>
+<!-- 					<injar>bin-klar/${project.build.finalName}.jar</injar> -->
+					<injar>${project.build.finalName}.jar</injar>
+					<outjar>obfuscated_jar/${project.build.finalName}.jar</outjar>
+					<options>
+						<option>-keep public class de.caegroup.pradar.parts.PradarPartUi2 { *; }</option>
+						<option>-keep public class de.caegroup.pradar.parts.PradarViewModel { *; }</option>
+					</options>
+					<libs>
+						<lib>${java.home}/lib/rt.jar</lib>
+					</libs>
+					<proguardVersion>4.8</proguardVersion>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+<!-- 					<outputDirectory>/tmp/pradar/bin</outputDirectory> -->
+					<finalName>${project.name}-${project.version}</finalName>
+					<archive>
+						<manifest>
+							<mainClass>de.caegroup.pradar.parts.PradarPartUi2</mainClass>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>gtk.linux.x86</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.eclipse.swt</groupId>
+					<artifactId>gtk.linux.x86</artifactId>
+					<version>3.100.1</version>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>gtk.linux.x86_64</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.eclipse.swt</groupId>
+					<artifactId>gtk.linux.x86_64</artifactId>
+					<version>3.101.0</version>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+	<dependencies>
+		<dependency>
+			<groupId>de.caegroup.pradar</groupId>
+			<artifactId>pradar-core</artifactId>
+			<version>0.1.3</version>
+		</dependency>
+    	<dependency>
+			<groupId>org.processing</groupId>
+			<artifactId>core</artifactId>
+			<version>2.0b3</version>
+    	</dependency>
+    	<dependency>
+			<groupId>org.processing</groupId>
+			<artifactId>jogl-all</artifactId>
+			<version>2.0b3</version>
+    	</dependency>
+    	<dependency>
+			<groupId>org.processing</groupId>
+			<artifactId>gluegen-rt</artifactId>
+			<version>2.0b3</version>
+    	</dependency>
+    	<dependency>
+			<groupId>org.processing</groupId>
+			<artifactId>jogl-all-natives-linux-amd64</artifactId>
+			<version>2.0b3</version>
+    	</dependency>
+    	<dependency>
+			<groupId>org.processing</groupId>
+			<artifactId>gluegen-rt-natives-linux-amd64</artifactId>
+			<version>2.0b3</version>
+    	</dependency>
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>jface</artifactId>
+			<version>3.8.300</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>jface.databinding</artifactId>
+			<version>1.6.200</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>databinding</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>databinding.beans</artifactId>
+			<version>1.2.200</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>databinding.observable</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>databinding.property</artifactId>
+			<version>1.4.200</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.e4</groupId>
+			<artifactId>ui.di</artifactId>
+			<version>0.11.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>common</artifactId>
+			<version>3.6.100</version>
+		</dependency>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>inject</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>commons-cli</groupId>
+			<artifactId>commons-cli</artifactId>
+			<version>1.2</version>
+		</dependency>
+	</dependencies>
+</project>
