@@ -1,0 +1,114 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.caegroup.commons</groupId>
+	<artifactId>avoge-commons</artifactId>
+	<packaging>jar</packaging>
+	<version>0.1</version>
+	<name>avoge-commons</name>
+	<url>http://maven.apache.org</url>
+	<build>
+		<plugins>
+
+<!-- packt alle class-Files in ein jar legt es im target ab-->
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<id>installation-caegroup-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<archive>
+								<manifest>
+<!--									<mainClass>de.caegroup.process.createdoc</mainClass> -->
+ 									<addClasspath>true</addClasspath>
+								</manifest>
+							</archive>
+<!-- 							<outputDirectory>/tmp/pradar/bin-klar</outputDirectory> -->
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.pyx4me</groupId>
+				<artifactId>proguard-maven-plugin</artifactId>
+				<version>2.0.4</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>proguard</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<obfuscate>false</obfuscate>
+<!-- 					<outputDirectory>/tmp/pradar</outputDirectory> -->
+<!-- 					<injar>bin-klar/${project.build.finalName}.jar</injar> -->
+<!-- 					<outjar>bin/${project.build.finalName}.jar</outjar> -->
+					<options>
+<!-- 					abhaengigkeiten in anderen packages (durch import) koennen nur aufgeloest werden, wenn diese klassen public bleiben -->
+						<option>-keep public class de.caegroup.commons.WhereAmI { *; }</option>
+						<option>-keep public class de.caegroup.commons.AutoCropBorder { *; }</option>
+						<option>-keep public class de.caegroup.commons.writeFile { *; }</option>
+						<option>-keep public class de.caegroup.commons.copyDirectoryTree { *; }</option>
+						<option>-keep public class de.caegroup.commons.MyLicense { *; }</option>
+						<option>-keep public class de.caegroup.commons.DistantHostActions { *; }</option>
+					</options>
+					<libs>
+						<lib>${java.home}/lib/rt.jar</lib>
+					</libs>
+					<proguardVersion>4.8</proguardVersion>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+<!-- 					<outputDirectory>/tmp/pradar/bin</outputDirectory> -->
+					<finalName>${project.name}-${project.version}</finalName>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+	    <dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.50</version>
+	    </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+				<dependency>
+			<groupId>com.license4j</groupId>
+			<artifactId>license4j-runtime-library</artifactId>
+			<version>4.4.0.1</version>
+		</dependency>
+	</dependencies>
+</project>
