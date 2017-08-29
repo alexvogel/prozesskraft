@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="root">
+   </xs:element>
+  <xs:element name="dir">
+    <xs:complexType>
+    	<xs:sequence>
+    		<xs:element maxOccurs="1" ref="path" minOccurs="1" />
+   			<xs:element ref="file" maxOccurs="unbounded" minOccurs="0"/>
+   			<xs:element ref="dir" maxOccurs="unbounded" minOccurs="0"/>
+     	</xs:sequence>
+    	<xs:attribute name="id" use="required" type="xs:int"></xs:attribute>
+    	<xs:attribute name="minOccur" type="xs:int" use="required"></xs:attribute>
+    	<xs:attribute name="maxOccur" type="xs:int" use="required"></xs:attribute>
+     </xs:complexType>
+  </xs:element>
+  <xs:element name="file">
+    <xs:complexType>
+    	<xs:sequence>
+    		<xs:element maxOccurs="1" ref="path" minOccurs="1" />
+    	</xs:sequence>
+    	<xs:attribute name="id" use="required" type="xs:int"></xs:attribute>
+    	<xs:attribute name="minOccur" type="xs:int" use="required"></xs:attribute>
+    	<xs:attribute name="maxOccur" type="xs:int" use="required"></xs:attribute>
+    	<xs:attribute name="size" type="xs:float" use="optional"></xs:attribute>
+     	<xs:attribute name="md5" type="xs:string" use="optional"></xs:attribute>
+    	<xs:attribute name="sizeUnit" use="optional">
+    		<xs:simpleType>
+    			<xs:restriction base="xs:string">
+    				<xs:pattern
+    					value="B|b|KB|kb|Kb|kB|MB|mb|Mb|mB|GB|gb|Gb|gB">
+    				</xs:pattern>
+    			</xs:restriction>
+    		</xs:simpleType>
+    	</xs:attribute>
+    	<xs:attribute name="sizeTolerance" use="optional">
+    		<xs:simpleType>
+    			<xs:restriction base="xs:float">
+    				<xs:minInclusive value="0"></xs:minInclusive>
+    				<xs:maxInclusive value="1"></xs:maxInclusive>
+    			</xs:restriction>
+    		</xs:simpleType>
+    	</xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="path" type="xs:string" />
+ </xs:schema>
