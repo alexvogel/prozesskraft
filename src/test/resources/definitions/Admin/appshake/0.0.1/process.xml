@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <root> -->
+<process name="appshake" modelVersion="0.3" version="0.0.1" description="startet eine app oder einen prozess mit beispieldaten. am ende werden die tatsaechlich erzeugten daten mit den erwarteten daten (fingerprint) verglichen. das ergebnis wird in einem kurzbericht zusammengefasst" architectMail="alexander.vogel@caegroup.de" architectName="Alexander Vogel" architectCompany="caegroup Ingenieure" customerMail="alexander.vogel@caegroup.de" customerName="Alexander Vogel" customerCompany="caegroup Ingenieure" path="irgendeinpath" wrapper="false">
+	<step name="root" type="automatic">
+		<commit name="Variable" toroot="true">
+			<variable key="spl" minoccur="1" maxoccur="1" type="string" free="true" description="Verzeichnis mit Beispieldaten">
+				<test name="matchPattern" description="testing if value is min 3 and max 250 characters long and only uses letters, figures and '_'">
+					<param id="1"><![CDATA[.{3,250}]]></param>
+				</test>
+			</variable>
+			<variable key="mailto" minoccur="0" maxoccur="5" type="string" free="true" description="Empfaenger des Testlauf-Ergebnisses">
+				<test name="matchPattern" description="testing if value is a mail-address">
+					<param id="1"><![CDATA[.+@.+\.\w+]]></param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="Files" toroot="true">
+			<file key="call" minoccur="1" maxoccur="1" description="File, welches den vollstaendigen Aufruf (entsprechend dem Standard 'ptest') enthaelt" >
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+			<file key="result" minoccur="1" maxoccur="1" description="File, welches den Fingerprint (entsprechend dem Standard 'ptest') enthaelt" >
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="startApp" type="automatic" description="starte den aufruf unter verwendung der beispieldaten">
+		<init fromobjecttype="variable" listname="spl" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="spl"/>
+		</init>
+		<init fromobjecttype="file" listname="call" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="call"/>
+		</init>
+		<work name="unnamed" description="irgendeine beschreibung" command="ptest launch">
+			<callitem sequence="1" par="-spl" del=" " val="{$spl}"/>
+			<callitem sequence="2" par="-call" del=" " val="{$call}"/>
+			<exit value="1" msg="es ist ein fehler beim starten aufgetreten"/>
+		</work>
+		<commit name="loggingOfTestRun" toroot="true">
+			<file key="testlog" minoccur="1" maxoccur="1" description="logfile des ptest-launch-laufes. enthaelt stdout+stderr der zu testenden applikation" glob=".log">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="compareResult" type="automatic" description="vergleichen der erzeugten daten mit dem hinterlegten fingerprint auf uebereinstimmung">
+		<init fromobjecttype="file" listname="loggingOfTestRun" returnfield="absfilename" fromstep="startApp" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="testlog"/>
+		</init>
+		<init fromobjecttype="file" listname="result" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="result"/>
+		</init>
+		<init fromobjecttype="variable" listname="dirOfStep_startApp" returnfield="value" fromstep="startApp" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="_dir"/>
+		</init>
+		<work name="unnamed" description="irgendeine beschreibung" command="ptest compare">
+			<callitem sequence="1" par="-exam" del=" " val="{$dirOfStep_startApp}"/>
+			<callitem sequence="2" par="-ref" del=" " val="{$result}"/>
+			<callitem sequence="3" par="-summary" del=" " val="error"/>
+		</work>
+		<commit name="gesamtErgebnis" toroot="true">
+			<variable key="ergebnis" minoccur="1" maxoccur="1" free="false" description="Diese Variable indiziert (SUCCESS|FAILED) ob die Referenzdaten (Fingerprint) mit den frisch erzeugten Daten uebereinstimmen" glob=".stdout.txt">
+				<test name="matchPattern" description="testing if given value is one the possible choices.">
+					<param id="1">SUCCESS|FAILED</param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="fehlerZusammenfassung" toroot="true">
+			<file key="fingerprintvergleich" minoccur="1" maxoccur="1" description="fehlertabellen der ref/exam vergleiche. wird benoetigt um ursache fuer ein FAILED zu ermitteln" glob=".stderr.txt">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="ergebnismail" type="automatic" description="versenden des ergebnisses per eMail">
+		<init fromobjecttype="variable" listname="ergebnis" returnfield="value" fromstep="compareResult" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="ergebnis"/>
+			<match field="value" pattern="^.+$"/>
+			<match field="value" pattern="^SUCCESS|FAILED$"/>
+		</init>
+		<init fromobjecttype="file" listname="testlog" returnfield="absfilename" fromstep="startApp" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="testlog"/>
+		</init>
+		<init fromobjecttype="file" listname="fingerprintvergleich" returnfield="absfilename" fromstep="compareResult" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="fingerprintvergleich"/>
+		</init>
+		<init fromobjecttype="variable" listname="mailto" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="99" description="receipient mail address">
+			<match field="key" pattern="mailto"/>
+		</init>
+		<work name="unnamed" description="irgendeine beschreibung" command="mutt">
+			<callitem sequence="1" par="-s" del=" " val="appshake_{$ergebnis}"/>
+			<callitem sequence="2" par="-a" del=" " val="{$fingerprintvergleich}"/>
+			<callitem sequence="2" par="-a" del=" " val="{$testlog}"/>
+			<callitem sequence="4" loop="mailto" par="-c" del=" " val="{$loopvarcallitem}"/>
+		</work>
+		<commit name="dummyCommit" toroot="false">
+			<variable key="dummyKey" minoccur="1" maxoccur="1" description="bla" value="dummyValue">
+			</variable>
+		</commit>
+	</step>
+</process>
+<!-- </root> -->
