@@ -1,0 +1,1757 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <root> -->
+<process name="beulen+" modelVersion="0.2" version="2.0.0" description="Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert." architectMail="alexander.vogel@caegroup.de" architectName="Alexander Vogel" architectCompany="caegroup Ingenieure" customerMail="max.mustermann@auto.de" customerName="Max Mustermann" customerCompany="AUTO AG" path="bin" wrapper="false" initCommitFile="etcFiles:etcFiles/views:etcFiles/grenzkurven" initCommitVariable="etcVariables/variables" id2Variable="basename" maxSimultaneousSteps="3" stepStartLoadAverageBelow="3.0">
+	<step name="root" type="automatic">
+		<commit name="parameter">
+			<variable key="matdb" value="no" minoccur="1" maxoccur="1" type="string" free="false" description="Auswahl einer zentral gepflegten Materialdatenbank oder 'no' wenn Materialdefinitionen in den Abaqus-Includes enthalten sind" >
+				<choice>no</choice>
+				<choice>lin</choice>
+				<choice>nlin</choice>
+				<test name="matchPattern" description="testing if given value is one the possible choices.">
+					<param id="1">^no|lin|nlin$</param>
+				</test>
+			</variable>
+			<variable key="basename" minoccur="1" maxoccur="1" type="string" free="true" description="Beliebiger Namen zur Identifikation. 3-50 Zeichen lang. Buchstaben, Zahlen und '_' sind erlaubt. Keine Leerzeichen.">
+				<test name="matchPattern" description="testing if value is min 3 and max 50 characters long.">
+					<param id="1"><![CDATA[.{3,50}]]></param>
+				</test>
+				<test name="isA" description="testing if value is of the expected type.">
+					<param id="1"><![CDATA[string]]></param>
+				</test>
+			</variable>
+			<variable key="parttype" minoccur="1" maxoccur="1" type="string" free="false" description="Welche Komponente wird analysiert?">
+				<choice><![CDATA[fkl]]></choice>
+				<choice><![CDATA[hkl]]></choice>
+				<choice><![CDATA[dach]]></choice>
+				<choice><![CDATA[seite]]></choice>
+				<choice><![CDATA[tuer]]></choice>
+				<choice><![CDATA[sw]]></choice>
+				<test name="matchPattern" description="testing if given value is one the possible choices.">
+					<param id="1"><![CDATA[^fkl|hkl|dach|seite|tuer|sw$]]></param>
+				</test>
+			</variable>
+			<variable key="nid" minoccur="1" maxoccur="1" type="integer" free="true" description="Die Position an der die Beulsteifigkeit untersucht werden soll. Angabe mittels Knoten-ID.">
+				<test name="matchPattern" description="testing if given value is an integer">
+					<param id="1">^\d+$</param>
+				</test>
+			</variable>
+			<variable key="area" minoccur="1" maxoccur="1" type="string" free="false" description="In welchem Prüfbereich liegt die Position.">
+				<choice>area_1</choice>
+				<choice>area_2</choice>
+				<choice>area_3</choice>
+				<test name="matchPattern" description="">
+					<param id="1">area_[123456789]{1}</param>
+				</test>
+			</variable>
+			<variable key="force" value="150" type="integer" minoccur="0" maxoccur="1" free="true" description="Testkraft, die auf den Stempel aufgebracht werden soll.">
+				<choice>150</choice>
+				<test name="matchPattern" description="tests whether given value is an integer">
+					<param id="1">^\d+$</param>
+				</test>
+				<test name="moreThan" description="tests whether given value is min 100">
+					<param id="1">99</param>
+				</test>
+				<test name="lessThan" description=" tests whether given value does not exceed 300">
+					<param id="1">301</param>
+				</test>
+			</variable>
+			<variable key="disp" value="0.5" minoccur="0" type="float" maxoccur="1" free="true" description="Stempelweg (diese Angabe wird nur verwendet, wenn method==disp)">
+				<choice>0.5</choice>
+				<test name="isA" description="testing if value is of the expected type.">
+					<param id="1"><![CDATA[float]]></param>
+				</test>
+				<test name="moreThan" description="tests whether given value is min 0.1">
+					<param id="1">0.1</param>
+				</test>
+				<test name="lessThan" description=" tests whether given value does not exceed 10.0">
+					<param id="1">10.0</param>
+				</test>
+			</variable>
+			<variable key="method" value="riks" minoccur="1" maxoccur="1" type="string" free="false" description="method of abaqus analysis">
+				<choice>riks</choice>
+				<choice>disp</choice>
+			</variable>
+			<variable key="vmises" value="0" minoccur="0" maxoccur="1" type="flag" free="false" description="if default postprocessing does not allow for a resultset 'vonMisesStrain' with this parameter set to 'true' the generation of this resultset will be forced.">
+				<choice>1</choice>
+			</variable>
+			<variable key="plstrain" value="0" minoccur="0" maxoccur="1" type="flag" free="false" description="if default postprocessing does not allow for a resultset 'plasticStrain' with this parameter set to 'true' the generation of this resultset will be forced.">
+				<choice>1</choice>
+			</variable>
+			<variable key="nosolve" value="false" minoccur="0" maxoccur="1" type="flag" free="false" description="to stop process before the solving step, choose true">
+				<choice>true</choice>
+			</variable>
+			<variable key="nopost" value="false" minoccur="0" maxoccur="1" type="flag" free="false" description="to stop process before the postprocessing step, choose true">
+				<choice>true</choice>
+			</variable>
+		</commit>
+		<commit name="abaqus model">
+			<file key="inc" minoccur="1" description="abaqus include file without history data" >
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+		<commit name="report">
+			<variable key="mailto" minoccur="0" maxoccur="5" type="string" free="true" description="Der Report wird an diese BMW-Mail-Adresse geschickt">
+				<test name="matchPattern" description="testing if value is a bmw-mail-address">
+					<param id="1"><![CDATA[.+@(.+)?bmw\.de+]]></param>
+				</test>
+			</variable>
+			<variable key="myName" minoccur="0" maxoccur="1" type="string" free="true" description="Namen des Bearbeiters">
+				<test name="matchPattern" description="testing if value is a string min 3, max 250 characters with no whitespaces">
+					<param id="1"><![CDATA[[^\s]{3,250}]]></param>
+				</test>
+			</variable>
+			<variable key="myCompany" minoccur="0" maxoccur="1" type="string" free="true" description="Firma des Bearbeiters">
+				<test name="matchPattern" description="testing if value is a string min 3, max 250 characters with no whitespaces">
+					<param id="1"><![CDATA[[^\s]{3,250}]]></param>
+				</test>
+			</variable>
+			<variable key="myMail" minoccur="0" maxoccur="1" type="string" free="true" description="Mail-Adresse des Bearbeiters">
+				<test name="matchPattern" description="testing if value is a mail-address">
+					<param id="1"><![CDATA[.+@.+\.\w+]]></param>
+				</test>
+			</variable>
+			<variable key="customerName" minoccur="0" maxoccur="1" type="string" free="true" description="Namen des Kunden">
+				<test name="matchPattern" description="testing if value is a string min 3, max 250 characters with no whitespaces">
+					<param id="1"><![CDATA[[^\s]{3,250}]]></param>
+				</test>
+			</variable>
+			<variable key="customerCompany" minoccur="0" maxoccur="1" type="string" free="true" description="Firma des Kunden">
+				<test name="matchPattern" description="testing if value is a string min 3, max 250 characters with no whitespaces">
+					<param id="1"><![CDATA[[^\s]{3,250}]]></param>
+				</test>
+			</variable>
+			<variable key="customerMail" minoccur="0" maxoccur="1" type="string" free="true" description="Mail-Adresse des Kunden">
+				<test name="matchPattern" description="testing if value is a mail-address">
+					<param id="1"><![CDATA[.+@.+\.\w+]]></param>
+				</test>
+			</variable>
+		</commit>
+	</step>
+	<step name="det_materialfile_and_pw" type="automatic" description="Ermittelt das zu verwendende optionale abaqus-materialfile und das optionale passwort. Der Pfad zum Materialfile wird in file 'matdbfile.txt' und das Passwort in file 'matdbpw.txt' geschrieben">
+		<init fromobjecttype="variable" listname="matdb" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1" description="soll eine zentral verwaltete Materialdatenbank eingebunden werden oder nicht (lin=linear / nlin=nichtlinear / no=keine)?">
+			<match field="key" pattern="matdb"/>
+			<match field="value" pattern="^no|lin|nlin$"/>
+		</init>
+		<work name="unnamed" description="irgendeine beschreibung" command="det_materialfile_and_pw.pl">
+			<callitem sequence="1" par="--matdb" del="=" val="{$matdb}"/>
+		</work>
+		<commit name="materialdetails" toroot="tmp">
+			<variable key="matdbfile" minoccur="0" maxoccur="1" free="true" description="zentral gepflegtes file im abaqus format mit materialdefinitionen" glob="matdbfile.txt">
+			</variable>
+			<variable key="matdbpw" minoccur="0" maxoccur="1" free="true" description="passwort fuer das zentral gepflegte file im abaqus format mit materialdefinitionen" glob="matdbpw.txt">
+			</variable>
+		</commit>
+	</step>
+	<step name="gen_abaqus_beulen" type="automatic" description="Erzeugen eines Abaqus-Startdecks aus einer Vorlage.">
+		<init fromobjecttype="file" listname="inc" returnfield="absfilename" fromstep="root" insertrule="append" minoccur="1" maxoccur="99">
+			<match field="key" pattern="inc"/>
+		</init>
+		<init fromobjecttype="file" listname="incStempel" returnfield="absfilename" fromstep="root" insertrule="append" minoccur="1" maxoccur="99">
+			<match field="key" pattern="beulsteifigkeit_stempel.inc"/>
+		</init>
+		<init fromobjecttype="variable" listname="nid" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="nid"/>
+		</init>
+		<init fromobjecttype="variable" listname="force" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="force"/>
+		</init>
+		<init fromobjecttype="variable" listname="isMethodRiks" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="method"/>
+			<match field="value" pattern="riks"/>
+		</init>
+		<init fromobjecttype="variable" listname="disp" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="disp"/>
+		</init>
+		<init fromobjecttype="variable" listname="isMethodDisp" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="method"/>
+			<match field="value" pattern="disp"/>
+		</init>
+		<init fromobjecttype="file" listname="template_disp" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="beulen_abaqus_start_disp.tt"/>
+		</init>
+		<init fromobjecttype="file" listname="template_riks" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="beulen_abaqus_start_riks.tt"/>
+		</init>
+		<init fromobjecttype="variable" listname="matdbfile" returnfield="value" fromstep="det_materialfile_and_pw" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="matdbfile"/>
+		</init>
+		<init fromobjecttype="variable" listname="matdbpw" returnfield="value" fromstep="det_materialfile_and_pw" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="matdbpw"/>
+		</init>
+		<init fromobjecttype="variable" listname="basename" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="basename"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="gen_abaqus_beulen.pl">
+			<callitem sequence="1" par="--nid" del="=" val="{$nid}"/>
+			<callitem sequence="2" par="--output" del="=" val="{$basename}_node_{$nid}.inp"/>
+			<callitem sequence="3" loop="inc" par="--inc" del="=" val="{$loopvarcallitem}"/>
+			<callitem sequence="3" loop="incStempel" par="--inc" del="=" val="{$loopvarcallitem}"/>
+			<callitem sequence="4" loop="isMethodRiks" par="--force" del="=" val="{$force}"/>
+			<callitem sequence="5" loop="isMethodDisp" par="--disp" del="=" val="{$disp}"/>
+			<callitem sequence="5" loop="isMethodRiks" par="--template" del="=" val="{$template_riks}"/>
+			<callitem sequence="5" loop="isMethodDisp" par="--template" del="=" val="{$template_disp}"/>
+			<callitem sequence="6" loop="matdbfile" par="--mat" del="=" val="{$loopvarcallitem}"/>
+			<callitem sequence="7" loop="matdbpw" par="--matpw" del="=" val="{$loopvarcallitem}"/>
+		</work>
+		<commit name="abaqus_startdeck" toroot="analysis">
+			<file key="abaqus_startdeck" minoccur="1" maxoccur="1" description="abaqus main file" glob="{$basename}_node_{$nid}.inp">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+			<file key="includeStempel" minoccur="1" maxoccur="1" description="abaqus include file - der Pruefstempel" glob="{$incStempel}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+		<commit name="includes" toroot="analysis" loop="inc">
+			<file key="includes" minoccur="1" maxoccur="99" description="abaqus include file" glob="{$loopvarcommit}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="gen_a4session_view" type="automatic" description="Es wird ein animator-session-file erstellt">
+		<init fromobjecttype="file" listname="template" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="99">
+			<match field="key" pattern="view_animator.ses.tt"/>
+		</init>
+		<init fromobjecttype="file" listname="abaqus_startdeck" returnfield="absfilename" fromstep="gen_abaqus_beulen" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqus_startdeck"/>
+		</init>
+		<init fromobjecttype="variable" listname="png_view_file" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="png_view_file"/>
+		</init>
+		<init fromobjecttype="variable" listname="a4session_view" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="a4session_view"/>
+		</init>
+		<init fromobjecttype="variable" listname="parttype" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="parttype"/>
+		</init>
+		<init fromobjecttype="variable" listname="aniviewdirection" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="{$parttype}_view"/>
+		</init>
+		<init fromobjecttype="file" listname="aniviewfile" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="^{$aniviewdirection}$"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="gen_a4session_view.pl">
+			<callitem sequence="1" par="--inp" del="=" val="{$abaqus_startdeck}"/>
+			<callitem sequence="2" par="--png" del="=" val="{$png_view_file}"/>
+			<callitem sequence="3" par="--template" del="=" val="{$template}"/>
+			<callitem sequence="4" par="--viewfile" del="=" val="{$aniviewfile}"/>
+			<callitem sequence="5" par="--output" del="=" val="{$a4session_view}"/>
+		</work>
+		<commit name="a4session_view" toroot="tmp">
+			<file key="a4session_view" minoccur="1" maxoccur="1" description="animator-session zum erzeugen einer modellansicht" glob="{$a4session_view}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="animator_ansicht" type="automatic" description="Es wird ein Bild erstellt. Es zeigt das gesamte FE-Modell. Definierte Bereiche fuer Beuluntersuchungen werden gefaerbt dargestellt">
+		<init fromobjecttype="variable" listname="animatorversion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="animatorversion"/>
+		</init>
+		<init fromobjecttype="file" listname="a4session_view" returnfield="absfilename" fromstep="gen_a4session_view" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="^a4session_view$"/>
+		</init>
+		<init fromobjecttype="variable" listname="png_view_file" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="png_view_file"/>
+		</init>
+<!-- 		<init fromobjecttype="file" listname="dummyErgebnis" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1"> -->
+<!-- 			<match field="key" pattern="{$png_view_file}"/> -->
+<!-- 		</init> -->
+		<work name="starte_script" description="irgendeine beschreibung" command="animator">
+			<callitem sequence="1" par="--version" del=" " val="{$animatorversion}"/>
+			<callitem sequence="2" par="-FG"/>
+			<callitem sequence="3" par="-b"/>
+			<callitem sequence="4" par="-s" del=" " val="{$a4session_view}"/>
+		</work>
+		<commit name="png_view_file" toroot="tmp">
+			<file key="png_view_file" minoccur="1" maxoccur="1" description="Bild des FE-Modells" glob="{$png_view_file}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="gen_flowguide_beulen" type="automatic" description="Erzeugen eines flowguide-konfigurationsfiles durch Befuellen eines Templates.">
+		<init fromobjecttype="variable" listname="abaqusversion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqusversion"/>
+		</init>
+		<init fromobjecttype="file" listname="abaqus_startdeck" returnfield="filename" fromstep="gen_abaqus_beulen" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqus_startdeck"/>
+		</init>
+		<init fromobjecttype="variable" listname="numcpus" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="numcpus"/>
+		</init>
+		<init fromobjecttype="file" listname="flowguideIniTemplate" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="beulen_flowguide2_abaqus.ini.tt"/>
+		</init>
+		<init fromobjecttype="variable" listname="resultdir" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="_dir"/>
+		</init>
+<!-- 		<init fromobjecttype="file" listname="dummyErgebnis" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1"> -->
+<!-- 			<match field="key" pattern="view.png"/> -->
+<!-- 		</init> -->
+		<work name="starte_script" description="irgendeine beschreibung" command="gen_flowguide_beulen.pl">
+			<callitem sequence="1" par="--abaqusinput" del="=" val="{$resultdir}/processOutput/analysis/{$abaqus_startdeck}"/>
+			<callitem sequence="2" par="--abaqusversion" del="=" val="{$abaqusversion}"/>
+			<callitem sequence="3" par="--numcpus" del="=" val="{$numcpus}"/>
+			<callitem sequence="4" par="--resultdir" del="=" val="{$resultdir}/processOutput/analysis"/>
+			<callitem sequence="4" par="--template" del="=" val="{$flowguideIniTemplate}"/>
+			<callitem sequence="5" par="--output" del="=" val="flowguide2.ini"/>
+		</work>
+		<commit name="flowguideIni">
+			<file key="flowguideIni" minoccur="1" maxoccur="1" description="flowguide 2 ini-file" glob="flowguide2.ini">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="start_flowguide" type="automatic" description="Das solving wird ueber flowguide gestartet. Wird auf diesen Step 'kill' angewendet, wird auch der Job auf dem HPC gekillt.">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nosolve"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="file" listname="flowguideIni" returnfield="absfilename" fromstep="gen_flowguide_beulen" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="flowguideIni"/>
+		</init>
+		<init fromobjecttype="variable" listname="flowguideversion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="flowguideversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="workflow" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="workflow"/>
+		</init>
+		<init fromobjecttype="variable" listname="workflowversion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="workflowversion"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="flowguide" killcommand="/share/ras2/flowguide/workflows/bmw_fg2/bin/hpc_qdel">
+			<callitem sequence="1" par="--version" del=" " val="{$flowguideversion}"/>
+			<callitem sequence="2" par="--wf" del=" " val="{$workflow}"/>
+			<callitem sequence="3" par="--wf-version" del=" " val="{$workflowversion}"/>
+			<callitem sequence="4" par="-p" del=" " val="{$flowguideIni}"/>
+			<callitem sequence="5" par="-b"/>
+		</work>
+		<commit name="dummyErgebnis">
+			<file key="dummyErgebnis" minoccur="1" maxoccur="1" description="pidFile als dummy" glob=".pid">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+		<commit name="killpid">
+			<variable key="killpid" minoccur="1" maxoccur="1" description="pid der Analyse auf dem HPC" glob=".log" extract="grep:INFO - Your job (\d+) ">
+			</variable>
+		</commit>
+	</step>
+	<step name="wait_for_analyse" type="automatic" description="warten auf ergebnisfiles aus Abaqus-Analyse">
+		<init fromobjecttype="file" listname="dummyStreamline" returnfield="absfilename" fromstep="start_flowguide" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="dummyErgebnis"/>
+		</init>
+		<init fromobjecttype="variable" listname="rootdir" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="_dir"/>
+		</init>
+		<init fromobjecttype="variable" listname="hpcpid" returnfield="value" fromstep="start_flowguide" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="killpid"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="wait_for_analyse.pl" maxrun="2980">
+			<callitem sequence="1" par="--hpcpid" del="=" val="{$hpcpid}"/>
+			<callitem sequence="2" par="--pattern" del="=" val="{$rootdir}/processOutput/analysis/*.odb"/>
+			<callitem sequence="3" par="--delay" del="=" val="5"/>
+			<callitem sequence="4" par="--maxrun" del="=" val="2880"/>
+		</work>
+		<commit name="results" toroot="analysis" >
+			<file key="odbFile" minoccur="1" maxoccur="1" description="odb-file" glob="{$rootdir}/processOutput/analysis/*.odb">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+			<file key="outFile" minoccur="1" maxoccur="1" description="out-file" glob="{$rootdir}/processOutput/analysis/*.out">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="was_abaqus_successfull" type="automatic" description="ueberpruefen ob die abaqus-analyse erfolgreich gelaufen ist">
+		<init fromobjecttype="file" listname="staFile" returnfield="absfilename" fromstep="wait_for_analyse" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="outFile"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="was_abaqus_successfull.pl">
+			<callitem sequence="1" par="--sta" del="=" val="{$staFile}"/>
+			<callitem sequence="2" par="--out" del="=" val="was_abaqus_successfull.txt"/>
+			<callitem sequence="3" par="--maxrun" del="=" val="2880"/>
+		</work>
+		<commit name="was_abaqus_successfull" toroot="pp">
+			<file key="was_abaqus_successfull" minoccur="1" maxoccur="1" description="ergebnisfile ob abaqus erfolgreich gelaufen ist" glob="was_abaqus_successfull.txt">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+		<commit name="was_abaqus_successfull2" toroot="pp">
+			<variable key="was_abaqus_successfull" minoccur="1" maxoccur="1" description="ergebnis ob abaqus erfolgreich gelaufen ist" glob="was_abaqus_successfull.txt">
+				<test name="matchPattern" description="tests whether value matches the pattern">
+					<param id="1">success|failed|indifferent</param>
+				</test>
+			</variable>
+		</commit>
+	</step>
+	<step name="maxvmises" type="automatic" description="ermittelt den hoechsten Wert der Von-Mises-Vergleichsspannung in kontaktierter Struktur">
+		<list name="maxvmises">
+			<defaultitem>maxvmises.txt</defaultitem>
+		</list>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="file" listname="dummyStreamline" returnfield="absfilename" fromstep="was_abaqus_successfull" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="was_abaqus_successfull"/>
+		</init>
+		<init fromobjecttype="file" listname="odb" returnfield="absfilename" fromstep="wait_for_analyse" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbFile"/>
+		</init>
+		<init fromobjecttype="variable" listname="abaqusversion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqusversion"/>
+		</init>
+		<init fromobjecttype="file" listname="odbMaxMisesScript" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbMaxMises.py"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="abaqus" maxrun="20">
+			<callitem sequence="1" par="--version" del=" " val="{$abaqusversion}"/>
+			<callitem sequence="2" par="python" del=" " val="{$odbMaxMisesScript}"/>
+			<callitem sequence="4" par="-odb" del=" " val="{$odb}"/>
+			<callitem sequence="5" par="-elset" del=" " val="STRUKTUR"/>
+		</work>
+		<commit name="maxvmisesFile" toroot="pp" refactor="filename:{$maxvmises}">
+			<file key="maxvmisesFile" minoccur="1" maxoccur="1" description="ergebniswert maximaler vMises in einem file" glob=".stdout.txt">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+		<commit name="maxvmises" toroot="pp">
+			<variable key="maxvmises" minoccur="1" maxoccur="1" description="ergebniswert maximaler vMises" extract="grep:([^\s]+)" glob=".stdout.txt">
+				<test name="isA" description="testing if value is of the expected type.">
+					<param id="1"><![CDATA[float]]></param>
+				</test>
+			</variable>
+		</commit>
+	</step>
+	<step name="xcoord_of_position" type="automatic" description="Ermitteln der x-Koordinate der Stempelposition">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="variable" listname="dummyStreamline" returnfield="value" fromstep="maxvmises" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="maxvmises"/>
+		</init>
+		<init fromobjecttype="file" listname="abaSuccess" returnfield="absfilename" fromstep="was_abaqus_successfull" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="was_abaqus_successfull"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="out_pos_xcoord"/>
+		</init>
+		<init fromobjecttype="variable" listname="abaqusVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqusversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="odbmodelScript" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbmodel"/>
+		</init>
+		<init fromobjecttype="variable" listname="instance" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="instance"/>
+		</init>
+		<init fromobjecttype="variable" listname="nid" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="nid"/>
+		</init>
+		<init fromobjecttype="file" listname="odbFile" returnfield="absfilename" fromstep="wait_for_analyse" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbFile"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="abaqus">
+			<callitem sequence="1" par="--version" del=" " val="{$abaqusVersion}"/>
+			<callitem sequence="2" par="python" del=" " val="{$odbmodelScript}"/>
+			<callitem sequence="3" par="--odb" del=" " val="{$odbFile}"/>
+			<callitem sequence="4" par="--instance" del=" " val="{$instance}"/>
+			<callitem sequence="5" par="--nid" del=" " val="{$nid}"/>
+			<callitem sequence="6" par="--output" del=" " val="coordinates"/>
+			<callitem sequence="7" par="--postfunction" del=" " val="value_1"/>
+		</work>
+		<commit name="xcoord" toroot="pp">
+			<variable key="xcoord" minoccur="1" maxoccur="1" description="x-koordinate der beulposition" extract="grep:([^\s]+)" glob=".stdout.txt">
+				<test name="isA" description="testing if value is of the expected type.">
+					<param id="1"><![CDATA[float]]></param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="xcoordFile" toroot="pp" refactor="filename:xcoord.txt">
+			<file key="xcoordFile" minoccur="1" maxoccur="1" description="x-koordinate der beulposition als file" glob=".stdout.txt">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="ycoord_of_position" type="automatic" description="Ermitteln der y-Koordinate der Stempelposition">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="variable" listname="dummyStreamline" returnfield="value" fromstep="xcoord_of_position" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="xcoord"/>
+		</init>
+		<init fromobjecttype="file" listname="abaSuccess" returnfield="absfilename" fromstep="was_abaqus_successfull" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="was_abaqus_successfull"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="out_pos_ycoord"/>
+		</init>
+		<init fromobjecttype="variable" listname="abaqusVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqusversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="odbmodelScript" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbmodel"/>
+		</init>
+		<init fromobjecttype="variable" listname="instance" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="instance"/>
+		</init>
+		<init fromobjecttype="variable" listname="nid" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="nid"/>
+		</init>
+		<init fromobjecttype="file" listname="odbFile" returnfield="absfilename" fromstep="wait_for_analyse" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbFile"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="abaqus">
+			<callitem sequence="1" par="--version" del=" " val="{$abaqusVersion}"/>
+			<callitem sequence="2" par="python" del=" " val="{$odbmodelScript}"/>
+			<callitem sequence="3" par="--odb" del=" " val="{$odbFile}"/>
+			<callitem sequence="4" par="--instance" del=" " val="{$instance}"/>
+			<callitem sequence="5" par="--nid" del=" " val="{$nid}"/>
+			<callitem sequence="6" par="--output" del=" " val="coordinates"/>
+			<callitem sequence="7" par="--postfunction" del=" " val="value_2"/>
+		</work>
+		<commit name="ycoord" toroot="pp">
+			<variable key="ycoord" minoccur="1" maxoccur="1" description="y-koordinate der beulposition" extract="grep:([^\s]+)" glob=".stdout.txt">
+				<test name="isA" description="testing if value is of the expected type.">
+					<param id="1"><![CDATA[float]]></param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="ycoordFile" toroot="pp" refactor="filename:ycoord.txt">
+			<file key="ycoordFile" minoccur="1" maxoccur="1" description="y-koordinate der beulposition als file" glob=".stdout.txt">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="zcoord_of_position" type="automatic" description="Ermitteln der z-Koordinate der Stempelposition">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="variable" listname="dummyStreamline" returnfield="value" fromstep="ycoord_of_position" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="ycoord"/>
+		</init>
+		<init fromobjecttype="file" listname="abaSuccess" returnfield="absfilename" fromstep="was_abaqus_successfull" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="was_abaqus_successfull"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="out_pos_zcoord"/>
+		</init>
+		<init fromobjecttype="variable" listname="abaqusVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqusversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="odbmodelScript" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbmodel"/>
+		</init>
+		<init fromobjecttype="variable" listname="instance" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="instance"/>
+		</init>
+		<init fromobjecttype="variable" listname="nid" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="nid"/>
+		</init>
+		<init fromobjecttype="file" listname="odbFile" returnfield="absfilename" fromstep="wait_for_analyse" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbFile"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="abaqus">
+			<callitem sequence="1" par="--version" del=" " val="{$abaqusVersion}"/>
+			<callitem sequence="2" par="python" del=" " val="{$odbmodelScript}"/>
+			<callitem sequence="3" par="--odb" del=" " val="{$odbFile}"/>
+			<callitem sequence="4" par="--instance" del=" " val="{$instance}"/>
+			<callitem sequence="5" par="--nid" del=" " val="{$nid}"/>
+			<callitem sequence="6" par="--output" del=" " val="coordinates"/>
+			<callitem sequence="7" par="--postfunction" del=" " val="value_3"/>
+		</work>
+		<commit name="zcoord" toroot="pp">
+			<variable key="zcoord" minoccur="1" maxoccur="1" description="z-koordinate der beulposition" extract="grep:([^\s]+)" glob=".stdout.txt">
+				<test name="isA" description="testing if value is of the expected type.">
+					<param id="1"><![CDATA[float]]></param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="zcoordFile" toroot="pp" refactor="filename:zcoord.txt">
+			<file key="zcoordFile" minoccur="1" maxoccur="1" description="z-koordinate der beulposition als file" glob=".stdout.txt">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="odbhistory_step1_rf1" type="automatic" description="extrahieren der historydaten RF1 aus Step1 an Stempelknoten">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="method"/>
+			<match field="value" pattern="disp"/>
+		</init>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="variable" listname="dummyStreamline" returnfield="value" fromstep="maxvmises" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="maxvmises"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="out_step1_time_rf1loc"/>
+		</init>
+		<init fromobjecttype="variable" listname="abaqusVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqusversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="odbhistoryScript" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbhistory"/>
+		</init>
+		<init fromobjecttype="variable" listname="riks_stepname_1" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="riks_stepname_1"/>
+		</init>
+		<init fromobjecttype="variable" listname="hregion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="hregion"/>
+		</init>
+		<init fromobjecttype="file" listname="odbFile" returnfield="absfilename" fromstep="wait_for_analyse" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbFile"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="abaqus">
+			<callitem sequence="1" par="--version" del=" " val="{$abaqusVersion}"/>
+			<callitem sequence="2" par="python" del=" " val="{$odbhistoryScript}"/>
+			<callitem sequence="3" par="--odb" del=" " val="{$odbFile}"/>
+			<callitem sequence="4" par="--stepname" del=" " val="{$riks_stepname_1}"/>
+			<callitem sequence="5" par="--region" del=" " val="'{$hregion}'"/>
+			<callitem sequence="5" par="--history" del=" " val="'RF1 LOCAL'"/>
+			<callitem sequence="6" par="--output" del=" " val="data"/>
+			<callitem sequence="7" par="--postfunction" del=" " val="time,value"/>
+		</work>
+		<commit name="odbhistory_step1_rf1" toroot="tmp" refactor="filename:{$output}">
+			<file key="odbhistory_step1_rf1" minoccur="1" maxoccur="1" description="curve step1-time-rf1" glob=".stdout.txt">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="odbhistory_step1_u1" type="automatic" description="extrahieren der historydaten U1 aus Step1 an Stempelknoten">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="method"/>
+			<match field="value" pattern="disp"/>
+		</init>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="file" listname="dummyStreamline" returnfield="absfilename" fromstep="odbhistory_step1_rf1" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbhistory_step1_rf1"/>
+		</init>
+		<init fromobjecttype="file" listname="abaSuccess" returnfield="absfilename" fromstep="was_abaqus_successfull" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="was_abaqus_successfull"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="out_step1_time_u1loc"/>
+		</init>
+		<init fromobjecttype="variable" listname="abaqusVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqusversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="odbhistoryScript" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbhistory"/>
+		</init>
+		<init fromobjecttype="variable" listname="riks_stepname_1" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="riks_stepname_1"/>
+		</init>
+		<init fromobjecttype="variable" listname="hregion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="hregion"/>
+		</init>
+		<init fromobjecttype="file" listname="odbFile" returnfield="absfilename" fromstep="wait_for_analyse" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbFile"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="abaqus">
+			<callitem sequence="1" par="--version" del=" " val="{$abaqusVersion}"/>
+			<callitem sequence="2" par="python" del=" " val="{$odbhistoryScript}"/>
+			<callitem sequence="3" par="--odb" del=" " val="{$odbFile}"/>
+			<callitem sequence="4" par="--stepname" del=" " val="{$riks_stepname_1}"/>
+			<callitem sequence="5" par="--region" del=" " val="'{$hregion}'"/>
+			<callitem sequence="5" par="--history" del=" " val="'U1 LOCAL'"/>
+			<callitem sequence="6" par="--output" del=" " val="data"/>
+			<callitem sequence="7" par="--postfunction" del=" " val="time,value"/>
+		</work>
+		<commit name="odbhistory_step1_u1" toroot="tmp" refactor="filename:{$output}">
+			<file key="odbhistory_step1_u1" minoccur="1" maxoccur="1" description="curve step1-time-u1" glob=".stdout.txt">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="odbhistory_step2_cf1" type="automatic" description="extrahieren der historydaten CF1 aus Step2 an Stempelknoten">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="method"/>
+			<match field="value" pattern="disp"/>
+		</init>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="file" listname="dummyStreamline" returnfield="absfilename" fromstep="odbhistory_step1_u1" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbhistory_step1_u1"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="out_step2_time_cf1loc"/>
+		</init>
+		<init fromobjecttype="variable" listname="abaqusVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqusversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="odbhistoryScript" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbhistory"/>
+		</init>
+		<init fromobjecttype="variable" listname="riks_stepname_2" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="riks_stepname_2"/>
+		</init>
+		<init fromobjecttype="variable" listname="hregion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="hregion"/>
+		</init>
+		<init fromobjecttype="file" listname="odbFile" returnfield="absfilename" fromstep="wait_for_analyse" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbFile"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="abaqus">
+			<callitem sequence="1" par="--version" del=" " val="{$abaqusVersion}"/>
+			<callitem sequence="2" par="python" del=" " val="{$odbhistoryScript}"/>
+			<callitem sequence="3" par="--odb" del=" " val="{$odbFile}"/>
+			<callitem sequence="4" par="--stepname" del=" " val="{$riks_stepname_2}"/>
+			<callitem sequence="5" par="--region" del=" " val="'{$hregion}'"/>
+			<callitem sequence="5" par="--history" del=" " val="'CF1 LOCAL'"/>
+			<callitem sequence="6" par="--output" del=" " val="data"/>
+			<callitem sequence="7" par="--postfunction" del=" " val="time,value"/>
+		</work>
+		<commit name="odbhistory_step2_cf1" toroot="tmp" refactor="filename:{$output}">
+			<file key="odbhistory_step2_cf1" minoccur="1" maxoccur="1" description="curve step2-time-cf1" glob=".stdout.txt">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="odbhistory_step2_u1" type="automatic" description="extrahieren der historydaten U1 aus Step2 an Stempelknoten">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="method"/>
+			<match field="value" pattern="disp"/>
+		</init>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="file" listname="dummyStreamline" returnfield="absfilename" fromstep="odbhistory_step2_cf1" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbhistory_step2_cf1"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="out_step2_time_u1loc"/>
+		</init>
+		<init fromobjecttype="variable" listname="abaqusVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqusversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="odbhistoryScript" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbhistory"/>
+		</init>
+		<init fromobjecttype="variable" listname="riks_stepname_2" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="riks_stepname_2"/>
+		</init>
+		<init fromobjecttype="variable" listname="hregion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="hregion"/>
+		</init>
+		<init fromobjecttype="file" listname="odbFile" returnfield="absfilename" fromstep="wait_for_analyse" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbFile"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="abaqus">
+			<callitem sequence="1" par="--version" del=" " val="{$abaqusVersion}"/>
+			<callitem sequence="2" par="python" del=" " val="{$odbhistoryScript}"/>
+			<callitem sequence="3" par="--odb" del=" " val="{$odbFile}"/>
+			<callitem sequence="4" par="--stepname" del=" " val="{$riks_stepname_2}"/>
+			<callitem sequence="5" par="--region" del=" " val="'{$hregion}'"/>
+			<callitem sequence="5" par="--history" del=" " val="'U1 LOCAL'"/>
+			<callitem sequence="6" par="--output" del=" " val="data"/>
+			<callitem sequence="7" par="--postfunction" del=" " val="time,value"/>
+		</work>
+		<commit name="odbhistory_step2_u1" toroot="tmp" refactor="filename:{$output}">
+			<file key="odbhistory_step2_u1" minoccur="1" maxoccur="1" description="curve step2-time-u1" glob=".stdout.txt">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="curve_combine_step1" type="automatic" description="die curves (rf1,u1) aus step1 ueber die time-daten zu einer curve zusammenfuehren">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="method"/>
+			<match field="value" pattern="disp"/>
+		</init>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="out_step1_u1loc_rf1loc"/>
+		</init>
+		<init fromobjecttype="file" listname="odbhistory_step1_u1" returnfield="absfilename" fromstep="odbhistory_step1_u1" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbhistory_step1_u1"/>
+		</init>
+		<init fromobjecttype="file" listname="odbhistory_step1_rf1" returnfield="absfilename" fromstep="odbhistory_step1_rf1" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbhistory_step1_rf1"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="curve_combine.pl">
+			<callitem sequence="1" par="--curve1" del=" " val="{$odbhistory_step1_u1}"/>
+			<callitem sequence="2" par="--curve2" del=" " val="{$odbhistory_step1_rf1}"/>
+			<callitem sequence="3" par="--out" del=" " val="{$output}"/>
+		</work>
+		<commit name="curveStep1KraftWeg" toroot="tmp">
+			<file key="curveStep1KraftWeg" minoccur="1" maxoccur="1" description="curve step1-kraft-weg" glob="{$output}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="curve_combine_step2" type="automatic" description="die curves (cf1,u1) aus step2 ueber die time-daten zu einer curve zusammenfuehren">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="method"/>
+			<match field="value" pattern="disp"/>
+		</init>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="out_step2_u1loc_cf1loc"/>
+		</init>
+		<init fromobjecttype="file" listname="odbhistory_step2_u1" returnfield="absfilename" fromstep="odbhistory_step2_u1" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbhistory_step2_u1"/>
+		</init>
+		<init fromobjecttype="file" listname="odbhistory_step2_cf1" returnfield="absfilename" fromstep="odbhistory_step2_cf1" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbhistory_step2_cf1"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="curve_combine.pl">
+			<callitem sequence="1" par="--curve1" del=" " val="{$odbhistory_step2_u1}"/>
+			<callitem sequence="2" par="--curve2" del=" " val="{$odbhistory_step2_cf1}"/>
+			<callitem sequence="3" par="--out" del=" " val="{$output}"/>
+		</work>
+		<commit name="curveStep2KraftWeg" toroot="tmp">
+			<file key="curveStep2KraftWeg" minoccur="1" maxoccur="1" description="curve step2-kraft-weg" glob="{$output}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="curve_merge_step1_step2" type="automatic" description="die kraft-weg-curves aus step1 und step2 werden zusammengehaengt">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="method"/>
+			<match field="value" pattern="disp"/>
+		</init>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="out_stepsall_u1loc_forceloc"/>
+		</init>
+		<init fromobjecttype="file" listname="curveStep1KraftWeg" returnfield="absfilename" fromstep="curve_combine_step1" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="curveStep1KraftWeg"/>
+		</init>
+		<init fromobjecttype="file" listname="curveStep2KraftWeg" returnfield="absfilename" fromstep="curve_combine_step2" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="curveStep2KraftWeg"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="curve_merge.pl">
+			<callitem sequence="1" par="--curve1" del=" " val="{$curveStep1KraftWeg}"/>
+			<callitem sequence="2" par="--curve2" del=" " val="{$curveStep2KraftWeg}"/>
+			<callitem sequence="3" par="--out" del=" " val="{$output}"/>
+		</work>
+		<commit name="curveKraftWeg" toroot="tmp">
+			<file key="curveKraftWeg" minoccur="1" maxoccur="1" description="curve kraft-weg" glob="{$output}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="get_stiffcurve_weggesteuert" type="automatic" description="die kraft-weg-curve aus step1 und step2 (falls method=disp) ermitteln">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="method"/>
+			<match field="value" pattern="riks"/>
+		</init>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="out_stepsall_u1loc_forceloc"/>
+		</init>
+		<init fromobjecttype="file" listname="abaSuccess" returnfield="absfilename" fromstep="was_abaqus_successfull" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="was_abaqus_successfull"/>
+		</init>
+		<init fromobjecttype="variable" listname="abaqusAufruf" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqus"/>
+		</init>
+		<init fromobjecttype="variable" listname="abaqusVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqusversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="odbhistoryScript" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbhistory"/>
+		</init>
+		<init fromobjecttype="variable" listname="weggesteuert_stepname_1" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="weggesteuert_stepname_1"/>
+		</init>
+		<init fromobjecttype="file" listname="odbFile" returnfield="absfilename" fromstep="wait_for_analyse" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbFile"/>
+		</init>
+		<init fromobjecttype="variable" listname="stempelNid" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="stempel_nid"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="gen_historycurve.pl">
+			<callitem sequence="1" par="--abaqusversion" del=" " val="{$abaqusVersion}"/>
+			<callitem sequence="2" par="--odbhistorypath" del=" " val="{$odbhistoryScript}"/>
+			<callitem sequence="3" par="--odb" del=" " val="{$odbFile}"/>
+			<callitem sequence="4" par="--entityid" del=" " val="{$stempelNid}"/>
+			<callitem sequence="5" par="--entitytype" del=" " val="node"/>
+			<callitem sequence="6" par="--history" del=" " val="'RF1 LOCAL'"/>
+			<callitem sequence="7" par="--entityid2" del=" " val="{$stempelNid}"/>
+			<callitem sequence="8" par="--entitytype2" del=" " val="node"/>
+			<callitem sequence="9" par="--history2" del=" " val="'U1 LOCAL'"/>
+			<callitem sequence="10" par="--step" del=" " val="{$weggesteuert_stepname_1}"/>
+			<callitem sequence="11" par="--out" del=" " val="{$output}"/>
+		</work>
+		<commit name="curveKraftWeg" toroot="tmp">
+			<file key="curveKraftWeg" minoccur="1" maxoccur="1" description="curve kraft-weg" glob="{$output}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="curve_clean" type="automatic" description="curve bereinigen um kleine negative y-werte und horizontalen verlauf am Anfang der curve">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="out_stepsall_u1loc_forceloc_cleaned"/>
+		</init>
+		<init fromobjecttype="file" listname="curve" returnfield="absfilename" fromstep="curve_merge_step1_step2" insertrule="unique" minoccur="0" maxoccur="1">
+			<match field="key" pattern="curveKraftWeg"/>
+		</init>
+		<init fromobjecttype="file" listname="curve" returnfield="absfilename" fromstep="get_stiffcurve_weggesteuert" insertrule="unique" minoccur="0" maxoccur="1">
+			<match field="key" pattern="curveKraftWeg"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="curve_clean.pl">
+			<callitem sequence="1" par="--curve" del=" " val="{$curve}"/>
+			<callitem sequence="2" par="--out" del=" " val="{$output}"/>
+		</work>
+		<commit name="curveKraftWegClean" toroot="pp">
+			<file key="curveKraftWegClean" minoccur="1" maxoccur="1" description="curve kraft-weg gesaeubert" glob="{$output}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="curve_judge" type="automatic" description="curve im Vergleich mit Grenzkurven beurteilen">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="file" listname="curve" returnfield="absfilename" fromstep="curve_clean" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="curveKraftWegClean"/>
+		</init>
+		<init fromobjecttype="variable" listname="parttype" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="parttype"/>
+		</init>
+		<init fromobjecttype="variable" listname="area" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="area"/>
+		</init>
+		<init fromobjecttype="file" listname="curveYellow" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="{$parttype}_{$area}o.crv"/>
+		</init>
+		<init fromobjecttype="file" listname="curveRed" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="{$parttype}_{$area}u.crv"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="classification_stiffness"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="curve_judge.pl">
+			<callitem sequence="1" par="--curve" del=" " val="{$curve}"/>
+			<callitem sequence="1" par="--yellow" del=" " val="{$curveYellow}"/>
+			<callitem sequence="1" par="--red" del=" " val="{$curveRed}"/>
+			<callitem sequence="2" par="--out" del=" " val="{$output}"/>
+		</work>
+		<commit name="classificationStiffness" toroot="pp">
+			<variable key="classificationStiffness" minoccur="1" maxoccur="1" description="classification stiffness" glob="{$output}">
+				<test name="matchPattern" description="testing if given value matches a certain pattern">
+					<param id="1">^green|yellow|red$</param>
+				</test>
+			</variable>
+		</commit>
+	</step>
+	<step name="gen_xmgrace_param" type="automatic" description="Erstellen eines xmgrace-parameterfiles zur automatischen Erzeugung eines Diagramms">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="variable" listname="dummyStreamline" returnfield="value" fromstep="curve_clean" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="lulu"/>
+		</init>
+		<init fromobjecttype="variable" listname="basename" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="basename"/>
+		</init>
+		<init fromobjecttype="variable" listname="nid" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="nid"/>
+		</init>
+		<init fromobjecttype="file" listname="template" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="beulen_xmgrace_param.tt"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="xmgraceparam"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="gen_xmgrace_param.pl">
+			<callitem sequence="1" par="--title" del=" " val="Beulsteifigkeit"/>
+			<callitem sequence="2" par="--subtitle" del=" " val="{$basename}-@-node-{$nid}"/>
+			<callitem sequence="3" par="--cname_main" del=" " val="stempel-@-node-{$nid}"/>
+			<callitem sequence="4" par="--cname_yellow" del=" " val="obere-grenzkurve"/>
+			<callitem sequence="5" par="--cname_red" del=" " val="untere-grenzkurve"/>
+			<callitem sequence="6" par="--template" del=" " val="{$template}"/>
+			<callitem sequence="7" par="--output" del=" " val="{$output}"/>
+		</work>
+		<commit name="paramFileXmgrace" toroot="tmp">
+			<file key="paramFileXmgrace" minoccur="1" maxoccur="1" description="parameter file for xmgrace" glob="{$output}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="curve_plot" type="automatic" description="Ein Diagramm-Bild mit Steifigkeitskurve und Grenzkurven erstellen">
+		<list name="output">
+			<defaultitem>diagram.png</defaultitem>
+		</list>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="file" listname="curve" returnfield="absfilename" fromstep="curve_clean" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="curveKraftWegClean"/>
+		</init>
+		<init fromobjecttype="variable" listname="parttype" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="parttype"/>
+		</init>
+		<init fromobjecttype="variable" listname="area" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="area"/>
+		</init>
+		<init fromobjecttype="file" listname="curveYellow" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="{$parttype}_{$area}o.crv"/>
+		</init>
+		<init fromobjecttype="file" listname="curveRed" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="{$parttype}_{$area}u.crv"/>
+		</init>
+		<init fromobjecttype="file" listname="paramFileXmgrace" returnfield="absfilename" fromstep="gen_xmgrace_param" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="paramFileXmgrace"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" precall="Xvfb :77 > /dev/null &amp;" env="DISPLAY=:77" command="curve_plot.pl">
+			<callitem sequence="1" par="--curve" del=" " val="{$curve}"/>
+			<callitem sequence="2" par="--yellow" del=" " val="{$curveYellow}"/>
+			<callitem sequence="3" par="--red" del=" " val="{$curveRed}"/>
+			<callitem sequence="4" par="--xmgraceparam" del=" " val="{$paramFileXmgrace}"/>
+			<callitem sequence="7" par="--out" del=" " val="{$output}"/>
+		</work>
+		<commit name="picDiagram" toroot="tmp">
+			<file key="picDiagram" minoccur="1" maxoccur="1" description="png-file" glob="{$output}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="gen_animator_session" type="automatic" description="animator sessionfile erstellen aus einem template">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="file" listname="odb" returnfield="absfilename" fromstep="wait_for_analyse" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbFile"/>
+		</init>
+		<init fromobjecttype="variable" listname="adb" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="adb"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="a4session"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="gen_a4session_beulen.pl">
+			<callitem sequence="1" par="--odb" del=" " val="{$odb}"/>
+			<callitem sequence="2" par="--adb" del=" " val="{$adb}"/>
+			<callitem sequence="3" par="--output" del=" " val="{$output}"/>
+		</work>
+		<commit name="a4session" toroot="tmp">
+			<file key="a4session" minoccur="1" maxoccur="2" description="a4-session-file zum erstellen einer a4db" glob="{$output}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="animator_database" type="automatic" description="erstellt eine animator-database mit animator">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="file" listname="a4session" returnfield="absfilename" fromstep="gen_animator_session" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="a4session"/>
+		</init>
+		<init fromobjecttype="variable" listname="adb" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="adb"/>
+		</init>
+		<init fromobjecttype="variable" listname="animatorversion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="animatorversion"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="animator">
+			<callitem sequence="1" par="--version" del=" " val="{$animatorversion}"/>
+			<callitem sequence="2" par="-FG"/>
+			<callitem sequence="3" par="-b"/>
+			<callitem sequence="4" par="-s" del=" " val="{$a4session}"/>
+		</work>
+		<commit name="adbFile" toroot="pp">
+			<file key="adbFile" minoccur="1" maxoccur="1" description="a4db-file" glob="{$adb}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="gen_animator_helper_session" type="automatic" description="erstellt ein animator sessionfile, welches das betrachten der erzeugten aniomator-database vereinfacht">
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="variable" listname="adb" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="adb"/>
+		</init>
+		<init fromobjecttype="variable" listname="output" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="adb_helper_session"/>
+		</init>
+		<init fromobjecttype="file" listname="adbFile" returnfield="absfilename" fromstep="animator_database" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="adbFile"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="gen_a4helpersession_beulen.pl">
+			<callitem sequence="1" par="--adb" del=" " val="{$adb}"/>
+			<callitem sequence="4" par="--output" del=" " val="{$output}"/>
+		</work>
+		<commit name="adbHelperSession" toroot="pp">
+			<file key="adbHelperSession" minoccur="1" maxoccur="1" description="a4db-helper-session-file" glob="{$output}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="get_matname_at_nid" type="automatic" description="ermittelt den Materialnamen an Positionsknoten (aus includefiles)">
+		<list name="matname">
+			<defaultitem>matname_at_nid.txt</defaultitem>
+		</list>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="variable" listname="dummyStreamline" returnfield="value" fromstep="wait_for_analyse" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="lulu"/>
+		</init>
+		<init fromobjecttype="variable" listname="nid" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="nid"/>
+		</init>
+		<init fromobjecttype="file" listname="inc" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="99">
+			<match field="key" pattern="inc"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="get_matname_at_nid.pl">
+			<callitem sequence="1" par="--nid" del=" " val="{$nid}"/>
+			<callitem sequence="2" loop="inc" par="--inc" del=" " val="{$loopvarcallitem}"/>
+			<callitem sequence="3" par="--output" del=" " val="{$matname}"/>
+		</work>
+		<commit name="matNameAtNid" toroot="pp">
+			<variable key="matNameAtNid" minoccur="1" maxoccur="1" description="Materialnamen an Positionsknoten" glob="{$matname}">
+				<test name="isA" description="testing if value is of the expected type.">
+					<param id="1"><![CDATA[string]]></param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="matNameAtNidFile" toroot="pp">
+			<file key="matNameAtNidFile" minoccur="1" maxoccur="1" description="Materialnamen an Positionsknoten" glob="{$matname}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="get_rp0_at_nid" type="automatic" description="ermittelt den rp0-Wert des Materials an Positionsknoten (aus includefiles)">
+		<list name="rp0">
+			<defaultitem>rp0_at_nid.txt</defaultitem>
+		</list>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="file" listname="matnlFile" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="matdb_v2.26_stdnd_QUASISTATIC_abq611_bmw_2015-06-30.inc"/>
+		</init>
+		<init fromobjecttype="file" listname="matNameAtNidFile" returnfield="absfilename" fromstep="get_matname_at_nid" insertrule="overwrite" minoccur="1" maxoccur="99">
+			<match field="key" pattern="matNameAtNidFile"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="get_rp0_at_nid.pl">
+			<callitem sequence="1" par="--matnamefile" del=" " val="{$matNameAtNidFile}"/>
+			<callitem sequence="2" par="--matfile" del=" " val="{$matnlFile}"/>
+			<callitem sequence="3" par="--output" del=" " val="{$rp0}"/>
+		</work>
+		<commit name="rp0AtNid" toroot="pp">
+			<variable key="rp0AtNid" minoccur="1" maxoccur="1" description="rp0 des Materials an Positionsknoten" extract="grep:([^\s]+)" glob="{$rp0}">
+				<test name="isA" description="testing if value is of the expected type.">
+					<param id="1"><![CDATA[float]]></param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="rp0AtNid" toroot="pp">
+			<file key="rp0AtNidFile" minoccur="1" maxoccur="1" description="rp0 des Materials an Positionsknoten" glob="{$rp0}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="get_effective_force" type="automatic" description="ermittelt die tatsaechlich verwendete kraft am stempel">
+		<list name="effective_force">
+			<defaultitem>effective_force.txt</defaultitem>
+		</list>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="file" listname="dummyStreamline" returnfield="absfilename" fromstep="maxvmises" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="dummyErgebnis"/>
+		</init>
+		<init fromobjecttype="file" listname="odb" returnfield="absfilename" fromstep="wait_for_analyse" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbFile"/>
+		</init>
+		<init fromobjecttype="variable" listname="abaqusversion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqusversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="odbfield" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="odbfield"/>
+		</init>
+		<init fromobjecttype="variable" listname="nid" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="nid"/>
+		</init>
+		<init fromobjecttype="variable" listname="stepname" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="maxforce_stepname"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="abaqus">
+			<callitem sequence="1" par="--version" del=" " val="{$abaqusversion}"/>
+			<callitem sequence="2" par="python" del=" " val="{$odbfield}"/>
+			<callitem sequence="4" par="--odb" del=" " val="{$odb}"/>
+			<callitem sequence="5" par="--framenr" del=" " val="-1"/>
+			<callitem sequence="5" par="--instance" del=" " val="PART-1-1"/>
+			<callitem sequence="5" par="--nid" del=" " val="{$nid}"/>
+			<callitem sequence="5" par="--field" del=" " val="RF"/>
+			<callitem sequence="5" par="--output" del=" " val="magnitude"/>
+			<callitem sequence="5" par="--coordsys" del=" " val="_global_"/>
+			<callitem sequence="5" par="--postfunction" del=" " val="none"/>
+			<callitem sequence="5" par="--stepname" del=" " val="{$stepname}"/>
+		</work>
+		<commit name="effective_force" toroot="pp">
+			<variable key="effective_force" minoccur="1" maxoccur="1" description="Stempelkraft" extract="grep:([^\s]+)" glob=".stdout.txt">
+				<test name="isA" description="testing if value is of the expected type.">
+					<param id="1"><![CDATA[float]]></param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="effective_force_file" toroot="pp" refactor="filename:{$effective_force}">
+			<file key="effective_force_file" minoccur="1" maxoccur="1" description="rp0 des Materials an Positionsknoten" glob=".stdout.txt">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="get_maxvmises_rp0_ratio_at_nid" type="automatic" description="ermittelt das Verhaeltnis von maxvmises/rp0">
+		<list name="scaled_maxvmises_rp0_ratio">
+			<defaultitem>scaled_maxvmises_rp0_ratio_at_nid.txt</defaultitem>
+		</list>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="file" listname="effectiveforcefile" returnfield="absfilename" fromstep="get_effective_force" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="effective_force_file"/>
+		</init>
+		<init fromobjecttype="file" listname="rp0file" returnfield="absfilename" fromstep="get_rp0_at_nid" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="rp0AtNidFile"/>
+		</init>
+		<init fromobjecttype="file" listname="maxvmisesfile" returnfield="absfilename" fromstep="maxvmises" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="maxvmisesFile"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="get_maxvmises_rp0_ratio_at_nid.pl">
+			<callitem sequence="1" par="--maxvmisesfile" del=" " val="{$maxvmisesfile}"/>
+			<callitem sequence="2" par="--rp0file" del=" " val="{$rp0file}"/>
+			<callitem sequence="4" par="--effectiveforcefile" del=" " val="{$effectiveforcefile}"/>
+			<callitem sequence="5" par="--output" del=" " val="{$scaled_maxvmises_rp0_ratio}"/>
+		</work>
+		<commit name="scaled_maxvmises_rp0_ratio" toroot="pp">
+			<variable key="scaled_maxvmises_rp0_ratio" minoccur="1" maxoccur="1" description="maxvmises/rp0" extract="grep:([^\s]+)" glob="{$scaled_maxvmises_rp0_ratio}">
+				<test name="isA" description="testing if value is of the expected type.">
+					<param id="1"><![CDATA[float]]></param>
+				</test>
+			</variable>
+		</commit>
+		<commit name="scaled_maxvmises_rp0_ratio_file" toroot="pp">
+			<file key="scaled_maxvmises_rp0_ratio_file" minoccur="1" maxoccur="1" description="maxvmises/rp0" glob="{$scaled_maxvmises_rp0_ratio}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="strength_judge" type="automatic" description="bewerte das Verhaeltnis von maxvmises/rp0">
+		<list name="classification_strength">
+			<defaultitem>classification_strength.txt</defaultitem>
+		</list>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="key" fromstep="root" insertrule="append" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="file" listname="ratiofile" returnfield="absfilename" fromstep="get_maxvmises_rp0_ratio_at_nid" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="scaled_maxvmises_rp0_ratio_file"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="strength_judge.pl">
+			<callitem sequence="1" par="--ratiofile" del=" " val="{$ratiofile}"/>
+			<callitem sequence="5" par="--output" del=" " val="{$classification_strength}"/>
+		</work>
+		<commit name="strengthJudge" toroot="pp">
+			<variable key="strengthJudge" minoccur="1" maxoccur="1" description="strength-judge-file" glob="{$classification_strength}">
+				<test name="matchPattern" description="testing if given value matches a certain pattern">
+					<param id="1">^green|yellow|red$</param>
+				</test>
+			</variable>
+		</commit>
+	</step>
+	<step name="generateReportPdf" type="automatic" description="Erstellt einen Report als pdf">
+		<list name="output">
+			<defaultitem>beulen+.pdf</defaultitem>
+		</list>
+		<init fromobjecttype="variable" listname="displaynr" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="displaynr"/>
+		</init>
+		<init fromobjecttype="file" listname="reportTemplate" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="beulen\+.jrxml"/>
+		</init>
+		<init fromobjecttype="variable" listname="myName" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myName"/>
+		</init>
+		<init fromobjecttype="variable" listname="myCompany" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myCompany"/>
+		</init>
+		<init fromobjecttype="file" listname="reportTemplate" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="beulen\+.jrxml"/>
+		</init>
+		<init fromobjecttype="variable" listname="myMail" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myMail"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerName" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerName"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerCompany" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerCompany"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerMail" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerMail"/>
+		</init>
+		<init fromobjecttype="variable" listname="_processVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="_processVersion"/>
+		</init>
+		<init fromobjecttype="variable" listname="basename" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="basename"/>
+		</init>
+		<init fromobjecttype="file" listname="viewImagePath" returnfield="absfilename" fromstep="animator_ansicht" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="png_view_file"/>
+		</init>
+		<init fromobjecttype="file" listname="diagramImagePath" returnfield="absfilename" fromstep="curve_plot" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="picDiagram"/>
+		</init>
+		<init fromobjecttype="variable" listname="parttype" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="parttype"/>
+		</init>
+		<init fromobjecttype="variable" listname="area" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="area"/>
+		</init>
+		<init fromobjecttype="variable" listname="nid" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="nid"/>
+		</init>
+		<init fromobjecttype="variable" listname="xcoord" returnfield="value" fromstep="xcoord_of_position" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="xcoord"/>
+		</init>
+		<init fromobjecttype="variable" listname="ycoord" returnfield="value" fromstep="ycoord_of_position" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="ycoord"/>
+		</init>
+		<init fromobjecttype="variable" listname="zcoord" returnfield="value" fromstep="zcoord_of_position" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="zcoord"/>
+		</init>
+		<init fromobjecttype="variable" listname="method" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="method"/>
+		</init>
+		<init fromobjecttype="variable" listname="abaqusversion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqusversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="matdb" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="matdb"/>
+		</init>
+		<init fromobjecttype="variable" listname="matname" returnfield="value" fromstep="get_matname_at_nid" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="matNameAtNid"/>
+		</init>
+		<init fromobjecttype="variable" listname="rp0" returnfield="value" fromstep="get_rp0_at_nid" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="rp0AtNid"/>
+		</init>
+		<init fromobjecttype="variable" listname="maxvmises" returnfield="value" fromstep="maxvmises" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="maxvmises"/>
+		</init>
+		<init fromobjecttype="variable" listname="effective_force" returnfield="value" fromstep="get_effective_force" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="effective_force"/>
+		</init>
+		<init fromobjecttype="variable" listname="scaled_maxvmises_rp0_ratio" returnfield="value" fromstep="get_maxvmises_rp0_ratio_at_nid" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="scaled_maxvmises_rp0_ratio"/>
+		</init>
+		<init fromobjecttype="variable" listname="classification_stiffness" returnfield="value" fromstep="curve_judge" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="classificationStiffness"/>
+		</init>
+		<init fromobjecttype="variable" listname="classification_strength" returnfield="value" fromstep="strength_judge" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="strengthJudge"/>
+		</init>
+		<work name="unnamed" description="irgendeine beschreibung" precall="Xvfb :77 > /dev/null &amp;" env="DISPLAY=:77" command="reporter">
+			<callitem sequence="1" par="generate"/>
+			<callitem sequence="2" par="-template" del=" " val="{$reportTemplate}"/>
+			<callitem sequence="3" loop="myName" par="-parameter" del=" " val="'myName={$loopvarcallitem}'"/>
+			<callitem sequence="4" loop="myCompany" par="-parameter" del=" " val="'myCompany={$loopvarcallitem}'"/>
+			<callitem sequence="5" loop="myMail" par="-parameter" del=" " val="'myMail={$loopvarcallitem}'"/>
+			<callitem sequence="6" loop="customerName" par="-parameter" del=" " val="'customerName={$loopvarcallitem}'"/>
+			<callitem sequence="7" loop="customerCompany" par="-parameter" del=" " val="'customerCompany={$loopvarcallitem}'"/>
+			<callitem sequence="8" loop="customerMail" par="-parameter" del=" " val="'customerMail={$loopvarcallitem}'"/>
+			<callitem sequence="9" par="-parameter" del=" " val="'_processVersion={$_processVersion}'"/>
+			<callitem sequence="10" par="-parameter" del=" " val="'basename={$basename}'"/>
+			<callitem sequence="11" par="-parameter" del=" " val="'viewImagePath={$viewImagePath}'"/>
+			<callitem sequence="12" par="-parameter" del=" " val="'diagramImagePath={$diagramImagePath}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'parttype={$parttype}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'area={$area}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'nid={$nid}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'xcoord={$xcoord}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'ycoord={$ycoord}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'zcoord={$zcoord}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'method={$method}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'abaqusversion={$abaqusversion}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'matdb={$matdb}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'matname={$matname}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'rp0={$rp0}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'maxvmises={$maxvmises}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'effective_force={$effective_force}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'scaled_maxvmises_rp0_ratio={$scaled_maxvmises_rp0_ratio}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'classification_stiffness={$classification_stiffness}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'classification_strength={$classification_strength}'"/>
+			<callitem sequence="13" par="-format" del=" " val="pdf"/>
+			<callitem sequence="14" par="-output" del=" " val="{$output}"/>
+		</work>
+		<commit name="report" toroot="report">
+			<file key="jasperFilled" minoccur="1" maxoccur="1" description="Report File" glob="*.jasperFilled">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+			<file key="reportPdf" minoccur="1" maxoccur="1" description="Report File" glob="{$output}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="generateReportPptx" type="automatic" description="Erstellt einen Report als pptx">
+		<list name="output">
+			<defaultitem>beulen+.pptx</defaultitem>
+		</list>
+		<init fromobjecttype="variable" listname="displaynr" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="displaynr"/>
+		</init>
+		<init fromobjecttype="file" listname="reportTemplate" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="beulen\+.jrxml"/>
+		</init>
+		<init fromobjecttype="variable" listname="myName" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myName"/>
+		</init>
+		<init fromobjecttype="variable" listname="myCompany" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myCompany"/>
+		</init>
+		<init fromobjecttype="variable" listname="myMail" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myMail"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerName" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerName"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerCompany" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerCompany"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerMail" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerMail"/>
+		</init>
+		<init fromobjecttype="variable" listname="_processVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="_processVersion"/>
+		</init>
+		<init fromobjecttype="variable" listname="basename" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="basename"/>
+		</init>
+		<init fromobjecttype="file" listname="viewImagePath" returnfield="absfilename" fromstep="animator_ansicht" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="png_view_file"/>
+		</init>
+		<init fromobjecttype="file" listname="diagramImagePath" returnfield="absfilename" fromstep="curve_plot" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="picDiagram"/>
+		</init>
+		<init fromobjecttype="variable" listname="parttype" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="parttype"/>
+		</init>
+		<init fromobjecttype="variable" listname="area" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="area"/>
+		</init>
+		<init fromobjecttype="variable" listname="nid" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="nid"/>
+		</init>
+		<init fromobjecttype="variable" listname="xcoord" returnfield="value" fromstep="xcoord_of_position" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="xcoord"/>
+		</init>
+		<init fromobjecttype="variable" listname="ycoord" returnfield="value" fromstep="ycoord_of_position" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="ycoord"/>
+		</init>
+		<init fromobjecttype="variable" listname="zcoord" returnfield="value" fromstep="zcoord_of_position" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="zcoord"/>
+		</init>
+		<init fromobjecttype="variable" listname="method" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="method"/>
+		</init>
+		<init fromobjecttype="variable" listname="abaqusversion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="abaqusversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="matdb" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="matdb"/>
+		</init>
+		<init fromobjecttype="variable" listname="matname" returnfield="value" fromstep="get_matname_at_nid" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="matNameAtNid"/>
+		</init>
+		<init fromobjecttype="variable" listname="rp0" returnfield="value" fromstep="get_rp0_at_nid" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="rp0AtNid"/>
+		</init>
+		<init fromobjecttype="variable" listname="maxvmises" returnfield="value" fromstep="maxvmises" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="maxvmises"/>
+		</init>
+		<init fromobjecttype="variable" listname="effective_force" returnfield="value" fromstep="get_effective_force" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="effective_force"/>
+		</init>
+		<init fromobjecttype="variable" listname="scaled_maxvmises_rp0_ratio" returnfield="value" fromstep="get_maxvmises_rp0_ratio_at_nid" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="scaled_maxvmises_rp0_ratio"/>
+		</init>
+		<init fromobjecttype="variable" listname="classification_stiffness" returnfield="value" fromstep="curve_judge" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="classificationStiffness"/>
+		</init>
+		<init fromobjecttype="variable" listname="classification_strength" returnfield="value" fromstep="strength_judge" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="strengthJudge"/>
+		</init>
+		<work name="unnamed" description="irgendeine beschreibung" precall="Xvfb :77 > /dev/null &amp;" env="DISPLAY=:77" command="reporter">
+			<callitem sequence="1" par="generate"/>
+			<callitem sequence="2" par="-template" del=" " val="{$reportTemplate}"/>
+			<callitem sequence="3" loop="myName" par="-parameter" del=" " val="'myName={$loopvarcallitem}'"/>
+			<callitem sequence="4" loop="myCompany" par="-parameter" del=" " val="'myCompany={$loopvarcallitem}'"/>
+			<callitem sequence="5" loop="myMail" par="-parameter" del=" " val="'myMail={$loopvarcallitem}'"/>
+			<callitem sequence="6" loop="customerName" par="-parameter" del=" " val="'customerName={$loopvarcallitem}'"/>
+			<callitem sequence="7" loop="customerCompany" par="-parameter" del=" " val="'customerCompany={$loopvarcallitem}'"/>
+			<callitem sequence="8" loop="customerMail" par="-parameter" del=" " val="'customerMail={$loopvarcallitem}'"/>
+			<callitem sequence="9" par="-parameter" del=" " val="'_processVersion={$_processVersion}'"/>
+			<callitem sequence="10" par="-parameter" del=" " val="'basename={$basename}'"/>
+			<callitem sequence="11" par="-parameter" del=" " val="'viewImagePath={$viewImagePath}'"/>
+			<callitem sequence="12" par="-parameter" del=" " val="'diagramImagePath={$diagramImagePath}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'parttype={$parttype}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'area={$area}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'nid={$nid}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'xcoord={$xcoord}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'ycoord={$ycoord}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'zcoord={$zcoord}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'method={$method}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'abaqusversion={$abaqusversion}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'matdb={$matdb}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'matname={$matname}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'rp0={$rp0}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'maxvmises={$maxvmises}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'effective_force={$effective_force}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'scaled_maxvmises_rp0_ratio={$scaled_maxvmises_rp0_ratio}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'classification_stiffness={$classification_stiffness}'"/>
+			<callitem sequence="13" par="-parameter" del=" " val="'classification_strength={$classification_strength}'"/>
+			<callitem sequence="13" par="-format" del=" " val="pptx"/>
+			<callitem sequence="14" par="-output" del=" " val="{$output}"/>
+		</work>
+		<commit name="reportPptx" toroot="report">
+			<file key="reportPptx" minoccur="1" maxoccur="1" description="Report File" glob="{$output}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="ergebnismail" type="automatic" description="versenden des ergebnisses per eMail">
+		<init fromobjecttype="file" listname="reportPdf" returnfield="absfilename" fromstep="generateReportPdf" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="reportPdf"/>
+		</init>
+		<init fromobjecttype="file" listname="reportPptx" returnfield="absfilename" fromstep="generateReportPptx" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="reportPptx"/>
+		</init>
+		<init fromobjecttype="variable" listname="_processVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="_processVersion"/>
+		</init>
+		<init fromobjecttype="variable" listname="_dir" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="_dir"/>
+		</init>
+		<init fromobjecttype="variable" listname="mailto" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="99" description="receipient mail address">
+			<match field="key" pattern="mailto"/>
+		</init>
+		<work name="unnamed" description="irgendeine beschreibung" command="mutt">
+			<callitem sequence="1" par="-s" del=" " val="'report: beulen+ version {$_processVersion} {$_dir}'"/>
+			<callitem sequence="2" par="-a" del=" " val="{$reportPdf}"/>
+			<callitem sequence="2" par="-a" del=" " val="{$reportPptx}"/>
+			<callitem sequence="4" loop="mailto" par="-c" del=" " val="{$loopvarcallitem}"/>
+		</work>
+		<commit name="dummyCommit" toroot="report">
+			<variable key="dummyKey" minoccur="1" maxoccur="1" description="bla" value="dummyValue">
+			</variable>
+		</commit>
+	</step>
+	
+</process>
+<!-- </root> -->
