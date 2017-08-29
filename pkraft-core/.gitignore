@@ -1,0 +1,8 @@
+target
+src/main/java/de/prozesskraft/jaxb/pkraft
+src/main/java/META-INF/sun-jaxb.episode
+doc/process.xsd.pdf
+doc/process.xsd.xhtml
+src/main/java/de/prozesskraft/jaxb/*
+src/main/java/META-INF/sun-jaxb.episode
+/doc/
