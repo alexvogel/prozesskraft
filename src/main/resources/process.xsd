@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+      <xs:complexType name="root">
+      <xs:sequence>
+        <xs:element ref="process"/>
+      </xs:sequence>
+    </xs:complexType>
+
+      <xs:complexType name="step">
+      	<xs:sequence>
+      		<xs:element maxOccurs="unbounded" ref="list"
+      			minOccurs="0" />
+      		<xs:element maxOccurs="unbounded" ref="init"
+      			minOccurs="0" />
+      		<xs:element ref="work" minOccurs="0" maxOccurs="1" />
+      		<xs:element ref="subprocess" maxOccurs="1" minOccurs="0" />
+      		<xs:element maxOccurs="unbounded" ref="commit"
+      			minOccurs="0" />
+      	</xs:sequence>
+      	<xs:attribute name="name" use="required" type="xs:string">
+      	</xs:attribute>
+      	<xs:attribute name="clip" type="xs:string" use="optional" />
+      	<xs:attribute name="loop" type="xs:string" use="optional" />
+      	<xs:attribute name="description" use="optional">
+      		<xs:simpleType>
+      			<xs:restriction base="xs:string">
+      				<xs:minLength value="0"></xs:minLength>
+      			</xs:restriction>
+      		</xs:simpleType>
+      	</xs:attribute>
+      	<xs:attribute name="type" use="optional" type="SteptypeType" />
+      	<xs:attribute name="stepStartDelayMinutes" type="xs:integer" default="0"/>
+      </xs:complexType>
+
+      <xs:complexType name="init">
+    	<xs:sequence>
+    		<xs:element minOccurs="0" maxOccurs="unbounded" ref="match" />
+    		<xs:element name="value" type="xs:string"
+    			maxOccurs="unbounded" minOccurs="0">
+    		</xs:element>
+    	</xs:sequence>
+    	<xs:attribute name="fromobjecttype" use="required" type="xs:string" />
+    	<xs:attribute name="fromstep" use="required" type="xs:string"/>
+    	<xs:attribute name="minoccur" type="xs:integer" use="required" />
+    	<xs:attribute name="maxoccur" type="xs:integer" use="required" />
+    	<xs:attribute name="listname" use="required" type="xs:string" />
+    	<xs:attribute name="returnfield" type="xs:string" use="required"/>
+    	<xs:attribute name="insertrule" type="xs:string" />
+    	<xs:attribute name="description" type="xs:string" use="optional" default="" />
+    </xs:complexType>
+
+    <xs:complexType name="match">
+      <xs:attribute name="field" type="xs:string" use="required"/>
+      <xs:attribute name="pattern" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="work">
+    	<xs:sequence>
+    		<xs:element minOccurs="0" maxOccurs="unbounded"
+    			ref="callitem" />
+    		<xs:element minOccurs="0" maxOccurs="unbounded" ref="exit" />
+    	</xs:sequence>
+    	<xs:attribute name="precall" use="optional" type="xs:string"/>
+    	<xs:attribute name="env" use="optional" type="xs:string" />
+    	<xs:attribute name="interpreter" type="xs:string" />
+    	<xs:attribute name="command" use="required" />
+    	<xs:attribute name="description" use="required" />
+    	<xs:attribute name="name" use="required" />
+    	<xs:attribute name="logfile" type="xs:string" />
+    	<xs:attribute name="maxrun" use="optional" type="xs:integer"
+    		default="5" />
+    	<xs:attribute name="killcommand" use="optional"
+    		type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="callitem">
+		<xs:attribute name="loop" type="xs:string" use="optional" />
+		<xs:attribute name="del" type="xs:string" use="optional"/>
+		<xs:attribute name="par" type="xs:string" use="required"/>
+		<xs:attribute name="sequence" use="optional" type="xs:integer" default="0" />
+		<xs:attribute name="val" use="optional" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="exit">
+		<xs:attribute name="value" type="xs:integer"></xs:attribute>
+		<xs:attribute name="msg" type="xs:string"></xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="subprocess">
+		<xs:sequence>
+			<xs:element minOccurs="1" maxOccurs="1" ref="step" />
+		</xs:sequence>
+		<xs:attribute name="domain" type="xs:string" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="version" type="xs:string" use="required"/>
+		<xs:attribute name="maxrun" type="xs:int" />
+	</xs:complexType>
+
+	<xs:complexType name="commit">
+    	<xs:choice minOccurs="0">
+    		<xs:element ref="file" minOccurs="0" maxOccurs="unbounded" />
+    		<xs:element ref="variable" minOccurs="0"
+    			maxOccurs="unbounded" />
+    	</xs:choice>
+    	<xs:attribute name="name" use="optional" type="xs:string" />
+    	<xs:attribute name="toroot" use="optional" type="xs:string"/>
+    	<xs:attribute name="copyto" use="optional" type="xs:string"/>
+    	<xs:attribute name="refactor" use="optional" type="xs:string"/>
+    	<xs:attribute name="loop" type="xs:string"/>
+    </xs:complexType>
+
+	<xs:complexType name="file">
+		<xs:sequence>
+			<xs:element maxOccurs="unbounded" ref="test" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="description" use="optional"
+			type="xs:string" />
+		<xs:attribute name="key" use="required" type="xs:string" />
+		<xs:attribute name="subprocesskey" use="optional"
+			type="xs:string" />
+		<xs:attribute name="glob" type="xs:string" />
+		<xs:attribute name="maxoccur" type="xs:integer" />
+		<xs:attribute name="minoccur" type="xs:integer" />
+		<xs:attribute name="preservePosition" type="xs:boolean" use="optional" default="false"/>
+	</xs:complexType>
+
+	<xs:complexType name="variable">
+		<xs:sequence>
+			<xs:element minOccurs="0" maxOccurs="unbounded"
+				ref="choice" />
+			<xs:element ref="test" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="key" use="required" type="xs:string" />
+		<xs:attribute name="subprocesskey" use="optional"
+			type="xs:string" />
+		<xs:attribute name="value" use="optional" type="xs:string" />
+		<xs:attribute name="glob" type="xs:string" use="optional" />
+		<xs:attribute name="extract" use="optional" type="xs:string"/>
+		<xs:attribute name="maxoccur" type="xs:integer" use="optional" />
+		<xs:attribute name="minoccur" type="xs:integer" use="optional" />
+		<xs:attribute name="type" type="xs:string" use="optional" />
+		<xs:attribute name="free" type="xs:boolean" use="optional"
+			default="true" />
+		<xs:attribute name="description" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="test">
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="param"/>
+      </xs:sequence>
+      <xs:attribute name="description" use="required"/>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+ 
+     <xs:complexType name="param" mixed="true">
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+    </xs:complexType>
+ 
+     <xs:complexType name="list">
+    	<xs:sequence>
+    		<xs:element ref="defaultitem" minOccurs="0" maxOccurs="unbounded"/>
+    	</xs:sequence>
+    	<xs:attribute name="name" use="required" type="xs:string"/>
+    	<xs:attribute name="max" use="optional" type="xs:integer" />
+    	<xs:attribute name="min" use="optional" type="xs:integer" />
+    </xs:complexType>
+ 
+  <xs:element name="root" type="root">
+  </xs:element>
+  <xs:element name="process">
+  	<xs:complexType>
+  		<xs:sequence>
+  			<xs:element maxOccurs="unbounded" ref="step" />
+  		</xs:sequence>
+  		<xs:attribute name="maxSimultaneousSteps" type="xs:integer"	default="100" />
+  		<xs:attribute name="stepStartDelayMinutes" type="xs:integer" default="0" />
+  		<xs:attribute name="stepStartLoadAverageBelow" type="xs:double" use="optional" default="20"/>
+  		<xs:attribute name="initCommitFile" type="xs:string"/>
+  		<xs:attribute name="initCommitVariable" type="xs:string"/>
+  		<xs:attribute name="architectMail" use="required"
+  			type="EmailType" />
+  		<xs:attribute name="architectName" type="xs:string"/>
+  		<xs:attribute name="architectCompany" type="xs:string"/>
+  		<xs:attribute name="customerMail" type="xs:string"/>
+  		<xs:attribute name="customerName" type="xs:string"/>
+  		<xs:attribute name="customerCompany" type="xs:string"/>
+  		<xs:attribute name="description" use="required"
+  			type="xs:string" />
+  		<xs:attribute name="name" use="required" type="xs:string" />
+  		<xs:attribute name="path" use="required" type="xs:string" />
+  		<xs:attribute name="modelVersion" use="required"
+  			type="xs:string" />
+  		<xs:attribute name="version" use="required" type="xs:string" />
+  		<xs:attribute name="wrapper" use="required" type="xs:boolean" />
+  		<xs:attribute name="id2Variable" use="optional"
+  			type="xs:string" />
+  	</xs:complexType>
+  </xs:element>
+  <xs:element name="step" type="step"/>
+  <xs:element name="init" type="init"/>
+  <xs:element name="match" type="match"/>
+  <xs:element name="work" type="work"/>
+  <xs:element name="callitem" type="callitem"/>
+  <xs:element name="exit" type="exit"/>
+  <xs:element name="subprocess" type="subprocess"/>
+  <xs:element name="commit" type="commit"/>
+  <xs:element name="file" type="file"/>
+  <xs:element name="variable" type="variable"/>
+  <xs:element name="choice" type="xs:string"/>
+  <xs:element name="test" type="test"/>
+  <xs:element name="param" type="param"/>
+  <xs:element name="list" type="list"/>
+  <xs:element name="defaultitem" type="xs:string"/>
+
+  <xs:simpleType name="ResourceType">
+  	<xs:restriction base="xs:string">
+  		<xs:pattern value="file|variable"></xs:pattern>
+  	</xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="SteptypeType">
+  	<xs:restriction base="xs:string">
+  		<xs:pattern value="automatic|manual|process"></xs:pattern>
+  	</xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="EmailType">
+  	<xs:restriction base="xs:string">
+  		<xs:pattern value=".+@.+\.\w+"></xs:pattern>
+  	</xs:restriction>
+  </xs:simpleType>
+
+
+
+  <xs:simpleType name="InsertruleType">
+  	<xs:restriction base="xs:string">
+  		<xs:pattern value="overwrite|overlap|append"></xs:pattern>
+  	</xs:restriction>
+  </xs:simpleType>
+
+
+
+
+</xs:schema>

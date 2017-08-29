@@ -1,0 +1,840 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <root> -->
+<process name="multibeulen+" modelVersion="0.2" version="2.0.0" description="Erzeugen von Rechenfaehigen Abaqusfiles, Beulanalysen, Postprocessing, Ergebnisreport (pptx + pdf)" architectMail="alexander.vogel@caegroup.de" architectName="Alexander Vogel" architectCompany="caegroup Ingenieure" customerMail="max.mustermann@auto.de" customerName="Max Mustermann" customerCompany="AUTO AG" path="bin" wrapper="false" initCommitVariable="etcVariables" initCommitFile="etcFiles:etcFiles/views" id2Variable="basename" stepStartDelayMinutes="1" maxSimultaneousSteps="15">
+	<step name="root" type="automatic">
+		<commit name="parameter">
+			<variable key="basename" minoccur="1" maxoccur="1" type="string" free="true" description="Beliebiger Namen zur Identifikation. 3-50 Zeichen lang. Buchstaben, Zahlen und '_' sind erlaubt. Keine Leerzeichen.">
+				<test name="matchPattern" description="testing if value is min 3 and max 50 characters long and only uses letters, figures and '_'">
+					<param id="1"><![CDATA[\w{3,50}]]></param>
+				</test>
+				<test name="isA" description="testing if value is of the expected type.">
+					<param id="1"><![CDATA[string]]></param>
+				</test>
+			</variable>
+			<variable key="parttype" minoccur="1" maxoccur="1" type="string" free="false" description="Welche Komponente wird analysiert?">
+				<choice><![CDATA[fkl]]></choice>
+				<choice><![CDATA[hkl]]></choice>
+				<choice><![CDATA[dach]]></choice>
+				<choice><![CDATA[seite]]></choice>
+				<choice><![CDATA[tuer]]></choice>
+				<choice><![CDATA[sw]]></choice>
+				<test name="matchPattern" description="testing if given value is one the possible choices.">
+					<param id="1"><![CDATA[^fkl|hkl|dach|seite|tuer|sw$]]></param>
+				</test>
+			</variable>
+			<variable key="nset" minoccur="1" maxoccur="1" value="BEULPUNKTE" type="string" free="true" description="Die Positionen an der die Beulsteifigkeit untersucht werden soll. Angabe mittels *NSET-Namen">
+				<choice><![CDATA[BEULPUNKTE]]></choice>
+				<test name="isA" description="testing if value is of the expected type.">
+					<param id="1"><![CDATA[string]]></param>
+				</test>
+			</variable>
+			<variable key="matdb" value="no" minoccur="1" maxoccur="1" type="string" free="false" description="Auswahl einer zentral gepflegten Materialdatenbank oder 'no' wenn Materialdefinitionen in den Abaqus-Includes enthalten sind" >
+				<choice>no</choice>
+				<choice>lin</choice>
+				<choice>nlin</choice>
+				<test name="matchPattern" description="testing if given value is one the possible choices.">
+					<param id="1">^no|lin|nlin$</param>
+				</test>
+			</variable>
+			<variable key="method" value="riks" minoccur="1" maxoccur="1" type="string" free="false" description="Abaqus Analyse Methode">
+				<choice>riks</choice>
+				<choice>disp</choice>
+			</variable>
+			<variable key="force" value="150" minoccur="0" type="integer" maxoccur="1" free="true" description="Stempelkraft (diese Definition wird nur verwendet, wenn method==riks)">
+				<choice>150</choice>
+				<test name="matchPattern" description="tests whether given value is an integer">
+					<param id="1">^\d+$</param>
+				</test>
+				<test name="moreThan" description="tests whether given value is min 100">
+					<param id="1">99</param>
+				</test>
+				<test name="lessThan" description=" tests whether given value does not exceed 300">
+					<param id="1">301</param>
+				</test>
+			</variable>
+			<variable key="disp" value="0.5" minoccur="0" type="float" maxoccur="1" free="true" description="Stempelweg (diese Definition wird nur verwendet, wenn method==disp)">
+				<choice>0.5</choice>
+				<test name="isA" description="testing if value is of the expected type.">
+					<param id="1"><![CDATA[float]]></param>
+				</test>
+				<test name="moreThan" description="tests whether given value is min 0.1">
+					<param id="1">0.1</param>
+				</test>
+				<test name="lessThan" description=" tests whether given value does not exceed 10.0">
+					<param id="1">10.0</param>
+				</test>
+			</variable>
+			<variable key="vmises" value="false" minoccur="0" maxoccur="1" type="flag" free="false" description="Soll das Resultset 'vonMisesStrain' in Animator Database erzwungen werden?">
+				<choice>true</choice>
+			</variable>
+			<variable key="plstrain" value="false" minoccur="0" maxoccur="1" type="flag" free="false" description="Soll das Resultset 'plasticStrain' in Animator Database erzwungen werden?">
+				<choice>true</choice>
+			</variable>
+			<variable key="nosolve" value="false" minoccur="0" maxoccur="1" type="flag" free="false" description="Soll Solving und Postprocessing gecancelt werden?">
+				<choice>true</choice>
+			</variable>
+			<variable key="nopost" value="false" minoccur="0" maxoccur="1" type="flag" free="false" description="Soll Postprocessing gecancelt werden?">
+				<choice>true</choice>
+			</variable>
+			<variable key="nomodalcheck" value="false" minoccur="0" maxoccur="1" type="flag" free="false" description="Soll Modalanalyse uebersprungen werden?">
+				<choice>true</choice>
+			</variable>
+		</commit>
+		<commit name="abaqus model">
+			<file key="inc" minoccur="1" description="abaqus include file without history data" >
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+		<commit name="template abaqus">
+			<file key="template" minoccur="0" maxoccur="1" description="Alternatives Template fuer Abaqus History." >
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+		<commit name="report">
+			<variable key="mailto" minoccur="0" maxoccur="5" type="string" free="true" description="Der Report wird an diese BMW-Mail-Adresse geschickt">
+				<test name="matchPattern" description="testing if value is a bmw-mail-address">
+					<param id="1"><![CDATA[.+@(.+)?bmw\.de+]]></param>
+				</test>
+			</variable>
+			<variable key="myName" value="myName" minoccur="0" maxoccur="1" type="string" free="true" description="Namen des Bearbeiters">
+				<test name="matchPattern" description="testing if value is a string min 3, max 250 characters">
+					<param id="1"><![CDATA[.{3,250}]]></param>
+				</test>
+			</variable>
+			<variable key="myCompany" value="myCompany" minoccur="0" maxoccur="1" type="string" free="true" description="Firma des Bearbeiters">
+				<test name="matchPattern" description="testing if value is a string min 3, max 250 characters">
+					<param id="1"><![CDATA[.{3,250}]]></param>
+				</test>
+			</variable>
+			<variable key="myMail" value="my@mail.com" minoccur="0" maxoccur="1" type="string" free="true" description="Mail-Adresse des Bearbeiters">
+				<test name="matchPattern" description="testing if value is a mail-address">
+					<param id="1"><![CDATA[.+@.+\.\w+]]></param>
+				</test>
+			</variable>
+			<variable key="customerName" value="customerName" minoccur="0" maxoccur="1" type="string" free="true" description="Namen des Kunden">
+				<test name="matchPattern" description="testing if value is a string min 3, max 250 characters">
+					<param id="1"><![CDATA[.{3,250}]]></param>
+				</test>
+			</variable>
+			<variable key="customerCompany" value="customerCompany" minoccur="0" maxoccur="1" type="string" free="true" description="Firma des Kunden">
+				<test name="matchPattern" description="testing if value is a string min 3, max 250 characters">
+					<param id="1"><![CDATA[.{3,250}]]></param>
+				</test>
+			</variable>
+			<variable key="customerMail" value="customer@mail.com" minoccur="0" maxoccur="1" type="string" free="true" description="Mail-Adresse des Kunden">
+				<test name="matchPattern" description="testing if value is a mail-address">
+					<param id="1"><![CDATA[.+@.+\.\w+]]></param>
+				</test>
+			</variable>
+		</commit>
+	</step>
+	<step name="modalanalyse" type="process" description="Modalanalyse zur Modellkontrolle">
+		<list name="noanalyse">
+			<defaultitem>false</defaultitem>
+		</list>
+		<list name="modes">
+			<defaultitem>9</defaultitem>
+		</list>
+		<init fromobjecttype="variable" listname="basename" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="basename"/>
+		</init>
+		<init fromobjecttype="variable" listname="_cancel" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nomodalcheck"/>
+			<match field="value" pattern="true"/>
+		</init>
+		<init fromobjecttype="variable" listname="matdb" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="matdb"/>
+		</init>
+		<init fromobjecttype="variable" listname="noanalyse" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="noanalyse"/>
+		</init>
+		<init fromobjecttype="file" listname="inc" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="30">
+			<match field="key" pattern="inc"/>
+		</init>
+		<subprocess domain="Exterior" name="modal+" version="2.0.0">
+			<step name="root">
+				<commit name="basename">
+					<variable key="basename" value="{$basename}"/>
+				</commit>
+				<commit name="Materialdatenbank">
+					<variable key="matdb" value="{$matdb}"/>
+				</commit>
+				<commit name="modes">
+					<variable key="modes" value="{$modes}"/>
+				</commit>
+				<commit name="noanalyse">
+					<variable key="noanalyse" value="{$noanalyse}"/>
+				</commit>
+				<commit loop="inc" name="abaqus_modell">
+					<file key="inc" glob="{$loopvarcommit}"/>
+				</commit>
+			</step>
+		</subprocess>
+		<commit name="dummy">
+			<file key="dummy" minoccur="1" maxoccur="1" description="dummy" glob=".pid">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="gen_multibeulen_toc" type="automatic" description="Erstellen einer toc-Datei. Uebersicht der zu ermittelnden Knoten">
+		<list name="tocfile">
+			<defaultitem>toc.csv</defaultitem>
+		</list>
+		<init fromobjecttype="file" listname="dummystreamline" returnfield="absfilename" fromstep="modalanalyse" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="dummy"/>
+		</init>
+		<init fromobjecttype="variable" listname="nset" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="nset"/>
+		</init>
+		<init fromobjecttype="variable" listname="basename" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="basename"/>
+		</init>
+		<init fromobjecttype="variable" listname="isParttypeSw" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="parttype"/>
+			<match field="value" pattern="sw"/>
+		</init>
+		<init fromobjecttype="file" listname="inc" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="99">
+			<match field="key" pattern="inc"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="gen_multibeulen_toc.pl">
+			<callitem sequence="1" par="--toc" del="=" val="{$tocfile}"/>
+			<callitem sequence="2" par="--nset" del="=" val="{$nset}"/>
+			<callitem sequence="3" par="--basename" del="=" val="{$basename}"/>
+			<callitem sequence="3" loop="isParttypeSw" par="--defaultarea" del="=" val="area_1"/>
+			<callitem sequence="4" loop="inc" par="--inc" del="=" val="{$loopvarcallitem}"/>
+		</work>
+		<commit name="toc">
+			<file key="toc" minoccur="1" maxoccur="1" description="toc file der beulpunkte" glob="{$tocfile}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="csv2Variable" type="automatic" description="Erstellen einer toc-Datei. Uebersicht der zu ermittelnden Knoten">
+		<list name="output">
+			<defaultitem>variables</defaultitem>
+		</list>
+		<init fromobjecttype="file" listname="csv" returnfield="absfilename" fromstep="gen_multibeulen_toc" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="toc"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="csv2variable">
+			<callitem sequence="1" par="--csv" del="=" val="{$csv}"/>
+			<callitem sequence="2" par="--parsing" del="=" val="headerIsKey"/>
+			<callitem sequence="3" par="--output" del="=" val="{$output}"/>
+		</work>
+		<commit name="variables">
+			<variable key="dummy" minoccur="1" maxoccur="200" description="beulpunkte" glob="{$output}">
+			</variable>
+		</commit>
+	</step>
+	<step name="beulen" loop="index(nid)" type="process" description="Fuer jede definierte Beulposition wird eine beulen+ Instanz gestartet">
+		<init fromobjecttype="variable" listname="basename" returnfield="value" fromstep="csv2Variable" insertrule="overwrite" minoccur="1" maxoccur="50">
+			<match field="key" pattern="basename"/>
+		</init>
+		<init fromobjecttype="variable" listname="matdb" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="matdb"/>
+		</init>
+		<init fromobjecttype="variable" listname="parttype" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="parttype"/>
+		</init>
+		<init fromobjecttype="variable" listname="nid" returnfield="value" fromstep="csv2Variable" insertrule="overwrite" minoccur="1" maxoccur="50">
+			<match field="key" pattern="nid"/>
+		</init>
+		<init fromobjecttype="variable" listname="area" returnfield="value" fromstep="csv2Variable" insertrule="overwrite" minoccur="1" maxoccur="50">
+			<match field="key" pattern="area"/>
+		</init>
+		<init fromobjecttype="variable" listname="force" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="force"/>
+		</init>
+		<init fromobjecttype="variable" listname="disp" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="disp"/>
+		</init>
+		<init fromobjecttype="variable" listname="method" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="method"/>
+		</init>
+		<init fromobjecttype="variable" listname="vmises" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="vmises"/>
+		</init>
+		<init fromobjecttype="variable" listname="plstrain" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="plstrain"/>
+		</init>
+		<init fromobjecttype="variable" listname="nosolve" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nosolve"/>
+		</init>
+		<init fromobjecttype="variable" listname="nopost" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="nopost"/>
+		</init>
+		<init fromobjecttype="file" listname="inc" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="30">
+			<match field="key" pattern="inc"/>
+		</init>
+		<init fromobjecttype="variable" listname="mailto" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="mailto"/>
+		</init>
+		<init fromobjecttype="variable" listname="myName" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myName"/>
+		</init>
+		<init fromobjecttype="variable" listname="myCompany" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myCompany"/>
+		</init>
+		<init fromobjecttype="variable" listname="myMail" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myMail"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerName" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerName"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerCompany" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerCompany"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerMail" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerMail"/>
+		</init>
+		<subprocess domain="Exterior" name="beulen+" version="2.0.0">
+			<step name="root">
+				<commit name="basename">
+					<variable key="basename" value="{$basename[{$loopvarstep}]}"/>
+				</commit>
+				<commit name="Materialdatenbank">
+					<variable key="matdb" value="{$matdb}"/>
+				</commit>
+				<commit name="parttype">
+					<variable key="parttype" value="{$parttype}"/>
+				</commit>
+				<commit name="nid">
+					<variable key="nid" value="{$nid[{$loopvarstep}]}"/>
+				</commit>
+				<commit name="area">
+					<variable key="area" value="{$area[{$loopvarstep}]}"/>
+				</commit>
+				<commit name="force">
+					<variable key="force" value="{$force}"/>
+				</commit>
+				<commit name="disp">
+					<variable key="disp" value="{$disp}"/>
+				</commit>
+				<commit name="method">
+					<variable key="method" value="{$method}"/>
+				</commit>
+				<commit name="vmises">
+					<variable key="vmises" value="{$vmises}"/>
+				</commit>
+				<commit name="plstrain">
+					<variable key="plstrain" value="{$plstrain}"/>
+				</commit>
+				<commit name="nosolve">
+					<variable key="nosolve" value="{$nosolve}"/>
+				</commit>
+				<commit name="nopost">
+					<variable key="nopost" value="{$nopost}"/>
+				</commit>
+				<commit loop="inc" name="abaqus_modell">
+					<file key="inc" glob="{$loopvarcommit}"/>
+				</commit>
+				<commit loop="mailto" name="mailto">
+					<variable key="mailto" value="{$loopvarcommit}"/>
+				</commit>
+				<commit name="myName">
+					<variable key="myName" value="{$myName}"/>
+				</commit>
+				<commit name="myCompany">
+					<variable key="myCompany" value="{$myCompany}"/>
+				</commit>
+				<commit name="myMail">
+					<variable key="myMail" value="{$myMail}"/>
+				</commit>
+				<commit name="customerName">
+					<variable key="customerName" value="{$customerName}"/>
+				</commit>
+				<commit name="customerCompany">
+					<variable key="customerCompany" value="{$customerCompany}"/>
+				</commit>
+				<commit name="customerMail">
+					<variable key="customerMail" value="{$customerMail}"/>
+				</commit>
+			</step>
+		</subprocess>
+		<commit name="subreport">
+			<file key="jasperFilled" minoccur="1" maxoccur="1" description="template des subreports" subprocesskey="jasperFilled">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+		<commit name="results">
+			<variable key="nid" value="{$nid[{$loopvarstep}]}" minoccur="1" maxoccur="1" free="true" description="Knoten-Id">
+				<test name="isA" description="testing if given value is of certain type">
+					<param id="1">integer</param>
+				</test>
+			</variable>
+			<variable key="area" value="{$area[{$loopvarstep}]}" minoccur="1" maxoccur="1" free="true" description="Pruefbereich">
+				<test name="matchPattern" description="testing if given value is one the possible choices.">
+					<param id="1">area_\d+</param>
+				</test>
+			</variable>
+			<variable key="basename" value="{$basename[{$loopvarstep}]}" minoccur="1" maxoccur="1" free="true" description="Eindeutiger Namen">
+				<test name="isA" description="testing if given value is of certain type">
+					<param id="1">string</param>
+				</test>
+			</variable>
+			<variable key="was_abaqus_successfull" minoccur="1" maxoccur="1" free="false" description="Diese Variable indiziert ob die Abaqusanalyse erfolgreich durchgelaufen ist." subprocesskey="was_abaqus_successfull">
+				<test name="matchPattern" description="testing if given value is one the possible choices.">
+					<param id="1">success|failed|indifferent</param>
+				</test>
+			</variable>
+			<variable key="classification-stiffness" minoccur="1" maxoccur="1" free="false" description="Diese Variable zeigt ob die Bewertung der Steifigkeit an" subprocesskey="classificationStiffness">
+				<test name="matchPattern" description="testing if given value is one the possible choices.">
+					<param id="1">red|yellow|green</param>
+				</test>
+			</variable>
+			<variable key="classification-strength" minoccur="1" maxoccur="1" free="false" description="Diese Variable zeigt ob die Bewertung der Festigkeit an" subprocesskey="strengthJudge">
+				<test name="matchPattern" description="testing if given value is one the possible choices.">
+					<param id="1">red|yellow|green</param>
+				</test>
+			</variable>
+			<variable key="maxvmises" minoccur="1" maxoccur="1" free="false" description="maximaler von Mises Vergleichsspannungswert im geprueften Bauteil" subprocesskey="maxvmises">
+				<test name="isA" description="testing if given value is of certain type">
+					<param id="1">float</param>
+				</test>
+			</variable>
+			<variable key="matNameAtNid" minoccur="1" maxoccur="1" free="false" description="Materialnamen" subprocesskey="matNameAtNid">
+				<test name="isA" description="testing if given value is of certain type">
+					<param id="1">string</param>
+				</test>
+			</variable>
+			<variable key="rp0AtNid" minoccur="1" maxoccur="1" free="false" description="Materialnamen" subprocesskey="rp0AtNid">
+				<test name="isA" description="testing if given value is of certain type">
+					<param id="1">float</param>
+				</test>
+			</variable>
+			<variable key="scaled_maxvmises_rp0_ratio" minoccur="1" maxoccur="1" free="false" description="Materialnamen" subprocesskey="scaled_maxvmises_rp0_ratio">
+				<test name="isA" description="testing if given value is of certain type">
+					<param id="1">float</param>
+				</test>
+			</variable>
+			<variable key="xcoord" minoccur="1" maxoccur="1" free="false" description="x-Koordinate des Pruefpunktes" subprocesskey="xcoord">
+				<test name="isA" description="testing if given value is of certain type">
+					<param id="1">float</param>
+				</test>
+			</variable>
+			<variable key="ycoord" minoccur="1" maxoccur="1" free="false" description="y-Koordinate des Pruefpunktes" subprocesskey="ycoord">
+				<test name="isA" description="testing if given value is of certain type">
+					<param id="1">float</param>
+				</test>
+			</variable>
+			<variable key="zcoord" minoccur="1" maxoccur="1" free="false" description="z-Koordinate des Pruefpunktes" subprocesskey="zcoord">
+				<test name="isA" description="testing if given value is of certain type">
+					<param id="1">float</param>
+				</test>
+			</variable>
+		</commit>
+	</step>
+	<step name="gen_summary_table" type="automatic" description="Erstellen einer Ergebnis-Zusammenfassung als csv-Datei">
+		<list name="csv">
+			<defaultitem>summary.csv</defaultitem>
+		</list>
+		<init fromobjecttype="variable" listname="nid" returnfield="value" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="nid"/>
+		</init>
+		<init fromobjecttype="variable" listname="area" returnfield="value" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="area"/>
+		</init>
+		<init fromobjecttype="variable" listname="basename" returnfield="value" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="basename"/>
+		</init>
+		<init fromobjecttype="variable" listname="xcoord" returnfield="value" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="xcoord"/>
+		</init>
+		<init fromobjecttype="variable" listname="ycoord" returnfield="value" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="ycoord"/>
+		</init>
+		<init fromobjecttype="variable" listname="zcoord" returnfield="value" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="zcoord"/>
+		</init>
+		<init fromobjecttype="variable" listname="success" returnfield="value" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="was_abaqus_successfull"/>
+		</init>
+		<init fromobjecttype="variable" listname="classification-stiffness" returnfield="value" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="classification-stiffness"/>
+		</init>
+		<init fromobjecttype="variable" listname="maxvmises" returnfield="value" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="maxvmises"/>
+		</init>
+		<init fromobjecttype="variable" listname="matname-at-nid" returnfield="value" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="matNameAtNid"/>
+		</init>
+		<init fromobjecttype="variable" listname="rp0" returnfield="value" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="rp0AtNid"/>
+		</init>
+		<init fromobjecttype="variable" listname="scaledmaxvmises-rp0-ratio" returnfield="value" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="scaled_maxvmises_rp0_ratio"/>
+		</init>
+		<init fromobjecttype="variable" listname="classification-strength" returnfield="value" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="classification-strength"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="variable2csv">
+			<callitem sequence="1" par="--output" del=" " val="{$csv}"/>
+			<callitem sequence="2" loop="nid" par="--variable" del=" " val="nid={$loopvarcallitem}"/>
+			<callitem sequence="3" loop="area" par="--variable" del=" " val="area={$loopvarcallitem}"/>
+			<callitem sequence="4" loop="basename" par="--variable" del=" " val="basename={$loopvarcallitem}"/>
+			<callitem sequence="5" loop="xcoord" par="--variable" del=" " val="xcoord={$loopvarcallitem}"/>
+			<callitem sequence="6" loop="ycoord" par="--variable" del=" " val="ycoord={$loopvarcallitem}"/>
+			<callitem sequence="7" loop="zcoord" par="--variable" del=" " val="zcoord={$loopvarcallitem}"/>
+			<callitem sequence="8" loop="success" par="--variable" del=" " val="success={$loopvarcallitem}"/>
+			<callitem sequence="9" loop="classification-stiffness" par="--variable" del=" " val="classification-stiffness={$loopvarcallitem}"/>
+			<callitem sequence="10" loop="maxvmises" par="--variable" del=" " val="maxvmises={$loopvarcallitem}"/>
+			<callitem sequence="11" loop="matname-at-nid" par="--variable" del=" " val="matname-at-nid={$loopvarcallitem}"/>
+			<callitem sequence="12" loop="rp0" par="--variable" del=" " val="rp0={$loopvarcallitem}"/>
+			<callitem sequence="13" loop="scaledmaxvmises-rp0-ratio" par="--variable" del=" " val="scaledmaxvmises-rp0-ratio={$loopvarcallitem}"/>
+			<callitem sequence="14" loop="classification-strength" par="--variable" del=" " val="classification-strength={$loopvarcallitem}"/>
+		</work>
+		<commit name="summary_table">
+			<file key="summary_table" minoccur="1" maxoccur="1" description="toc file der beulpunkte" glob="{$csv}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="gen_a4_session_stiff" type="automatic" description="Erstellen einer animator session datei zur erzeugung eines bildes mit den steifigkeitsergebnissen aller pruefpositionen">
+		<list name="output">
+			<defaultitem>view_stiffness.png.create.ses</defaultitem>
+		</list>
+		<init fromobjecttype="file" listname="csv" returnfield="absfilename" fromstep="gen_summary_table" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="summary_table"/>
+		</init>
+		<init fromobjecttype="variable" listname="parttype" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="parttype"/>
+		</init>
+		<init fromobjecttype="variable" listname="parttype_standardview" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="{$parttype}_view"/>
+		</init>
+		<init fromobjecttype="file" listname="viewfile" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="{$parttype_standardview}"/>
+		</init>
+		<init fromobjecttype="variable" listname="view_stiff" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="view_stiff"/>
+		</init>
+		<init fromobjecttype="file" listname="inc" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="inc"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="gen_a4_session_stiff.pl">
+			<callitem sequence="1" par="--csv" del="=" val="{$csv}"/>
+			<callitem sequence="2" par="--png" del="=" val="{$view_stiff}"/>
+			<callitem sequence="3" par="--viewfile" del="=" val="{$viewfile}"/>
+			<callitem sequence="4" par="--output" del="=" val="{$output}"/>
+			<callitem sequence="5" loop="inc" par="--inc" del="=" val="{$loopvarcallitem}"/>
+		</work>
+		<commit name="sessionFileStiff">
+			<file key="sessionFileStiff" minoccur="1" maxoccur="1" description="session file" glob="{$output}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="gen_view_stiff" type="automatic" description="erzeugung eines bildes mit den steifigkeitsergebnissen aller pruefpositionen">
+		<init fromobjecttype="file" listname="sessionFileStiff" returnfield="absfilename" fromstep="gen_a4_session_stiff" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="sessionFileStiff"/>
+		</init>
+		<init fromobjecttype="variable" listname="animatorversion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="animatorversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="view_stiff" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="view_stiff"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="animator">
+			<callitem sequence="1" par="--version" del=" " val="{$animatorversion}"/>
+			<callitem sequence="2" par="-FG"/>
+			<callitem sequence="3" par="-b"/>
+			<callitem sequence="4" par="-s" del=" " val="{$sessionFileStiff}"/>
+			<callitem sequence="5" par="-h" del=" " val="900"/>
+			<callitem sequence="6" par="-w" del=" " val="1200"/>
+		</work>
+		<commit name="viewStiffPng" toroot="pp">
+			<file key="viewStiffPng" minoccur="1" maxoccur="1" description="toc file der beulpunkte" glob="{$view_stiff}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>	
+	<step name="gen_a4_session_strength" type="automatic" description="Erstellen einer animator session datei zur erzeugung eines bildes mit den festigkeits-ergebnissen aller pruefpositionen">
+		<list name="output">
+			<defaultitem>view_strength.png.create.ses</defaultitem>
+		</list>
+		<init fromobjecttype="file" listname="csv" returnfield="absfilename" fromstep="gen_summary_table" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="summary_table"/>
+		</init>
+		<init fromobjecttype="variable" listname="parttype" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="parttype"/>
+		</init>
+		<init fromobjecttype="variable" listname="parttype_standardview" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="{$parttype}_view"/>
+		</init>
+		<init fromobjecttype="file" listname="viewfile" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="{$parttype_standardview}"/>
+		</init>
+		<init fromobjecttype="variable" listname="view_strength" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="view_strength"/>
+		</init>
+		<init fromobjecttype="file" listname="inc" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="100">
+			<match field="key" pattern="inc"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="gen_a4_session_strength.pl">
+			<callitem sequence="1" par="--csv" del="=" val="{$csv}"/>
+			<callitem sequence="2" par="--png" del="=" val="{$view_strength}"/>
+			<callitem sequence="3" par="--viewfile" del="=" val="{$viewfile}"/>
+			<callitem sequence="4" par="--output" del="=" val="{$output}"/>
+			<callitem sequence="5" loop="inc" par="--inc" del="=" val="{$loopvarcallitem}"/>
+		</work>
+		<commit name="sessionFileStrength">
+			<file key="sessionFileStrength" minoccur="1" maxoccur="1" description="session file" glob="{$output}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="gen_view_strength" type="automatic" description="erzeugung eines bildes mit den festigkeits-ergebnissen aller pruefpositionen">
+		<init fromobjecttype="file" listname="sessionFileStrength" returnfield="absfilename" fromstep="gen_a4_session_strength" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="sessionFileStrength"/>
+		</init>
+		<init fromobjecttype="variable" listname="animatorversion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="animatorversion"/>
+		</init>
+		<init fromobjecttype="variable" listname="view_strength" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="view_strength"/>
+		</init>
+		<work name="starte_script" description="irgendeine beschreibung" command="animator">
+			<callitem sequence="1" par="--version" del=" " val="{$animatorversion}"/>
+			<callitem sequence="2" par="-FG"/>
+			<callitem sequence="3" par="-b"/>
+			<callitem sequence="4" par="-s" del=" " val="{$sessionFileStrength}"/>
+			<callitem sequence="5" par="-h" del=" " val="900"/>
+			<callitem sequence="6" par="-w" del=" " val="1200"/>
+		</work>
+		<commit name="viewStrengthPng" toroot="pp">
+			<file key="viewStrengthPng" minoccur="1" maxoccur="1" description="toc file der beulpunkte" glob="{$view_strength}">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>	
+	<step name="generateReportPdf" type="automatic" description="Erstellt einen Report als pdf">
+		<init fromobjecttype="variable" listname="displaynr" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="displaynr"/>
+		</init>
+		<init fromobjecttype="file" listname="reportTemplate" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="multibeulen\+.jrxml"/>
+		</init>
+		<init fromobjecttype="variable" listname="myName" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myName"/>
+		</init>
+		<init fromobjecttype="variable" listname="myCompany" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myCompany"/>
+		</init>
+		<init fromobjecttype="variable" listname="myMail" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myMail"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerName" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerName"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerCompany" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerCompany"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerMail" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerMail"/>
+		</init>
+		<init fromobjecttype="variable" listname="_processVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="_processVersion"/>
+		</init>
+		<init fromobjecttype="variable" listname="basename" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="basename"/>
+		</init>
+		<init fromobjecttype="file" listname="viewStiffPngPath" returnfield="absfilename" fromstep="gen_view_stiff" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="viewStiffPng"/>
+		</init>
+		<init fromobjecttype="file" listname="viewStrengthPngPath" returnfield="absfilename" fromstep="gen_view_strength" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="viewStrengthPng"/>
+		</init>
+		<init fromobjecttype="file" listname="jasperFilled" returnfield="absfilename" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="200">
+			<match field="key" pattern="jasperFilled"/>
+		</init>
+		<init fromobjecttype="file" listname="summaryCsv" returnfield="absfilename" fromstep="gen_summary_table" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="summary_table"/>
+		</init>
+		<work name="unnamed" description="irgendeine beschreibung" env="DISPLAY=:{$displaynr}" command="reporter">
+			<callitem sequence="1" par="generate"/>
+			<callitem sequence="2" par="-template" del=" " val="{$reportTemplate}"/>
+			<callitem sequence="3" loop="myName" par="-parameter" del=" " val="'myName={$loopvarcallitem}'"/>
+			<callitem sequence="4" loop="myCompany" par="-parameter" del=" " val="'myCompany={$loopvarcallitem}'"/>
+			<callitem sequence="5" loop="myMail" par="-parameter" del=" " val="'myMail={$loopvarcallitem}'"/>
+			<callitem sequence="6" loop="customerName" par="-parameter" del=" " val="'customerName={$loopvarcallitem}'"/>
+			<callitem sequence="7" loop="customerCompany" par="-parameter" del=" " val="'customerCompany={$loopvarcallitem}'"/>
+			<callitem sequence="8" loop="customerMail" par="-parameter" del=" " val="'customerMail={$loopvarcallitem}'"/>
+			<callitem sequence="9" par="-parameter" del=" " val="'_processVersion={$_processVersion}'"/>
+			<callitem sequence="10" par="-parameter" del=" " val="'basename={$basename}'"/>
+			<callitem sequence="11" par="-parameter" del=" " val="'viewStiffPngPath={$viewStiffPngPath}'"/>
+			<callitem sequence="12" par="-parameter" del=" " val="'viewStrengthPngPath={$viewStrengthPngPath}'"/>
+			<callitem sequence="15" par="-fieldFile" del=" " val="{$summaryCsv}"/>
+			<callitem sequence="20" loop="jasperFilled" par="-appendJasperFilled" del=" " val="{$loopvarcallitem}"/>
+			<callitem sequence="23" par="-format" del=" " val="pdf"/>
+			<callitem sequence="24" par="-output" del=" " val="{$basename}_report-multibeulen+.pdf"/>
+		</work>
+		<commit name="report" toroot="report">
+			<file key="jasperFilled" minoccur="1" maxoccur="1" description="Report File" glob="*.jasperFilled">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+			<file key="reportPdf" minoccur="1" maxoccur="1" description="Report File" glob="{$basename}*.pdf">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="generateReportPptx" type="automatic" description="Erstellt einen Report als pptx">
+		<init fromobjecttype="variable" listname="displaynr" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="displaynr"/>
+		</init>
+		<init fromobjecttype="file" listname="reportTemplate" returnfield="absfilename" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="multibeulen\+.jrxml"/>
+		</init>
+		<init fromobjecttype="variable" listname="myName" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myName"/>
+		</init>
+		<init fromobjecttype="variable" listname="myCompany" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myCompany"/>
+		</init>
+		<init fromobjecttype="variable" listname="myMail" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="myMail"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerName" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerName"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerCompany" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerCompany"/>
+		</init>
+		<init fromobjecttype="variable" listname="customerMail" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="1">
+			<match field="key" pattern="customerMail"/>
+		</init>
+		<init fromobjecttype="variable" listname="_processVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="_processVersion"/>
+		</init>
+		<init fromobjecttype="variable" listname="basename" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="basename"/>
+		</init>
+		<init fromobjecttype="file" listname="viewStiffPngPath" returnfield="absfilename" fromstep="gen_view_stiff" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="viewStiffPng"/>
+		</init>
+		<init fromobjecttype="file" listname="viewStrengthPngPath" returnfield="absfilename" fromstep="gen_view_strength" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="viewStrengthPng"/>
+		</init>
+		<init fromobjecttype="file" listname="jasperFilled" returnfield="absfilename" fromstep="beulen" insertrule="overwrite" minoccur="1" maxoccur="200">
+			<match field="key" pattern="jasperFilled"/>
+		</init>
+		<init fromobjecttype="file" listname="summaryCsv" returnfield="absfilename" fromstep="gen_summary_table" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="summary_table"/>
+		</init>
+		<work name="unnamed" description="irgendeine beschreibung" env="DISPLAY=:{$displaynr}" command="reporter">
+			<callitem sequence="1" par="generate"/>
+			<callitem sequence="2" par="-template" del=" " val="{$reportTemplate}"/>
+			<callitem sequence="3" loop="myName" par="-parameter" del=" " val="'myName={$loopvarcallitem}'"/>
+			<callitem sequence="4" loop="myCompany" par="-parameter" del=" " val="'myCompany={$loopvarcallitem}'"/>
+			<callitem sequence="5" loop="myMail" par="-parameter" del=" " val="'myMail={$loopvarcallitem}'"/>
+			<callitem sequence="6" loop="customerName" par="-parameter" del=" " val="'customerName={$loopvarcallitem}'"/>
+			<callitem sequence="7" loop="customerCompany" par="-parameter" del=" " val="'customerCompany={$loopvarcallitem}'"/>
+			<callitem sequence="8" loop="customerMail" par="-parameter" del=" " val="'customerMail={$loopvarcallitem}'"/>
+			<callitem sequence="9" par="-parameter" del=" " val="'_processVersion={$_processVersion}'"/>
+			<callitem sequence="10" par="-parameter" del=" " val="'basename={$basename}'"/>
+			<callitem sequence="11" par="-parameter" del=" " val="'viewStiffPngPath={$viewStiffPngPath}'"/>
+			<callitem sequence="12" par="-parameter" del=" " val="'viewStrengthPngPath={$viewStrengthPngPath}'"/>
+			<callitem sequence="13" par="-fieldFile" del=" " val="{$summaryCsv}"/>
+			<callitem sequence="14" loop="jasperFilled" par="-appendJasperFilled" del=" " val="{$loopvarcallitem}"/>
+			<callitem sequence="15" par="-format" del=" " val="pptx"/>
+			<callitem sequence="16" par="-output" del=" " val="{$basename}_report-multibeulen+.pptx"/>
+		</work>
+		<commit name="report" toroot="report">
+			<file key="reportPptx" minoccur="1" maxoccur="1" description="Report File" glob="{$basename}*.pptx">
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="ergebnismail" type="automatic" description="versenden des ergebnisses per eMail">
+		<init fromobjecttype="file" listname="reportPdf" returnfield="absfilename" fromstep="generateReportPdf" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="reportPdf"/>
+		</init>
+		<init fromobjecttype="file" listname="reportPptx" returnfield="absfilename" fromstep="generateReportPptx" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="reportPptx"/>
+		</init>
+		<init fromobjecttype="variable" listname="_processVersion" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="_processVersion"/>
+		</init>
+		<init fromobjecttype="variable" listname="_dir" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="_dir"/>
+		</init>
+		<init fromobjecttype="variable" listname="mailto" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="0" maxoccur="99" description="receipient mail address">
+			<match field="key" pattern="mailto"/>
+		</init>
+		<work name="unnamed" description="irgendeine beschreibung" command="mutt">
+			<callitem sequence="1" par="-s" del=" " val="'report: multibeulen+ version {$_processVersion} {$_dir}'"/>
+			<callitem sequence="2" par="-a" del=" " val="{$reportPdf}"/>
+			<callitem sequence="2" par="-a" del=" " val="{$reportPptx}"/>
+			<callitem sequence="4" loop="mailto" par="-c" del=" " val="{$loopvarcallitem}"/>
+		</work>
+		<commit name="dummyCommit" toroot="report">
+			<variable key="dummyKey" minoccur="1" maxoccur="1" description="bla" value="dummyValue">
+			</variable>
+		</commit>
+	</step>
+</process>
+<!-- </root> -->
