@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body style="font-family:Tahoma;padding:10px;">
+        <div>
+            <h1>License4J Licensing Example Application</h1>
+            <p>
+            This application demonstrates validation of all license types.
+            It stores license information in user home directory with
+            file name ""sample-app.conf".
+            "License" menu item in Help menu has required buttons to install, validate, activate,
+            modify and deactivate a test license. Normally, a software product has a single
+            licensing method, so a single license validation method should be sufficient. License details
+            menu item in Help menu is to display some details about the installed license. Normally, customers
+            do not need that much information.            
+            </p>
+            
+            <p>
+                "ProductLicense.java" has all settings and validation methods defined. It is used
+                to make this demonstration application simple. In a real application, you should validate
+                licenses in a few different parts of your application; and as in "ProductLicense.java" file
+                it is better to perform validation, activation, modification, and deactivation in a thread
+                to provide a more user friendly GUI. This sample application has simple SwingWorker methods
+                to make it simple.
+            </p>
+            
+            <h2>TODO List</h2>
+            To test your licenses with this application search for word TODO in source file
+            "ProductLicense.java" and replace with your product information.
+            <ul>
+                <li>Change publicKey variable with your public key in ProductLicense.java file.</li>
+                <li>Replace product id, edition and version with your settings in ProductLicense.java file</li>
+                <li>To use your own Auto License Generation and Activation Server or License Activation and Validation Server define your server address in ProductLicense.java file.</li>
+            </ul>
+            
+            <h2>Example Licenses</h2>
+            Example license files are located at "example-licenses" folder.
+            <ul>
+                <li>1380143057225.l4j: License text without activation.</li>
+                <li>1380143200594.l4j: License text with activation and return type activation code.</li>
+                <li>1380143384116.l4j: License text with activation and return type license text.</li>
+            </ul>
+            <br/>
+            Following are some basic and secure license keys with different features.
+            <ul>
+                <li>NSEZ9-FIDBV-2FN6Y-QJQPF-4PWGD: key without activation.</li>
+                <li>XKMS7-9DL2J-5YULB-6WM3K-24BNE: key with activation and return type activation code.</li>
+                <li>UR3AM-GNQ5F-PH4KC-ACLAZ-CF757: key with activation and return type license text.</li>
+                <li>D3CQ4-DR3NH-GSSBI-5DN5B-HZ2AW-PAQWA-A9BEG-N3QDM-Z6MDE-KVR49-FEQFQ: key without activation.</li>
+                <li>9HLQU-DYAW6-GJLZF-MFKZV-7VPAT-S4QD9-ACBEW-MVACF-PZAF4-2VAF5-7IGJQ: key with activation and return type activation code.</li>
+                <li>5RTQU-DRG32-GQ9HT-SCBGG-4D2AC-9IQAA-A9JET-6SPRV-SLY24-UJHI6-4FS4Y: key with activation and return type license text.</li>
+            </ul>
+            <br/>
+            Following are online license keys with different features.
+            <ul>
+                <li>4R566-HVQRB-H7XWP-NT2P3-4I6TG: online key without usage limit.</li>
+                <li>EIMVJ-L5YFT-Q52W6-2BCBS-CXPTW: online key with usage count limit of 999999.</li>
+                <li>QVK9P-3RKXZ-AC22U-HT66S-JFNHK: online key with usage time limit of 999999.</li>
+            </ul>
+        </div>
+    </body>
+</html>
