@@ -1,0 +1,16 @@
+
+INSTALLATION
+
+32bit Java 1.6+ is required for 32bit OS.
+64bit Java 1.6+ is required for 64bit OS.
+
+
+LINUX OS
+1- Set your java path in service.sh and gui.sh files.
+2- run service.sh script with start, stop, or restart parameters.
+3- To run administration gui, run gui.sh script.
+
+
+MAC OS
+Floating license server can not run as a service on MAC OS.
+1- Run "java -jar FloatingLicenseServer.jar start" command.
