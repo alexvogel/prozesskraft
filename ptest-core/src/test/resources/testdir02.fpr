@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<dir id="0" minOccur="1" maxOccur="1">
+    <path>\Q\E</path>
+    <file id="1" minOccur="1" maxOccur="1" size="7.0" sizeUnit="B" sizeTolerance="0.0">
+        <path>\Qhello.txt\E</path>
+    </file>
+    <file id="2" minOccur="1" maxOccur="1" size="10.0" sizeUnit="B" sizeTolerance="0.0">
+        <path>\Qlulu.txt\E</path>
+    </file>
+</dir>
