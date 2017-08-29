@@ -1,0 +1,176 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.prozesskraft.ptest</groupId>
+	<artifactId>ptest-core</artifactId>
+	<version>1.0.0</version>
+	<packaging>jar</packaging>
+	<name>ptest-core</name>
+	<url>http://maven.apache.org</url>
+	
+	<build>
+		<plugins>
+		
+<!-- packt alle class-Files in ein jar legt es im classDirectory ab -->
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<id>installation-prozesskraft-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<finalName>${project.name}-${project.version}</finalName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
+				<version>0.8.3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<forceRegenerate>true</forceRegenerate>
+			      			<schemaDirectory>src/main/resources</schemaDirectory>
+			      			<schemaIncludes>
+			        			<include>ptest.xsd</include>
+			      			</schemaIncludes>
+			      			<generatePackage>de.prozesskraft.jaxb.ptest</generatePackage>
+			      			<generateDirectory>src/main/java</generateDirectory>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<extension>true</extension>
+					<args>
+						<arg>-Xsetters</arg>
+						<arg>-Xsetters-mode=direct</arg>
+					</args>
+					<plugins>
+						<plugin>
+							<groupId>org.jvnet.jaxb2_commons</groupId>
+							<artifactId>jaxb2-basics</artifactId>
+							<version>0.6.4</version>
+						</plugin>
+					</plugins>
+				</configuration>
+			</plugin>
+
+<!-- Obfuskieren des jars. das output ueberschreibt das default-jar, welches durch 'maven-jar-plugin' id=default produziert wurde -->
+<!-- 			<plugin> -->
+<!-- 				<groupId>com.pyx4me</groupId> -->
+<!-- 				<artifactId>proguard-maven-plugin</artifactId> -->
+<!-- 				<version>2.0.4</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<phase>package</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>proguard</goal> -->
+<!-- 						</goals> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 				<configuration> -->
+<!-- 					<includeDependency>true</includeDependency> -->
+<!-- 					<obfuscate>true</obfuscate> -->
+<!-- 					<outputDirectory>${project.build.directory}</outputDirectory> -->
+<!-- 					<injar>${project.name}-${project.version}.jar</injar> -->
+<!-- 					<outjar>${project.name}-${project.version}.jar</outjar> -->
+<!-- 					<options> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Process { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Step { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Init { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Commit { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Log { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Variable { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.File { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.List { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Work { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Callitem { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Exit { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Match { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Test { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.pkraft.Param { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Process { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Step { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Init { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Commit { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Variable { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.File { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.List { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Work { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Callitem { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Exit { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Match { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Test { *; }</option> -->
+<!-- 						<option>-keep public class de.prozesskraft.jaxb.pkraft.Param { *; }</option> -->
+<!-- 					</options> -->
+<!-- 					<libs> -->
+<!-- 						<lib>${java.home}/lib/rt.jar</lib> -->
+<!-- 					</libs> -->
+<!-- 					<proguardVersion>4.8</proguardVersion> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
+			
+		</plugins>
+	</build>
+	<dependencies>
+	    <dependency>
+			<groupId>net.sf.dozer</groupId>
+			<artifactId>dozer</artifactId>
+			<version>5.4.0</version>
+	    </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.ini4j</groupId>
+			<artifactId>ini4j</artifactId>
+			<version>0.5.2</version>
+		</dependency>
+		<dependency>
+			<groupId>de.prozesskraft.commons</groupId>
+			<artifactId>avoge-commons</artifactId>
+			<version>0.4.0</version>
+		</dependency>
+<!-- diese dependencies sind fuer andere module start -->
+	    <dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.2</version>
+	    </dependency>
+	    <dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+	    </dependency>
+	    <dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.4</version>
+	    </dependency>
+	    <dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.3</version>
+	    </dependency>
+	    <dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.7</version>
+	    </dependency>
+<!-- diese dependencies sind fuer andere module ende -->
+	</dependencies>
+</project>

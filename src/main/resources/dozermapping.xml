@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://dozer.sourceforge.net http://dozer.sourceforge.net/schema/beanmapping.xsd"> 
+	<mapping>
+		<class-a>de.prozesskraft.jaxb.ptest.Batch</class-a>
+		<class-b>de.prozesskraft.ptest.Batch</class-b>
+		<field>
+			<a>step</a>
+			<b>steps</b>
+		</field>
+	</mapping>
+</mappings>
