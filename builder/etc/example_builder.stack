@@ -1,0 +1,87 @@
+# first non-comment-line is header
+# app-name;repodirectory(abs);target;targetuser;targetmachine;targetdirectory(abs);amount_last_full_versions(newest(head) and betas (younger than full versions) are always on);deployment script;actiontag;actiontag;actiontag;actiontag
+app;repodir;target;targetuser;targetmachine;targetdir;ybranches;deployscript;action;action;action
+#
+# git_caegroup to lpcagw13.muc /share/xscaeapps/SNK/qxb0117
+myperllib;/data/prog/gits/git_caegroup/myperllib.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;;searchreplace
+cud;/data/prog/gits/git_caegroup/cud.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+beulen;/data/prog/gits/git_caegroup/beulen.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+multibeulen;/data/prog/gits/git_caegroup/multibeulen.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+modal;/data/prog/gits/git_caegroup/modal.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+snk_cond_pre;/data/prog/gits/git_caegroup/snk_cond_pre.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;;searchreplace(snk_cond_pre_cb2,snk_cond_pre)
+nak_cond_pre;/data/prog/gits/git_caegroup/nak_cond_pre.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;;searchreplace(nak_cond_pre_cb2,nak_cond_pre)
+license4j-server;/data/prog/gits/git_caegroup/license4j-server.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy_java32.pl;addcaller(license4j-server-admin);searchreplace(fls.sh)
+mdb2mdbl;/data/prog/gits/git_caegroup/mdb2mdbl.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;;;searchreplace
+fill_template;/data/prog/gits/git_caegroup/fill_template.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;;;searchreplace
+nasinclude;/data/prog/gits/git_caegroup/nasinclude.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;;;searchreplace
+curve_combine;/data/prog/gits/git_caegroup/curve_combine.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;;;searchreplace
+abaqustraceline;/data/prog/gits/git_caegroup/abaqustraceline.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;;;searchreplace
+#
+# git_privat to lpcagw13.muc /share/xscaeapps/SNK/qxb0117
+pradar-core;/data/prog/gits/git_privat/pradar-core.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+pradar-checkin;/data/prog/gits/git_privat/pradar-checkin.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+pradar-checkout;/data/prog/gits/git_privat/pradar-checkout.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+pradar-init;/data/prog/gits/git_privat/pradar-init.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+pradar-list;/data/prog/gits/git_privat/pradar-list.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+pradar;/data/prog/gits/git_privat/pradar-start.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+pradar-gui;/data/prog/gits/git_privat/pradar-gui.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy_gtk.linux.x86.pl;searchreplace(PradarPartUi)
+pradar-server;/data/prog/gits/git_privat/pradar-server.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+pradar-cleandb;/data/prog/gits/git_privat/pradar-cleandb.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+pradar-progress;/data/prog/gits/git_privat/pradar-progress.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+pramp-gui;/data/prog/gits/git_privat/pramp-gui.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy_gtk.linux.x86.pl;searchreplace(PrampPartUi)
+pmodel-gui;/data/prog/gits/git_privat/pmodel-gui.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy_gtk.linux.x86.pl;searchreplace(PmodelPartUi)
+process-startinstance;/data/prog/gits/git_privat/process-startinstance.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+process-manager;/data/prog/gits/git_privat/process-manager.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+process-syscall;/data/prog/gits/git_privat/process-syscall.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+processes;/data/prog/gits/git_privat/processes.git;default;qxb0117;lpcagw13.muc;/share/xscaeapps/SNK/qxb0117;0;deploy.pl;searchreplace
+#
+# git_caegroup to sv02 (/soft/deploy)
+myperllib;/data/prog/gits/git_caegroup/myperllib.git;default;avo;sv02;/soft/deploy;0;;searchreplace
+cud;/data/prog/gits/git_caegroup/cud.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+beulen;/data/prog/gits/git_caegroup/beulen.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+multibeulen;/data/prog/gits/git_caegroup/multibeulen.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+nak_cond_pre;/data/prog/gits/git_caegroup/nak_cond_pre.git;default;avo;sv02;/soft/deploy;0;;searchreplace
+nak_cond_pre_cb2;/data/prog/gits/git_caegroup/nak_cond_pre.git;default;avo;sv02;/soft/deploy;0;;searchreplace
+snk_cond_pre;/data/prog/gits/git_caegroup/snk_cond_pre.git;default;avo;sv02;/soft/deploy;0;;searchreplace
+snk_cond_pre_cb2;/data/prog/gits/git_caegroup/snk_cond_pre.git;default;avo;sv02;/soft/deploy;0;;searchreplace
+snk_cond_post;/data/prog/gits/git_caegroup/snk_cond_post.git;default;avo;sv02;/soft/deploy;0;;searchreplace
+snk_cond_post_cb2;/data/prog/gits/git_caegroup/snk_cond_post.git;default;avo;sv02;/soft/deploy;0;;searchreplace
+modal;/data/prog/gits/git_caegroup/modal.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+mdb2mdbl;/data/prog/gits/git_caegroup/mdb2mdbl.git;default;avo;sv02;/soft/deploy;0;;searchreplace
+processes;/data/prog/gits/git_caegroup/processes.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+fill_template;/data/prog/gits/git_caegroup/fill_template.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+nasinclude;/data/prog/gits/git_caegroup/nasinclude.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+curve_combine;/data/prog/gits/git_caegroup/curve_combine.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+#
+# git_private to sv02 (/soft/deploy)
+builder;/data/prog/gits/git_privat/builder.git;default;avo;sv02;/soft/deploy;0;;searchreplace
+pradar-core;/data/prog/gits/git_privat/pradar-core.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+pradar-checkin;/data/prog/gits/git_privat/pradar-checkin.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+pradar-checkout;/data/prog/gits/git_privat/pradar-checkout.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+pradar-init;/data/prog/gits/git_privat/pradar-init.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+pradar-list;/data/prog/gits/git_privat/pradar-list.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+pradar;/data/prog/gits/git_privat/pradar-start.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+pradar-gui;/data/prog/gits/git_privat/pradar-gui.git;default;avo;sv02;/soft/deploy;0;deploy_gtk.linux.x86_64.pl;searchreplace(PradarPartUi)
+pradar-server;/data/prog/gits/git_privat/pradar-server.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+pradar-cleandb;/data/prog/gits/git_privat/pradar-cleandb.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+pradar-progress;/data/prog/gits/git_privat/pradar-progress.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+pramp-gui;/data/prog/gits/git_privat/pramp-gui.git;default;avo;sv02;/soft/deploy;0;deploy_gtk.linux.x86_64.pl;searchreplace(PrampPartUi)
+pmodel-gui;/data/prog/gits/git_privats/git_privat/pmodel-gui.git;default;avo;sv02;/soft/deploy;0;deploy_gtk.linux.x86_64.pl;searchreplace(PmodelPartUi)
+license4j-server;/data/prog/gits/git_privat/license4j-server.git;default;avo;sv02;/soft/deploy;0;deploy_java64.pl;addcaller(license4j-server-admin);searchreplace(fls.sh)
+license4j-manager;/data/prog/gits/git_privat/license4j-manager.git;default;avo;sv02;/soft/deploy;0;;searchreplace
+process-startinstance;/data/prog/gits/git_privat/process-startinstance.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+process-core;/data/prog/gits/git_privat/process-core.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+process-manager;/data/prog/gits/git_privat/process-manager.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+process-syscall;/data/prog/gits/git_privat/process-syscall.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+process-createdoc;/data/prog/gits/git_privat/process-createdoc.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+process-checkconsistency;/data/prog/gits/git_privat/process-checkconsistency.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+process-perlcode;/data/prog/gits/git_privat/process-perlcode.git;default;avo;sv02;/soft/deploy;0;deploy.pl;searchreplace
+#
+# cb2 /share/sdmmisc/cb2-scripts/TEST/caegroup/nvh/rootinstalldir
+snk_cond_pre_cb2;/data/prog/gits/git_caegroup/snk_cond_pre.git;default;qxb0117;lpcagw13.muc;/share/sdmmisc/cb2-scripts/TEST/caegroup/nvh/rootinstalldir;0;;searchreplace(snk_cond_pre.pl);perl_cb2
+nak_cond_pre_cb2;/data/prog/gits/git_caegroup/nak_cond_pre.git;default;qxb0117;lpcagw13.muc;/share/sdmmisc/cb2-scripts/TEST/caegroup/nvh/rootinstalldir;0;;searchreplace(nak_cond_pre.pl);perl_cb2
+#
+# angie /share/sdmmisc/cb2-scripts/exterior
+modal;/data/prog/gits/git_caegroup/modal.git;angie;qxb0117;lpcagw13.muc;/share/sdmmisc/cb2-scripts/exterior;0;deploy.pl;searchreplace
+beulen;/data/prog/gits/git_caegroup/beulen.git;angie;qxb0117;lpcagw13.muc;/share/sdmmisc/cb2-scripts/exterior;0;deploy.pl;searchreplace
+multibeulen;/data/prog/gits/git_caegroup/multibeulen.git;angie;qxb0117;lpcagw13.muc;/share/sdmmisc/cb2-scripts/exterior;0;deploy.pl;searchreplace
