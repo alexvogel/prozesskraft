@@ -1,0 +1,12 @@
+to install pmodel follow these instructions
+
+1) go to the directory where you want to install the toolbox and unpack
+	tar -xvf pModel-0.5.0.tar.gz
+
+2) this generates a new <installdirectory>
+
+3) link the launch script "bin/pmodel" from a PATH-directory. for example
+	cd ~/bin
+	ln -s <installdirectory>/bin/pmodel
+
+checkout www.prozesskraft.de for more informations or tools.
