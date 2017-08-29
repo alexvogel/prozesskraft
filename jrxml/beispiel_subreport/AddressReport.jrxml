@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="AddressReport" pageWidth="175" pageHeight="842" columnWidth="175" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="527bb148-14f5-48eb-848a-9c01c0ff79ea">
+	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+	<style name="Sans_Bold" fontName="DejaVu Sans" fontSize="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+	<style name="Sans_Italic" fontName="DejaVu Sans" fontSize="8" isBold="false" isItalic="true" isUnderline="false" isStrikeThrough="false"/>
+	<parameter name="City" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT * FROM Address WHERE City = $P{City}]]>
+	</queryString>
+	<field name="Id" class="java.lang.Integer"/>
+	<field name="FirstName" class="java.lang.String"/>
+	<field name="LastName" class="java.lang.String"/>
+	<field name="Street" class="java.lang.String"/>
+	<title>
+		<band height="14">
+			<staticText>
+				<reportElement uuid="fc768861-155b-4e44-9fa6-5b49e879e8b7" style="Sans_Italic" x="0" y="2" width="20" height="10"/>
+				<textElement/>
+				<text><![CDATA[Title]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="31f32776-309b-41ca-b4a3-b47bb919fe7f" style="Sans_Bold" x="20" y="2" width="155" height="10"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA["Addresses in " + $P{City}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="14">
+			<staticText>
+				<reportElement uuid="7678d57c-8f73-48ef-b96f-9a979e46174a" style="Sans_Italic" x="0" y="2" width="175" height="10" forecolor="#008080"/>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[Page Header]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="14">
+			<frame>
+				<reportElement uuid="265647aa-afba-44df-9d84-4e5d5f98cb95" x="0" y="2" width="175" height="10" forecolor="#CCFFFF" backcolor="#CCFFFF"/>
+				<box>
+					<pen lineWidth="1.0"/>
+				</box>
+				<staticText>
+					<reportElement uuid="97d0a9bb-c476-41c2-b55d-747d96cae2e6" style="Sans_Bold" mode="Opaque" x="0" y="0" width="20" height="10" backcolor="#CCFFFF"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[ID]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="08bb1bab-b648-4583-b104-0c28e238832d" style="Sans_Bold" mode="Opaque" x="20" y="0" width="85" height="10" backcolor="#CCFFFF"/>
+					<textElement/>
+					<text><![CDATA[Name]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="22a25828-e56e-4c7c-b822-ecf4ffee2eeb" style="Sans_Bold" mode="Opaque" x="105" y="0" width="70" height="10" backcolor="#CCFFFF"/>
+					<textElement/>
+					<text><![CDATA[Street]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="14">
+			<textField>
+				<reportElement uuid="7d56c0c0-6759-4ba7-92da-571466ce4630" x="0" y="2" width="15" height="10"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{Id}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="d7d966b5-dcc0-4181-a55d-e2777c1dd412" positionType="Float" x="20" y="2" width="80" height="10"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{FirstName} + " " + $F{LastName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="a2c3d5ef-3351-47a7-84ef-d955de37e5a2" positionType="Float" x="105" y="2" width="70" height="10"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{Street}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="14">
+			<staticText>
+				<reportElement uuid="6a277cdd-5956-490d-a605-1960cdd2d228" style="Sans_Italic" x="0" y="2" width="175" height="10"/>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<textElement/>
+				<text><![CDATA[Column Footer]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="14">
+			<frame>
+				<reportElement uuid="0e20a675-8640-4d8f-a499-b9d99c4b2edf" mode="Transparent" x="0" y="2" width="175" height="10" forecolor="#008080"/>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<staticText>
+					<reportElement uuid="3e1fc0b1-ea55-46c1-b46b-43dc0bd9fd4e" style="Sans_Italic" x="0" y="0" width="60" height="10" forecolor="#008080"/>
+					<textElement/>
+					<text><![CDATA[Page Footer]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="999c472c-cb07-405f-843e-79deb68f4d92" style="Sans_Italic" x="100" y="0" width="50" height="10" forecolor="#008080"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA["Page " + String.valueOf($V{PAGE_NUMBER}) + " of "]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report">
+					<reportElement uuid="f133422c-c215-465c-9835-6a7a08403569" style="Sans_Italic" x="150" y="0" width="20" height="10" forecolor="#008080"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="14">
+			<frame>
+				<reportElement uuid="ab8f5310-0bc5-4ac3-8761-156c1d0ed4eb" x="0" y="2" width="175" height="10" forecolor="#33CCCC" backcolor="#33CCCC"/>
+				<staticText>
+					<reportElement uuid="0a03407f-d843-47b7-b2f6-593183d85a0c" style="Sans_Italic" mode="Opaque" x="0" y="0" width="100" height="10" backcolor="#33CCCC"/>
+					<textElement/>
+					<text><![CDATA[Summary]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="29c543fe-0898-421d-b2d6-c3acf93459c3" style="Sans_Bold" mode="Opaque" x="100" y="0" width="50" height="10" backcolor="#33CCCC"/>
+					<textElement textAlignment="Right"/>
+					<text><![CDATA[Count :]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="196219cc-4df6-4d1f-9482-2da5b3fd43fd" style="Sans_Bold" mode="Opaque" x="150" y="0" width="25" height="10" backcolor="#33CCCC"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</summary>
+</jasperReport>
