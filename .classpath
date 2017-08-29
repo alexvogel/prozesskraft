@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry including="**/*.java" kind="src" path="src/test/resources"/>
+	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry including="**/*.java" kind="src" path="src/main/resources"/>
+	<classpathentry kind="lib" path="lib/core-2.0b3.jar"/>
+	<classpathentry kind="lib" path="lib/databinding-1.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/databinding.beans-1.2.200.jar"/>
+	<classpathentry kind="lib" path="lib/databinding.observable-1.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/databinding.property-1.4.200.jar"/>
+	<classpathentry kind="lib" path="lib/gluegen-rt-2.0b3.jar"/>
+	<classpathentry kind="lib" path="lib/gluegen-rt-natives-linux-amd64-2.0b3.jar"/>
+	<classpathentry kind="lib" path="lib/gtk.linux.x86_64-3.101.0.jar"/>
+	<classpathentry kind="lib" path="lib/jface-3.8.300.jar"/>
+	<classpathentry kind="lib" path="lib/jface.databinding-1.6.200.jar"/>
+	<classpathentry kind="lib" path="lib/jogl-all-2.0b3.jar"/>
+	<classpathentry kind="lib" path="lib/jogl-all-natives-linux-amd64-2.0b3.jar"/>
+	<classpathentry kind="lib" path="lib/runtime-3.9.0.jar"/>
+	<classpathentry kind="lib" path="lib/runtime.compatibility-3.2.200.jar"/>
+	<classpathentry kind="lib" path="lib/ui.di-0.11.0.jar"/>
+	<classpathentry kind="lib" path="lib/inject-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/common-3.6.100.jar"/>
+	<classpathentry kind="lib" path="lib/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.7.2.jar"/>
+	<classpathentry kind="lib" path="lib/ini4j-0.5.2.jar"/>
+	<classpathentry kind="lib" path="lib/commands-3.3.0-I20070605-0010.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
