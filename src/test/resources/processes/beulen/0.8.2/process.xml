@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <root> -->
+<process name="beulen" modelVersion="0.2" description="Ermittelt die Beulsteifigkeit einer Struktur an einer bestimmten Stelle. Die Position wird mittels einer Knoten-ID definiert." architectMail="alexander.vogel@caegroup.de" architectName="Alexander Vogel" architectCompany="caegroup Ingenieure" customerMail="jaohn.doe@bmw.de" customerName="John Doe" customerCompany="BMW AG" path="irgendeinpath" pradar="false">
+	<step name="root" type="automatic">
+		<commit name="parameter" toroot="true">
+			<variable key="matdb" value="no" minoccur="1" maxoccur="1" free="false" description="choose a centrally maintained material database or 'no' if material definitions are provided with abaqus includes" >
+				<choice>no</choice>
+				<choice>lin</choice>
+				<choice>nlin</choice>
+				<test name="matchPattern" description="testing if given value is one the possible choices.">
+					<param id="1">no|lin|nlin</param>
+				</test>
+			</variable>
+			<variable key="basename" minoccur="1" maxoccur="1" free="true" description="give it a name. 3-50 characters long. letters, figueres and '_'. no spaces.">
+				<test name="matchPattern" description="testing if value is min 3 and max 50 characters long and only uses letters, figures and '_'">
+					<param id="1">\w{3,50}</param>
+				</test>
+			</variable>
+			<variable key="parttype" minoccur="1" maxoccur="1" free="false" description="which partype are you going to analyse?">
+				<choice>fkl</choice>
+				<choice>dach</choice>
+				<choice>seite</choice>
+				<test name="matchPattern" description="testing if given value is one the possible choices.">
+					<param id="1">fkl|dach|seite</param>
+				</test>
+			</variable>
+			<variable key="nid" minoccur="1" maxoccur="1" free="true" description="define position of stempel via node id.">
+				<test name="matchPattern" description="testing if given value is an integer">
+					<param id="1">\d+</param>
+				</test>
+			</variable>
+			<variable key="area" minoccur="1" maxoccur="1" free="false" description="assessment area of node id. this links to the benchmarks.">
+				<choice>area_1</choice>
+				<choice>area_2</choice>
+				<choice>area_3</choice>
+				<test name="matchPattern" description="">
+					<param id="1">area_[123456789]{1}</param>
+				</test>
+			</variable>
+			<variable key="force" value="150" minoccur="1" maxoccur="1" free="true" description="test force">
+				<choice>150</choice>
+				<test name="matchPattern" description="tests whether given value is an integer">
+					<param id="1">\d+</param>
+				</test>
+				<test name="moreThan" description="tests whether given value is min 100">
+					<param id="1">99</param>
+				</test>
+				<test name="lessThan" description=" tests whether given value does not exceed 300">
+					<param id="1">301</param>
+				</test>
+			</variable>
+			<variable key="vmises" value="true" minoccur="0" maxoccur="1" free="false" description="if default postprocessing does not allow for a resultset 'vonMisesStrain' with this parameter set to 'true' the generation of this resultset will be forced.">
+				<choice>true</choice>
+<!-- 				<choice>false</choice> -->
+			</variable>
+			<variable key="plstrain" value="" minoccur="0" maxoccur="1" free="false" description="if default postprocessing does not allow for a resultset 'plasticStrain' with this parameter set to 'true' the generation of this resultset will be forced.">
+				<choice>true</choice>
+<!-- 				<choice>false</choice> -->
+			</variable>
+		</commit>
+		<commit name="abaqus model" toroot="true">
+			<file key="inc" minoccur="1" description="abaqus include file without history data" >
+				<test name="doesExist" description="tests whether file does exist">
+				</test>
+				<test name="sizeGreaterThan" description="tests whether file size exceeds a min threshold">
+					<param id="1">byte</param>
+					<param id="2">1</param>
+				</test>
+				<test name="matchPattern" description="tests whether file content matches a certain pattern.">
+					<param id="1">FO] --- maven-jar-plugin:2.3.2:jar (default-jar) @ pradar</param>
+				</test>
+			</file>
+		</commit>
+	</step>
+	<step name="beulen" type="automatic" description="Die FE-Struktur wird an 1 Position auf Beulsteifigkeit und Beulfestigkeit untersucht.">
+		<init fromobjecttype="file" listname="inc" returnfield="absfilename" fromstep="root" insertrule="overlap" minoccur="1" maxoccur="99">
+			<match field="filename" pattern=""/>
+		</init>
+		<init fromobjecttype="variable" listname="basename" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="key" pattern="basename"/>
+		</init>
+		<init fromobjecttype="variable" listname="matdb" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="value" pattern="no|lin|nlin"/>
+		</init>
+		<init fromobjecttype="variable" listname="nid" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="value" pattern="\d*"/>
+		</init>
+		<init fromobjecttype="variable" listname="area" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="value" pattern="area_1|area_2|area_3"/>
+		</init>
+		<init fromobjecttype="variable" listname="force" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="value" pattern="\d*"/>
+		</init>
+		<init fromobjecttype="variable" listname="parttype" returnfield="value" fromstep="root" insertrule="overwrite" minoccur="1" maxoccur="1">
+			<match field="value" pattern="fkl|hkl|seite|dach"/>
+		</init>
+		<work name="starte_prozesskette" description="irgendeine beschreibung" command="beulen">
+			<callitem sequence="1" par="--basename" del="=" val="$basename"/>
+			<callitem sequence="2" par="--matdb" del="=" val="$matdb"/>
+			<callitem sequence="3" par="--nid" del="=" val="$nid"/>
+			<callitem sequence="4" par="--area" del="=" val="$area"/>
+			<callitem sequence="5" par="--force" del="=" val="$force"/>
+			<callitem sequence="6" par="--parttype" del="=" val="$parttype"/>
+			<callitem sequence="7" loop="inc" par="--inc" del="=" val="$_"/>
+		</work>
+		<commit name="name9" toroot="true">
+			<variable key="plstrain" value="" minoccur="0" maxoccur="1" free="false">
+				<choice>true</choice>
+				<choice>false</choice>
+				<test name="matchPattern" description="">
+					<param id="1">|true|false</param>
+				</test>
+			</variable>
+		</commit>
+	</step>
+</process>
+<!-- </root> -->
