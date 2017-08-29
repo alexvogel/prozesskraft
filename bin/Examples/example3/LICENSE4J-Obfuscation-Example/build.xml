@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="LICENSE4J-Obfuscation-Example" default="default" basedir=".">
+    <description>Builds, tests, and runs the project LICENSE4J-Obfuscation-Example.</description>
+    <import file="nbproject/build-impl.xml"/>
+  
+    <!-- 
+    ANT TASK TO BUILD AND OBFUSCATE THE APPLICATION
+    -->
+    <target name="build_obfuscate_exe" description="Build, Obfuscate and Make Exe Task" depends="clean, jar">
+        <!-- 
+        Create a folder names as "obfuscated" to save final obfuscated jar file.
+        -->
+        <mkdir dir="dist/obfuscated"/>
+        
+        <!--
+        Proguard ant task definitaion and proguard jar file.
+        -->
+        <taskdef resource="proguard/ant/task.properties"
+                 classpath="lib/proguard-4.11.jar" />
+    
+        <!--
+        Proguard configuration file. It includes descriptions in comment blocks,
+        make required modifications for your real application.
+        -->
+        <proguard configuration="proguard/proguard-conf.pro"/>
+        
+        <!--
+        Create temporary folder and extract original manifest file from your
+        application. This manifest file will be used when creating final jar
+        file below.
+        -->
+        <mkdir dir="dist/temp"/>
+        <unzip src="dist/LICENSE4J-Obfuscation-Example.jar" dest="dist/temp">
+            <patternset>
+                <include name="META-INF/**"/>
+            </patternset>
+        </unzip>
+        
+        <!--
+        Create a temporary folder and extract "resources" folder from license4j
+        runtime library. This will be used when creating final jar file below.
+        -->
+        <mkdir dir="dist/obfuscated/temp"/>
+        <unzip src="dist/obfuscated/LICENSE4J-Obfuscation-Example-temp.jar" dest="dist/obfuscated/temp">
+            <patternset>
+                <include name="com/license4j/resources/**"/>
+            </patternset>
+        </unzip>
+        
+        <!--
+        We assume that "com.license4j" package is mapped to "com.a" package name
+        If it is different or you give a custom mapping file, modify folder names below.
+        
+        Mapping file is in "obfuscated" folder and named as "obfuscated-mapping.txt"
+        
+        Create directory "a" in "com" directory then move resources to this
+        directory, and delete old empty "license4j" directory.
+        -->
+        <mkdir dir="dist/obfuscated/temp/com/a"/>
+        <move file="dist/obfuscated/temp/com/license4j/resources" todir="dist/obfuscated/temp/com/a"/>
+        <delete dir="dist/obfuscated/temp/com/license4j"/>
+        
+        <!--
+        Final application jar file will be created.
+        
+        "dist/obfuscated/temp" directory includes "resources", this directory is
+        added in jar file and "com/license4j/resources/" directory is excluded.
+        
+        Manifest file which is copied to temporary directory above is used.
+        -->
+        <jar jarfile="dist/obfuscated/LICENSE4J-Obfuscation-Example.jar" manifest="dist/temp/META-INF/MANIFEST.MF">
+            <fileset dir="dist/obfuscated/temp"/>
+            <zipfileset excludes="com/license4j/resources/**" src="dist/obfuscated/LICENSE4J-Obfuscation-Example-temp.jar"/>
+        </jar>
+        <!--
+        Finally, the application with bundled and obfuscated license4j runtime
+        library is built, jar file is in "dist/obfuscated" folder with name
+        "LICENSE4J-Obfuscation-Example.jar"
+        -->
+        
+        
+        <!--
+        Delete temporary directories and files.
+        -->
+        <delete dir="dist/temp/"/>
+        <delete dir="dist/obfuscated/temp/"/>
+        <delete file="dist/obfuscated/LICENSE4J-Obfuscation-Example-temp.jar"/>
+        
+        
+        <!--
+        Define property "launch4j.dir" and set to your Launch4j installation path.
+        -->
+        <property name="launch4j.dir" location="C:\\Program Files (x86)\\Launch4j" />
+        <taskdef name="launch4j"
+                 classname="net.sf.launch4j.ant.Launch4jTask"
+                 classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+    
+        <!--
+        Run Launch4j to create EXE file. Modify "launch4j-config.xml" file as required.
+        -->
+        <launch4j configFile="launch4j/launch4j-config.xml" />
+    </target>
+</project>

@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body style="font-family:Tahoma;padding:10px;">
+        <div>
+            <h1>License4J QuickStart Licensing Example Application</h1>
+            <p>
+                This application demonstrates usage of quick start example in a swing application.
+                Quick start licensing example includes all required dialogs and code to get license information from user and validate/activate.
+            </p>
+
+            <h1>Which License Types can be used</h1>
+            <p>
+                With quick start example file, you can validate license key, license text and activate if activation return type is a license text.
+                <br />
+                <br />
+                This application at startup just before main frame displayed, checks for license if there is no license, then brings up 
+                license information dialog. License information dialog has "activate" "change license" buttons. To install a license, click on 
+                "change license" button, and license input GUI will come up. License input gui has 3 options.<br/><br/> With first option you can 
+                hard-code your trial license in your software and customer may directly use it (it should be a license key/text with enabled activation,
+                also validity period should be set to something like 30 days, the trial period. One final important requirement about license: on license actiavtion step while
+                generating license, do not forget to select "set license generation date time to ..." checkbox, so trial period will begin when license is activated.)
+                <br/><br/>With the second option, customer can install license key.
+                <br/><br/>With the third option, customer can install a license file by browsing with file chooser. The license file can also
+                be an activated license text. e.g. You can get hardware IDs from customer by e-mail, then use license manager gui and 
+                add a manual activation and send license text to customer by e-mail. Finally, customer use this option and directly install activated license.
+            </p>
+            <h1>Sample licenses to test:</h1>
+            <p>
+                All the following licenses are hosted on Online.License4J and their quantity is set to 999999. So you
+                can use them to test application.
+            </p>
+            <ul>
+                <li><b>7IDZ9-2VY4C-SIDNK-JPHVE-KL7VA</b> trial license key included in MainJFrame.java file.</li>
+                <li><b>IYZCY-V9ABW-63PP4-HKQLG-RTLR3</b> license key which requires activation, and have 2 years validity period</li>
+                <li><b>K5W3C-KMYWW-5BPML-RCXE6-3QQNG</b> license key, does not require activation</li>
+                <li><b>1402319831268</b> license file located in "example-license-text" folder, a trial license text, requires activation.</li>
+                <li><b>1402319951304</b> license file, which does not require activation</li>
+            </ul>
+        </div>
+    </body>
+</html>

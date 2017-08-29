@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body style="font-family:Tahoma;padding:10px;">
+        <div>
+            <h1>License4J Licensing Example Application</h1>
+            <p>
+                This application demonstrates trial license usage and validation.
+                It stores license information in user home directory with
+                sample-app-license-file.lic".
+                "License" menu item in Help menu has required buttons to request a trial, change product key,
+                validate and activate a test license.        
+            </p>
+
+            <p>
+                The easiest trial license implementation in License4J is to use single trial license key and 
+                perform activations with this single license key. Therefore you can generate a single license key 
+                and hard-code in your software product. When a user first run software, he/she can request a trial usage with
+                a button click. Then runtime library auto-activates hard-coded trial license key on server, and trial period starts. After 
+                trial period ends, if user uninstall/re-install software and tries to request another trial license, <b>he/she will get
+                    already activated and expired trial activation.</b><br/>
+                As a software publisher you can monitor trial license activations by just right clicking on trial license in License Manager
+                and running "Manage Activations" menu item; you will see all trial activations with expiration dates.<br /><br/>
+                </p>
+                <h2>  To generate trial license key:</h2>
+            <ul>
+                <li>Start license generation wizard.</li>
+                <li>On step 3, select basic license key</li>
+                <li>On step 4, define quantity as 999999</li>
+                <li>On step 5, enable activation</li>
+                <li>On step 5, select activation period as 0 (zero)</li>
+                <li>On step 5, select activation return as license text</li>
+                <li>On step 5, select "set activated license text generation ..." checkbox. So trial period will begin when
+                    user first activated the license</li>
+                <li>On step 5, select hardware ID(s) you want to use</li>
+                <li>On step 6, set validity period. Like 30 days valid trial license</li>
+                <li>On step 7, define a custom signed feature to identify this license as trial (like trial=yes)</li>
+                <li>On step 8, preferably enable date/time check</li>
+            </ul>
+
+        <h2>Some Source Files</h2>
+        <p>
+            "MyProductLicense.java" has all settings and validation methods defined. It is used
+            to make this demonstration application simple. In a real application, you should validate
+            licenses in a few different parts of your application.
+        </p>
+
+        <p>
+            "MyProductLicenseJDialog.java" is a simple licensing window to modify license and display information.
+        </p>
+
+        <h2>TODO List</h2>
+        To test your licenses with this application search for word TODO in source file
+        "MyProductLicense.java" and replace with your product information.
+        <ul>
+            <li>Change publicKey variable with your public key in MyProductLicense.java file.</li>
+            <li>Replace product id, edition and version with your settings in MyProductLicense.java file</li>
+            <li>To use your own Auto License Generation and Activation Server or License Activation and Validation Server user your server address in 
+                autoActivate method in MyProductLicense.java file.</li>
+        </ul>
+
+        <h2>Example Licenses</h2>
+
+        <ul>
+            <li><b>QJ4GK-96PF7-M6CSA-AWGUE-TTQSA</b>: This is a sample trial license key with 90 days validity period defined.</li>
+            <li><b>AH2RN-26GDM-92PUN-5JWSU-Q362H</b>: This is a 1 year valid normal license key and requires activation, to test 
+                example when a customer purchased product.</li>
+            <li><b>PTBSZ-C4IJ2-X4WPB-3H4FQ-PM33K</b>:  This is a 2 year valid normal license key and requires activation, to test 
+                example when a customer purchased product.</li>
+        </ul>
+        
+         <h2>Note</h2>
+         <p>
+             License validation/activation can be made in many different ways. Use of threads or SwingWorker may change in your product.
+             This is just an example application to help start license validation.
+         </p>
+    </div>
+</body>
+</html>
