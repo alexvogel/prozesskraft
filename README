@@ -1,0 +1,11 @@
+1) go to the directory where you want to install the toolbox and unpack
+	tar -xvf ptest-*.tar.gz
+
+2) link the launch script "bin/ptest" from a PATH-directory. for example
+	cd ~/bin
+	ln -s <installdirectory>/bin/ptest
+
+3) edit the configuration file etc/ptest-fingerprint.ini
+	define at least one license-server (for example: license-server-1=16090@sv02)
+
+checkout www.prozesskraft.de for further informations or even more tools.
