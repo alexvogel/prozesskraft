@@ -1,0 +1,4 @@
+deploytargetrename.txt
+deployignore.txt
+deploy.pl
+config
